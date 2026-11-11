@@ -123,8 +123,49 @@ public class VoiceRecognitionManager {
     /** Application context, kept only to name ourselves as the recogniser's calling package. */
     private final Context mContext;
 
-    /** The tag the last dictation request carried; what the error and the chip should name. */
+    /** The language the last dictation was for; what the error and the chip should name. */
     private String mLastLanguageTag = SettingsManager.DEFAULT_VOICE_INPUT_LANGUAGE;
+
+    /**
+     * Languages this recogniser turned out to know under another tag ("fr" as "fr-FR"): the tag
+     * asked for, to the tag to send. Learned by {@link #resolveRefusedLanguage}; forgotten when
+     * the recogniser is changed for another.
+     */
+    private final java.util.HashMap<String, String> mUsableTags = new java.util.HashMap<>();
+
+    /** Whether the dictation the user started has already had its one language check. */
+    private boolean mLanguageChecked;
+
+    /** Whether the dictation the user started has already been retried with a region added. */
+    private boolean mRegionTried;
+
+    /**
+     * Counts the dictations the user starts. A language check or download answers with the
+     * number it was started under, and is ignored once that is no longer the current one.
+     */
+    private int mLanguageRequest;
+
+    /**
+     * While a language download is being followed, the recogniser is not let go for being idle
+     * (its listener would be dropped) until this uptime: {@link #DOWNLOAD_HOLD_MILLIS} at most.
+     */
+    private long mDownloadHoldUntil;
+
+    /** The current download's listener, for a test to play the recogniser's side. */
+    private Object mDownloadListener;
+
+    /** How long a recogniser is kept for a download that has not reported back. */
+    static final long DOWNLOAD_HOLD_MILLIS = 10 * 60_000L;
+
+    /**
+     * How long a download request may go without any answer before it is taken as refused. A
+     * recogniser with the feature switched off drops the request without a word (Google's
+     * service logs "disabled via flag. Noop"), which would leave "Downloading…" up for good.
+     */
+    static final long DOWNLOAD_ANSWER_MILLIS = 20_000L;
+
+    /** Reports a download request that nothing answered; posted by {@link #downloadLanguage}. */
+    private Runnable mDownloadUnanswered;
 
     
     public enum Mode {
@@ -150,6 +191,17 @@ public class VoiceRecognitionManager {
 
         /** The recogniser refused the language itself (error 12 or 13); {@code languageTag} is what was sent. */
         void onLanguageNotSupported(String languageTag);
+
+        /**
+         * The recogniser is downloading the language it refused; dictation starts by itself when
+         * that finishes, if the board is still up.
+         *
+         * @param percent how far along, 0 to 100, or -1 when not known
+         */
+        void onLanguageDownloading(String languageTag, int percent);
+
+        /** The download was accepted but will happen later, or cannot be followed (Android 13). */
+        void onLanguageDownloadPending(String languageTag);
 
         /** There is no speech-recognition service to bind, so no session can start. */
         void onNoRecognitionService();
@@ -199,7 +251,8 @@ public class VoiceRecognitionManager {
                 if (VoiceRecognitionManager.this.mSpeechRecognizer == null) {
                     return;
                 }
-                if (VoiceRecognitionManager.this.mMode != Mode.NONE) {
+                if (VoiceRecognitionManager.this.mMode != Mode.NONE
+                        || android.os.SystemClock.uptimeMillis() < VoiceRecognitionManager.this.mDownloadHoldUntil) {
                     VoiceRecognitionManager.this.mHandler.postDelayed(this, IDLE_RELEASE_MILLIS);
                     return;
                 }
@@ -219,6 +272,18 @@ public class VoiceRecognitionManager {
 
     public void startDictation() {
         Logger.debug(TAG, "Dictation button pressed");
+        // A new dictation of the user's: it gets its own language check, and whatever an earlier
+        // check or download still has to say is no longer wanted.
+        this.mLanguageChecked = false;
+        this.mRegionTried = false;
+        this.mLanguageRequest++;
+        this.mDownloadHoldUntil = 0L;
+        forgetDownloadWatch();
+        beginDictation();
+    }
+
+    /** Builds the dictation request from the current settings and starts listening. */
+    private void beginDictation() {
         refreshRecognizer();
         SettingsValues c0804dM5050c = SettingsManager.getInstance().getSettingsValues();
         Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
@@ -231,12 +296,15 @@ public class VoiceRecognitionManager {
         final String keyboardLocale = subtypes.getCurrentSubtype() != null ? subtypes.getCurrentSubtype().getLocale() : null;
         final String tag = VoiceLanguageTags.effectiveTag(c0804dM5050c.voiceInputUseInputLanguage, keyboardLocale, c0804dM5050c.voiceInputLanguageList);
         this.mLastLanguageTag = tag;
-        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, tag);
-        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_PREFERENCE, tag);
+        // The recogniser's own tag for the language, when an earlier refusal taught us one.
+        final String known = this.mUsableTags.get(tag);
+        final String sentTag = known != null ? known : tag;
+        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, sentTag);
+        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_PREFERENCE, sentTag);
         if (c0804dM5050c.voiceInputUseInputLanguage && Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
             // A multi-language keyboard's extra prediction languages: let the recogniser detect
             // and switch between them rather than hear everything as the primary language.
-            final ArrayList<String> allowed = VoiceLanguageTags.allowedTags(tag, subtypes.getCurrentSubtypeAdditionalLocales());
+            final ArrayList<String> allowed = VoiceLanguageTags.allowedTags(sentTag, subtypes.getCurrentSubtypeAdditionalLocales());
             if (allowed.size() > 1) {
                 intent.putExtra(RecognizerIntent.EXTRA_ENABLE_LANGUAGE_DETECTION, true);
                 intent.putStringArrayListExtra(RecognizerIntent.EXTRA_LANGUAGE_DETECTION_ALLOWED_LANGUAGES, allowed);
@@ -378,6 +446,9 @@ public class VoiceRecognitionManager {
      */
     public void destroy() {
         this.mDestroyed = true;
+        this.mLanguageRequest++;
+        this.mDownloadHoldUntil = 0L;
+        forgetDownloadWatch();
         this.mHandler.removeCallbacks(this.mTimeoutRunnable);
         this.mHandler.removeCallbacks(this.mReleaseRunnable);
         SpeechRecognizer speechRecognizer = this.mSpeechRecognizer;
@@ -412,6 +483,9 @@ public class VoiceRecognitionManager {
             this.mSpeechRecognizer.destroy();
         }
         this.mCancelRequested = false;
+        if (!selection.equals(this.mSelection)) {
+            this.mUsableTags.clear();  // another recogniser, with its own names for languages
+        }
         this.mSelection = selection;
         this.mSpeechRecognizer = InstalledVoiceRecognizers.create(this.mContext, selection);
         this.mListener = new RecognitionListenerImpl();
@@ -465,6 +539,204 @@ public class VoiceRecognitionManager {
 
     public Mode getMode() {
         return this.mMode;
+    }
+
+    /**
+     * The recogniser refused the language of the dictation that just ended. Two things are tried
+     * before the user is told, each once per dictation they start, so a recogniser that keeps
+     * refusing cannot loop:
+     * <ol>
+     *   <li>A bare language refused as unknown is sent again with its likely region. Google's
+     *       on-device recogniser knows "fr-FR" and not "fr" (emulator and KEY2, 2026-11-10: "fr"
+     *       is error 12, "fr-FR" error 13 when its pack is missing), while a keyboard language
+     *       is often bare.</li>
+     *   <li>On Android 13+ the recogniser is asked what it has: a language it knows under
+     *       another tag is used, one it can download is downloaded and dictation starts when
+     *       that finishes. A recogniser that cannot say (older Google services answer that the
+     *       check is switched off) is still asked for the download on Android 14+, when its
+     *       refusal was "not downloaded".</li>
+     * </ol>
+     *
+     * @param error {@code ERROR_LANGUAGE_NOT_SUPPORTED} or {@code ERROR_LANGUAGE_UNAVAILABLE}
+     * @return false when nothing was started and the caller should report the refusal itself
+     */
+    private boolean resolveRefusedLanguage(final int error) {
+        if (this.mSpeechRecognizer == null || this.mDictationIntent == null) {
+            return false;
+        }
+        final String asked = this.mLastLanguageTag;
+        final String refused = this.mDictationIntent.getStringExtra(RecognizerIntent.EXTRA_LANGUAGE);
+        if (error == SpeechRecognizer.ERROR_LANGUAGE_NOT_SUPPORTED && retryWithLikelyRegion(asked, refused)) {
+            return true;
+        }
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU || this.mLanguageChecked) {
+            return false;
+        }
+        this.mLanguageChecked = true;
+        final int request = this.mLanguageRequest;
+        try {
+            VoiceLanguageSupport.check(this.mSpeechRecognizer, this.mDictationIntent, refused,
+                    this.mContext.getMainExecutor(), new VoiceLanguageSupport.CheckListener() {
+                        @Override
+                        public void onDecision(VoiceLanguageSupport.Decision decision) {
+                            if (isCurrentLanguageRequest(request)) {
+                                onLanguageDecision(request, asked, decision);
+                            }
+                        }
+
+                        @Override
+                        public void onCheckFailed() {
+                            if (!isCurrentLanguageRequest(request)) {
+                                return;
+                            }
+                            if (error == SpeechRecognizer.ERROR_LANGUAGE_UNAVAILABLE
+                                    && Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+                                // It knows the language and lacks the download, and cannot list
+                                // what it has: ask for exactly what it refused. Android 14+ only,
+                                // where the request is answered; on Android 13 a recogniser that
+                                // will not list its languages drops the request too (emulator,
+                                // 2026-11-10), and nothing would say so.
+                                downloadLanguage(request, asked, refused);
+                            } else {
+                                VoiceRecognitionManager.this.mCallback.onLanguageNotSupported(asked);
+                            }
+                        }
+                    });
+        } catch (RuntimeException e) {
+            Logger.debug(TAG, "Language support check failed: " + e);
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * Starts the dictation again with the likely region added to a bare language ("fr" as
+     * "fr-FR"), and remembers the fuller tag for the dictations after it.
+     *
+     * @return whether the dictation was started again
+     */
+    private boolean retryWithLikelyRegion(String asked, String refused) {
+        if (this.mRegionTried || refused == null || refused.indexOf('-') >= 0) {
+            return false;
+        }
+        final String region = VoiceLanguageTags.likelyRegion(refused);
+        if (region == null) {
+            return false;
+        }
+        this.mRegionTried = true;
+        Logger.debug(TAG, "Language " + refused + " refused; trying " + refused + "-" + region);
+        this.mUsableTags.put(asked, refused + "-" + region);
+        if (this.mMode != Mode.NONE || !this.mController.isViewShowing()) {
+            return false;
+        }
+        beginDictation();
+        return true;
+    }
+
+    private boolean isCurrentLanguageRequest(int request) {
+        return request == this.mLanguageRequest && !this.mDestroyed;
+    }
+
+    private void onLanguageDecision(int request, String asked, VoiceLanguageSupport.Decision decision) {
+        Logger.debug(TAG, "Language " + asked + ": " + decision);
+        switch (decision.kind) {
+            case USE:
+                this.mUsableTags.put(asked, decision.tag);
+                if (this.mMode == Mode.NONE && this.mController.isViewShowing()) {
+                    beginDictation();
+                }
+                break;
+            case PENDING:
+            case DOWNLOAD:
+                downloadLanguage(request, asked, decision.tag);
+                break;
+            default:
+                this.mCallback.onLanguageNotSupported(asked);
+                break;
+        }
+    }
+
+    /** Requests the download of {@code tag} and follows it; see {@link VoiceLanguageSupport#download}. */
+    private void downloadLanguage(final int request, final String asked, final String tag) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU || this.mSpeechRecognizer == null) {
+            this.mCallback.onLanguageNotSupported(asked);
+            return;
+        }
+        final Intent intent = new Intent(this.mDictationIntent);
+        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, tag);
+        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_PREFERENCE, tag);
+        final VoiceLanguageSupport.DownloadListener listener = new VoiceLanguageSupport.DownloadListener() {
+            @Override
+            public void onProgress(int percent) {
+                if (isCurrentLanguageRequest(request)) {
+                    forgetDownloadWatch();
+                    VoiceRecognitionManager.this.mCallback.onLanguageDownloading(asked, percent);
+                }
+            }
+
+            @Override
+            public void onSuccess() {
+                if (!isCurrentLanguageRequest(request)) {
+                    return;
+                }
+                forgetDownloadWatch();
+                VoiceRecognitionManager.this.mDownloadHoldUntil = 0L;
+                VoiceRecognitionManager.this.mUsableTags.put(asked, tag);
+                if (VoiceRecognitionManager.this.mMode == Mode.NONE
+                        && VoiceRecognitionManager.this.mController.isViewShowing()) {
+                    beginDictation();
+                }
+            }
+
+            @Override
+            public void onScheduled() {
+                if (isCurrentLanguageRequest(request)) {
+                    forgetDownloadWatch();
+                    VoiceRecognitionManager.this.mDownloadHoldUntil = 0L;
+                    VoiceRecognitionManager.this.mCallback.onLanguageDownloadPending(asked);
+                }
+            }
+
+            @Override
+            public void onError() {
+                if (isCurrentLanguageRequest(request)) {
+                    forgetDownloadWatch();
+                    VoiceRecognitionManager.this.mDownloadHoldUntil = 0L;
+                    VoiceRecognitionManager.this.mCallback.onLanguageNotSupported(asked);
+                }
+            }
+        };
+        this.mDownloadListener = listener;
+        this.mDownloadHoldUntil = android.os.SystemClock.uptimeMillis() + DOWNLOAD_HOLD_MILLIS;
+        this.mCallback.onLanguageDownloading(asked, -1);
+        forgetDownloadWatch();
+        this.mDownloadUnanswered = new Runnable() {
+            @Override
+            public void run() {
+                Logger.debug(TAG, "Language download request went unanswered");
+                listener.onError();
+            }
+        };
+        this.mHandler.postDelayed(this.mDownloadUnanswered, DOWNLOAD_ANSWER_MILLIS);
+        try {
+            VoiceLanguageSupport.download(this.mSpeechRecognizer, intent, this.mContext.getMainExecutor(), listener);
+        } catch (RuntimeException e) {
+            Logger.debug(TAG, "Language download request failed: " + e);
+            listener.onError();
+        }
+    }
+
+    /** Stops waiting for a download request to be answered. */
+    private void forgetDownloadWatch() {
+        if (this.mDownloadUnanswered != null) {
+            this.mHandler.removeCallbacks(this.mDownloadUnanswered);
+            this.mDownloadUnanswered = null;
+        }
+    }
+
+    /** The listener of the last language download requested, for a test to play the recogniser's side. */
+    Object languageDownloadListenerForTest() {
+        return this.mDownloadListener;
     }
 
     /** The tag the last dictation request was sent with. */
@@ -616,10 +888,13 @@ public class VoiceRecognitionManager {
                     break;
                 case SpeechRecognizer.ERROR_LANGUAGE_NOT_SUPPORTED:
                 case SpeechRecognizer.ERROR_LANGUAGE_UNAVAILABLE:
-                    // The two codes that actually mean "not this language". Google's service never
-                    // sends them (it falls back silently), but other recognisers do; before this they
-                    // just stopped the mic with no message.
-                    VoiceRecognitionManager.this.mCallback.onLanguageNotSupported(VoiceRecognitionManager.this.mLastLanguageTag);
+                    // The two codes that actually mean "not this language". Google's online service
+                    // never sends them (it falls back silently), but its on-device recogniser and
+                    // others do; before this they just stopped the mic with no message. First see
+                    // whether the recogniser has the language under another name or can fetch it.
+                    if (!VoiceRecognitionManager.this.resolveRefusedLanguage(i)) {
+                        VoiceRecognitionManager.this.mCallback.onLanguageNotSupported(VoiceRecognitionManager.this.mLastLanguageTag);
+                    }
                     break;
             }
         }

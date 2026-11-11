@@ -35,6 +35,8 @@ data class SearchDeviceCapabilities(
     val isDebugBuild: Boolean = false,
     /** Android 12 or later: the "Dynamic color" switch is drawn only there. */
     val supportsDynamicColor: Boolean = true,
+    /** Android 13 or later, where a speech recogniser can be asked to download a language. */
+    val canDownloadVoiceLanguages: Boolean = true,
 ) {
     companion object {
         fun current(): SearchDeviceCapabilities {
@@ -51,6 +53,7 @@ data class SearchDeviceCapabilities(
                 hasTouchKeypad = profile?.hasTouchKeypad() ?: false,
                 isDebugBuild = BuildConfig.DEBUG,
                 supportsDynamicColor = Build.VERSION.SDK_INT >= Build.VERSION_CODES.S,
+                canDownloadVoiceLanguages = Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU,
             )
         }
     }
@@ -99,7 +102,10 @@ enum class DeviceRequirement {
     DEBUG_BUILD,
 
     /** Drawn on Android 12 and later only: the "Dynamic color" switch. */
-    DYNAMIC_COLOR;
+    DYNAMIC_COLOR,
+
+    /** Drawn on Android 13 and later only: the "Download voice languages" switch. */
+    VOICE_LANGUAGE_DOWNLOADS;
 
     fun isMetBy(capabilities: SearchDeviceCapabilities): Boolean = when (this) {
         ANY -> true
@@ -112,6 +118,7 @@ enum class DeviceRequirement {
         TOUCH_KEYPAD_DECLARED -> capabilities.declaresTouchKeypad
         DEBUG_BUILD -> capabilities.isDebugBuild
         DYNAMIC_COLOR -> capabilities.supportsDynamicColor
+        VOICE_LANGUAGE_DOWNLOADS -> capabilities.canDownloadVoiceLanguages
     }
 }
 
@@ -212,6 +219,9 @@ object SettingsSearchIndex {
         SearchableSetting(R.string.settings_voice_stop_on_pause_title, "voice stop listening pause silence continuous keep listening press to stop dictation end", SettingsRoute.VoiceInput.route, TYPING, "voice_input_stop_on_pause"),
         SearchableSetting(R.string.settings_voice_use_keyboard_lang_title, "voice language keyboard", SettingsRoute.VoiceInput.route, TYPING, "voice_input_use_input_language"),
         SearchableSetting(R.string.settings_voice_prefer_offline_title, "voice offline on device", SettingsRoute.VoiceInput.route, TYPING, "voice_input_prefer_offline"),
+        // The "Offline voice languages" link below it is not indexed: it is drawn only when the
+        // phone's recogniser declares a settings screen, which search cannot know.
+        SearchableSetting(R.string.settings_voice_download_languages_title, "voice language download offline pack speech dictation manage", SettingsRoute.VoiceInput.route, TYPING, "voice_input_download_languages", requires = DeviceRequirement.VOICE_LANGUAGE_DOWNLOADS),
         SearchableSetting(R.string.settings_voice_show_partial_results_title, "voice dictation partial live words speak", SettingsRoute.VoiceInput.route, TYPING, "voice_input_show_partial_results"),
         // "Block offensive words" lives on the voice screen: masking the recogniser's results
         // (EXTRA_MASK_OFFENSIVE_WORDS) is all it does. Frozen anchor, moved route and category —

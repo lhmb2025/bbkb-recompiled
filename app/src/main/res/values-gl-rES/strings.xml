@@ -803,6 +803,17 @@
     <string name="dictionary_missing_no_suggestions">Aínda non hai dicionario de %1$s. Descárgao en Configuración de BBKB › Idioma.</string>
     <string name="dictionary_required_to_type">Para escribir en %1$s, descarga o seu dicionario en Configuración de BBKB › Idioma.</string>
     <string name="voice_status_language_unsupported">A entrada de voz non está dispoñible para %1$s. Cambia o idioma da entrada de voz en Configuración de BBKB.</string>
+    <string name="voice_status_language_downloading">Descargando %1$s&#8230;</string>
+    <string name="voice_status_language_download_pending">Téntao de novo cando se descargue %1$s</string>
+    <string name="settings_voice_group_recognition">Recoñecemento</string>
+    <string name="settings_voice_group_listening">Escoita</string>
+    <string name="settings_voice_group_text">Texto</string>
+    <string name="settings_voice_download_languages_title">Descargar idiomas de voz</string>
+    <string name="settings_voice_download_languages_summary">Para cada teclado que engadas</string>
+    <string name="settings_voice_offline_languages_title">Idiomas de voz sen conexión</string>
+    <string name="settings_voice_offline_languages_summary">Xestionado por %1$s</string>
+    <string name="language_packs_voice_chip">Voz</string>
+    <string name="language_packs_voice_offline">A entrada de voz funciona sen conexión</string>
     <string name="voice_status_no_recognition_service">Non se seleccionou ningún servizo de recoñecemento de voz</string>
     <string name="voice_status_network_error">Problema de rede. Comproba a túa conexión.</string>
     <string name="voice_status_audio_error">Non se puido gravar o audio.</string>

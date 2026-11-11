@@ -407,7 +407,10 @@ class PackInstallService @JvmOverloads constructor(
         }
 
         override fun enableSubtypeFor(context: Context, locale: String): Boolean =
-            SubtypeEnabler.enable(context, locale)
+            SubtypeEnabler.enable(context, locale).also { on ->
+                // A keyboard the user just added: ask for its voice language too.
+                if (on) dev.bbkb.ime.keyboard.inputboard.voice.VoiceLanguages.downloadForKeyboard(context, locale)
+            }
     }
 
     companion object {

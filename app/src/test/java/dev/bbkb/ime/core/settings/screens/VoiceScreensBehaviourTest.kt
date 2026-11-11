@@ -24,6 +24,7 @@ import androidx.compose.ui.test.hasScrollToNodeAction
 import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.isDialog
 import androidx.compose.ui.test.junit4.createComposeRule
+import androidx.compose.ui.test.performScrollTo
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performScrollToNode
@@ -310,14 +311,15 @@ class VoiceScreensBehaviourTest {
             "Show words as you speak" to "voice_input_show_partial_results",
         )
         for ((title, key) in rows) {
-            assertTrue("$title is not on screen", title in rendered())
+            // The screen is five groups long now, so a row may be below the fold.
+            composeRule.onNodeWithText(title).assertExists("$title is not on screen")
         }
         // Turn the dependent rows off first: switching the master off disables them.
         for (title in listOf("Show words as you speak", "Prefer offline recognition", "Use keyboard language", "Auto-start listening")) {
-            composeRule.onNodeWithText(title).performClick()
+            composeRule.onNodeWithText(title).performScrollTo().performClick()
             composeRule.waitForIdle()
         }
-        composeRule.onNodeWithText("Enable built-in voice input").performClick()
+        composeRule.onNodeWithText("Enable built-in voice input").performScrollTo().performClick()
         composeRule.waitForIdle()
 
         for ((title, key) in rows) {

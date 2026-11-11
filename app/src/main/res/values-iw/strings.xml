@@ -803,6 +803,17 @@
     <string name="dictionary_missing_no_suggestions">עדיין אין מילון ל%1$s. הורד אותו בהגדרות BBKB › שפה.</string>
     <string name="dictionary_required_to_type">כדי להקליד ב%1$s צריך מילון. הורד אותו בהגדרות BBKB › שפה.</string>
     <string name="voice_status_language_unsupported">הקלט הקולי לא זמין ב%1$s. שנה את שפת הקלט הקולי בהגדרות BBKB.</string>
+    <string name="voice_status_language_downloading">מתבצעת הורדה של %1$s&#8230;</string>
+    <string name="voice_status_language_download_pending">יש לנסות שוב לאחר ההורדה של %1$s</string>
+    <string name="settings_voice_group_recognition">זיהוי</string>
+    <string name="settings_voice_group_listening">האזנה</string>
+    <string name="settings_voice_group_text">טקסט</string>
+    <string name="settings_voice_download_languages_title">הורדת שפות קוליות</string>
+    <string name="settings_voice_download_languages_summary">לכל מקלדת שמוסיפים</string>
+    <string name="settings_voice_offline_languages_title">שפות קוליות אופליין</string>
+    <string name="settings_voice_offline_languages_summary">מנוהל על ידי %1$s</string>
+    <string name="language_packs_voice_chip">קול</string>
+    <string name="language_packs_voice_offline">הקלט הקולי פועל במצב לא מקוון</string>
     <string name="voice_status_no_recognition_service">לא נבחר שירות לזיהוי קולי</string>
     <string name="voice_status_network_error">בעיית רשת. בדוק את החיבור.</string>
     <string name="voice_status_audio_error">לא ניתן היה להקליט שמע.</string>

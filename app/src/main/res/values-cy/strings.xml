@@ -803,6 +803,17 @@
     <string name="dictionary_missing_no_suggestions">Dim geiriadur %1$s eto. I\'w lawrlwytho: Gosodiadau BBKB › Iaith.</string>
     <string name="dictionary_required_to_type">Mae angen geiriadur %1$s i deipio. I\'w lawrlwytho: Gosodiadau BBKB › Iaith.</string>
     <string name="voice_status_language_unsupported">Nid yw mewnbwn llais ar gael ar gyfer %1$s. Newidiwch iaith y mewnbwn llais yng Ngosodiadau BBKB.</string>
+    <string name="voice_status_language_downloading">Wrthi\'n lawrlwytho %1$s&#8230;</string>
+    <string name="voice_status_language_download_pending">Rhowch gynnig arall arni ar ôl i %1$s lawrlwytho</string>
+    <string name="settings_voice_group_recognition">Adnabod</string>
+    <string name="settings_voice_group_listening">Gwrando</string>
+    <string name="settings_voice_group_text">Testun</string>
+    <string name="settings_voice_download_languages_title">Lawrlwytho ieithoedd llais</string>
+    <string name="settings_voice_download_languages_summary">Ar gyfer pob bysellfwrdd rydych yn ei ychwanegu</string>
+    <string name="settings_voice_offline_languages_title">Ieithoedd llais all-lein</string>
+    <string name="settings_voice_offline_languages_summary">Rheolir gan %1$s</string>
+    <string name="language_packs_voice_chip">Llais</string>
+    <string name="language_packs_voice_offline">Mae mewnbwn llais yn gweithio all-lein</string>
     <string name="voice_status_no_recognition_service">Dim gwasanaeth adnabod llais wedi\'i ddewis</string>
     <string name="voice_status_network_error">Problem rhwydwaith. Gwiriwch eich cysylltiad.</string>
     <string name="voice_status_audio_error">Methu recordio sain.</string>

@@ -803,6 +803,17 @@
     <string name="dictionary_missing_no_suggestions">ยังไม่มีพจนานุกรม %1$s ดาวน์โหลดได้ที่ การตั้งค่า BBKB › ภาษา</string>
     <string name="dictionary_required_to_type">ต้องมีพจนานุกรม %1$s ก่อนจึงจะพิมพ์ได้ ดาวน์โหลดได้ที่ การตั้งค่า BBKB › ภาษา</string>
     <string name="voice_status_language_unsupported">การป้อนด้วยเสียงไม่รองรับ %1$s เปลี่ยนภาษาสำหรับการป้อนด้วยเสียงได้ใน การตั้งค่า BBKB</string>
+    <string name="voice_status_language_downloading">กำลังดาวน์โหลด %1$s&#8230;</string>
+    <string name="voice_status_language_download_pending">ลองอีกครั้งหลังจากดาวน์โหลด %1$s เสร็จแล้ว</string>
+    <string name="settings_voice_group_recognition">การจดจำเสียง</string>
+    <string name="settings_voice_group_listening">การฟัง</string>
+    <string name="settings_voice_group_text">ข้อความ</string>
+    <string name="settings_voice_download_languages_title">ดาวน์โหลดภาษาเสียง</string>
+    <string name="settings_voice_download_languages_summary">สำหรับแป้นพิมพ์แต่ละรายการที่คุณเพิ่ม</string>
+    <string name="settings_voice_offline_languages_title">ภาษาเสียงแบบออฟไลน์</string>
+    <string name="settings_voice_offline_languages_summary">จัดการโดย %1$s</string>
+    <string name="language_packs_voice_chip">เสียง</string>
+    <string name="language_packs_voice_offline">ป้อนข้อมูลด้วยเสียงแบบออฟไลน์ได้</string>
     <string name="voice_status_no_recognition_service">ไม่ได้เลือกบริการจดจำเสียง</string>
     <string name="voice_status_network_error">เครือข่ายมีปัญหา ตรวจสอบการเชื่อมต่อของคุณ</string>
     <string name="voice_status_audio_error">ไม่สามารถบันทึกเสียงได้</string>

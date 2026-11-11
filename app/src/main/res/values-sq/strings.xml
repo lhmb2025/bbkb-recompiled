@@ -803,6 +803,17 @@
     <string name="dictionary_missing_no_suggestions">Ende nuk ka fjalor për %1$s. Shkarkoje te Cilësimet e BBKB › Gjuha.</string>
     <string name="dictionary_required_to_type">Për të shkruar në %1$s duhet fjalori. Shkarkoje te Cilësimet e BBKB › Gjuha.</string>
     <string name="voice_status_language_unsupported">Shkrimi me zë nuk ofrohet për %1$s. Ndrysho gjuhën e shkrimit me zë te Cilësimet e BBKB.</string>
+    <string name="voice_status_language_downloading">Po shkarkohet %1$s&#8230;</string>
+    <string name="voice_status_language_download_pending">Provo sërish pasi të shkarkohet %1$s</string>
+    <string name="settings_voice_group_recognition">Njohja</string>
+    <string name="settings_voice_group_listening">Dëgjimi</string>
+    <string name="settings_voice_group_text">Teksti</string>
+    <string name="settings_voice_download_languages_title">Shkarko gjuhët zanore</string>
+    <string name="settings_voice_download_languages_summary">Për çdo tastierë që shton</string>
+    <string name="settings_voice_offline_languages_title">Gjuhët zanore jashtë linje</string>
+    <string name="settings_voice_offline_languages_summary">Menaxhohet nga %1$s</string>
+    <string name="language_packs_voice_chip">Zëri</string>
+    <string name="language_packs_voice_offline">Shkrimi me zë funksionon jashtë linje</string>
     <string name="voice_status_no_recognition_service">Nuk është zgjedhur asnjë shërbim për njohjen e zërit</string>
     <string name="voice_status_network_error">Problem me rrjetin. Kontrollo lidhjen.</string>
     <string name="voice_status_audio_error">Audioja nuk mund të regjistrohej.</string>

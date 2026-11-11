@@ -16,6 +16,7 @@ import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.semantics.Role
+import dev.bbkb.ime.keyboard.inputboard.voice.VoiceLanguages
 import dev.bbkb.ime.core.locale.multilanguage.LocaleItem
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -392,6 +393,7 @@ fun LanguagesHubScreen(
                         }
                         direct -> {
                             val ok = withContext(Dispatchers.IO) { KeyboardLanguages.add(context, subtype) }
+                            if (ok) VoiceLanguages.downloadForKeyboard(context, subtype.locale)
                             // Already on: the dictionary must not turn on a second keyboard.
                             candidate.pack?.let { download(listOf(it), turnOn = false) }
                             toast(context.getString(if (ok) R.string.languages_hub_added else R.string.languages_hub_failed, candidate.name))

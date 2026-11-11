@@ -19,7 +19,8 @@ import dev.bbkb.ime.core.settings.util.SettingsManager;
  * {@code he} and {@code id} by the service; a hyphenated BCP-47 tag is used as given. So every
  * region-bearing keyboard dictated in the wrong language until this normaliser existed.
  *
- * <p>Pure functions over strings so the rules can be tested without Android.
+ * <p>Pure functions over strings so the rules can be tested without Android ({@link #likelyRegion}
+ * excepted: it asks Android's locale data).
  */
 public final class VoiceLanguageTags {
 
@@ -34,6 +35,21 @@ public final class VoiceLanguageTags {
         LANGUAGE_ALIASES.put("in", "id");
         LANGUAGE_ALIASES.put("ji", "yi");
         LANGUAGE_ALIASES.put("jw", "jv");
+    }
+
+    /**
+     * Codes a recogniser may use for a language the keyboard spells another way: Google lists
+     * Mandarin and Cantonese as {@code cmn-Hans-CN} and {@code yue-Hant-HK} where the keyboard
+     * says {@code zh}, and some services say {@code no} and {@code fil} for {@code nb} and
+     * {@code tl}. Used only to compare tags ({@link #bestMatch}); nothing is rewritten.
+     */
+    private static final Map<String, String> SAME_LANGUAGE = new HashMap<>();
+
+    static {
+        SAME_LANGUAGE.put("cmn", "zh");
+        SAME_LANGUAGE.put("yue", "zh");
+        SAME_LANGUAGE.put("no", "nb");
+        SAME_LANGUAGE.put("fil", "tl");
     }
 
     private static final Pattern LANGUAGE = Pattern.compile("[a-z]{2,3}");
@@ -127,6 +143,96 @@ public final class VoiceLanguageTags {
     }
 
     /** "English (United States)" for {@code en-US}; the tag itself when the platform has no name. */
+    /**
+     * The tag in {@code candidates} to use for {@code wanted}, or null when none is in the same
+     * language. In order: {@code wanted} itself; the same language in the same region; the same
+     * language in {@code likelyRegion} (what a bare "fr" most likely means); the same language
+     * anywhere. Comparison ignores case, and the returned tag is the candidate's own spelling.
+     *
+     * <p>Recognisers list their languages with regions ("fr-FR", "fr-CA") while a keyboard
+     * language may be bare ("fr"), and one may carry a script the other lacks ("sr-Latn-RS").
+     *
+     * @param likelyRegion a two-letter or three-digit region, or null for none
+     */
+    public static String bestMatch(String wanted, String likelyRegion, java.util.List<String> candidates) {
+        if (wanted == null || wanted.isEmpty() || candidates == null) {
+            return null;
+        }
+        final String language = languageOf(wanted);
+        final String region = regionOf(wanted);
+        String sameRegion = null;
+        String inLikelyRegion = null;
+        String sameLanguage = null;
+        for (String candidate : candidates) {
+            if (candidate == null || candidate.isEmpty()) {
+                continue;
+            }
+            if (candidate.equalsIgnoreCase(wanted)) {
+                return candidate;
+            }
+            if (!language.equals(languageOf(candidate))) {
+                continue;
+            }
+            final String candidateRegion = regionOf(candidate);
+            if (sameRegion == null && region != null && region.equalsIgnoreCase(candidateRegion)) {
+                sameRegion = candidate;
+            }
+            if (inLikelyRegion == null && likelyRegion != null && likelyRegion.equalsIgnoreCase(candidateRegion)) {
+                inLikelyRegion = candidate;
+            }
+            if (sameLanguage == null) {
+                sameLanguage = candidate;
+            }
+        }
+        if (sameRegion != null) {
+            return sameRegion;
+        }
+        if (inLikelyRegion != null) {
+            return inLikelyRegion;
+        }
+        // Chinese is the exception to "any region will do": the mainland, Taiwan and Hong Kong
+        // entries are different scripts and, for Hong Kong, a different spoken language.
+        return "zh".equals(language) ? null : sameLanguage;
+    }
+
+    /**
+     * "FR" for "fr", "BR" for "pt", "CN" for "zh": the region a language most likely means, from
+     * Android's locale data; null when it knows none.
+     */
+    public static String likelyRegion(String tag) {
+        if (tag == null || tag.isEmpty()) {
+            return null;
+        }
+        try {
+            final String region = android.icu.util.ULocale.addLikelySubtags(
+                    android.icu.util.ULocale.forLanguageTag(tag)).getCountry();
+            return region == null || region.isEmpty() ? null : region;
+        } catch (RuntimeException e) {
+            return null;
+        }
+    }
+
+    /** The language part of a hyphenated tag, lower-cased and with old codes mapped: "fr" for "fr-CA". */
+    private static String languageOf(String tag) {
+        final int hyphen = tag.indexOf('-');
+        final String language = (hyphen < 0 ? tag : tag.substring(0, hyphen)).toLowerCase(Locale.ROOT);
+        final String alias = LANGUAGE_ALIASES.get(language);
+        final String current = alias != null ? alias : language;
+        final String same = SAME_LANGUAGE.get(current);
+        return same != null ? same : current;
+    }
+
+    /** The region part of a hyphenated tag ("CA" for "fr-CA", "RS" for "sr-Latn-RS"), or null. */
+    private static String regionOf(String tag) {
+        final String[] parts = tag.split("-");
+        for (int i = 1; i < parts.length; i++) {
+            if (REGION_LETTERS.matcher(parts[i]).matches() || REGION_DIGITS.matcher(parts[i]).matches()) {
+                return parts[i];
+            }
+        }
+        return null;
+    }
+
     public static String displayName(String tag) {
         if (tag == null || tag.isEmpty()) {
             return "";

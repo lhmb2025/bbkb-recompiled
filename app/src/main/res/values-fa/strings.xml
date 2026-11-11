@@ -803,6 +803,17 @@
     <string name="dictionary_missing_no_suggestions">هنوز واژه‌نامهٔ %1$s وجود ندارد. آن را از تنظیمات BBKB › زبان بارگیری کنید.</string>
     <string name="dictionary_required_to_type">برای تایپ به %1$s، واژه‌نامهٔ آن لازم است. آن را از تنظیمات BBKB › زبان بارگیری کنید.</string>
     <string name="voice_status_language_unsupported">ورودی صوتی برای %1$s در دسترس نیست. زبان ورودی صوتی را در تنظیمات BBKB تغییر دهید.</string>
+    <string name="voice_status_language_downloading">در حال بارگیری %1$s&#8230;</string>
+    <string name="voice_status_language_download_pending">پس از بارگیری %1$s دوباره امتحان کنید</string>
+    <string name="settings_voice_group_recognition">تشخیص</string>
+    <string name="settings_voice_group_listening">گوش دادن</string>
+    <string name="settings_voice_group_text">متن</string>
+    <string name="settings_voice_download_languages_title">بارگیری زبان‌های صوتی</string>
+    <string name="settings_voice_download_languages_summary">برای هر صفحه‌کلیدی که اضافه می‌کنید</string>
+    <string name="settings_voice_offline_languages_title">زبان‌های صوتی آفلاین</string>
+    <string name="settings_voice_offline_languages_summary">مدیریت توسط %1$s</string>
+    <string name="language_packs_voice_chip">صدا</string>
+    <string name="language_packs_voice_offline">ورودی صوتی به‌صورت آفلاین کار می‌کند</string>
     <string name="voice_status_no_recognition_service">هیچ سرویس تشخیص صدا انتخاب نشده است</string>
     <string name="voice_status_network_error">مشکل شبکه. اتصال خود را بررسی کنید.</string>
     <string name="voice_status_audio_error">ضبط صدا ممکن نشد.</string>

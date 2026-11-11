@@ -803,6 +803,17 @@
     <string name="dictionary_missing_no_suggestions">%1$s നിഘണ്ടു ഇതുവരെ ഇല്ല. BBKB ക്രമീകരണങ്ങൾ › ഭാഷ എന്നതിൽ ഇത് ഡൗൺലോഡ് ചെയ്യുക.</string>
     <string name="dictionary_required_to_type">ടൈപ്പ് ചെയ്യാൻ %1$s നിഘണ്ടു വേണം. BBKB ക്രമീകരണങ്ങൾ › ഭാഷ എന്നതിൽ ഇത് ഡൗൺലോഡ് ചെയ്യുക.</string>
     <string name="voice_status_language_unsupported">%1$s ഭാഷയ്ക്ക് വോയ്‌സ് ഇൻപുട്ട് ലഭ്യമല്ല. BBKB ക്രമീകരണങ്ങളിൽ വോയ്‌സ് ഇൻപുട്ട് ഭാഷ മാറ്റുക.</string>
+    <string name="voice_status_language_downloading">%1$s ഡൗൺലോഡ് ചെയ്യുന്നു&#8230;</string>
+    <string name="voice_status_language_download_pending">%1$s ഡൗൺലോഡ് ചെയ്ത ശേഷം വീണ്ടും ശ്രമിക്കുക</string>
+    <string name="settings_voice_group_recognition">തിരിച്ചറിയൽ</string>
+    <string name="settings_voice_group_listening">കേൾക്കൽ</string>
+    <string name="settings_voice_group_text">ടെക്സ്റ്റ്</string>
+    <string name="settings_voice_download_languages_title">വോയ്‌സ് ഭാഷകൾ ഡൗൺലോഡ് ചെയ്യുക</string>
+    <string name="settings_voice_download_languages_summary">നിങ്ങൾ ചേർക്കുന്ന ഓരോ കീബോർഡിനും</string>
+    <string name="settings_voice_offline_languages_title">ഓഫ്‌ലൈൻ വോയ്‌സ് ഭാഷകൾ</string>
+    <string name="settings_voice_offline_languages_summary">%1$s നിയന്ത്രിക്കുന്നു</string>
+    <string name="language_packs_voice_chip">വോയ്‌സ്</string>
+    <string name="language_packs_voice_offline">വോയ്‌സ് ഇൻപുട്ട് ഓഫ്‌ലൈനിൽ പ്രവർത്തിക്കുന്നു</string>
     <string name="voice_status_no_recognition_service">വോയ്‌സ് തിരിച്ചറിയൽ സേവനമൊന്നും തിരഞ്ഞെടുത്തിട്ടില്ല</string>
     <string name="voice_status_network_error">നെറ്റ്‌വർക്ക് പ്രശ്‌നം. നിങ്ങളുടെ കണക്ഷൻ പരിശോധിക്കുക.</string>
     <string name="voice_status_audio_error">ഓഡിയോ റെക്കോർഡ് ചെയ്യാനായില്ല.</string>

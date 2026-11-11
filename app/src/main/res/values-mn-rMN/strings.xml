@@ -803,6 +803,17 @@
     <string name="dictionary_missing_no_suggestions">%1$s толь бичиг одоогоор алга. BBKB Тохиргоо › Хэл хэсгээс татаж авна уу.</string>
     <string name="dictionary_required_to_type">Бичихэд %1$s толь бичиг хэрэгтэй. BBKB Тохиргоо › Хэл хэсгээс татаж авна уу.</string>
     <string name="voice_status_language_unsupported">%1$s хэлэнд дуут оролт боломжгүй. Дуут оролтын хэлийг BBKB Тохиргоо хэсгээс өөрчилнө үү.</string>
+    <string name="voice_status_language_downloading">%1$s татаж байна&#8230;</string>
+    <string name="voice_status_language_download_pending">%1$s татагдсаны дараа дахин оролдоно уу</string>
+    <string name="settings_voice_group_recognition">Таних</string>
+    <string name="settings_voice_group_listening">Сонсох</string>
+    <string name="settings_voice_group_text">Текст</string>
+    <string name="settings_voice_download_languages_title">Дуут хэлнүүдийг татах</string>
+    <string name="settings_voice_download_languages_summary">Таны нэмсэн гар бүрд</string>
+    <string name="settings_voice_offline_languages_title">Офлайн дуут хэлнүүд</string>
+    <string name="settings_voice_offline_languages_summary">%1$s удирддаг</string>
+    <string name="language_packs_voice_chip">Дуу</string>
+    <string name="language_packs_voice_offline">Дуут оролт офлайнаар ажиллана</string>
     <string name="voice_status_no_recognition_service">Дуу хоолой таних үйлчилгээ сонгоогүй байна</string>
     <string name="voice_status_network_error">Сүлжээний асуудал. Холболтоо шалгана уу.</string>
     <string name="voice_status_audio_error">Аудио бичиж чадсангүй.</string>

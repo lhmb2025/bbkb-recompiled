@@ -8,6 +8,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
@@ -107,6 +108,12 @@ fun PreferenceItem(
      */
     groupEdge: GroupEdge = GroupEdge.Middle,
     onClick: (() -> Unit)? = null,
+    /**
+     * A small mark that belongs to the title - a chip, a tag - drawn right after it on the same
+     * line. When the title leaves it no room it moves to a line of its own under the title, so
+     * the title is never cut short for it.
+     */
+    titleAccessory: @Composable (() -> Unit)? = null,
     trailing: @Composable (() -> Unit)? = null
 ) {
     val spacing = LocalSpacing.current
@@ -198,15 +205,17 @@ fun PreferenceItem(
                     .weight(1f)
                     .padding(end = if (trailing != null) spacing.iconTextGap else spacing.none)
             ) {
-                Text(
-                    text = title,
-                    style = MaterialTheme.typography.bodyLarge,  // Standard for preference items
-                    color = if (enabled) {
-                        MaterialTheme.colorScheme.onSurface
-                    } else {
-                        MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f)
-                    }
-                )
+                TitleWithAccessory(accessory = titleAccessory) {
+                    Text(
+                        text = title,
+                        style = MaterialTheme.typography.bodyLarge,  // Standard for preference items
+                        color = if (enabled) {
+                            MaterialTheme.colorScheme.onSurface
+                        } else {
+                            MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f)
+                        }
+                    )
+                }
                 if (summary != null) {
                     Spacer(modifier = Modifier.height(spacing.titleSummaryGap))
                     Text(
@@ -224,6 +233,33 @@ fun PreferenceItem(
             // Trailing content (switch, checkbox, chevron, etc.)
             trailing?.invoke()
         }
+    }
+}
+
+/**
+ * A row's title with an optional mark after it (see [PreferenceItem]'s `titleAccessory`). The two
+ * flow like words: side by side while both fit, the mark under the title when they do not.
+ * Without a mark this is the title alone, laid out exactly as it always was.
+ */
+@Composable
+fun TitleWithAccessory(
+    accessory: @Composable (() -> Unit)?,
+    modifier: Modifier = Modifier,
+    title: @Composable () -> Unit,
+) {
+    if (accessory == null) {
+        Box(modifier = modifier) { title() }
+        return
+    }
+    val spacing = LocalSpacing.current
+    FlowRow(
+        modifier = modifier,
+        horizontalArrangement = Arrangement.spacedBy(spacing.small),
+        verticalArrangement = Arrangement.spacedBy(spacing.extraSmall),
+        itemVerticalAlignment = Alignment.CenterVertically,
+    ) {
+        title()
+        accessory()
     }
 }
 

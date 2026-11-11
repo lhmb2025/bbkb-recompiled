@@ -803,6 +803,17 @@
     <string name="dictionary_missing_no_suggestions">Ingen ordlista för %1$s än. Hämta den under Inställningar för BBKB › Språk.</string>
     <string name="dictionary_required_to_type">%1$s behöver sin ordlista för att skriva. Hämta den under Inställningar för BBKB › Språk.</string>
     <string name="voice_status_language_unsupported">Röstinmatning är inte tillgänglig för %1$s. Byt språk för röstinmatning under Inställningar för BBKB.</string>
+    <string name="voice_status_language_downloading">Laddar ned %1$s&#8230;</string>
+    <string name="voice_status_language_download_pending">Försök igen när %1$s har laddats ned</string>
+    <string name="settings_voice_group_recognition">Igenkänning</string>
+    <string name="settings_voice_group_listening">Lyssning</string>
+    <string name="settings_voice_group_text">Text</string>
+    <string name="settings_voice_download_languages_title">Ladda ned röstspråk</string>
+    <string name="settings_voice_download_languages_summary">För varje tangentbord du lägger till</string>
+    <string name="settings_voice_offline_languages_title">Offlineröstspråk</string>
+    <string name="settings_voice_offline_languages_summary">Hanteras av %1$s</string>
+    <string name="language_packs_voice_chip">Röst</string>
+    <string name="language_packs_voice_offline">Röstinmatning fungerar offline</string>
     <string name="voice_status_no_recognition_service">Ingen röstigenkänningstjänst har valts</string>
     <string name="voice_status_network_error">Nätverksproblem. Kontrollera anslutningen.</string>
     <string name="voice_status_audio_error">Det gick inte att spela in ljud.</string>

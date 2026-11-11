@@ -803,6 +803,17 @@
     <string name="dictionary_missing_no_suggestions">Níl foclóir %1$s ann fós. Íoslódáil é i Socruithe BBKB › Teanga.</string>
     <string name="dictionary_required_to_type">Teastaíonn foclóir %1$s chun clóscríobh. Íoslódáil é i Socruithe BBKB › Teanga.</string>
     <string name="voice_status_language_unsupported">Níl ionchur gutha ar fáil do %1$s. Athraigh teanga an ionchuir gutha i Socruithe BBKB.</string>
+    <string name="voice_status_language_downloading">%1$s á íoslódáil&#8230;</string>
+    <string name="voice_status_language_download_pending">Bain triail eile as tar éis %1$s a íoslódáil</string>
+    <string name="settings_voice_group_recognition">Aithint</string>
+    <string name="settings_voice_group_listening">Éisteacht</string>
+    <string name="settings_voice_group_text">Téacs</string>
+    <string name="settings_voice_download_languages_title">Íoslódáil teangacha gutha</string>
+    <string name="settings_voice_download_languages_summary">Do gach méarchlár a chuireann tú leis</string>
+    <string name="settings_voice_offline_languages_title">Teangacha gutha as líne</string>
+    <string name="settings_voice_offline_languages_summary">Á mbainistiú ag %1$s</string>
+    <string name="language_packs_voice_chip">Guth</string>
+    <string name="language_packs_voice_offline">Oibríonn ionchur gutha as líne</string>
     <string name="voice_status_no_recognition_service">Níl aon seirbhís aitheantais gutha roghnaithe</string>
     <string name="voice_status_network_error">Fadhb líonra. Seiceáil do cheangal.</string>
     <string name="voice_status_audio_error">Níorbh fhéidir fuaim a thaifeadadh.</string>

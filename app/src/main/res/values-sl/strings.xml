@@ -803,6 +803,17 @@
     <string name="dictionary_missing_no_suggestions">%1$s: slovarja še ni. Prenesite ga v razdelku Nastavitve BBKB › Jezik.</string>
     <string name="dictionary_required_to_type">%1$s: za tipkanje potrebujete slovar. Prenesite ga v razdelku Nastavitve BBKB › Jezik.</string>
     <string name="voice_status_language_unsupported">%1$s: glasovni vnos ni na voljo. Jezik glasovnega vnosa spremenite v Nastavitvah BBKB.</string>
+    <string name="voice_status_language_downloading">Prenašanje: %1$s&#8230;</string>
+    <string name="voice_status_language_download_pending">Poskusite znova, ko se %1$s prenese</string>
+    <string name="settings_voice_group_recognition">Prepoznavanje</string>
+    <string name="settings_voice_group_listening">Poslušanje</string>
+    <string name="settings_voice_group_text">Besedilo</string>
+    <string name="settings_voice_download_languages_title">Prenesi glasovne jezike</string>
+    <string name="settings_voice_download_languages_summary">Za vsako dodano tipkovnico</string>
+    <string name="settings_voice_offline_languages_title">Glasovni jeziki brez povezave</string>
+    <string name="settings_voice_offline_languages_summary">Upravlja %1$s</string>
+    <string name="language_packs_voice_chip">Glas</string>
+    <string name="language_packs_voice_offline">Glasovni vnos deluje brez povezave</string>
     <string name="voice_status_no_recognition_service">Ni izbrane storitve za prepoznavanje glasu</string>
     <string name="voice_status_network_error">Težava z omrežjem. Preverite povezavo.</string>
     <string name="voice_status_audio_error">Zvoka ni bilo mogoče posneti.</string>

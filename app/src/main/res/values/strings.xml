@@ -341,6 +341,17 @@
     <string name="voice_status_listening">Listening&#8230;</string>
     <string name="voice_status_listening_tap_to_stop">Listening&#8230; Tap the mic to stop</string>
     <string name="voice_status_language_unsupported">Voice input isn\'t available for %1$s. Change the voice language in BBKB Settings.</string>
+    <string name="voice_status_language_downloading">Downloading %1$s&#8230;</string>
+    <string name="voice_status_language_download_pending">Try again after %1$s has downloaded</string>
+    <string name="settings_voice_group_recognition">Recognition</string>
+    <string name="settings_voice_group_listening">Listening</string>
+    <string name="settings_voice_group_text">Text</string>
+    <string name="settings_voice_download_languages_title">Download voice languages</string>
+    <string name="settings_voice_download_languages_summary">For each keyboard you add</string>
+    <string name="settings_voice_offline_languages_title">Offline voice languages</string>
+    <string name="settings_voice_offline_languages_summary">Managed by %1$s</string>
+    <string name="language_packs_voice_chip">Voice</string>
+    <string name="language_packs_voice_offline">Voice input works offline</string>
     <string name="voice_status_no_recognition_service">No selected voice recognition service</string>
     <string name="voice_status_network_error">Network problem. Check your connection.</string>
     <string name="voice_status_audio_error">Couldn\'t record audio.</string>

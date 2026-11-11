@@ -803,6 +803,17 @@
     <string name="dictionary_missing_no_suggestions">%1$s शब्दकोश अद्याप नाही. BBKB सेटिंग्ज › भाषा मध्ये तो डाउनलोड करा.</string>
     <string name="dictionary_required_to_type">%1$s मध्ये टाइप करण्यासाठी शब्दकोश हवा. BBKB सेटिंग्ज › भाषा मध्ये तो डाउनलोड करा.</string>
     <string name="voice_status_language_unsupported">%1$s साठी व्हॉइस इनपुट उपलब्ध नाही. BBKB सेटिंग्जमध्ये व्हॉइस इनपुट भाषा बदला.</string>
+    <string name="voice_status_language_downloading">%1$s डाउनलोड होत आहे&#8230;</string>
+    <string name="voice_status_language_download_pending">%1$s डाउनलोड झाल्यानंतर पुन्हा प्रयत्न करा</string>
+    <string name="settings_voice_group_recognition">ओळख</string>
+    <string name="settings_voice_group_listening">ऐकणे</string>
+    <string name="settings_voice_group_text">मजकूर</string>
+    <string name="settings_voice_download_languages_title">व्हॉइस भाषा डाउनलोड करा</string>
+    <string name="settings_voice_download_languages_summary">तुम्ही जोडलेल्या प्रत्येक कीबोर्डसाठी</string>
+    <string name="settings_voice_offline_languages_title">ऑफलाइन व्हॉइस भाषा</string>
+    <string name="settings_voice_offline_languages_summary">%1$s द्वारे व्यवस्थापित</string>
+    <string name="language_packs_voice_chip">व्हॉइस</string>
+    <string name="language_packs_voice_offline">व्हॉइस इनपुट ऑफलाइन काम करते</string>
     <string name="voice_status_no_recognition_service">कोणतीही व्हॉइस ओळख सेवा निवडलेली नाही</string>
     <string name="voice_status_network_error">नेटवर्क समस्या. तुमचे कनेक्शन तपासा.</string>
     <string name="voice_status_audio_error">ऑडिओ रेकॉर्ड करता आला नाही.</string>

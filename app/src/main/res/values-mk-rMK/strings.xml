@@ -803,6 +803,17 @@
     <string name="dictionary_missing_no_suggestions">Уште нема речник за %1$s. Преземете го во Поставки на BBKB › Јазик.</string>
     <string name="dictionary_required_to_type">За пишување на %1$s потребен е речник. Преземете го во Поставки на BBKB › Јазик.</string>
     <string name="voice_status_language_unsupported">Гласовното внесување не е достапно за %1$s. Сменете го јазикот за гласовно внесување во Поставки на BBKB.</string>
+    <string name="voice_status_language_downloading">Се презема %1$s&#8230;</string>
+    <string name="voice_status_language_download_pending">Обидете се повторно откако ќе се преземе %1$s</string>
+    <string name="settings_voice_group_recognition">Препознавање</string>
+    <string name="settings_voice_group_listening">Слушање</string>
+    <string name="settings_voice_group_text">Текст</string>
+    <string name="settings_voice_download_languages_title">Преземај гласовни јазици</string>
+    <string name="settings_voice_download_languages_summary">За секоја тастатура што ќе ја додадете</string>
+    <string name="settings_voice_offline_languages_title">Офлајн гласовни јазици</string>
+    <string name="settings_voice_offline_languages_summary">Управува %1$s</string>
+    <string name="language_packs_voice_chip">Глас</string>
+    <string name="language_packs_voice_offline">Гласовниот внес работи офлајн</string>
     <string name="voice_status_no_recognition_service">Не е избрана услуга за препознавање глас</string>
     <string name="voice_status_network_error">Проблем со мрежата. Проверете ја врската.</string>
     <string name="voice_status_audio_error">Не може да се сними звук.</string>

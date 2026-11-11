@@ -803,6 +803,17 @@
     <string name="dictionary_missing_no_suggestions">Δεν υπάρχει ακόμη λεξικό για τα %1$s. Κατεβάστε το από τις Ρυθμίσεις BBKB › Γλώσσα.</string>
     <string name="dictionary_required_to_type">Για να γράψετε στα %1$s, κατεβάστε το λεξικό από τις Ρυθμίσεις BBKB › Γλώσσα.</string>
     <string name="voice_status_language_unsupported">Η φωνητική εισαγωγή δεν είναι διαθέσιμη για τα %1$s. Αλλάξτε τη γλώσσα φωνητικής εισαγωγής στις Ρυθμίσεις BBKB.</string>
+    <string name="voice_status_language_downloading">Λήψη: %1$s&#8230;</string>
+    <string name="voice_status_language_download_pending">Δοκιμάστε ξανά μετά τη λήψη: %1$s</string>
+    <string name="settings_voice_group_recognition">Αναγνώριση</string>
+    <string name="settings_voice_group_listening">Ακρόαση</string>
+    <string name="settings_voice_group_text">Κείμενο</string>
+    <string name="settings_voice_download_languages_title">Λήψη γλωσσών φωνής</string>
+    <string name="settings_voice_download_languages_summary">Για κάθε πληκτρολόγιο που προσθέτετε</string>
+    <string name="settings_voice_offline_languages_title">Γλώσσες φωνής εκτός σύνδεσης</string>
+    <string name="settings_voice_offline_languages_summary">Διαχείριση από %1$s</string>
+    <string name="language_packs_voice_chip">Φωνή</string>
+    <string name="language_packs_voice_offline">Η φωνητική εισαγωγή λειτουργεί εκτός σύνδεσης</string>
     <string name="voice_status_no_recognition_service">Δεν έχει επιλεγεί υπηρεσία αναγνώρισης φωνής</string>
     <string name="voice_status_network_error">Πρόβλημα δικτύου. Ελέγξτε τη σύνδεσή σας.</string>
     <string name="voice_status_audio_error">Δεν ήταν δυνατή η εγγραφή ήχου.</string>

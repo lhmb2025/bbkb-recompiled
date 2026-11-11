@@ -803,6 +803,17 @@
     <string name="dictionary_missing_no_suggestions">%1$s: словаря пока нет. Загрузите его в разделе Настройки BBKB › Язык.</string>
     <string name="dictionary_required_to_type">%1$s: для ввода нужен словарь. Загрузите его в разделе Настройки BBKB › Язык.</string>
     <string name="voice_status_language_unsupported">%1$s: голосовой ввод недоступен. Измените язык голосового ввода в Настройках BBKB.</string>
+    <string name="voice_status_language_downloading">Скачивается: %1$s&#8230;</string>
+    <string name="voice_status_language_download_pending">Повторите попытку после скачивания: %1$s</string>
+    <string name="settings_voice_group_recognition">Распознавание</string>
+    <string name="settings_voice_group_listening">Прослушивание</string>
+    <string name="settings_voice_group_text">Текст</string>
+    <string name="settings_voice_download_languages_title">Скачивать голосовые языки</string>
+    <string name="settings_voice_download_languages_summary">Для каждой добавленной клавиатуры</string>
+    <string name="settings_voice_offline_languages_title">Голосовые языки офлайн</string>
+    <string name="settings_voice_offline_languages_summary">Управляет %1$s</string>
+    <string name="language_packs_voice_chip">Голос</string>
+    <string name="language_packs_voice_offline">Голосовой ввод работает без интернета</string>
     <string name="voice_status_no_recognition_service">Не выбрана служба распознавания голоса</string>
     <string name="voice_status_network_error">Проблема с сетью. Проверьте подключение.</string>
     <string name="voice_status_audio_error">Не удалось записать звук.</string>

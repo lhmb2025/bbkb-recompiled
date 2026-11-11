@@ -803,6 +803,17 @@
     <string name="dictionary_missing_no_suggestions">Encara no hi ha diccionari de %1$s. Baixa\'l a Configuració de BBKB › Llengua.</string>
     <string name="dictionary_required_to_type">Per escriure en %1$s, baixa el diccionari a Configuració de BBKB › Llengua.</string>
     <string name="voice_status_language_unsupported">L\'entrada de veu no està disponible per a %1$s. Canvia la llengua de l\'entrada de veu a Configuració de BBKB.</string>
+    <string name="voice_status_language_downloading">S\'està baixant %1$s&#8230;</string>
+    <string name="voice_status_language_download_pending">Torna-ho a provar quan s\'hagi baixat %1$s</string>
+    <string name="settings_voice_group_recognition">Reconeixement</string>
+    <string name="settings_voice_group_listening">Escolta</string>
+    <string name="settings_voice_group_text">Text</string>
+    <string name="settings_voice_download_languages_title">Baixa els idiomes de veu</string>
+    <string name="settings_voice_download_languages_summary">Per a cada teclat que afegeixis</string>
+    <string name="settings_voice_offline_languages_title">Idiomes de veu sense connexió</string>
+    <string name="settings_voice_offline_languages_summary">Gestionat per %1$s</string>
+    <string name="language_packs_voice_chip">Veu</string>
+    <string name="language_packs_voice_offline">L\'entrada de veu funciona sense connexió</string>
     <string name="voice_status_no_recognition_service">No s\'ha seleccionat cap servei de reconeixement de veu</string>
     <string name="voice_status_network_error">Problema de xarxa. Comproveu la connexió.</string>
     <string name="voice_status_audio_error">No s\'ha pogut enregistrar l\'àudio.</string>

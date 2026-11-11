@@ -803,6 +803,17 @@
     <string name="dictionary_missing_no_suggestions">अभी %1$s शब्दकोश नहीं है। इसे BBKB सेटिंग्स › भाषा में डाउनलोड करें।</string>
     <string name="dictionary_required_to_type">टाइप करने के लिए %1$s शब्दकोश चाहिए। इसे BBKB सेटिंग्स › भाषा में डाउनलोड करें।</string>
     <string name="voice_status_language_unsupported">%1$s के लिए ध्वनि इनपुट उपलब्ध नहीं है। BBKB सेटिंग्स में ध्वनि इनपुट भाषा बदलें।</string>
+    <string name="voice_status_language_downloading">%1$s डाउनलोड हो रही है&#8230;</string>
+    <string name="voice_status_language_download_pending">%1$s डाउनलोड होने के बाद फिर से कोशिश करें</string>
+    <string name="settings_voice_group_recognition">पहचान</string>
+    <string name="settings_voice_group_listening">सुनना</string>
+    <string name="settings_voice_group_text">टेक्स्ट</string>
+    <string name="settings_voice_download_languages_title">आवाज़ की भाषाएं डाउनलोड करें</string>
+    <string name="settings_voice_download_languages_summary">आपके जोड़े गए हर कीबोर्ड के लिए</string>
+    <string name="settings_voice_offline_languages_title">ऑफ़लाइन आवाज़ की भाषाएं</string>
+    <string name="settings_voice_offline_languages_summary">%1$s द्वारा प्रबंधित</string>
+    <string name="language_packs_voice_chip">वॉइस</string>
+    <string name="language_packs_voice_offline">बोलकर लिखने की सुविधा ऑफ़लाइन काम करती है</string>
     <string name="voice_status_no_recognition_service">कोई ध्वनि पहचान सेवा नहीं चुनी गई है</string>
     <string name="voice_status_network_error">नेटवर्क समस्या। अपना कनेक्शन जांचें।</string>
     <string name="voice_status_audio_error">ऑडियो रिकॉर्ड नहीं हो सका।</string>

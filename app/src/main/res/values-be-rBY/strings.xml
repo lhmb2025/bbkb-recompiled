@@ -803,6 +803,17 @@
     <string name="dictionary_missing_no_suggestions">Слоўніка для мовы %1$s пакуль няма. Спампуйце яго: Налады BBKB › Мова.</string>
     <string name="dictionary_required_to_type">Каб друкаваць, для мовы %1$s патрэбны слоўнік. Спампуйце яго: Налады BBKB › Мова.</string>
     <string name="voice_status_language_unsupported">Галасавы ўвод недаступны для мовы %1$s. Змяніце мову галасавога ўводу ў Наладах BBKB.</string>
+    <string name="voice_status_language_downloading">Спампоўваецца: %1$s&#8230;</string>
+    <string name="voice_status_language_download_pending">Паўтарыце спробу пасля спампоўкі: %1$s</string>
+    <string name="settings_voice_group_recognition">Распазнаванне</string>
+    <string name="settings_voice_group_listening">Праслухоўванне</string>
+    <string name="settings_voice_group_text">Тэкст</string>
+    <string name="settings_voice_download_languages_title">Спампоўваць галасавыя мовы</string>
+    <string name="settings_voice_download_languages_summary">Для кожнай дададзенай клавіятуры</string>
+    <string name="settings_voice_offline_languages_title">Галасавыя мовы па-за сеткай</string>
+    <string name="settings_voice_offline_languages_summary">Кіруе %1$s</string>
+    <string name="language_packs_voice_chip">Голас</string>
+    <string name="language_packs_voice_offline">Галасавы ўвод працуе без інтэрнэту</string>
     <string name="voice_status_no_recognition_service">Не выбрана служба распазнавання голасу</string>
     <string name="voice_status_network_error">Праблема з сеткай. Праверце падключэнне.</string>
     <string name="voice_status_audio_error">Не ўдалося запісаць аўдыя.</string>

@@ -803,6 +803,17 @@
     <string name="dictionary_missing_no_suggestions">%1$s ನಿಘಂಟು ಇನ್ನೂ ಇಲ್ಲ. ಇಲ್ಲಿ ಡೌನ್‌ಲೋಡ್ ಮಾಡಿ: BBKB ಸೆಟ್ಟಿಂಗ್‌ಗಳು › ಭಾಷೆ.</string>
     <string name="dictionary_required_to_type">ಟೈಪ್ ಮಾಡಲು %1$s ನಿಘಂಟು ಬೇಕು. ಇಲ್ಲಿ ಡೌನ್‌ಲೋಡ್ ಮಾಡಿ: BBKB ಸೆಟ್ಟಿಂಗ್‌ಗಳು › ಭಾಷೆ.</string>
     <string name="voice_status_language_unsupported">%1$s ಗಾಗಿ ಧ್ವನಿ ಇನ್‌ಪುಟ್ ಲಭ್ಯವಿಲ್ಲ. BBKB ಸೆಟ್ಟಿಂಗ್‌ಗಳಲ್ಲಿ ಧ್ವನಿ ಇನ್‌ಪುಟ್ ಭಾಷೆಯನ್ನು ಬದಲಿಸಿ.</string>
+    <string name="voice_status_language_downloading">%1$s ಡೌನ್‌ಲೋಡ್ ಆಗುತ್ತಿದೆ&#8230;</string>
+    <string name="voice_status_language_download_pending">%1$s ಡೌನ್‌ಲೋಡ್ ಆದ ನಂತರ ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ</string>
+    <string name="settings_voice_group_recognition">ಗುರುತಿಸುವಿಕೆ</string>
+    <string name="settings_voice_group_listening">ಆಲಿಸುವಿಕೆ</string>
+    <string name="settings_voice_group_text">ಪಠ್ಯ</string>
+    <string name="settings_voice_download_languages_title">ಧ್ವನಿ ಭಾಷೆಗಳನ್ನು ಡೌನ್‌ಲೋಡ್ ಮಾಡಿ</string>
+    <string name="settings_voice_download_languages_summary">ನೀವು ಸೇರಿಸುವ ಪ್ರತಿ ಕೀಬೋರ್ಡ್‌ಗೆ</string>
+    <string name="settings_voice_offline_languages_title">ಆಫ್‌ಲೈನ್ ಧ್ವನಿ ಭಾಷೆಗಳು</string>
+    <string name="settings_voice_offline_languages_summary">%1$s ನಿರ್ವಹಿಸುತ್ತದೆ</string>
+    <string name="language_packs_voice_chip">ಧ್ವನಿ</string>
+    <string name="language_packs_voice_offline">ಧ್ವನಿ ಇನ್‌ಪುಟ್ ಆಫ್‌ಲೈನ್‌ನಲ್ಲಿ ಕಾರ್ಯನಿರ್ವಹಿಸುತ್ತದೆ</string>
     <string name="voice_status_no_recognition_service">ಯಾವುದೇ ಧ್ವನಿ ಗುರುತಿಸುವಿಕೆ ಸೇವೆಯನ್ನು ಆಯ್ಕೆ ಮಾಡಿಲ್ಲ</string>
     <string name="voice_status_network_error">ನೆಟ್‌ವರ್ಕ್ ಸಮಸ್ಯೆ. ನಿಮ್ಮ ಸಂಪರ್ಕವನ್ನು ಪರಿಶೀಲಿಸಿ.</string>
     <string name="voice_status_audio_error">ಆಡಿಯೋ ರೆಕಾರ್ಡ್ ಮಾಡಲು ಸಾಧ್ಯವಾಗಲಿಲ್ಲ.</string>

@@ -803,6 +803,17 @@
     <string name="dictionary_missing_no_suggestions">尚无%1$s词典。请前往“BBKB 设置 › 语言”下载。</string>
     <string name="dictionary_required_to_type">%1$s需要词典才能输入。请前往“BBKB 设置 › 语言”下载。</string>
     <string name="voice_status_language_unsupported">语音输入不支持%1$s。请在“BBKB 设置”中更改语音输入语言。</string>
+    <string name="voice_status_language_downloading">正在下载%1$s&#8230;</string>
+    <string name="voice_status_language_download_pending">%1$s下载完成后请重试</string>
+    <string name="settings_voice_group_recognition">识别</string>
+    <string name="settings_voice_group_listening">聆听</string>
+    <string name="settings_voice_group_text">文字</string>
+    <string name="settings_voice_download_languages_title">下载语音语言</string>
+    <string name="settings_voice_download_languages_summary">为你添加的每个键盘下载</string>
+    <string name="settings_voice_offline_languages_title">离线语音语言</string>
+    <string name="settings_voice_offline_languages_summary">由%1$s管理</string>
+    <string name="language_packs_voice_chip">语音</string>
+    <string name="language_packs_voice_offline">语音输入可离线使用</string>
     <string name="voice_status_no_recognition_service">未选择语音识别服务</string>
     <string name="voice_status_network_error">网络有问题。请检查网络连接。</string>
     <string name="voice_status_audio_error">无法录制音频。</string>

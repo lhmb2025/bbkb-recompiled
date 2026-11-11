@@ -803,6 +803,17 @@
     <string name="dictionary_missing_no_suggestions">Még nincs %1$s szótár. Töltse le itt: BBKB beállításai › Nyelv.</string>
     <string name="dictionary_required_to_type">Gépeléshez %1$s szótár kell. Töltse le itt: BBKB beállításai › Nyelv.</string>
     <string name="voice_status_language_unsupported">A hangbevitel %1$s nyelven nem érhető el. Módosítsa a hangbevitel nyelvét a BBKB beállításaiban.</string>
+    <string name="voice_status_language_downloading">Letöltés: %1$s&#8230;</string>
+    <string name="voice_status_language_download_pending">Próbálja újra, miután a(z) %1$s letöltődött</string>
+    <string name="settings_voice_group_recognition">Felismerés</string>
+    <string name="settings_voice_group_listening">Figyelés</string>
+    <string name="settings_voice_group_text">Szöveg</string>
+    <string name="settings_voice_download_languages_title">Hangnyelvek letöltése</string>
+    <string name="settings_voice_download_languages_summary">Minden hozzáadott billentyűzethez</string>
+    <string name="settings_voice_offline_languages_title">Offline hangnyelvek</string>
+    <string name="settings_voice_offline_languages_summary">Kezeli: %1$s</string>
+    <string name="language_packs_voice_chip">Hang</string>
+    <string name="language_packs_voice_offline">A hangbevitel offline is működik</string>
     <string name="voice_status_no_recognition_service">Nincs kiválasztott hangfelismerő szolgáltatás</string>
     <string name="voice_status_network_error">Hálózati probléma. Ellenőrizze a kapcsolatot.</string>
     <string name="voice_status_audio_error">Nem sikerült hangot rögzíteni.</string>

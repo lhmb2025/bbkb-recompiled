@@ -25,11 +25,13 @@ import dev.bbkb.ime.core.settings.search.settingsSearchAnchor
 import dev.bbkb.ime.core.settings.ui.ChoiceOption
 import dev.bbkb.ime.core.settings.ui.ListPreference
 import dev.bbkb.ime.core.settings.ui.LocalSpacing
+import dev.bbkb.ime.core.settings.ui.PreferenceCategory
 import dev.bbkb.ime.core.settings.ui.PreferenceGroup
 import dev.bbkb.ime.core.settings.ui.PreferenceScreen
 import dev.bbkb.ime.core.settings.ui.SettingsScaffold
 import dev.bbkb.ime.core.settings.ui.SwitchPreference
 import dev.bbkb.ime.keyboard.inputboard.voice.InstalledVoiceRecognizers
+import dev.bbkb.ime.keyboard.inputboard.voice.VoiceLanguages
 import dev.bbkb.ime.keyboard.inputboard.voice.VoiceRecognizerChoice
 
 /**
@@ -63,6 +65,9 @@ fun VoiceInputSettingsScreen(
     var stopOnPause by remember {
         mutableStateOf(prefs.getBoolean("voice_input_stop_on_pause", true))
     }
+    var downloadLanguages by remember {
+        mutableStateOf(prefs.getBoolean(VoiceLanguages.PREF_AUTO_DOWNLOAD, true))
+    }
     var blockOffensive by remember {
         // Frozen key, and the engine reads it with
         // resources.getBoolean(R.bool.config_block_potentially_offensive) — now false — via
@@ -77,6 +82,8 @@ fun VoiceInputSettingsScreen(
     var recognizer by remember {
         mutableStateOf(SettingsManager.getVoiceInputRecognizer(prefs))
     }
+    // The chosen recogniser's own settings screen, looked up again when the choice changes.
+    val offlineLanguagesLink = remember(recognizer) { VoiceLanguages.settingsLink(context) }
     // Read once: this screen only displays it; the picker is what changes it.
     val voiceLanguage = remember {
         prefs.getString(VOICE_LANGUAGE_PREF, SettingsManager.DEFAULT_VOICE_INPUT_LANGUAGE)
@@ -109,6 +116,11 @@ fun VoiceInputSettingsScreen(
                     }
                 )
 
+            }
+
+            // Which recogniser listens, and where.
+            PreferenceCategory(context.getString(R.string.settings_voice_group_recognition))
+            PreferenceGroup {
                 // Speech recognizer: which recognition service dictation binds. The row shows what the
                 // setting resolves to now, so a chosen app that has since been uninstalled reads as the
                 // system default, which is what dictation falls back to.
@@ -135,23 +147,24 @@ fun VoiceInputSettingsScreen(
                     }
                 )
 
-                // Auto-start listening
+                // Prefer Offline Recognition
                 SwitchPreference(
-                    title = context.getString(R.string.settings_voice_auto_start_title),
-                    icon = ImageVector.vectorResource(R.drawable.ic_settings_voice_auto_start),
-                    summary = if (autoStartListening)
-                        context.getString(R.string.settings_voice_auto_start_summary_on)
-                    else
-                        context.getString(R.string.settings_voice_auto_start_summary_off),
-                    checked = autoStartListening,
+                    title = context.getString(R.string.settings_voice_prefer_offline_title),
+                    icon = ImageVector.vectorResource(R.drawable.ic_settings_voice_offline),
+                    summary = context.getString(R.string.settings_voice_prefer_offline_summary),
+                    checked = preferOffline,
                     enabled = builtInVoiceEnabled,
-                    modifier = Modifier.settingsSearchAnchor("voice_input_auto_start"),
+                    modifier = Modifier.settingsSearchAnchor("voice_input_prefer_offline"),
                     onCheckedChange = { newValue ->
-                        autoStartListening = newValue
-                        prefs.edit().putBoolean("voice_input_auto_start", newValue).apply()
+                        preferOffline = newValue
+                        prefs.edit().putBoolean("voice_input_prefer_offline", newValue).apply()
                     }
                 )
+            }
 
+            // Which language it listens for, and getting that language onto the phone.
+            PreferenceCategory(context.getString(R.string.settings_languages_title))
+            PreferenceGroup {
                 // Use Input Language
                 SwitchPreference(
                     title = context.getString(R.string.settings_voice_use_keyboard_lang_title),
@@ -175,18 +188,60 @@ fun VoiceInputSettingsScreen(
                         onClick = onNavigateToLanguageSelection
                     )
                 }
-            
-                // Prefer Offline Recognition
+
+                // Download voice languages: when a keyboard is added, ask the recogniser for
+                // its voice language. Android 13+, where a recogniser can be asked at all.
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                    SwitchPreference(
+                        title = context.getString(R.string.settings_voice_download_languages_title),
+                        icon = ImageVector.vectorResource(R.drawable.ic_settings_m_download),
+                        summary = context.getString(R.string.settings_voice_download_languages_summary),
+                        checked = downloadLanguages,
+                        enabled = builtInVoiceEnabled,
+                        modifier = Modifier.settingsSearchAnchor("voice_input_download_languages"),
+                        onCheckedChange = { newValue ->
+                            downloadLanguages = newValue
+                            prefs.edit().putBoolean(VoiceLanguages.PREF_AUTO_DOWNLOAD, newValue).apply()
+                        }
+                    )
+                }
+
+                // Offline voice languages: the recogniser's own settings, where its languages are
+                // added and removed. Only when it declares a screen this keyboard can open.
+                offlineLanguagesLink?.let { (intent, appName) ->
+                    PreferenceScreen(
+                        title = context.getString(R.string.settings_voice_offline_languages_title),
+                        summary = context.getString(R.string.settings_voice_offline_languages_summary, appName),
+                        icon = ImageVector.vectorResource(R.drawable.ic_settings_m_open_in_new),
+                        enabled = builtInVoiceEnabled,
+                        onClick = {
+                            try {
+                                context.startActivity(intent)
+                            } catch (e: RuntimeException) {
+                                // Declared but not launchable after all: nothing to open.
+                            }
+                        }
+                    )
+                }
+            }
+
+            // When listening starts and ends.
+            PreferenceCategory(context.getString(R.string.settings_voice_group_listening))
+            PreferenceGroup {
+                // Auto-start listening
                 SwitchPreference(
-                    title = context.getString(R.string.settings_voice_prefer_offline_title),
-                    icon = ImageVector.vectorResource(R.drawable.ic_settings_voice_offline),
-                    summary = context.getString(R.string.settings_voice_prefer_offline_summary),
-                    checked = preferOffline,
+                    title = context.getString(R.string.settings_voice_auto_start_title),
+                    icon = ImageVector.vectorResource(R.drawable.ic_settings_voice_auto_start),
+                    summary = if (autoStartListening)
+                        context.getString(R.string.settings_voice_auto_start_summary_on)
+                    else
+                        context.getString(R.string.settings_voice_auto_start_summary_off),
+                    checked = autoStartListening,
                     enabled = builtInVoiceEnabled,
-                    modifier = Modifier.settingsSearchAnchor("voice_input_prefer_offline"),
+                    modifier = Modifier.settingsSearchAnchor("voice_input_auto_start"),
                     onCheckedChange = { newValue ->
-                        preferOffline = newValue
-                        prefs.edit().putBoolean("voice_input_prefer_offline", newValue).apply()
+                        autoStartListening = newValue
+                        prefs.edit().putBoolean("voice_input_auto_start", newValue).apply()
                     }
                 )
 
@@ -207,7 +262,11 @@ fun VoiceInputSettingsScreen(
                         prefs.edit().putBoolean("voice_input_stop_on_pause", newValue).apply()
                     }
                 )
+            }
 
+            // What is typed.
+            PreferenceCategory(context.getString(R.string.settings_voice_group_text))
+            PreferenceGroup {
                 // Show words as you speak: partial results as composing text in the editor
                 SwitchPreference(
                     title = context.getString(R.string.settings_voice_show_partial_results_title),

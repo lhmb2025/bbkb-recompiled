@@ -368,6 +368,34 @@ public class VoiceInputController extends AbstractBoardController<VoiceInputCont
     }
 
     /**
+     * The recogniser is fetching the language: say so where "Listening" normally goes. The first
+     * report ({@code percent} -1) falls back to a toast under the styles with no status line;
+     * progress after that is only worth showing where it can be updated in place.
+     */
+    @Override
+    public void onLanguageDownloading(String languageTag, int percent) {
+        if (!isViewShowing()) {
+            return;
+        }
+        final String downloading = this.mContext.getString(
+                R.string.voice_status_language_downloading, VoiceLanguageTags.displayName(languageTag));
+        if (percent < 0) {
+            showNotice(downloading);
+        } else {
+            this.mVoiceInputView.showStatusMessage(downloading + " "
+                    + java.text.NumberFormat.getPercentInstance().format(Math.min(percent, 100) / 100.0));
+        }
+    }
+
+    @Override
+    public void onLanguageDownloadPending(String languageTag) {
+        if (isViewShowing()) {
+            showNotice(this.mContext.getString(R.string.voice_status_language_download_pending,
+                    VoiceLanguageTags.displayName(languageTag)));
+        }
+    }
+
+    /**
      * No recognition service (KEY2, 2026-10-06: the mic key opened a board the UIM bar then hid,
      * voice mode stayed latched on, and the user was told nothing). If the board is up it stays up,
      * idle, and says so; otherwise nothing opens, voice mode goes back off so the next press is a

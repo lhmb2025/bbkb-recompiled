@@ -20,6 +20,11 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.layout.width
+import dev.bbkb.ime.core.settings.PrefsManager
+import dev.bbkb.ime.keyboard.inputboard.voice.VoiceLanguages
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.ui.semantics.clearAndSetSemantics
+import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.RadioButton
@@ -84,6 +89,7 @@ import dev.bbkb.ime.core.settings.ui.PreferenceItem
 import dev.bbkb.ime.core.settings.ui.PreferenceLeadingBadge
 import dev.bbkb.ime.core.settings.ui.PreferenceTrailingLabel
 import dev.bbkb.ime.core.settings.ui.SettingsScaffold
+import dev.bbkb.ime.core.settings.ui.TitleWithAccessory
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -121,6 +127,16 @@ fun LanguagePacksScreen(
 
     // State for language packs
     var languagePacks by remember { mutableStateOf<List<InstalledLanguagePack>>(emptyList()) }
+    // Which languages the phone's speech recogniser has downloaded: the Voice chip after a row's
+    // name. The last answer shows at once; a fresh one replaces it when the recogniser replies.
+    // None while built-in voice input is off.
+    val voiceInputOn = remember { PrefsManager.getPrefs(context).getBoolean("voice_input_enabled", true) }
+    var voiceLanguages by remember {
+        mutableStateOf(if (voiceInputOn) VoiceLanguages.snapshot(context) else null)
+    }
+    LaunchedEffect(Unit) {
+        if (voiceInputOn) VoiceLanguages.refresh(context) { voiceLanguages = it }
+    }
     var isLoading by remember { mutableStateOf(true) }
     var showDeleteDialog by remember { mutableStateOf<InstalledLanguagePack?>(null) }
     // Deleting a variant is confirmed separately: the thing being removed is a member of a group,
@@ -288,6 +304,7 @@ fun LanguagePacksScreen(
                 ) { index, pack ->
                     LanguagePackItem(
                         pack = pack,
+                        voiceOffline = voiceLanguages?.isDownloaded(pack.localeId) == true,
                         edge = groupEdge(index, languagePacks.size),
                         variantGroup = variantGroups[pack.languageCode],
                         onSelectVariant = { tag ->
@@ -313,6 +330,7 @@ fun LanguagePacksScreen(
                                     SubtypeEnabler.enable(context, pack.localeId)
                                 }
                                 if (on) {
+                                    VoiceLanguages.downloadForKeyboard(context, pack.localeId)
                                     Toast.makeText(
                                         context,
                                         context.getString(R.string.language_packs_turned_on, pack.displayName),
@@ -480,6 +498,8 @@ fun LanguagePacksScreen(
 @Composable
 private fun LanguagePackItem(
     pack: InstalledLanguagePack,
+    /** The speech recogniser has this language on the phone: the Voice chip after the name. */
+    voiceOffline: Boolean = false,
     /** The plain row's place in its group; a language with regional dictionaries keeps its card. */
     edge: GroupEdge = GroupEdge.Middle,
     variantGroup: LanguageVariantStore.Group? = null,
@@ -504,6 +524,9 @@ private fun LanguagePackItem(
             leading = { LanguageCodeBadge(pack.languageCode) },
             // The trailing slot holds either the Preinstalled tag or the delete button - the same
             // one-slot, two-meanings rule the dictionary rows use, at the same right edge.
+            titleAccessory = if (voiceOffline) {
+                { OfflineVoiceChip() }
+            } else null,
             trailing = when {
                 onDelete != null -> {
                     { PreferenceDeleteButton(contentDescription = stringResource(R.string.settings_pkb_layouts_delete, pack.displayName), onClick = onDelete) }
@@ -554,12 +577,18 @@ private fun LanguagePackItem(
             ) {
                 LanguageCodeBadge(pack.languageCode)
             }
-            Text(
-                text = pack.displayName,
-                style = MaterialTheme.typography.bodyLarge,
-                color = MaterialTheme.colorScheme.onSurface,
+            TitleWithAccessory(
+                accessory = if (voiceOffline) {
+                    { OfflineVoiceChip() }
+                } else null,
                 modifier = Modifier.weight(1f)
-            )
+            ) {
+                Text(
+                    text = pack.displayName,
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = MaterialTheme.colorScheme.onSurface
+                )
+            }
             onDelete?.let { delete ->
                 PreferenceDeleteButton(contentDescription = stringResource(R.string.settings_pkb_layouts_delete, pack.displayName), onClick = delete)
             }
@@ -748,6 +777,43 @@ private fun PackActionRow(
 @Composable
 private fun LanguageCodeBadge(code: String) {
     PreferenceLeadingBadge(code.uppercase(Locale.ROOT))
+}
+
+/**
+ * "Voice", with the offline mark: the phone's speech recogniser has this language downloaded, so
+ * dictation in it works without a connection. Drawn right after the language's name, and only
+ * then - a language that is still downloading, works online only or has no voice input at all
+ * shows nothing.
+ *
+ * Shorter than the title's line, so a row with the chip is the same height as one without.
+ */
+@Composable
+private fun OfflineVoiceChip() {
+    val colors = MaterialTheme.colorScheme
+    val description = stringResource(R.string.language_packs_voice_offline)
+    Row(
+        modifier = Modifier
+            .clip(CircleShape)
+            .background(colors.secondaryContainer)
+            .padding(start = 6.dp, end = 8.dp, top = 2.dp, bottom = 2.dp)
+            .clearAndSetSemantics { contentDescription = description },
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(4.dp),
+    ) {
+        Icon(
+            ImageVector.vectorResource(R.drawable.ic_settings_m_offline_pin),
+            contentDescription = null,
+            modifier = Modifier.size(14.dp),
+            tint = colors.onSecondaryContainer,
+        )
+        Text(
+            text = stringResource(R.string.language_packs_voice_chip),
+            style = MaterialTheme.typography.labelMedium,
+            color = colors.onSecondaryContainer,
+            maxLines = 1,
+            softWrap = false,
+        )
+    }
 }
 
 /** "Preinstalled", right-aligned with the delete buttons. */

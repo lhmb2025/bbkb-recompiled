@@ -803,6 +803,17 @@
     <string name="dictionary_missing_no_suggestions">Engin orðabók fyrir %1$s enn. Sæktu hana: BBKB stillingar › Tungumál.</string>
     <string name="dictionary_required_to_type">%1$s þarf orðabók til að skrifa. Sæktu hana: BBKB stillingar › Tungumál.</string>
     <string name="voice_status_language_unsupported">Raddinnsláttur er ekki í boði fyrir %1$s. Breyttu tungumáli raddinnsláttar í BBKB stillingum.</string>
+    <string name="voice_status_language_downloading">Sæki %1$s&#8230;</string>
+    <string name="voice_status_language_download_pending">Reyndu aftur þegar %1$s hefur verið sótt</string>
+    <string name="settings_voice_group_recognition">Greining</string>
+    <string name="settings_voice_group_listening">Hlustun</string>
+    <string name="settings_voice_group_text">Texti</string>
+    <string name="settings_voice_download_languages_title">Sækja raddtungumál</string>
+    <string name="settings_voice_download_languages_summary">Fyrir hvert lyklaborð sem þú bætir við</string>
+    <string name="settings_voice_offline_languages_title">Raddtungumál án nettengingar</string>
+    <string name="settings_voice_offline_languages_summary">Stjórnað af %1$s</string>
+    <string name="language_packs_voice_chip">Rödd</string>
+    <string name="language_packs_voice_offline">Raddinnsláttur virkar án nettengingar</string>
     <string name="voice_status_no_recognition_service">Engin raddgreiningarþjónusta valin</string>
     <string name="voice_status_network_error">Netvandamál. Athugaðu tenginguna.</string>
     <string name="voice_status_audio_error">Ekki tókst að taka upp hljóð.</string>

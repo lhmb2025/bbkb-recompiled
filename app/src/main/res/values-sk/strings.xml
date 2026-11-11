@@ -803,6 +803,17 @@
     <string name="dictionary_missing_no_suggestions">%1$s: slovník zatiaľ chýba. Stiahnite si ho v sekcii Nastavenia BBKB › Jazyk.</string>
     <string name="dictionary_required_to_type">%1$s: na písanie je potrebný slovník. Stiahnite si ho v sekcii Nastavenia BBKB › Jazyk.</string>
     <string name="voice_status_language_unsupported">%1$s: hlasový vstup nie je k dispozícii. Zmeňte jazyk hlasového vstupu v Nastaveniach BBKB.</string>
+    <string name="voice_status_language_downloading">Sťahuje sa %1$s&#8230;</string>
+    <string name="voice_status_language_download_pending">Skúste to znova, keď sa %1$s stiahne</string>
+    <string name="settings_voice_group_recognition">Rozpoznávanie</string>
+    <string name="settings_voice_group_listening">Počúvanie</string>
+    <string name="settings_voice_group_text">Text</string>
+    <string name="settings_voice_download_languages_title">Sťahovať hlasové jazyky</string>
+    <string name="settings_voice_download_languages_summary">Pre každú pridanú klávesnicu</string>
+    <string name="settings_voice_offline_languages_title">Offline hlasové jazyky</string>
+    <string name="settings_voice_offline_languages_summary">Spravuje %1$s</string>
+    <string name="language_packs_voice_chip">Hlas</string>
+    <string name="language_packs_voice_offline">Hlasový vstup funguje offline</string>
     <string name="voice_status_no_recognition_service">Nie je vybratá žiadna služba rozpoznávania hlasu</string>
     <string name="voice_status_network_error">Problém so sieťou. Skontrolujte pripojenie.</string>
     <string name="voice_status_audio_error">Zvuk sa nepodarilo nahrať.</string>

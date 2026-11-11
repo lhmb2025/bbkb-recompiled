@@ -208,6 +208,7 @@ class SettingsSearchIndexTest {
             DeviceRequirement.ANY,
             DeviceRequirement.ACCESSIBILITY_HELPER_AVAILABLE,
             DeviceRequirement.DYNAMIC_COLOR,
+            DeviceRequirement.VOICE_LANGUAGE_DOWNLOADS,
         )
         assertEquals(
             "gating changed the entries that are NOT device-specific",

@@ -636,7 +636,10 @@ class SettingsScreenRenderTest(private val screenName: String) {
                 "settings_auxiliary_input_title", "settings_category_input_menu",
                 "settings_uim_enable_summary_on", "settings_uim_enable_title",
                 "settings_customize_menu_summary", "settings_customize_menu_title",
-                "settings_category_voice", "settings_uim_toggle_voice", "settings_voice_input_summary",
+                // "language_packs_voice_chip", not "settings_category_voice": the Language packs
+                // screen's Voice chip (2026-11-10) reads "Voice" too, and the recorder keeps the
+                // lexicographically first name of a shared value. Same header, same screen.
+                "language_packs_voice_chip", "settings_uim_toggle_voice", "settings_voice_input_summary",
                 // The emoji search rows moved to the two keyboard screens (2026-11-03).
                 // (The clipboard group's "Clipboard" header is a category, which the recorder
                 // does not count.)
@@ -1291,7 +1294,13 @@ class SettingsScreenRenderTest(private val screenName: String) {
                 "settings_voice_stop_on_pause_summary_on", "settings_voice_stop_on_pause_title",
                 // The "Speech recognizer" row. Robolectric has no recognition app installed, so its
                 // summary is the one that says so and suggests apps to install.
-                "settings_voice_recognizer_title", "settings_voice_recognizer_none_installed"
+                "settings_voice_recognizer_title", "settings_voice_recognizer_none_installed",
+                // The four group headings (Language reuses the main menu's title), and the
+                // "Download voice languages" switch. The "Offline voice languages" link is not
+                // drawn here: Robolectric has no recogniser to declare a settings screen.
+                "settings_voice_group_recognition", "settings_languages_title",
+                "settings_voice_group_listening", "settings_voice_group_text",
+                "settings_voice_download_languages_title", "settings_voice_download_languages_summary",
             ),
             literals = emptySet(),
         ),

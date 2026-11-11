@@ -803,6 +803,17 @@
     <string name="dictionary_missing_no_suggestions">%1$s నిఘంటువు ఇంకా లేదు. BBKB సెట్టింగ్‌లు › భాష నుండి దాన్ని డౌన్‌లోడ్ చేయండి.</string>
     <string name="dictionary_required_to_type">టైప్ చేయడానికి %1$s నిఘంటువు అవసరం. BBKB సెట్టింగ్‌లు › భాష నుండి దాన్ని డౌన్‌లోడ్ చేయండి.</string>
     <string name="voice_status_language_unsupported">%1$s కు వాయిస్ ఇన్‌పుట్ అందుబాటులో లేదు. BBKB సెట్టింగ్‌లలో వాయిస్ ఇన్‌పుట్ భాషను మార్చండి.</string>
+    <string name="voice_status_language_downloading">%1$s డౌన్‌లోడ్ అవుతోంది&#8230;</string>
+    <string name="voice_status_language_download_pending">%1$s డౌన్‌లోడ్ అయిన తర్వాత మళ్లీ ప్రయత్నించండి</string>
+    <string name="settings_voice_group_recognition">గుర్తింపు</string>
+    <string name="settings_voice_group_listening">వినడం</string>
+    <string name="settings_voice_group_text">టెక్స్ట్</string>
+    <string name="settings_voice_download_languages_title">వాయిస్ భాషలను డౌన్‌లోడ్ చేయండి</string>
+    <string name="settings_voice_download_languages_summary">మీరు జోడించే ప్రతి కీబోర్డ్ కోసం</string>
+    <string name="settings_voice_offline_languages_title">ఆఫ్‌లైన్ వాయిస్ భాషలు</string>
+    <string name="settings_voice_offline_languages_summary">%1$s నిర్వహిస్తుంది</string>
+    <string name="language_packs_voice_chip">వాయిస్</string>
+    <string name="language_packs_voice_offline">వాయిస్ ఇన్‌పుట్ ఆఫ్‌లైన్‌లో పని చేస్తుంది</string>
     <string name="voice_status_no_recognition_service">వాయిస్ గుర్తింపు సేవ ఏదీ ఎంచుకోబడలేదు</string>
     <string name="voice_status_network_error">నెట్‌వర్క్ సమస్య. మీ కనెక్షన్‌ను తనిఖీ చేయండి.</string>
     <string name="voice_status_audio_error">ఆడియోను రికార్డ్ చేయడం సాధ్యపడలేదు.</string>

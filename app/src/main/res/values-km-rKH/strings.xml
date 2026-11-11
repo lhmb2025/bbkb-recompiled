@@ -803,6 +803,17 @@
     <string name="dictionary_missing_no_suggestions">មិនទាន់មានវចនានុក្រម %1$s នៅឡើយទេ។ ទាញយកវានៅក្នុង ការ​កំណត់ BBKB › ភាសា។</string>
     <string name="dictionary_required_to_type">%1$s ត្រូវការវចនានុក្រមដើម្បីវាយ។ ទាញយកវានៅក្នុង ការ​កំណត់ BBKB › ភាសា។</string>
     <string name="voice_status_language_unsupported">ការបញ្ចូលដោយសំឡេងមិនអាចប្រើបានសម្រាប់ %1$s ទេ។ ប្ដូរភាសាសម្រាប់ការបញ្ចូលដោយសំឡេងនៅក្នុង ការ​កំណត់ BBKB។</string>
+    <string name="voice_status_language_downloading">កំពុងទាញយក %1$s&#8230;</string>
+    <string name="voice_status_language_download_pending">សូមព្យាយាមម្ដងទៀត បន្ទាប់ពីទាញយក %1$s រួច</string>
+    <string name="settings_voice_group_recognition">ការសម្គាល់</string>
+    <string name="settings_voice_group_listening">ការស្ដាប់</string>
+    <string name="settings_voice_group_text">អត្ថបទ</string>
+    <string name="settings_voice_download_languages_title">ទាញយកភាសាសំឡេង</string>
+    <string name="settings_voice_download_languages_summary">សម្រាប់ក្ដារចុចនីមួយៗដែលអ្នកបន្ថែម</string>
+    <string name="settings_voice_offline_languages_title">ភាសាសំឡេងក្រៅបណ្ដាញ</string>
+    <string name="settings_voice_offline_languages_summary">គ្រប់គ្រងដោយ %1$s</string>
+    <string name="language_packs_voice_chip">សំឡេង</string>
+    <string name="language_packs_voice_offline">ការបញ្ចូលដោយសំឡេងដំណើរការដោយគ្មានអ៊ីនធឺណិត</string>
     <string name="voice_status_no_recognition_service">មិនបានជ្រើសរើសសេវាសម្គាល់សំឡេងទេ</string>
     <string name="voice_status_network_error">បញ្ហាបណ្ដាញ។ សូមពិនិត្យការតភ្ជាប់របស់អ្នក។</string>
     <string name="voice_status_audio_error">មិនអាចថតសំឡេងបានទេ។</string>
