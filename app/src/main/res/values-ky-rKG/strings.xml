@@ -710,11 +710,12 @@
     <string name="device_config_import_matches_device">Баскычтоп түзмөгү: %1$s</string>
     <string name="device_config_import_matches_build">Курулма түзмөгү: %1$s</string>
     <string name="device_config_import_matches_brand">Бренд: %1$s</string>
+    <string name="device_config_import_based_on">Негизи: %1$s</string>
     <string name="device_config_import_matches_nothing">Бул файлда дал келтире турган түзмөк көрсөтүлгөн эмес, ошондуктан ал эч качан колдонулбайт</string>
     <string name="device_config_import_type">Түзмөктүн түрү: %1$s</string>
     <string name="device_config_import_keys">%1$d баскыч дал келтирүүсү</string>
     <string name="device_config_import_keypad_layout">Баскычтоптун жайгашуусу: %1$s</string>
-    <string name="device_config_import_mismatch">Бул конфигурация башка телефон үчүн түзүлгөн. Аны сактап койсо болот, бирок бул жерде эч нерсе кылбайт.</string>
+    <string name="device_config_import_mismatch">Бул конфигурация башка телефон үчүн түзүлгөн. Аны ушул телефонго туура келерин билсеңиз гана иштетиңиз.</string>
     <string name="device_config_import_activate">Иштетүү</string>
     <string name="device_config_import_keep">Сактап гана коюу</string>
     <string name="device_config_import_unreadable">Бул файл түзмөктүн конфигурациясы эмес</string>

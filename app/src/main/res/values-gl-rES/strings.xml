@@ -710,11 +710,12 @@
     <string name="device_config_import_matches_device">Dispositivo de teclado: %1$s</string>
     <string name="device_config_import_matches_build">Dispositivo de compilación: %1$s</string>
     <string name="device_config_import_matches_brand">Marca: %1$s</string>
+    <string name="device_config_import_based_on">Baseada en: %1$s</string>
     <string name="device_config_import_matches_nothing">Este ficheiro non indica ningún dispositivo co que coincidir, polo que nunca se aplicaría</string>
     <string name="device_config_import_type">Tipo de dispositivo: %1$s</string>
     <string name="device_config_import_keys">%1$d asignacións de teclas</string>
     <string name="device_config_import_keypad_layout">Disposición do teclado: %1$s</string>
-    <string name="device_config_import_mismatch">Esta configuración creouse para outro teléfono. Podes conservala, pero aquí non fará nada.</string>
+    <string name="device_config_import_mismatch">Esta configuración creouse para outro teléfono. Actívaa só se sabes que é axeitada para este.</string>
     <string name="device_config_import_activate">Activar</string>
     <string name="device_config_import_keep">Só conservar</string>
     <string name="device_config_import_unreadable">Ese ficheiro non é unha configuración de dispositivo</string>

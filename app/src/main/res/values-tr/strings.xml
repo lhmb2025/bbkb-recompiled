@@ -710,11 +710,12 @@
     <string name="device_config_import_matches_device">Klavye cihazı: %1$s</string>
     <string name="device_config_import_matches_build">Derleme cihazı: %1$s</string>
     <string name="device_config_import_matches_brand">Marka: %1$s</string>
+    <string name="device_config_import_based_on">Temel alınan: %1$s</string>
     <string name="device_config_import_matches_nothing">Bu dosya eşleştirilecek bir cihaz belirtmiyor, bu yüzden hiçbir zaman uygulanmaz</string>
     <string name="device_config_import_type">Cihaz türü: %1$s</string>
     <string name="device_config_import_keys">%1$d tuş eşlemesi</string>
     <string name="device_config_import_keypad_layout">Tuş takımı düzeni: %1$s</string>
-    <string name="device_config_import_mismatch">Bu yapılandırma başka bir telefon için oluşturulmuş. Saklanabilir ancak burada hiçbir şey yapmaz.</string>
+    <string name="device_config_import_mismatch">Bu yapılandırma başka bir telefon için oluşturulmuş. Yalnızca bu telefona uygun olduğunu biliyorsanız etkinleştirin.</string>
     <string name="device_config_import_activate">Etkinleştir</string>
     <string name="device_config_import_keep">Yalnızca sakla</string>
     <string name="device_config_import_unreadable">Bu dosya bir cihaz yapılandırması değil</string>

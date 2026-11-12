@@ -710,11 +710,12 @@
     <string name="device_config_import_matches_device">ອຸປະກອນແປ້ນພິມ: %1$s</string>
     <string name="device_config_import_matches_build">ອຸປະກອນຂອງບິວ: %1$s</string>
     <string name="device_config_import_matches_brand">ຍີ່ຫໍ້: %1$s</string>
+    <string name="device_config_import_based_on">ອີງໃສ່: %1$s</string>
     <string name="device_config_import_matches_nothing">ໄຟລ໌ນີ້ບໍ່ໄດ້ລະບຸອຸປະກອນໃດໃຫ້ກົງກັນ, ດັ່ງນັ້ນມັນຈະບໍ່ຖືກນຳໃຊ້ເລີຍ</string>
     <string name="device_config_import_type">ປະເພດອຸປະກອນ: %1$s</string>
     <string name="device_config_import_keys">ການແມັບປຸ່ມ %1$d ລາຍການ</string>
     <string name="device_config_import_keypad_layout">ຮູບແບບແປ້ນພິມ: %1$s</string>
-    <string name="device_config_import_mismatch">ການກຳນົດຄ່ານີ້ຖືກສ້າງຂຶ້ນສຳລັບໂທລະສັບເຄື່ອງອື່ນ. ສາມາດເກັບໄວ້ໄດ້ ແຕ່ຈະບໍ່ເຮັດຫຍັງຢູ່ນີ້.</string>
+    <string name="device_config_import_mismatch">ການກຳນົດຄ່ານີ້ຖືກສ້າງຂຶ້ນສຳລັບໂທລະສັບເຄື່ອງອື່ນ. ເປີດໃຊ້ສະເພາະເມື່ອທ່ານຮູ້ວ່າມັນເໝາະກັບເຄື່ອງນີ້.</string>
     <string name="device_config_import_activate">ເປີດໃຊ້</string>
     <string name="device_config_import_keep">ເກັບໄວ້ເທົ່ານັ້ນ</string>
     <string name="device_config_import_unreadable">ໄຟລ໌ນັ້ນບໍ່ແມ່ນການກຳນົດຄ່າອຸປະກອນ</string>

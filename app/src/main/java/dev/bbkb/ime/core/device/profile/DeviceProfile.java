@@ -492,8 +492,17 @@ public final class DeviceProfile {
 
     // ==================== Capability Queries ====================
 
+    /**
+     * Whether this is a keypad phone: the scan found an alphabetic physical keyboard, or the
+     * phone's profile declares one ({@code <device-type>PKB</device-type>} or {@code CKB}).
+     *
+     * <p>The declaration used to reach only the per-key classifier. A keypad that Android does not
+     * report as an alphabetic keyboard (its key character map says otherwise on some ROMs) then
+     * left the app in on-screen mode with the keypad settings hidden, whatever the profile said.
+     */
     public boolean isPkbDevice() {
         if (runtimeState.isForceVkbMode()) return false;
+        if (isForcedPkbDevice()) return true;
         DeviceCapabilities.DetectedDeviceType type = capabilities.getDeviceType();
         return type == DeviceCapabilities.DetectedDeviceType.PKB || type == DeviceCapabilities.DetectedDeviceType.HYBRID;
     }
@@ -506,8 +515,9 @@ public final class DeviceProfile {
         return isPkbDevice() ? DeviceType.PKB : DeviceType.VKB;
     }
 
+    /** The scan found a physical keyboard, or the phone's profile declares the phone has one. */
     public boolean hasPhysicalKeyboard() {
-        return capabilities.hasPhysicalKeyboard();
+        return capabilities.hasPhysicalKeyboard() || isForcedPkbDevice();
     }
 
     /**
@@ -806,10 +816,7 @@ public final class DeviceProfile {
 
     @Nullable
     public AltMappingsTable getAltMappingsTable(Context context) {
-        if (!hasCustomAltMappings() || deviceMapping.altMappingsFile == null) {
-            return null;
-        }
-        return AltMappingsParser.getCachedMappings(context, deviceMapping.altMappingsFile);
+        return AltMappingsParser.tableFor(context, deviceMapping);
     }
 
     /**

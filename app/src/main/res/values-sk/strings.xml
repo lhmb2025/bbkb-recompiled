@@ -710,11 +710,12 @@
     <string name="device_config_import_matches_device">Zariadenie klávesnice: %1$s</string>
     <string name="device_config_import_matches_build">Zariadenie zostavy: %1$s</string>
     <string name="device_config_import_matches_brand">Značka: %1$s</string>
+    <string name="device_config_import_based_on">Založené na: %1$s</string>
     <string name="device_config_import_matches_nothing">Tento súbor neuvádza žiadne zariadenie na porovnanie, takže by sa nikdy neuplatnil</string>
     <string name="device_config_import_type">Typ zariadenia: %1$s</string>
     <string name="device_config_import_keys">%1$d priradení klávesov</string>
     <string name="device_config_import_keypad_layout">Rozloženie klávesnice: %1$s</string>
-    <string name="device_config_import_mismatch">Táto konfigurácia bola vytvorená pre iný telefón. Dá sa ponechať, ale tu nebude nič robiť.</string>
+    <string name="device_config_import_mismatch">Táto konfigurácia bola vytvorená pre iný telefón. Aktivujte ju, iba ak viete, že sa hodí pre tento.</string>
     <string name="device_config_import_activate">Aktivovať</string>
     <string name="device_config_import_keep">Iba ponechať</string>
     <string name="device_config_import_unreadable">Tento súbor nie je konfigurácia zariadenia</string>

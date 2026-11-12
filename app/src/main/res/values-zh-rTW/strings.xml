@@ -710,11 +710,12 @@
     <string name="device_config_import_matches_device">鍵盤裝置：%1$s</string>
     <string name="device_config_import_matches_build">版本裝置名稱：%1$s</string>
     <string name="device_config_import_matches_brand">品牌：%1$s</string>
+    <string name="device_config_import_based_on">基於：%1$s</string>
     <string name="device_config_import_matches_nothing">此檔案未指定要比對的裝置，因此永遠不會生效</string>
     <string name="device_config_import_type">裝置類型：%1$s</string>
     <string name="device_config_import_keys">%1$d 項按鍵對應</string>
     <string name="device_config_import_keypad_layout">鍵盤配置：%1$s</string>
-    <string name="device_config_import_mismatch">此組態是為另一支手機建立的。可以保留，但在此裝置上不會生效。</string>
+    <string name="device_config_import_mismatch">此組態是為另一支手機建立的。請只在確定適用於這支手機時才啟用。</string>
     <string name="device_config_import_activate">啟用</string>
     <string name="device_config_import_keep">僅保留</string>
     <string name="device_config_import_unreadable">該檔案不是裝置組態</string>

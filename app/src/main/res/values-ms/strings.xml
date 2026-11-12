@@ -710,11 +710,12 @@
     <string name="device_config_import_matches_device">Peranti papan kekunci: %1$s</string>
     <string name="device_config_import_matches_build">Peranti binaan: %1$s</string>
     <string name="device_config_import_matches_brand">Jenama: %1$s</string>
+    <string name="device_config_import_based_on">Berdasarkan: %1$s</string>
     <string name="device_config_import_matches_nothing">Fail ini tidak menamakan sebarang peranti untuk dipadankan, jadi ia tidak akan digunakan</string>
     <string name="device_config_import_type">Jenis peranti: %1$s</string>
     <string name="device_config_import_keys">%1$d pemetaan kekunci</string>
     <string name="device_config_import_keypad_layout">Susun atur pad kekunci: %1$s</string>
-    <string name="device_config_import_mismatch">Konfigurasi ini dibina untuk telefon lain. Ia boleh disimpan, tetapi tidak akan berfungsi di sini.</string>
+    <string name="device_config_import_mismatch">Konfigurasi ini dibina untuk telefon lain. Aktifkan hanya jika anda tahu ia sesuai dengan telefon ini.</string>
     <string name="device_config_import_activate">Aktifkan</string>
     <string name="device_config_import_keep">Simpan sahaja</string>
     <string name="device_config_import_unreadable">Fail itu bukan konfigurasi peranti</string>

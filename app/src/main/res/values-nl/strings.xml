@@ -710,11 +710,12 @@
     <string name="device_config_import_matches_device">Toetsenbordapparaat: %1$s</string>
     <string name="device_config_import_matches_build">Build-apparaat: %1$s</string>
     <string name="device_config_import_matches_brand">Merk: %1$s</string>
+    <string name="device_config_import_based_on">Gebaseerd op: %1$s</string>
     <string name="device_config_import_matches_nothing">Dit bestand noemt geen apparaat om mee overeen te komen, dus het zou nooit worden toegepast</string>
     <string name="device_config_import_type">Apparaattype: %1$s</string>
     <string name="device_config_import_keys">%1$d toetstoewijzingen</string>
     <string name="device_config_import_keypad_layout">Toetsenblokindeling: %1$s</string>
-    <string name="device_config_import_mismatch">Deze configuratie is gemaakt voor een andere telefoon. U kunt hem bewaren, maar hier doet hij niets.</string>
+    <string name="device_config_import_mismatch">Deze configuratie is gemaakt voor een andere telefoon. Activeer hem alleen als u weet dat hij bij deze past.</string>
     <string name="device_config_import_activate">Activeren</string>
     <string name="device_config_import_keep">Alleen bewaren</string>
     <string name="device_config_import_unreadable">Dat bestand is geen apparaatconfiguratie</string>

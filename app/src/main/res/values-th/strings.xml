@@ -710,11 +710,12 @@
     <string name="device_config_import_matches_device">อุปกรณ์แป้นพิมพ์: %1$s</string>
     <string name="device_config_import_matches_build">อุปกรณ์ของบิลด์: %1$s</string>
     <string name="device_config_import_matches_brand">แบรนด์: %1$s</string>
+    <string name="device_config_import_based_on">อิงตาม: %1$s</string>
     <string name="device_config_import_matches_nothing">ไฟล์นี้ไม่ได้ระบุอุปกรณ์ที่จะจับคู่ จึงจะไม่มีการนำไปใช้เลย</string>
     <string name="device_config_import_type">ประเภทอุปกรณ์: %1$s</string>
     <string name="device_config_import_keys">การแมปปุ่ม %1$d รายการ</string>
     <string name="device_config_import_keypad_layout">เลย์เอาท์แป้นพิมพ์: %1$s</string>
-    <string name="device_config_import_mismatch">การกำหนดค่านี้สร้างขึ้นสำหรับโทรศัพท์เครื่องอื่น คุณเก็บไว้ได้ แต่จะไม่ทำงานที่นี่</string>
+    <string name="device_config_import_mismatch">การกำหนดค่านี้สร้างขึ้นสำหรับโทรศัพท์เครื่องอื่น เปิดใช้งานเฉพาะเมื่อคุณรู้ว่าเหมาะกับเครื่องนี้</string>
     <string name="device_config_import_activate">เปิดใช้งาน</string>
     <string name="device_config_import_keep">เก็บไว้เท่านั้น</string>
     <string name="device_config_import_unreadable">ไฟล์นั้นไม่ใช่การกำหนดค่าอุปกรณ์</string>

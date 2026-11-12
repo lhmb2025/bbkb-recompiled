@@ -710,11 +710,12 @@
     <string name="device_config_import_matches_device">Tastatūras ierīce: %1$s</string>
     <string name="device_config_import_matches_build">Būvējuma ierīce: %1$s</string>
     <string name="device_config_import_matches_brand">Zīmols: %1$s</string>
+    <string name="device_config_import_based_on">Pamatā: %1$s</string>
     <string name="device_config_import_matches_nothing">Šajā failā nav norādīta neviena ierīce, kurai to piemērot, tāpēc tas nekad netiktu lietots</string>
     <string name="device_config_import_type">Ierīces tips: %1$s</string>
     <string name="device_config_import_keys">%1$d taustiņu kartējumi</string>
     <string name="device_config_import_keypad_layout">Tastatūras izkārtojums: %1$s</string>
-    <string name="device_config_import_mismatch">Šī konfigurācija tika izveidota citam tālrunim. To var paturēt, bet šeit tā neko nedarīs.</string>
+    <string name="device_config_import_mismatch">Šī konfigurācija tika izveidota citam tālrunim. Aktivizējiet to tikai tad, ja zināt, ka tā der šim.</string>
     <string name="device_config_import_activate">Aktivizēt</string>
     <string name="device_config_import_keep">Tikai paturēt</string>
     <string name="device_config_import_unreadable">Šis fails nav ierīces konfigurācija</string>

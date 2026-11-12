@@ -710,11 +710,12 @@
     <string name="device_config_import_matches_device">Прылада клавіятуры: %1$s</string>
     <string name="device_config_import_matches_build">Прылада зборкі: %1$s</string>
     <string name="device_config_import_matches_brand">Брэнд: %1$s</string>
+    <string name="device_config_import_based_on">На аснове: %1$s</string>
     <string name="device_config_import_matches_nothing">Гэты файл не называе ніводнай прылады для супастаўлення, таму ён ніколі не спрацуе</string>
     <string name="device_config_import_type">Тып прылады: %1$s</string>
     <string name="device_config_import_keys">%1$d супастаўленняў клавіш</string>
     <string name="device_config_import_keypad_layout">Раскладка клавіятуры: %1$s</string>
-    <string name="device_config_import_mismatch">Гэтая канфігурацыя створана для іншага тэлефона. Яе можна пакінуць, але тут яна нічога не зробіць.</string>
+    <string name="device_config_import_mismatch">Гэтая канфігурацыя створана для іншага тэлефона. Актывуйце яе, толькі калі ведаеце, што яна падыходзіць да гэтага.</string>
     <string name="device_config_import_activate">Актываваць</string>
     <string name="device_config_import_keep">Толькі пакінуць</string>
     <string name="device_config_import_unreadable">Гэты файл не з\'яўляецца канфігурацыяй прылады</string>

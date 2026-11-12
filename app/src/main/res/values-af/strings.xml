@@ -710,11 +710,12 @@
     <string name="device_config_import_matches_device">Toetsbordtoestel: %1$s</string>
     <string name="device_config_import_matches_build">Boutoestel: %1$s</string>
     <string name="device_config_import_matches_brand">Handelsmerk: %1$s</string>
+    <string name="device_config_import_based_on">Gebaseer op: %1$s</string>
     <string name="device_config_import_matches_nothing">Hierdie lêer noem geen toestel om by te pas nie, en sal dus nooit geld nie</string>
     <string name="device_config_import_type">Toesteltipe: %1$s</string>
     <string name="device_config_import_keys">%1$d toetstoewysings</string>
     <string name="device_config_import_keypad_layout">Sleutelborduitleg: %1$s</string>
-    <string name="device_config_import_mismatch">Hierdie konfigurasie is vir \'n ander foon gebou. Dit kan gehou word, maar dit sal hier niks doen nie.</string>
+    <string name="device_config_import_mismatch">Hierdie konfigurasie is vir \'n ander foon gebou. Aktiveer dit net as jy weet dit pas by hierdie een.</string>
     <string name="device_config_import_activate">Aktiveer</string>
     <string name="device_config_import_keep">Hou net</string>
     <string name="device_config_import_unreadable">Daardie lêer is nie \'n toestelkonfigurasie nie</string>

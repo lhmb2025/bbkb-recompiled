@@ -127,7 +127,7 @@ public class DeviceInputMappingParser {
         XmlResourceParser parser = null;
         try {
             parser = context.getResources().getXml(resId);
-            parseDevices(parser, config);
+            parseDevices(parser, config, null);
         } catch (Exception e) {
             Logger.error(TAG, "Error parsing " + what + ": " + e.getMessage());
         } finally {
@@ -145,11 +145,29 @@ public class DeviceInputMappingParser {
      * @return DeviceInputConfig containing parsed mappings
      */
     public static DeviceInputConfig parseConfigFromStream(InputStream is) {
+        return parseConfigFromStream(is, null);
+    }
+
+    /**
+     * Where a {@code <device extends="...">} finds the profile it builds on: a fresh, parsed copy
+     * of the named built-in profile (the caller may change it), or null when there is none by
+     * that name.
+     */
+    public interface BaseProfiles {
+        DeviceInputMapping load(String name);
+    }
+
+    /**
+     * As {@link #parseConfigFromStream(InputStream)}, for a configuration that may build on a
+     * built-in profile ({@code <device extends="device_config_athena">}). With {@code bases}
+     * null, or a name it does not know, such a device is read as a profile of its own.
+     */
+    public static DeviceInputConfig parseConfigFromStream(InputStream is, BaseProfiles bases) {
         final DeviceInputConfig config = new DeviceInputConfig();
         try {
             final XmlPullParser parser = Xml.newPullParser();
             parser.setInput(is, "UTF-8");
-            parseDevices(parser, config);
+            parseDevices(parser, config, bases);
         } catch (Exception e) {
             Logger.error(TAG, "Error parsing device config from stream: " + e.getMessage());
         }
@@ -157,12 +175,13 @@ public class DeviceInputMappingParser {
     }
 
     /** Collects every {@code <device>} in the document. Devices parsed before a malformed tail are kept. */
-    private static void parseDevices(XmlPullParser parser, DeviceInputConfig config)
+    private static void parseDevices(XmlPullParser parser, DeviceInputConfig config,
+                                     BaseProfiles bases)
             throws XmlPullParserException, IOException {
         int eventType = parser.getEventType();
         while (eventType != XmlPullParser.END_DOCUMENT) {
             if (eventType == XmlPullParser.START_TAG && "device".equals(parser.getName())) {
-                final DeviceInputMapping mapping = parseDeviceV2(parser);
+                final DeviceInputMapping mapping = parseDeviceV2(parser, bases);
                 if (mapping != null) {
                     config.mappings.add(mapping);
                 }
@@ -208,12 +227,43 @@ public class DeviceInputMappingParser {
 
     /**
      * Parse a device entry in v2.0 format.
+     *
+     * <p>Schema v2.6: {@code <device extends="device_config_athena">} starts from the named
+     * built-in profile instead of from nothing, and every element the device then writes replaces
+     * or adds to what it inherited:
+     * <ul>
+     *   <li>a single-valued element ({@code <device-type>}, {@code <kdb-variant>},
+     *       {@code <keypad-layout>}, {@code <keypad-layouts>}, {@code <touch-keypad>},
+     *       {@code <accessibility-helper>}, an Alt table {@code <source>} ...) replaces it;</li>
+     *   <li>{@code <match>} replaces the inherited rules as a whole; with none, the inherited
+     *       rules stand;</li>
+     *   <li>{@code <key>} roles and {@code <setting>} overrides are consulted before the inherited
+     *       ones, so a key or setting named again wins and the rest are kept;</li>
+     *   <li>layout overrides, quirks and Alt {@code <mapping>} entries are added, an entry for the
+     *       same thing replacing the inherited one.</li>
+     * </ul>
+     * A profile that changes one key used to have to restate the whole of the shipped profile,
+     * and then missed every later fix to it.
      */
-    private static DeviceInputMapping parseDeviceV2(XmlPullParser parser)
+    private static DeviceInputMapping parseDeviceV2(XmlPullParser parser, BaseProfiles bases)
             throws XmlPullParserException, IOException {
 
-        final DeviceInputMapping mapping = new DeviceInputMapping();
-        mapping.mappingType = DeviceInputMapping.InputMappingType.DEFAULT;
+        final String baseName = attr(parser, "extends");
+        DeviceInputMapping inherited = null;
+        if (baseName != null && !baseName.trim().isEmpty()) {
+            inherited = bases != null ? bases.load(baseName.trim()) : null;
+            if (inherited == null) {
+                Logger.error(TAG, "<device extends=\"" + baseName + "\">: no such built-in profile;"
+                        + " reading the device as a profile of its own");
+            }
+        }
+        final DeviceInputMapping mapping = inherited != null ? inherited : new DeviceInputMapping();
+        if (inherited == null) {
+            mapping.mappingType = DeviceInputMapping.InputMappingType.DEFAULT;
+        }
+        // Where the inherited entries end: what this device adds is moved in front of them below.
+        final int inheritedRoles = mapping.scancodeMappings.size();
+        final int inheritedSettings = mapping.settingsOverrides.size();
 
         children(parser, "device", (p, tag) -> {
             switch (tag) {
@@ -224,6 +274,7 @@ public class DeviceInputMappingParser {
                     final String deviceType = p.nextText();
                     if ("PKB".equalsIgnoreCase(deviceType)) {
                         mapping.forcePkbDevice = true;
+                        mapping.forceTouchKeypad = false;  // said again over an inherited CKB
                     } else if ("CKB".equalsIgnoreCase(deviceType)) {
                         mapping.forcePkbDevice = true;
                         mapping.forceTouchKeypad = true;
@@ -288,6 +339,7 @@ public class DeviceInputMappingParser {
                     // Keypad layout choice; unknown names are dropped with a log line.
                     final String declared = trimmedText(p);
                     if (declared != null) {
+                        mapping.keypadLayoutOptions.clear();  // the list as a whole, not added to
                         for (String part : declared.split(",")) {
                             final String layout = KeypadLayoutDetector.normalize(part.trim());
                             if (layout != null) {
@@ -319,10 +371,24 @@ public class DeviceInputMappingParser {
             }
         });
 
+        moveTailToFront(mapping.scancodeMappings, inheritedRoles);
+        moveTailToFront(mapping.settingsOverrides, inheritedSettings);
+
         // Validate: must have at least device name or match criteria
         final boolean named = mapping.deviceName != null && !mapping.deviceName.isEmpty();
         final boolean matched = mapping.matchCriteria != null && mapping.matchCriteria.hasAnyCriteria();
         return (named || matched) ? mapping : null;
+    }
+
+    /**
+     * Moves the entries from {@code from} onwards to the front, keeping their order: the entries
+     * a device wrote itself, ahead of the ones it inherited. Both lists are read first match wins.
+     */
+    private static <T> void moveTailToFront(java.util.List<T> list, int from) {
+        if (from <= 0 || from >= list.size()) return;
+        final java.util.List<T> own = new java.util.ArrayList<>(list.subList(from, list.size()));
+        list.subList(from, list.size()).clear();
+        list.addAll(0, own);
     }
 
     /**
@@ -449,12 +515,36 @@ public class DeviceInputMappingParser {
             throws XmlPullParserException, IOException {
         mapping.mappingType = DeviceInputMapping.InputMappingType.CUSTOM_ALT_MAPPINGS;
         children(parser, "alt-mappings", (p, tag) -> {
-            if ("source".equals(tag)) {
-                mapping.altMappingsFile = p.nextText();
-            } else if ("enabled".equals(tag) && "false".equals(p.nextText())) {
-                mapping.mappingType = DeviceInputMapping.InputMappingType.DEFAULT;
+            switch (tag) {
+                case "source":
+                    mapping.altMappingsFile = p.nextText();
+                    break;
+                case "enabled":
+                    if ("false".equals(p.nextText())) {
+                        mapping.mappingType = DeviceInputMapping.InputMappingType.DEFAULT;
+                    }
+                    break;
+                // The profile's own Alt characters, in the form the built-in tables use. They
+                // go on top of the <source> table, or stand alone when there is none.
+                case "mapping":
+                    AltMappingsParser.parseMapping(p, inlineAltTable(mapping));
+                    break;
+                case "special-function":
+                    AltMappingsParser.parseSpecialFunction(p, inlineAltTable(mapping));
+                    break;
+                default:
+                    break;
             }
         });
+    }
+
+    private static dev.bbkb.ime.core.device.config.model.AltMappingsTable inlineAltTable(
+            DeviceInputMapping mapping) {
+        if (mapping.inlineAltMappings == null) {
+            mapping.inlineAltMappings =
+                    new dev.bbkb.ime.core.device.config.model.AltMappingsTable("profile");
+        }
+        return mapping.inlineAltMappings;
     }
 
     /**

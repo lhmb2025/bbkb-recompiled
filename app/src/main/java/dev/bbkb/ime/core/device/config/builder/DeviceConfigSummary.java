@@ -43,12 +43,14 @@ public final class DeviceConfigSummary {
     @Nullable public final String keypadLayout;
     /** Roles of the {@code <key>} elements, in document order. */
     @NonNull public final List<String> keyRoles;
+    /** The built-in profile the first {@code <device>} builds on ({@code extends}), or null. */
+    @Nullable public final String basedOn;
 
     private DeviceConfigSummary(@Nullable String name, @Nullable String deviceName,
                                 @Nullable String buildDevice, @Nullable String brand,
                                 @Nullable String vendorId, @Nullable String productId,
                                 @Nullable String deviceType, @Nullable String keypadLayout,
-                                @NonNull List<String> keyRoles) {
+                                @NonNull List<String> keyRoles, @Nullable String basedOn) {
         this.name = name;
         this.deviceName = deviceName;
         this.buildDevice = buildDevice;
@@ -58,6 +60,7 @@ public final class DeviceConfigSummary {
         this.deviceType = deviceType;
         this.keypadLayout = keypadLayout;
         this.keyRoles = keyRoles;
+        this.basedOn = basedOn;
     }
 
     public int keyCount() {
@@ -66,6 +69,11 @@ public final class DeviceConfigSummary {
 
     /** True when the config names nothing to match on — it would never apply to any device. */
     public boolean matchesNothing() {
+        // A profile that builds on a built-in one and writes no rules of its own uses that one's.
+        return isBlank(basedOn) && writesNoMatchRules();
+    }
+
+    private boolean writesNoMatchRules() {
         return isBlank(deviceName) && isBlank(buildDevice) && isBlank(brand)
                 && isBlank(vendorId) && isBlank(productId);
     }
@@ -77,6 +85,8 @@ public final class DeviceConfigSummary {
      * obvious mismatch, not to re-implement the matcher.
      */
     public boolean couldMatch(@NonNull DeviceFacts facts) {
+        // Inherited rules are not read here; the profile it builds on decides, so no warning.
+        if (!isBlank(basedOn) && writesNoMatchRules()) return true;
         if (!isBlank(deviceName)) {
             boolean seen = false;
             for (DeviceFacts.Keyboard keyboard : facts.keyboards) {
@@ -125,6 +135,7 @@ public final class DeviceConfigSummary {
         String productId = null;
         String deviceType = null;
         String keypadLayout = null;
+        String basedOn = null;
         final List<String> roles = new ArrayList<>();
 
         try {
@@ -141,6 +152,7 @@ public final class DeviceConfigSummary {
                     } else if ("device".equals(tag)) {
                         if (depthOfDevice >= 0) break;  // second <device>: stop at the first
                         depthOfDevice = parser.getDepth();
+                        basedOn = parser.getAttributeValue(null, "extends");
                     } else if (depthOfDevice >= 0) {
                         switch (tag) {
                             case "device-name":
@@ -181,7 +193,7 @@ public final class DeviceConfigSummary {
             return null;
         }
         return new DeviceConfigSummary(name, deviceName, buildDevice, brand, vendorId, productId,
-                deviceType, keypadLayout, roles);
+                deviceType, keypadLayout, roles, basedOn);
     }
 
     /** A {@code <match>} child's value, exact or regex, in the form the dialog shows it. */

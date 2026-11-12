@@ -710,11 +710,12 @@
     <string name="device_config_import_matches_device">Tastaturenhet: %1$s</string>
     <string name="device_config_import_matches_build">Build-enhet: %1$s</string>
     <string name="device_config_import_matches_brand">Merke: %1$s</string>
+    <string name="device_config_import_based_on">Basert på: %1$s</string>
     <string name="device_config_import_matches_nothing">Denne filen oppgir ingen enhet å matche, så den ville aldri blitt brukt</string>
     <string name="device_config_import_type">Enhetstype: %1$s</string>
     <string name="device_config_import_keys">%1$d tastetilordninger</string>
     <string name="device_config_import_keypad_layout">Tastaturoppsett: %1$s</string>
-    <string name="device_config_import_mismatch">Denne konfigurasjonen ble laget for en annen telefon. Den kan beholdes, men den gjør ingenting her.</string>
+    <string name="device_config_import_mismatch">Denne konfigurasjonen ble laget for en annen telefon. Aktiver den bare hvis du vet at den passer til denne.</string>
     <string name="device_config_import_activate">Aktiver</string>
     <string name="device_config_import_keep">Bare behold</string>
     <string name="device_config_import_unreadable">Den filen er ikke en enhetskonfigurasjon</string>

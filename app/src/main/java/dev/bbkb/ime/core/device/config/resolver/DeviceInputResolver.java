@@ -221,9 +221,12 @@ public class DeviceInputResolver {
             }
         }
 
-        // Cache null result to prevent repeated searches
-        cacheMapping(ALL_DEVICES, null);
-        return null;
+        // No keyboard matched (or the phone reports none at all). A configuration the user
+        // picked by hand is the phone's profile anyway; otherwise the answer is "none", cached so
+        // the search is not repeated.
+        final DeviceInputMapping chosen = sConfig.chosenPhoneProfile();
+        cacheMapping(ALL_DEVICES, chosen);
+        return chosen;
     }
 
     private static void cacheMapping(int deviceId, DeviceInputMapping mapping) {
@@ -263,21 +266,9 @@ public class DeviceInputResolver {
      * @return AltMappingsTable or null if no custom mappings configured
      */
     public static AltMappingsTable getAltMappingsTable(Context context, int deviceId) {
-        DeviceInputMapping mapping = resolveInputMapping(context, deviceId);
-        
-        if (mapping == null || mapping.mappingType != DeviceInputMapping.InputMappingType.CUSTOM_ALT_MAPPINGS) {
-            return null;
-        }
-        
-        if (mapping.altMappingsFile == null || mapping.altMappingsFile.isEmpty()) {
-            if (BuildConfig.DEBUG) android.util.Log.w(TAG, "Device " + deviceId + " has CUSTOM_ALT_MAPPINGS but no file specified");
-            return null;
-        }
-        
-        // Load mappings from XML (cached)
-        return AltMappingsParser.getCachedMappings(context, mapping.altMappingsFile);
+        return AltMappingsParser.tableFor(context, resolveInputMapping(context, deviceId));
     }
-    
+
     /**
      * A device was added, removed or reported as changed: forgets what was resolved and resolves
      * the phone's profile again at once.

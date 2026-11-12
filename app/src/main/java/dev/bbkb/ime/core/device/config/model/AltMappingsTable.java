@@ -62,6 +62,25 @@ public class AltMappingsTable {
     }
 
     /**
+     * A table holding everything in {@code base} with everything in {@code over} laid on top: a
+     * key both name gets {@code over}'s answer. Either may be null. This is how a profile's own
+     * {@code <mapping>} entries sit on the table its {@code <source>} names.
+     */
+    public static AltMappingsTable layered(String name, AltMappingsTable base, AltMappingsTable over) {
+        final AltMappingsTable out = new AltMappingsTable(name);
+        for (AltMappingsTable from : new AltMappingsTable[] {base, over}) {
+            if (from == null) continue;
+            for (int i = 0; i < from.mappings.size(); i++) {
+                out.mappings.put(from.mappings.keyAt(i), from.mappings.valueAt(i));
+            }
+            for (int i = 0; i < from.specialFunctions.size(); i++) {
+                out.specialFunctions.put(from.specialFunctions.keyAt(i), from.specialFunctions.valueAt(i));
+            }
+        }
+        return out;
+    }
+
+    /**
      * Get the number of mappings.
      */
     public int size() {

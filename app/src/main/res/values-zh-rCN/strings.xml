@@ -710,11 +710,12 @@
     <string name="device_config_import_matches_device">键盘设备：%1$s</string>
     <string name="device_config_import_matches_build">版本设备名：%1$s</string>
     <string name="device_config_import_matches_brand">品牌：%1$s</string>
+    <string name="device_config_import_based_on">基于：%1$s</string>
     <string name="device_config_import_matches_nothing">此文件未指定要匹配的设备，因此永远不会生效</string>
     <string name="device_config_import_type">设备类型：%1$s</string>
     <string name="device_config_import_keys">%1$d 项按键映射</string>
     <string name="device_config_import_keypad_layout">键区布局：%1$s</string>
-    <string name="device_config_import_mismatch">此配置是为另一部手机创建的。可以保留，但在此设备上不会生效。</string>
+    <string name="device_config_import_mismatch">此配置是为另一部手机创建的。仅在确认适用于此手机时才激活。</string>
     <string name="device_config_import_activate">激活</string>
     <string name="device_config_import_keep">仅保留</string>
     <string name="device_config_import_unreadable">该文件不是设备配置</string>

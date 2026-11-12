@@ -710,11 +710,12 @@
     <string name="device_config_import_matches_device">Pajisja e tastierës: %1$s</string>
     <string name="device_config_import_matches_build">Pajisja e ndërtimit: %1$s</string>
     <string name="device_config_import_matches_brand">Marka: %1$s</string>
+    <string name="device_config_import_based_on">Bazuar në: %1$s</string>
     <string name="device_config_import_matches_nothing">Ky skedar nuk përmend asnjë pajisje për t\'u përputhur, ndaj nuk do të zbatohej kurrë</string>
     <string name="device_config_import_type">Lloji i pajisjes: %1$s</string>
     <string name="device_config_import_keys">%1$d lidhje tastash</string>
     <string name="device_config_import_keypad_layout">Paraqitja e tastierës: %1$s</string>
-    <string name="device_config_import_mismatch">Ky konfigurim u ndërtua për një telefon tjetër. Mund të mbahet, por këtu nuk do të bëjë asgjë.</string>
+    <string name="device_config_import_mismatch">Ky konfigurim u ndërtua për një telefon tjetër. Aktivizoje vetëm nëse e di që i përshtatet këtij telefoni.</string>
     <string name="device_config_import_activate">Aktivizo</string>
     <string name="device_config_import_keep">Vetëm mbaje</string>
     <string name="device_config_import_unreadable">Ai skedar nuk është konfigurim pajisjeje</string>

@@ -710,11 +710,12 @@
     <string name="device_config_import_matches_device">Keyboard device: %1$s</string>
     <string name="device_config_import_matches_build">Device ng build: %1$s</string>
     <string name="device_config_import_matches_brand">Brand: %1$s</string>
+    <string name="device_config_import_based_on">Batay sa: %1$s</string>
     <string name="device_config_import_matches_nothing">Walang tinutukoy na device na tutugma ang file na ito, kaya hindi ito kailanman magagamit</string>
     <string name="device_config_import_type">Uri ng device: %1$s</string>
     <string name="device_config_import_keys">%1$d key mapping</string>
     <string name="device_config_import_keypad_layout">Layout ng keypad: %1$s</string>
-    <string name="device_config_import_mismatch">Ginawa ang configuration na ito para sa ibang telepono. Puwede itong itago, pero wala itong gagawin dito.</string>
+    <string name="device_config_import_mismatch">Ginawa ang configuration na ito para sa ibang telepono. I-activate lang ito kung alam mong akma ito sa teleponong ito.</string>
     <string name="device_config_import_activate">I-activate</string>
     <string name="device_config_import_keep">Itago lang</string>
     <string name="device_config_import_unreadable">Hindi configuration ng device ang file na iyon</string>

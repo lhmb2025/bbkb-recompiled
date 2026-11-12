@@ -710,11 +710,12 @@
     <string name="device_config_import_matches_device">Billentyűzeteszköz: %1$s</string>
     <string name="device_config_import_matches_build">Build eszköze: %1$s</string>
     <string name="device_config_import_matches_brand">Márka: %1$s</string>
+    <string name="device_config_import_based_on">Alapja: %1$s</string>
     <string name="device_config_import_matches_nothing">Ez a fájl nem nevez meg egyeztetendő eszközt, így soha nem lépne életbe</string>
     <string name="device_config_import_type">Eszköztípus: %1$s</string>
     <string name="device_config_import_keys">%1$d billentyű-hozzárendelés</string>
     <string name="device_config_import_keypad_layout">Billentyűzetkiosztás: %1$s</string>
-    <string name="device_config_import_mismatch">Ez a konfiguráció másik telefonhoz készült. Megtartható, de itt nem csinál semmit.</string>
+    <string name="device_config_import_mismatch">Ez a konfiguráció másik telefonhoz készült. Csak akkor aktiválja, ha tudja, hogy ehhez illik.</string>
     <string name="device_config_import_activate">Aktiválás</string>
     <string name="device_config_import_keep">Csak megtartás</string>
     <string name="device_config_import_unreadable">Az a fájl nem eszközkonfiguráció</string>

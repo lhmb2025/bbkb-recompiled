@@ -710,11 +710,12 @@
     <string name="device_config_import_matches_device">Tastaturenhed: %1$s</string>
     <string name="device_config_import_matches_build">Build-enhed: %1$s</string>
     <string name="device_config_import_matches_brand">Mærke: %1$s</string>
+    <string name="device_config_import_based_on">Baseret på: %1$s</string>
     <string name="device_config_import_matches_nothing">Denne fil angiver ingen enhed at matche, så den ville aldrig blive anvendt</string>
     <string name="device_config_import_type">Enhedstype: %1$s</string>
     <string name="device_config_import_keys">%1$d tastetilknytninger</string>
     <string name="device_config_import_keypad_layout">Tastaturlayout: %1$s</string>
-    <string name="device_config_import_mismatch">Denne konfiguration er lavet til en anden telefon. Den kan beholdes, men den gør ikke noget her.</string>
+    <string name="device_config_import_mismatch">Denne konfiguration er lavet til en anden telefon. Aktiver den kun, hvis du ved, at den passer til denne.</string>
     <string name="device_config_import_activate">Aktiver</string>
     <string name="device_config_import_keep">Behold kun</string>
     <string name="device_config_import_unreadable">Den fil er ikke en enhedskonfiguration</string>

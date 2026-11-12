@@ -710,11 +710,12 @@
     <string name="device_config_import_matches_device">কীবোর্ড ডিভাইস: %1$s</string>
     <string name="device_config_import_matches_build">বিল্ড ডিভাইস: %1$s</string>
     <string name="device_config_import_matches_brand">ব্র্যান্ড: %1$s</string>
+    <string name="device_config_import_based_on">ভিত্তি: %1$s</string>
     <string name="device_config_import_matches_nothing">এই ফাইলে মেলানোর মতো কোনো ডিভাইসের নাম নেই, তাই এটি কখনও প্রয়োগ হবে না</string>
     <string name="device_config_import_type">ডিভাইসের ধরন: %1$s</string>
     <string name="device_config_import_keys">%1$d টি কী ম্যাপিং</string>
     <string name="device_config_import_keypad_layout">কীপ্যাড লেআউট: %1$s</string>
-    <string name="device_config_import_mismatch">এই কনফিগারেশনটি অন্য একটি ফোনের জন্য তৈরি। এটি রাখা যাবে, তবে এখানে কিছুই করবে না।</string>
+    <string name="device_config_import_mismatch">এই কনফিগারেশনটি অন্য একটি ফোনের জন্য তৈরি। এটি এই ফোনের জন্য উপযুক্ত বলে জানলে তবেই সক্রিয় করুন।</string>
     <string name="device_config_import_activate">সক্রিয় করুন</string>
     <string name="device_config_import_keep">শুধু রাখুন</string>
     <string name="device_config_import_unreadable">ওই ফাইলটি ডিভাইস কনফিগারেশন নয়</string>

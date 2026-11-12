@@ -710,11 +710,12 @@
     <string name="device_config_import_matches_device">കീബോർഡ് ഉപകരണം: %1$s</string>
     <string name="device_config_import_matches_build">ബിൽഡ് ഉപകരണം: %1$s</string>
     <string name="device_config_import_matches_brand">ബ്രാൻഡ്: %1$s</string>
+    <string name="device_config_import_based_on">അടിസ്ഥാനം: %1$s</string>
     <string name="device_config_import_matches_nothing">ഈ ഫയലിൽ ചേരാനുള്ള ഒരു ഉപകരണവും പറഞ്ഞിട്ടില്ല, അതിനാൽ ഇത് ഒരിക്കലും ബാധകമാകില്ല</string>
     <string name="device_config_import_type">ഉപകരണ തരം: %1$s</string>
     <string name="device_config_import_keys">%1$d കീ മാപ്പിംഗുകൾ</string>
     <string name="device_config_import_keypad_layout">കീപാഡ് ലേഔട്ട്: %1$s</string>
-    <string name="device_config_import_mismatch">ഈ കോൺഫിഗറേഷൻ മറ്റൊരു ഫോണിനായി ഉണ്ടാക്കിയതാണ്. ഇത് സൂക്ഷിക്കാം, പക്ഷേ ഇവിടെ ഒന്നും ചെയ്യില്ല.</string>
+    <string name="device_config_import_mismatch">ഈ കോൺഫിഗറേഷൻ മറ്റൊരു ഫോണിനായി ഉണ്ടാക്കിയതാണ്. ഇത് ഈ ഫോണിന് യോജിക്കുമെന്ന് അറിയാമെങ്കിൽ മാത്രം സജീവമാക്കുക.</string>
     <string name="device_config_import_activate">സജീവമാക്കുക</string>
     <string name="device_config_import_keep">സൂക്ഷിക്കുക മാത്രം</string>
     <string name="device_config_import_unreadable">ആ ഫയൽ ഒരു ഉപകരണ കോൺഫിഗറേഷൻ അല്ല</string>

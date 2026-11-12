@@ -171,10 +171,7 @@ fun DeviceConfigurationScreen(
                         config = config,
                         isSelected = config.id == activeId,
                         edge = groupEdge(index, standardConfigs.size),
-                        onSelect = {
-                            manager.activeConfigId = config.id
-                            activeId = config.id
-                        },
+                        onSelect = { activeId = select(manager, config.id) },
                         onDelete = null
                     )
                 }
@@ -187,10 +184,7 @@ fun DeviceConfigurationScreen(
                             config = config,
                             isSelected = config.id == activeId,
                             edge = groupEdge(index, preloadedConfigs.size),
-                            onSelect = {
-                                manager.activeConfigId = config.id
-                                activeId = config.id
-                            },
+                            onSelect = { activeId = select(manager, config.id) },
                             onDelete = null
                         )
                     }
@@ -204,10 +198,7 @@ fun DeviceConfigurationScreen(
                             config = config,
                             isSelected = config.id == activeId,
                             edge = groupEdge(index, customConfigs.size),
-                            onSelect = {
-                                manager.activeConfigId = config.id
-                                activeId = config.id
-                            },
+                            onSelect = { activeId = select(manager, config.id) },
                             onDelete = { deleteTarget = config }
                         )
                     }
@@ -305,6 +296,17 @@ private fun ConfigItem(
     }
 }
 
+/**
+ * Makes [id] the active configuration and returns the one now in effect, which is what the list
+ * shows selected. They differ for "Detect automatically": the selection lands on the profile
+ * detection picked, at once. The list used to show the tapped row and only move the selection the
+ * next time the screen was opened.
+ */
+private fun select(manager: CustomDeviceConfigManager, id: String): String {
+    manager.activeConfigId = id
+    return manager.activeConfigId
+}
+
 /** An imported config waiting for the user to look at its `<match>` block. */
 private data class PendingImport(val id: String, val summary: DeviceConfigSummary)
 
@@ -321,7 +323,9 @@ private fun importedFile(context: Context, configId: String): File? {
  *
  * The decision offered is deliberately not "import / cancel" — the file is already copied by the
  * time it can be read — but "use it now, or keep it for later". A config for another handset is a
- * perfectly good thing to be carrying around; it just must not be switched on silently.
+ * perfectly good thing to be carrying around; it just must not be switched on silently. Activate
+ * applies it to this phone whatever it matches on (a profile picked by hand always applies), so
+ * the mismatch line is a warning about what Activate will do, not a note that nothing will happen.
  */
 @VisibleForTesting
 @Composable
@@ -347,6 +351,10 @@ internal fun ImportSummaryDialog(
                 }
                 summary.brand?.let {
                     Text(stringResource(R.string.device_config_import_matches_brand, it))
+                }
+                summary.basedOn?.takeIf { it.isNotBlank() }?.let { base ->
+                    val manager = CustomDeviceConfigManager.getInstance(context)
+                    Text(stringResource(R.string.device_config_import_based_on, manager.builtInProfileName(base) ?: base))
                 }
                 if (summary.matchesNothing()) {
                     Text(stringResource(R.string.device_config_import_matches_nothing))

@@ -710,11 +710,12 @@
     <string name="device_config_import_matches_device">Уред на тастатурата: %1$s</string>
     <string name="device_config_import_matches_build">Уред на верзијата: %1$s</string>
     <string name="device_config_import_matches_brand">Марка: %1$s</string>
+    <string name="device_config_import_based_on">Врз основа на: %1$s</string>
     <string name="device_config_import_matches_nothing">Оваа датотека не наведува уред со кој би се совпаднала, па затоа никогаш не би се применила</string>
     <string name="device_config_import_type">Тип на уред: %1$s</string>
     <string name="device_config_import_keys">%1$d мапирања на копчиња</string>
     <string name="device_config_import_keypad_layout">Распоред на тастатурата: %1$s</string>
-    <string name="device_config_import_mismatch">Оваа конфигурација е направена за друг телефон. Може да се зачува, но овде нема да прави ништо.</string>
+    <string name="device_config_import_mismatch">Оваа конфигурација е направена за друг телефон. Активирајте ја само ако знаете дека одговара на овој.</string>
     <string name="device_config_import_activate">Активирај</string>
     <string name="device_config_import_keep">Само зачувај</string>
     <string name="device_config_import_unreadable">Таа датотека не е конфигурација на уред</string>

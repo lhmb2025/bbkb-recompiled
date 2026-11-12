@@ -710,11 +710,12 @@
     <string name="device_config_import_matches_device">Teklatu-gailua: %1$s</string>
     <string name="device_config_import_matches_build">Konpilazioaren gailua: %1$s</string>
     <string name="device_config_import_matches_brand">Marka: %1$s</string>
+    <string name="device_config_import_based_on">Oinarria: %1$s</string>
     <string name="device_config_import_matches_nothing">Fitxategi honek ez du bat etortzeko gailurik aipatzen, beraz ez litzateke inoiz aplikatuko</string>
     <string name="device_config_import_type">Gailu mota: %1$s</string>
     <string name="device_config_import_keys">%1$d tekla-esleipen</string>
     <string name="device_config_import_keypad_layout">Teklatuaren diseinua: %1$s</string>
-    <string name="device_config_import_mismatch">Konfigurazio hau beste telefono baterako sortu zen. Gorde daiteke, baina ez du ezer egingo hemen.</string>
+    <string name="device_config_import_mismatch">Konfigurazio hau beste telefono baterako sortu zen. Aktibatu soilik telefono honetarako egokia dela badakizu.</string>
     <string name="device_config_import_activate">Aktibatu</string>
     <string name="device_config_import_keep">Gorde besterik ez</string>
     <string name="device_config_import_unreadable">Fitxategi hori ez da gailuaren konfigurazio bat</string>

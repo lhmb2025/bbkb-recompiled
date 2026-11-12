@@ -710,11 +710,12 @@
     <string name="device_config_import_matches_device">Uređaj tipkovnice: %1$s</string>
     <string name="device_config_import_matches_build">Uređaj međuverzije: %1$s</string>
     <string name="device_config_import_matches_brand">Marka: %1$s</string>
+    <string name="device_config_import_based_on">Temeljeno na: %1$s</string>
     <string name="device_config_import_matches_nothing">Ova datoteka ne navodi nijedan uređaj s kojim bi se podudarala pa se nikad ne bi primijenila</string>
     <string name="device_config_import_type">Vrsta uređaja: %1$s</string>
     <string name="device_config_import_keys">%1$d mapiranja tipki</string>
     <string name="device_config_import_keypad_layout">Raspored tipkovnice: %1$s</string>
-    <string name="device_config_import_mismatch">Ova je konfiguracija izrađena za drugi telefon. Može se zadržati, ali ovdje neće ništa raditi.</string>
+    <string name="device_config_import_mismatch">Ova je konfiguracija izrađena za drugi telefon. Aktivirajte je samo ako znate da odgovara ovom.</string>
     <string name="device_config_import_activate">Aktiviraj</string>
     <string name="device_config_import_keep">Samo zadrži</string>
     <string name="device_config_import_unreadable">Ta datoteka nije konfiguracija uređaja</string>

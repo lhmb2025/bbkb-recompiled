@@ -710,11 +710,12 @@
     <string name="device_config_import_matches_device">Piranti papan tombol: %1$s</string>
     <string name="device_config_import_matches_build">Piranti build: %1$s</string>
     <string name="device_config_import_matches_brand">Merek: %1$s</string>
+    <string name="device_config_import_based_on">Adhedhasar: %1$s</string>
     <string name="device_config_import_matches_nothing">Berkas iki ora nyebutake piranti apa wae sing kudu cocog, mula ora bakal tau ditrapake</string>
     <string name="device_config_import_type">Jinis piranti: %1$s</string>
     <string name="device_config_import_keys">%1$d pemetaan tombol</string>
     <string name="device_config_import_keypad_layout">Tata letak papan tombol: %1$s</string>
-    <string name="device_config_import_mismatch">Konfigurasi iki digawe kanggo telpon liya. Bisa disimpen, nanging ora bakal nindakake apa-apa ing kene.</string>
+    <string name="device_config_import_mismatch">Konfigurasi iki digawe kanggo telpon liya. Aktifake mung yen sampeyan ngerti cocog karo telpon iki.</string>
     <string name="device_config_import_activate">Aktifake</string>
     <string name="device_config_import_keep">Mung simpen</string>
     <string name="device_config_import_unreadable">Berkas kuwi dudu konfigurasi piranti</string>

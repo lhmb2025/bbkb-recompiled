@@ -710,11 +710,12 @@
     <string name="device_config_import_matches_device">Συσκευή πληκτρολογίου: %1$s</string>
     <string name="device_config_import_matches_build">Συσκευή build: %1$s</string>
     <string name="device_config_import_matches_brand">Μάρκα: %1$s</string>
+    <string name="device_config_import_based_on">Βασίζεται σε: %1$s</string>
     <string name="device_config_import_matches_nothing">Αυτό το αρχείο δεν ορίζει συσκευή για αντιστοίχιση, επομένως δεν θα εφαρμοστεί ποτέ</string>
     <string name="device_config_import_type">Τύπος συσκευής: %1$s</string>
     <string name="device_config_import_keys">%1$d αντιστοιχίσεις πλήκτρων</string>
     <string name="device_config_import_keypad_layout">Διάταξη πληκτρολογίου: %1$s</string>
-    <string name="device_config_import_mismatch">Αυτή η διαμόρφωση δημιουργήθηκε για άλλο τηλέφωνο. Μπορεί να διατηρηθεί, αλλά δεν θα κάνει τίποτα εδώ.</string>
+    <string name="device_config_import_mismatch">Αυτή η διαμόρφωση δημιουργήθηκε για άλλο τηλέφωνο. Ενεργοποιήστε την μόνο αν γνωρίζετε ότι ταιριάζει σε αυτό.</string>
     <string name="device_config_import_activate">Ενεργοποίηση</string>
     <string name="device_config_import_keep">Μόνο διατήρηση</string>
     <string name="device_config_import_unreadable">Αυτό το αρχείο δεν είναι διαμόρφωση συσκευής</string>

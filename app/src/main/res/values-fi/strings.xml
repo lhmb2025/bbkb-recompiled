@@ -710,11 +710,12 @@
     <string name="device_config_import_matches_device">Näppäimistölaite: %1$s</string>
     <string name="device_config_import_matches_build">Koontiversion laite: %1$s</string>
     <string name="device_config_import_matches_brand">Merkki: %1$s</string>
+    <string name="device_config_import_based_on">Pohjana: %1$s</string>
     <string name="device_config_import_matches_nothing">Tässä tiedostossa ei nimetä laitetta, johon se sopisi, joten sitä ei koskaan käytettäisi</string>
     <string name="device_config_import_type">Laitetyyppi: %1$s</string>
     <string name="device_config_import_keys">%1$d näppäinmääritystä</string>
     <string name="device_config_import_keypad_layout">Näppäimistöasettelu: %1$s</string>
-    <string name="device_config_import_mismatch">Tämä määritys on tehty toiselle puhelimelle. Sen voi säilyttää, mutta täällä se ei tee mitään.</string>
+    <string name="device_config_import_mismatch">Tämä määritys on tehty toiselle puhelimelle. Ota se käyttöön vain, jos tiedät sen sopivan tähän.</string>
     <string name="device_config_import_activate">Ota käyttöön</string>
     <string name="device_config_import_keep">Vain säilytä</string>
     <string name="device_config_import_unreadable">Kyseinen tiedosto ei ole laitemääritys</string>

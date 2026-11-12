@@ -710,11 +710,12 @@
     <string name="device_config_import_matches_device">Klaviatuuriseade: %1$s</string>
     <string name="device_config_import_matches_build">Järgu seade: %1$s</string>
     <string name="device_config_import_matches_brand">Kaubamärk: %1$s</string>
+    <string name="device_config_import_based_on">Aluseks: %1$s</string>
     <string name="device_config_import_matches_nothing">See fail ei nimeta ühtegi sobitatavat seadet, seega ei rakenduks see kunagi</string>
     <string name="device_config_import_type">Seadme tüüp: %1$s</string>
     <string name="device_config_import_keys">%1$d klahviseost</string>
     <string name="device_config_import_keypad_layout">Klahvistiku paigutus: %1$s</string>
-    <string name="device_config_import_mismatch">See konfiguratsioon on loodud teise telefoni jaoks. Selle võib alles jätta, kuid siin ei tee see midagi.</string>
+    <string name="device_config_import_mismatch">See konfiguratsioon on loodud teise telefoni jaoks. Aktiveeri see ainult siis, kui tead, et see sobib sellele.</string>
     <string name="device_config_import_activate">Aktiveeri</string>
     <string name="device_config_import_keep">Ainult säilita</string>
     <string name="device_config_import_unreadable">See fail ei ole seadme konfiguratsioon</string>

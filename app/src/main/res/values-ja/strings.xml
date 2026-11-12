@@ -710,11 +710,12 @@
     <string name="device_config_import_matches_device">キーボードデバイス: %1$s</string>
     <string name="device_config_import_matches_build">ビルドの端末名: %1$s</string>
     <string name="device_config_import_matches_brand">ブランド: %1$s</string>
+    <string name="device_config_import_based_on">ベース: %1$s</string>
     <string name="device_config_import_matches_nothing">このファイルには照合する端末が指定されていないため、適用されることはありません</string>
     <string name="device_config_import_type">端末の種類: %1$s</string>
     <string name="device_config_import_keys">%1$d 件のキー割り当て</string>
     <string name="device_config_import_keypad_layout">キーパッドのレイアウト: %1$s</string>
-    <string name="device_config_import_mismatch">この構成は別の端末向けに作成されたものです。保持できますが、この端末では機能しません。</string>
+    <string name="device_config_import_mismatch">この構成は別の端末向けに作成されたものです。この端末に合うことがわかっている場合のみ有効にしてください。</string>
     <string name="device_config_import_activate">有効にする</string>
     <string name="device_config_import_keep">保持のみ</string>
     <string name="device_config_import_unreadable">このファイルは端末構成ではありません</string>

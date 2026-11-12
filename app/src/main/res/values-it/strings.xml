@@ -710,11 +710,12 @@
     <string name="device_config_import_matches_device">Dispositivo tastiera: %1$s</string>
     <string name="device_config_import_matches_build">Dispositivo della build: %1$s</string>
     <string name="device_config_import_matches_brand">Marca: %1$s</string>
+    <string name="device_config_import_based_on">Basata su: %1$s</string>
     <string name="device_config_import_matches_nothing">Questo file non indica alcun dispositivo da abbinare, quindi non verrebbe mai applicato</string>
     <string name="device_config_import_type">Tipo di dispositivo: %1$s</string>
     <string name="device_config_import_keys">%1$d mappature di tasti</string>
     <string name="device_config_import_keypad_layout">Layout del tastierino: %1$s</string>
-    <string name="device_config_import_mismatch">Questa configurazione è stata creata per un altro telefono. Puoi conservarla, ma qui non avrà alcun effetto.</string>
+    <string name="device_config_import_mismatch">Questa configurazione è stata creata per un altro telefono. Attivala solo se sai che è adatta a questo.</string>
     <string name="device_config_import_activate">Attiva</string>
     <string name="device_config_import_keep">Conserva soltanto</string>
     <string name="device_config_import_unreadable">Quel file non è una configurazione di dispositivo</string>

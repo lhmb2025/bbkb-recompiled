@@ -107,6 +107,7 @@ object SettingsBackup {
      */
     val DENIED_KEYS: Set<String> = setOf(
         "active_device_config_id",
+        "active_device_config_chosen",
         "last_shown_emoji_category_id",
         // CkbKeyGridCapture's cached key rectangles for THIS device's keypad geometry (a cost
         // cache, rebuilt on the next layout sync). Carrying it to another device would hand the

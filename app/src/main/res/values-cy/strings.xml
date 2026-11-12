@@ -710,11 +710,12 @@
     <string name="device_config_import_matches_device">Dyfais y bysellfwrdd: %1$s</string>
     <string name="device_config_import_matches_build">Dyfais y build: %1$s</string>
     <string name="device_config_import_matches_brand">Brand: %1$s</string>
+    <string name="device_config_import_based_on">Yn seiliedig ar: %1$s</string>
     <string name="device_config_import_matches_nothing">Nid yw\'r ffeil hon yn enwi unrhyw ddyfais i gyfateb iddi, felly ni fyddai byth yn berthnasol</string>
     <string name="device_config_import_type">Math o ddyfais: %1$s</string>
     <string name="device_config_import_keys">%1$d mapiad bysell</string>
     <string name="device_config_import_keypad_layout">Cynllun y pad bysellau: %1$s</string>
-    <string name="device_config_import_mismatch">Lluniwyd y ffurfweddiad hwn ar gyfer ffôn arall. Gellir ei gadw, ond ni fydd yn gwneud dim yma.</string>
+    <string name="device_config_import_mismatch">Lluniwyd y ffurfweddiad hwn ar gyfer ffôn arall. Gweithredwch ef dim ond os ydych yn gwybod ei fod yn addas i\'r un hwn.</string>
     <string name="device_config_import_activate">Gweithredu</string>
     <string name="device_config_import_keep">Cadw\'n unig</string>
     <string name="device_config_import_unreadable">Nid ffurfweddiad dyfais yw\'r ffeil honno</string>

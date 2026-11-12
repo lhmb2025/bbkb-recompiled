@@ -710,11 +710,12 @@
     <string name="device_config_import_matches_device">Ստեղնաշարի սարք՝ %1$s</string>
     <string name="device_config_import_matches_build">Կառուցման սարք՝ %1$s</string>
     <string name="device_config_import_matches_brand">Ապրանքանիշ՝ %1$s</string>
+    <string name="device_config_import_based_on">Հիմքը՝ %1$s</string>
     <string name="device_config_import_matches_nothing">Այս ֆայլը որևէ սարք չի նշում համապատասխանեցման համար, ուստի երբեք չի կիրառվի</string>
     <string name="device_config_import_type">Սարքի տեսակ՝ %1$s</string>
     <string name="device_config_import_keys">%1$d ստեղնի համապատասխանեցում</string>
     <string name="device_config_import_keypad_layout">Ստեղնաշարի դասավորություն՝ %1$s</string>
-    <string name="device_config_import_mismatch">Այս կազմաձևը ստեղծվել է այլ հեռախոսի համար։ Այն կարելի է պահել, սակայն այստեղ ոչինչ չի անի։</string>
+    <string name="device_config_import_mismatch">Այս կազմաձևը ստեղծվել է այլ հեռախոսի համար։ Ակտիվացրեք այն միայն, եթե գիտեք, որ այն համապատասխանում է այս հեռախոսին։</string>
     <string name="device_config_import_activate">Ակտիվացնել</string>
     <string name="device_config_import_keep">Միայն պահել</string>
     <string name="device_config_import_unreadable">Այդ ֆայլը սարքի կազմաձև չէ</string>

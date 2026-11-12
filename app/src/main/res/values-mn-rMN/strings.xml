@@ -710,11 +710,12 @@
     <string name="device_config_import_matches_device">Гарын төхөөрөмж: %1$s</string>
     <string name="device_config_import_matches_build">Хувилбарын төхөөрөмж: %1$s</string>
     <string name="device_config_import_matches_brand">Брэнд: %1$s</string>
+    <string name="device_config_import_based_on">Үндэслэсэн: %1$s</string>
     <string name="device_config_import_matches_nothing">Энэ файлд тааруулах төхөөрөмж заагаагүй тул хэзээ ч хэрэглэгдэхгүй</string>
     <string name="device_config_import_type">Төхөөрөмжийн төрөл: %1$s</string>
     <string name="device_config_import_keys">%1$d товчны харгалзуулалт</string>
     <string name="device_config_import_keypad_layout">Гарын байрлал: %1$s</string>
-    <string name="device_config_import_mismatch">Энэ тохиргоо өөр утсанд зориулж хийгдсэн. Үүнийг хадгалж болох боловч энд юу ч хийхгүй.</string>
+    <string name="device_config_import_mismatch">Энэ тохиргоо өөр утсанд зориулж хийгдсэн. Энэ утсанд тохирно гэдгийг мэдэж байгаа бол л идэвхжүүлээрэй.</string>
     <string name="device_config_import_activate">Идэвхжүүлэх</string>
     <string name="device_config_import_keep">Зөвхөн хадгалах</string>
     <string name="device_config_import_unreadable">Тэр файл нь төхөөрөмжийн тохиргоо биш байна</string>

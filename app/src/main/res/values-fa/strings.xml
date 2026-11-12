@@ -710,11 +710,12 @@
     <string name="device_config_import_matches_device">دستگاه صفحه کلید: %1$s</string>
     <string name="device_config_import_matches_build">دستگاه ساخت: %1$s</string>
     <string name="device_config_import_matches_brand">برند: %1$s</string>
+    <string name="device_config_import_based_on">بر اساس: %1$s</string>
     <string name="device_config_import_matches_nothing">این فایل هیچ دستگاهی برای تطبیق نام نمی‌برد، بنابراین هرگز اعمال نخواهد شد</string>
     <string name="device_config_import_type">نوع دستگاه: %1$s</string>
     <string name="device_config_import_keys">%1$d نگاشت کلید</string>
     <string name="device_config_import_keypad_layout">چیدمان صفحه کلید: %1$s</string>
-    <string name="device_config_import_mismatch">این پیکربندی برای تلفن دیگری ساخته شده است. می‌توان آن را نگه داشت، اما اینجا کاری انجام نمی‌دهد.</string>
+    <string name="device_config_import_mismatch">این پیکربندی برای تلفن دیگری ساخته شده است. فقط اگر می‌دانید با این تلفن سازگار است، آن را فعال کنید.</string>
     <string name="device_config_import_activate">فعال‌سازی</string>
     <string name="device_config_import_keep">فقط نگه داشتن</string>
     <string name="device_config_import_unreadable">آن فایل یک پیکربندی دستگاه نیست</string>

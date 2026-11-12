@@ -710,11 +710,12 @@
     <string name="device_config_import_matches_device">Dispozitivul tastaturii: %1$s</string>
     <string name="device_config_import_matches_build">Dispozitivul versiunii: %1$s</string>
     <string name="device_config_import_matches_brand">Marcă: %1$s</string>
+    <string name="device_config_import_based_on">Bazată pe: %1$s</string>
     <string name="device_config_import_matches_nothing">Acest fișier nu indică niciun dispozitiv cu care să se potrivească, deci nu s-ar aplica niciodată</string>
     <string name="device_config_import_type">Tipul dispozitivului: %1$s</string>
     <string name="device_config_import_keys">%1$d mapări de taste</string>
     <string name="device_config_import_keypad_layout">Aspectul tastaturii: %1$s</string>
-    <string name="device_config_import_mismatch">Această configurație a fost creată pentru alt telefon. Poate fi păstrată, dar nu va face nimic aici.</string>
+    <string name="device_config_import_mismatch">Această configurație a fost creată pentru alt telefon. Activați-o doar dacă știți că se potrivește cu acesta.</string>
     <string name="device_config_import_activate">Activați</string>
     <string name="device_config_import_keep">Doar păstrați</string>
     <string name="device_config_import_unreadable">Fișierul acela nu este o configurație de dispozitiv</string>

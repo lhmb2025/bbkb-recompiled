@@ -912,11 +912,12 @@
     <string name="device_config_import_matches_device">Keyboard device: %1$s</string>
     <string name="device_config_import_matches_build">Build device: %1$s</string>
     <string name="device_config_import_matches_brand">Brand: %1$s</string>
+    <string name="device_config_import_based_on">Based on: %1$s</string>
     <string name="device_config_import_matches_nothing">This file names no device to match, so it would never apply</string>
     <string name="device_config_import_type">Device type: %1$s</string>
     <string name="device_config_import_keys">%1$d key mappings</string>
     <string name="device_config_import_keypad_layout">Keypad layout: %1$s</string>
-    <string name="device_config_import_mismatch">This configuration was built for a different phone. It can be kept, but it will do nothing here.</string>
+    <string name="device_config_import_mismatch">This configuration was built for a different phone. Activate it only if you know it fits this one.</string>
     <string name="device_config_import_activate">Activate</string>
     <string name="device_config_import_keep">Keep only</string>
     <string name="device_config_import_unreadable">That file is not a device configuration</string>

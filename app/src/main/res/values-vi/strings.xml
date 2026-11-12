@@ -710,11 +710,12 @@
     <string name="device_config_import_matches_device">Thiết bị bàn phím: %1$s</string>
     <string name="device_config_import_matches_build">Thiết bị của bản dựng: %1$s</string>
     <string name="device_config_import_matches_brand">Thương hiệu: %1$s</string>
+    <string name="device_config_import_based_on">Dựa trên: %1$s</string>
     <string name="device_config_import_matches_nothing">Tệp này không nêu thiết bị nào để đối chiếu nên sẽ không bao giờ được áp dụng</string>
     <string name="device_config_import_type">Loại thiết bị: %1$s</string>
     <string name="device_config_import_keys">%1$d ánh xạ phím</string>
     <string name="device_config_import_keypad_layout">Bố cục bàn phím: %1$s</string>
-    <string name="device_config_import_mismatch">Cấu hình này được tạo cho một điện thoại khác. Bạn có thể giữ lại, nhưng nó sẽ không có tác dụng ở đây.</string>
+    <string name="device_config_import_mismatch">Cấu hình này được tạo cho một điện thoại khác. Chỉ kích hoạt nếu bạn biết cấu hình này phù hợp với điện thoại này.</string>
     <string name="device_config_import_activate">Kích hoạt</string>
     <string name="device_config_import_keep">Chỉ giữ lại</string>
     <string name="device_config_import_unreadable">Tệp đó không phải là cấu hình thiết bị</string>

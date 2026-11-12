@@ -13,8 +13,33 @@ public class DeviceInputConfig {
 
     public List<DeviceInputMapping> mappings;
 
+    /**
+     * True when the user picked this configuration on the Device configuration screen, as
+     * opposed to automatic detection finding it. A configuration picked by hand is the phone's
+     * profile even when its {@code <match>} rules fail here: that is what picking it is for (a
+     * ROM that renames the keypad's driver, a unit the rules did not foresee). Set by
+     * {@code CustomDeviceConfigManager}; false for a configuration nobody chose.
+     */
+    public boolean chosenByUser;
+
     public DeviceInputConfig() {
         this.mappings = new ArrayList<>();
+    }
+
+    /**
+     * The profile a hand-picked configuration gives the phone when nothing matched: its first
+     * {@code <device>}. Null when the configuration was not picked by hand, holds no device, or
+     * identifies its keyboard by USB or Bluetooth ids (that one describes a keyboard that plugs
+     * in, and applies only while it is attached).
+     */
+    public DeviceInputMapping chosenPhoneProfile() {
+        if (!chosenByUser || mappings.isEmpty()) {
+            return null;
+        }
+        final DeviceInputMapping first = mappings.get(0);
+        final boolean external = first.matchCriteria != null
+                && first.matchCriteria.hasVendorOrProductRule();
+        return external ? null : first;
     }
 
     /**
@@ -34,7 +59,8 @@ public class DeviceInputConfig {
      * {@code product-id} rules matchable: every production caller has the InputDevice.
      *
      * <p>An external keyboard (USB, Bluetooth) is matched only by a profile that
-     * {@link DeviceInputMapping#namesInputDevice names the keyboard itself}. A profile matched
+     * {@link DeviceInputMapping#namesInputDevice names the keyboard itself}. A built-in device
+     * that no profile matches gets {@link #chosenPhoneProfile()}, when there is one. A profile matched
      * on the phone's build alone (the KEY2's, the Titans') describes that phone's own keys; it
      * used to match every keyboard attached to the phone as well, so a Bluetooth keyboard's 0
      * key was the KEY2's mic key.
@@ -58,7 +84,10 @@ public class DeviceInputConfig {
                 return mapping;
             }
         }
-        return null;
+        // Nothing matched. A configuration the user picked by hand still speaks for the phone's
+        // own devices, exactly as one matched on the phone's build does; never for a keyboard
+        // that is plugged in.
+        return external ? null : chosenPhoneProfile();
     }
 
     /**

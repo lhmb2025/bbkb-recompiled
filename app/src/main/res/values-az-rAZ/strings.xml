@@ -710,11 +710,12 @@
     <string name="device_config_import_matches_device">Klaviatura cihazı: %1$s</string>
     <string name="device_config_import_matches_build">Build cihazı: %1$s</string>
     <string name="device_config_import_matches_brand">Brend: %1$s</string>
+    <string name="device_config_import_based_on">Əsas götürülüb: %1$s</string>
     <string name="device_config_import_matches_nothing">Bu fayl uyğunlaşdırılacaq heç bir cihaz göstərmir, ona görə heç vaxt tətbiq olunmayacaq</string>
     <string name="device_config_import_type">Cihaz tipi: %1$s</string>
     <string name="device_config_import_keys">%1$d klaviş uyğunlaşdırması</string>
     <string name="device_config_import_keypad_layout">Klaviatura düzümü: %1$s</string>
-    <string name="device_config_import_mismatch">Bu konfiqurasiya başqa telefon üçün hazırlanıb. Saxlanıla bilər, lakin burada heç nə etməyəcək.</string>
+    <string name="device_config_import_mismatch">Bu konfiqurasiya başqa telefon üçün hazırlanıb. Onu yalnız bu telefona uyğun olduğunu bilirsinizsə aktivləşdirin.</string>
     <string name="device_config_import_activate">Aktivləşdir</string>
     <string name="device_config_import_keep">Yalnız saxla</string>
     <string name="device_config_import_unreadable">Bu fayl cihaz konfiqurasiyası deyil</string>

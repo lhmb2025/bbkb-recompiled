@@ -6,6 +6,7 @@ import android.content.res.XmlResourceParser;
 import android.view.KeyEvent;
 
 import dev.bbkb.ime.core.device.config.model.AltMappingsTable;
+import dev.bbkb.ime.core.device.config.model.DeviceInputMapping;
 
 import org.xmlpull.v1.XmlPullParser;
 
@@ -56,6 +57,33 @@ public class AltMappingsParser {
             sCache.put(resourceName, table);
         }
         return table;
+    }
+
+    /**
+     * The Alt table a profile's keys use, or null when it has none: the table its
+     * {@code <source>} names, with the profile's own {@code <mapping>} entries on top. A profile
+     * with entries of its own and no {@code <source>} gets just those.
+     *
+     * <p>Called on the key-event path: the named table is memoised here by name, and the layered
+     * one on the profile itself (a profile is parsed afresh whenever the configuration changes).
+     */
+    public static AltMappingsTable tableFor(Context context, DeviceInputMapping profile) {
+        if (profile == null
+                || profile.mappingType != DeviceInputMapping.InputMappingType.CUSTOM_ALT_MAPPINGS) {
+            return null;
+        }
+        final boolean named = profile.altMappingsFile != null && !profile.altMappingsFile.isEmpty();
+        final AltMappingsTable own = profile.inlineAltMappings;
+        if (own == null) {
+            return named ? getCachedMappings(context, profile.altMappingsFile) : null;
+        }
+        AltMappingsTable layered = profile.layeredAltMappings;
+        if (layered == null) {
+            final AltMappingsTable base = named ? getCachedMappings(context, profile.altMappingsFile) : null;
+            layered = AltMappingsTable.layered(own.getName(), base, own);
+            profile.layeredAltMappings = layered;
+        }
+        return layered;
     }
 
     /** Drops every memoized table, so the next lookup re-parses. Used when the config reloads. */
@@ -143,7 +171,7 @@ public class AltMappingsParser {
     /**
      * Parse a single <mapping> element.
      */
-    private static void parseMapping(XmlResourceParser parser, AltMappingsTable table) {
+    public static void parseMapping(XmlPullParser parser, AltMappingsTable table) {
         try {
             // Get attributes
             String keycodeStr = parser.getAttributeValue(null, "keycode");
@@ -187,7 +215,7 @@ public class AltMappingsParser {
      * 
      * Valid function names: "voice", "emoji"
      */
-    private static void parseSpecialFunction(XmlResourceParser parser, AltMappingsTable table) {
+    public static void parseSpecialFunction(XmlPullParser parser, AltMappingsTable table) {
         try {
             String keycodeStr = parser.getAttributeValue(null, "keycode");
             String functionStr = parser.getAttributeValue(null, "function");

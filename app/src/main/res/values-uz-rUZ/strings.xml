@@ -710,11 +710,12 @@
     <string name="device_config_import_matches_device">Klaviatura qurilmasi: %1$s</string>
     <string name="device_config_import_matches_build">Build qurilmasi: %1$s</string>
     <string name="device_config_import_matches_brand">Brend: %1$s</string>
+    <string name="device_config_import_based_on">Asosi: %1$s</string>
     <string name="device_config_import_matches_nothing">Bu faylda moslashtiriladigan qurilma ko‘rsatilmagan, shuning uchun u hech qachon qo‘llanilmaydi</string>
     <string name="device_config_import_type">Qurilma turi: %1$s</string>
     <string name="device_config_import_keys">%1$d ta tugma moslamasi</string>
     <string name="device_config_import_keypad_layout">Klaviatura joylashuvi: %1$s</string>
-    <string name="device_config_import_mismatch">Bu konfiguratsiya boshqa telefon uchun yaratilgan. Uni saqlab qo‘yish mumkin, lekin bu yerda hech nima qilmaydi.</string>
+    <string name="device_config_import_mismatch">Bu konfiguratsiya boshqa telefon uchun yaratilgan. Uni faqat shu telefonga mos kelishini bilsangiz faollashtiring.</string>
     <string name="device_config_import_activate">Faollashtirish</string>
     <string name="device_config_import_keep">Faqat saqlash</string>
     <string name="device_config_import_unreadable">Bu fayl qurilma konfiguratsiyasi emas</string>

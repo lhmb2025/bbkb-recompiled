@@ -710,11 +710,12 @@
     <string name="device_config_import_matches_device">Urządzenie klawiatury: %1$s</string>
     <string name="device_config_import_matches_build">Urządzenie kompilacji: %1$s</string>
     <string name="device_config_import_matches_brand">Marka: %1$s</string>
+    <string name="device_config_import_based_on">Na podstawie: %1$s</string>
     <string name="device_config_import_matches_nothing">Ten plik nie wskazuje żadnego urządzenia do dopasowania, więc nigdy nie zostałby zastosowany</string>
     <string name="device_config_import_type">Typ urządzenia: %1$s</string>
     <string name="device_config_import_keys">%1$d przypisań klawiszy</string>
     <string name="device_config_import_keypad_layout">Układ klawiatury: %1$s</string>
-    <string name="device_config_import_mismatch">Ta konfiguracja została utworzona dla innego telefonu. Można ją zachować, ale tutaj nic nie zrobi.</string>
+    <string name="device_config_import_mismatch">Ta konfiguracja została utworzona dla innego telefonu. Aktywuj ją tylko wtedy, gdy wiesz, że pasuje do tego.</string>
     <string name="device_config_import_activate">Aktywuj</string>
     <string name="device_config_import_keep">Tylko zachowaj</string>
     <string name="device_config_import_unreadable">Ten plik nie jest konfiguracją urządzenia</string>

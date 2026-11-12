@@ -710,11 +710,12 @@
     <string name="device_config_import_matches_device">ಕೀಬೋರ್ಡ್ ಸಾಧನ: %1$s</string>
     <string name="device_config_import_matches_build">ಬಿಲ್ಡ್ ಸಾಧನ: %1$s</string>
     <string name="device_config_import_matches_brand">ಬ್ರ್ಯಾಂಡ್: %1$s</string>
+    <string name="device_config_import_based_on">ಆಧಾರ: %1$s</string>
     <string name="device_config_import_matches_nothing">ಈ ಫೈಲ್ ಹೊಂದಿಸಲು ಯಾವುದೇ ಸಾಧನವನ್ನು ಸೂಚಿಸುವುದಿಲ್ಲ, ಆದ್ದರಿಂದ ಅದು ಎಂದಿಗೂ ಅನ್ವಯವಾಗುವುದಿಲ್ಲ</string>
     <string name="device_config_import_type">ಸಾಧನ ಪ್ರಕಾರ: %1$s</string>
     <string name="device_config_import_keys">%1$d ಕೀ ಮ್ಯಾಪಿಂಗ್‌ಗಳು</string>
     <string name="device_config_import_keypad_layout">ಕೀಪ್ಯಾಡ್ ವಿನ್ಯಾಸ: %1$s</string>
-    <string name="device_config_import_mismatch">ಈ ಕಾನ್ಫಿಗರೇಶನ್ ಬೇರೆ ಫೋನ್‌ಗಾಗಿ ರಚಿಸಲಾಗಿದೆ. ಇದನ್ನು ಇಟ್ಟುಕೊಳ್ಳಬಹುದು, ಆದರೆ ಇಲ್ಲಿ ಏನೂ ಮಾಡುವುದಿಲ್ಲ.</string>
+    <string name="device_config_import_mismatch">ಈ ಕಾನ್ಫಿಗರೇಶನ್ ಬೇರೆ ಫೋನ್‌ಗಾಗಿ ರಚಿಸಲಾಗಿದೆ. ಇದು ಈ ಫೋನ್‌ಗೆ ಹೊಂದುತ್ತದೆ ಎಂದು ನಿಮಗೆ ತಿಳಿದಿದ್ದರೆ ಮಾತ್ರ ಸಕ್ರಿಯಗೊಳಿಸಿ.</string>
     <string name="device_config_import_activate">ಸಕ್ರಿಯಗೊಳಿಸಿ</string>
     <string name="device_config_import_keep">ಕೇವಲ ಇರಿಸಿ</string>
     <string name="device_config_import_unreadable">ಆ ಫೈಲ್ ಸಾಧನ ಕಾನ್ಫಿಗರೇಶನ್ ಅಲ್ಲ</string>

@@ -710,11 +710,12 @@
     <string name="device_config_import_matches_device">키보드 기기: %1$s</string>
     <string name="device_config_import_matches_build">빌드 기기: %1$s</string>
     <string name="device_config_import_matches_brand">브랜드: %1$s</string>
+    <string name="device_config_import_based_on">기반: %1$s</string>
     <string name="device_config_import_matches_nothing">이 파일에는 일치시킬 기기가 지정되어 있지 않아 적용되지 않습니다</string>
     <string name="device_config_import_type">기기 유형: %1$s</string>
     <string name="device_config_import_keys">키 매핑 %1$d개</string>
     <string name="device_config_import_keypad_layout">키패드 레이아웃: %1$s</string>
-    <string name="device_config_import_mismatch">이 구성은 다른 기기용으로 만들어졌습니다. 보관할 수는 있지만 여기서는 작동하지 않습니다.</string>
+    <string name="device_config_import_mismatch">이 구성은 다른 기기용으로 만들어졌습니다. 이 기기에 맞는다는 것을 아는 경우에만 활성화하세요.</string>
     <string name="device_config_import_activate">활성화</string>
     <string name="device_config_import_keep">보관만</string>
     <string name="device_config_import_unreadable">해당 파일은 기기 구성이 아닙니다</string>

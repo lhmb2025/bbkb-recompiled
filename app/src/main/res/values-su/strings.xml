@@ -710,11 +710,12 @@
     <string name="device_config_import_matches_device">Parangkat papan tombol: %1$s</string>
     <string name="device_config_import_matches_build">Parangkat build: %1$s</string>
     <string name="device_config_import_matches_brand">Mérek: %1$s</string>
+    <string name="device_config_import_based_on">Dumasar kana: %1$s</string>
     <string name="device_config_import_matches_nothing">Berkas ieu teu nyebutkeun parangkat naon waé nu kudu cocog, jadi moal pernah lumaku</string>
     <string name="device_config_import_type">Jinis parangkat: %1$s</string>
     <string name="device_config_import_keys">%1$d pemetaan tombol</string>
     <string name="device_config_import_keypad_layout">Tata perenah papan tombol: %1$s</string>
-    <string name="device_config_import_mismatch">Konfigurasi ieu dijieun pikeun telepon séjén. Bisa disimpen, tapi moal ngalakukeun naon-naon di dieu.</string>
+    <string name="device_config_import_mismatch">Konfigurasi ieu dijieun pikeun telepon séjén. Aktipkeun ngan lamun anjeun terang éta cocog jeung telepon ieu.</string>
     <string name="device_config_import_activate">Aktipkeun</string>
     <string name="device_config_import_keep">Ngan simpen</string>
     <string name="device_config_import_unreadable">Berkas éta lain konfigurasi parangkat</string>

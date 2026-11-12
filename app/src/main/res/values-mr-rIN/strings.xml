@@ -710,11 +710,12 @@
     <string name="device_config_import_matches_device">कीबोर्ड डिव्हाइस: %1$s</string>
     <string name="device_config_import_matches_build">बिल्ड डिव्हाइस: %1$s</string>
     <string name="device_config_import_matches_brand">ब्रँड: %1$s</string>
+    <string name="device_config_import_based_on">आधार: %1$s</string>
     <string name="device_config_import_matches_nothing">या फाइलमध्ये जुळवण्यासाठी कोणतेही डिव्हाइस नमूद केलेले नाही, त्यामुळे ती कधीही लागू होणार नाही</string>
     <string name="device_config_import_type">डिव्हाइसचा प्रकार: %1$s</string>
     <string name="device_config_import_keys">%1$d की मॅपिंग</string>
     <string name="device_config_import_keypad_layout">कीपॅड लेआउट: %1$s</string>
-    <string name="device_config_import_mismatch">हे कॉन्फिगरेशन दुसऱ्या फोनसाठी तयार केले होते. ते ठेवता येईल, पण येथे ते काहीही करणार नाही.</string>
+    <string name="device_config_import_mismatch">हे कॉन्फिगरेशन दुसऱ्या फोनसाठी तयार केले होते. ते या फोनला जुळते हे माहीत असेल तरच सक्रिय करा.</string>
     <string name="device_config_import_activate">सक्रिय करा</string>
     <string name="device_config_import_keep">फक्त ठेवा</string>
     <string name="device_config_import_unreadable">ती फाइल डिव्हाइस कॉन्फिगरेशन नाही</string>

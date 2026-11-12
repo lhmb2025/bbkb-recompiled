@@ -710,11 +710,12 @@
     <string name="device_config_import_matches_device">Пристрій клавіатури: %1$s</string>
     <string name="device_config_import_matches_build">Пристрій збірки: %1$s</string>
     <string name="device_config_import_matches_brand">Бренд: %1$s</string>
+    <string name="device_config_import_based_on">На основі: %1$s</string>
     <string name="device_config_import_matches_nothing">У цьому файлі не вказано пристрою для зіставлення, тому він ніколи не застосується</string>
     <string name="device_config_import_type">Тип пристрою: %1$s</string>
     <string name="device_config_import_keys">%1$d зіставлень клавіш</string>
     <string name="device_config_import_keypad_layout">Розкладка клавіатури: %1$s</string>
-    <string name="device_config_import_mismatch">Цю конфігурацію створено для іншого телефона. Її можна залишити, але тут вона нічого не зробить.</string>
+    <string name="device_config_import_mismatch">Цю конфігурацію створено для іншого телефона. Активуйте її, лише якщо знаєте, що вона підходить для цього.</string>
     <string name="device_config_import_activate">Активувати</string>
     <string name="device_config_import_keep">Лише залишити</string>
     <string name="device_config_import_unreadable">Цей файл не є конфігурацією пристрою</string>

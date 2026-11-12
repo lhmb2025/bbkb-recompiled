@@ -710,11 +710,12 @@
     <string name="device_config_import_matches_device">Perangkat keyboard: %1$s</string>
     <string name="device_config_import_matches_build">Perangkat build: %1$s</string>
     <string name="device_config_import_matches_brand">Merek: %1$s</string>
+    <string name="device_config_import_based_on">Berdasarkan: %1$s</string>
     <string name="device_config_import_matches_nothing">File ini tidak menyebutkan perangkat apa pun untuk dicocokkan, jadi tidak akan pernah diterapkan</string>
     <string name="device_config_import_type">Jenis perangkat: %1$s</string>
     <string name="device_config_import_keys">%1$d pemetaan tombol</string>
     <string name="device_config_import_keypad_layout">Tata letak keypad: %1$s</string>
-    <string name="device_config_import_mismatch">Konfigurasi ini dibuat untuk ponsel lain. Konfigurasi dapat disimpan, tetapi tidak akan berfungsi di sini.</string>
+    <string name="device_config_import_mismatch">Konfigurasi ini dibuat untuk ponsel lain. Aktifkan hanya jika Anda tahu konfigurasi ini cocok untuk ponsel ini.</string>
     <string name="device_config_import_activate">Aktifkan</string>
     <string name="device_config_import_keep">Simpan saja</string>
     <string name="device_config_import_unreadable">File itu bukan konfigurasi perangkat</string>

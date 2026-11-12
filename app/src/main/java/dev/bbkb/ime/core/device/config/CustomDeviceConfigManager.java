@@ -36,6 +36,14 @@ public class CustomDeviceConfigManager {
 
     private static final String TAG = "CustomDeviceConfigManager";
     private static final String PREF_ACTIVE_CONFIG_ID = "active_device_config_id";
+    /**
+     * True once the user has picked the stored configuration on the Device configuration screen
+     * with a build that treats a pick as "apply this to my phone". An id stored by an earlier
+     * build has no such flag and keeps what it meant then: it applies only where its
+     * {@code <match>} rules hold. Without this, a profile someone once tapped on a phone it was
+     * not made for, where it did nothing, would switch itself on with the update.
+     */
+    private static final String PREF_ACTIVE_CONFIG_CHOSEN = "active_device_config_chosen";
     private static final String CUSTOM_CONFIG_DIR = "device_configs";
     
     // Config ID prefixes
@@ -98,6 +106,12 @@ public class CustomDeviceConfigManager {
         return sInstance;
     }
 
+    /** Drops the singleton, so the next {@link #getInstance} reads the stored choice afresh. */
+    @androidx.annotation.VisibleForTesting
+    public static synchronized void resetForTest() {
+        sInstance = null;
+    }
+
     /**
      * Get the currently active device configuration.
      * @return DeviceInputConfig object, never null (falls back to default).
@@ -111,20 +125,47 @@ public class CustomDeviceConfigManager {
         }
 
         String activeId = getActiveConfigId();
-        
 
         DeviceInputConfig config = loadConfigById(activeId);
-        if (config == null) {
-            // Fallback to default if loading failed
-            Logger.error(TAG, "Failed to load active config " + activeId + ", falling back to default");
-            config = loadDefaultConfig();
-            // Don't update preference yet, let user retry or see error in UI? 
-            // For stability, maybe we should just return default but keep pref?
-            // Or reset pref? Let's keep pref but return default for now.
+        if (isUnusable(activeId, config)) {
+            // The stored choice is gone (its file was deleted, a restore brought the id without
+            // the file, an update renamed a shipped profile) or holds no device. It used to leave
+            // the phone on the empty default with detection switched off and no row selected.
+            // Now the choice is dropped, so detection runs again as on a fresh install.
+            Logger.error(TAG, "Active config " + activeId + " cannot be used; back to automatic detection");
+            forgetStoredChoice();
+            activeId = getActiveConfigId();
+            config = loadConfigById(activeId);
+            if (config == null) {
+                config = loadDefaultConfig();
+            }
         }
+        config.chosenByUser = isChosenByUser();
 
         mActiveConfig = config;
         return mActiveConfig;
+    }
+
+    /** A chosen configuration that did not load, or that loaded with no {@code <device>} in it. */
+    private static boolean isUnusable(String id, DeviceInputConfig config) {
+        if (config == null) return true;
+        return !ID_DEFAULT.equals(id) && config.mappings.isEmpty();
+    }
+
+    /** Whether the stored configuration is one the user picked by hand (see the preference). */
+    private boolean isChosenByUser() {
+        return !ID_DEFAULT.equals(mPrefs.getString(PREF_ACTIVE_CONFIG_ID, ID_DEFAULT))
+                && mPrefs.getBoolean(PREF_ACTIVE_CONFIG_CHOSEN, false);
+    }
+
+    /** Puts the stored choice back to "Detect automatically", without the reload a pick does. */
+    private void forgetStoredChoice() {
+        mPrefs.edit()
+                .putString(PREF_ACTIVE_CONFIG_ID, ID_DEFAULT)
+                .remove(PREF_ACTIVE_CONFIG_CHOSEN)
+                .apply();
+        mAutoSelectedId = null;
+        mAutoSelectSearched = false;
     }
 
     /**
@@ -217,7 +258,12 @@ public class CustomDeviceConfigManager {
      * Set the active configuration ID.
      */
     public void setActiveConfigId(String id) {
-        mPrefs.edit().putString(PREF_ACTIVE_CONFIG_ID, id).apply();
+        // Every pick made here is by hand: the Device configuration screen and a deleted
+        // configuration falling back to the default are the only callers.
+        mPrefs.edit()
+                .putString(PREF_ACTIVE_CONFIG_ID, id)
+                .putBoolean(PREF_ACTIVE_CONFIG_CHOSEN, !ID_DEFAULT.equals(id))
+                .apply();
         // Clear cache to force reload on next get
         synchronized (this) {
             mActiveConfig = null;
@@ -440,13 +486,41 @@ public class CustomDeviceConfigManager {
             if (file.exists()) {
                 try {
                     FileInputStream fis = new FileInputStream(file);
-                    DeviceInputConfig config = DeviceInputMappingParser.parseConfigFromStream(fis);
+                    DeviceInputConfig config =
+                            DeviceInputMappingParser.parseConfigFromStream(fis, this::loadBuiltInProfile);
                     fis.close();
                     return config;
                 } catch (IOException e) {
                     Logger.error(TAG, "Error loading custom config file: " + e.getMessage());
                 }
             }
+        }
+        return null;
+    }
+
+    /**
+     * The built-in profile a custom one builds on ({@code <device extends="device_config_athena">}),
+     * parsed afresh so the caller can change it; null when no built-in profile has that name. Only
+     * {@code device_config_*} resources can be named: a file from outside must not be able to pull
+     * in any other XML resource.
+     */
+    private dev.bbkb.ime.core.device.config.model.DeviceInputMapping loadBuiltInProfile(String name) {
+        if (name == null) return null;
+        final String resName = name.startsWith(PREFIX_PRELOADED)
+                ? name.substring(PREFIX_PRELOADED.length()) : name;
+        if (!resName.startsWith("device_config_")) return null;
+        final int resId = mContext.getResources().getIdentifier(resName, "xml", mContext.getPackageName());
+        if (resId == 0) return null;
+        final DeviceInputConfig base = DeviceInputMappingParser.parseConfigFromXmlResource(mContext, resId);
+        return base.mappings.isEmpty() ? null : base.mappings.get(0);
+    }
+
+    /** The display name of the built-in profile called {@code name}, or null when there is none. */
+    public String builtInProfileName(String name) {
+        if (name == null) return null;
+        final String id = name.startsWith(PREFIX_PRELOADED) ? name : PREFIX_PRELOADED + name;
+        for (ConfigInfo info : getPreloadedConfigs()) {
+            if (info.id.equals(id)) return info.name;
         }
         return null;
     }

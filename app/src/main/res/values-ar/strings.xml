@@ -710,11 +710,12 @@
     <string name="device_config_import_matches_device">جهاز لوحة المفاتيح: %1$s</string>
     <string name="device_config_import_matches_build">جهاز الإصدار: %1$s</string>
     <string name="device_config_import_matches_brand">العلامة التجارية: %1$s</string>
+    <string name="device_config_import_based_on">يستند إلى: %1$s</string>
     <string name="device_config_import_matches_nothing">لا يذكر هذا الملف أي جهاز للمطابقة، لذا لن يُطبَّق أبدًا</string>
     <string name="device_config_import_type">نوع الجهاز: %1$s</string>
     <string name="device_config_import_keys">%1$d تعيين مفاتيح</string>
     <string name="device_config_import_keypad_layout">تخطيط لوحة المفاتيح: %1$s</string>
-    <string name="device_config_import_mismatch">أُنشئ هذا التكوين لهاتف مختلف. يمكن الاحتفاظ به، لكنه لن يفعل شيئًا هنا.</string>
+    <string name="device_config_import_mismatch">أُنشئ هذا التكوين لهاتف مختلف. لا تنشّطه إلا إذا كنت تعلم أنه يناسب هذا الهاتف.</string>
     <string name="device_config_import_activate">تنشيط</string>
     <string name="device_config_import_keep">الاحتفاظ فقط</string>
     <string name="device_config_import_unreadable">هذا الملف ليس تكوين جهاز</string>

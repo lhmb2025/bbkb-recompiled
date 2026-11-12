@@ -710,11 +710,12 @@
     <string name="device_config_import_matches_device">Klaviatūros įrenginys: %1$s</string>
     <string name="device_config_import_matches_build">Versijos įrenginys: %1$s</string>
     <string name="device_config_import_matches_brand">Prekės ženklas: %1$s</string>
+    <string name="device_config_import_based_on">Pagrįsta: %1$s</string>
     <string name="device_config_import_matches_nothing">Šiame faile nenurodytas joks atitinkamas įrenginys, todėl jis niekada nebūtų pritaikytas</string>
     <string name="device_config_import_type">Įrenginio tipas: %1$s</string>
     <string name="device_config_import_keys">%1$d klavišų susiejimų</string>
     <string name="device_config_import_keypad_layout">Klaviatūros išdėstymas: %1$s</string>
-    <string name="device_config_import_mismatch">Ši konfigūracija sukurta kitam telefonui. Ją galima palikti, bet čia ji nieko nedarys.</string>
+    <string name="device_config_import_mismatch">Ši konfigūracija sukurta kitam telefonui. Aktyvinkite ją tik tada, jei žinote, kad ji tinka šiam.</string>
     <string name="device_config_import_activate">Aktyvinti</string>
     <string name="device_config_import_keep">Tik palikti</string>
     <string name="device_config_import_unreadable">Tas failas nėra įrenginio konfigūracija</string>

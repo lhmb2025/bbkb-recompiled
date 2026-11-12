@@ -710,11 +710,12 @@
     <string name="device_config_import_matches_device">מכשיר המקלדת: %1$s</string>
     <string name="device_config_import_matches_build">מכשיר ה-build: %1$s</string>
     <string name="device_config_import_matches_brand">מותג: %1$s</string>
+    <string name="device_config_import_based_on">מבוססת על: %1$s</string>
     <string name="device_config_import_matches_nothing">קובץ זה אינו מציין מכשיר להתאמה, ולכן לעולם לא יחול</string>
     <string name="device_config_import_type">סוג המכשיר: %1$s</string>
     <string name="device_config_import_keys">%1$d מיפויי מקשים</string>
     <string name="device_config_import_keypad_layout">פריסת המקלדת: %1$s</string>
-    <string name="device_config_import_mismatch">תצורה זו נבנתה עבור טלפון אחר. אפשר לשמור אותה, אך היא לא תעשה דבר כאן.</string>
+    <string name="device_config_import_mismatch">תצורה זו נבנתה עבור טלפון אחר. יש להפעיל אותה רק אם ידוע לך שהיא מתאימה לטלפון הזה.</string>
     <string name="device_config_import_activate">הפעל</string>
     <string name="device_config_import_keep">שמור בלבד</string>
     <string name="device_config_import_unreadable">קובץ זה אינו תצורת מכשיר</string>

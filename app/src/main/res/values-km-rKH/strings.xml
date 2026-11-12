@@ -710,11 +710,12 @@
     <string name="device_config_import_matches_device">ឧបករណ៍ក្ដារចុច៖ %1$s</string>
     <string name="device_config_import_matches_build">ឧបករណ៍នៃកំណែបង្កើត៖ %1$s</string>
     <string name="device_config_import_matches_brand">ម៉ាក៖ %1$s</string>
+    <string name="device_config_import_based_on">ផ្អែកលើ៖ %1$s</string>
     <string name="device_config_import_matches_nothing">ឯកសារនេះមិនបញ្ជាក់ឧបករណ៍ណាសម្រាប់ផ្គូផ្គងទេ ដូច្នេះវានឹងមិនដំណើរការឡើយ</string>
     <string name="device_config_import_type">ប្រភេទឧបករណ៍៖ %1$s</string>
     <string name="device_config_import_keys">ការភ្ជាប់គ្រាប់ចុច %1$d</string>
     <string name="device_config_import_keypad_layout">ប្លង់ក្ដារចុច៖ %1$s</string>
-    <string name="device_config_import_mismatch">ការកំណត់រចនាសម្ព័ន្ធនេះត្រូវបានបង្កើតសម្រាប់ទូរសព្ទផ្សេង។ អ្នកអាចរក្សាទុកវាបាន ប៉ុន្តែវានឹងមិនធ្វើអ្វីនៅទីនេះទេ។</string>
+    <string name="device_config_import_mismatch">ការកំណត់រចនាសម្ព័ន្ធនេះត្រូវបានបង្កើតសម្រាប់ទូរសព្ទផ្សេង។ សូមបើកដំណើរការវា លុះត្រាតែអ្នកដឹងថាវាសមនឹងទូរសព្ទនេះ។</string>
     <string name="device_config_import_activate">បើកដំណើរការ</string>
     <string name="device_config_import_keep">រក្សាទុកតែប៉ុណ្ណោះ</string>
     <string name="device_config_import_unreadable">ឯកសារនោះមិនមែនជាការកំណត់រចនាសម្ព័ន្ធឧបករណ៍ទេ</string>

@@ -710,11 +710,12 @@
     <string name="device_config_import_matches_device">Tangentbordsenhet: %1$s</string>
     <string name="device_config_import_matches_build">Byggets enhet: %1$s</string>
     <string name="device_config_import_matches_brand">Märke: %1$s</string>
+    <string name="device_config_import_based_on">Baserad på: %1$s</string>
     <string name="device_config_import_matches_nothing">Den här filen anger ingen enhet att matcha, så den skulle aldrig användas</string>
     <string name="device_config_import_type">Enhetstyp: %1$s</string>
     <string name="device_config_import_keys">%1$d tangentkopplingar</string>
     <string name="device_config_import_keypad_layout">Tangentbordslayout: %1$s</string>
-    <string name="device_config_import_mismatch">Den här konfigurationen skapades för en annan telefon. Den kan behållas, men den gör ingenting här.</string>
+    <string name="device_config_import_mismatch">Den här konfigurationen skapades för en annan telefon. Aktivera den bara om du vet att den passar den här.</string>
     <string name="device_config_import_activate">Aktivera</string>
     <string name="device_config_import_keep">Behåll bara</string>
     <string name="device_config_import_unreadable">Den filen är ingen enhetskonfiguration</string>

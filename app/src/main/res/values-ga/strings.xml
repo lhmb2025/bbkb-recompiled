@@ -710,11 +710,12 @@
     <string name="device_config_import_matches_device">Gléas an mhéarchláir: %1$s</string>
     <string name="device_config_import_matches_build">Gléas an bhuild: %1$s</string>
     <string name="device_config_import_matches_brand">Branda: %1$s</string>
+    <string name="device_config_import_based_on">Bunaithe ar: %1$s</string>
     <string name="device_config_import_matches_nothing">Ní ainmníonn an comhad seo aon ghléas le meaitseáil, mar sin ní bheadh feidhm leis riamh</string>
     <string name="device_config_import_type">Cineál gléis: %1$s</string>
     <string name="device_config_import_keys">%1$d mapáil eochrach</string>
     <string name="device_config_import_keypad_layout">Leagan amach an eochaircheap: %1$s</string>
-    <string name="device_config_import_mismatch">Tógadh an chumraíocht seo d\'fhón eile. Is féidir í a choinneáil, ach ní dhéanfaidh sí tada anseo.</string>
+    <string name="device_config_import_mismatch">Tógadh an chumraíocht seo d\'fhón eile. Ná gníomhachtaigh í ach amháin má tá a fhios agat go n-oireann sí don cheann seo.</string>
     <string name="device_config_import_activate">Gníomhachtaigh</string>
     <string name="device_config_import_keep">Coinnigh amháin</string>
     <string name="device_config_import_unreadable">Ní cumraíocht gléis é an comhad sin</string>

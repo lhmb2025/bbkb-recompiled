@@ -710,11 +710,12 @@
     <string name="device_config_import_matches_device">კლავიატურის მოწყობილობა: %1$s</string>
     <string name="device_config_import_matches_build">ბილდის მოწყობილობა: %1$s</string>
     <string name="device_config_import_matches_brand">ბრენდი: %1$s</string>
+    <string name="device_config_import_based_on">საფუძველი: %1$s</string>
     <string name="device_config_import_matches_nothing">ეს ფაილი არ ასახელებს მოწყობილობას შესატყვისად, ამიტომ ის არასოდეს გამოიყენება</string>
     <string name="device_config_import_type">მოწყობილობის ტიპი: %1$s</string>
     <string name="device_config_import_keys">%1$d კლავიშის მიბმა</string>
     <string name="device_config_import_keypad_layout">კლავიატურის განლაგება: %1$s</string>
-    <string name="device_config_import_mismatch">ეს კონფიგურაცია სხვა ტელეფონისთვის შეიქმნა. მისი შენახვა შეიძლება, მაგრამ აქ ვერაფერს გააკეთებს.</string>
+    <string name="device_config_import_mismatch">ეს კონფიგურაცია სხვა ტელეფონისთვის შეიქმნა. გააქტიურეთ ის მხოლოდ იმ შემთხვევაში, თუ იცით, რომ ამ ტელეფონს შეესაბამება.</string>
     <string name="device_config_import_activate">გააქტიურება</string>
     <string name="device_config_import_keep">მხოლოდ შენახვა</string>
     <string name="device_config_import_unreadable">ეს ფაილი მოწყობილობის კონფიგურაცია არ არის</string>

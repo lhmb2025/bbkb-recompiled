@@ -710,11 +710,12 @@
     <string name="device_config_import_matches_device">Устройство клавиатуры: %1$s</string>
     <string name="device_config_import_matches_build">Устройство сборки: %1$s</string>
     <string name="device_config_import_matches_brand">Бренд: %1$s</string>
+    <string name="device_config_import_based_on">На основе: %1$s</string>
     <string name="device_config_import_matches_nothing">В этом файле не указано устройство для сопоставления, поэтому он никогда не будет применен</string>
     <string name="device_config_import_type">Тип устройства: %1$s</string>
     <string name="device_config_import_keys">%1$d сопоставлений клавиш</string>
     <string name="device_config_import_keypad_layout">Раскладка клавиатуры: %1$s</string>
-    <string name="device_config_import_mismatch">Эта конфигурация создана для другого телефона. Ее можно оставить, но здесь она ничего не даст.</string>
+    <string name="device_config_import_mismatch">Эта конфигурация создана для другого телефона. Активируйте ее, только если знаете, что она подходит для этого.</string>
     <string name="device_config_import_activate">Активировать</string>
     <string name="device_config_import_keep">Только оставить</string>
     <string name="device_config_import_unreadable">Этот файл не является конфигурацией устройства</string>

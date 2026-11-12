@@ -20,6 +20,16 @@ public class DeviceInputMapping {
     public String deviceName;               // For logging/display purposes
     public InputMappingType mappingType;
     public String altMappingsFile;          // XML file name for Alt+key mappings (without .xml extension)
+    /**
+     * Alt characters written in the profile itself ({@code <mapping>} and
+     * {@code <special-function>} inside {@code <alt-mappings>}); null when it writes none. They
+     * sit on top of the table {@link #altMappingsFile} names, or stand alone when it names none.
+     * This is what lets an imported or built profile carry Alt characters: {@code <source>} can
+     * only name a table built into the app.
+     */
+    public AltMappingsTable inlineAltMappings;
+    /** {@link #inlineAltMappings} over the named table, built once; see {@code AltMappingsParser.tableFor}. */
+    public volatile AltMappingsTable layeredAltMappings;
     public String keypadType;               // Force specific physical keypad type (e.g., "3row", "4row")
 
     /**

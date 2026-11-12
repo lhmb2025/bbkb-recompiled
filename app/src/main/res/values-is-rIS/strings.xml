@@ -710,11 +710,12 @@
     <string name="device_config_import_matches_device">Lyklaborðstæki: %1$s</string>
     <string name="device_config_import_matches_build">Tæki útgáfu: %1$s</string>
     <string name="device_config_import_matches_brand">Vörumerki: %1$s</string>
+    <string name="device_config_import_based_on">Byggt á: %1$s</string>
     <string name="device_config_import_matches_nothing">Þessi skrá tilgreinir ekkert tæki til að passa við og myndi því aldrei taka gildi</string>
     <string name="device_config_import_type">Tegund tækis: %1$s</string>
     <string name="device_config_import_keys">%1$d lyklavörpun</string>
     <string name="device_config_import_keypad_layout">Uppsetning lyklaborðs: %1$s</string>
-    <string name="device_config_import_mismatch">Þessi stilling var gerð fyrir annan síma. Hægt er að halda henni en hún gerir ekkert hér.</string>
+    <string name="device_config_import_mismatch">Þessi stilling var gerð fyrir annan síma. Virkjaðu hana aðeins ef þú veist að hún hentar þessum.</string>
     <string name="device_config_import_activate">Virkja</string>
     <string name="device_config_import_keep">Aðeins geyma</string>
     <string name="device_config_import_unreadable">Sú skrá er ekki tækjastilling</string>

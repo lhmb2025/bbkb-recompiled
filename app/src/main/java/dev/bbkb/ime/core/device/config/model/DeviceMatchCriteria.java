@@ -185,6 +185,15 @@ public class DeviceMatchCriteria {
                 || rules.containsKey(Field.PRODUCT_ID);
     }
 
+    /**
+     * True when a rule identifies the keyboard by its USB or Bluetooth ids (vendor id or product
+     * id). Such a profile describes a keyboard that is plugged in, not the phone, so it applies
+     * only while that keyboard is attached, even when the user chose it by hand.
+     */
+    public boolean hasVendorOrProductRule() {
+        return rules.containsKey(Field.VENDOR_ID) || rules.containsKey(Field.PRODUCT_ID);
+    }
+
     /** Check if at least one matching criterion is defined. */
     public boolean hasAnyCriteria() {
         return !rules.isEmpty();

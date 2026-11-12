@@ -710,11 +710,12 @@
     <string name="device_config_import_matches_device">Tastaturgerät: %1$s</string>
     <string name="device_config_import_matches_build">Build-Gerät: %1$s</string>
     <string name="device_config_import_matches_brand">Marke: %1$s</string>
+    <string name="device_config_import_based_on">Basiert auf: %1$s</string>
     <string name="device_config_import_matches_nothing">Diese Datei nennt kein Gerät, auf das sie passen soll, und würde daher nie angewendet</string>
     <string name="device_config_import_type">Gerätetyp: %1$s</string>
     <string name="device_config_import_keys">%1$d Tastenzuordnungen</string>
     <string name="device_config_import_keypad_layout">Tastenfeld-Layout: %1$s</string>
-    <string name="device_config_import_mismatch">Diese Konfiguration wurde für ein anderes Telefon erstellt. Sie kann behalten werden, bewirkt hier aber nichts.</string>
+    <string name="device_config_import_mismatch">Diese Konfiguration wurde für ein anderes Telefon erstellt. Aktivieren Sie sie nur, wenn Sie wissen, dass sie zu diesem passt.</string>
     <string name="device_config_import_activate">Aktivieren</string>
     <string name="device_config_import_keep">Nur behalten</string>
     <string name="device_config_import_unreadable">Diese Datei ist keine Gerätekonfiguration</string>

@@ -710,11 +710,12 @@
     <string name="device_config_import_matches_device">விசைப்பலகைச் சாதனம்: %1$s</string>
     <string name="device_config_import_matches_build">பதிப்புச் சாதனம்: %1$s</string>
     <string name="device_config_import_matches_brand">பிராண்ட்: %1$s</string>
+    <string name="device_config_import_based_on">அடிப்படை: %1$s</string>
     <string name="device_config_import_matches_nothing">இந்தக் கோப்பில் பொருந்துவதற்கான சாதனம் எதுவும் குறிப்பிடப்படவில்லை, எனவே இது ஒருபோதும் பொருந்தாது</string>
     <string name="device_config_import_type">சாதன வகை: %1$s</string>
     <string name="device_config_import_keys">%1$d விசை இணைப்புகள்</string>
     <string name="device_config_import_keypad_layout">விசைப்பலகைத் தளவமைப்பு: %1$s</string>
-    <string name="device_config_import_mismatch">இந்த உள்ளமைவு வேறொரு ஃபோனுக்காக உருவாக்கப்பட்டது. இதை வைத்திருக்கலாம், ஆனால் இங்கு எதுவும் செய்யாது.</string>
+    <string name="device_config_import_mismatch">இந்த உள்ளமைவு வேறொரு ஃபோனுக்காக உருவாக்கப்பட்டது. இது இந்த ஃபோனுக்குப் பொருந்தும் என்று தெரிந்தால் மட்டுமே செயல்படுத்தவும்.</string>
     <string name="device_config_import_activate">செயல்படுத்து</string>
     <string name="device_config_import_keep">வைத்திரு மட்டும்</string>
     <string name="device_config_import_unreadable">அந்தக் கோப்பு சாதன உள்ளமைவு அல்ல</string>

@@ -710,11 +710,12 @@
     <string name="device_config_import_matches_device">కీబోర్డ్ పరికరం: %1$s</string>
     <string name="device_config_import_matches_build">బిల్డ్ పరికరం: %1$s</string>
     <string name="device_config_import_matches_brand">బ్రాండ్: %1$s</string>
+    <string name="device_config_import_based_on">ఆధారం: %1$s</string>
     <string name="device_config_import_matches_nothing">ఈ ఫైల్ సరిపోల్చడానికి ఏ పరికరాన్నీ పేర్కొనలేదు, కాబట్టి ఇది ఎప్పటికీ వర్తించదు</string>
     <string name="device_config_import_type">పరికర రకం: %1$s</string>
     <string name="device_config_import_keys">%1$d కీ మ్యాపింగ్‌లు</string>
     <string name="device_config_import_keypad_layout">కీప్యాడ్ లేఅవుట్: %1$s</string>
-    <string name="device_config_import_mismatch">ఈ కాన్ఫిగరేషన్ మరో ఫోన్ కోసం రూపొందించబడింది. దీన్ని ఉంచుకోవచ్చు, కానీ ఇక్కడ ఏమీ చేయదు.</string>
+    <string name="device_config_import_mismatch">ఈ కాన్ఫిగరేషన్ మరో ఫోన్ కోసం రూపొందించబడింది. ఇది ఈ ఫోన్‌కు సరిపోతుందని మీకు తెలిస్తేనే యాక్టివేట్ చేయండి.</string>
     <string name="device_config_import_activate">యాక్టివేట్ చేయి</string>
     <string name="device_config_import_keep">ఉంచు మాత్రమే</string>
     <string name="device_config_import_unreadable">ఆ ఫైల్ పరికర కాన్ఫిగరేషన్ కాదు</string>

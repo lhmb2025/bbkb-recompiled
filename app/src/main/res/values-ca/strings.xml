@@ -710,11 +710,12 @@
     <string name="device_config_import_matches_device">Dispositiu de teclat: %1$s</string>
     <string name="device_config_import_matches_build">Dispositiu de la compilació: %1$s</string>
     <string name="device_config_import_matches_brand">Marca: %1$s</string>
+    <string name="device_config_import_based_on">Basada en: %1$s</string>
     <string name="device_config_import_matches_nothing">Aquest fitxer no indica cap dispositiu amb què coincidir, de manera que no s\'aplicaria mai</string>
     <string name="device_config_import_type">Tipus de dispositiu: %1$s</string>
     <string name="device_config_import_keys">%1$d assignacions de tecla</string>
     <string name="device_config_import_keypad_layout">Disposició del teclat: %1$s</string>
-    <string name="device_config_import_mismatch">Aquesta configuració es va crear per a un altre telèfon. Es pot conservar, però aquí no farà res.</string>
+    <string name="device_config_import_mismatch">Aquesta configuració es va crear per a un altre telèfon. Activeu-la només si sabeu que és adequada per a aquest.</string>
     <string name="device_config_import_activate">Activa</string>
     <string name="device_config_import_keep">Només conserva</string>
     <string name="device_config_import_unreadable">Aquest fitxer no és una configuració de dispositiu</string>
