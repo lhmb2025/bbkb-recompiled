@@ -73,8 +73,8 @@
     <string name="settings_category_device">მოწყობილობა</string>
     <string name="settings_category_behavior_vkb">ქცევა</string>
     <string name="settings_category_ckb_gestures">ტევადობითი კლავიატურა</string>
-    <string name="settings_category_on_screen_keyboard">Ეკრანული კლავიატურა</string>
-    <string name="settings_category_physical_keyboard">Ფიზიკური კლავიატურა</string>
+    <string name="settings_category_on_screen_keyboard">ეკრანული კლავიატურა</string>
+    <string name="settings_category_physical_keyboard">ფიზიკური კლავიატურა</string>
     <string name="settings_category_gestures">ჟესტები</string>
     <string name="settings_category_key_popup">კლავიშის გადიდება</string>
     <string name="settings_category_modifiers">მოდიფიკატორები</string>
