@@ -1157,9 +1157,8 @@ public final class ComposingTextTracker {
     /**
      * Record for a picked suggestion. When the pick covers only a prefix of the composing buffer (CJK
      * pinyin/stroke/BPMF, Japanese inline word), that prefix is split off and the rest stays composing.
-     * @param previousPickWasPartial {@code true} if learning should be skipped for this commit
      */
-    public synchronized CommitEventRecord createEventDispatcherForPickedSuggestion(CommitEventRecord.CommitType commitType, SuggestedWords.SuggestedWordInfo suggestedWordInfo, PrevWordsInfo prevWordsInfo, boolean previousPickWasPartial) {
+    public synchronized CommitEventRecord createEventDispatcherForPickedSuggestion(CommitEventRecord.CommitType commitType, SuggestedWords.SuggestedWordInfo suggestedWordInfo, PrevWordsInfo prevWordsInfo) {
         String string;
         int iIndexOf;
         CommitEventRecord c0713o;

@@ -172,11 +172,10 @@ class CommitController {
         mInputLogic.mRichInputConnection.commitText(processClipboardMarker(picked.word), 1);
         PrevWordsInfo prevWordsInfo = mInputLogic.mRichInputConnection.getPrevWordsInfo(
                 settings.spacingAndPunctuation, mInputLogic.mComposingTracker.isComposing() ? 2 : 1);
-        boolean skipLearningBefore = mInputLogic.mEventDispatcher.skipLearning;
         if (LocaleUtils.isCurrentSubtypeChinese()) {
             mInputLogic.mEventDispatcher =
                     mInputLogic.mComposingTracker.createEventDispatcherForPickedSuggestion(
-                            request.commitType, picked, prevWordsInfo, skipLearningBefore);
+                            request.commitType, picked, prevWordsInfo);
             mInputLogic.mIme.getDynamicLearningManager()
                     .learn(picked, mInputLogic.mEventDispatcher.skipLearning);
         } else {
@@ -195,7 +194,7 @@ class CommitController {
             }
             mInputLogic.mEventDispatcher =
                     mInputLogic.mComposingTracker.createEventDispatcherForPickedSuggestion(
-                            request.commitType, picked, prevWordsInfo, skipLearningBefore);
+                            request.commitType, picked, prevWordsInfo);
         }
         boolean skipLearningAfter = mInputLogic.mEventDispatcher.skipLearning;
         mInputLogic.setComposingTextInternal(mInputLogic.mComposingTracker.getComposingText(), 1);

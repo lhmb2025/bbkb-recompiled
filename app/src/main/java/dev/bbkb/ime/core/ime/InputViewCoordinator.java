@@ -279,7 +279,7 @@ public class InputViewCoordinator implements KeyboardSwitcher.SwitcherCallbacks,
             showCjkSuggestionStripIfNeeded();
             return;
         }
-        this.imeService.restoreSuggestionStrip(true, true);
+        this.imeService.restoreSuggestionStrip(true);
     }
 
     public void onAuxBarHeightChanged() {
@@ -299,18 +299,6 @@ public class InputViewCoordinator implements KeyboardSwitcher.SwitcherCallbacks,
 
     public AuxBarManager getAuxBarManager() {
         return auxBarManager;
-    }
-
-    /** @param currentGridVisibility a View visibility: {@code 0} (VISIBLE) hides the grid, {@code 8} (GONE) shows it */
-    public void onCjkGridVisibilityChanged(int currentGridVisibility) {
-        if (currentGridVisibility == 0) {
-            getCjkSuggestionGrid().setVisible(false);
-        } else {
-            if (currentGridVisibility != 8) {
-                return;
-            }
-            getCjkSuggestionGrid().setVisible(true);
-        }
     }
 
     @Override

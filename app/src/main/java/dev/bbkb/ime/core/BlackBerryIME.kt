@@ -2542,15 +2542,12 @@ class BlackBerryIME : InputMethodService(),
         if (arrowBar == null || !arrowBar.isShowing()) return
         arrowBar.hide()
         if (hasAuxBarView() || hasCjkSuggestionGrid()) {
-            restoreSuggestionStrip(false, requestShiftUpdate)
+            restoreSuggestionStrip(requestShiftUpdate)
         }
     }
 
-    /**
-     * @param animate unused
-     * @param requestShiftUpdate true to re-derive the shift state (skipped with a selection)
-     */
-    fun restoreSuggestionStrip(animate: Boolean, requestShiftUpdate: Boolean) {
+    /** @param requestShiftUpdate true to re-derive the shift state (skipped with a selection) */
+    fun restoreSuggestionStrip(requestShiftUpdate: Boolean) {
         // RESTORE_BAR row; the shift re-derivation is the text pipeline and stays here.
         keyboardSwitcher.transitions().apply(KeyboardTransition.restoreBar())
         if (!requestShiftUpdate || inputLogic.mRichInputConnection.hasSelection()) return

@@ -22,7 +22,6 @@ public final class ResourceConfigManager {
 
     // Read many times during keyboard initialization and layout.
     private static volatile int sCachedScreenWidth = -1;
-    private static volatile int sCachedKeyboardHeight = -1;
     private static volatile int sCachedOrientation = -1;
     private static volatile int sCachedDensityDpi = -1;
     private static volatile int sCachedScreenWidthDp = -1;
@@ -65,7 +64,7 @@ public final class ResourceConfigManager {
      */
     public static int getSuggestionsStripHeight(Resources resources) {
         int base = resources.getDimensionPixelSize(R.dimen.config_suggestions_strip_height);
-        float scale = SettingsManager.getEffectiveKeyboardHeightScale(resources);
+        float scale = SettingsManager.getEffectiveKeyboardHeightScale();
         if (scale == 1.0f) {
             return base;
         }
@@ -75,7 +74,6 @@ public final class ResourceConfigManager {
     /** Call on a configuration change (orientation, density). */
     public static void invalidateDimensionCache() {
         sCachedScreenWidth = -1;
-        sCachedKeyboardHeight = -1;
         sCachedOrientation = -1;
         sCachedDensityDpi = -1;
         sCachedScreenWidthDp = -1;
@@ -96,7 +94,7 @@ public final class ResourceConfigManager {
         int baseHeight = (int) Math.max(Math.min(dimension, fraction), fraction2);
 
         // Scale after clamping (expanded 1.15, regular 1.0, compact 0.85, extra_compact 0.75).
-        float scale = SettingsManager.getEffectiveKeyboardHeightScale(resources);
+        float scale = SettingsManager.getEffectiveKeyboardHeightScale();
         if (scale != 1.0f) {
             baseHeight = (int)(baseHeight * scale);
         }

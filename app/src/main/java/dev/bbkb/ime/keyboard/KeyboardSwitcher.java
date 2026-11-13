@@ -1127,7 +1127,7 @@ public final class KeyboardSwitcher implements SymbolPageProvider, KeyboardLayou
 
     @Override
     public void onReturnToAlphabetFromSymbol() {
-        this.blackberryIme.restoreSuggestionStrip(false, true);
+        this.blackberryIme.restoreSuggestionStrip(true);
     }
 
     @Override

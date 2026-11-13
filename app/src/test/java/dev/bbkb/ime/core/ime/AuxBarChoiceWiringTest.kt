@@ -198,7 +198,7 @@ class AuxBarChoiceWiringTest {
         coordinator.putMenuAway()
 
         verify(uim).lowerMenuOntoStrip()
-        verify(ime, never()).restoreSuggestionStrip(Mockito.anyBoolean(), Mockito.anyBoolean())
+        verify(ime, never()).restoreSuggestionStrip(Mockito.anyBoolean())
         assertFalse(coordinator.barChoice.isMenuChosen)
     }
 
@@ -210,7 +210,7 @@ class AuxBarChoiceWiringTest {
         coordinator.putMenuAway()
 
         verify(uim, never()).lowerMenuOntoStrip()
-        verify(ime).restoreSuggestionStrip(true, true)
+        verify(ime).restoreSuggestionStrip(true)
     }
 
     @Test

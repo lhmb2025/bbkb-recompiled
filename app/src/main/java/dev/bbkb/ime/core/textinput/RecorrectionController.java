@@ -57,7 +57,7 @@ class RecorrectionController {
             return;
         }
 
-        if (settingsValues.isSupportedAndroidApp() || !settingsValues.shouldShowLxxButton || mInputLogic.mSuggestionRequestQueue.isSuggestionsEnabled() || mInputLogic.mRichInputConnection.hasSelection() || mInputLogic.mRichInputConnection.getCursorStart() < 0) {
+        if (!settingsValues.shouldShowLxxButton || mInputLogic.mSuggestionRequestQueue.isSuggestionsEnabled() || mInputLogic.mRichInputConnection.hasSelection() || mInputLogic.mRichInputConnection.getCursorStart() < 0) {
             mInputLogic.mSuggestionStripListener.setNeutralSuggestionStrip();
             return;
         }

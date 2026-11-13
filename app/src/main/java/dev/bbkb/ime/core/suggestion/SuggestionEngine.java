@@ -326,10 +326,10 @@ public final class SuggestionEngine {
                 + meetsThreshold + " canAC=" + canAutoCorrect);
         }
 
-        boolean isExactMatch = composingTracker.looksLikeURL();
-        boolean isUserOverride = composingTracker.looksLikeEmail();
+        boolean typedLooksLikeUrl = composingTracker.looksLikeURL();
+        boolean typedLooksLikeEmail = composingTracker.looksLikeEmail();
         boolean typedEqualsCorrection = typedWord.equals(suggestedWordInfoVar.word);
-        if (isExactMatch || isUserOverride || typedEqualsCorrection) {
+        if (typedLooksLikeUrl || typedLooksLikeEmail || typedEqualsCorrection) {
             return false;
         }
         if (canAutoCorrect && typedWordIsValid

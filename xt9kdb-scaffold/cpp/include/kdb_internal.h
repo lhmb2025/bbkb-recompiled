@@ -173,8 +173,6 @@ int  xt9kdb_word_zipf10(const char* w);
 ET9STATUS xt9kdb_decode_and_commit(ET9KDBInfoPtr ctx);
 ET9STATUS xt9kdb_decode_scratch(void);
 
-/* Attach a smart-touch per-key center bias (clamped to +/- half key size). Used by the XML loader. */
-void xt9kdb_attach_bias(ET9KdbLoaded* m, ET9U16 keyIdx, ET9S16 biasX, ET9S16 biasY);
 
 /* AW hand-off. Recognized symbols go to AW's ET9WordSymbInfo at ctx+0x52 via the blob export
  * ET9AddExplicitSymb(ctx+0x52, symb), which takes the WordSymbInfo pointer (magic u16 at +0), not

@@ -428,8 +428,7 @@ class BackspaceController {
             if (-1 == ric.getCursorEnd()) {
                 if (BuildConfig.DEBUG) Log.e(TAG, "Backspace when we don't know the selection position");
             }
-            if (context.settingsValues.isBeamReaderPackage()
-                    || -1 == ric.getCursorEnd()
+            if (-1 == ric.getCursorEnd()
                     || (ric.getCursorEnd() == 0 && ric.getCodePointAfterCursor() == -1 && ric.getCodePointBeforeCursor() == -1)) {
                 mInputLogic.sendKeyEvent(67);
                 if (this.mDeleteRepeatCount > 20) {

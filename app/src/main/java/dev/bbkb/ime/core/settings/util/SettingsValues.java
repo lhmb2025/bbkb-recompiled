@@ -810,16 +810,6 @@ public final class SettingsValues {
         return this.editorCapabilities.isSameInputType(editorInfo);
     }
 
-    /** Constant false: Android no longer launches apps targeting SDKs this checked for (below 16). */
-    public boolean isBeamReaderPackage() {
-        return false;
-    }
-
-    /** Constant false: no app is known to be broken by re-correction. */
-    public boolean isSupportedAndroidApp() {
-        return false;
-    }
-
     private static boolean loadPredictionsEnabledSetting(SharedPreferences sharedPreferences, Resources resources) {
         return sharedPreferences.getBoolean("show_predictions", resources.getBoolean(R.bool.config_default_show_predictions));
     }

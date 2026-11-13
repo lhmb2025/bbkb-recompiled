@@ -353,11 +353,10 @@ public class AuxBarManager implements AuxBarView.StateChangeListener, UnifiedSug
         auxBarView.showAutofill(suggestions, width, height);
     }
 
-    /** @param restoreSuggestionStrip unused: the next suggestion update refills the strip */
-    public void hideAutofillBar(boolean restoreSuggestionStrip) {
+    /** Hides autofill chips; the next suggestion update refills the strip. */
+    public void hideAutofillBar() {
         if (BuildConfig.DEBUG) {
         Log.d(DIAG, "[AUXBAR] hideAutofillBar() called"
-                + " | restoreSuggestions=" + restoreSuggestionStrip
                 + " | currentState=" + (auxBarView != null ? auxBarView.getCurrentState() : "auxBarView=NULL"));
         }
         if (auxBarView == null) {
@@ -370,7 +369,7 @@ public class AuxBarManager implements AuxBarView.StateChangeListener, UnifiedSug
             if (eventListener != null && eventListener.shouldShowUim()) {
                 showUnifiedInputMenu();
             }
-            if (BuildConfig.DEBUG) Log.d(DIAG, "[AUXBAR] hideAutofillBar() executed - was in AUTOFILL state (restoreSuggestionStrip=" + restoreSuggestionStrip + ")");
+            if (BuildConfig.DEBUG) Log.d(DIAG, "[AUXBAR] hideAutofillBar() executed - was in AUTOFILL state");
         } else {
             if (BuildConfig.DEBUG) Log.d(DIAG, "[AUXBAR] hideAutofillBar() no-op - not in AUTOFILL state");
         }

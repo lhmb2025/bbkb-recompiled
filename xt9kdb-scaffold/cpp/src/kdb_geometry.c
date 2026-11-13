@@ -184,20 +184,6 @@ int xt9kdb_point_to_candidates(const ET9KdbLoaded* m, float x, float y,
     return out;
 }
 
-/* Attach a smart-touch bias (Load_AttachBias @0xba0b0), clamped to half the key size so it
- * moves the center at most to a key edge. The engine rejects out-of-range bias (0x1a); we clamp.
- * Currently has no caller that applies data. */
-void xt9kdb_attach_bias(ET9KdbLoaded* m, ET9U16 keyIdx, ET9S16 biasX, ET9S16 biasY) {
-    if (!m || !m->keys || keyIdx >= m->keyCount) return;
-    ET9KdbKey* k = &m->keys[keyIdx];
-    ET9S16 halfW = (ET9S16)(((k->right - k->left) + 1) / 2);
-    ET9S16 halfH = (ET9S16)(((k->bottom - k->top) + 1) / 2);
-    if (biasX >  halfW) biasX =  halfW; else if (biasX < -halfW) biasX = -halfW;
-    if (biasY >  halfH) biasY =  halfH; else if (biasY < -halfH) biasY = -halfH;
-    k->biasX = biasX;
-    k->biasY = biasY;
-}
-
 /* Authored -> view, as the engine's per-key writer @0xb9200:
  *     view = offset + (scale ? round(scale*authored/dim) : authored)
  * where round adds 1 iff remainder > dim/2 (`cmp rem, dim,lsr#1 ; cset hi`). */

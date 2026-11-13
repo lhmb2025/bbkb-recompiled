@@ -341,7 +341,7 @@ public final class SettingsManager implements SharedPreferences.OnSharedPreferen
      * The height scale for the keyboard's base height, the same in both orientations: landscape
      * has its own base in res/values-land.
      */
-    public static float getEffectiveKeyboardHeightScale(Resources resources) {
+    public static float getEffectiveKeyboardHeightScale() {
         return getKeyboardHeightScale();
     }
 

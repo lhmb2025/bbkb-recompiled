@@ -360,7 +360,7 @@ public final class InlineAutofillManager implements UnifiedInputBoardComponent {
         hide();
         currentSuggestions.clear();
         if (auxBarManager != null) {
-            auxBarManager.hideAutofillBar(true);
+            auxBarManager.hideAutofillBar();
         }
     }
 
@@ -388,7 +388,7 @@ public final class InlineAutofillManager implements UnifiedInputBoardComponent {
         }
         if (isShowing) {
             if (auxBarManager != null) {
-                auxBarManager.hideAutofillBar(false);
+                auxBarManager.hideAutofillBar();
             }
             isShowing = false;
         } else {

@@ -149,7 +149,7 @@ class LayoutBoardCharacterisationTest {
 
         assertEquals(0, vkbElement())
         assertEquals(false, vkbHardwareFlag())
-        verify(ime).restoreSuggestionStrip(false, true)
+        verify(ime).restoreSuggestionStrip(true)
     }
 
     /**

@@ -147,7 +147,7 @@ class AuxBarManagerTransitionTest {
         bare.showSuggestionStrip(words())
         bare.showSuggestionStrip(words(), false)
         bare.showAutofillBar(emptyList(), 1, 1)
-        bare.hideAutofillBar(true)
+        bare.hideAutofillBar()
         bare.showUnifiedInputMenu(keyboard("a"))
         bare.showUnifiedInputMenu()
         bare.hideUnifiedInputMenu()
@@ -481,17 +481,17 @@ class AuxBarManagerTransitionTest {
         manager.showAutofillBar(emptyList(), 10, 10)
         assertEquals(AuxBarState.AUTOFILL, manager.currentState)
 
-        manager.hideAutofillBar(true)
+        manager.hideAutofillBar()
         assertEquals(AuxBarState.NONE, manager.currentState)
         assertEquals(View.GONE, bar.visibility)
 
         manager.showAutofillBar(emptyList(), 10, 10)
-        manager.hideAutofillBar(false)
+        manager.hideAutofillBar()
         assertEquals(AuxBarState.NONE, manager.currentState)
 
         val w = words()
         manager.showSuggestionStrip(w, false)
-        manager.hideAutofillBar(true)
+        manager.hideAutofillBar()
         assertEquals(AuxBarState.LATIN_SUGGESTIONS, manager.currentState)
         assertSame(w, currentWords())
     }
@@ -504,7 +504,7 @@ class AuxBarManagerTransitionTest {
         manager.hideArrowBar()
         assertEquals(AuxBarState.AUTOFILL, manager.currentState)
 
-        manager.hideAutofillBar(false)
+        manager.hideAutofillBar()
 
         assertEquals(AuxBarState.NONE, manager.currentState)
         assertEquals(View.GONE, bar.visibility)
