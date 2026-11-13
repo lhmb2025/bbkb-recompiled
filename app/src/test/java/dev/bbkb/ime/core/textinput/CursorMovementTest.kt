@@ -517,10 +517,11 @@ class CursorMovementTest {
 
     @Test
     fun aSelectionBeingDroppedFromAPositionTheConnectionDoesNotShare_isSwallowed() {
-        // Known bug, characterised: `isSelectionUnchanged` runs before the `z2` (selection involved)
-        // test and accepts any report moving the same way as the pending motion,
-        // `(newStart - oldStart) * (cachedStart - newStart) >= 0`. So "selection 1..3 collapsed to 4"
-        // is read as a stale echo toward cached 5, and composing survives a real selection change.
+        // Intended: `isSelectionUnchanged` accepts any report moving the same way as the pending
+        // motion, `(newStart - oldStart) * (cachedStart - newStart) >= 0`, before the `z2` test.
+        // "Selection 1..3 collapsed to 4" with the cache at 5 is also what the editor sends late
+        // when keys were typed over that selection faster than its reports came back, so it is
+        // read as a stale echo (requiring a collapsed old range here broke that typing).
         val settings = h.settingsWith("shouldShowLxxButton" to true)
         armComposing("", "hello")
 

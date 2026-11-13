@@ -92,9 +92,10 @@ public class RichInputConnection {
     private boolean mTextAfterReachesEnd = false;
 
     /**
-     * Collapsed {@link #setSelection} moves not yet echoed by onUpdateSelection, {from, to} in send
-     * order. A keypad drag sends one per frame, so on a direction reversal a trailing report points
-     * the "wrong" way and must not be read as an external move.
+     * Edits not yet echoed by onUpdateSelection, {fromStart, fromEnd, to} in send order: collapsed
+     * {@link #setSelection} moves, and text typed over a selection. A keypad drag sends one move per
+     * frame, so on a direction reversal a trailing report points the "wrong" way; quick keys over a
+     * selection leave the first key's report behind the cache. Neither is an external move.
      */
     private final java.util.ArrayDeque<int[]> mPendingEchoes = new java.util.ArrayDeque<>();
 
@@ -261,6 +262,7 @@ public class RichInputConnection {
      * @param highlightEnd end index of the highlight span within {@code charSequence}
      */
     public void commitTextWithHighlight(CharSequence charSequence, int newCursorPosition, int highlightColor, int highlightEnd) {
+        final int[] replaced = selectionToReplace();
         this.mTextBeforeCursor.append(charSequence);
         trimTextBeforeCursor();
         this.mCursorStart += charSequence.length() - this.mComposingText.length();
@@ -270,6 +272,7 @@ public class RichInputConnection {
             this.mCursorStart += newCursorPosition - 1;
         }
         this.mCursorEnd = this.mCursorStart;
+        recordReplacedSelection(replaced);
         this.mComposingText.setLength(0);
         this.mComposingRegionLength = 0;
         this.mHasBackgroundSpan = false;
@@ -475,6 +478,8 @@ public class RichInputConnection {
     /** Mirrors Enter, Backspace and printable keys into the cache before forwarding. */
     public void sendKeyEvent(KeyEvent keyEvent) {
         if (keyEvent.getAction() == 0) {
+            // Read only by the inserting branches: Enter, a printable key, a character string.
+            final int[] replaced = selectionToReplace();
             int keyCode = keyEvent.getKeyCode();
             if (keyCode != 0) {
                 switch (keyCode) {
@@ -483,6 +488,7 @@ public class RichInputConnection {
                         trimTextBeforeCursor();
                         this.mCursorStart++;
                         this.mCursorEnd = this.mCursorStart;
+                        recordReplacedSelection(replaced);
                         break;
                     case 67: {
                         // Delete one code point, not one char, or an emoji leaves a lone surrogate.
@@ -513,6 +519,7 @@ public class RichInputConnection {
                             trimTextBeforeCursor();
                             this.mCursorStart += strM5463a.length();
                             this.mCursorEnd = this.mCursorStart;
+                            recordReplacedSelection(replaced);
                             break;
                         }
                         // A key that types nothing (a DPAD arrow) can move the editor's cursor
@@ -525,6 +532,7 @@ public class RichInputConnection {
                 trimTextBeforeCursor();
                 this.mCursorStart += keyEvent.getCharacters().length();
                 this.mCursorEnd = this.mCursorStart;
+                recordReplacedSelection(replaced);
             }
         }
         InputConnection inputConnection = this.mInputConnection;
@@ -564,8 +572,10 @@ public class RichInputConnection {
      */
     public void setComposingText(CharSequence charSequence, int newCursorPosition) {
         if (BuildConfig.DEBUG) Log.d("TEXT_EDIT_DEBUG", "RIC.setComposingText: newText='" + charSequence + "' cursorPos=" + newCursorPosition + " cursorStart=" + mCursorStart + " prevComposing='" + mComposingText + "'");
+        final int[] replaced = selectionToReplace();
         this.mCursorStart += charSequence.length() - this.mComposingText.length();
         this.mCursorEnd = this.mCursorStart;
+        recordReplacedSelection(replaced);
         this.mComposingText.setLength(0);
         this.mComposingText.append(charSequence);
         this.mComposingRegionLength = this.mComposingText.length();
@@ -598,7 +608,7 @@ public class RichInputConnection {
         InputConnection inputConnection = this.mInputConnection;
         if (inputConnection == null || inputConnection.setSelection(start, end)) {
             if (inputConnection != null && caretMove) {
-                recordPendingEcho(fromStart, start);
+                recordPendingEcho(fromStart, fromStart, start);
             }
             if (canShift && inputConnection != null) {
                 shiftCachedText(start - fromStart);
@@ -661,27 +671,43 @@ public class RichInputConnection {
         }
     }
 
-    private void recordPendingEcho(int from, int to) {
-        if (from == to) {
+    private void recordPendingEcho(int fromStart, int fromEnd, int to) {
+        if (fromStart == to && fromEnd == to) {
             return; // An editor reports no change for a move to where it already is.
         }
         if (this.mPendingEchoes.size() >= MAX_PENDING_ECHOES) {
             this.mPendingEchoes.pollFirst();
         }
-        this.mPendingEchoes.addLast(new int[]{from, to});
+        this.mPendingEchoes.addLast(new int[]{fromStart, fromEnd, to});
+    }
+
+    /** The selection inserted text will replace, {start, end}; null with none or with composing text. */
+    private int[] selectionToReplace() {
+        if (this.mCursorStart < 0 || this.mCursorStart >= this.mCursorEnd
+                || this.mComposingText.length() != 0 || this.mComposingRegionLength != 0) {
+            return null;
+        }
+        return new int[]{this.mCursorStart, this.mCursorEnd};
+    }
+
+    /** Called once the cache has moved past text inserted over {@code replaced}. */
+    private void recordReplacedSelection(int[] replaced) {
+        if (replaced != null && this.mInputConnection != null) {
+            recordPendingEcho(replaced[0], replaced[1], this.mCursorStart);
+        }
     }
 
     /**
-     * True if the report matches a recorded {from, to} caret move. Drops it and every earlier
-     * pair, since reports arrive in send order and those echoes were folded or lost.
+     * True if the report matches a recorded {fromStart, fromEnd, to} edit. Drops it and every
+     * earlier entry, since reports arrive in send order and those echoes were folded or lost.
      */
     private boolean consumePendingEcho(int oldStart, int newStart, int oldEnd, int newEnd) {
-        if (this.mPendingEchoes.isEmpty() || oldStart != oldEnd || newStart != newEnd) {
+        if (this.mPendingEchoes.isEmpty() || newStart != newEnd) {
             return false;
         }
         int index = 0;
         for (int[] echo : this.mPendingEchoes) {
-            if (echo[0] == oldStart && echo[1] == newStart) {
+            if (echo[0] == oldStart && echo[1] == oldEnd && echo[2] == newStart) {
                 for (int n = 0; n <= index; n++) {
                     this.mPendingEchoes.pollFirst();
                 }
@@ -721,10 +747,12 @@ public class RichInputConnection {
         if (text == null) {
             text = "";
         }
+        final int[] replaced = selectionToReplace();
         this.mTextBeforeCursor.append(text);
         trimTextBeforeCursor();
         this.mCursorStart += text.length() - this.mComposingText.length();
         this.mCursorEnd = this.mCursorStart;
+        recordReplacedSelection(replaced);
         this.mComposingText.setLength(0);
         this.mComposingRegionLength = 0;
         InputConnection inputConnection = this.mInputConnection;
