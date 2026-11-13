@@ -898,7 +898,7 @@ public final class KeyboardBuilder {
         params.mGridWidth = keyWidth;
         params.mGridHeight = keyHeight;
         params.mMostCommonKeyHeight = keyHeight;
-        params.mMostCommonKeyWidth = keyHeight;
+        params.mMostCommonKeyWidth = keyWidth;
 
         Params dVar = new Params();
         dVar.mKeyboardWidth = screenWidth;

@@ -315,7 +315,6 @@ class DictionaryRepository @androidx.annotation.VisibleForTesting internal const
         }
     }
 
-    fun isLoaded(): Boolean {
-        return personalDictManager.getWordSubstitutions() != null || personalDictManager.getPersonalDictionary() != null
-    }
+    /** The manager's own flag: the substitutions map exists before the load has finished. */
+    fun isLoaded(): Boolean = personalDictManager.isLoaded()
 }

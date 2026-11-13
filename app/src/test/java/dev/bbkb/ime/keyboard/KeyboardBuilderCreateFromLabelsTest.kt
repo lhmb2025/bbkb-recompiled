@@ -94,7 +94,7 @@ class KeyboardBuilderCreateFromLabelsTest {
         assertEquals(0, keyboard.mHorizontalGap)
         assertEquals(0, keyboard.mVerticalGap)
         assertEquals(77, keyboard.mMostCommonKeyHeight)
-        assertEquals(77, keyboard.mMostCommonKeyWidth)
+        assertEquals("the key width, one of two keys across the screen", screenWidth / 2, keyboard.mMostCommonKeyWidth)
         assertEquals(2, keyboard.mMaxMoreKeysKeyboardColumn)
         assertEquals(0, keyboard.mId.mElementId)
         assertEquals(0, keyboard.mId.mMode)

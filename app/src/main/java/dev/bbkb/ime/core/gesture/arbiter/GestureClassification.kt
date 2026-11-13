@@ -41,7 +41,7 @@ object ActionPreview {
         GestureClassification.DoubleTap -> "Unassigned (assignable, default: no action)"
         GestureClassification.FlowTrace -> "Type by swiping (yield to flow pipeline)"
         is GestureClassification.Swipe -> when (classification.direction) {
-            GestureDirection.UP -> if (classification.fast) "Commit highlighted suggestion (reserved)" else "Swipe up (assignable)"
+            GestureDirection.UP -> "Commit highlighted suggestion (reserved)"
             GestureDirection.DOWN -> "Cycle symbols (assignable, default)"
             GestureDirection.LEFT -> "Delete word — destructive, needs high confidence"
             GestureDirection.RIGHT -> "Accept / restore"
