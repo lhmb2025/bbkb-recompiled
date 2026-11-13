@@ -10,21 +10,21 @@ public final class MoreKeysDetector extends KeyDetector {
 
     private final int slideAllowanceSquareTop;
 
-    public MoreKeysDetector(float f) {
-        this.slideAllowanceSquare = (int) (f * f);
+    public MoreKeysDetector(float slideAllowance) {
+        this.slideAllowanceSquare = (int) (slideAllowance * slideAllowance);
         this.slideAllowanceSquareTop = this.slideAllowanceSquare * 2;
     }
 
     @Override // dev.bbkb.ime.keyboard.KeyDetector
-    public Key detectHitKey(int i, int i2) {
+    public Key detectHitKey(int x, int y) {
         Keyboard c0965eA = getKeyboard();
         Key key = null;
         if (c0965eA == null) {
             return null;
         }
-        int iA = getTouchX(i);
-        int iB = getTouchY(i2);
-        int i3 = i2 < 0 ? this.slideAllowanceSquareTop : this.slideAllowanceSquare;
+        int iA = getTouchX(x);
+        int iB = getTouchY(y);
+        int i3 = y < 0 ? this.slideAllowanceSquareTop : this.slideAllowanceSquare;
         for (Key key2 : c0965eA.getKeys()) {
             int iM6225b = key2.squaredDistanceToEdge(iA, iB);
             if (iM6225b < i3) {

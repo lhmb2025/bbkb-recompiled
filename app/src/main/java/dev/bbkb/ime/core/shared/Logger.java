@@ -21,17 +21,17 @@ public final class Logger {
     }
 
     /**
-     * @param str log tag
-     * @param i {@link Log} priority level
+     * @param tag log tag
+     * @param level {@link Log} priority level
      */
-    public static boolean isLoggable(String str, int i) {
+    public static boolean isLoggable(String tag, int level) {
         if (!BuildConfig.DEBUG) {
             return false;
         }
-        if (minLogLevel > i) {
+        if (minLogLevel > level) {
             return false;
         }
-        return Log.isLoggable(str, i);
+        return Log.isLoggable(tag, level);
     }
 
     public static int verbose(String tag, String message) {

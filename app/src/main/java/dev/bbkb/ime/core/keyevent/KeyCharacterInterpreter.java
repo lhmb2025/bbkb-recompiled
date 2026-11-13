@@ -5,7 +5,7 @@ import android.view.KeyEvent;
 
 
 public interface KeyCharacterInterpreter extends KeyCharacterResult {
-    KeyCharacterResult.Interpretation interpretKeyCharacter(KeyEvent keyEvent, int i);
+    KeyCharacterResult.Interpretation interpretKeyCharacter(KeyEvent keyEvent, int metaState);
 
     
     public static class MetaMask {
@@ -16,13 +16,13 @@ public interface KeyCharacterInterpreter extends KeyCharacterResult {
 
         private final int mOffBits;
 
-        public MetaMask(int i, int i2) {
-            this.mOnBits = i;
-            this.mOffBits = i2;
+        public MetaMask(int onBits, int offBits) {
+            this.mOnBits = onBits;
+            this.mOffBits = offBits;
         }
 
-        public int apply(int i) {
-            return (i & (~this.mOffBits)) | this.mOnBits;
+        public int apply(int metaState) {
+            return (metaState & (~this.mOffBits)) | this.mOnBits;
         }
     }
 }

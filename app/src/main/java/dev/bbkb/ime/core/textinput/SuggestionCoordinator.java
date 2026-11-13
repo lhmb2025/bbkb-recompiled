@@ -44,21 +44,21 @@ class SuggestionCoordinator {
     /**
      * Blocks for the worker's suggestions (up to {@link #SYNC_SUGGESTION_TIMEOUT_MS}).
      *
-     * @param c0804d current settings values
-     * @param i update reason code forwarded to the worker
+     * @param settingsValues current settings values
+     * @param inputStyle update reason code forwarded to the worker
      * @return {@code true} if the worker answered in time and its result was shown
      */
-    boolean updateSuggestionsSync(SettingsValues c0804d, int i) {
-        if (!c0804d.shouldShowLxxButton) {
+    boolean updateSuggestionsSync(SettingsValues settingsValues, int inputStyle) {
+        if (!settingsValues.shouldShowLxxButton) {
             if (mInputLogic.mComposingTracker.isComposing()) {
                 if (BuildConfig.DEBUG) Log.w(TAG, "Called updateSuggestionsOrPredictions but suggestions were not requested!");
             }
             mInputLogic.mSuggestionStripListener.showSuggestionStrip(SuggestedWords.EMPTY);
-        } else if (!InputLogic.needsSuggestionLookups(c0804d) && !NuanceSDKManager.isGesturePending()) {
+        } else if (!InputLogic.needsSuggestionLookups(settingsValues) && !NuanceSDKManager.isGesturePending()) {
             // Composing only for learning: nothing consumes a candidate list, so none is built.
             mInputLogic.mSuggestionStripListener.showSuggestionStrip(SuggestedWords.EMPTY);
         } else {
-            if (!mInputLogic.mComposingTracker.isComposing() && !c0804d.isBigramPredictionEnabled) {
+            if (!mInputLogic.mComposingTracker.isComposing() && !settingsValues.isBigramPredictionEnabled) {
                 mInputLogic.mSuggestionStripListener.setNeutralSuggestionStrip();
                 return false;
             }
@@ -68,18 +68,18 @@ class SuggestionCoordinator {
             // Read here: the callback runs on the engine thread, which never reads the tracker.
             final String requestText = mInputLogic.mComposingTracker.getComposingText();
             // keep=true: the main thread is parked on this reply, so it must never be dropped.
-            mInputLogic.mSuggestionRequestQueue.sendToWorkerThread(i, true, new SuggestionEngine.SuggestionCallback() {
+            mInputLogic.mSuggestionRequestQueue.sendToWorkerThread(inputStyle, true, new SuggestionEngine.SuggestionCallback() {
                 /**
-                 * @param c0666ac the suggestions the worker produced
+                 * @param suggestedWords the suggestions the worker produced
                  */
                 @Override
-                public void onSuggestionsReady(SuggestedWords c0666ac) {
+                public void onSuggestionsReady(SuggestedWords suggestedWords) {
                     String strM4360m = requestText;
-                    if (c0666ac.size() > 1 || strM4360m.length() <= 1) {
-                        c0883c.set(stampEditCount(c0666ac, requestEditCount));
+                    if (suggestedWords.size() > 1 || strM4360m.length() <= 1) {
+                        c0883c.set(stampEditCount(suggestedWords, requestEditCount));
                     } else {
                         if (PrimaryEngineFacts.get().isCurrLocaleChinese()) {
-                            c0883c.set(stampEditCount(c0666ac, requestEditCount));
+                            c0883c.set(stampEditCount(suggestedWords, requestEditCount));
                             return;
                         }
                         c0883c.set(stampEditCount(createSuggestionsWithTypedWord(strM4360m, mInputLogic.mCurrentSuggestions), requestEditCount));
@@ -97,20 +97,20 @@ class SuggestionCoordinator {
 
     /**
      * Results arrive through {@code postShowSuggestionStrip}.
-     * @param c0804d current settings values
-     * @param i update reason code forwarded to the worker
+     * @param settingsValues current settings values
+     * @param inputStyle update reason code forwarded to the worker
      */
-    void updateSuggestionsAsync(SettingsValues c0804d, int i) {
-        if (BuildConfig.DEBUG) android.util.Log.d("SUGG", "updateSuggestionsAsync: shouldShow=" + c0804d.shouldShowLxxButton + " composing=" + mInputLogic.mComposingTracker.isComposing() + " bigram=" + c0804d.isBigramPredictionEnabled);
-        if (!c0804d.shouldShowLxxButton) {
+    void updateSuggestionsAsync(SettingsValues settingsValues, int inputStyle) {
+        if (BuildConfig.DEBUG) android.util.Log.d("SUGG", "updateSuggestionsAsync: shouldShow=" + settingsValues.shouldShowLxxButton + " composing=" + mInputLogic.mComposingTracker.isComposing() + " bigram=" + settingsValues.isBigramPredictionEnabled);
+        if (!settingsValues.shouldShowLxxButton) {
             if (mInputLogic.mComposingTracker.isComposing()) {
                 if (BuildConfig.DEBUG) Log.w(TAG, "Called updateSuggestionsOrPredictions but suggestions were not requested!");
             }
             mInputLogic.mSuggestionStripListener.showSuggestionStrip(SuggestedWords.EMPTY);
-        } else if (!InputLogic.needsSuggestionLookups(c0804d) && !NuanceSDKManager.isGesturePending()) {
+        } else if (!InputLogic.needsSuggestionLookups(settingsValues) && !NuanceSDKManager.isGesturePending()) {
             // Composing only for learning: nothing consumes a candidate list, so none is built.
             mInputLogic.mSuggestionStripListener.showSuggestionStrip(SuggestedWords.EMPTY);
-        } else if (!mInputLogic.mComposingTracker.isComposing() && !c0804d.isBigramPredictionEnabled) {
+        } else if (!mInputLogic.mComposingTracker.isComposing() && !settingsValues.isBigramPredictionEnabled) {
             if (BuildConfig.DEBUG) android.util.Log.d("SUGG", "updateSuggestionsAsync: not composing + bigram off -> setNeutralSuggestionStrip");
             mInputLogic.mSuggestionStripListener.setNeutralSuggestionStrip();
         } else {
@@ -131,16 +131,16 @@ class SuggestionCoordinator {
             mInFlightEditCount = requestEditCount;
             // Read here: the callback runs on the engine thread, which never reads the tracker.
             final String requestText = mInputLogic.mComposingTracker.getComposingText();
-            mInputLogic.mSuggestionRequestQueue.sendToWorkerThread(i, new SuggestionEngine.SuggestionCallback() {
+            mInputLogic.mSuggestionRequestQueue.sendToWorkerThread(inputStyle, new SuggestionEngine.SuggestionCallback() {
                 /**
-                 * @param c0666ac the suggestions the worker produced
+                 * @param suggestedWords the suggestions the worker produced
                  */
                 @Override
-                public void onSuggestionsReady(SuggestedWords c0666ac) {
-                    if (BuildConfig.DEBUG) android.util.Log.d("SUGG", "updateSuggestionsAsync: onSuggestionsReady size=" + c0666ac.size() + " thread=" + Thread.currentThread().getName());
+                public void onSuggestionsReady(SuggestedWords suggestedWords) {
+                    if (BuildConfig.DEBUG) android.util.Log.d("SUGG", "updateSuggestionsAsync: onSuggestionsReady size=" + suggestedWords.size() + " thread=" + Thread.currentThread().getName());
                     String strM4360m = requestText;
-                    SuggestedWords reply = c0666ac.size() > 1 || strM4360m.length() <= 1
-                            ? c0666ac
+                    SuggestedWords reply = suggestedWords.size() > 1 || strM4360m.length() <= 1
+                            ? suggestedWords
                             : createSuggestionsWithTypedWord(strM4360m, mInputLogic.mCurrentSuggestions);
                     stampEditCount(reply, requestEditCount);
                     inFlight.set(reply);
@@ -154,12 +154,12 @@ class SuggestionCoordinator {
      * Makes the auto-correction match the composing text before a commit: a queued update runs
      * synchronously; one already in flight for this text is waited on (a new request would queue
      * behind it); otherwise a sync update is made.
-     * @param c0804d current settings values
-     * @param handlerC0650c UI update handler used to cancel pending async requests
+     * @param settingsValues current settings values
+     * @param uiUpdateHandler UI update handler used to cancel pending async requests
      */
-    void flushPendingSuggestions(SettingsValues c0804d, UIUpdateHandler handlerC0650c) {
-        boolean hasPendingUpdate = handlerC0650c.hasPendingSuggestionUpdate();
-        boolean hasPendingJapanese = handlerC0650c.hasPendingJapaneseSuggestionUpdate();
+    void flushPendingSuggestions(SettingsValues settingsValues, UIUpdateHandler uiUpdateHandler) {
+        boolean hasPendingUpdate = uiUpdateHandler.hasPendingSuggestionUpdate();
+        boolean hasPendingJapanese = uiUpdateHandler.hasPendingJapaneseSuggestionUpdate();
         ComposingTextTracker tracker = mInputLogic.mComposingTracker;
         boolean awaitingResult = tracker.isComposing() && !tracker.isGestureInput()
                 && !tracker.hasAutoCorrectionForComposingText();
@@ -170,11 +170,11 @@ class SuggestionCoordinator {
             + " composing='" + tracker.getComposingText() + "'");
         }
         if (hasPendingUpdate || hasPendingJapanese) {
-            handlerC0650c.cancelPendingSuggestionUpdates();
+            uiUpdateHandler.cancelPendingSuggestionUpdates();
             if (BuildConfig.DEBUG) android.util.Log.d("AC_DEBUG", "flushPendingSuggestions: running sync update");
-            if (updateSuggestionsSync(c0804d, 1)) {
+            if (updateSuggestionsSync(settingsValues, 1)) {
                 // An older reply queued meanwhile would put a stale strip back after the commit.
-                handlerC0650c.cancelPendingSuggestionDelivery();
+                uiUpdateHandler.cancelPendingSuggestionDelivery();
             }
         } else if (awaitingResult) {
             AsyncResultHolder<SuggestedWords> inFlight = mInFlightResult;
@@ -183,14 +183,14 @@ class SuggestionCoordinator {
                 if (BuildConfig.DEBUG) android.util.Log.d("AC_DEBUG", "flushPendingSuggestions: waited for in-flight reply, arrived=" + (reply != null));
                 if (reply != null) {
                     // Show it now; its queued delivery would land after this commit.
-                    handlerC0650c.cancelPendingSuggestionDelivery();
+                    uiUpdateHandler.cancelPendingSuggestionDelivery();
                     mInputLogic.mSuggestionStripListener.showSuggestionStrip(reply);
                 }
                 // On timeout the word commits as typed.
             } else {
                 if (BuildConfig.DEBUG) android.util.Log.d("AC_DEBUG", "flushPendingSuggestions: nothing in flight for this text, running sync update");
-                if (updateSuggestionsSync(c0804d, 1)) {
-                    handlerC0650c.cancelPendingSuggestionDelivery();
+                if (updateSuggestionsSync(settingsValues, 1)) {
+                    uiUpdateHandler.cancelPendingSuggestionDelivery();
                 }
             }
         } else {
@@ -211,45 +211,45 @@ class SuggestionCoordinator {
 
     /**
      * The typed word first, then the given list's suggestions (dropped if it is an auto-correction).
-     * @param str the typed word to put first
-     * @param c0666ac the suggestions to append after the typed word
+     * @param typedWord the typed word to put first
+     * @param previousSuggestions the suggestions to append after the typed word
      */
-    SuggestedWords createSuggestionsWithTypedWord(String str, SuggestedWords c0666ac) {
-        if (c0666ac.isAutoCorrection()) {
-            c0666ac = SuggestedWords.EMPTY;
+    SuggestedWords createSuggestionsWithTypedWord(String typedWord, SuggestedWords previousSuggestions) {
+        if (previousSuggestions.isAutoCorrection()) {
+            previousSuggestions = SuggestedWords.EMPTY;
         }
-        return new SuggestedWords(SuggestedWords.buildWithTypedWord(str, c0666ac), false, false, c0666ac.mInputStyle);
+        return new SuggestedWords(SuggestedWords.buildWithTypedWord(typedWord, previousSuggestions), false, false, previousSuggestions.mInputStyle);
     }
 
     /**
-     * @param str  text before the cursor
-     * @param i    cursor position within the recorrection word
-     * @param str2 the recorrection word
+     * @param textBeforeCursor  text before the cursor
+     * @param recorrectionCursorPosition    cursor position within the recorrection word
+     * @param recorrectionWord the recorrection word
      */
-    void updateNuanceContext(String str, int i, String str2) {
+    void updateNuanceContext(String textBeforeCursor, int recorrectionCursorPosition, String recorrectionWord) {
         if (mInputLogic.mComposingTracker.getRecorrectionCurrentWord() != null && mInputLogic.mComposingTracker.getRecorrectionCurrentWord().isEmpty()) {
             mInputLogic.mComposingTracker.resetRecorrection();
         } else {
             if (mInputLogic.mComposingTracker.isGestureInput()) {
-                if (mInputLogic.mComposingTracker.getRecorrectionCursorPosition() != i) {
-                    commitWordToDictionary(str);
+                if (mInputLogic.mComposingTracker.getRecorrectionCursorPosition() != recorrectionCursorPosition) {
+                    commitWordToDictionary(textBeforeCursor);
                 }
-                mInputLogic.mComposingTracker.setRecorrectionInfo(i, str2);
+                mInputLogic.mComposingTracker.setRecorrectionInfo(recorrectionCursorPosition, recorrectionWord);
                 return;
             }
-            commitWordToDictionary(str);
+            commitWordToDictionary(textBeforeCursor);
         }
     }
 
     /**
      * Reports a changed recorrection to the dictionary, then resets recorrection state.
-     * @param str text context passed to the dictionary for the commit
+     * @param textBeforeCursor text context passed to the dictionary for the commit
      */
-    void commitWordToDictionary(String str) {
+    void commitWordToDictionary(String textBeforeCursor) {
         // This is learning, so it is skipped while the session may not learn.
         if (mInputLogic.mComposingTracker.hasRecorrectionChanged()
                 && mInputLogic.mIme.getDynamicLearningManager().isLearningAllowed()) {
-            mInputLogic.mDictionaryLoader.getMainDictionary().onWordChanged(str, mInputLogic.mComposingTracker.getRecorrectionCursorPosition(), mInputLogic.mComposingTracker.getRecorrectionOriginalWord(), mInputLogic.mComposingTracker.getRecorrectionCurrentWord());
+            mInputLogic.mDictionaryLoader.getMainDictionary().onWordChanged(textBeforeCursor, mInputLogic.mComposingTracker.getRecorrectionCursorPosition(), mInputLogic.mComposingTracker.getRecorrectionOriginalWord(), mInputLogic.mComposingTracker.getRecorrectionCurrentWord());
         }
         mInputLogic.mComposingTracker.resetRecorrection();
     }

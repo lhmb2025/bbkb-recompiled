@@ -29,9 +29,9 @@ public class ClipboardController extends AbstractBoardController<ClipboardContro
         void onClipboardHidden();
     }
 
-    /** @param aVar receives clipboard shown and hidden events */
-    public ClipboardController(BlackBerryIME blackBerryIME, Listener aVar) {
-        super(KEY_CODE, blackBerryIME, aVar);
+    /** @param listener receives clipboard shown and hidden events */
+    public ClipboardController(BlackBerryIME blackBerryIME, Listener listener) {
+        super(KEY_CODE, blackBerryIME, listener);
         // The application context, not the service: the system holds the primary-clip listener's
         // binder stub until its own GC, which would pin every destroyed IME instance.
         Context appContext = blackBerryIME.getApplicationContext();
@@ -58,10 +58,10 @@ public class ClipboardController extends AbstractBoardController<ClipboardContro
         hideClipboard();
     }
 
-    /** @param z true if the focused field is incognito (stop capturing clips) */
-    public void setNoPersonalizedLearning(boolean z) {
+    /** @param noPersonalizedLearning true if the focused field is incognito (stop capturing clips) */
+    public void setNoPersonalizedLearning(boolean noPersonalizedLearning) {
         if (hasHistoryManager()) {
-            this.mHistoryManager.setNoPersonalizedLearning(z);
+            this.mHistoryManager.setNoPersonalizedLearning(noPersonalizedLearning);
         }
     }
 

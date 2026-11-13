@@ -33,42 +33,42 @@ public final class HermiteInterpolator {
     private int mMaxPos;
 
     /**
-     * @param iArr x coordinates
-     * @param iArr2 y coordinates
-     * @param i first valid index
-     * @param i2 end index (exclusive)
+     * @param xCoords x coordinates
+     * @param yCoords y coordinates
+     * @param minPos first valid index
+     * @param maxPos end index (exclusive)
      */
-    public void reset(int[] iArr, int[] iArr2, int i, int i2) {
-        this.mXCoords = iArr;
-        this.mYCoords = iArr2;
-        this.mMinPos = i;
-        this.mMaxPos = i2;
+    public void reset(int[] xCoords, int[] yCoords, int minPos, int maxPos) {
+        this.mXCoords = xCoords;
+        this.mYCoords = yCoords;
+        this.mMinPos = minPos;
+        this.mMaxPos = maxPos;
     }
 
     /**
      * Sets the segment P1 to P2 with neighbors P0 and P3, given as indices.
-     * @param i P0
-     * @param i2 P1
-     * @param i3 P2
-     * @param i4 P3
+     * @param p0 P0
+     * @param p1 P1
+     * @param p2 P2
+     * @param p3 P3
      */
-    public void setInterval(int i, int i2, int i3, int i4) {
+    public void setInterval(int p0, int p1, int p2, int p3) {
         int[] iArr = this.mXCoords;
-        this.mP1X = iArr[i2];
+        this.mP1X = iArr[p1];
         int[] iArr2 = this.mYCoords;
-        this.mP1Y = iArr2[i2];
-        this.mP2X = iArr[i3];
-        this.mP2Y = iArr2[i3];
+        this.mP1Y = iArr2[p1];
+        this.mP2X = iArr[p2];
+        this.mP2Y = iArr2[p2];
         int i5 = this.mP2X - this.mP1X;
         int i6 = this.mP2Y - this.mP1Y;
-        if (i >= this.mMinPos) {
+        if (p0 >= this.mMinPos) {
             // Tangent at P1 is half of the vector P0 -> P2 (the endpoint, not the delta i5).
-            this.mSlope1X = (this.mP2X - iArr[i]) / 2.0f;
-            this.mSlope1Y = (this.mP2Y - iArr2[i]) / 2.0f;
-        } else if (i4 < this.mMaxPos) {
+            this.mSlope1X = (this.mP2X - iArr[p0]) / 2.0f;
+            this.mSlope1Y = (this.mP2Y - iArr2[p0]) / 2.0f;
+        } else if (p3 < this.mMaxPos) {
             // No P0: mirror the tangent at P2 (half of the vector P1 -> P3) about P1 -> P2.
-            float f = (iArr[i4] - this.mP1X) / 2.0f;
-            float f2 = (iArr2[i4] - this.mP1Y) / 2.0f;
+            float f = (iArr[p3] - this.mP1X) / 2.0f;
+            float f2 = (iArr2[p3] - this.mP1Y) / 2.0f;
             float f3 = i5;
             float f4 = i6;
             float f5 = (f3 * f2) - (f4 * f);
@@ -80,14 +80,14 @@ public final class HermiteInterpolator {
             this.mSlope1X = i5;
             this.mSlope1Y = i6;
         }
-        if (i4 < this.mMaxPos) {
-            this.mSlope2X = (this.mXCoords[i4] - this.mP1X) / 2.0f;
-            this.mSlope2Y = (this.mYCoords[i4] - this.mP1Y) / 2.0f;
+        if (p3 < this.mMaxPos) {
+            this.mSlope2X = (this.mXCoords[p3] - this.mP1X) / 2.0f;
+            this.mSlope2Y = (this.mYCoords[p3] - this.mP1Y) / 2.0f;
             return;
         }
-        if (i >= this.mMinPos) {
-            float f8 = (this.mP2X - this.mXCoords[i]) / 2.0f;
-            float f9 = (this.mP2Y - this.mYCoords[i]) / 2.0f;
+        if (p0 >= this.mMinPos) {
+            float f8 = (this.mP2X - this.mXCoords[p0]) / 2.0f;
+            float f9 = (this.mP2Y - this.mYCoords[p0]) / 2.0f;
             float f10 = i5;
             float f11 = i6;
             float f12 = (f10 * f9) - (f11 * f8);
@@ -101,15 +101,15 @@ public final class HermiteInterpolator {
         this.mSlope2Y = i6;
     }
 
-    /** @param f position on the segment, 0 at P1 to 1 at P2 */
-    public void interpolate(float f) {
-        float f2 = 1.0f - f;
-        float f3 = 2.0f * f;
+    /** @param t position on the segment, 0 at P1 to 1 at P2 */
+    public void interpolate(float t) {
+        float f2 = 1.0f - t;
+        float f3 = 2.0f * t;
         float f4 = 1.0f + f3;
         float f5 = 3.0f - f3;
         float f6 = f2 * f2;
-        float f7 = f * f;
-        this.mInterpolatedX = (((this.mP1X * f4) + (this.mSlope1X * f)) * f6) + (((this.mP2X * f5) - (this.mSlope2X * f2)) * f7);
-        this.mInterpolatedY = (((f4 * this.mP1Y) + (f * this.mSlope1Y)) * f6) + (((f5 * this.mP2Y) - (f2 * this.mSlope2Y)) * f7);
+        float f7 = t * t;
+        this.mInterpolatedX = (((this.mP1X * f4) + (this.mSlope1X * t)) * f6) + (((this.mP2X * f5) - (this.mSlope2X * f2)) * f7);
+        this.mInterpolatedY = (((f4 * this.mP1Y) + (t * this.mSlope1Y)) * f6) + (((f5 * this.mP2Y) - (f2 * this.mSlope2Y)) * f7);
     }
 }

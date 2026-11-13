@@ -19,15 +19,15 @@ public final class MoreSuggestionsView extends MoreKeysKeyboardView {
 
     
     public static abstract class MoreSuggestionsListener implements KeyboardActionListenerInterface {
-        public abstract void onSuggestionSelected(SuggestedWords.SuggestedWordInfo suggestedWordInfoVar);
+        public abstract void onSuggestionSelected(SuggestedWords.SuggestedWordInfo suggestedWordInfo);
     }
 
     public MoreSuggestionsView(Context context, AttributeSet attributeSet) {
         this(context, attributeSet, R.attr.moreKeysKeyboardViewStyle);
     }
 
-    public MoreSuggestionsView(Context context, AttributeSet attributeSet, int i) {
-        super(context, attributeSet, i);
+    public MoreSuggestionsView(Context context, AttributeSet attributeSet, int defStyle) {
+        super(context, attributeSet, defStyle);
     }
 
     @Override // dev.bbkb.ime.keyboard.MoreKeysKeyboardView
@@ -35,12 +35,12 @@ public final class MoreSuggestionsView extends MoreKeysKeyboardView {
         return ((MoreSuggestionsKeyboard) getKeyboard()).mOccupiedWidth / 2;
     }
 
-    public void applyDefaultRowHeight(int i) {
-        applyDefaultKeyStyle(i);
+    public void applyDefaultRowHeight(int rowHeight) {
+        applyDefaultKeyStyle(rowHeight);
     }
 
     @Override // dev.bbkb.ime.keyboard.MoreKeysKeyboardView
-    protected void onKeyInput(Key key, int i, int i2, long j) {
+    protected void onKeyInput(Key key, int x, int y, long eventTime) {
         if (!(key instanceof MoreSuggestionsKeyboard.MoreSuggestionKey)) {
             if (BuildConfig.DEBUG) Log.e(TAG, "Expected key is MoreSuggestionKey, but found " + key.getClass().getName());
             return;

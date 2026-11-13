@@ -46,11 +46,11 @@ public class FallbackDictionary extends Dictionary {
     }
 
     @Override
-    public ArrayList<SuggestedWords.SuggestedWordInfo> generateSuggestions(ComposingTextTracker c0670ag, PrevWordsInfo prevWordsInfo, SuggestionStripSettings c0805e, int sessionId) {
-        if (c0670ag == null) {
+    public ArrayList<SuggestedWords.SuggestedWordInfo> generateSuggestions(ComposingTextTracker composingTracker, PrevWordsInfo prevWordsInfo, SuggestionStripSettings stripSettings, int sessionId) {
+        if (composingTracker == null) {
             return new ArrayList<>();
         }
-        return suggestionsFor(c0670ag.getComposingText());
+        return suggestionsFor(composingTracker.getComposingText());
     }
 
     @Override
@@ -129,16 +129,16 @@ public class FallbackDictionary extends Dictionary {
     }
 
     @Override
-    public boolean isWordValid(String str) {
-        if (str == null || str.isEmpty()) {
+    public boolean isWordValid(String word) {
+        if (word == null || word.isEmpty()) {
             return false;
         }
 
-        return commonLowerSet.contains(str.toLowerCase(locale));
+        return commonLowerSet.contains(word.toLowerCase(locale));
     }
 
     @Override
-    public String getWordSeparator(String str) {
+    public String getWordSeparator(String precedingText) {
         return " ";
     }
 }

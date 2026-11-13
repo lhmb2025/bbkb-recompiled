@@ -116,87 +116,87 @@ public final class SpacingAndPunctuation {
     }
 
     /**
-     * @param c0806f the rules to copy
-     * @param iArr the sorted word separators to use instead
+     * @param model the rules to copy
+     * @param overrideWordSeparators the sorted word separators to use instead
      */
-    public SpacingAndPunctuation(SpacingAndPunctuation c0806f, int[] iArr) {
-        this.symbolsPrecededBySpace = c0806f.symbolsPrecededBySpace;
-        this.symbolsFollowedBySpace = c0806f.symbolsFollowedBySpace;
-        this.symbolsClusteringTogether = c0806f.symbolsClusteringTogether;
-        this.wordConnectors = c0806f.wordConnectors;
-        this.wordSeparators = iArr;
-        this.notSeparatorsPinyin = c0806f.notSeparatorsPinyin;
-        this.notSeparatorsCangjie = c0806f.notSeparatorsCangjie;
-        this.notSeparatorsStroke = c0806f.notSeparatorsStroke;
-        this.notSeparatorsZhuyin = c0806f.notSeparatorsZhuyin;
-        this.swipeDeleteDelimiters = c0806f.swipeDeleteDelimiters;
-        this.suggestedPunctuations = c0806f.suggestedPunctuations;
-        this.sentenceSeparatorChar = c0806f.sentenceSeparatorChar;
-        this.sentenceSeparatorAndSpace = c0806f.sentenceSeparatorAndSpace;
-        this.currentLanguageHasSpaces = c0806f.currentLanguageHasSpaces;
-        this.supportsDoubleSpacePeriod = c0806f.supportsDoubleSpacePeriod;
-        this.usesAmericanTypography = c0806f.usesAmericanTypography;
-        this.usesGermanRules = c0806f.usesGermanRules;
+    public SpacingAndPunctuation(SpacingAndPunctuation model, int[] overrideWordSeparators) {
+        this.symbolsPrecededBySpace = model.symbolsPrecededBySpace;
+        this.symbolsFollowedBySpace = model.symbolsFollowedBySpace;
+        this.symbolsClusteringTogether = model.symbolsClusteringTogether;
+        this.wordConnectors = model.wordConnectors;
+        this.wordSeparators = overrideWordSeparators;
+        this.notSeparatorsPinyin = model.notSeparatorsPinyin;
+        this.notSeparatorsCangjie = model.notSeparatorsCangjie;
+        this.notSeparatorsStroke = model.notSeparatorsStroke;
+        this.notSeparatorsZhuyin = model.notSeparatorsZhuyin;
+        this.swipeDeleteDelimiters = model.swipeDeleteDelimiters;
+        this.suggestedPunctuations = model.suggestedPunctuations;
+        this.sentenceSeparatorChar = model.sentenceSeparatorChar;
+        this.sentenceSeparatorAndSpace = model.sentenceSeparatorAndSpace;
+        this.currentLanguageHasSpaces = model.currentLanguageHasSpaces;
+        this.supportsDoubleSpacePeriod = model.supportsDoubleSpacePeriod;
+        this.usesAmericanTypography = model.usesAmericanTypography;
+        this.usesGermanRules = model.usesGermanRules;
     }
 
-    /** @param i a code point */
-    public boolean isWordSeparator(int i) {
-        return Arrays.binarySearch(this.wordSeparators, i) >= 0;
+    /** @param code a code point */
+    public boolean isWordSeparator(int code) {
+        return Arrays.binarySearch(this.wordSeparators, code) >= 0;
     }
 
-    /** @param i a code point */
-    public boolean isNotWordSeparatorForLocale(int i, Locale locale) {
+    /** @param code a code point */
+    public boolean isNotWordSeparatorForLocale(int code, Locale locale) {
         int iBinarySearch;
         if (LocaleUtils.isChinesePinyin(locale)) {
-            iBinarySearch = Arrays.binarySearch(this.notSeparatorsPinyin, i);
+            iBinarySearch = Arrays.binarySearch(this.notSeparatorsPinyin, code);
         } else if (LocaleUtils.isChineseCangjie(locale)) {
-            iBinarySearch = Arrays.binarySearch(this.notSeparatorsCangjie, i);
+            iBinarySearch = Arrays.binarySearch(this.notSeparatorsCangjie, code);
         } else if (LocaleUtils.isChineseStroke(locale)) {
-            iBinarySearch = Arrays.binarySearch(this.notSeparatorsStroke, i);
+            iBinarySearch = Arrays.binarySearch(this.notSeparatorsStroke, code);
         } else {
-            iBinarySearch = LocaleUtils.isChineseZhuyin(locale) ? Arrays.binarySearch(this.notSeparatorsZhuyin, i) : -1;
+            iBinarySearch = LocaleUtils.isChineseZhuyin(locale) ? Arrays.binarySearch(this.notSeparatorsZhuyin, code) : -1;
         }
         return iBinarySearch >= 0;
     }
 
-    /** @param i a code point */
-    public boolean isSwipeDeleteDelimiter(int i) {
-        return Arrays.binarySearch(this.swipeDeleteDelimiters, i) >= 0;
+    /** @param code a code point */
+    public boolean isSwipeDeleteDelimiter(int code) {
+        return Arrays.binarySearch(this.swipeDeleteDelimiters, code) >= 0;
     }
 
-    /** @param i a code point */
-    public boolean isWordConnector(int i) {
-        return Arrays.binarySearch(this.wordConnectors, i) >= 0;
+    /** @param code a code point */
+    public boolean isWordConnector(int code) {
+        return Arrays.binarySearch(this.wordConnectors, code) >= 0;
     }
 
-    /** @param i a code point */
-    public boolean isLetterOrConnector(int i) {
-        return Character.isLetter(i) || isWordConnector(i);
+    /** @param code a code point */
+    public boolean isLetterOrConnector(int code) {
+        return Character.isLetter(code) || isWordConnector(code);
     }
 
-    /** @param i a code point */
-    public boolean isPrecededBySpace(int i) {
-        return Arrays.binarySearch(this.symbolsPrecededBySpace, i) >= 0;
+    /** @param code a code point */
+    public boolean isPrecededBySpace(int code) {
+        return Arrays.binarySearch(this.symbolsPrecededBySpace, code) >= 0;
     }
 
-    /** @param i a code point */
-    public boolean isPrecededBySpaceFrench(int i) {
-        return LocaleUtils.isCurrentSubtypeNonCanadianFrench() && Arrays.binarySearch(this.symbolsPrecededBySpaceFrench, i) >= 0;
+    /** @param code a code point */
+    public boolean isPrecededBySpaceFrench(int code) {
+        return LocaleUtils.isCurrentSubtypeNonCanadianFrench() && Arrays.binarySearch(this.symbolsPrecededBySpaceFrench, code) >= 0;
     }
 
-    /** @param i a code point */
-    public boolean isFollowedBySpace(int i) {
-        return Arrays.binarySearch(this.symbolsFollowedBySpace, i) >= 0;
+    /** @param code a code point */
+    public boolean isFollowedBySpace(int code) {
+        return Arrays.binarySearch(this.symbolsFollowedBySpace, code) >= 0;
     }
 
-    /** @param i a code point */
-    public boolean clustersWithSymbols(int i) {
-        return Arrays.binarySearch(this.symbolsClusteringTogether, i) >= 0;
+    /** @param code a code point */
+    public boolean clustersWithSymbols(int code) {
+        return Arrays.binarySearch(this.symbolsClusteringTogether, code) >= 0;
     }
 
-    /** @param i a code point */
-    public boolean isSentenceSeparator(int i) {
-        return i == this.sentenceSeparatorChar;
+    /** @param code a code point */
+    public boolean isSentenceSeparator(int code) {
+        return code == this.sentenceSeparatorChar;
     }
 
     public String getSentenceSeparatorAndSpace() {

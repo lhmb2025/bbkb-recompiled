@@ -89,15 +89,15 @@ public final class MultitapEventHandler extends WeakOwnerHandler<BlackBerryIME> 
     }
 
     /**
-     * @param str the multitap base character
-     * @param i index into its more-keys, or -1 for the base itself
+     * @param baseChar the multitap base character
+     * @param index index into its more-keys, or -1 for the base itself
      */
-    private String getMultitapCandidate(String str, int i) {
-        String[] moreKeys = this.keyboardLayoutCallback.getMoreKeysForKeyByStyle(str);
-        if (moreKeys == null || i >= moreKeys.length) {
-            i = -1;
+    private String getMultitapCandidate(String baseChar, int index) {
+        String[] moreKeys = this.keyboardLayoutCallback.getMoreKeysForKeyByStyle(baseChar);
+        if (moreKeys == null || index >= moreKeys.length) {
+            index = -1;
         }
-        return i == -1 ? str : moreKeys[i];
+        return index == -1 ? baseChar : moreKeys[index];
     }
 
     public void refreshAltMultitapSupport() {
@@ -112,9 +112,9 @@ public final class MultitapEventHandler extends WeakOwnerHandler<BlackBerryIME> 
         return this.altMultitapSupported;
     }
 
-    /** @param i the meta state to interpret the key under */
+    /** @param metaState the meta state to interpret the key under */
     @Override
-    public KeyCharacterResult.Interpretation interpretKeyCharacter(KeyEvent keyEvent, int i) {
+    public KeyCharacterResult.Interpretation interpretKeyCharacter(KeyEvent keyEvent, int metaState) {
         int i2;
         String strValueOf;
         boolean z;
@@ -133,12 +133,12 @@ public final class MultitapEventHandler extends WeakOwnerHandler<BlackBerryIME> 
             i2 = -1;
             // Letter layouts first (the multitap base is the script letter), then their Alt character,
             // then the KCM. Strip COMBINING_ACCENT from dead keys to get the real character.
-            int rawUnicode = PhysicalKeyResolver.letter(keyEvent, i);
+            int rawUnicode = PhysicalKeyResolver.letter(keyEvent, metaState);
             if (rawUnicode == 0) {
-                rawUnicode = PhysicalKeyResolver.altFor(keyEvent, i);
+                rawUnicode = PhysicalKeyResolver.altFor(keyEvent, metaState);
             }
             if (rawUnicode == 0) {
-                rawUnicode = keyEvent.getUnicodeChar(i);
+                rawUnicode = keyEvent.getUnicodeChar(metaState);
             }
             if ((rawUnicode & android.view.KeyCharacterMap.COMBINING_ACCENT) != 0) {
                 rawUnicode = rawUnicode & android.view.KeyCharacterMap.COMBINING_ACCENT_MASK;

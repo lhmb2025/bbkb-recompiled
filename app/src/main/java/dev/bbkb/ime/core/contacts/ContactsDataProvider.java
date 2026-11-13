@@ -18,8 +18,8 @@ public class ContactsDataProvider {
 
     
     interface Listener {
-        /** @param bVar the contact set that changed */
-        void onContactsChanged(ContactsType bVar);
+        /** @param contactsType the contact set that changed */
+        void onContactsChanged(ContactsType contactsType);
     }
 
     /** WORK is never returned by getContactNames(); DynamicLearningManager still switches on it. */
@@ -34,11 +34,11 @@ public class ContactsDataProvider {
         this.changeObserver = new ContactsChangeObserver(context);
     }
 
-    /** @param bVar which contact set to read; only PERSONAL and ALL return names */
-    ArrayList<String> getContactNames(ContactsType bVar, Uri uri) {
+    /** @param contactsType which contact set to read; only PERSONAL and ALL return names */
+    ArrayList<String> getContactNames(ContactsType contactsType, Uri uri) {
         ArrayList<String> arrayList = new ArrayList<>();
         synchronized (this) {
-            if (bVar == ContactsType.PERSONAL || bVar == ContactsType.ALL) {
+            if (contactsType == ContactsType.PERSONAL || contactsType == ContactsType.ALL) {
                 arrayList.addAll(this.changeObserver.getContactNames(uri));
             }
         }
@@ -48,24 +48,24 @@ public class ContactsDataProvider {
     /** Set by {@link #release}: no observer is registered again. */
     private boolean released;
 
-    /** @param aVar listener notified when contacts change */
-    void registerListener(Listener aVar) {
+    /** @param listener listener notified when contacts change */
+    void registerListener(Listener listener) {
         synchronized (this) {
             if (this.released) {
                 return;
             }
-            this.listener = aVar;
-            this.changeObserver.registerObserver(aVar);
+            this.listener = listener;
+            this.changeObserver.registerObserver(listener);
         }
     }
 
-    /** @param bVar contact set the names belong to; only PERSONAL is saved */
-    void saveContactsSnapshot(ContactsType bVar, ArrayList<String> arrayList) {
+    /** @param contactsType contact set the names belong to; only PERSONAL is saved */
+    void saveContactsSnapshot(ContactsType contactsType, ArrayList<String> arrayList) {
         if (arrayList.isEmpty()) {
             return;
         }
         synchronized (this) {
-            if (bVar == ContactsType.PERSONAL) {
+            if (contactsType == ContactsType.PERSONAL) {
                 this.changeObserver.saveContactsState(arrayList);
             }
         }

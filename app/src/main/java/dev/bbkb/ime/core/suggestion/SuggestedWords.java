@@ -38,24 +38,24 @@ public class SuggestedWords {
 
     public static final SuggestedWords EMPTY = new SuggestedWords(EMPTY_SUGGESTIONS_LIST, false, false, 0);
 
-    private static boolean isValidType(int i) {
-        return 6 == i || 7 == i;
+    private static boolean isValidType(int inputStyle) {
+        return 6 == inputStyle || 7 == inputStyle;
     }
 
     public boolean isAutoCorrection() {
         return false;
     }
 
-    public SuggestedWords(ArrayList<SuggestedWordInfo> arrayList, boolean z, boolean z2, int i) {
-        this(arrayList, (arrayList.isEmpty() || isValidType(i)) ? null : arrayList.get(0).word, z, z2, i);
+    public SuggestedWords(ArrayList<SuggestedWordInfo> arrayList, boolean typedWordValid, boolean willAutoCorrect, int inputStyle) {
+        this(arrayList, (arrayList.isEmpty() || isValidType(inputStyle)) ? null : arrayList.get(0).word, typedWordValid, willAutoCorrect, inputStyle);
     }
 
-    public SuggestedWords(ArrayList<SuggestedWordInfo> arrayList, String str, boolean z, boolean z2, int i) {
+    public SuggestedWords(ArrayList<SuggestedWordInfo> arrayList, String typedWord, boolean typedWordValid, boolean willAutoCorrect, int inputStyle) {
         this.mSuggestionsList = arrayList;
-        this.mTypedWordValid = z;
-        this.mWillAutoCorrect = z2;
-        this.mInputStyle = i;
-        this.mAutoCorrectWord = str;
+        this.mTypedWordValid = typedWordValid;
+        this.mWillAutoCorrect = willAutoCorrect;
+        this.mInputStyle = inputStyle;
+        this.mAutoCorrectWord = typedWord;
     }
 
     public boolean isEmpty() {
@@ -66,27 +66,27 @@ public class SuggestedWords {
         return this.mSuggestionsList.size();
     }
 
-    public String getWord(int i) {
-        return this.mSuggestionsList.get(i).word;
+    public String getWord(int index) {
+        return this.mSuggestionsList.get(index).word;
     }
 
-    public String getWordForDisplay(int i) {
-        return this.mSuggestionsList.get(i).word;
+    public String getWordForDisplay(int index) {
+        return this.mSuggestionsList.get(index).word;
     }
 
-    public SuggestedWordInfo getWordInfo(int i) {
-        return this.mSuggestionsList.get(i);
+    public SuggestedWordInfo getWordInfo(int index) {
+        return this.mSuggestionsList.get(index);
     }
 
     public String toString() {
         return "SuggestedWords: mTypedWordValid=" + this.mTypedWordValid + " mWillAutoCorrect=" + this.mWillAutoCorrect + " mInputStyle=" + this.mInputStyle + " words=" + Arrays.toString(this.mSuggestionsList.toArray());
     }
 
-    public static ArrayList<SuggestedWordInfo> buildWithTypedWord(String str, SuggestedWords suggestions) {
+    public static ArrayList<SuggestedWordInfo> buildWithTypedWord(String typedWord, SuggestedWords suggestions) {
         ArrayList<SuggestedWordInfo> arrayList = new ArrayList<>();
         HashSet hashSet = new HashSet();
-        arrayList.add(new SuggestedWordInfo(str, Integer.MAX_VALUE, 0, Dictionary.DICTIONARY_USER_TYPED, -1, -1, null));
-        hashSet.add(str.toString());
+        arrayList.add(new SuggestedWordInfo(typedWord, Integer.MAX_VALUE, 0, Dictionary.DICTIONARY_USER_TYPED, -1, -1, null));
+        hashSet.add(typedWord.toString());
         int iM4288c = suggestions.size();
         for (int i = 1; i < iM4288c; i++) {
             SuggestedWordInfo suggestedWordInfoVarMo4289C = suggestions.getWordInfo(i);
@@ -120,15 +120,15 @@ public class SuggestedWords {
 
         private String debugInfo;
 
-        public SuggestedWordInfo(String str, int i, int i2, Dictionary dictionary, int i3, int i4, WordInfo wordInfo) {
+        public SuggestedWordInfo(String word, int score, int kindAndFlags, Dictionary dictionary, int indexInDictionary, int indexInSuggestions, WordInfo wordInfo) {
             this.debugInfo = "";
-            this.word = str;
+            this.word = word;
             this.completionInfo = null;
-            this.score = i;
-            this.kindAndFlags = i2;
+            this.score = score;
+            this.kindAndFlags = kindAndFlags;
             this.sourceDictionary = dictionary;
-            this.indexInDictionary = i3;
-            this.indexInSuggestions = i4;
+            this.indexInDictionary = indexInDictionary;
+            this.indexInSuggestions = indexInSuggestions;
             this.nuanceWordInfo = wordInfo;
         }
 
@@ -148,8 +148,8 @@ public class SuggestedWords {
             return this.kindAndFlags & 255;
         }
 
-        public boolean isKind(int i) {
-            return getKind() == i;
+        public boolean isKind(int kind) {
+            return getKind() == kind;
         }
 
         public boolean isObsolete() {
@@ -167,24 +167,24 @@ public class SuggestedWords {
             return this.word + " (" + this.debugInfo + ")";
         }
 
-        public static void dedupeSuggestions(String str, ArrayList<SuggestedWordInfo> arrayList) {
+        public static void dedupeSuggestions(String typedWord, ArrayList<SuggestedWordInfo> arrayList) {
             if (arrayList.isEmpty()) {
                 return;
             }
-            if (!TextUtils.isEmpty(str)) {
-                removeDuplicatesOf(str, arrayList, -1, false);
+            if (!TextUtils.isEmpty(typedWord)) {
+                removeDuplicatesOf(typedWord, arrayList, -1, false);
             }
             for (int i = 0; i < arrayList.size(); i++) {
                 removeDuplicatesOf(arrayList.get(i).word, arrayList, i, false);
             }
         }
 
-        private static boolean removeDuplicatesOf(String str, ArrayList<SuggestedWordInfo> arrayList, int i, boolean z) {
-            int i2 = i + 1;
+        private static boolean removeDuplicatesOf(String word, ArrayList<SuggestedWordInfo> arrayList, int startIndexExclusive, boolean ignoreCase) {
+            int i2 = startIndexExclusive + 1;
             boolean z2 = false;
             while (i2 < arrayList.size()) {
                 SuggestedWordInfo suggestedWordInfoVar = arrayList.get(i2);
-                if (str.equals(suggestedWordInfoVar.word) || (z && str.equalsIgnoreCase(suggestedWordInfoVar.word))) {
+                if (word.equals(suggestedWordInfoVar.word) || (ignoreCase && word.equalsIgnoreCase(suggestedWordInfoVar.word))) {
                     arrayList.remove(i2);
                     i2--;
                     z2 = true;
@@ -219,13 +219,13 @@ public class SuggestedWords {
         return (LocaleUtils.isCurrentSubtypeChinese() || LocaleUtils.isCurrentSubtypeJapanese()) ? 150 : 18;
     }
 
-    public static SuggestedWordInfo findByNuanceWord(SuggestedWords c0666ac, String str) {
-        Iterator<SuggestedWordInfo> it = c0666ac.mSuggestionsList.iterator();
+    public static SuggestedWordInfo findByNuanceWord(SuggestedWords suggestedWords, String word) {
+        Iterator<SuggestedWordInfo> it = suggestedWords.mSuggestionsList.iterator();
         while (it.hasNext()) {
             SuggestedWordInfo next = it.next();
-            if (next.nuanceWordInfo != null && next.nuanceWordInfo.word != null && str != null) {
+            if (next.nuanceWordInfo != null && next.nuanceWordInfo.word != null && word != null) {
                 java.util.Locale locale = SubtypeManager.getInstance().getCurrentSubtypeLocale();
-                if (locale != null && next.nuanceWordInfo.word.toLowerCase(locale).equals(str.toLowerCase(locale))) {
+                if (locale != null && next.nuanceWordInfo.word.toLowerCase(locale).equals(word.toLowerCase(locale))) {
                     return next;
                 }
             }

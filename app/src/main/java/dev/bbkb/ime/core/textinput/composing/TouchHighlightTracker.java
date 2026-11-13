@@ -20,14 +20,14 @@ public class TouchHighlightTracker {
         return this.highlightActive;
     }
 
-    public boolean onInputEvent(InputEvent event, int i) {
+    public boolean onInputEvent(InputEvent event, int highlightColor) {
         if (event.isModifierKey()) {
             if (event.isShiftLocked() && !this.highlightActive) {
                 return false;
             }
             this.highlightActive = true;
             this.pendingChar = new String(Character.toChars(event.mCodePoint));
-            this.highlightColor = i;
+            this.highlightColor = highlightColor;
         }
         return true;
     }
@@ -41,14 +41,14 @@ public class TouchHighlightTracker {
         this.highlightActive = false;
     }
 
-    public CharSequence applyHighlight(String str) {
+    public CharSequence applyHighlight(String composingText) {
         if (!this.highlightActive) {
-            return str;
+            return composingText;
         }
-        if (TextUtils.isEmpty(str)) {
-            str = this.pendingChar;
+        if (TextUtils.isEmpty(composingText)) {
+            composingText = this.pendingChar;
         }
-        SpannableString spannableString = new SpannableString(str);
+        SpannableString spannableString = new SpannableString(composingText);
         spannableString.setSpan(new BackgroundColorSpan(this.highlightColor), spannableString.length() - 1, spannableString.length(), 289);
         return spannableString;
     }

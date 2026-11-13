@@ -33,9 +33,9 @@ public class NumericSubpanelKeyboardView extends SimplifiedKeyboardView implemen
 
     private SettingsManager settingsManager;
 
-    /** @param aVar unused */
+    /** @param listener unused */
     @Override
-    public void setListener(SlideboardComponent.Listener aVar) {
+    public void setListener(SlideboardComponent.Listener listener) {
         // The numeric pad never slides itself shut.
     }
 
@@ -43,16 +43,16 @@ public class NumericSubpanelKeyboardView extends SimplifiedKeyboardView implemen
         this(context, attributeSet, R.attr.mainKeyboardViewStyle);
     }
 
-    /** @param i the default style attribute */
-    public NumericSubpanelKeyboardView(Context context, AttributeSet attributeSet, int i) {
-        super(context, attributeSet, i);
+    /** @param defStyleAttr the default style attribute */
+    public NumericSubpanelKeyboardView(Context context, AttributeSet attributeSet, int defStyleAttr) {
+        super(context, attributeSet, defStyleAttr);
         this.gestureAvailability = new GestureInputAvailability();
         this.settingsManager = SettingsManager.getInstance();
     }
 
-    /** @param c0924a the shared gesture detector, or null on release */
-    public void setGestureDetector(MultiPointerGestureDetector c0924a) {
-        this.gestureDetector = c0924a;
+    /** @param multiPointerGestureDetector the shared gesture detector, or null on release */
+    public void setGestureDetector(MultiPointerGestureDetector multiPointerGestureDetector) {
+        this.gestureDetector = multiPointerGestureDetector;
     }
 
     /** Real key surfaces in every style, in the palette's slide tones on the darker panel ground. */
@@ -71,19 +71,19 @@ public class NumericSubpanelKeyboardView extends SimplifiedKeyboardView implemen
         return getVisibility() == View.VISIBLE;
     }
 
-    /** @param str the currency symbol */
-    public void updateKey(String str) {
+    /** @param currencySymbol the currency symbol */
+    public void updateKey(String currencySymbol) {
         Keyboard keyboard = getKeyboard();
         if (keyboard != null) {
-            updateCurrencyKey(keyboard, str);
+            updateCurrencyKey(keyboard, currencySymbol);
         }
     }
 
-    /** @param str the currency setting's symbol, put on the currency key */
-    public static void updateCurrencyKey(Keyboard keyboard, String str) {
+    /** @param currencySymbol the currency setting's symbol, put on the currency key */
+    public static void updateCurrencyKey(Keyboard keyboard, String currencySymbol) {
         Key keyM6597a;
         char cCharAt;
-        if (str.isEmpty() || (keyM6597a = keyboard.getKeyByOutputText("currencyExtendedKeyStyle")) == null || (cCharAt = str.charAt(0)) == keyM6597a.getCode()) {
+        if (currencySymbol.isEmpty() || (keyM6597a = keyboard.getKeyByOutputText("currencyExtendedKeyStyle")) == null || (cCharAt = currencySymbol.charAt(0)) == keyM6597a.getCode()) {
             return;
         }
         if (keyboard.replaceKey(keyM6597a, new Key(new MoreKeySpec(String.valueOf(cCharAt), 0, cCharAt, String.valueOf(cCharAt)), MoreKeySpec.getEmpty(), KeyHintPosition.HIDDEN, keyM6597a.getHintLabel(), 0, 9, keyM6597a.getX(), keyM6597a.getY(), keyboard.mHorizontalGap + keyM6597a.getWidth(), keyboard.mVerticalGap + keyM6597a.getHeight(), keyboard.mHorizontalGap, keyboard.mVerticalGap, "currencyExtendedKeyStyle", keyM6597a.getMoreKeys(), keyM6597a.getKeyLabelSet(), keyM6597a.getMoreKeysFlags(), 8, keyM6597a.getScanCode()))) {
@@ -147,9 +147,9 @@ public class NumericSubpanelKeyboardView extends SimplifiedKeyboardView implemen
         keyboard.rebuildProximityGrid();
     }
 
-    /** @param str the symbol; empty keeps {@code key} */
-    private static Key createReplacementKey(Keyboard keyboard, String str, Key key) {
-        return str.length() == 0 ? key : new Key(new MoreKeySpec(str, 0, str.codePointAt(0), str), MoreKeySpec.getEmpty(), KeyHintPosition.HIDDEN, str, 0, key.getBackgroundType(), key.getX(), key.getY(), key.getWidth() + keyboard.mHorizontalGap, key.getHeight() + keyboard.mVerticalGap, keyboard.mHorizontalGap, keyboard.mVerticalGap, key.getOutputText(), null, key.getKeyLabelSet(), key.getMoreKeysFlags(), key.getActionFlags(), key.getScanCode());
+    /** @param symbol the symbol; empty keeps {@code key} */
+    private static Key createReplacementKey(Keyboard keyboard, String symbol, Key key) {
+        return symbol.length() == 0 ? key : new Key(new MoreKeySpec(symbol, 0, symbol.codePointAt(0), symbol), MoreKeySpec.getEmpty(), KeyHintPosition.HIDDEN, symbol, 0, key.getBackgroundType(), key.getX(), key.getY(), key.getWidth() + keyboard.mHorizontalGap, key.getHeight() + keyboard.mVerticalGap, keyboard.mHorizontalGap, keyboard.mVerticalGap, key.getOutputText(), null, key.getKeyLabelSet(), key.getMoreKeysFlags(), key.getActionFlags(), key.getScanCode());
     }
 
     @Override
@@ -183,9 +183,9 @@ public class NumericSubpanelKeyboardView extends SimplifiedKeyboardView implemen
         return true;
     }
 
-    /** @param f the panel's x translation */
+    /** @param translationX the panel's x translation */
     @Override
-    public void setXTranslation(float f) {
-        setTranslationX(f);
+    public void setXTranslation(float translationX) {
+        setTranslationX(translationX);
     }
 }

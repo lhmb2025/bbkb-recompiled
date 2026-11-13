@@ -19,11 +19,11 @@ public class CompositeKeyCharacterInterpreter implements KeyCharacterInterpreter
     }
 
     @Override
-    public KeyCharacterResult.Interpretation interpretKeyCharacter(KeyEvent keyEvent, int i) {
-        KeyCharacterResult.Interpretation interpretation = this.first.interpretKeyCharacter(keyEvent, i);
+    public KeyCharacterResult.Interpretation interpretKeyCharacter(KeyEvent keyEvent, int metaState) {
+        KeyCharacterResult.Interpretation interpretation = this.first.interpretKeyCharacter(keyEvent, metaState);
         if (interpretation == null) {
-            interpretation = this.second.interpretKeyCharacter(keyEvent, i);
+            interpretation = this.second.interpretKeyCharacter(keyEvent, metaState);
         }
-        return interpretation == null ? this.third.interpretKeyCharacter(keyEvent, i) : interpretation;
+        return interpretation == null ? this.third.interpretKeyCharacter(keyEvent, metaState) : interpretation;
     }
 }

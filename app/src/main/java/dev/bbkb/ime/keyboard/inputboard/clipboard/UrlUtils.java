@@ -18,30 +18,30 @@ public final class UrlUtils {
     private static final Pattern IMAGE_URL_PATTERN = Pattern.compile(
             "(?i)(?:https://)?[^\\s/:?#@]+\\.[^\\s/:?#@]+(?::\\d+)?/\\S*\\.(?:jpg|png|gif|bmp)");
 
-    /** @param str the candidate URL */
-    public static boolean isImageUrl(String str) {
-        return IMAGE_URL_PATTERN.matcher(str).matches();
+    /** @param url the candidate URL */
+    public static boolean isImageUrl(String url) {
+        return IMAGE_URL_PATTERN.matcher(url).matches();
     }
 
     /**
-     * Returns {@code str} unchanged if java.net.URL accepts it, {@code "https://" + str} if that has a
+     * Returns {@code url} unchanged if java.net.URL accepts it, {@code "https://" + url} if that has a
      * host (a bare host), otherwise null so callers skip the fetch.
      *
-     * @param str the candidate URL
+     * @param url the candidate URL
      */
     @Nullable
-    public static String ensureScheme(@Nullable String str) {
-        if (str == null) {
+    public static String ensureScheme(@Nullable String url) {
+        if (url == null) {
             return null;
         }
-        if (isValidUrl(str)) {
-            return str;
+        if (isValidUrl(url)) {
+            return url;
         }
         // Blank, has whitespace, or has a scheme the JVM cannot handle: not a host we can prefix.
-        if (str.isEmpty() || str.contains("://") || str.matches(".*\\s.*")) {
+        if (url.isEmpty() || url.contains("://") || url.matches(".*\\s.*")) {
             return null;
         }
-        String withScheme = "https://" + str;
+        String withScheme = "https://" + url;
         try {
             String host = new URL(withScheme).getHost();
             return (host == null || host.isEmpty()) ? null : withScheme;
@@ -55,11 +55,11 @@ public final class UrlUtils {
      * page's {@code og:image} could name {@code file:///...}), and {@link #ensureScheme} accepts any
      * scheme java.net.URL handles.
      *
-     * @param str the candidate URL
+     * @param rawUrl the candidate URL
      */
     @Nullable
-    public static String httpsUrlOrNull(@Nullable String str) {
-        String url = ensureScheme(str);
+    public static String httpsUrlOrNull(@Nullable String rawUrl) {
+        String url = ensureScheme(rawUrl);
         if (url == null) {
             return null;
         }
@@ -73,10 +73,10 @@ public final class UrlUtils {
         }
     }
 
-    /** @param str the candidate URL */
-    private static boolean isValidUrl(String str) {
+    /** @param url the candidate URL */
+    private static boolean isValidUrl(String url) {
         try {
-            new URL(str);
+            new URL(url);
             return true;
         } catch (MalformedURLException unused) {
             return false;

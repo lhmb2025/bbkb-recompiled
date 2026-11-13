@@ -24,13 +24,13 @@ public final class GraphemeUtils {
     /**
      * Chars one Backspace deletes from the end of {@code charSequence} (the text before the cursor).
      *
-     * @param i the code point before the cursor
+     * @param codePointBeforeCursor the code point before the cursor
      */
-    public static int getGraphemeLengthBeforeCursor(CharSequence charSequence, int i) {
+    public static int getGraphemeLengthBeforeCursor(CharSequence charSequence, int codePointBeforeCursor) {
         if (charSequence == null) {
             return 1;
         }
-        int shortcode = EmojiTextAnalyzer.findEmoticonShortcodeLength(true, charSequence, i);
+        int shortcode = EmojiTextAnalyzer.findEmoticonShortcodeLength(true, charSequence, codePointBeforeCursor);
         if (shortcode != 0 || charSequence.length() == 0) {
             return shortcode;
         }
@@ -46,13 +46,13 @@ public final class GraphemeUtils {
     /**
      * Chars one forward delete removes from the start of {@code charSequence} (the text after the cursor).
      *
-     * @param i the code point after the cursor
+     * @param codePointAfterCursor the code point after the cursor
      */
-    public static int getGraphemeLengthAfterCursor(CharSequence charSequence, int i) {
+    public static int getGraphemeLengthAfterCursor(CharSequence charSequence, int codePointAfterCursor) {
         if (charSequence == null) {
             return 1;
         }
-        int shortcode = EmojiTextAnalyzer.findEmoticonShortcodeLength(false, charSequence, i);
+        int shortcode = EmojiTextAnalyzer.findEmoticonShortcodeLength(false, charSequence, codePointAfterCursor);
         if (shortcode != 0 || charSequence.length() == 0) {
             return shortcode;
         }
@@ -67,13 +67,13 @@ public final class GraphemeUtils {
     /**
      * Chars one cursor step left crosses: the last cluster of {@code charSequence}.
      *
-     * @param i the code point before the cursor
+     * @param codePointBeforeCursor the code point before the cursor
      */
-    public static int getClusterLengthBeforeCursor(CharSequence charSequence, int i) {
+    public static int getClusterLengthBeforeCursor(CharSequence charSequence, int codePointBeforeCursor) {
         if (charSequence == null) {
             return 1;
         }
-        int shortcode = EmojiTextAnalyzer.findEmoticonShortcodeLength(true, charSequence, i);
+        int shortcode = EmojiTextAnalyzer.findEmoticonShortcodeLength(true, charSequence, codePointBeforeCursor);
         if (shortcode != 0 || charSequence.length() == 0) {
             return shortcode;
         }
@@ -84,25 +84,25 @@ public final class GraphemeUtils {
     /**
      * Chars one cursor step right crosses: the first cluster of {@code charSequence}.
      *
-     * @param i the code point after the cursor
+     * @param codePointAfterCursor the code point after the cursor
      */
-    public static int getClusterLengthAfterCursor(CharSequence charSequence, int i) {
+    public static int getClusterLengthAfterCursor(CharSequence charSequence, int codePointAfterCursor) {
         if (charSequence == null) {
             return 1;
         }
-        int shortcode = EmojiTextAnalyzer.findEmoticonShortcodeLength(false, charSequence, i);
+        int shortcode = EmojiTextAnalyzer.findEmoticonShortcodeLength(false, charSequence, codePointAfterCursor);
         if (shortcode != 0 || charSequence.length() == 0) {
             return shortcode;
         }
         return clusterEndAfter(charSequence.toString(), 0);
     }
 
-    /** @param str a two-char string; returns 0 unless it is a surrogate pair */
-    public static int surrogatePairToCodePoint(String str) {
-        if (str.length() != 2 || !Character.isSurrogatePair(str.charAt(0), str.charAt(1))) {
+    /** @param text a two-char string; returns 0 unless it is a surrogate pair */
+    public static int surrogatePairToCodePoint(String text) {
+        if (text.length() != 2 || !Character.isSurrogatePair(text.charAt(0), text.charAt(1))) {
             return 0;
         }
-        return Character.toCodePoint(str.charAt(0), str.charAt(1));
+        return Character.toCodePoint(text.charAt(0), text.charAt(1));
     }
 
     private static BreakIterator iteratorOver(String text) {

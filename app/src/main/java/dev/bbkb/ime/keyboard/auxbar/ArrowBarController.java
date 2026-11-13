@@ -136,12 +136,12 @@ public class ArrowBarController implements SimplifiedKeyboardView.onKeyEventList
         this.repeatHandler.postDelayed(this.keyRepeatRunnable, this.keyRepeatStartTimeout);
     }
 
-    /** @param z true if the finger lifted on the key it pressed (a tap, not a cancel) */
+    /** @param releasedOnKey true if the finger lifted on the key it pressed (a tap, not a cancel) */
     @Override
-    public void onKeyUp(Key key, boolean z) {
+    public void onKeyUp(Key key, boolean releasedOnKey) {
         stopKeyRepeat();
         // The shared key view can deliver a null key.
-        if (z && key != null) {
+        if (releasedOnKey && key != null) {
             handleArrowKey(key);
         }
     }

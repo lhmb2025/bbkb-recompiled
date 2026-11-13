@@ -50,41 +50,41 @@ public final class MoreKeysKeyboard extends Keyboard {
         public int mColumnWidth;
 
         /**
-         * @param i number of more keys
-         * @param i2 maximum columns
-         * @param i3 key width
-         * @param i4 row height
-         * @param i5 x of the parent key's center
-         * @param i6 keyboard width
-         * @param z true for a fixed column count
-         * @param z2 true for fixed key order
-         * @param i7 divider width, 0 for none
+         * @param numKeys number of more keys
+         * @param numColumn maximum columns
+         * @param keyWidth key width
+         * @param rowHeight row height
+         * @param coordXInParent x of the parent key's center
+         * @param parentKeyboardWidth keyboard width
+         * @param isMoreKeysFixedColumn true for a fixed column count
+         * @param isMoreKeysFixedOrder true for fixed key order
+         * @param dividerWidth divider width, 0 for none
          */
-        public void setParameters(int i, int i2, int i3, int i4, int i5, int i6, boolean z, boolean z2, int i7) {
+        public void setParameters(int numKeys, int numColumn, int keyWidth, int rowHeight, int coordXInParent, int parentKeyboardWidth, boolean isMoreKeysFixedColumn, boolean isMoreKeysFixedOrder, int dividerWidth) {
             int iM6344c;
             int iM6345d;
-            this.mIsMoreKeysFixedOrder = z2;
-            if (i6 / i3 < Math.min(i, i2)) {
-                throw new IllegalArgumentException("Keyboard is too small to hold more keys: " + i6 + " " + i3 + " " + i + " " + i2);
+            this.mIsMoreKeysFixedOrder = isMoreKeysFixedOrder;
+            if (parentKeyboardWidth / keyWidth < Math.min(numKeys, numColumn)) {
+                throw new IllegalArgumentException("Keyboard is too small to hold more keys: " + parentKeyboardWidth + " " + keyWidth + " " + numKeys + " " + numColumn);
             }
-            this.mDefaultKeyWidth = i3;
-            this.mDefaultRowHeight = i4;
-            this.mNumRows = ((i + i2) - 1) / i2;
-            if (z) {
-                iM6344c = Math.min(i, i2);
+            this.mDefaultKeyWidth = keyWidth;
+            this.mDefaultRowHeight = rowHeight;
+            this.mNumRows = ((numKeys + numColumn) - 1) / numColumn;
+            if (isMoreKeysFixedColumn) {
+                iM6344c = Math.min(numKeys, numColumn);
             } else {
-                iM6344c = getOptimizedColumns(i, i2);
+                iM6344c = getOptimizedColumns(numKeys, numColumn);
             }
             this.mNumColumns = iM6344c;
-            int i8 = i % iM6344c;
+            int i8 = numKeys % iM6344c;
             if (i8 == 0) {
                 i8 = iM6344c;
             }
             this.mTopKeys = i8;
             int i9 = (iM6344c - 1) / 2;
             int i10 = iM6344c - i9;
-            int i11 = i5 / i3;
-            int i12 = (i6 - i5) / i3;
+            int i11 = coordXInParent / keyWidth;
+            int i12 = (parentKeyboardWidth - coordXInParent) / keyWidth;
             if (i9 > i11) {
                 i10 = iM6344c - i11;
                 i9 = i11;
@@ -105,13 +105,13 @@ public final class MoreKeysKeyboard extends Keyboard {
             }
             this.mLeftKeys = i9;
             this.mRightKeys = i10;
-            if (z2) {
+            if (isMoreKeysFixedOrder) {
                 iM6345d = getFixedOrderTopRowAdjustment();
             } else {
                 iM6345d = getAutoOrderTopRowAdjustment();
             }
             this.mTopRowAdjustment = iM6345d;
-            this.mDividerWidth = i7;
+            this.mDividerWidth = dividerWidth;
             int i14 = this.mDefaultKeyWidth;
             int i15 = this.mDividerWidth;
             this.mColumnWidth = i14 + i15;
@@ -136,15 +136,15 @@ public final class MoreKeysKeyboard extends Keyboard {
             return (this.mNumRows == 1 || (i = this.mTopKeys) == 1 || this.mNumColumns % 2 == i % 2 || this.mLeftKeys == 0 || this.mRightKeys == 1) ? 0 : -1;
         }
 
-        /** @param i index of the more key */
-        int getColumnPos(int i) {
-            return this.mIsMoreKeysFixedOrder ? getFixedOrderColumnPos(i) : getAutoOrderColumnPos(i);
+        /** @param n index of the more key */
+        int getColumnPos(int n) {
+            return this.mIsMoreKeysFixedOrder ? getFixedOrderColumnPos(n) : getAutoOrderColumnPos(n);
         }
 
-        private int getFixedOrderColumnPos(int i) {
+        private int getFixedOrderColumnPos(int n) {
             int i2 = this.mNumColumns;
-            int i3 = i % i2;
-            if (!isTopRow(i / i2)) {
+            int i3 = n % i2;
+            if (!isTopRow(n / i2)) {
                 return i3 - this.mLeftKeys;
             }
             int i4 = this.mTopKeys;
@@ -156,10 +156,10 @@ public final class MoreKeysKeyboard extends Keyboard {
             return (i9 < i5 || i8 < i6) ? i9 < i5 ? i7 - (i5 - i9) : i7 + (i6 - i8) : i7;
         }
 
-        private int getAutoOrderColumnPos(int i) {
+        private int getAutoOrderColumnPos(int n) {
             int i2 = this.mNumColumns;
-            int i3 = i % i2;
-            int i4 = i / i2;
+            int i3 = n % i2;
+            int i4 = n / i2;
             int i5 = this.mLeftKeys;
             if (isTopRow(i4)) {
                 i5 += this.mTopRowAdjustment;
@@ -189,17 +189,17 @@ public final class MoreKeysKeyboard extends Keyboard {
             return i9;
         }
 
-        private static int getTopRowEmptySlots(int i, int i2) {
-            int i3 = i % i2;
+        private static int getTopRowEmptySlots(int numKeys, int numColumns) {
+            int i3 = numKeys % numColumns;
             if (i3 == 0) {
                 return 0;
             }
-            return i2 - i3;
+            return numColumns - i3;
         }
 
-        private int getOptimizedColumns(int i, int i2) {
-            int iMin = Math.min(i, i2);
-            while (getTopRowEmptySlots(i, iMin) >= this.mNumRows) {
+        private int getOptimizedColumns(int numKeys, int maxColumns) {
+            int iMin = Math.min(numKeys, maxColumns);
+            while (getTopRowEmptySlots(numKeys, iMin) >= this.mNumRows) {
                 iMin--;
             }
             return iMin;
@@ -210,32 +210,32 @@ public final class MoreKeysKeyboard extends Keyboard {
         }
 
         /**
-         * @param i index of the more key
-         * @param i2 row, 0 at the bottom
+         * @param n index of the more key
+         * @param row row, 0 at the bottom
          */
-        public int getX(int i, int i2) {
-            int iM6349a = (getColumnPos(i) * this.mColumnWidth) + getDefaultKeyCoordX();
-            return isTopRow(i2) ? iM6349a + (this.mTopRowAdjustment * (this.mColumnWidth / 2)) : iM6349a;
+        public int getX(int n, int row) {
+            int iM6349a = (getColumnPos(n) * this.mColumnWidth) + getDefaultKeyCoordX();
+            return isTopRow(row) ? iM6349a + (this.mTopRowAdjustment * (this.mColumnWidth / 2)) : iM6349a;
         }
 
-        /** @param i row, 0 at the bottom */
-        public int getY(int i) {
-            return (((this.mNumRows - 1) - i) * this.mDefaultRowHeight) + this.mTopPadding;
+        /** @param row row, 0 at the bottom */
+        public int getY(int row) {
+            return (((this.mNumRows - 1) - row) * this.mDefaultRowHeight) + this.mTopPadding;
         }
 
-        /** @param i row, 0 at the bottom */
-        public void markAsEdgeKey(Key key, int i) {
-            if (i == 0) {
+        /** @param row row, 0 at the bottom */
+        public void markAsEdgeKey(Key key, int row) {
+            if (row == 0) {
                 key.setTopEdge(this);
             }
-            if (isTopRow(i)) {
+            if (isTopRow(row)) {
                 key.setBottomEdge(this);
             }
         }
 
-        private boolean isTopRow(int i) {
+        private boolean isTopRow(int row) {
             int i2 = this.mNumRows;
-            return i2 > 1 && i == i2 - 1;
+            return i2 > 1 && row == i2 - 1;
         }
     }
 
@@ -395,36 +395,36 @@ public final class MoreKeysKeyboard extends Keyboard {
         private final Key mParentKey;
 
         /**
-         * @param c0965e the parent keyboard
-         * @param z true for a single more key shown in the key preview's place
-         * @param i key preview visible width
-         * @param i2 key preview visible height
+         * @param keyboard the parent keyboard
+         * @param isSingleMoreKeyWithPreview true for a single more key shown in the key preview's place
+         * @param keyPreviewVisibleWidth key preview visible width
+         * @param keyPreviewVisibleHeight key preview visible height
          */
-        public Builder(Context context, Key key, Keyboard c0965e, boolean z, int i, int i2, Paint paint) {
+        public Builder(Context context, Key key, Keyboard keyboard, boolean isSingleMoreKeyWithPreview, int keyPreviewVisibleWidth, int keyPreviewVisibleHeight, Paint paint) {
             this.mParams = new MoreKeysKeyboardParams();
             int iM6354a;
             int i3;
-            TemplateAttributes.obtain(context, c0965e).applyTo(this.mParams, c0965e.mId);
-            this.mParams.mVerticalGap = c0965e.mVerticalGap / 2;
+            TemplateAttributes.obtain(context, keyboard).applyTo(this.mParams, keyboard.mId);
+            this.mParams.mVerticalGap = keyboard.mVerticalGap / 2;
             this.mParentKey = key;
-            if (z) {
-                iM6354a = i;
-                i3 = i2 + this.mParams.mVerticalGap;
+            if (isSingleMoreKeyWithPreview) {
+                iM6354a = keyPreviewVisibleWidth;
+                i3 = keyPreviewVisibleHeight + this.mParams.mVerticalGap;
             } else {
                 iM6354a = getMaxKeyWidth(key, this.mParams.mDefaultKeyWidth, context.getResources().getDimension(R.dimen.config_more_keys_keyboard_key_horizontal_padding) + (key.hasLabelsInMoreKeys() ? this.mParams.mDefaultKeyWidth * 0.2f : 0.0f), paint);
-                i3 = c0965e.mMostCommonKeyHeight;
+                i3 = keyboard.mMostCommonKeyHeight;
             }
-            this.mParams.setParameters(key.getMoreKeys().length, key.getMoreKeysColumnNumber(), iM6354a, i3, key.getX() + (key.getWidth() / 2), c0965e.mId.mWidth, key.isMoreKeysFixedColumn(), key.isMoreKeysFixedOrder(), key.needsDividersInMoreKeys() ? (int) (iM6354a * 0.2f) : 0);
+            this.mParams.setParameters(key.getMoreKeys().length, key.getMoreKeysColumnNumber(), iM6354a, i3, key.getX() + (key.getWidth() / 2), keyboard.mId.mWidth, key.isMoreKeysFixedColumn(), key.isMoreKeysFixedOrder(), key.needsDividersInMoreKeys() ? (int) (iM6354a * 0.2f) : 0);
         }
 
-        private static int getMaxKeyWidth(Key key, int i, float f, Paint paint) {
+        private static int getMaxKeyWidth(Key key, int minKeyWidth, float padding, Paint paint) {
             for (MoreKeySpec c1034aq : key.getMoreKeys()) {
                 String strD = c1034aq.getLabel();
                 if (strD != null && (strD).codePointCount(0, (strD).length()) > 1) {
-                    i = Math.max(i, (int) (TypefaceUtils.getStringWidth(strD, paint) + f));
+                    minKeyWidth = Math.max(minKeyWidth, (int) (TypefaceUtils.getStringWidth(strD, paint) + padding));
                 }
             }
-            return i;
+            return minKeyWidth;
         }
 
         public MoreKeysKeyboard build() {
@@ -451,14 +451,14 @@ public final class MoreKeysKeyboard extends Keyboard {
     
     public static class MoreKeysDivider extends Key.SpacerKey {
         /**
-         * @param c1025ah the popup's params
-         * @param i x
-         * @param i2 y
-         * @param i3 width
-         * @param i4 height
+         * @param keyboardParams the popup's params
+         * @param x x
+         * @param y y
+         * @param width width
+         * @param height height
          */
-        public MoreKeysDivider(KeyboardParams c1025ah, int i, int i2, int i3, int i4) {
-            super(c1025ah, i, i2, i3, i4);
+        public MoreKeysDivider(KeyboardParams keyboardParams, int x, int y, int width, int height) {
+            super(keyboardParams, x, y, width, height);
         }
     }
 }

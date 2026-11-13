@@ -57,33 +57,33 @@ public class QuickPhrasesController implements QuickPhrasesView.OnQuickPhraseSel
         this.ime.getInputLogic().pasteText(charSequence);
     }
 
-    /** @param c0804d the settings holding the five phrases */
-    private List<QuickPhrasesAdapter.QuickPhrase> buildPhrasesList(SettingsValues c0804d) {
+    /** @param settingsValues the settings holding the five phrases */
+    private List<QuickPhrasesAdapter.QuickPhrase> buildPhrasesList(SettingsValues settingsValues) {
         ArrayList arrayList = new ArrayList();
-        addPhrase(arrayList, c0804d.quickPhrase1);
-        addPhrase(arrayList, c0804d.quickPhrase2);
-        addPhrase(arrayList, c0804d.quickPhrase3);
-        addPhrase(arrayList, c0804d.quickPhrase4);
-        addPhrase(arrayList, c0804d.quickPhrase5);
+        addPhrase(arrayList, settingsValues.quickPhrase1);
+        addPhrase(arrayList, settingsValues.quickPhrase2);
+        addPhrase(arrayList, settingsValues.quickPhrase3);
+        addPhrase(arrayList, settingsValues.quickPhrase4);
+        addPhrase(arrayList, settingsValues.quickPhrase5);
         return arrayList;
     }
 
     /**
      * @param list the phrases so far
-     * @param str the phrase; blank ones are skipped
+     * @param phrase the phrase; blank ones are skipped
      */
-    private static void addPhrase(List<QuickPhrasesAdapter.QuickPhrase> list, String str) {
-        if (isAllWhitespace(str)) {
+    private static void addPhrase(List<QuickPhrasesAdapter.QuickPhrase> list, String phrase) {
+        if (isAllWhitespace(phrase)) {
             return;
         }
-        list.add(new QuickPhrasesAdapter.QuickPhrase(str + " "));
+        list.add(new QuickPhrasesAdapter.QuickPhrase(phrase + " "));
     }
 
-    /** @param c0804d the settings holding the five phrases */
-    public void loadPhrases(SettingsValues c0804d) {
+    /** @param settingsValues the settings holding the five phrases */
+    public void loadPhrases(SettingsValues settingsValues) {
         QuickPhrasesView quickPhrasesView = this.view;
         if (quickPhrasesView != null) {
-            quickPhrasesView.setQuickPhrases(buildPhrasesList(c0804d));
+            quickPhrasesView.setQuickPhrases(buildPhrasesList(settingsValues));
         }
     }
 }

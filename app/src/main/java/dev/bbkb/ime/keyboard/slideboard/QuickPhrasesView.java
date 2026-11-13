@@ -45,9 +45,9 @@ public class QuickPhrasesView extends RelativeLayout implements QuickPhrasesAdap
         this(context, attributeSet, 0);
     }
 
-    /** @param i the default style attribute */
-    public QuickPhrasesView(Context context, AttributeSet attributeSet, int i) {
-        super(context, attributeSet, i);
+    /** @param defStyleAttr the default style attribute */
+    public QuickPhrasesView(Context context, AttributeSet attributeSet, int defStyleAttr) {
+        super(context, attributeSet, defStyleAttr);
         LayoutInflater.from(context).inflate(R.layout.quickphrases, this);
         this.recyclerView = (RecyclerView) findViewById(R.id.quick_phrase_list);
         this.recyclerView.setLayoutManager(new LinearLayoutManager(context));
@@ -123,11 +123,11 @@ public class QuickPhrasesView extends RelativeLayout implements QuickPhrasesAdap
     }
 
     /**
-     * @param i the width measure spec (ignored)
-     * @param i2 the height measure spec (ignored)
+     * @param widthMeasureSpec the width measure spec (ignored)
+     * @param heightMeasureSpec the height measure spec (ignored)
      */
     @Override
-    public void onMeasure(int i, int i2) {
+    public void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         int i3;
         int iM5585a = ResourceConfigManager.getScreenWidthPixels(getContext().getResources()) / 2;
         Keyboard keyboard = this.keyboardSwitcher.getCurrentKeyboard();
@@ -160,10 +160,10 @@ public class QuickPhrasesView extends RelativeLayout implements QuickPhrasesAdap
         return ResourceConfigManager.getScreenWidthPixels(getResources()) / 2;
     }
 
-    /** @param f the panel's x translation */
+    /** @param translationX the panel's x translation */
     @Override
-    public void setXTranslation(float f) {
-        setTranslationX(f);
+    public void setXTranslation(float translationX) {
+        setTranslationX(translationX);
     }
 
     @Override

@@ -19,12 +19,12 @@ public enum KeyHintPosition {
     private final int value;
 
     /**
-     * @param str the XML name
-     * @param i the XML integer value
+     * @param label the XML name
+     * @param value the XML integer value
      */
-    KeyHintPosition(String str, int i) {
-        this.label = str;
-        this.value = i;
+    KeyHintPosition(String label, int value) {
+        this.label = label;
+        this.value = value;
     }
 
     public int getValue() {
@@ -36,9 +36,9 @@ public enum KeyHintPosition {
         return this.label;
     }
 
-    /** @param i the XML integer value */
-    public static KeyHintPosition fromValue(int i) {
-        switch (i) {
+    /** @param value the XML integer value */
+    public static KeyHintPosition fromValue(int value) {
+        switch (value) {
             case 0:
                 return HIDDEN;
             case 1:
@@ -50,7 +50,7 @@ public enum KeyHintPosition {
             case 4:
                 return BOTTOM_LEFT_CORNER;
             default:
-                throw new IllegalArgumentException("Invalid display style value: " + i);
+                throw new IllegalArgumentException("Invalid display style value: " + value);
         }
     }
 }

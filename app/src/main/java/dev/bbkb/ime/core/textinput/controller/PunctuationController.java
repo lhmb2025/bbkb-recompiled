@@ -42,15 +42,15 @@ public class PunctuationController {
     }
 
     /**
-     * @param i the code point before the space
+     * @param codePoint the code point before the space
      */
-    private static boolean isDoubleSpacePeriodCandidate(int i, InputEventContext context) {
+    private static boolean isDoubleSpacePeriodCandidate(int codePoint, InputEventContext context) {
         Locale locale = context.settingsValues.locale;
         if ((locale != null ? locale.getLanguage() : "").equals("th")) {
             return false;
         }
-        int type = Character.getType(i);
-        return Character.isLetterOrDigit(i) || i == 39 || i == 34 || i == 41 || i == 93 || i == 125 || i == 62 || i == 43 || i == 37 || type == 28 || type == 6 || type == 8;
+        int type = Character.getType(codePoint);
+        return Character.isLetterOrDigit(codePoint) || codePoint == 39 || codePoint == 34 || codePoint == 41 || codePoint == 93 || codePoint == 125 || codePoint == 62 || codePoint == 43 || codePoint == 37 || type == 28 || type == 6 || type == 8;
     }
 
     /** Replaces the trailing space with separator + space on a quick second space. */

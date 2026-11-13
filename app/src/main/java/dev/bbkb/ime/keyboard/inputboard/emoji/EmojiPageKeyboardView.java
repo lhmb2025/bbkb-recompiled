@@ -119,15 +119,15 @@ public final class EmojiPageKeyboardView extends KeyboardView implements Gesture
         }
     }
 
-    /** @param c1084t the pointer tracker */
+    /** @param pointerTracker the pointer tracker */
     @Override
-    public void showGestureTrail(PointerTracker c1084t) {
+    public void showGestureTrail(PointerTracker pointerTracker) {
         // No gesture typing on emoji pages.
     }
 
-    /** @param c1084t the pointer tracker */
+    /** @param pointerTracker the pointer tracker */
     @Override
-    public void showSlidingKeyInputPreview(PointerTracker c1084t) {
+    public void showSlidingKeyInputPreview(PointerTracker pointerTracker) {
         // No sliding key input on emoji pages.
     }
     
@@ -136,9 +136,9 @@ public final class EmojiPageKeyboardView extends KeyboardView implements Gesture
         // Keys are redrawn through invalidateKey.
     }
 
-    /** @param c1084t the pointer tracker */
+    /** @param pointerTracker the pointer tracker */
     @Override
-    public void onLongPress(PointerTracker c1084t) {
+    public void onLongPress(PointerTracker pointerTracker) {
         // Long-press is handled by the GestureDetector (onLongPress(MotionEvent)).
     }
 
@@ -168,20 +168,20 @@ public final class EmojiPageKeyboardView extends KeyboardView implements Gesture
     }
 
     /**
-     * @param f horizontal velocity
-     * @param f2 vertical velocity
+     * @param velocityX horizontal velocity
+     * @param velocityY vertical velocity
      */
     @Override // android.view.GestureDetector.OnGestureListener
-    public boolean onFling(MotionEvent motionEvent, MotionEvent motionEvent2, float f, float f2) {
+    public boolean onFling(MotionEvent motionEvent, MotionEvent e2, float velocityX, float velocityY) {
         return false;
     }
 
     /**
-     * @param f horizontal scroll distance
-     * @param f2 vertical scroll distance
+     * @param distanceX horizontal scroll distance
+     * @param distanceY vertical scroll distance
      */
     @Override // android.view.GestureDetector.OnGestureListener
-    public boolean onScroll(MotionEvent motionEvent, MotionEvent motionEvent2, float f, float f2) {
+    public boolean onScroll(MotionEvent motionEvent, MotionEvent e2, float distanceX, float distanceY) {
         return false;
     }
 
@@ -190,12 +190,12 @@ public final class EmojiPageKeyboardView extends KeyboardView implements Gesture
         // Pressed state is set in onDown.
     }
 
-    /** @param interfaceC1071m the popup panel being shown */
+    /** @param moreKeysPanel the popup panel being shown */
     @Override
-    public void onShowMoreKeysPanel(MoreKeysPanel interfaceC1071m) {
+    public void onShowMoreKeysPanel(MoreKeysPanel moreKeysPanel) {
         updateMoreKeysPosition();
-        interfaceC1071m.showInParent(this.moreKeysLayoutParams);
-        this.moreKeysDrawingProxy = interfaceC1071m;
+        moreKeysPanel.showInParent(this.moreKeysLayoutParams);
+        this.moreKeysDrawingProxy = moreKeysPanel;
         setDimmed(true);
     }
 
@@ -255,9 +255,9 @@ public final class EmojiPageKeyboardView extends KeyboardView implements Gesture
         this(context, attributeSet, R.attr.keyboardViewStyle);
     }
 
-    /** @param i the default style attribute */
-    public EmojiPageKeyboardView(Context context, AttributeSet attributeSet, int i) {
-        super(context, attributeSet, i);
+    /** @param defStyleAttr the default style attribute */
+    public EmojiPageKeyboardView(Context context, AttributeSet attributeSet, int defStyleAttr) {
+        super(context, attributeSet, defStyleAttr);
         this.keyboardStyleSet = null;
         this.dimPaint = new Paint();
         this.windowLocationArray = CoordinateUtils.newCoordinateArray();
@@ -265,7 +265,7 @@ public final class EmojiPageKeyboardView extends KeyboardView implements Gesture
         this.keyboardActionListener = new KeyDetector();
         this.gestureDetector = new GestureDetector(context, this);
         this.gestureDetector.setIsLongpressEnabled(true);
-        TypedArray typedArrayObtainStyledAttributes = context.obtainStyledAttributes(attributeSet, R.styleable.MainKeyboardView, i, R.style.MainKeyboardView);
+        TypedArray typedArrayObtainStyledAttributes = context.obtainStyledAttributes(attributeSet, R.styleable.MainKeyboardView, defStyleAttr, R.style.MainKeyboardView);
         this.keyboardStyleSet = new KeyPreviewDrawParams(typedArrayObtainStyledAttributes);
         // Inflated lazily: most pages are never long-pressed.
         this.moreKeysLayoutResId = typedArrayObtainStyledAttributes.getResourceId(R.styleable.MainKeyboardView_moreKeysKeyboardLayout, 0);
@@ -394,9 +394,9 @@ public final class EmojiPageKeyboardView extends KeyboardView implements Gesture
         this.moreKeysLayoutParams.removeAllDrawingPreviews();
     }
 
-    /** @param interfaceC0967a receives emoji key presses and releases */
-    public void setOnKeyEventListener(OnEmojiKeyListener interfaceC0967a) {
-        this.keyEventListener = interfaceC0967a;
+    /** @param onEmojiKeyListener receives emoji key presses and releases */
+    public void setOnKeyEventListener(OnEmojiKeyListener onEmojiKeyListener) {
+        this.keyEventListener = onEmojiKeyListener;
     }
 
     @Override // dev.bbkb.ime.keyboard.KeyboardView
@@ -487,10 +487,10 @@ public final class EmojiPageKeyboardView extends KeyboardView implements Gesture
         }
     }
 
-    /** @param z true to dim the page behind an open popup */
-    private void setDimmed(boolean z) {
-        boolean z2 = this.isDimmed != z;
-        this.isDimmed = z;
+    /** @param dimmed true to dim the page behind an open popup */
+    private void setDimmed(boolean dimmed) {
+        boolean z2 = this.isDimmed != dimmed;
+        this.isDimmed = dimmed;
         if (z2) {
             invalidateAllKeys();
         }

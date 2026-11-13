@@ -21,23 +21,23 @@ public abstract class AbstractDrawingHandler implements PointerTrackerQueue.Elem
 
     public final int mPointerId;
 
-    public abstract void updateBatchInputTimer(long j);
+    public abstract void updateBatchInputTimer(long syntheticMoveEventTime);
 
-    protected abstract void onCancelEventInternal(long j);
+    protected abstract void onCancelEventInternal(long eventTime);
 
-    public AbstractDrawingHandler(int i) {
-        this.mPointerId = i;
+    public AbstractDrawingHandler(int pointerId) {
+        this.mPointerId = pointerId;
     }
 
     public boolean isInGesture() {
         return this.mInGesture;
     }
 
-    protected void onCancelEvent(int i, int i2, long j) {
+    protected void onCancelEvent(int x, int y, long eventTime) {
         if (Logger.isLoggable(TAG, Log.DEBUG)) {
-            printTouchEvent("onCancelEvt:", i, i2, j);
+            printTouchEvent("onCancelEvt:", x, y, eventTime);
         }
-        onCancelEventInternal(j);
+        onCancelEventInternal(eventTime);
     }
 
     protected void resetGestureStrokeTime() {
@@ -45,12 +45,12 @@ public abstract class AbstractDrawingHandler implements PointerTrackerQueue.Elem
     }
 
     @Override
-    public void addGestureStrokeTime(int i) {
-        this.mAccumulatedGestureTime += i;
+    public void addGestureStrokeTime(int distance) {
+        this.mAccumulatedGestureTime += distance;
     }
 
-    protected void printTouchEvent(String str, int i, int i2, long j) {
-        if (BuildConfig.DEBUG) Log.d(TAG, String.format("[%d]%s %4d %4d %5d", Integer.valueOf(this.mPointerId), str, Integer.valueOf(i), Integer.valueOf(i2), Long.valueOf(j)));
+    protected void printTouchEvent(String title, int x, int y, long eventTime) {
+        if (BuildConfig.DEBUG) Log.d(TAG, String.format("[%d]%s %4d %4d %5d", Integer.valueOf(this.mPointerId), title, Integer.valueOf(x), Integer.valueOf(y), Long.valueOf(eventTime)));
     }
 
     public void cancelTracking() {

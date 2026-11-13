@@ -55,13 +55,13 @@ public class DynamicLearningManager implements NuanceSDK.ManagedModeCallback {
         });
     }
 
-    /** @param z true if this session may learn (preference, field type and incognito folded in) */
-    public void setDynamicLearningEnabled(boolean z) {
-        this.dynamicLearningEnabled = z;
+    /** @param enabled true if this session may learn (preference, field type and incognito folded in) */
+    public void setDynamicLearningEnabled(boolean enabled) {
+        this.dynamicLearningEnabled = enabled;
         EngineThreads.post(() -> {
             NuanceSDK engine = engineOrNull();
-            if (engine != null) engine.setIsExplicitLearning(!z);
-            if (BuildConfig.DEBUG) android.util.Log.d("PIPELINE", "IME:learn:setDynamicLearningEnabled=" + z + " engine=" + (engine != null));
+            if (engine != null) engine.setIsExplicitLearning(!enabled);
+            if (BuildConfig.DEBUG) android.util.Log.d("PIPELINE", "IME:learn:setDynamicLearningEnabled=" + enabled + " engine=" + (engine != null));
         });
     }
 
@@ -70,14 +70,14 @@ public class DynamicLearningManager implements NuanceSDK.ManagedModeCallback {
         return this.dynamicLearningEnabled;
     }
 
-    /** @param z the global learning preference */
-    public void setLearningPreferenceEnabled(boolean z) {
-        this.learningPreferenceEnabled = z;
+    /** @param enabled the global learning preference */
+    public void setLearningPreferenceEnabled(boolean enabled) {
+        this.learningPreferenceEnabled = enabled;
     }
 
-    /** @param z true if the focused field asked for no personalized learning */
-    public void setNoPersonalizedLearning(boolean z) {
-        this.noPersonalizedLearning = z;
+    /** @param noPersonalizedLearning true if the focused field asked for no personalized learning */
+    public void setNoPersonalizedLearning(boolean noPersonalizedLearning) {
+        this.noPersonalizedLearning = noPersonalizedLearning;
     }
 
     /** Whether the focused field asked for no personalized learning (incognito). */
@@ -126,20 +126,20 @@ public class DynamicLearningManager implements NuanceSDK.ManagedModeCallback {
     }
 
     /**
-     * @param z force: true for a Japanese or partial Chinese pick, where the engine's selection is
+     * @param force force: true for a Japanese or partial Chinese pick, where the engine's selection is
      *          the transition that keeps the composition alive. Selects by index even when the
      *          session may not learn, but never learns by content.
      */
-    public void learn(SuggestedWords.SuggestedWordInfo suggestedWordInfoVar, boolean z) {
-        if (suggestedWordInfoVar == null || (!this.dynamicLearningEnabled && !z)) {
+    public void learn(SuggestedWords.SuggestedWordInfo suggestedWordInfo, boolean force) {
+        if (suggestedWordInfo == null || (!this.dynamicLearningEnabled && !force)) {
             clearEngine();
         } else {
-            learnWithActiveLearner(suggestedWordInfoVar);
+            learnWithActiveLearner(suggestedWordInfo);
         }
     }
 
-    public void learn(SuggestedWords.SuggestedWordInfo suggestedWordInfoVar) {
-        learn(suggestedWordInfoVar, false);
+    public void learn(SuggestedWords.SuggestedWordInfo suggestedWordInfo) {
+        learn(suggestedWordInfo, false);
     }
 
     /**
@@ -156,16 +156,16 @@ public class DynamicLearningManager implements NuanceSDK.ManagedModeCallback {
     }
 
     /**
-     * @param strArr contact name words
-     * @param bVar which contacts (all, personal or work)
+     * @param words contact name words
+     * @param contactsType which contacts (all, personal or work)
      */
-    public void addContactsWords(final String[] strArr, final ContactsDataProvider.ContactsType bVar) {
+    public void addContactsWords(final String[] words, final ContactsDataProvider.ContactsType contactsType) {
         // The global preference only: the focused field (password, incognito) has no say in an address book import.
         if (this.learningPreferenceEnabled) {
-            if (strArr.length <= 500) {
-                addContactsWordsOnLoader(strArr, bVar);
+            if (words.length <= 500) {
+                addContactsWordsOnLoader(words, contactsType);
             } else {
-                this.backgroundExecutor.execute(() -> addContactsWordsOnLoader(strArr, bVar));
+                this.backgroundExecutor.execute(() -> addContactsWordsOnLoader(words, contactsType));
             }
         }
     }
@@ -174,11 +174,11 @@ public class DynamicLearningManager implements NuanceSDK.ManagedModeCallback {
      * Runs the batch (a long hold) on the loader thread. A background caller waits so its
      * bookkeeping follows the add; the main thread never waits.
      *
-     * @param strArr contact name words
-     * @param bVar which contacts
+     * @param words contact name words
+     * @param contactsType which contacts
      */
-    private void addContactsWordsOnLoader(String[] strArr, ContactsDataProvider.ContactsType bVar) {
-        java.util.concurrent.Future<?> done = EngineThreads.load(() -> addContactsWordsInternal(strArr, bVar));
+    private void addContactsWordsOnLoader(String[] words, ContactsDataProvider.ContactsType contactsType) {
+        java.util.concurrent.Future<?> done = EngineThreads.load(() -> addContactsWordsInternal(words, contactsType));
         if (Looper.myLooper() == Looper.getMainLooper()) {
             return;
         }
@@ -191,7 +191,7 @@ public class DynamicLearningManager implements NuanceSDK.ManagedModeCallback {
         }
     }
 
-    private void learnWithActiveLearner(SuggestedWords.SuggestedWordInfo suggestedWordInfoVar) {
+    private void learnWithActiveLearner(SuggestedWords.SuggestedWordInfo suggestedWordInfo) {
         BaseLearningModel abstractC0928aM6055e = getActiveLearner();
         if (BuildConfig.DEBUG) {
             // active is set only from onManagedModeChanged(false); if that never fires, every commit
@@ -201,7 +201,7 @@ public class DynamicLearningManager implements NuanceSDK.ManagedModeCallback {
                                                 : abstractC0928aM6055e.getClass().getSimpleName()));
         }
         if (abstractC0928aM6055e != null) {
-            abstractC0928aM6055e.learnWord(suggestedWordInfoVar, this.dynamicLearningEnabled);
+            abstractC0928aM6055e.learnWord(suggestedWordInfo, this.dynamicLearningEnabled);
             return;
         }
         // No learner: still end the word, or the next prediction scores against the committed word.
@@ -211,25 +211,25 @@ public class DynamicLearningManager implements NuanceSDK.ManagedModeCallback {
     /**
      * Loader thread (see {@link #addContactsWordsOnLoader}).
      *
-     * @param strArr contact name words
-     * @param bVar which contacts
+     * @param words contact name words
+     * @param contactsType which contacts
      */
-    void addContactsWordsInternal(String[] strArr, ContactsDataProvider.ContactsType bVar) {
+    void addContactsWordsInternal(String[] words, ContactsDataProvider.ContactsType contactsType) {
         NuanceSDK engine = engineOrNull();
         if (engine == null) {
             return; // No engine to learn contacts into.
         }
-        if (bVar == ContactsDataProvider.ContactsType.ALL) {
-            engine.addContactsWords(strArr);
+        if (contactsType == ContactsDataProvider.ContactsType.ALL) {
+            engine.addContactsWords(words);
         } else {
-            engine.addContactsWords(strArr, bVar == ContactsDataProvider.ContactsType.WORK);
+            engine.addContactsWords(words, contactsType == ContactsDataProvider.ContactsType.WORK);
         }
     }
 
     @Override // com.blackberry.nuanceshim.NuanceSDK.ManagedModeCallback
-    /** @param z true for managed (work profile) mode, which activates no learner */
-    public void onManagedModeChanged(boolean z) {
-        if (z) {
+    /** @param isManaged true for managed (work profile) mode, which activates no learner */
+    public void onManagedModeChanged(boolean isManaged) {
+        if (isManaged) {
             return;
         }
         this.personalLearner.active = true;

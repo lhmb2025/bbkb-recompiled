@@ -77,40 +77,40 @@ public final class SoftwareMultitapHandler extends WeakOwnerHandler<BlackBerryIM
     }
 
     /**
-     * @param i the multitap base code point
-     * @param i2 index into its more-keys, or -1 for the base itself
+     * @param baseCode the multitap base code point
+     * @param index index into its more-keys, or -1 for the base itself
      */
-    private String getMultitapCandidate(int i, int i2) {
-        String[] moreKeys = this.keyboardSwitcher.getMoreKeysForCode(i);
-        if (moreKeys == null || i2 >= moreKeys.length) {
-            i2 = -1;
+    private String getMultitapCandidate(int baseCode, int index) {
+        String[] moreKeys = this.keyboardSwitcher.getMoreKeysForCode(baseCode);
+        if (moreKeys == null || index >= moreKeys.length) {
+            index = -1;
         }
-        return i2 == -1 ? Character.toString((char) i) : moreKeys[i2];
+        return index == -1 ? Character.toString((char) baseCode) : moreKeys[index];
     }
 
     public boolean isMultitapInProgress() {
         return this.multitapInProgress;
     }
 
-    /** @param i the code point of the tapped key */
-    public KeyCharacterResult.Interpretation interpretCodePoint(int i) {
+    /** @param code the code point of the tapped key */
+    public KeyCharacterResult.Interpretation interpretCodePoint(int code) {
         int i2;
         boolean z;
         int i3;
         boolean z2;
-        if (this.multitapCodePoint == i) {
+        if (this.multitapCodePoint == code) {
             int i4 = this.multitapIndex + 1;
             i2 = this.multitapBaseCode;
             i3 = i4;
             z = true;
             z2 = true;
-        } else if (this.keyboardSwitcher.getMoreKeysForCode(i) != null) {
-            i2 = i;
+        } else if (this.keyboardSwitcher.getMoreKeysForCode(code) != null) {
+            i2 = code;
             z = true;
             i3 = -1;
             z2 = false;
         } else {
-            i2 = i;
+            i2 = code;
             z = false;
             i3 = -1;
             z2 = false;

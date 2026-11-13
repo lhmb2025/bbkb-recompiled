@@ -53,16 +53,16 @@ public class KeyEventConverter {
         return PrefsManager.INSTANCE.getPrefs(mContext).getBoolean("pref_voice_input_key", true);
     }
 
-    /** @param i an EditorInfo input type */
-    private boolean isNumericFieldClass(int i) {
-        int i2 = i & 15;
+    /** @param inputType an EditorInfo input type */
+    private boolean isNumericFieldClass(int inputType) {
+        int i2 = inputType & 15;
         return i2 == 2 || i2 == 4 || i2 == 3;
     }
 
-    /** @param i an EditorInfo input type */
-    private boolean isNumberOrDatetimeVariationField(int i) {
-        int i2 = i & 15;
-        return i2 == 2 || (i2 == 4 && (i & 4080) != 0);
+    /** @param inputType an EditorInfo input type */
+    private boolean isNumberOrDatetimeVariationField(int inputType) {
+        int i2 = inputType & 15;
+        return i2 == 2 || (i2 == 4 && (inputType & 4080) != 0);
     }
 
     /**
@@ -88,12 +88,12 @@ public class KeyEventConverter {
     }
 
     /**
-     * @param i device id
-     * @param interfaceC0922i interprets the event's character under the computed meta state
+     * @param deviceId device id
+     * @param keyCharacterInterpreter interprets the event's character under the computed meta state
      */
-    public KeyEventConverter(int i, KeyCharacterInterpreter interfaceC0922i, Context context, AuxCharacterResolver resolver) {
-        this.mDeviceId = i;
-        this.mKeyCharacterInterpreter = interfaceC0922i;
+    public KeyEventConverter(int deviceId, KeyCharacterInterpreter keyCharacterInterpreter, Context context, AuxCharacterResolver resolver) {
+        this.mDeviceId = deviceId;
+        this.mKeyCharacterInterpreter = keyCharacterInterpreter;
         this.mContext = context;
         this.auxCharacterResolver = resolver;
     }
@@ -136,10 +136,10 @@ public class KeyEventConverter {
     }
 
     /**
-     * @param i the computed (interpreted) meta state
-     * @param i2 the editor's input type
+     * @param metaState the computed (interpreted) meta state
+     * @param inputType the editor's input type
      */
-    public InputEvent convertKeyEvent(KeyEvent keyEvent, int i, int i2) {
+    public InputEvent convertKeyEvent(KeyEvent keyEvent, int metaState, int inputType) {
         initializeAltMappingsIfNeeded();
 
         // The profile's Alt table and special-function keys describe the phone's own keys. A key
@@ -161,7 +161,7 @@ public class KeyEventConverter {
         boolean isModifierKey = false;
         boolean isTextEvent = false;
         boolean z = false;
-        KeyCharacterResult.Interpretation interpreted = this.mKeyCharacterInterpreter.interpretKeyCharacter(keyEvent, i);
+        KeyCharacterResult.Interpretation interpreted = this.mKeyCharacterInterpreter.interpretKeyCharacter(keyEvent, metaState);
         if (dev.bbkb.ime.core.shared.InputPathDebug.on()) {
             dev.bbkb.ime.core.shared.Logger.info("CKB_SWIPE_TYPE_DEBUG",
                     "KeyEventConverter: keyCode=" + keyEvent.getKeyCode() + " isPhysical=" + isPhysical
@@ -175,14 +175,14 @@ public class KeyEventConverter {
             charSequence = interpreted.text;
             unicodeChar = i3;
             z = shiftLocked;
-        } else if (isNumericFieldClass(i2) && (LocaleUtils.isCurrentSubtypePinyin() || LocaleUtils.isCurrentSubtypeCangjie() || LocaleUtils.isCurrentSubtypeJapanese())) {
+        } else if (isNumericFieldClass(inputType) && (LocaleUtils.isCurrentSubtypePinyin() || LocaleUtils.isCurrentSubtypeCangjie() || LocaleUtils.isCurrentSubtypeJapanese())) {
             charSequence = null;
             unicodeChar = keyEvent.getNumber();
             isModifierKey = false;
             isTextEvent = false;
             z = false;
         } else {
-            if (isAltActive(keyEvent, i)) {
+            if (isAltActive(keyEvent, metaState)) {
                 int keyCode = keyEvent.getKeyCode();
                 // Special function keys and BOARD_VOICE skip this: their own branches below handle
                 // Alt (with dictation off, Alt+voice key starts voice input).
@@ -202,11 +202,11 @@ public class KeyEventConverter {
                     }
                 }
             }
-            if (InputTypeUtils.isAnyPasswordInputType(i2) && isAltActive(keyEvent, i) && (LocaleUtils.isCurrentSubtypePinyin() || LocaleUtils.isCurrentSubtypeCangjie() || LocaleUtils.isCurrentSubtypeKorean() || LocaleUtils.isCurrentSubtypeJapanese())) {
+            if (InputTypeUtils.isAnyPasswordInputType(inputType) && isAltActive(keyEvent, metaState) && (LocaleUtils.isCurrentSubtypePinyin() || LocaleUtils.isCurrentSubtypeCangjie() || LocaleUtils.isCurrentSubtypeKorean() || LocaleUtils.isCurrentSubtypeJapanese())) {
                 char number = keyEvent.getNumber();
                 if (number == 0) {
                     charSequence = null;
-                    unicodeChar = keyEvent.getUnicodeChar(i);
+                    unicodeChar = keyEvent.getUnicodeChar(metaState);
                     isModifierKey = false;
                     isTextEvent = false;
                     z = false;
@@ -221,9 +221,9 @@ public class KeyEventConverter {
                 // A physical letter key follows the user's letter layout, then the active
                 // keyboard's alphabet (Arabic, Cyrillic, Hebrew, Greek, Hangul), before the system
                 // key map, which spells it in Latin.
-                int unicodeChar2 = PhysicalKeyResolver.letter(keyEvent, i);
+                int unicodeChar2 = PhysicalKeyResolver.letter(keyEvent, metaState);
                 if (unicodeChar2 == 0) {
-                    unicodeChar2 = keyEvent.getUnicodeChar(i);
+                    unicodeChar2 = keyEvent.getUnicodeChar(metaState);
                 }
                 if (keyEvent.getKeyCode() == 54 && unicodeChar2 == 37325 && PrimaryEngineFacts.get().isChineseCangjieMode()) {
                     charSequence = null;
@@ -248,13 +248,13 @@ public class KeyEventConverter {
             android.util.Log.d("MIC_DEBUG",
                 "KEC#convertKeyEvent entry: keyCode=7 scanCode=" + keyEvent.getScanCode() +
                 " sysMeta=" + hex(keyEvent.getMetaState()) +
-                " computedMetaIn=" + hex(i) +
+                " computedMetaIn=" + hex(metaState) +
                 " repeatCount=" + keyEvent.getRepeatCount() +
                 " unicodeChar(afterKCI)=" + unicodeChar +
                 " isModifierKey(modifier)=" + isModifierKey +
                 " isTextEvent(textEvent)=" + isTextEvent +
                 " charSequence=" + charSequence +
-                " inputType=" + i2);
+                " inputType=" + inputType);
             }
         }
         if (isTextEvent && charSequence != null) {
@@ -264,7 +264,7 @@ public class KeyEventConverter {
         ScancodeMapping resolvedMapping = DeviceInputResolver.keyRole(
                 keyEvent.getScanCode(), keyCode2, keyEvent.getDeviceId());
         if (resolvedMapping != null && resolvedMapping.role != null) {
-            boolean unifiedAltPressed = (KeyEvent.normalizeMetaState(i) & 2) != 0;
+            boolean unifiedAltPressed = (KeyEvent.normalizeMetaState(metaState) & 2) != 0;
 
             // The emoji multifunction action reuses the BOARD_EMOJI branch. The ctrl action
             // never gets here without Alt: remapKeyEvent() already made it KEYCODE_CTRL_LEFT.
@@ -273,7 +273,7 @@ public class KeyEventConverter {
 
             if (resolvedMapping.role == KeyRole.BOARD_VOICE) {
                 // In a numeric field it is its digit (held: repeats), whatever dictation and Alt say.
-                InputEvent digit = numericFieldDigit(i2, altCharFor(aux, resolvedMapping, keyEvent),
+                InputEvent digit = numericFieldDigit(inputType, altCharFor(aux, resolvedMapping, keyEvent),
                         keyCode2, z2, keyEvent.getEventTime());
                 if (digit != null) {
                     this.mVoiceKeyPending = false;
@@ -282,7 +282,7 @@ public class KeyEventConverter {
                 // A letter layout that names this key (Thai ป) answers a letter only with Shift,
                 // since its unshifted entry is the digit.
                 if (!unifiedAltPressed) {
-                    int layoutLetter = PhysicalKeyResolver.letter(keyEvent, i);
+                    int layoutLetter = PhysicalKeyResolver.letter(keyEvent, metaState);
                     if (layoutLetter != 0 && Character.isLetter(layoutLetter)) {
                         this.mVoiceKeyPending = false;
                         return InputEvent.createHardwareKeyPressEx(layoutLetter, keyCode2, null, z2, keyEvent.getEventTime(), false);
@@ -357,12 +357,12 @@ public class KeyEventConverter {
         if (7 == keyCode2 && DeviceProfile.current().isBlackBerryDevice()) {
             AuxCharacterResolver.Result legacyAlt = aux.resolve(keyEvent);
             char legacyAltChar = legacyAlt.hasCharacter() ? legacyAlt.character : '0';
-            InputEvent digit = numericFieldDigit(i2, legacyAltChar, keyCode2, z2, keyEvent.getEventTime());
+            InputEvent digit = numericFieldDigit(inputType, legacyAltChar, keyCode2, z2, keyEvent.getEventTime());
             if (digit != null) {
                 this.mVoiceKeyPending = false;
                 return digit;
             }
-            boolean altPressed = (KeyEvent.normalizeMetaState(i) & 2) != 0;
+            boolean altPressed = (KeyEvent.normalizeMetaState(metaState) & 2) != 0;
             boolean dictationEnabled = isDictationKeyEnabled();
 
             boolean shouldTriggerVoice = dictationEnabled ? !altPressed : altPressed;
@@ -370,8 +370,8 @@ public class KeyEventConverter {
             if (BuildConfig.DEBUG) {
             android.util.Log.d("MIC_DEBUG",
                 "KEC#keyCode7: scanCode=" + keyEvent.getScanCode() +
-                " computedMetaState=" + hex(i) +
-                " normalizedMeta=" + hex(KeyEvent.normalizeMetaState(i)) +
+                " computedMetaState=" + hex(metaState) +
+                " normalizedMeta=" + hex(KeyEvent.normalizeMetaState(metaState)) +
                 " altPressed=" + altPressed +
                 " dictationEnabled=" + dictationEnabled +
                 " shouldTriggerVoice=" + shouldTriggerVoice +
@@ -419,7 +419,7 @@ public class KeyEventConverter {
         // before the system voice assistant launches.
         if (231 == keyCode2 && isPhysical
                 && keyEvent.getScanCode() == ResolvedKey.PSEUDO_KEYCODE_VOICE) {
-            boolean altPressed = (KeyEvent.normalizeMetaState(i) & 2) != 0;
+            boolean altPressed = (KeyEvent.normalizeMetaState(metaState) & 2) != 0;
             boolean dictationEnabled = isDictationKeyEnabled();
 
             // Dictation on: MIC alone = voice, Alt+MIC = period. Off: swapped.
@@ -457,7 +457,7 @@ public class KeyEventConverter {
         if (isPhysical && scanCode == ResolvedKey.PSEUDO_KEYCODE_EMOJI
                 && (keyCode2 == 0 || keyCode2 == ResolvedKey.PSEUDO_KEYCODE_EMOJI)) {
             if (keyEvent.getRepeatCount() == 0) {
-                boolean altPressed = (KeyEvent.normalizeMetaState(i) & 2) != 0;
+                boolean altPressed = (KeyEvent.normalizeMetaState(metaState) & 2) != 0;
                 
                 if (BuildConfig.DEBUG) {
                 android.util.Log.d("EmojiKeyDebug", "Emoji key (scancode "
@@ -487,12 +487,12 @@ public class KeyEventConverter {
                 if (BuildConfig.DEBUG) android.util.Log.d("MicKeyDebug", "Special function: keyCode=" + keyCode2 + " -> virtualKeyCode=" + virtualKeyCode);
 
                 if (keyEvent.getRepeatCount() == 0) {
-                boolean altPressed = (KeyEvent.normalizeMetaState(i) & 2) != 0;
+                boolean altPressed = (KeyEvent.normalizeMetaState(metaState) & 2) != 0;
                     
                     if (7 == virtualKeyCode) {
                         // In a numeric field the key is its digit, never voice input.
                         AuxCharacterResolver.Result mapped = aux.resolve(keyCode2);
-                        InputEvent digit = numericFieldDigit(i2,
+                        InputEvent digit = numericFieldDigit(inputType,
                                 mapped.hasCharacter() ? mapped.character : 0,
                                 keyCode2, z2, keyEvent.getEventTime());
                         if (digit != null) {
@@ -543,7 +543,7 @@ public class KeyEventConverter {
                     + " pressed but altTable (AltMappingsTable) is null!");
         }
         if (KeyEvent.KEYCODE_SPACE == keyCode2 && keyEvent.getRepeatCount() == 1) {
-            if (!isNumberOrDatetimeVariationField(i2)) {
+            if (!isNumberOrDatetimeVariationField(inputType)) {
                 return InputEvent.createHardwareKeyPress(-1, -5, InputEvent.createHardwareKeyPress(-1, -10, null, false, -1L), false, -1L);
             }
             return InputEvent.createHardwareKeyPress(-1, -10, null, false, -1L);
@@ -575,7 +575,7 @@ public class KeyEventConverter {
         if (isModifierKey) {
             return InputEvent.createModifierKeyEvent(unicodeChar, keyCode2, (InputEvent) null, z2, z, keyEvent.getEventTime());
         }
-        return InputEvent.createHardwareKeyPressEx(unicodeChar, keyCode2, (InputEvent) null, z2, keyEvent.getEventTime(), (i & 514) != 0);
+        return InputEvent.createHardwareKeyPressEx(unicodeChar, keyCode2, (InputEvent) null, z2, keyEvent.getEventTime(), (metaState & 514) != 0);
     }
 
     /**

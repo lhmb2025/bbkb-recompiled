@@ -73,17 +73,17 @@ public class CursorController {
     }
 
     /**
-     * @param z true to move toward the end of the text
-     * @param i the number of steps
-     * @param z2 true to collapse the steps into one setSelection
+     * @param forward true to move toward the end of the text
+     * @param count the number of steps
+     * @param allowBatchedMove true to collapse the steps into one setSelection
      */
-    private void moveCursor(boolean z, int i, boolean z2) {
+    private void moveCursor(boolean forward, int count, boolean allowBatchedMove) {
         int iMax;
         int iM5853q = this.mRichInputConnection.getCursorStart();
         int iM5854r = this.mRichInputConnection.getCursorEnd();
-        if (z) {
-            int iMax2 = Math.max(0, Math.min(i, iM5853q - iM5854r));
-            int iMax3 = Math.max(0, i - iMax2);
+        if (forward) {
+            int iMax2 = Math.max(0, Math.min(count, iM5853q - iM5854r));
+            int iMax3 = Math.max(0, count - iMax2);
             if (iMax3 > 1) {
                 // A multi-step move (keypad cursor drag) crosses iMax3 graphemes, not chars.
                 iMax3 = graphemeRunLength(true, iMax3);
@@ -99,23 +99,23 @@ public class CursorController {
             }
             iMax = iMax2 + iM5854r + iMax3;
         } else {
-            if (i > 1) {
-                i = graphemeRunLength(false, i);
+            if (count > 1) {
+                count = graphemeRunLength(false, count);
             } else {
                 int iM5660a = GraphemeUtils.getClusterLengthBeforeCursor(this.mRichInputConnection.getTextBeforeCursor(GRAPHEME_SCAN_LENGTH, 0), this.mRichInputConnection.getCodePointBeforeCursor());
                 if (iM5660a != 1) {
-                    i = iM5660a;
+                    count = iM5660a;
                 }
             }
-            iMax = Math.max(0, iM5854r - i);
+            iMax = Math.max(0, iM5854r - count);
         }
-        if (z2) {
+        if (allowBatchedMove) {
             this.mRichInputConnection.setSelection(iMax, iMax);
             return;
         }
         // Stepping one position at a time is what allowBatchedCursorMove == false means; do not
-        // collapse it into one setSelection (the z2 branch above is the batched form).
-        if (z) {
+        // collapse it into one setSelection (the allowBatchedMove branch above is the batched form).
+        if (forward) {
             for (int i2 = iM5854r + 1; i2 <= iMax; i2++) {
                 this.mRichInputConnection.setSelection(i2, i2);
             }

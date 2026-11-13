@@ -152,13 +152,13 @@ public class VoiceRecognitionManager {
     
     public interface Callback {
         /**
-         * @param aVar the current mode
-         * @param i one of the STATE_ constants
+         * @param mode the current mode
+         * @param state one of the STATE_ constants
          */
-        void onStateChanged(Mode aVar, int i);
+        void onStateChanged(Mode mode, int state);
 
-        /** @param str the final transcription */
-        void onDictationResult(String str);
+        /** @param text the final transcription */
+        void onDictationResult(String text);
 
         void onPermissionNeeded();
 
@@ -194,15 +194,15 @@ public class VoiceRecognitionManager {
         void onDictationAbandoned();
     }
 
-    /** @param c1122b the board's controller, also the callback */
-    public VoiceRecognitionManager(Context context, VoiceInputController c1122b) {
+    /** @param voiceInputController the board's controller, also the callback */
+    public VoiceRecognitionManager(Context context, VoiceInputController voiceInputController) {
         this.mContext = context.getApplicationContext();
         this.mSelection = InstalledVoiceRecognizers.resolve(this.mContext);
         this.mSpeechRecognizer = InstalledVoiceRecognizers.create(this.mContext, this.mSelection);
         this.mListener = new RecognitionListenerImpl();
         this.mSpeechRecognizer.setRecognitionListener(this.mListener);
-        this.mCallback = c1122b;
-        this.mController = c1122b;
+        this.mCallback = voiceInputController;
+        this.mController = voiceInputController;
         this.mMode = Mode.NONE;
         this.mHandler = new Handler(android.os.Looper.getMainLooper());
         this.mTimeoutRunnable = new Runnable() {
@@ -460,12 +460,12 @@ public class VoiceRecognitionManager {
         }
     }
 
-    /** @param aVar the mode the session runs in */
-    private void startRecognition(Mode aVar, Intent intent) {
+    /** @param mode the mode the session runs in */
+    private void startRecognition(Mode mode, Intent intent) {
         if (this.mSpeechRecognizer == null) {
             return;
         }
-        this.mMode = aVar;
+        this.mMode = mode;
         this.mReadyForSpeech = false;
         this.mStopRequested = false;
         this.mCommittedThisSession = false;
@@ -671,9 +671,9 @@ public class VoiceRecognitionManager {
         return this.mLastLanguageTag;
     }
 
-    /** @param i one of the STATE_ constants */
-    public void notifyState(int i) {
-        this.mCallback.onStateChanged(this.mMode, i);
+    /** @param state one of the STATE_ constants */
+    public void notifyState(int state) {
+        this.mCallback.onStateChanged(this.mMode, state);
     }
 
     /**
@@ -687,9 +687,9 @@ public class VoiceRecognitionManager {
 
     
     protected class RecognitionListenerImpl implements RecognitionListener {
-        /** @param bArr raw audio, unused */
+        /** @param buffer raw audio, unused */
         @Override
-        public void onBufferReceived(byte[] bArr) {
+        public void onBufferReceived(byte[] buffer) {
             // Raw audio is not needed.
         }
 
@@ -710,12 +710,12 @@ public class VoiceRecognitionManager {
             VoiceRecognitionManager.this.notifyState(STATE_STOPPED);
         }
 
-        /** @param i the SpeechRecognizer ERROR_ code (5 is ERROR_CLIENT) */
+        /** @param error the SpeechRecognizer ERROR_ code (5 is ERROR_CLIENT) */
         @Override
-        public void onError(int i) {
-            Logger.debug(VoiceRecognitionManager.TAG, "error = " + i);
+        public void onError(int error) {
+            Logger.debug(VoiceRecognitionManager.TAG, "error = " + error);
             final boolean sessionActive = VoiceRecognitionManager.this.mMode != Mode.NONE;
-            final boolean noService = VoiceRecognitionAvailability.isNoServiceError(i, sessionActive,
+            final boolean noService = VoiceRecognitionAvailability.isNoServiceError(error, sessionActive,
                     VoiceRecognitionManager.this.mReadyForSpeech, VoiceRecognitionManager.this.mStaleClientErrorPossible);
             // Restored below in the one case where the session has not ended (transient ERROR_CLIENT).
             final boolean stopRequested = VoiceRecognitionManager.this.mStopRequested;
@@ -728,17 +728,17 @@ public class VoiceRecognitionManager {
             // Deliberate stop/cancel: skip the transient-error handling (the case-5 re-arm).
             if (VoiceRecognitionManager.this.mCancelRequested) {
                 VoiceRecognitionManager.this.mCancelRequested = false;
-                if (i != 5) {
+                if (error != 5) {
                     VoiceRecognitionManager.this.notifyState(STATE_STOPPED);
                 }
                 return;
             }
-            if (i == 5 && !sessionActive) {
+            if (error == 5 && !sessionActive) {
                 // Nothing was running: the answer to a stray stop (or a second missing-service
                 // report). Re-arming here would create a phantom session.
                 return;
             }
-            if (i == 5) {
+            if (error == 5) {
                 // Whatever this ERROR_CLIENT answered, the next one is this session's own.
                 VoiceRecognitionManager.this.mStaleClientErrorPossible = false;
             }
@@ -749,7 +749,7 @@ public class VoiceRecognitionManager {
                 VoiceRecognitionManager.this.mCallback.onNoRecognitionService();
                 return;
             }
-            if (i == 5 && VoiceRecognitionManager.this.mController.isViewShowing()) {
+            if (error == 5 && VoiceRecognitionManager.this.mController.isViewShowing()) {
                 // Transient: the answer to an earlier stop, arriving after this session started.
                 // The session is still live, so its partial text stays composing.
                 VoiceRecognitionManager.this.mMode = Mode.DICTATION;
@@ -758,7 +758,7 @@ public class VoiceRecognitionManager {
                 return;
             }
             VoiceRecognitionManager.this.mCallback.onDictationAbandoned();
-            final boolean nothingHeard = i == SpeechRecognizer.ERROR_SPEECH_TIMEOUT || i == SpeechRecognizer.ERROR_NO_MATCH;
+            final boolean nothingHeard = error == SpeechRecognizer.ERROR_SPEECH_TIMEOUT || error == SpeechRecognizer.ERROR_NO_MATCH;
             if (nothingHeard && continuous && !stopRequested && sessionActive) {
                 // Continuous: a silent session is a pause; chain quietly until the silent cap.
                 VoiceRecognitionManager.this.mContinuous = true;
@@ -769,16 +769,16 @@ public class VoiceRecognitionManager {
                 }
                 VoiceRecognitionManager.this.mContinuous = false;
             }
-            if (i != 5) {
+            if (error != 5) {
                 VoiceRecognitionManager.this.notifyState(STATE_STOPPED);
             }
             // A stop with nothing said: the user ended it, so "No speech heard" is noise.
             final int message = nothingHeard && stopRequested
-                    ? VoiceRecognitionAvailability.NO_MESSAGE : VoiceRecognitionAvailability.messageForError(i);
+                    ? VoiceRecognitionAvailability.NO_MESSAGE : VoiceRecognitionAvailability.messageForError(error);
             if (message != VoiceRecognitionAvailability.NO_MESSAGE) {
                 VoiceRecognitionManager.this.mCallback.onRecognitionError(message);
             }
-            switch (i) {
+            switch (error) {
                 case 4:
                     VoiceRecognitionManager.this.mCallback.onLanguageUnavailable();
                     break;
@@ -813,18 +813,18 @@ public class VoiceRecognitionManager {
                 case SpeechRecognizer.ERROR_LANGUAGE_UNAVAILABLE:
                     // Google's online service never sends these (it falls back silently); on-device
                     // recognisers do. First try another tag or a download.
-                    if (!VoiceRecognitionManager.this.resolveRefusedLanguage(i)) {
+                    if (!VoiceRecognitionManager.this.resolveRefusedLanguage(error)) {
                         VoiceRecognitionManager.this.mCallback.onLanguageNotSupported(VoiceRecognitionManager.this.mLastLanguageTag);
                     }
                     break;
             }
         }
 
-        /** @param i the recogniser's event type */
+        /** @param eventType the recogniser's event type */
         @Override
-        public void onEvent(int i, Bundle bundle) {
+        public void onEvent(int eventType, Bundle bundle) {
             Logger.debug(VoiceRecognitionManager.TAG, "onEvent");
-            Logger.debug(VoiceRecognitionManager.TAG, "Event type: " + i + "bundle: " + bundle.toString());
+            Logger.debug(VoiceRecognitionManager.TAG, "Event type: " + eventType + "bundle: " + bundle.toString());
         }
 
         @Override
@@ -895,15 +895,15 @@ public class VoiceRecognitionManager {
             VoiceRecognitionManager.this.notifyState(STATE_STOPPED);
         }
 
-        /** @param f the input level in dB */
+        /** @param rmsdB the input level in dB */
         @Override
-        public void onRmsChanged(float f) {
+        public void onRmsChanged(float rmsdB) {
             // 10 to 50 times a second: skip the string concatenation outside debug builds.
             if (BuildConfig.DEBUG) {
-                Logger.debug(VoiceRecognitionManager.TAG, "onRmsChanged:" + f);
+                Logger.debug(VoiceRecognitionManager.TAG, "onRmsChanged:" + rmsdB);
             }
             // Drives the Material waveform; no-op under Classic/Modern.
-            VoiceRecognitionManager.this.mController.onAudioLevel(f);
+            VoiceRecognitionManager.this.mController.onAudioLevel(rmsdB);
         }
     }
 }

@@ -37,34 +37,34 @@ public final class StringHelper {
         return codePoints;
     }
     
-    public static int[] toSortedCodePointArray(String str) {
-        int[] codePoints = toCodePointArray(str);
+    public static int[] toSortedCodePointArray(String text) {
+        int[] codePoints = toCodePointArray(text);
         Arrays.sort(codePoints);
         return codePoints;
     }
     
-    public static String capitalizeFirstCodePoint(String str, Locale locale) {
-        if (str.length() <= 1) {
-            return str.toUpperCase(locale);
+    public static String capitalizeFirstCodePoint(String text, Locale locale) {
+        if (text.length() <= 1) {
+            return text.toUpperCase(locale);
         }
-        int offset = str.offsetByCodePoints(0, 1);
-        return str.substring(0, offset).toUpperCase(locale) + str.substring(offset);
+        int offset = text.offsetByCodePoints(0, 1);
+        return text.substring(0, offset).toUpperCase(locale) + text.substring(offset);
     }
     
-    public static String capitalizeFirstAndLowercaseRest(String str, Locale locale) {
-        if (str.length() <= 1) {
-            return str.toUpperCase(locale);
+    public static String capitalizeFirstAndLowercaseRest(String text, Locale locale) {
+        if (text.length() <= 1) {
+            return text.toUpperCase(locale);
         }
-        int offset = str.offsetByCodePoints(0, 1);
-        return str.substring(0, offset).toUpperCase(locale) + str.substring(offset).toLowerCase(locale);
+        int offset = text.offsetByCodePoints(0, 1);
+        return text.substring(0, offset).toUpperCase(locale) + text.substring(offset).toLowerCase(locale);
     }
     
-    public static boolean containsCodePoint(String str, int codePoint) {
-        if (str != null) {
-            int length = str.length();
+    public static boolean containsCodePoint(String text, int codePoint) {
+        if (text != null) {
+            int length = text.length();
             int i = 0;
             while (i < length) {
-                int cp = str.codePointAt(i);
+                int cp = text.codePointAt(i);
                 if (cp == codePoint) {
                     return true;
                 }
@@ -74,10 +74,10 @@ public final class StringHelper {
         return false;
     }
     
-    public static boolean isAllWhitespace(String str) {
+    public static boolean isAllWhitespace(String text) {
         // Bound by char length, not code point count, or surrogate pairs truncate the scan.
-        for (int i = 0; i < str.length(); ) {
-            int codePoint = str.codePointAt(i);
+        for (int i = 0; i < text.length(); ) {
+            int codePoint = text.codePointAt(i);
             if (!Character.isWhitespace(codePoint)) {
                 return false;
             }
@@ -212,12 +212,12 @@ public final class StringHelper {
         return 34 == codePointBefore;
     }
     
-    public static boolean hasLineBreakCharacter(String str) {
-        if (TextUtils.isEmpty(str)) {
+    public static boolean hasLineBreakCharacter(String text) {
+        if (TextUtils.isEmpty(text)) {
             return false;
         }
-        for (int i = str.length() - 1; i >= 0; i--) {
-            char c = str.charAt(i);
+        for (int i = text.length() - 1; i >= 0; i--) {
+            char c = text.charAt(i);
             if (c != 133) {
                 switch (c) {
                     case '\n':
@@ -240,27 +240,27 @@ public final class StringHelper {
         return false;
     }
     
-    public static int getCapitalizationMode(String str) {
-        int length = str.length();
+    public static int getCapitalizationMode(String text) {
+        int length = text.length();
         int offset = 0;
-        while (offset < length && !Character.isLetter(str.codePointAt(offset))) {
-            offset = str.offsetByCodePoints(offset, 1);
+        while (offset < length && !Character.isLetter(text.codePointAt(offset))) {
+            offset = text.offsetByCodePoints(offset, 1);
         }
-        if (offset == length || !Character.isUpperCase(str.codePointAt(offset))) {
+        if (offset == length || !Character.isUpperCase(text.codePointAt(offset))) {
             return 0;
         }
-        int nextOffset = str.offsetByCodePoints(offset, 1);
+        int nextOffset = text.offsetByCodePoints(offset, 1);
         int upperCount = 1;
         int letterCount = 1;
         while (nextOffset < length && (1 == upperCount || letterCount == upperCount)) {
-            int codePoint = str.codePointAt(nextOffset);
+            int codePoint = text.codePointAt(nextOffset);
             if (Character.isUpperCase(codePoint)) {
                 upperCount++;
                 letterCount++;
             } else if (Character.isLetter(codePoint)) {
                 letterCount++;
             }
-            nextOffset = str.offsetByCodePoints(nextOffset, 1);
+            nextOffset = text.offsetByCodePoints(nextOffset, 1);
         }
         if (1 == upperCount) {
             return 1;
@@ -268,14 +268,14 @@ public final class StringHelper {
         return letterCount == upperCount ? 2 : 0;
     }
     
-    public static String toUpperCaseWithGreek(String str, boolean shouldUppercase, Locale locale, boolean useGreek) {
-        if (str == null || !shouldUppercase) {
-            return str;
+    public static String toUpperCaseWithGreek(String text, boolean shouldUppercase, Locale locale, boolean useGreek) {
+        if (text == null || !shouldUppercase) {
+            return text;
         }
         if (useGreek && locale.getLanguage().equals("el")) {
             StringBuilder sb = new StringBuilder();
-            for (int i = 0; i < str.length(); i++) {
-                char c = str.charAt(i);
+            for (int i = 0; i < text.length(); i++) {
+                char c = text.charAt(i);
                 int index = "άέήίόύώϊϋΐΰ".indexOf(c);
                 if (index != -1) {
                     sb.append("ΆΈΉΊΌΎΏΪΫΙΥ".charAt(index));
@@ -287,7 +287,7 @@ public final class StringHelper {
             }
             return sb.toString();
         }
-        return str.toUpperCase(locale);
+        return text.toUpperCase(locale);
     }
     
     public static int toUpperCaseCodePoint(int codePoint, boolean shouldUppercase, Locale locale) {

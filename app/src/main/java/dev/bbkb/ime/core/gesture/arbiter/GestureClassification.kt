@@ -35,13 +35,13 @@ sealed class GestureClassification {
 
 /** Illustrative mapping for the Gesture Lab readout; not the production policy ([GesturePolicy]). */
 object ActionPreview {
-    fun describe(c: GestureClassification): String = when (c) {
+    fun describe(classification: GestureClassification): String = when (classification) {
         GestureClassification.Tap -> "Key press (physical key) — tap-to-type deferred"
         GestureClassification.Hold -> "Enter cursor mode / FCC (assignable, default)"
         GestureClassification.DoubleTap -> "Unassigned (assignable, default: no action)"
         GestureClassification.FlowTrace -> "Type by swiping (yield to flow pipeline)"
-        is GestureClassification.Swipe -> when (c.direction) {
-            GestureDirection.UP -> if (c.fast) "Commit highlighted suggestion (reserved)" else "Swipe up (assignable)"
+        is GestureClassification.Swipe -> when (classification.direction) {
+            GestureDirection.UP -> if (classification.fast) "Commit highlighted suggestion (reserved)" else "Swipe up (assignable)"
             GestureDirection.DOWN -> "Cycle symbols (assignable, default)"
             GestureDirection.LEFT -> "Delete word — destructive, needs high confidence"
             GestureDirection.RIGHT -> "Accept / restore"

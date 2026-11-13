@@ -18,69 +18,69 @@ public class GesturePathTracker {
     public interface BatchInputListener {
         void onStartBatchInput();
 
-        void onUpdateBatchInput(long j);
+        void onUpdateBatchInput(long eventTime);
 
         void startUpdateBatchInputTimer();
 
-        void onEndBatchInput(long j);
+        void onEndBatchInput(long upEventTime);
     }
 
-    public GesturePathTracker(int i, GestureRecognitionParams c1054m) {
-        this.mGestureStrokeAnalyzer = new GestureStrokeAnalyzer(i, c1054m);
+    public GesturePathTracker(int pointerId, GestureRecognitionParams gestureRecognitionParams) {
+        this.mGestureStrokeAnalyzer = new GestureStrokeAnalyzer(pointerId, gestureRecognitionParams);
     }
 
-    public void setKeyboardGeometry(int i, int i2) {
-        this.mGestureStrokeAnalyzer.setKeyboardGeometry(i, i2);
+    public void setKeyboardGeometry(int keyWidth, int keyboardHeight) {
+        this.mGestureStrokeAnalyzer.setKeyboardGeometry(keyWidth, keyboardHeight);
     }
 
-    public int getGestureElapsedTime(long j) {
-        return (int) (j - this.mGestureStartTime);
+    public int getGestureElapsedTime(long eventTime) {
+        return (int) (eventTime - this.mGestureStartTime);
     }
 
-    public void addDownEventPoint(int i, int i2, long j, long j2, int i3) {
-        if (i3 == 1) {
-            this.mGestureStartTime = j;
-            if (InputPathDebug.on()) android.util.Log.i("CKB_SWIPE_TYPE_DEBUG", "BatchInputTracker.onStartBatchInput: x=" + i + " y=" + i2 + " time=" + j);
+    public void addDownEventPoint(int x, int y, long downEventTime, long lastKeyEventTime, int activePointerCount) {
+        if (activePointerCount == 1) {
+            this.mGestureStartTime = downEventTime;
+            if (InputPathDebug.on()) android.util.Log.i("CKB_SWIPE_TYPE_DEBUG", "BatchInputTracker.onStartBatchInput: x=" + x + " y=" + y + " time=" + downEventTime);
         }
-        if (InputPathDebug.on()) android.util.Log.i("CKB_SWIPE_TYPE_DEBUG", "BatchInputTracker.onUpdateBatchInput: x=" + i + " y=" + i2 + " elapsed=" + getGestureElapsedTime(j) + " dt=" + (j - j2));
-        this.mGestureStrokeAnalyzer.addDownEventPoint(i, i2, getGestureElapsedTime(j), (int) (j - j2));
+        if (InputPathDebug.on()) android.util.Log.i("CKB_SWIPE_TYPE_DEBUG", "BatchInputTracker.onUpdateBatchInput: x=" + x + " y=" + y + " elapsed=" + getGestureElapsedTime(downEventTime) + " dt=" + (downEventTime - lastKeyEventTime));
+        this.mGestureStrokeAnalyzer.addDownEventPoint(x, y, getGestureElapsedTime(downEventTime), (int) (downEventTime - lastKeyEventTime));
     }
 
-    public boolean addMoveEventPoint(boolean z, int i, int i2, long j, boolean z2, BatchInputListener aVar, GestureStrokeAnalyzer.GestureStrokeTimeListener aVar2) {
+    public boolean addMoveEventPoint(boolean inGesture, int x, int y, long eventTime, boolean isMajorEvent, BatchInputListener listener, GestureStrokeAnalyzer.GestureStrokeTimeListener strokeTimeListener) {
         int iM7383a = this.mGestureStrokeAnalyzer.getLength();
-        boolean zM7387a = this.mGestureStrokeAnalyzer.addEventPoint(i, i2, getGestureElapsedTime(j), z2, aVar2);
-        if (z && this.mGestureStrokeAnalyzer.getLength() > iM7383a) {
-            aVar.startUpdateBatchInputTimer();
+        boolean zM7387a = this.mGestureStrokeAnalyzer.addEventPoint(x, y, getGestureElapsedTime(eventTime), isMajorEvent, strokeTimeListener);
+        if (inGesture && this.mGestureStrokeAnalyzer.getLength() > iM7383a) {
+            listener.startUpdateBatchInputTimer();
         }
         return zM7387a;
     }
 
-    public boolean tryStartBatchInput(BatchInputListener aVar) {
+    public boolean tryStartBatchInput(BatchInputListener batchInputListener) {
         if (!this.mGestureStrokeAnalyzer.hasRecognitionGesturePoint()) {
             return false;
         }
         this.mLastRecognitionPointSize = 0;
         this.mLastRecognitionTime = 0L;
-        aVar.onStartBatchInput();
+        batchInputListener.onStartBatchInput();
         return true;
     }
 
-    public void onUpdateBatchInputTimer(long j, BatchInputListener aVar) {
-        this.mGestureStrokeAnalyzer.duplicateLastPoint(getGestureElapsedTime(j));
-        updateBatchInput(j, aVar);
+    public void onUpdateBatchInputTimer(long eventTime, BatchInputListener batchInputListener) {
+        this.mGestureStrokeAnalyzer.duplicateLastPoint(getGestureElapsedTime(eventTime));
+        updateBatchInput(eventTime, batchInputListener);
     }
 
-    public void updateBatchInput(long j, BatchInputListener aVar) {
+    public void updateBatchInput(long moveEventTime, BatchInputListener batchInputListener) {
         int iM7389c = this.mGestureStrokeAnalyzer.getIncrementalRecognitionSize();
-        aVar.onUpdateBatchInput(j);
-        aVar.startUpdateBatchInputTimer();
+        batchInputListener.onUpdateBatchInput(moveEventTime);
+        batchInputListener.startUpdateBatchInputTimer();
         this.mLastRecognitionPointSize = iM7389c;
-        this.mLastRecognitionTime = j;
+        this.mLastRecognitionTime = moveEventTime;
     }
 
-    public void endBatchInput(long j, BatchInputListener aVar) {
-        aVar.onEndBatchInput(j);
+    public void endBatchInput(long upEventTime, BatchInputListener batchInputListener) {
+        batchInputListener.onEndBatchInput(upEventTime);
         this.mLastRecognitionPointSize = this.mGestureStrokeAnalyzer.getIncrementalRecognitionSize();
-        this.mLastRecognitionTime = j;
+        this.mLastRecognitionTime = upEventTime;
     }
 }

@@ -32,8 +32,8 @@ public class QuickPhrasesAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
         final String text;
 
-        QuickPhrase(String str) {
-            this.text = str;
+        QuickPhrase(String text) {
+            this.text = text;
         }
 
         public String toString() {
@@ -77,17 +77,17 @@ public class QuickPhrasesAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         return true;
     }
 
-    /** @param i the view type (only one) */
+    /** @param viewType the view type (only one) */
     @Override
-    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
+    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
         LayoutInflater layoutInflaterFrom = LayoutInflater.from(viewGroup.getContext());
         return new ViewHolder(layoutInflaterFrom.inflate(R.layout.quick_phrase_list_item, viewGroup, false));
     }
 
-    /** @param i the phrase's position */
+    /** @param position the phrase's position */
     @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder holder, int i) {
-        bindViewHolder((ViewHolder) holder, i);
+    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+        bindViewHolder((ViewHolder) holder, position);
     }
 
     @Override
@@ -95,9 +95,9 @@ public class QuickPhrasesAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         return this.phrases.size();
     }
 
-    /** @param i the phrase's position */
-    private void bindViewHolder(ViewHolder holder, int i) {
-        QuickPhrase phrase = this.phrases.get(i);
+    /** @param position the phrase's position */
+    private void bindViewHolder(ViewHolder holder, int position) {
+        QuickPhrase phrase = this.phrases.get(position);
         holder.phrase = phrase;
         // The stored phrase carries a trailing space for committing; the tile shows it without.
         CharSequence label = phrase.toString().trim();

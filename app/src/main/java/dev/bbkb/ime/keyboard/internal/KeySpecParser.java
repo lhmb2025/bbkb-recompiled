@@ -9,30 +9,30 @@ import java.util.HashSet;
 
 
 public final class KeySpecParser {
-    private static boolean hasIcon(String str) {
-        return str.startsWith("!icon/");
+    private static boolean hasIcon(String keySpec) {
+        return keySpec.startsWith("!icon/");
     }
 
-    private static boolean hasCode(String str, int i) {
+    private static boolean hasCode(String keySpec, int labelEnd) {
         int i2;
-        if (i <= 0 || (i2 = i + 1) >= str.length()) {
+        if (labelEnd <= 0 || (i2 = labelEnd + 1) >= keySpec.length()) {
             return false;
         }
-        return str.startsWith("!code/", i2) || str.startsWith("0x", i2);
+        return keySpec.startsWith("!code/", i2) || keySpec.startsWith("0x", i2);
     }
 
-    private static String parseEscape(String str) {
+    private static String parseEscape(String text) {
         int i;
-        if (str.indexOf(92) < 0) {
-            return str;
+        if (text.indexOf(92) < 0) {
+            return text;
         }
-        int length = str.length();
+        int length = text.length();
         StringBuilder sb = new StringBuilder();
         int i2 = 0;
         while (i2 < length) {
-            char cCharAt = str.charAt(i2);
+            char cCharAt = text.charAt(i2);
             if (cCharAt == '\\' && (i = i2 + 1) < length) {
-                sb.append(str.charAt(i));
+                sb.append(text.charAt(i));
                 i2 = i;
             } else {
                 sb.append(cCharAt);
@@ -42,11 +42,11 @@ public final class KeySpecParser {
         return sb.toString();
     }
 
-    private static int indexOfLabelEnd(String str) {
+    private static int indexOfLabelEnd(String keySpec) {
         int i;
-        int length = str.length();
-        if (str.indexOf(92) < 0) {
-            int iIndexOf = str.indexOf(124);
+        int length = keySpec.length();
+        if (keySpec.indexOf(92) < 0) {
+            int iIndexOf = keySpec.indexOf(124);
             if (iIndexOf != 0) {
                 return iIndexOf;
             }
@@ -57,7 +57,7 @@ public final class KeySpecParser {
         }
         int i2 = 0;
         while (i2 < length) {
-            char cCharAt = str.charAt(i2);
+            char cCharAt = keySpec.charAt(i2);
             if (cCharAt == '\\' && (i = i2 + 1) < length) {
                 i2 = i;
             } else if (cCharAt == '|') {
@@ -68,51 +68,51 @@ public final class KeySpecParser {
         return -1;
     }
 
-    private static String getBeforeLabelEnd(String str, int i) {
-        return i < 0 ? str : str.substring(0, i);
+    private static String getBeforeLabelEnd(String keySpec, int labelEnd) {
+        return labelEnd < 0 ? keySpec : keySpec.substring(0, labelEnd);
     }
 
-    private static String getAfterLabelEnd(String str, int i) {
-        return str.substring(i + 1);
+    private static String getAfterLabelEnd(String keySpec, int labelEnd) {
+        return keySpec.substring(labelEnd + 1);
     }
 
-    private static void checkDoubleLabelEnd(String str, int i) {
-        if (indexOfLabelEnd(getAfterLabelEnd(str, i)) < 0) {
+    private static void checkDoubleLabelEnd(String keySpec, int labelEnd) {
+        if (indexOfLabelEnd(getAfterLabelEnd(keySpec, labelEnd)) < 0) {
             return;
         }
-        throw new KeySpecParserError("Multiple |: " + str);
+        throw new KeySpecParserError("Multiple |: " + keySpec);
     }
 
-    /** @param str key spec */
-    public static String getLabel(String str) {
-        if (str == null || hasIcon(str)) {
+    /** @param keySpec key spec */
+    public static String getLabel(String keySpec) {
+        if (keySpec == null || hasIcon(keySpec)) {
             return null;
         }
-        String strM7460f = parseEscape(getBeforeLabelEnd(str, indexOfLabelEnd(str)));
+        String strM7460f = parseEscape(getBeforeLabelEnd(keySpec, indexOfLabelEnd(keySpec)));
         if (!strM7460f.isEmpty()) {
             return strM7460f;
         }
-        throw new KeySpecParserError("Empty label: " + str);
+        throw new KeySpecParserError("Empty label: " + keySpec);
     }
 
-    private static String parseOutputText(String str, int i) {
-        if (i <= 0) {
+    private static String parseOutputText(String keySpec, int labelEnd) {
+        if (labelEnd <= 0) {
             return null;
         }
-        checkDoubleLabelEnd(str, i);
-        return parseEscape(getAfterLabelEnd(str, i));
+        checkDoubleLabelEnd(keySpec, labelEnd);
+        return parseEscape(getAfterLabelEnd(keySpec, labelEnd));
     }
 
-    /** @param str key spec */
-    public static String getOutputText(String str) {
-        if (str == null) {
+    /** @param keySpec key spec */
+    public static String getOutputText(String keySpec) {
+        if (keySpec == null) {
             return null;
         }
-        int iM7462g = indexOfLabelEnd(str);
-        if (hasCode(str, iM7462g)) {
+        int iM7462g = indexOfLabelEnd(keySpec);
+        if (hasCode(keySpec, iM7462g)) {
             return null;
         }
-        String strM7461f = parseOutputText(str, iM7462g);
+        String strM7461f = parseOutputText(keySpec, iM7462g);
         if (strM7461f != null) {
             if ((strM7461f).codePointCount(0, (strM7461f).length()) == 1) {
                 return null;
@@ -120,11 +120,11 @@ public final class KeySpecParser {
             if (!strM7461f.isEmpty()) {
                 return strM7461f;
             }
-            throw new KeySpecParserError("Empty outputText: " + str);
+            throw new KeySpecParserError("Empty outputText: " + keySpec);
         }
-        String strM7450a = getLabel(str);
+        String strM7450a = getLabel(keySpec);
         if (strM7450a == null) {
-            throw new KeySpecParserError("Empty label: " + str);
+            throw new KeySpecParserError("Empty label: " + keySpec);
         }
         if ((strM7450a).codePointCount(0, (strM7450a).length()) == 1) {
             return null;
@@ -132,26 +132,26 @@ public final class KeySpecParser {
         return strM7450a;
     }
 
-    /** @param str key spec */
-    public static int getCode(String str) {
-        if (str == null) {
+    /** @param keySpec key spec */
+    public static int getCode(String keySpec) {
+        if (keySpec == null) {
             return -21;
         }
-        int iM7462g = indexOfLabelEnd(str);
-        if (hasCode(str, iM7462g)) {
-            checkDoubleLabelEnd(str, iM7462g);
-            return getCodeFromSpec(getAfterLabelEnd(str, iM7462g), -21);
+        int iM7462g = indexOfLabelEnd(keySpec);
+        if (hasCode(keySpec, iM7462g)) {
+            checkDoubleLabelEnd(keySpec, iM7462g);
+            return getCodeFromSpec(getAfterLabelEnd(keySpec, iM7462g), -21);
         }
-        String strM7461f = parseOutputText(str, iM7462g);
+        String strM7461f = parseOutputText(keySpec, iM7462g);
         if (strM7461f != null) {
             if ((strM7461f).codePointCount(0, (strM7461f).length()) == 1) {
                 return strM7461f.codePointAt(0);
             }
             return -4;
         }
-        String strM7450a = getLabel(str);
+        String strM7450a = getLabel(keySpec);
         if (strM7450a == null) {
-            throw new KeySpecParserError("Empty label: " + str);
+            throw new KeySpecParserError("Empty label: " + keySpec);
         }
         if ((strM7450a).codePointCount(0, (strM7450a).length()) == 1) {
             return strM7450a.codePointAt(0);
@@ -160,41 +160,41 @@ public final class KeySpecParser {
     }
 
     /**
-     * @param str "!code/name" or "0x" hex code
-     * @param i default code when str is neither
+     * @param codeSpec "!code/name" or "0x" hex code
+     * @param defaultCode default code when codeSpec is neither
      */
-    public static int getCodeFromSpec(String str, int i) {
-        if (str == null) {
-            return i;
+    public static int getCodeFromSpec(String codeSpec, int defaultCode) {
+        if (codeSpec == null) {
+            return defaultCode;
         }
-        if (str.startsWith("!code/")) {
-            return KeyboardCodesSet.getCode(str.substring(6));
+        if (codeSpec.startsWith("!code/")) {
+            return KeyboardCodesSet.getCode(codeSpec.substring(6));
         }
-        return str.startsWith("0x") ? Integer.parseInt(str.substring(2), 16) : i;
+        return codeSpec.startsWith("0x") ? Integer.parseInt(codeSpec.substring(2), 16) : defaultCode;
     }
 
     /** Parses icon specs into icon ids. */
-    public static int[] getIconIds(String[] strArr) {
-        final int n = (strArr == null) ? 0 : strArr.length;
+    public static int[] getIconIds(String[] iconSpecs) {
+        final int n = (iconSpecs == null) ? 0 : iconSpecs.length;
         int[] iArr = new int[n];
         for (int i = 0; i < n; i++) {
-            iArr[i] = getIconId(strArr[i]);
+            iArr[i] = getIconId(iconSpecs[i]);
         }
         return iArr;
     }
 
-    /** @param str key spec */
-    public static int getIconId(String str) {
-        if (str != null && hasIcon(str)) {
-            return KeyboardIconSet.getIconId(getBeforeLabelEnd(str, indexOfLabelEnd(str)).substring(6));
+    /** @param keySpec key spec */
+    public static int getIconId(String keySpec) {
+        if (keySpec != null && hasIcon(keySpec)) {
+            return KeyboardIconSet.getIconId(getBeforeLabelEnd(keySpec, indexOfLabelEnd(keySpec)).substring(6));
         }
         return 0;
     }
 
     
     public static final class KeySpecParserError extends RuntimeException {
-        public KeySpecParserError(String str) {
-            super(str);
+        public KeySpecParserError(String message) {
+            super(message);
         }
     }
 
@@ -203,38 +203,38 @@ public final class KeySpecParser {
 
     private static final String[] EMPTY_KEY_SPECS = new String[0];
 
-    /** @param str comma-separated key specs, backslash escapes allowed */
-    public static String[] splitKeySpecs(String str) {
-        return splitKeySpecsWithFlag(str, false);
+    /** @param text comma-separated key specs, backslash escapes allowed */
+    public static String[] splitKeySpecs(String text) {
+        return splitKeySpecsWithFlag(text, false);
     }
 
     /**
-     * @param str comma-separated key specs, backslash escapes allowed
-     * @param z true to drop duplicate specs
+     * @param text comma-separated key specs, backslash escapes allowed
+     * @param removeDuplicates true to drop duplicate specs
      */
-    public static String[] splitKeySpecsWithFlag(String str, boolean z) {
-        if (TextUtils.isEmpty(str)) {
+    public static String[] splitKeySpecsWithFlag(String text, boolean removeDuplicates) {
+        if (TextUtils.isEmpty(text)) {
             return null;
         }
-        int length = str.length();
+        int length = text.length();
         if (length == 1) {
-            return new String[]{str};
+            return new String[]{text};
         }
         ArrayList arrayList = null;
         HashSet hashSet = null;
         int i = 0;
         int i2 = 0;
         while (i < length) {
-            char cCharAt = str.charAt(i);
+            char cCharAt = text.charAt(i);
             if (cCharAt == ',') {
                 if (i - i2 > 0) {
                     if (arrayList == null) {
                         arrayList = new ArrayList();
-                        if (z) {
+                        if (removeDuplicates) {
                             hashSet = new HashSet();
                         }
                     }
-                    String strSubstring = str.substring(i2, i);
+                    String strSubstring = text.substring(i2, i);
                     if (hashSet == null || !hashSet.contains(strSubstring)) {
                         arrayList.add(strSubstring);
                         if (hashSet != null) {
@@ -248,7 +248,7 @@ public final class KeySpecParser {
             }
             i++;
         }
-        String strSubstring2 = length - i2 > 0 ? str.substring(i2) : null;
+        String strSubstring2 = length - i2 > 0 ? text.substring(i2) : null;
         if (arrayList == null) {
             if (strSubstring2 != null) {
                 return new String[]{strSubstring2};
@@ -261,27 +261,27 @@ public final class KeySpecParser {
         return (String[]) arrayList.toArray(new String[arrayList.size()]);
     }
 
-    private static String[] filterOutEmptyString(String[] strArr) {
-        if (strArr == null) {
+    private static String[] filterOutEmptyString(String[] array) {
+        if (array == null) {
             return EMPTY_KEY_SPECS;
         }
         ArrayList arrayListM5681a = null;
-        for (int i = 0; i < strArr.length; i++) {
-            String str = strArr[i];
+        for (int i = 0; i < array.length; i++) {
+            String str = array[i];
             if (TextUtils.isEmpty(str)) {
                 if (arrayListM5681a == null) {
-                    arrayListM5681a = new ArrayList<>(java.util.Arrays.asList(strArr).subList(0, i));
+                    arrayListM5681a = new ArrayList<>(java.util.Arrays.asList(array).subList(0, i));
                 }
             } else if (arrayListM5681a != null) {
                 arrayListM5681a.add(str);
             }
         }
-        return arrayListM5681a == null ? strArr : (String[]) arrayListM5681a.toArray(new String[arrayListM5681a.size()]);
+        return arrayListM5681a == null ? array : (String[]) arrayListM5681a.toArray(new String[arrayListM5681a.size()]);
     }
 
-    public static String[] insertAdditionalMoreKeys(String[] strArr, String[] strArr2) {
-        String[] strArrM7282a = filterOutEmptyString(strArr);
-        String[] strArrM7282a2 = filterOutEmptyString(strArr2);
+    public static String[] insertAdditionalMoreKeys(String[] moreKeySpecs, String[] additionalMoreKeySpecs) {
+        String[] strArrM7282a = filterOutEmptyString(moreKeySpecs);
+        String[] strArrM7282a2 = filterOutEmptyString(additionalMoreKeySpecs);
         int length = strArrM7282a.length;
         int length2 = strArrM7282a2.length;
         ArrayList arrayListM5681a = null;
@@ -326,50 +326,50 @@ public final class KeySpecParser {
     }
 
     /**
-     * Reads the int after {@code str} from the first matching spec; matched specs are nulled out.
-     * @param strArr more-keys specs
-     * @param str prefix to look for
-     * @param i default value
+     * Reads the int after {@code key} from the first matching spec; matched specs are nulled out.
+     * @param moreKeys more-keys specs
+     * @param key prefix to look for
+     * @param defaultValue default value
      */
-    public static int getIntValue(String[] strArr, String str, int i) throws NumberFormatException {
-        if (strArr == null) {
-            return i;
+    public static int getIntValue(String[] moreKeys, String key, int defaultValue) throws NumberFormatException {
+        if (moreKeys == null) {
+            return defaultValue;
         }
-        int length = str.length();
+        int length = key.length();
         boolean z = false;
-        for (int i2 = 0; i2 < strArr.length; i2++) {
-            String str2 = strArr[i2];
-            if (str2 != null && str2.startsWith(str)) {
-                strArr[i2] = null;
+        for (int i2 = 0; i2 < moreKeys.length; i2++) {
+            String str2 = moreKeys[i2];
+            if (str2 != null && str2.startsWith(key)) {
+                moreKeys[i2] = null;
                 if (z) {
                     continue;
                 } else {
                     try {
-                        i = Integer.parseInt(str2.substring(length));
+                        defaultValue = Integer.parseInt(str2.substring(length));
                         z = true;
                     } catch (NumberFormatException unused) {
-                        throw new RuntimeException("integer should follow after " + str + ": " + str2);
+                        throw new RuntimeException("integer should follow after " + key + ": " + str2);
                     }
                 }
             }
         }
-        return i;
+        return defaultValue;
     }
 
     /**
-     * True if {@code str} is present; matching specs are nulled out.
-     * @param strArr more-keys specs
-     * @param str flag to look for
+     * True if {@code key} is present; matching specs are nulled out.
+     * @param moreKeys more-keys specs
+     * @param key flag to look for
      */
-    public static boolean getBooleanValue(String[] strArr, String str) {
-        if (strArr == null) {
+    public static boolean getBooleanValue(String[] moreKeys, String key) {
+        if (moreKeys == null) {
             return false;
         }
         boolean z = false;
-        for (int i = 0; i < strArr.length; i++) {
-            String str2 = strArr[i];
-            if (str2 != null && str2.equals(str)) {
-                strArr[i] = null;
+        for (int i = 0; i < moreKeys.length; i++) {
+            String str2 = moreKeys[i];
+            if (str2 != null && str2.equals(key)) {
+                moreKeys[i] = null;
                 z = true;
             }
         }

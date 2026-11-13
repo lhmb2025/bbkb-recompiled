@@ -43,8 +43,8 @@ public class LongPressTimer {
         startWithDelay(this.mDelay);
     }
 
-    /** @param j delay in ms */
-    public void startWithDelay(long j) {
+    /** @param delayMillis delay in ms */
+    public void startWithDelay(long delayMillis) {
         if (this.mCount != 0) {
             throw new IllegalStateException("Timer is already running!");
         }
@@ -53,7 +53,7 @@ public class LongPressTimer {
         }
         this.mCount = 1;
         this.mHandler.removeCallbacks(this.mRunnable);
-        this.mHandler.postDelayed(this.mRunnable, j);
+        this.mHandler.postDelayed(this.mRunnable, delayMillis);
     }
 
     public void cancel() {
@@ -64,8 +64,8 @@ public class LongPressTimer {
         this.mHandler.removeCallbacks(this.mRunnable);
     }
 
-    public void setCallback(Callback aVar) {
-        this.mCallback = aVar;
+    public void setCallback(Callback callback) {
+        this.mCallback = callback;
     }
 
     public int getCount() {

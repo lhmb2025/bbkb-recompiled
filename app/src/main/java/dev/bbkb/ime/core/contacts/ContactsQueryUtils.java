@@ -40,14 +40,14 @@ public final class ContactsQueryUtils {
      * hyphenated strings such as "foo-bar", which are far more often identifiers than names.
      * A multi-word name may contain hyphens ("Anne-Marie Smith") and is kept.
      *
-     * @param str contact display name
+     * @param name contact display name
      */
-    static boolean isValidName(String str) {
-        if (TextUtils.isEmpty(str) || str.indexOf('@') != -1) {
+    static boolean isValidName(String name) {
+        if (TextUtils.isEmpty(name) || name.indexOf('@') != -1) {
             return false;
         }
-        final boolean isMultiWord = str.indexOf(' ') != -1;
-        final boolean hasHyphen = str.indexOf('-') != -1;
+        final boolean isMultiWord = name.indexOf(' ') != -1;
+        final boolean hasHyphen = name.indexOf('-') != -1;
         return isMultiWord || !hasHyphen;
     }
 

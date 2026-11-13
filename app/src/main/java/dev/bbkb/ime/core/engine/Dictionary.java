@@ -24,19 +24,19 @@ public abstract class Dictionary {
     public final String dictType;
 
     /**
-     * @param c0670ag the composing tracker
-     * @param c0805e the suggestion strip settings
-     * @param i the session id
+     * @param composingTracker the composing tracker
+     * @param stripSettings the suggestion strip settings
+     * @param sessionId the session id
      */
-    public abstract ArrayList<SuggestedWords.SuggestedWordInfo> generateSuggestions(ComposingTextTracker c0670ag, PrevWordsInfo prevWordsInfo, SuggestionStripSettings c0805e, int i);
+    public abstract ArrayList<SuggestedWords.SuggestedWordInfo> generateSuggestions(ComposingTextTracker composingTracker, PrevWordsInfo prevWordsInfo, SuggestionStripSettings stripSettings, int sessionId);
 
     /**
      * For a snapshot taken on main (engine-thread requests never read the tracker). Named apart from
      * {@link #generateSuggestions} so a mock's {@code any()} or a null still picks one method.
      *
-     * @param i the session id
+     * @param sessionId the session id
      */
-    public ArrayList<SuggestedWords.SuggestedWordInfo> generateSuggestionsForSnapshot(ComposingSnapshot composing, PrevWordsInfo prevWordsInfo, SuggestionStripSettings stripSettings, int i) {
+    public ArrayList<SuggestedWords.SuggestedWordInfo> generateSuggestionsForSnapshot(ComposingSnapshot composing, PrevWordsInfo prevWordsInfo, SuggestionStripSettings stripSettings, int sessionId) {
         return null;
     }
 
@@ -46,12 +46,12 @@ public abstract class Dictionary {
     /**
      * Reports a recorrection to the learned model.
      *
-     * @param str the text holding the recorrected word
-     * @param i the recorrection cursor position in {@code str}
-     * @param str2 the original word
-     * @param str3 the current (replacement) word
+     * @param contextBefore the text holding the recorrected word
+     * @param cursorPosition the recorrection cursor position in {@code contextBefore}
+     * @param originalWord the original word
+     * @param currentWord the current (replacement) word
      */
-    public boolean onWordChanged(String str, int i, String str2, String str3) {
+    public boolean onWordChanged(String contextBefore, int cursorPosition, String originalWord, String currentWord) {
         return false;
     }
 
@@ -63,44 +63,44 @@ public abstract class Dictionary {
         return true;
     }
 
-    public abstract boolean isWordValid(String str);
+    public abstract boolean isWordValid(String word);
 
     /** Forgets a learned word the user rejected; ignored without a learned model. */
-    public boolean unlearnWord(String str) {
+    public boolean unlearnWord(String word) {
         return false;
     }
 
-    public String getWordSeparator(String str) {
+    public String getWordSeparator(String precedingText) {
         return "";
     }
 
-    public Dictionary(String str) {
-        this.dictType = str;
+    public Dictionary(String dictType) {
+        this.dictType = dictType;
     }
 
-    public boolean isValidWord(String str) {
-        return isWordValid(str);
+    public boolean isValidWord(String word) {
+        return isWordValid(word);
     }
 
     /** Whether the language dictionaries alone know the word; {@link #isValidWord} without a learned model. */
-    public boolean isDictionaryWord(String str) {
-        return isWordValid(str);
+    public boolean isDictionaryWord(String word) {
+        return isWordValid(word);
     }
 
     
     private static final class PhonyDictionary extends Dictionary {
         @Override // dev.bbkb.ime.core.engine.Dictionary
-        public ArrayList<SuggestedWords.SuggestedWordInfo> generateSuggestions(ComposingTextTracker c0670ag, PrevWordsInfo prevWordsInfo, SuggestionStripSettings c0805e, int i) {
+        public ArrayList<SuggestedWords.SuggestedWordInfo> generateSuggestions(ComposingTextTracker composingTracker, PrevWordsInfo prevWordsInfo, SuggestionStripSettings stripSettings, int sessionId) {
             return null;
         }
 
         @Override // dev.bbkb.ime.core.engine.Dictionary
-        public boolean isWordValid(String str) {
+        public boolean isWordValid(String word) {
             return false;
         }
 
-        private PhonyDictionary(String str) {
-            super(str);
+        private PhonyDictionary(String dictType) {
+            super(dictType);
         }
     }
 }

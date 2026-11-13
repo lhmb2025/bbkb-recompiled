@@ -268,12 +268,12 @@ public class UnifiedInputBoardManager implements SimplifiedKeyboardView.onKeyEve
     }
 
     /**
-     * @param i translation Y in pixels
-     * @param i2 translation Z in pixels
+     * @param translationY translation Y in pixels
+     * @param translationZ translation Z in pixels
      */
-    public void setTranslation(int i, int i2) {
-        this.keyboardView.setTranslationY(i);
-        this.keyboardView.setTranslationZ(i2);
+    public void setTranslation(int translationY, int translationZ) {
+        this.keyboardView.setTranslationY(translationY);
+        this.keyboardView.setTranslationZ(translationZ);
     }
 
     public void destroy() {
@@ -527,24 +527,24 @@ public class UnifiedInputBoardManager implements SimplifiedKeyboardView.onKeyEve
      * close from view state: the board is opened unconditionally (show() is guarded) and the
      * coordinator is set from the result.
      *
-     * @param iM6232c the bar key's code
+     * @param keyCode the bar key's code
      */
-    private void dispatchBoardAction(int iM6232c) {
-        dumpUimState("dispatchBoardAction.ENTRY", iM6232c);
+    private void dispatchBoardAction(int keyCode) {
+        dumpUimState("dispatchBoardAction.ENTRY", keyCode);
         beginBoardTransition();
         // Exclusive open. Only panel boards can be active, so this never hides the keyboard itself.
         UnifiedInputBoardComponent previousActive = getActiveComponent();
-        if (previousActive != null && previousActive.getKeyCode() != iM6232c) {
+        if (previousActive != null && previousActive.getKeyCode() != keyCode) {
             // Not gated on isShowing(): a board whose view was clobbered down must still be
             // cleared from the coordinator (hide() has its own guard).
-            Logger.debug(TAG, "Exclusive-open: closing active board " + previousActive.getKeyCode() + " before opening " + iM6232c);
+            Logger.debug(TAG, "Exclusive-open: closing active board " + previousActive.getKeyCode() + " before opening " + keyCode);
             previousActive.hide();
             setActiveComponent(null);
         }
 
-        hideOtherComponents(iM6232c);
+        hideOtherComponents(keyCode);
         
-        if (iM6232c == -3) {
+        if (keyCode == -3) {
             setActiveComponent(null);
             closeActiveComponent();
             if (isSlideboardShowing()) {
@@ -556,13 +556,13 @@ public class UnifiedInputBoardManager implements SimplifiedKeyboardView.onKeyEve
                     ui.putMenuAway();
                 }
             }
-        } else if (iM6232c == -26) {
+        } else if (keyCode == -26) {
             this.imeService.openSlideboardSettings();
-        } else if (iM6232c == -45) {
+        } else if (keyCode == -45) {
             this.imeService.openSettings();
         } else {
-            if (iM6232c == -27) {
-                UnifiedInputBoardComponent voiceComponent = panelComponent(iM6232c);
+            if (keyCode == -27) {
+                UnifiedInputBoardComponent voiceComponent = panelComponent(keyCode);
                 if (voiceComponent instanceof dev.bbkb.ime.keyboard.inputboard.voice.VoiceInputController) {
                     dev.bbkb.ime.keyboard.inputboard.voice.VoiceInputController voiceController =
                         (dev.bbkb.ime.keyboard.inputboard.voice.VoiceInputController) voiceComponent;
@@ -575,18 +575,18 @@ public class UnifiedInputBoardManager implements SimplifiedKeyboardView.onKeyEve
                 }
             } else {
                 // FCC, clipboard, number pad, emoji (driven through KeyboardState), autofill.
-                UnifiedInputBoardComponent interfaceC1012j = panelComponent(iM6232c);
+                UnifiedInputBoardComponent interfaceC1012j = panelComponent(keyCode);
                 if (interfaceC1012j != null) {
                     interfaceC1012j.show();
                     // Report the result, not the intention: a board can refuse (FCC with a physical
                     // key held, an uninflated ViewStub), and a false "open" makes the next tap dead.
                     if (interfaceC1012j.isShowing()) {
                         setActiveComponent(interfaceC1012j);
-                        if (iM6232c == -37) {
+                        if (keyCode == -37) {
                             hideView();
                         }
                     } else {
-                        Logger.warn(TAG, "openBoard(" + iM6232c + "): the board refused to open; "
+                        Logger.warn(TAG, "openBoard(" + keyCode + "): the board refused to open; "
                                 + "reporting it CLOSED so the next press opens rather than toggles");
                         setActiveComponent(null);
                     }
@@ -595,7 +595,7 @@ public class UnifiedInputBoardManager implements SimplifiedKeyboardView.onKeyEve
         }
         updateAlphabetKeyForSlideboard();
         refresh();
-        dumpUimState("dispatchBoardAction.EXIT", iM6232c);
+        dumpUimState("dispatchBoardAction.EXIT", keyCode);
         assertVisibilityConsistency("dispatchBoardAction.EXIT");
     }
 
@@ -617,10 +617,10 @@ public class UnifiedInputBoardManager implements SimplifiedKeyboardView.onKeyEve
         dispatchBoardAction(iM6232c);
     }
 
-    /** @param z true if released over the key that was pressed (a real tap) */
+    /** @param releasedOnKey true if released over the key that was pressed (a real tap) */
     @Override
-    public void onKeyUp(Key key, boolean z) {
-        if (!z) {
+    public void onKeyUp(Key key, boolean releasedOnKey) {
+        if (!releasedOnKey) {
             return;
         }
         if (isAnimating()) {
@@ -908,10 +908,10 @@ public class UnifiedInputBoardManager implements SimplifiedKeyboardView.onKeyEve
         }
     }
 
-    /** @param c0965e the bar keyboard to paint */
-    public void updateKeyHighlightedStates(Keyboard c0965e) {
+    /** @param keyboard the bar keyboard to paint */
+    public void updateKeyHighlightedStates(Keyboard keyboard) {
         UnifiedInputBoardComponent value;
-        if (c0965e == null) {
+        if (keyboard == null) {
             Logger.error(TAG, "invoked with null keyboard");
             return;
         }
@@ -937,7 +937,7 @@ public class UnifiedInputBoardManager implements SimplifiedKeyboardView.onKeyEve
                 }
                 // Openness comes from the component, not from its key being on the bar: a toggle
                 // moved off the bar is still opened by physical keys, and the sweep must not close it.
-                Key keyM6604b = c0965e.getKeyByCode(iIntValue);
+                Key keyM6604b = keyboard.getKeyByCode(iIntValue);
                 boolean shouldHighlight = false;
                 boolean isShowing = value.isShowing();
                 boolean isEnabled = value.isEnabled();
@@ -972,7 +972,7 @@ public class UnifiedInputBoardManager implements SimplifiedKeyboardView.onKeyEve
             }
         }
         // The centre key is painted even while the bar is GONE, for when it becomes visible.
-        Key keyM6604b2 = c0965e.getKeyByCode(-3);
+        Key keyM6604b2 = keyboard.getKeyByCode(-3);
         if (keyM6604b2 != null) {
             keyM6604b2.setActive(true);
             keyM6604b2.setHighlighted(keyboardIconHighlighted);

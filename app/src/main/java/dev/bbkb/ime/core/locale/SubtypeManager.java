@@ -196,30 +196,30 @@ public final class SubtypeManager {
         return "";
     }
 
-    /** @param str id of the IME to switch to */
-    private void switchToTargetIme(final String str, final InputMethodSubtype inputMethodSubtype, final InputMethodService inputMethodService) {
+    /** @param imiId id of the IME to switch to */
+    private void switchToTargetIme(final String imiId, final InputMethodSubtype inputMethodSubtype, final InputMethodService inputMethodService) {
         // Token-free form on API 28+, deprecated IBinder-token call below that; both off the calling thread.
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
             IME_SWITCH_EXECUTOR.execute(() -> {
                 try {
-                    inputMethodService.switchInputMethod(str, inputMethodSubtype);
+                    inputMethodService.switchInputMethod(imiId, inputMethodSubtype);
                 } catch (RuntimeException e) {
-                    Logger.errorWithException(SubtypeManager.TAG, e, "Exception while invoking InputMethodService.switchInputMethod(" + str + ")");
+                    Logger.errorWithException(SubtypeManager.TAG, e, "Exception while invoking InputMethodService.switchInputMethod(" + imiId + ")");
                 }
             });
             return;
         }
         final IBinder iBinder = inputMethodService.getWindow().getWindow().getAttributes().token;
         if (iBinder == null) {
-            Logger.error(TAG, "Unable to switch IME to [" + str + "] with subtype [" + inputMethodSubtype.getMode() + "] because window attributes are unavailable");
+            Logger.error(TAG, "Unable to switch IME to [" + imiId + "] with subtype [" + inputMethodSubtype.getMode() + "] because window attributes are unavailable");
             return;
         }
         final InputMethodManager inputMethodManagerM5887c = this.richImm.getInputMethodManager();
         IME_SWITCH_EXECUTOR.execute(() -> {
             try {
-                inputMethodManagerM5887c.setInputMethodAndSubtype(iBinder, str, inputMethodSubtype);
+                inputMethodManagerM5887c.setInputMethodAndSubtype(iBinder, imiId, inputMethodSubtype);
             } catch (RuntimeException e) {
-                Logger.errorWithException(SubtypeManager.TAG, e, "Exception while invoking InputMethodManager.setInputMethodAndSubtype(" + iBinder + ", " + str + ", " + inputMethodSubtype.getMode() + ")");
+                Logger.errorWithException(SubtypeManager.TAG, e, "Exception while invoking InputMethodManager.setInputMethodAndSubtype(" + iBinder + ", " + imiId + ", " + inputMethodSubtype.getMode() + ")");
             }
         });
     }

@@ -19,6 +19,6 @@ public interface SlideboardComponent {
 
     void setListener(Listener listener);
 
-    /** @param f the panel's x translation */
-    void setXTranslation(float f);
+    /** @param translationX the panel's x translation */
+    void setXTranslation(float translationX);
 }

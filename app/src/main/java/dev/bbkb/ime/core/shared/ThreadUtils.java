@@ -16,8 +16,8 @@ public final class ThreadUtils {
 
         private final String threadName;
 
-        NamedThreadFactory(String str) {
-            this.threadName = str;
+        NamedThreadFactory(String threadName) {
+            this.threadName = threadName;
         }
 
         @Override // java.util.concurrent.ThreadFactory
@@ -26,14 +26,14 @@ public final class ThreadUtils {
         }
     }
 
-    public static ExecutorService getBackgroundExecutor(String str) {
-        ExecutorService executorServiceNewSingleThreadExecutor = sExecutorMap.get(str);
+    public static ExecutorService getBackgroundExecutor(String name) {
+        ExecutorService executorServiceNewSingleThreadExecutor = sExecutorMap.get(name);
         if (executorServiceNewSingleThreadExecutor == null) {
             synchronized (sExecutorMap) {
-                executorServiceNewSingleThreadExecutor = sExecutorMap.get(str);
+                executorServiceNewSingleThreadExecutor = sExecutorMap.get(name);
                 if (executorServiceNewSingleThreadExecutor == null) {
-                    executorServiceNewSingleThreadExecutor = Executors.newSingleThreadExecutor(new NamedThreadFactory(str));
-                    sExecutorMap.put(str, executorServiceNewSingleThreadExecutor);
+                    executorServiceNewSingleThreadExecutor = Executors.newSingleThreadExecutor(new NamedThreadFactory(name));
+                    sExecutorMap.put(name, executorServiceNewSingleThreadExecutor);
                 }
             }
         }

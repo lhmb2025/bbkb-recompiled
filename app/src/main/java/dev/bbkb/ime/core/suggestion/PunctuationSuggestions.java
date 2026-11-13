@@ -18,17 +18,17 @@ public final class PunctuationSuggestions extends SuggestedWords {
         super(arrayList, false, false, 0);
     }
 
-    public static PunctuationSuggestions newPunctuationSuggestions(String[] strArr) {
+    public static PunctuationSuggestions newPunctuationSuggestions(String[] punctuationSpecs) {
         ArrayList arrayList = new ArrayList();
-        for (String str : strArr) {
+        for (String str : punctuationSpecs) {
             arrayList.add(newHardCodedWordInfo(str));
         }
         return new PunctuationSuggestions(arrayList);
     }
 
     @Override // dev.bbkb.ime.core.suggestion.SuggestedWords
-    public String getWord(int i) {
-        String strMo4284a = super.getWord(i);
+    public String getWord(int index) {
+        String strMo4284a = super.getWord(index);
         int iM7454c = KeySpecParser.getCode(strMo4284a);
         if (iM7454c == -4) {
             return KeySpecParser.getOutputText(strMo4284a);
@@ -37,13 +37,13 @@ public final class PunctuationSuggestions extends SuggestedWords {
     }
 
     @Override // dev.bbkb.ime.core.suggestion.SuggestedWords
-    public String getWordForDisplay(int i) {
-        return KeySpecParser.getLabel(super.getWord(i));
+    public String getWordForDisplay(int index) {
+        return KeySpecParser.getLabel(super.getWord(index));
     }
 
     @Override // dev.bbkb.ime.core.suggestion.SuggestedWords
-    public SuggestedWordInfo getWordInfo(int i) {
-        return newHardCodedWordInfo(getWord(i));
+    public SuggestedWordInfo getWordInfo(int index) {
+        return newHardCodedWordInfo(getWord(index));
     }
 
     @Override // dev.bbkb.ime.core.suggestion.SuggestedWords
@@ -51,7 +51,7 @@ public final class PunctuationSuggestions extends SuggestedWords {
         return "PunctuationSuggestions:  words=" + Arrays.toString(this.mSuggestionsList.toArray());
     }
 
-    private static SuggestedWordInfo newHardCodedWordInfo(String str) {
-        return new SuggestedWordInfo(str, Integer.MAX_VALUE, 5, Dictionary.DICTIONARY_HARDCODED, -1, -1, null);
+    private static SuggestedWordInfo newHardCodedWordInfo(String keySpec) {
+        return new SuggestedWordInfo(keySpec, Integer.MAX_VALUE, 5, Dictionary.DICTIONARY_HARDCODED, -1, -1, null);
     }
 }

@@ -58,27 +58,27 @@ public class KeyboardXMLParser<KP extends KeyboardParams> {
         this.mSubtypeDisplayNameHelper = new SubtypeDisplayNameHelper(context);
     }
 
-    /** @param c1031an the key interning cache */
-    public void setUniqueKeysCache(UniqueKeysCache c1031an) {
-        this.mParams.mTextTable = c1031an;
+    /** @param uniqueKeysCache the key interning cache */
+    public void setUniqueKeysCache(UniqueKeysCache uniqueKeysCache) {
+        this.mParams.mTextTable = uniqueKeysCache;
     }
 
-    private String getResourceName(int i) {
+    private String getResourceName(int resId) {
         try {
-            return this.mResources.getResourceName(i);
+            return this.mResources.getResourceName(resId);
         } catch (Resources.NotFoundException unused) {
             return "File not found";
         }
     }
 
     /**
-     * @param i keyboard XML resource id
-     * @param c0977g id of the keyboard being built
+     * @param xmlId keyboard XML resource id
+     * @param keyboardId id of the keyboard being built
      */
-    public KeyboardXMLParser<KP> load(int i, KeyboardId c0977g) {
-        this.mParams.mId = c0977g;
+    public KeyboardXMLParser<KP> load(int xmlId, KeyboardId keyboardId) {
+        this.mParams.mId = keyboardId;
 
-        int resolvedResourceId = DeviceProfile.resolveLayoutResource(this.mResources, i);
+        int resolvedResourceId = DeviceProfile.resolveLayoutResource(this.mResources, xmlId);
         
         XmlResourceParser xml = this.mResources.getXml(resolvedResourceId);
         try {
@@ -87,11 +87,11 @@ public class KeyboardXMLParser<KP extends KeyboardParams> {
                     parseKeyboard(xml);
                     return this;
                 } catch (IOException e) {
-                    if (BuildConfig.DEBUG) Log.w("Keyboard.Builder", "keyboard XML parse error. xmlId: " + Integer.toString(i) + ", file: " + getResourceName(i), e);
+                    if (BuildConfig.DEBUG) Log.w("Keyboard.Builder", "keyboard XML parse error. xmlId: " + Integer.toString(xmlId) + ", file: " + getResourceName(xmlId), e);
                     throw new RuntimeException(e.getMessage(), e);
                 }
             } catch (XmlPullParserException e2) {
-                if (BuildConfig.DEBUG) Log.w("Keyboard.Builder", "keyboard XML parse error. xmlId: " + Integer.toString(i) + ", file: " + getResourceName(i), e2);
+                if (BuildConfig.DEBUG) Log.w("Keyboard.Builder", "keyboard XML parse error. xmlId: " + Integer.toString(xmlId) + ", file: " + getResourceName(xmlId), e2);
                 throw new IllegalArgumentException(e2.getMessage(), e2);
             }
         } finally {
@@ -99,9 +99,9 @@ public class KeyboardXMLParser<KP extends KeyboardParams> {
         }
     }
 
-    /** @param z true if the keyboard allows gesture input on letter keys (read by Keyboard.allowsGestureForCode) */
-    public void setAllowRedundantMoreKeys(boolean z) {
-        this.mParams.mAllowRedundantMoreKeys = z;
+    /** @param enabled true if the keyboard allows gesture input on letter keys (read by Keyboard.allowsGestureForCode) */
+    public void setAllowRedundantMoreKeys(boolean enabled) {
+        this.mParams.mAllowRedundantMoreKeys = enabled;
     }
 
     public Keyboard build() {
@@ -157,23 +157,23 @@ public class KeyboardXMLParser<KP extends KeyboardParams> {
         }
     }
 
-    private void parseKeyboardContent(XmlPullParser xmlPullParser, boolean z) throws XmlPullParserException, Resources.NotFoundException, IOException {
+    private void parseKeyboardContent(XmlPullParser xmlPullParser, boolean skip) throws XmlPullParserException, Resources.NotFoundException, IOException {
         while (xmlPullParser.getEventType() != 1) {
             int next = xmlPullParser.next();
             if (next == 2) {
                 String name = xmlPullParser.getName();
                 if ("Row".equals(name)) {
                     KeyboardRow c1027ajM7142c = parseRowAttributes(xmlPullParser);
-                    if (!z) {
+                    if (!skip) {
                         startRow(c1027ajM7142c);
                     }
-                    parseRowContent(xmlPullParser, c1027ajM7142c, z);
+                    parseRowContent(xmlPullParser, c1027ajM7142c, skip);
                 } else if ("include".equals(name)) {
-                    parseIncludeKeyboardContent(xmlPullParser, z);
+                    parseIncludeKeyboardContent(xmlPullParser, skip);
                 } else if ("switch".equals(name)) {
-                    parseSwitchKeyboardContent(xmlPullParser, z);
+                    parseSwitchKeyboardContent(xmlPullParser, skip);
                 } else if ("key-style".equals(name)) {
-                    parseKeyStyle(xmlPullParser, z);
+                    parseKeyStyle(xmlPullParser, skip);
                 } else {
                     throw new XmlParseUtils.IllegalStartTag(xmlPullParser, name, "Row");
                 }
@@ -209,31 +209,31 @@ public class KeyboardXMLParser<KP extends KeyboardParams> {
         }
     }
 
-    private void parseRowContent(XmlPullParser xmlPullParser, KeyboardRow c1027aj, boolean z) throws XmlPullParserException, IOException {
+    private void parseRowContent(XmlPullParser xmlPullParser, KeyboardRow keyboardRow, boolean skip) throws XmlPullParserException, IOException {
         while (xmlPullParser.getEventType() != 1) {
             int next = xmlPullParser.next();
             if (next == 2) {
                 String name = xmlPullParser.getName();
                 if ("Key".equals(name)) {
-                    parseKey(xmlPullParser, c1027aj, z);
+                    parseKey(xmlPullParser, keyboardRow, skip);
                 } else if ("Spacer".equals(name)) {
-                    parseSpacer(xmlPullParser, c1027aj, z);
+                    parseSpacer(xmlPullParser, keyboardRow, skip);
                 } else if ("include".equals(name)) {
-                    parseIncludeRowContent(xmlPullParser, c1027aj, z);
+                    parseIncludeRowContent(xmlPullParser, keyboardRow, skip);
                 } else if ("switch".equals(name)) {
-                    parseSwitchRowContent(xmlPullParser, c1027aj, z);
+                    parseSwitchRowContent(xmlPullParser, keyboardRow, skip);
                 } else if ("key-style".equals(name)) {
-                    parseKeyStyle(xmlPullParser, z);
+                    parseKeyStyle(xmlPullParser, skip);
                 } else {
                     throw new XmlParseUtils.IllegalStartTag(xmlPullParser, name, "Row");
                 }
             } else if (next == 3) {
                 String name2 = xmlPullParser.getName();
                 if ("Row".equals(name2)) {
-                    if (z) {
+                    if (skip) {
                         return;
                     }
-                    endRow(c1027aj);
+                    endRow(keyboardRow);
                     return;
                 } else {
                     if (!"case".equals(name2) && !"default".equals(name2) && !"merge".equals(name2)) {
@@ -245,8 +245,8 @@ public class KeyboardXMLParser<KP extends KeyboardParams> {
         }
     }
 
-    private void parseKey(XmlPullParser xmlPullParser, KeyboardRow c1027aj, boolean z) throws XmlParseUtils.ParseException {
-        if (z) {
+    private void parseKey(XmlPullParser xmlPullParser, KeyboardRow keyboardRow, boolean skip) throws XmlParseUtils.ParseException {
+        if (skip) {
             XmlParseUtils.checkEndTag("Key", xmlPullParser);
             return;
         }
@@ -259,34 +259,34 @@ public class KeyboardXMLParser<KP extends KeyboardParams> {
         String strMo7100b2 = abstractC1067zM7091a.getString(typedArrayObtainAttributes, R.styleable.Keyboard_Key_secondaryKeySpec);
         KeyHintPosition enumC0963cM6586a = KeyHintPosition.fromValue(abstractC1067zM7091a.getInt(typedArrayObtainAttributes, R.styleable.Keyboard_Key_secondaryFunctionDisplayStyle, KeyHintPosition.HIDDEN.getValue()));
         String strM7450a = KeySpecParser.getLabel(strMo7100b);
-        Key key = new Key((strM7450a == null || !strM7450a.toLowerCase(java.util.Locale.ROOT).equals("lang_code")) ? strMo7100b : strMo7100b.replace("lang_code", this.mSubtypeDisplayNameHelper.getSpaceKeyLabel(ResourceLocaleUtils.getSubtypeLocale(this.mParams.mId.mSubtype), ResourceLocaleUtils.getAdditionalLocales(this.mParams.mId.mSubtype))), strMo7100b2, enumC0963cM6586a, typedArrayObtainAttributes, abstractC1067zM7091a, this.mParams, c1027aj);
+        Key key = new Key((strM7450a == null || !strM7450a.toLowerCase(java.util.Locale.ROOT).equals("lang_code")) ? strMo7100b : strMo7100b.replace("lang_code", this.mSubtypeDisplayNameHelper.getSpaceKeyLabel(ResourceLocaleUtils.getSubtypeLocale(this.mParams.mId.mSubtype), ResourceLocaleUtils.getAdditionalLocales(this.mParams.mId.mSubtype))), strMo7100b2, enumC0963cM6586a, typedArrayObtainAttributes, abstractC1067zM7091a, this.mParams, keyboardRow);
         typedArrayObtainAttributes.recycle();
         XmlParseUtils.checkEndTag("Key", xmlPullParser);
         endKey(key);
     }
 
-    private void parseSpacer(XmlPullParser xmlPullParser, KeyboardRow c1027aj, boolean z) throws XmlParseUtils.NonEmptyTag, XmlParseUtils.ParseException {
-        if (z) {
+    private void parseSpacer(XmlPullParser xmlPullParser, KeyboardRow keyboardRow, boolean skip) throws XmlParseUtils.NonEmptyTag, XmlParseUtils.ParseException {
+        if (skip) {
             XmlParseUtils.checkEndTag("Spacer", xmlPullParser);
             return;
         }
         TypedArray typedArrayObtainAttributes = this.mResources.obtainAttributes(Xml.asAttributeSet(xmlPullParser), R.styleable.Keyboard_Key);
-        Key.SpacerKey c0943c = new Key.SpacerKey(typedArrayObtainAttributes, this.mParams.mKeyStyles.getKeyStyle(typedArrayObtainAttributes, xmlPullParser), this.mParams, c1027aj);
+        Key.SpacerKey c0943c = new Key.SpacerKey(typedArrayObtainAttributes, this.mParams.mKeyStyles.getKeyStyle(typedArrayObtainAttributes, xmlPullParser), this.mParams, keyboardRow);
         typedArrayObtainAttributes.recycle();
         XmlParseUtils.checkEndTag("Spacer", xmlPullParser);
         endKey(c0943c);
     }
 
-    private void parseIncludeKeyboardContent(XmlPullParser xmlPullParser, boolean z) throws XmlParseUtils.NonEmptyTag, Resources.NotFoundException, IOException, XmlPullParserException {
-        parseKeyStyleForKey(xmlPullParser, null, z);
+    private void parseIncludeKeyboardContent(XmlPullParser xmlPullParser, boolean skip) throws XmlParseUtils.NonEmptyTag, Resources.NotFoundException, IOException, XmlPullParserException {
+        parseKeyStyleForKey(xmlPullParser, null, skip);
     }
 
-    private void parseIncludeRowContent(XmlPullParser xmlPullParser, KeyboardRow c1027aj, boolean z) throws XmlParseUtils.NonEmptyTag, Resources.NotFoundException, IOException, XmlPullParserException {
-        parseKeyStyleForKey(xmlPullParser, c1027aj, z);
+    private void parseIncludeRowContent(XmlPullParser xmlPullParser, KeyboardRow keyboardRow, boolean skip) throws XmlParseUtils.NonEmptyTag, Resources.NotFoundException, IOException, XmlPullParserException {
+        parseKeyStyleForKey(xmlPullParser, keyboardRow, skip);
     }
 
-    private void parseKeyStyleForKey(XmlPullParser xmlPullParser, KeyboardRow c1027aj, boolean z) throws XmlParseUtils.NonEmptyTag, Resources.NotFoundException, IOException, XmlPullParserException {
-        if (z) {
+    private void parseKeyStyleForKey(XmlPullParser xmlPullParser, KeyboardRow keyboardRow, boolean skip) throws XmlParseUtils.NonEmptyTag, Resources.NotFoundException, IOException, XmlPullParserException {
+        if (skip) {
             XmlParseUtils.checkEndTag("include", xmlPullParser);
             return;
         }
@@ -296,9 +296,9 @@ public class KeyboardXMLParser<KP extends KeyboardParams> {
         try {
             XmlParseUtils.checkAttributeExists(typedArrayObtainAttributes, 0, "keyboardLayout", "include", xmlPullParser);
             int resourceId = typedArrayObtainAttributes.getResourceId(R.styleable.Keyboard_Include_keyboardLayout, 0);
-            if (c1027aj != null) {
-                c1027aj.setXPos(c1027aj.getKeyX(typedArrayObtainAttributes2));
-                c1027aj.pushRowAttributes(typedArrayObtainAttributes2);
+            if (keyboardRow != null) {
+                keyboardRow.setXPos(keyboardRow.getKeyX(typedArrayObtainAttributes2));
+                keyboardRow.pushRowAttributes(typedArrayObtainAttributes2);
             }
             XmlParseUtils.checkEndTag("include", xmlPullParser);
 
@@ -306,10 +306,10 @@ public class KeyboardXMLParser<KP extends KeyboardParams> {
             
             XmlResourceParser xml = this.mResources.getXml(resolvedIncludeId);
             try {
-                parseKeyContent(xml, c1027aj, z);
+                parseKeyContent(xml, keyboardRow, skip);
             } finally {
-                if (c1027aj != null) {
-                    c1027aj.popRowAttributes();
+                if (keyboardRow != null) {
+                    keyboardRow.popRowAttributes();
                 }
                 xml.close();
             }
@@ -319,32 +319,32 @@ public class KeyboardXMLParser<KP extends KeyboardParams> {
         }
     }
 
-    private void parseKeyContent(XmlPullParser xmlPullParser, KeyboardRow c1027aj, boolean z) throws XmlPullParserException, Resources.NotFoundException, IOException {
+    private void parseKeyContent(XmlPullParser xmlPullParser, KeyboardRow keyboardRow, boolean skip) throws XmlPullParserException, Resources.NotFoundException, IOException {
         while (xmlPullParser.getEventType() != 1) {
             if (xmlPullParser.next() == 2) {
                 if (!"merge".equals(xmlPullParser.getName())) {
                     throw new XmlParseUtils.ParseException("Included keyboard layout must have <merge> root element", xmlPullParser);
                 }
-                if (c1027aj == null) {
-                    parseKeyboardContent(xmlPullParser, z);
+                if (keyboardRow == null) {
+                    parseKeyboardContent(xmlPullParser, skip);
                     return;
                 } else {
-                    parseRowContent(xmlPullParser, c1027aj, z);
+                    parseRowContent(xmlPullParser, keyboardRow, skip);
                     return;
                 }
             }
         }
     }
 
-    private void parseSwitchKeyboardContent(XmlPullParser xmlPullParser, boolean z) throws XmlPullParserException, IOException {
-        parseSwitchInternal(xmlPullParser, (KeyboardRow) null, z);
+    private void parseSwitchKeyboardContent(XmlPullParser xmlPullParser, boolean skip) throws XmlPullParserException, IOException {
+        parseSwitchInternal(xmlPullParser, (KeyboardRow) null, skip);
     }
 
-    private void parseSwitchRowContent(XmlPullParser xmlPullParser, KeyboardRow c1027aj, boolean z) throws XmlPullParserException, IOException {
-        parseSwitchInternal(xmlPullParser, c1027aj, z);
+    private void parseSwitchRowContent(XmlPullParser xmlPullParser, KeyboardRow keyboardRow, boolean skip) throws XmlPullParserException, IOException {
+        parseSwitchInternal(xmlPullParser, keyboardRow, skip);
     }
 
-    private void parseSwitchInternal(XmlPullParser xmlPullParser, KeyboardRow c1027aj, boolean z) throws XmlPullParserException, IOException {
+    private void parseSwitchInternal(XmlPullParser xmlPullParser, KeyboardRow keyboardRow, boolean skip) throws XmlPullParserException, IOException {
         boolean zM7141b = false;
         while (true) {
             if (xmlPullParser.getEventType() == 1) {
@@ -354,9 +354,9 @@ public class KeyboardXMLParser<KP extends KeyboardParams> {
             if (next == 2) {
                 String name = xmlPullParser.getName();
                 if ("case".equals(name)) {
-                    zM7141b |= parseCase(xmlPullParser, c1027aj, zM7141b ? true : z);
+                    zM7141b |= parseCase(xmlPullParser, keyboardRow, zM7141b ? true : skip);
                 } else if ("default".equals(name)) {
-                    zM7141b |= parseDefault(xmlPullParser, c1027aj, zM7141b ? true : z);
+                    zM7141b |= parseDefault(xmlPullParser, keyboardRow, zM7141b ? true : skip);
                 } else {
                     throw new XmlParseUtils.IllegalStartTag(xmlPullParser, name, "switch");
                 }
@@ -370,15 +370,15 @@ public class KeyboardXMLParser<KP extends KeyboardParams> {
         }
     }
 
-    private boolean parseCase(XmlPullParser xmlPullParser, KeyboardRow c1027aj, boolean z) throws XmlPullParserException, Resources.NotFoundException, IOException {
+    private boolean parseCase(XmlPullParser xmlPullParser, KeyboardRow keyboardRow, boolean skip) throws XmlPullParserException, Resources.NotFoundException, IOException {
         boolean zM7150d = matchCaseConditions(xmlPullParser);
         if (!zM7150d) {
-            z = true;
+            skip = true;
         }
-        if (c1027aj == null) {
-            parseKeyboardContent(xmlPullParser, z);
+        if (keyboardRow == null) {
+            parseKeyboardContent(xmlPullParser, skip);
         } else {
-            parseRowContent(xmlPullParser, c1027aj, z);
+            parseRowContent(xmlPullParser, keyboardRow, skip);
         }
         return zM7150d;
     }
@@ -416,61 +416,61 @@ public class KeyboardXMLParser<KP extends KeyboardParams> {
         }
     }
 
-    private static boolean matchInteger(TypedArray typedArray, int i, int i2) {
-        return !typedArray.hasValue(i) || typedArray.getInt(i, 0) == i2;
+    private static boolean matchInteger(TypedArray typedArray, int index, int value) {
+        return !typedArray.hasValue(index) || typedArray.getInt(index, 0) == value;
     }
 
-    private static boolean matchBoolean(TypedArray typedArray, int i, boolean z) {
-        return !typedArray.hasValue(i) || typedArray.getBoolean(i, false) == z;
+    private static boolean matchBoolean(TypedArray typedArray, int index, boolean value) {
+        return !typedArray.hasValue(index) || typedArray.getBoolean(index, false) == value;
     }
 
     /** Matches a "|"-separated attribute value; an absent attribute matches. */
-    private static boolean matchString(TypedArray typedArray, int i, String str) {
-        return !typedArray.hasValue(i) || splitContains(typedArray.getString(i), str);
+    private static boolean matchString(TypedArray typedArray, int index, String value) {
+        return !typedArray.hasValue(index) || splitContains(typedArray.getString(index), value);
     }
 
     /** Null-safe: a non-string attribute value makes {@code getString} return null. */
-    private static boolean splitContains(String value, String str) {
+    private static boolean splitContains(String value, String target) {
         if (value == null) {
             return false;
         }
         for (String candidate : value.split("\\|")) {
-            if (candidate.equals(str)) {
+            if (candidate.equals(target)) {
                 return true;
             }
         }
         return false;
     }
 
-    private static boolean matchTypedValue(TypedArray typedArray, int i, int i2, String str) {
-        TypedValue typedValuePeekValue = typedArray.peekValue(i);
+    private static boolean matchTypedValue(TypedArray typedArray, int index, int intValue, String strValue) {
+        TypedValue typedValuePeekValue = typedArray.peekValue(index);
         if (typedValuePeekValue == null) {
             return true;
         }
         if (ResourceConfigManager.isIntegerType(typedValuePeekValue)) {
-            return i2 == typedArray.getInt(i, 0);
+            return intValue == typedArray.getInt(index, 0);
         }
         // String values match by name against a "|"-separated list, like matchString.
         if (ResourceConfigManager.isStringType(typedValuePeekValue)) {
-            return splitContains(typedArray.getString(i), str);
+            return splitContains(typedArray.getString(index), strValue);
         }
         return false;
     }
 
-    private static boolean matchIcon(TypedArray typedArray, int i, KeyboardIconSet c1024ag) {
-        return (typedArray.hasValue(i) && c1024ag.getIconDrawable(KeyboardIconSet.getIconId(typedArray.getString(i))) == null) ? false : true;
+    private static boolean matchIcon(TypedArray typedArray, int index, KeyboardIconSet keyboardIconSet) {
+        return (typedArray.hasValue(index) && keyboardIconSet.getIconDrawable(KeyboardIconSet.getIconId(typedArray.getString(index))) == null) ? false : true;
     }
 
-    private boolean parseDefault(XmlPullParser xmlPullParser, KeyboardRow c1027aj, boolean z) throws XmlPullParserException, Resources.NotFoundException, IOException {
-        if (c1027aj == null) {
-            parseKeyboardContent(xmlPullParser, z);
+    private boolean parseDefault(XmlPullParser xmlPullParser, KeyboardRow keyboardRow, boolean skip) throws XmlPullParserException, Resources.NotFoundException, IOException {
+        if (keyboardRow == null) {
+            parseKeyboardContent(xmlPullParser, skip);
         } else {
-            parseRowContent(xmlPullParser, c1027aj, z);
+            parseRowContent(xmlPullParser, keyboardRow, skip);
         }
         return true;
     }
 
-    private void parseKeyStyle(XmlPullParser xmlPullParser, boolean z) throws XmlParseUtils.NonEmptyTag, XmlParseUtils.ParseException {
+    private void parseKeyStyle(XmlPullParser xmlPullParser, boolean skip) throws XmlParseUtils.NonEmptyTag, XmlParseUtils.ParseException {
         AttributeSet attributeSetAsAttributeSet = Xml.asAttributeSet(xmlPullParser);
         TypedArray typedArrayObtainAttributes = this.mResources.obtainAttributes(attributeSetAsAttributeSet, R.styleable.Keyboard_KeyStyle);
         TypedArray typedArrayObtainAttributes2 = this.mResources.obtainAttributes(attributeSetAsAttributeSet, R.styleable.Keyboard_Key);
@@ -479,7 +479,7 @@ public class KeyboardXMLParser<KP extends KeyboardParams> {
             if (!hasStyleName) {
                 throw new XmlParseUtils.ParseException("<key-style/> needs styleName attribute", xmlPullParser);
             }
-            if (!z) {
+            if (!skip) {
                 this.mParams.mKeyStyles.parseKeyStyleAttributes(typedArrayObtainAttributes, typedArrayObtainAttributes2, xmlPullParser);
             }
             typedArrayObtainAttributes.recycle();
@@ -497,14 +497,14 @@ public class KeyboardXMLParser<KP extends KeyboardParams> {
         this.mTopEdge = true;
     }
 
-    private void startRow(KeyboardRow c1027aj) {
-        addEdgeSpace(this.mParams.mLeftPadding, c1027aj);
-        this.mCurrentRow = c1027aj;
+    private void startRow(KeyboardRow keyboardRow) {
+        addEdgeSpace(this.mParams.mLeftPadding, keyboardRow);
+        this.mCurrentRow = keyboardRow;
         this.mLeftEdge = true;
         this.mRightEdgeKey = null;
     }
 
-    private void endRow(KeyboardRow c1027aj) {
+    private void endRow(KeyboardRow keyboardRow) {
         if (this.mCurrentRow == null) {
             throw new RuntimeException("orphan end row tag");
         }
@@ -513,8 +513,8 @@ public class KeyboardXMLParser<KP extends KeyboardParams> {
             key.setRightEdge(this.mParams);
             this.mRightEdgeKey = null;
         }
-        addEdgeSpace(this.mParams.mRightPadding, c1027aj);
-        this.mCurrentY += c1027aj.getRowHeight();
+        addEdgeSpace(this.mParams.mRightPadding, keyboardRow);
+        this.mCurrentY += keyboardRow.getRowHeight();
         this.mCurrentRow = null;
         this.mTopEdge = false;
     }
@@ -541,8 +541,8 @@ public class KeyboardXMLParser<KP extends KeyboardParams> {
         }
     }
 
-    private void addEdgeSpace(float f, KeyboardRow c1027aj) {
-        c1027aj.advanceXPos(f);
+    private void addEdgeSpace(float width, KeyboardRow keyboardRow) {
+        keyboardRow.advanceXPos(width);
         this.mLeftEdge = false;
         this.mRightEdgeKey = null;
     }

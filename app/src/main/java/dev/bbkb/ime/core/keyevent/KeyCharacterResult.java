@@ -18,21 +18,21 @@ public interface KeyCharacterResult {
         /** Text output sets both flags above. */
         private static final int FLAGS_TEXT_OUTPUT = FLAG_MODIFIER | FLAG_SHIFT_LOCKED;
 
-        /** @param i the code point */
-        public Interpretation(int i) {
+        /** @param codePoint the code point */
+        public Interpretation(int codePoint) {
             this.flags = 0;
-            this.codePoint = i;
+            this.codePoint = codePoint;
             this.text = null;
         }
 
         /**
-         * @param i the code point
-         * @param z true if Shift is locked
-         * @param z2 true if a modifier (multitap) interpretation
+         * @param codePoint the code point
+         * @param isShiftLocked true if Shift is locked
+         * @param isModifier true if a modifier (multitap) interpretation
          */
-        public Interpretation(int i, boolean z, boolean z2) {
-            this.flags = (z ? FLAG_SHIFT_LOCKED : 0) | (z2 ? FLAG_MODIFIER : 0);
-            this.codePoint = i;
+        public Interpretation(int codePoint, boolean isShiftLocked, boolean isModifier) {
+            this.flags = (isShiftLocked ? FLAG_SHIFT_LOCKED : 0) | (isModifier ? FLAG_MODIFIER : 0);
+            this.codePoint = codePoint;
             this.text = null;
         }
 

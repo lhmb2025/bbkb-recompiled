@@ -20,12 +20,12 @@ public class UnifiedInputBoardHandler extends WeakOwnerHandler<UnifiedInputBoard
     }
 
     /**
-     * @param aVar the callback, held weakly
-     * @param j delay in ms before key states are restored
+     * @param callback the callback, held weakly
+     * @param delayMillis delay in ms before key states are restored
      */
-    public UnifiedInputBoardHandler(Callback aVar, long j) {
-        super(aVar);
-        this.mDelay = j;
+    public UnifiedInputBoardHandler(Callback callback, long delayMillis) {
+        super(callback);
+        this.mDelay = delayMillis;
     }
 
     @Override

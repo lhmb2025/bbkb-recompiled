@@ -24,71 +24,71 @@ public class MoreKeySpec {
     private final String mOutputText;
 
     /**
-     * @param str label
-     * @param i icon id
-     * @param i2 code
-     * @param str2 output text
+     * @param label label
+     * @param iconId icon id
+     * @param code code
+     * @param outputText output text
      */
-    public MoreKeySpec(String str, int i, int i2, String str2) {
-        this.mLabel = str;
-        this.mIconId = i;
-        this.mCode = i2;
-        this.mOutputText = str2;
+    public MoreKeySpec(String label, int iconId, int code, String outputText) {
+        this.mLabel = label;
+        this.mIconId = iconId;
+        this.mCode = code;
+        this.mOutputText = outputText;
     }
 
     /**
-     * @param str more-key spec
-     * @param z true to upper-case for a shifted keyboard
+     * @param moreKeySpec more-key spec
+     * @param needsToUpperCase true to upper-case for a shifted keyboard
      */
-    public MoreKeySpec(String str, boolean z, Locale locale) {
-        if (TextUtils.isEmpty(str)) {
+    public MoreKeySpec(String moreKeySpec, boolean needsToUpperCase, Locale locale) {
+        if (TextUtils.isEmpty(moreKeySpec)) {
             throw new KeySpecParser.KeySpecParserError("Empty key spec");
         }
-        if (z && locale == null) {
+        if (needsToUpperCase && locale == null) {
             throw new IllegalArgumentException("Invalid null locale reference");
         }
-        this.mLabel = toUpperCaseWithGreek(KeySpecParser.getLabel(str), z, locale, true);
-        int iM5460a = toUpperCaseCodePointWithGreek(KeySpecParser.getCode(str), z, locale, true);
+        this.mLabel = toUpperCaseWithGreek(KeySpecParser.getLabel(moreKeySpec), needsToUpperCase, locale, true);
+        int iM5460a = toUpperCaseCodePointWithGreek(KeySpecParser.getCode(moreKeySpec), needsToUpperCase, locale, true);
         String strM5466a = null;
         if (iM5460a != -21) {
-            strM5466a = toUpperCaseWithGreek(KeySpecParser.getOutputText(str), z, locale, true);
-        } else if (str != null) {
+            strM5466a = toUpperCaseWithGreek(KeySpecParser.getOutputText(moreKeySpec), needsToUpperCase, locale, true);
+        } else if (moreKeySpec != null) {
             iM5460a = -4;
             strM5466a = this.mLabel;
         }
         this.mCode = iM5460a;
         this.mOutputText = strM5466a;
-        this.mIconId = KeySpecParser.getIconId(str);
+        this.mIconId = KeySpecParser.getIconId(moreKeySpec);
     }
 
     /**
-     * @param str key spec
-     * @param str2 label overriding the spec's, or null
-     * @param i code to use when the spec has none, or -21
-     * @param z true to upper-case for a shifted keyboard
+     * @param keySpec key spec
+     * @param labelOverride label overriding the spec's, or null
+     * @param shiftedHintCode code to use when the spec has none, or -21
+     * @param needsToUpperCase true to upper-case for a shifted keyboard
      */
-    public MoreKeySpec(String str, String str2, int i, boolean z, Locale locale) {
-        if (z && locale == null) {
+    public MoreKeySpec(String keySpec, String labelOverride, int shiftedHintCode, boolean needsToUpperCase, Locale locale) {
+        if (needsToUpperCase && locale == null) {
             throw new IllegalArgumentException("Invalid null locale reference");
         }
-        this.mIconId = KeySpecParser.getIconId(str);
-        int iM7454c = KeySpecParser.getCode(str);
-        if (str2 != null) {
-            this.mLabel = str2;
+        this.mIconId = KeySpecParser.getIconId(keySpec);
+        int iM7454c = KeySpecParser.getCode(keySpec);
+        if (labelOverride != null) {
+            this.mLabel = labelOverride;
         } else if (iM7454c >= 65536) {
             this.mLabel = new StringBuilder().appendCodePoint(iM7454c).toString();
         } else {
-            String labelStr = KeySpecParser.getLabel(str);
-            this.mLabel = ((iM7454c != 32 && z && labelStr != null) ? labelStr.toUpperCase(locale) : labelStr);
+            String labelStr = KeySpecParser.getLabel(keySpec);
+            this.mLabel = ((iM7454c != 32 && needsToUpperCase && labelStr != null) ? labelStr.toUpperCase(locale) : labelStr);
         }
-        String outputStr = KeySpecParser.getOutputText(str);
-        String strM5465a = ((z && outputStr != null) ? outputStr.toUpperCase(locale) : outputStr);
+        String outputStr = KeySpecParser.getOutputText(keySpec);
+        String strM5465a = ((needsToUpperCase && outputStr != null) ? outputStr.toUpperCase(locale) : outputStr);
         if (iM7454c == -21 && TextUtils.isEmpty(strM5465a) && !TextUtils.isEmpty(this.mLabel)) {
             if ((this.mLabel).codePointCount(0, (this.mLabel).length()) != 1) {
                 strM5465a = this.mLabel;
                 this.mCode = -4;
-            } else if (i != -21) {
-                this.mCode = i;
+            } else if (shiftedHintCode != -21) {
+                this.mCode = shiftedHintCode;
             } else {
                 this.mCode = this.mLabel.codePointAt(0);
             }
@@ -100,7 +100,7 @@ public class MoreKeySpec {
                 this.mCode = -4;
             }
         } else {
-            this.mCode = toUpperCaseCodePoint(iM7454c, z, locale);
+            this.mCode = toUpperCaseCodePoint(iM7454c, needsToUpperCase, locale);
         }
         this.mOutputText = strM5465a;
     }
@@ -164,11 +164,11 @@ public class MoreKeySpec {
 
     /**
      * Builds a plain key from this spec with the keyboard's default key metrics.
-     * @param i x
-     * @param i2 y
-     * @param i3 label flags
+     * @param x x
+     * @param y y
+     * @param labelFlags label flags
      */
-    public Key buildKey(int i, int i2, int i3, KeyboardParams c1025ah) {
-        return new Key(this, MoreKeySpec.getEmpty(), KeyHintPosition.HIDDEN, null, i3, 1, i, i2, c1025ah.mDefaultKeyWidth, c1025ah.mDefaultRowHeight, c1025ah.mHorizontalGap, c1025ah.mVerticalGap, null, null, null, 0, 2, -1);
+    public Key buildKey(int x, int y, int labelFlags, KeyboardParams keyboardParams) {
+        return new Key(this, MoreKeySpec.getEmpty(), KeyHintPosition.HIDDEN, null, labelFlags, 1, x, y, keyboardParams.mDefaultKeyWidth, keyboardParams.mDefaultRowHeight, keyboardParams.mHorizontalGap, keyboardParams.mVerticalGap, null, null, null, 0, 2, -1);
     }
 }

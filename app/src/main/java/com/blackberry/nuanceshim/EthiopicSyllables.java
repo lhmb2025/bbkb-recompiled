@@ -42,9 +42,9 @@ public final class EthiopicSyllables {
         return (codePoint - FIRST_SYLLABLE) & 7;
     }
 
-    private static int markerOrder(char c) {
+    private static int markerOrder(char marker) {
         for (int order = 1; order < MARKERS.length; order++) {
-            if (MARKERS[order] == c) {
+            if (MARKERS[order] == marker) {
                 return order;
             }
         }

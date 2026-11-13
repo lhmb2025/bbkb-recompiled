@@ -111,11 +111,11 @@ public final class FccCursorTouchListener implements View.OnTouchListener {
     }
 
     /**
-     * @param f the target scale
-     * @param i the duration in ms
+     * @param scale the target scale
+     * @param durationMillis the duration in ms
      */
-    private void animateScale(View view, float f, int i) {
-        view.animate().scaleX(f).scaleY(f).setDuration(i);
+    private void animateScale(View view, float scale, int durationMillis) {
+        view.animate().scaleX(scale).scaleY(scale).setDuration(durationMillis);
     }
 
     /** Follow the finger, locked to the dominant axis once past the threshold. */
@@ -135,16 +135,16 @@ public final class FccCursorTouchListener implements View.OnTouchListener {
     }
 
     /**
-     * @param f the travel to clamp
-     * @param z true for the horizontal axis
+     * @param offset the travel to clamp
+     * @param isHorizontal true for the horizontal axis
      */
-    private float clampTravel(float f, boolean z) {
-        float f2 = z ? this.mMaxTravelX : this.mMaxTravelY;
-        if (f > f2) {
+    private float clampTravel(float offset, boolean isHorizontal) {
+        float f2 = isHorizontal ? this.mMaxTravelX : this.mMaxTravelY;
+        if (offset > f2) {
             return f2;
         }
         float f3 = -f2;
-        return f < f3 ? f3 : f;
+        return offset < f3 ? f3 : offset;
     }
 
     private void updateDirection() {
@@ -178,44 +178,44 @@ public final class FccCursorTouchListener implements View.OnTouchListener {
     }
 
     /**
-     * @param f the nub's travel
-     * @param z true when the drag is horizontal
+     * @param offset the nub's travel
+     * @param isHorizontal true when the drag is horizontal
      */
-    private void scaleNubForDrag(float f, boolean z) {
-        animateScale(this.mNub, 1.0f - (computeDragRatio(f, z) * 0.39999998f), 0);
+    private void scaleNubForDrag(float offset, boolean isHorizontal) {
+        animateScale(this.mNub, 1.0f - (computeDragRatio(offset, isHorizontal) * 0.39999998f), 0);
     }
 
     /**
-     * @param f the nub's travel
-     * @param z true when the drag is horizontal
+     * @param offset the nub's travel
+     * @param isHorizontal true when the drag is horizontal
      */
-    private float computeDragRatio(float f, boolean z) {
-        float f2 = z ? this.mMaxTravelX : this.mMaxTravelY;
-        float fAbs = Math.abs(f);
+    private float computeDragRatio(float offset, boolean isHorizontal) {
+        float f2 = isHorizontal ? this.mMaxTravelX : this.mMaxTravelY;
+        float fAbs = Math.abs(offset);
         float f3 = this.mThreshold;
         return (fAbs - f3) / (f2 - f3);
     }
 
     /**
-     * @param j the base delay in ms
-     * @param z true when the drag is horizontal
-     * @param f the nub's travel (further is faster)
+     * @param baseDelayMillis the base delay in ms
+     * @param isHorizontal true when the drag is horizontal
+     * @param offset the nub's travel (further is faster)
      */
-    private long computeRepeatDelay(long j, boolean z, float f) {
-        float f2 = j;
-        return Math.max((long) (f2 - ((Math.abs(f) / (z ? this.mMaxTravelX : this.mMaxTravelY + this.mVerticalOffset)) * f2)), 5L);
+    private long computeRepeatDelay(long baseDelayMillis, boolean isHorizontal, float offset) {
+        float f2 = baseDelayMillis;
+        return Math.max((long) (f2 - ((Math.abs(offset) / (isHorizontal ? this.mMaxTravelX : this.mMaxTravelY + this.mVerticalOffset)) * f2)), 5L);
     }
 
-    /** @param enumC0992a the direction to repeat */
-    private void startRepeat(final FccView.Direction enumC0992a) {
-        if (this.mFccView.getRepeatRunnable() == null || this.mCurrentDirection != enumC0992a) {
+    /** @param direction the direction to repeat */
+    private void startRepeat(final FccView.Direction direction) {
+        if (this.mFccView.getRepeatRunnable() == null || this.mCurrentDirection != direction) {
             this.mFccView.stopRepeat();
-            this.mCurrentDirection = enumC0992a;
+            this.mCurrentDirection = direction;
             this.mFccView.setRepeatRunnable(new Runnable() {
                 @Override
                 public void run() {
                     if (FccCursorTouchListener.this.mListener != null) {
-                        FccCursorTouchListener.this.mListener.onMove(enumC0992a);
+                        FccCursorTouchListener.this.mListener.onMove(direction);
                     }
                     FccCursorTouchListener.this.mHandler.postDelayed(this, FccCursorTouchListener.this.mRepeatDelay);
                 }

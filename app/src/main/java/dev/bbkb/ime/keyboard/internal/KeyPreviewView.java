@@ -47,8 +47,8 @@ public class KeyPreviewView extends AppCompatTextView {
         this(context, attributeSet, 0);
     }
 
-    public KeyPreviewView(Context context, AttributeSet attributeSet, int i) {
-        super(context, attributeSet, i);
+    public KeyPreviewView(Context context, AttributeSet attributeSet, int defStyleAttr) {
+        super(context, attributeSet, defStyleAttr);
         this.mBackgroundPadding = new Rect();
         setGravity(Gravity.CENTER_HORIZONTAL | Gravity.TOP);
         setIncludeFontPadding(false);
@@ -95,14 +95,14 @@ public class KeyPreviewView extends AppCompatTextView {
         if (InputPathDebug.on()) Log.d(TAG, "[KEY_PREVIEW] Set preview dimensions - width: " + width + ", height: " + height);
     }
 
-    public void setPreviewVisual(Key key, KeyboardIconSet c1024ag, KeyDrawParams c1061t) {
+    public void setPreviewVisual(Key key, KeyboardIconSet keyboardIconSet, KeyDrawParams keyDrawParams) {
         if (InputPathDebug.on()) Log.d(TAG, "[KEY_PREVIEW] setPreviewVisual called - key code: " + key.getCode());
         if (InputPathDebug.on()) Log.d(TAG, "[KEY_PREVIEW] key.getIconId() (icon code): " + key.getIconId());
 
         applyThemedBackground();
         
         if (key.getIconId() != 0) {
-            Drawable iconDrawable = key.getPreviewIcon(c1024ag);
+            Drawable iconDrawable = key.getPreviewIcon(keyboardIconSet);
             if (InputPathDebug.on()) Log.d(TAG, "[KEY_PREVIEW] Using icon drawable: " + iconDrawable);
             setBottomDrawableIfChanged(iconDrawable);
             setText((CharSequence) null);
@@ -112,10 +112,10 @@ public class KeyPreviewView extends AppCompatTextView {
         
         setBottomDrawableIfChanged(null);
         setTextColor(KeyboardColorManager.INSTANCE.getTextColor());
-        setTextSize(0, key.getLetterSize(c1061t));
+        setTextSize(0, key.getLetterSize(keyDrawParams));
         setTypeface(KeyboardColorManager.styleSpec().getMediumKeyTypeface()
-                ? dev.bbkb.ime.keyboard.KeyboardView.mediumWeightTypeface(key.getLetterTypeface(c1061t))
-                : key.getLetterTypeface(c1061t));
+                ? dev.bbkb.ime.keyboard.KeyboardView.mediumWeightTypeface(key.getLetterTypeface(keyDrawParams))
+                : key.getLetterTypeface(keyDrawParams));
         
         String keyLabel = key.getVisibleLabel();
         if (InputPathDebug.on()) Log.d(TAG, "[KEY_PREVIEW] key.getVisibleLabel() (label): '" + keyLabel + "', length: " + (keyLabel != null ? keyLabel.length() : "null"));
@@ -168,14 +168,14 @@ public class KeyPreviewView extends AppCompatTextView {
         if (InputPathDebug.on()) Log.d(TAG, "[KEY_PREVIEW] Applied themed background with color: " + Integer.toHexString(color));
     }
 
-    private void setTextAndScaleX(String str) {
+    private void setTextAndScaleX(String text) {
         Drawable background;
-        if (InputPathDebug.on()) Log.d(TAG, "[KEY_PREVIEW] setTextAndScaleX called with: '" + str + "'");
+        if (InputPathDebug.on()) Log.d(TAG, "[KEY_PREVIEW] setTextAndScaleX called with: '" + text + "'");
         setTextScaleX(1.0f);
-        setText(str);
+        setText(text);
         if (InputPathDebug.on()) Log.d(TAG, "[KEY_PREVIEW] After setText - current text: '" + getText() + "'");
         
-        if (mNoScaleXTextSet.contains(str) || (background = getBackground()) == null) {
+        if (mNoScaleXTextSet.contains(text) || (background = getBackground()) == null) {
             if (InputPathDebug.on()) Log.d(TAG, "[KEY_PREVIEW] Skipping scale calculation - cached or no background");
             return;
         }
@@ -186,16 +186,16 @@ public class KeyPreviewView extends AppCompatTextView {
         // No intrinsic width (-1): don't scale.
         if (intrinsicWidth <= 0) {
             if (InputPathDebug.on()) Log.d(TAG, "[KEY_PREVIEW] Background has no intrinsic width, using default scale");
-            mNoScaleXTextSet.add(str);
+            mNoScaleXTextSet.add(text);
             return;
         }
         
-        float fM7441a = getTextWidth(str, getPaint());
+        float fM7441a = getTextWidth(text, getPaint());
         if (InputPathDebug.on()) Log.d(TAG, "[KEY_PREVIEW] Text width: " + fM7441a);
         
         float f = intrinsicWidth;
         if (fM7441a <= f) {
-            mNoScaleXTextSet.add(str);
+            mNoScaleXTextSet.add(text);
             if (InputPathDebug.on()) Log.d(TAG, "[KEY_PREVIEW] Text fits, no scaling needed");
         } else {
             setTextScaleX(f / fM7441a);
@@ -203,19 +203,19 @@ public class KeyPreviewView extends AppCompatTextView {
         }
     }
 
-    private static float getTextWidth(String str, TextPaint textPaint) {
-        return TextUtils.isEmpty(str) ? 0.0f : textPaint.measureText(str);
+    private static float getTextWidth(String text, TextPaint textPaint) {
+        return TextUtils.isEmpty(text) ? 0.0f : textPaint.measureText(text);
     }
 
     /**
-     * @param z true if the key has more keys
-     * @param i edge position: 0 none, 1 left edge, 2 right edge
+     * @param hasMoreKeys true if the key has more keys
+     * @param position edge position: 0 none, 1 left edge, 2 right edge
      */
-    public void setPreviewBackground(boolean z, int i) {
+    public void setPreviewBackground(boolean hasMoreKeys, int position) {
         Drawable background = getBackground();
         if (background == null) {
             return;
         }
-        background.setState(KEY_PREVIEW_BACKGROUND_STATE_SETS[i][z ? 1 : 0]);
+        background.setState(KEY_PREVIEW_BACKGROUND_STATE_SETS[position][hasMoreKeys ? 1 : 0]);
     }
 }

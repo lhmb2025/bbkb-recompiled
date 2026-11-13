@@ -37,37 +37,37 @@ public class LanguagePackRegistry {
     }
 
     /**
-     * @param str language code
-     * @param str2 country code, or null/empty for none
+     * @param language language code
+     * @param country country code, or null/empty for none
      */
-    public synchronized LanguagePackInfo findLanguagePack(String str, String str2) {
-        return findLanguagePackInternal(str, str2, true);
+    public synchronized LanguagePackInfo findLanguagePack(String language, String country) {
+        return findLanguagePackInternal(language, country, true);
     }
 
     /**
-     * @param str language code
-     * @param str2 country code, or null/empty for none
-     * @param z true to try the fallback table and the language's default pack
+     * @param language language code
+     * @param country country code, or null/empty for none
+     * @param allowFallback true to try the fallback table and the language's default pack
      */
-    private LanguagePackInfo findLanguagePackInternal(String str, String str2, boolean z) {
-        if (str2 != null && str2.isEmpty()) {
-            str2 = null;
+    private LanguagePackInfo findLanguagePackInternal(String language, String country, boolean allowFallback) {
+        if (country != null && country.isEmpty()) {
+            country = null;
         }
-        String str3 = str2 != null ? str + "-" + str2 : str;
+        String str3 = country != null ? language + "-" + country : language;
         Map<String, List<LanguagePackInfo>> map = this.packsByLanguage;
         if (map == null) {
             return null;
         }
-        List<LanguagePackInfo> list = map.get(str);
+        List<LanguagePackInfo> list = map.get(language);
         if (list != null) {
             for (LanguagePackInfo pack : list) {
-                if (Objects.equals(pack.country, str2)) {
+                if (Objects.equals(pack.country, country)) {
                     if (BuildConfig.DEBUG) Log.d("NuanceShim", "Language found: " + str3);
                     return pack;
                 }
             }
         }
-        if (!z) {
+        if (!allowFallback) {
             return null;
         }
         String str4 = LOCALE_FALLBACKS.get(str3);

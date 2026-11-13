@@ -119,10 +119,10 @@ public final class FlickSuggestionView extends RelativeLayout {
     
     public interface Listener {
         /**
-         * @param suggestedWordInfoVar the picked word
-         * @param enumC0690f where the pick came from
+         * @param suggestedWordInfo the picked word
+         * @param inputSource where the pick came from
          */
-        void onSuggestionPicked(SuggestedWords.SuggestedWordInfo suggestedWordInfoVar, InputSource enumC0690f);
+        void onSuggestionPicked(SuggestedWords.SuggestedWordInfo suggestedWordInfo, InputSource inputSource);
     }
 
     public FlickSuggestionView(Context context, AttributeSet attributeSet) {
@@ -193,9 +193,9 @@ public final class FlickSuggestionView extends RelativeLayout {
         return true;
     }
 
-    /** @param interfaceC0825a receives picked suggestions */
-    public void init(Listener interfaceC0825a, MainKeyboardView mainKeyboardView) {
-        this.mListener = interfaceC0825a;
+    /** @param listener receives picked suggestions */
+    public void init(Listener listener, MainKeyboardView mainKeyboardView) {
+        this.mListener = listener;
         this.mKeyboardView = mainKeyboardView;
     }
 
@@ -239,13 +239,13 @@ public final class FlickSuggestionView extends RelativeLayout {
         return SettingsManager.getInstance().getSettingsValues().isVkbGestureInputEnabledForLocale();
     }
 
-    /** @param str unused */
-    public void clearSuggestions(String str) {
+    /** @param word unused */
+    public void clearSuggestions(String word) {
         setSuggestions(SuggestedWords.EMPTY, this.mIsRtl);
     }
 
-    /** @param z true to only reset the metrics, false to also lay the current words out again */
-    public void updateKeyMetrics(boolean z) {
+    /** @param suggestionUpdatePending true to only reset the metrics, false to also lay the current words out again */
+    public void updateKeyMetrics(boolean suggestionUpdatePending) {
         Keyboard keyboard;
         this.mHorizontalWordDistance = this.mMinHorizontalWordDistance;
         this.mVerticalWordDistance = this.mMinVerticalWordDistance;
@@ -257,7 +257,7 @@ public final class FlickSuggestionView extends RelativeLayout {
             this.mHorizontalWordDistance = key.getHeight() * this.mHorizontalWordDistanceFactor;
             this.mVerticalWordDistance = key.getHeight() * this.mVerticalWordDistanceFactor;
         }
-        if (z) {
+        if (suggestionUpdatePending) {
             return;
         }
         this.mShownValid = false;
@@ -302,17 +302,17 @@ public final class FlickSuggestionView extends RelativeLayout {
     }
 
     /**
-     * @param c0666ac the words to show
-     * @param z true for a right-to-left layout
+     * @param suggestedWords the words to show
+     * @param isRtl true for a right-to-left layout
      */
-    public void setSuggestions(SuggestedWords c0666ac, boolean z) {
+    public void setSuggestions(SuggestedWords suggestedWords, boolean isRtl) {
         MainKeyboardView mainKeyboardView = this.mKeyboardView;
         if (mainKeyboardView != null && mainKeyboardView.getX() == 0.0f) {
             boolean colorsChanged = refreshTextColors();
-            if (!colorsChanged && c0666ac != null && c0666ac.size() > 0 && isShowing(c0666ac, z)) {
+            if (!colorsChanged && suggestedWords != null && suggestedWords.size() > 0 && isShowing(suggestedWords, isRtl)) {
                 // Already drawn; keep the new object so a flick picks the newest word info.
-                this.mSuggestedWords = c0666ac;
-                this.mShownWords = c0666ac;
+                this.mSuggestedWords = suggestedWords;
+                this.mShownWords = suggestedWords;
                 return;
             }
             // Set the spacebar word once: hide() clearing it then the render setting it again
@@ -320,13 +320,13 @@ public final class FlickSuggestionView extends RelativeLayout {
             this.mSpacebarTextDeferred = true;
             try {
                 clear();
-                this.mIsRtl = z;
+                this.mIsRtl = isRtl;
                 Keyboard keyboard = this.mKeyboardView.getKeyboard();
                 if (keyboard == null) {
                     return;
                 }
-                if (c0666ac == null || c0666ac.size() > 0) {
-                    this.mSuggestedWords = c0666ac;
+                if (suggestedWords == null || suggestedWords.size() > 0) {
+                    this.mSuggestedWords = suggestedWords;
                     boolean isVkb = isSupportedKeyboard();
                     boolean onKeyEnabled = isOnKeyPredictionEnabled();
                     boolean notShowingEmoji = !isEmojiKeyboardShowing();
@@ -338,8 +338,8 @@ public final class FlickSuggestionView extends RelativeLayout {
                         }
                         showAutoCorrectPrediction(this.mSuggestedWords, keyboard);
                     }
-                    if (c0666ac != null) {
-                        rememberShown(c0666ac, keyboard, z);
+                    if (suggestedWords != null) {
+                        rememberShown(suggestedWords, keyboard, isRtl);
                     }
                 }
             } finally {
@@ -401,18 +401,18 @@ public final class FlickSuggestionView extends RelativeLayout {
     }
 
     /**
-     * @param c0666ac the words to show
-     * @param c0965e the current keyboard
+     * @param suggestedWords the words to show
+     * @param keyboard the current keyboard
      */
-    private void showAutoCorrectPrediction(SuggestedWords c0666ac, Keyboard c0965e) {
-        if (c0666ac.mAutoCorrectWord != null && c0666ac.mWillAutoCorrect) {
-            Key keyM6604b = c0965e.getKeyByCode(32);
+    private void showAutoCorrectPrediction(SuggestedWords suggestedWords, Keyboard keyboard) {
+        if (suggestedWords.mAutoCorrectWord != null && suggestedWords.mWillAutoCorrect) {
+            Key keyM6604b = keyboard.getKeyByCode(32);
             if (keyM6604b != null) {
-                setSpacebarText(c0666ac.getWord(1));
+                setSpacebarText(suggestedWords.getWord(1));
                 if (isGestureInputEnabled()) {
                     return;
                 }
-                String strMo4284a = c0666ac.getWord(0);
+                String strMo4284a = suggestedWords.getWord(0);
                 this.mPredictionViews.get(this.mVisibleCount).setPrediction(0, (keyM6604b.getWidth() / 2) + keyM6604b.getX(), keyM6604b.getY(), true, strMo4284a, strMo4284a);
                 this.mPredictionViews.get(this.mVisibleCount).setVisibility(View.VISIBLE);
                 this.mVisibleCount = 1;
@@ -455,29 +455,29 @@ public final class FlickSuggestionView extends RelativeLayout {
         return android.graphics.Typeface.DEFAULT;
     }
 
-    /** @param str the word, Hangul decoded by the engine (raw text on timeout) */
-    private static int[] toCodePoints(String str) {
-        if (!TextUtils.isEmpty(str) && ScriptUtils.isLetterPartOfScript(str.charAt(0), 8)) {
-            final String raw = str;
+    /** @param text the word, Hangul decoded by the engine (raw text on timeout) */
+    private static int[] toCodePoints(String text) {
+        if (!TextUtils.isEmpty(text) && ScriptUtils.isLetterPartOfScript(text.charAt(0), 8)) {
+            final String raw = text;
             String decoded = EngineOps.query("flickDecodeHangul", FLICK_DECODE_TIMEOUT_MS, raw,
                     sdk -> sdk.decodeHangul(raw, true));
-            str = decoded != null ? decoded : raw;
+            text = decoded != null ? decoded : raw;
         }
-        return toCodePointArray(str, 0, str.length());
+        return toCodePointArray(text, 0, text.length());
     }
 
     /**
-     * @param c0666ac the words to show
-     * @param c0965e the current keyboard
+     * @param suggestedWords the words to show
+     * @param keyboard the current keyboard
      */
-    private void showOnKeyPredictions(SuggestedWords c0666ac, Keyboard c0965e) {
+    private void showOnKeyPredictions(SuggestedWords suggestedWords, Keyboard keyboard) {
         String string = "";
         ArrayList<Integer> arrayList = new ArrayList<>();
         int i;
         int i2;
         
-        if (c0666ac.mAutoCorrectWord != null) {
-            string = c0666ac.getWord(0).toString();
+        if (suggestedWords.mAutoCorrectWord != null) {
+            string = suggestedWords.getWord(0).toString();
             i = 0;
         } else {
             i = -1;
@@ -486,8 +486,8 @@ public final class FlickSuggestionView extends RelativeLayout {
         int[] iArrM5278b = toCodePoints(string);
         int length = iArrM5278b.length;
         
-        if (c0666ac.mWillAutoCorrect) {
-            setSpacebarText(c0666ac.getWord(1).toString());
+        if (suggestedWords.mWillAutoCorrect) {
+            setSpacebarText(suggestedWords.getWord(1).toString());
             i2 = 1;
         } else {
             setSpacebarText("");
@@ -499,8 +499,8 @@ public final class FlickSuggestionView extends RelativeLayout {
         boolean hasEmojiSuggestion = false;
         int emojiSuggestionIndex = -1;
         
-        for (int i13 = 0; i13 < c0666ac.size(); i13++) {
-            if (c0666ac.getWordInfo(i13).isKind(11)) {
+        for (int i13 = 0; i13 < suggestedWords.size(); i13++) {
+            if (suggestedWords.getWordInfo(i13).isKind(11)) {
                 // Emoji go on the period key (showEmojiPrediction), never on letter keys.
                 hasEmojiSuggestion = true;
                 if (emojiSuggestionIndex < 0) {
@@ -509,7 +509,7 @@ public final class FlickSuggestionView extends RelativeLayout {
                 continue;
             }
             
-            String strMo4284a = c0666ac.getWord(i13);
+            String strMo4284a = suggestedWords.getWord(i13);
             int[] iArrM5278b2 = toCodePoints(strMo4284a);
             int length2 = iArrM5278b2.length;
             boolean z7 = iArrM5278b.length != 0 && strMo4284a.startsWith(string);
@@ -527,7 +527,7 @@ public final class FlickSuggestionView extends RelativeLayout {
             // Must stay separate from the check above, not nested in it.
             if (i13 == i) {
                 if (i2 >= 0 && i2 != i) {
-                    keyM6604b = c0965e.getKeyByCode(32);
+                    keyM6604b = keyboard.getKeyByCode(32);
                     i3 = 32;
                 }
                 z2 = false;
@@ -556,7 +556,7 @@ public final class FlickSuggestionView extends RelativeLayout {
                     }
                     
                     if (i17 != 32) {
-                        keyM6607c = c0965e.getActionKeyForCode(i17);
+                        keyM6607c = keyboard.getActionKeyForCode(i17);
                         if (keyM6607c != null) {
                             int iM6232c = keyM6607c.getCode();
                             
@@ -601,7 +601,7 @@ public final class FlickSuggestionView extends RelativeLayout {
                             }
                         }
                     } else if (i14 == length2 - 1 && i2 < 0) {
-                        keyM6607c = c0965e.getKeyByCode(32);
+                        keyM6607c = keyboard.getKeyByCode(32);
                         i4 = 32;
                         break;
                     }
@@ -636,11 +636,11 @@ public final class FlickSuggestionView extends RelativeLayout {
             z6 = z3;
         }
         
-        if (c0965e.getKeyByCode(46) != null && !arrayList.contains(46)) {
+        if (keyboard.getKeyByCode(46) != null && !arrayList.contains(46)) {
             if (hasEmojiSuggestion) {
                 Logger.debug(TAG, "Emoji suggestion found at index " + emojiSuggestionIndex + ", calling showEmojiPrediction()");
             }
-            showEmojiPrediction(c0666ac, c0965e, string);
+            showEmojiPrediction(suggestedWords, keyboard, string);
         }
         
         if (this.mVisibleCount > 0) {
@@ -649,31 +649,31 @@ public final class FlickSuggestionView extends RelativeLayout {
     }
 
     /**
-     * @param c0666ac the words to search for an emoji
-     * @param c0965e the current keyboard
-     * @param str the typed prefix
+     * @param suggestedWords the words to search for an emoji
+     * @param keyboard the current keyboard
+     * @param typedWord the typed prefix
      */
-    private void showEmojiPrediction(SuggestedWords c0666ac, Keyboard c0965e, String str) {
+    private void showEmojiPrediction(SuggestedWords suggestedWords, Keyboard keyboard, String typedWord) {
         Key keyM6604b;
         String strMo4284a;
-        if (this.mVisibleCount <= 0 || !isEmojiPredictionsEnabled() || (keyM6604b = c0965e.getKeyByCode(46)) == null) {
+        if (this.mVisibleCount <= 0 || !isEmojiPredictionsEnabled() || (keyM6604b = keyboard.getKeyByCode(46)) == null) {
             return;
         }
         int i = 0;
         while (true) {
-            if (i >= c0666ac.size()) {
+            if (i >= suggestedWords.size()) {
                 strMo4284a = null;
                 break;
             } else {
-                if (c0666ac.getWordInfo(i).isKind(11)) {
-                    strMo4284a = c0666ac.getWord(i);
+                if (suggestedWords.getWordInfo(i).isKind(11)) {
+                    strMo4284a = suggestedWords.getWord(i);
                     break;
                 }
                 i++;
             }
         }
         if (strMo4284a != null) {
-            this.mPredictionViews.get(this.mVisibleCount).setPrediction(i, keyM6604b.getX() + (keyM6604b.getWidth() / 2), keyM6604b.getY(), false, strMo4284a, str);
+            this.mPredictionViews.get(this.mVisibleCount).setPrediction(i, keyM6604b.getX() + (keyM6604b.getWidth() / 2), keyM6604b.getY(), false, strMo4284a, typedWord);
             if (collidesWithVisible(this.mPredictionViews.get(this.mVisibleCount))) {
                 return;
             }
@@ -682,31 +682,31 @@ public final class FlickSuggestionView extends RelativeLayout {
         }
     }
 
-    /** @param c0826b the prediction about to be shown */
-    private boolean collidesWithVisible(PredictionView c0826b) {
+    /** @param predictionView the prediction about to be shown */
+    private boolean collidesWithVisible(PredictionView predictionView) {
         if (this.mVisibleCount <= 0) {
             return false;
         }
-        float y = c0826b.getY() + c0826b.getMeasuredHeight();
-        float x = c0826b.getX() + c0826b.getMeasuredWidth();
+        float y = predictionView.getY() + predictionView.getMeasuredHeight();
+        float x = predictionView.getX() + predictionView.getMeasuredWidth();
         float f = this.mHorizontalWordDistance * this.mHorizontalOffsetFactor;
         for (int i = 0; i < this.mVisibleCount; i++) {
             PredictionView c0826b2 = this.mPredictionViews.get(i);
             float y2 = c0826b2.getY() - this.mVerticalWordDistance;
-            if (c0826b2.getY() + c0826b2.getMeasuredHeight() + this.mVerticalWordDistance >= c0826b.getY() && y2 <= y) {
+            if (c0826b2.getY() + c0826b2.getMeasuredHeight() + this.mVerticalWordDistance >= predictionView.getY() && y2 <= y) {
                 float x2 = c0826b2.getX() - this.mHorizontalWordDistance;
-                if (c0826b2.getX() + c0826b2.getMeasuredWidth() + this.mHorizontalWordDistance >= c0826b.getX() && x2 <= x) {
+                if (c0826b2.getX() + c0826b2.getMeasuredWidth() + this.mHorizontalWordDistance >= predictionView.getX() && x2 <= x) {
                     float x3 = c0826b2.getX() + (c0826b2.getMeasuredWidth() / 2.0f);
-                    float x4 = c0826b.getX() + (c0826b.getMeasuredWidth() / 2.0f);
-                    if (Math.abs(c0826b2.getY() - c0826b.getY()) > this.mVerticalWordDistance && Math.abs(x3 - x4) > f) {
+                    float x4 = predictionView.getX() + (predictionView.getMeasuredWidth() / 2.0f);
+                    if (Math.abs(c0826b2.getY() - predictionView.getY()) > this.mVerticalWordDistance && Math.abs(x3 - x4) > f) {
                         // Guarded here: Logger.debug gates inside the callee, after the
                         // concatenation is built (this loop runs per keystroke).
                         if (BuildConfig.DEBUG) {
-                            Logger.debug(TAG, "\"" + ((Object) c0826b.getText()) + "\" and \"" + ((Object) c0826b2.getText()) + "\" are not in the same column.");
+                            Logger.debug(TAG, "\"" + ((Object) predictionView.getText()) + "\" and \"" + ((Object) c0826b2.getText()) + "\" are not in the same column.");
                         }
                     } else {
                         if (BuildConfig.DEBUG) {
-                            Logger.debug(TAG, "\"" + ((Object) c0826b.getText()) + "\" and \"" + ((Object) c0826b2.getText()) + "\" are colliding. Remove: \"" + ((Object) c0826b.getText()) + "\"");
+                            Logger.debug(TAG, "\"" + ((Object) predictionView.getText()) + "\" and \"" + ((Object) c0826b2.getText()) + "\" are colliding. Remove: \"" + ((Object) predictionView.getText()) + "\"");
                         }
                         return true;
                     }
@@ -717,21 +717,21 @@ public final class FlickSuggestionView extends RelativeLayout {
     }
 
     /**
-     * @param f x in keyboard view coordinates
-     * @param f2 y in keyboard view coordinates
-     * @param f3 the largest distance that still matches
+     * @param x x in keyboard view coordinates
+     * @param y y in keyboard view coordinates
+     * @param maxDistance the largest distance that still matches
      */
-    private int findNearestPrediction(float f, float f2, float f3) {
+    private int findNearestPrediction(float x, float y, float maxDistance) {
                 int[] location = new int[2];
         this.mKeyboardView.getLocationInWindow(location);
-        float f4 = f + location[0];
-        float f5 = f2 + location[1];
-        float f6 = f3 + 1.0f;
+        float f4 = x + location[0];
+        float f5 = y + location[1];
+        float f6 = maxDistance + 1.0f;
         int i = -1;
         for (int i2 = 0; i2 < this.mVisibleCount; i2++) {
-            float y = this.mPredictionViews.get(i2).getY() + (this.mPredictionViews.get(i2).getMeasuredHeight() * this.mTextVerticalPaddingFactor);
-            if (y <= f5) {
-                float distanceToRect = GeometryUtils.getDistanceToRect(f4, f5, this.mPredictionViews.get(i2).getX(), y, this.mPredictionViews.get(i2).getMeasuredWidth(), this.mPredictionViews.get(i2).getMeasuredHeight());
+            float top = this.mPredictionViews.get(i2).getY() + (this.mPredictionViews.get(i2).getMeasuredHeight() * this.mTextVerticalPaddingFactor);
+            if (top <= f5) {
+                float distanceToRect = GeometryUtils.getDistanceToRect(f4, f5, this.mPredictionViews.get(i2).getX(), top, this.mPredictionViews.get(i2).getMeasuredWidth(), this.mPredictionViews.get(i2).getMeasuredHeight());
                 if (distanceToRect < f6) {
                     i = i2;
                     f6 = distanceToRect;
@@ -742,18 +742,18 @@ public final class FlickSuggestionView extends RelativeLayout {
     }
 
     /**
-     * @param f x in keyboard view coordinates
-     * @param f2 y in keyboard view coordinates
-     * @param f3 the largest distance that still matches
+     * @param x x in keyboard view coordinates
+     * @param y y in keyboard view coordinates
+     * @param maxDistance the largest distance that still matches
      */
-    public boolean handleFlick(float f, float f2, float f3) {
+    public boolean handleFlick(float x, float y, float maxDistance) {
         int iM5275b;
         int iM5302a;
         long jUptimeMillis = SystemClock.uptimeMillis();
         if (jUptimeMillis < this.mLastSelectionTime + 200) {
             return false;
         }
-        iM5275b = findNearestPrediction(f, f2, f3);
+        iM5275b = findNearestPrediction(x, y, maxDistance);
         if (iM5275b < 0) {
             return false;
         }
@@ -773,19 +773,19 @@ public final class FlickSuggestionView extends RelativeLayout {
     /**
      * No-op: VkbGestureListener still dispatches single-tap-up here but nothing uses it.
      *
-     * @param f x
-     * @param f2 y
+     * @param x x
+     * @param y y
      */
-    public void onSingleTap(float f, float f2) {
+    public void onSingleTap(float x, float y) {
     }
 
     /**
      * No-op, as {@link #onSingleTap}.
      *
-     * @param f x
-     * @param f2 y
+     * @param x x
+     * @param y y
      */
-    public void onShowPress(float f, float f2) {
+    public void onShowPress(float x, float y) {
     }
 
     /** Reusable scratch for the keyboard view's window position. */
@@ -815,18 +815,18 @@ public final class FlickSuggestionView extends RelativeLayout {
         }
 
         /**
-         * @param i the word's index in the suggestions
-         * @param i2 the centre x (key coordinates)
-         * @param i3 the key's top y (key coordinates)
-         * @param z true to colour the typed prefix {@code str2} apart from the rest
-         * @param str the word
-         * @param str2 the typed prefix
+         * @param wordIndex the word's index in the suggestions
+         * @param x the centre x (key coordinates)
+         * @param y the key's top y (key coordinates)
+         * @param highlightTypedPrefix true to colour the typed prefix {@code typedPrefix} apart from the rest
+         * @param word the word
+         * @param typedPrefix the typed prefix
          */
-        public void setPrediction(int i, int i2, int i3, boolean z, String str, String str2) {
-            this.mWordIndex = i;
+        public void setPrediction(int wordIndex, int x, int y, boolean highlightTypedPrefix, String word, String typedPrefix) {
+            this.mWordIndex = wordIndex;
             // Applied per show, not in the constructor, so theme switches take effect.
             dev.bbkb.ime.keyboard.StyleSpec spec = KeyboardColorManager.styleSpec();
-            boolean deEmphasized = FlickSuggestionView.this.deEmphasized(i);
+            boolean deEmphasized = FlickSuggestionView.this.deEmphasized(wordIndex);
             setTextSize(0, FlickSuggestionView.this.mLetterSize * spec.getPredictionTextScale());
             android.graphics.Typeface typeface = spec.getMediumKeyTypeface()
                     ? dev.bbkb.ime.keyboard.KeyboardView
@@ -842,21 +842,21 @@ public final class FlickSuggestionView extends RelativeLayout {
             int[] iArr = FlickSuggestionView.this.keyboardLocationInWindow();
             this.mTextBuilder.clear();
             this.mTextBuilder.clearSpans();
-            this.mTextBuilder.append((CharSequence) str);
-            if (z) {
+            this.mTextBuilder.append((CharSequence) word);
+            if (highlightTypedPrefix) {
                 if (FlickSuggestionView.this.getCurrentKeyboardLocale().equals("hi")) {
-                    this.mTextBuilder.setSpan(suggestedSpan, 0, str.length(), 17);
+                    this.mTextBuilder.setSpan(suggestedSpan, 0, word.length(), 17);
                 } else {
-                    this.mTextBuilder.setSpan(typedSpan, 0, str2.length(), 17);
-                    this.mTextBuilder.setSpan(suggestedSpan, str2.length(), str.length(), 17);
+                    this.mTextBuilder.setSpan(typedSpan, 0, typedPrefix.length(), 17);
+                    this.mTextBuilder.setSpan(suggestedSpan, typedPrefix.length(), word.length(), 17);
                 }
             } else {
-                this.mTextBuilder.setSpan(suggestedSpan, 0, str.length(), 17);
+                this.mTextBuilder.setSpan(suggestedSpan, 0, word.length(), 17);
             }
             setText(this.mTextBuilder);
             measure(0, 0);
-            float finalX = i2 - (getMeasuredWidth() / 2);
-            float finalY = (i3 + iArr[1]) - (getMeasuredHeight() * FlickSuggestionView.this.mTextVerticalPaddingFactor);
+            float finalX = x - (getMeasuredWidth() / 2);
+            float finalY = (y + iArr[1]) - (getMeasuredHeight() * FlickSuggestionView.this.mTextVerticalPaddingFactor);
             setX(finalX);
             setY(finalY);
             int width = iArr[0] + FlickSuggestionView.this.mKeyboardView.getWidth();

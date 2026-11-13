@@ -139,8 +139,8 @@ public final class TouchKeypadGeometry {
         return isMeasured(xSource) || isMeasured(ySource);
     }
 
-    private static boolean isMeasured(Source s) {
-        return s == Source.MEASURED || s == Source.INPUT_DEVICE || s == Source.PROFILE;
+    private static boolean isMeasured(Source source) {
+        return source == Source.MEASURED || source == Source.INPUT_DEVICE || source == Source.PROFILE;
     }
 
     /** Resolved height, or 0 (the "no pad" answer callers test for) when only the KEY2 default backs it. */

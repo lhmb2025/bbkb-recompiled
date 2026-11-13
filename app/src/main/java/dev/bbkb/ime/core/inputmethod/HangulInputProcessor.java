@@ -13,10 +13,10 @@ public class HangulInputProcessor extends AbstractInputProcessor {
     /**
      * Unused for Hangul (words are built through {@link #processSymbols}); always null.
      *
-     * @param c0697m the touch-coordinate tracker (ignored)
+     * @param sourceTracker the touch-coordinate tracker (ignored)
      */
     @Override
-    public InputMethodCallback.ConversionResult revertLastConversion(CharSequence charSequence, TouchPointerCoordTracker c0697m, NuanceSDK nuanceSDK) {
+    public InputMethodCallback.ConversionResult revertLastConversion(CharSequence charSequence, TouchPointerCoordTracker sourceTracker, NuanceSDK nuanceSDK) {
         return null;
     }
 
@@ -37,9 +37,9 @@ public class HangulInputProcessor extends AbstractInputProcessor {
         return Character.UnicodeBlock.HANGUL_SYLLABLES.equals(Character.UnicodeBlock.of(c));
     }
 
-    /** @param i the code point to test for a composed Hangul syllable */
-    public static boolean isHangulSyllable(int i) {
-        return Character.UnicodeBlock.HANGUL_SYLLABLES.equals(Character.UnicodeBlock.of(i));
+    /** @param codePoint the code point to test for a composed Hangul syllable */
+    public static boolean isHangulSyllable(int codePoint) {
+        return Character.UnicodeBlock.HANGUL_SYLLABLES.equals(Character.UnicodeBlock.of(codePoint));
     }
 
     /** @param c the char to test for a Hangul Compatibility Jamo */

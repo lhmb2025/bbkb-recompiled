@@ -103,9 +103,9 @@ public class ClipboardAdapter extends ListAdapter<ClipboardItem, RecyclerView.Vi
         return this.imageProvider;
     }
 
-    /** @param cVar receives the row actions */
-    public void setActionCallback(ClipboardActionCallback cVar) {
-        this.actionCallback = cVar;
+    /** @param clipboardActionCallback receives the row actions */
+    public void setActionCallback(ClipboardActionCallback clipboardActionCallback) {
+        this.actionCallback = clipboardActionCallback;
     }
 
     @Override

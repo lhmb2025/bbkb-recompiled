@@ -799,12 +799,12 @@ class BlackBerryIME : InputMethodService(),
     }
 
     /**
-     * @param z true if a hardware keyboard is now attached
-     * @param i the new [Configuration.orientation]
+     * @param hasHardwareKeyboard true if a hardware keyboard is now attached
+     * @param orientation the new [Configuration.orientation]
      */
-    fun onKeyboardConfigurationChanged(z: Boolean, i: Int) {
+    fun onKeyboardConfigurationChanged(hasHardwareKeyboard: Boolean, orientation: Int) {
         Logger.info(LOG_TAG, "Updating keyboard configuration settings")
-        if (!z && i == 2 && !isInputViewShown() && hasActiveInputConnection() && !wasBackPressed) {
+        if (!hasHardwareKeyboard && orientation == 2 && !isInputViewShown() && hasActiveInputConnection() && !wasBackPressed) {
             richInputMethodManager!!.getInputMethodManager().showSoftInputFromInputMethod(window.window!!.attributes.token, 0)
         }
         loadSettings()
@@ -924,19 +924,19 @@ class BlackBerryIME : InputMethodService(),
      * PKB forces a show past super only with an editor bound and [onEvaluateInputViewShown]
      * agreeing, so transient show requests do not bring the IME up on the home screen.
      *
-     * @param i the show flags (bit 0 = implicit)
-     * @param z true if this is for a configuration change
+     * @param flags the show flags (bit 0 = implicit)
+     * @param configChange true if this is for a configuration change
      */
-    override fun onShowInputRequested(i: Int, z: Boolean): Boolean {
-        var zOnShowInputRequested = super.onShowInputRequested(i, z)
+    override fun onShowInputRequested(flags: Int, configChange: Boolean): Boolean {
+        var zOnShowInputRequested = super.onShowInputRequested(flags, configChange)
         if (!zOnShowInputRequested && DeviceProfile.current().isPkbDevice()) {
             if (getCurrentInputBinding() != null && onEvaluateInputViewShown()) {
                 zOnShowInputRequested = true
             }
-        } else if (!zOnShowInputRequested && onEvaluateInputViewShown() && (i and 1) == 0) {
+        } else if (!zOnShowInputRequested && onEvaluateInputViewShown() && (flags and 1) == 0) {
             zOnShowInputRequested = DeviceProfile.isPkb()
         }
-        Logger.debug(LOG_TAG, "onShowInputRequested(): flags=$i configChange=$z show=$zOnShowInputRequested")
+        Logger.debug(LOG_TAG, "onShowInputRequested(): flags=$flags configChange=$configChange show=$zOnShowInputRequested")
         return zOnShowInputRequested
     }
 
@@ -991,12 +991,12 @@ class BlackBerryIME : InputMethodService(),
     private val syncLayoutAfterShow = Runnable { keyboardSwitcher.syncKeyboardLayout() }
     private val syncLayoutAfterShowSettled = Runnable { keyboardSwitcher.syncKeyboardLayout() }
 
-    /** @param z true to show the input view */
-    override fun showWindow(z: Boolean) {
-        if (BuildConfig.DEBUG) android.util.Log.d("KBD_LIFECYCLE", "showWindow(): showInput=$z")
-        Logger.debug(LOG_TAG, "showWindow(): showInput=$z")
-        super.showWindow(z)
-        if (z) {
+    /** @param showInput true to show the input view */
+    override fun showWindow(showInput: Boolean) {
+        if (BuildConfig.DEBUG) android.util.Log.d("KBD_LIFECYCLE", "showWindow(): showInput=$showInput")
+        Logger.debug(LOG_TAG, "showWindow(): showInput=$showInput")
+        super.showWindow(showInput)
+        if (showInput) {
             // The startInput sync runs before the view is laid out, and syncKeyboardLayout picks
             // the engine frame from whether MainKeyboardView is displayed; re-sync after layout.
             keyboardSwitcher.getMainKeyboardView()?.let { v ->
@@ -1103,11 +1103,11 @@ class BlackBerryIME : InputMethodService(),
         super.onExtractedTextClicked()
     }
 
-    override fun onExtractedCursorMovement(i: Int, i2: Int) {
+    override fun onExtractedCursorMovement(dx: Int, dy: Int) {
         if (settingsManager.getSettingsValues().shouldShowLxxButton) {
             return
         }
-        super.onExtractedCursorMovement(i, i2)
+        super.onExtractedCursorMovement(dx, dy)
     }
 
     override fun onCreateInputMethodInterface(): AbstractInputMethodService.AbstractInputMethodImpl {
@@ -1129,10 +1129,10 @@ class BlackBerryIME : InputMethodService(),
         }
     }
 
-    /** @param z true if the same editor is restarting */
-    override fun onStartInput(editorInfo: EditorInfo?, z: Boolean) {
+    /** @param restarting true if the same editor is restarting */
+    override fun onStartInput(editorInfo: EditorInfo?, restarting: Boolean) {
         DeviceProfile.setLanguageForceVkbMode(dev.bbkb.ime.core.layout.OnScreenKeyboardChoice.isOnForCurrentKeyboard(this))
-        Logger.info(LOG_TAG, "onStartInput(): restarting=$z, editorInfo=${if (editorInfo == null) "NULL" else "valid"}")
+        Logger.info(LOG_TAG, "onStartInput(): restarting=$restarting, editorInfo=${if (editorInfo == null) "NULL" else "valid"}")
         // Debug probe (`setprop debug.et9.probe 1`) dumping the engine's ranking config. Here, not
         // in ...View, because PKB sessions create no input view; opt-in since it can SIGSEGV cold.
         if (BuildConfig.DEBUG) {
@@ -1140,7 +1140,7 @@ class BlackBerryIME : InputMethodService(),
             EngineThreads.post { com.blackberry.nuanceshim.Et9Probe.probe(NuanceSDKManager.getInstance()) }
         }
         if (BuildConfig.DEBUG) sensorVizOverlay.syncActiveFromPrefs()
-        if (BuildConfig.DEBUG) android.util.Log.d("KBD_LIFECYCLE", "onStartInput(): restarting=$z isInputViewShown=${isInputViewShown()} pkg=${editorInfo?.packageName ?: "null"}")
+        if (BuildConfig.DEBUG) android.util.Log.d("KBD_LIFECYCLE", "onStartInput(): restarting=$restarting isInputViewShown=${isInputViewShown()} pkg=${editorInfo?.packageName ?: "null"}")
 
         // Every start, including a restart of the same editor.
         wasBackPressed = false
@@ -1151,7 +1151,7 @@ class BlackBerryIME : InputMethodService(),
         }
 
         refreshSubtypeSwitcher()
-        uiUpdateHandler.handleStartInput(editorInfo, z)
+        uiUpdateHandler.handleStartInput(editorInfo, restarting)
         isInputActive = hasActiveInputConnection()
         val str = editorInfo?.packageName
         var z2 = false
@@ -1180,13 +1180,13 @@ class BlackBerryIME : InputMethodService(),
         }
 
         if (InlineAutofillManager.isSupported()) {
-            InlineAutofillManager.getInstance(this).onInputStarted(editorInfo, z)
+            InlineAutofillManager.getInstance(this).onInputStarted(editorInfo, restarting)
         }
     }
 
-    /** @param z true if the same editor is restarting */
+    /** @param restarting true if the same editor is restarting */
     @Throws(Resources.NotFoundException::class)
-    override fun onStartInputView(editorInfo: EditorInfo?, z: Boolean) {
+    override fun onStartInputView(editorInfo: EditorInfo?, restarting: Boolean) {
         // The language-chip bar goes with the field it was for.
         auxBarManager?.hideLanguageChips()
         Logger.info(LOG_TAG, "onStartInputView()")
@@ -1194,21 +1194,21 @@ class BlackBerryIME : InputMethodService(),
         refreshInputActive()
         // Re-reads log.tag.XT9Input so diagnostics toggle via setprop without a restart.
         if (BuildConfig.DEBUG) InputPathDebug.refresh()
-        uiUpdateHandler.handleStartInputView(editorInfo, z)
+        uiUpdateHandler.handleStartInputView(editorInfo, restarting)
         // As in onWindowShown(): the system clears the status-bar slot between sessions.
         physicalKeyboardStateTracker.refreshModifierStatus()
         // Also on window show: the decor view's focus and listener do not survive every re-creation.
         nativeTouch.attach()
     }
 
-    /** @param z true if input is finishing too */
-    override fun onFinishInputView(z: Boolean) {
+    /** @param finishingInput true if input is finishing too */
+    override fun onFinishInputView(finishingInput: Boolean) {
         if (teardownStarted) {
             Logger.info(LOG_TAG, "onFinishInputView() after teardown: ignored")
             return
         }
-        Logger.info(LOG_TAG, "onFinishInputView(), finishingInput=$z")
-        uiUpdateHandler.handleFinishInputView(z)
+        Logger.info(LOG_TAG, "onFinishInputView(), finishingInput=$finishingInput")
+        uiUpdateHandler.handleFinishInputView(finishingInput)
         controlMode.clearControlState()
     }
 
@@ -1229,24 +1229,24 @@ class BlackBerryIME : InputMethodService(),
         }
     }
 
-    /** @param z true if the same editor is restarting */
-    fun startInputInternal(editorInfo: EditorInfo?, z: Boolean) {
-        inputSessionCoordinator.onStartInputInternal(editorInfo, z)
+    /** @param restarting true if the same editor is restarting */
+    fun startInputInternal(editorInfo: EditorInfo?, restarting: Boolean) {
+        inputSessionCoordinator.onStartInputInternal(editorInfo, restarting)
     }
 
-    /** @param z true if the same editor is restarting */
+    /** @param restarting true if the same editor is restarting */
     @Throws(Resources.NotFoundException::class)
-    fun startInputViewInternal(editorInfo: EditorInfo?, z: Boolean) {
-        inputSessionCoordinator.onStartInputViewInternal(editorInfo, z)
+    fun startInputViewInternal(editorInfo: EditorInfo?, restarting: Boolean) {
+        inputSessionCoordinator.onStartInputViewInternal(editorInfo, restarting)
     }
 
     fun finishInputInternal() {
         inputSessionCoordinator.onFinishInputInternal()
     }
 
-    /** @param z true if input is finishing too */
-    fun finishInputViewInternal(z: Boolean) {
-        inputSessionCoordinator.onFinishInputViewInternal(z)
+    /** @param finishingInput true if input is finishing too */
+    fun finishInputViewInternal(finishingInput: Boolean) {
+        inputSessionCoordinator.onFinishInputViewInternal(finishingInput)
     }
 
     /**
@@ -1294,15 +1294,15 @@ class BlackBerryIME : InputMethodService(),
     }
 
     /**
-     * @param i old selection start
-     * @param i2 old selection end
-     * @param i3 new selection start
-     * @param i4 new selection end
-     * @param i5 composing span start
-     * @param i6 composing span end
+     * @param oldSelStart old selection start
+     * @param oldSelEnd old selection end
+     * @param newSelStart new selection start
+     * @param newSelEnd new selection end
+     * @param candidatesStart composing span start
+     * @param candidatesEnd composing span end
      */
-    override fun onUpdateSelection(i: Int, i2: Int, i3: Int, i4: Int, i5: Int, i6: Int) {
-        super.onUpdateSelection(i, i2, i3, i4, i5, i6)
+    override fun onUpdateSelection(oldSelStart: Int, oldSelEnd: Int, newSelStart: Int, newSelEnd: Int, candidatesStart: Int, candidatesEnd: Int) {
+        super.onUpdateSelection(oldSelStart, oldSelEnd, newSelStart, newSelEnd, candidatesStart, candidatesEnd)
 
         val inputConnection = getCurrentInputConnection()
         if (inputConnection == null || !getCurrentInputStarted()) {
@@ -1311,7 +1311,7 @@ class BlackBerryIME : InputMethodService(),
         }
 
         val settingsValues = settingsManager.getSettingsValues()
-        val zM4467a = inputLogic.onUpdateSelection(i, i2, i3, i4, settingsValues)
+        val zM4467a = inputLogic.onUpdateSelection(oldSelStart, oldSelEnd, newSelStart, newSelEnd, settingsValues)
         if (zM4467a) {
             resetKeyboardState()
         }
@@ -1326,10 +1326,10 @@ class BlackBerryIME : InputMethodService(),
             multitapEventHandler.commitMultitapIfActive()
             softwareMultitapHandler.commitMultitap()
         }
-        if (i3 != i4 && !isMetaKeyActive()) {
+        if (newSelStart != newSelEnd && !isMetaKeyActive()) {
             enableCursorMode(false)
         }
-        fccController?.onSelectionUpdate(i3, i4)
+        fccController?.onSelectionUpdate(newSelStart, newSelEnd)
     }
 
     override fun onUpdateCursorAnchorInfo(cursorAnchorInfo: CursorAnchorInfo?) {
@@ -1358,10 +1358,10 @@ class BlackBerryIME : InputMethodService(),
         }
     }
 
-    /** @param z true if the click moved focus */
-    override fun onViewClicked(z: Boolean) {
-        Logger.debug(LOG_TAG, "onViewClicked, focusChanged=$z")
-        super.onViewClicked(z)
+    /** @param focusChanged true if the click moved focus */
+    override fun onViewClicked(focusChanged: Boolean) {
+        Logger.debug(LOG_TAG, "onViewClicked, focusChanged=$focusChanged")
+        super.onViewClicked(focusChanged)
         enableCursorMode(false)
         refreshUnifiedInputBoardState()
     }
@@ -1452,8 +1452,8 @@ class BlackBerryIME : InputMethodService(),
         return settingsManager.getSettingsValues()
     }
 
-    /** @param c0804d the new settings */
-    override fun onSettingsValuesChanged(c0804d: SettingsValues) {
+    /** @param settingsValues the new settings */
+    override fun onSettingsValuesChanged(settingsValues: SettingsValues) {
     }
 
     fun loadSettings() {
@@ -1510,18 +1510,18 @@ class BlackBerryIME : InputMethodService(),
         }
     }
 
-    /** @param c0804d the current settings */
-    fun applyAutoCorrectionSettings(c0804d: SettingsValues) {
+    /** @param settingsValues the current settings */
+    fun applyAutoCorrectionSettings(settingsValues: SettingsValues) {
         val isPkb = DeviceProfile.current().hasShiftedSymbolKeyboard()
         val acMode = if (!isPkb) 1 else 0
         if (BuildConfig.DEBUG) {
         android.util.Log.d("PKB_SPACE_AUTOCORRECT_DEBUG", "applyAutoCorrectionSettings (updateAutoCorrection): isPkb=$isPkb" +
-            " acEnabledPerUser=${c0804d.isAutoCorrectionEnabledPerUserSettings}" +
-            " acModeValue=${c0804d.autoCorrectionMode}" +
-            " willSetThreshold=${c0804d.autoCorrectionMode} willSetMode=$acMode")
+            " acEnabledPerUser=${settingsValues.isAutoCorrectionEnabledPerUserSettings}" +
+            " acModeValue=${settingsValues.autoCorrectionMode}" +
+            " willSetThreshold=${settingsValues.autoCorrectionMode} willSetMode=$acMode")
         }
-        if (c0804d.isAutoCorrectionEnabledPerUserSettings) {
-            inputLogic.mSuggestionEngine.setAutoCorrectThreshold(c0804d.autoCorrectionMode)
+        if (settingsValues.isAutoCorrectionEnabledPerUserSettings) {
+            inputLogic.mSuggestionEngine.setAutoCorrectThreshold(settingsValues.autoCorrectionMode)
             inputLogic.mSuggestionEngine.setAutoCorrectMode(acMode)
         }
     }
@@ -1610,15 +1610,15 @@ class BlackBerryIME : InputMethodService(),
         }
     }
 
-    /** @param z true if the main dictionary loaded */
-    override fun onDictionaryInitialized(z: Boolean) {
-        keyboardSwitcher.getMainKeyboardView()?.setMainDictionaryAvailability(z)
-        if (z) uiUpdateHandler.postDictionaryLoaded()
+    /** @param available true if the main dictionary loaded */
+    override fun onDictionaryInitialized(available: Boolean) {
+        keyboardSwitcher.getMainKeyboardView()?.setMainDictionaryAvailability(available)
+        if (available) uiUpdateHandler.postDictionaryLoaded()
         // Restored words wait for the dictionary and engine model they are written into.
-        if (z) dev.bbkb.ime.core.settings.backup.AutoBackup.applyPendingWordsIfReady(this)
+        if (available) dev.bbkb.ime.core.settings.backup.AutoBackup.applyPendingWordsIfReady(this)
         val hadTimeout = uiUpdateHandler.hasDictionaryLoadTimeout()
         if (hadTimeout) uiUpdateHandler.removeDictionaryLoadTimeout()
-        if (z || hadTimeout) uiUpdateHandler.postUpdateShiftState(true, false)
+        if (available || hadTimeout) uiUpdateHandler.postUpdateShiftState(true, false)
     }
 
     override fun onLocalesUpdated() {
@@ -1637,9 +1637,9 @@ class BlackBerryIME : InputMethodService(),
     /**
      * "Change language": toggles the language-chip bar on the strip. Nothing with one language.
      *
-     * @param enumC0690f where the request came from
+     * @param inputSource where the request came from
      */
-    fun switchToNextSubtype(enumC0690f: InputSource): Boolean {
+    fun switchToNextSubtype(inputSource: InputSource): Boolean {
         if (!richInputMethodManager!!.hasMultipleEnabledSubtypesInThisIme(false)) {
             return false
         }
@@ -1679,8 +1679,8 @@ class BlackBerryIME : InputMethodService(),
         startActivity(intent)
     }
 
-    /** @param enumC0690f where the request came from */
-    fun updateSuggestionsFromSubtype(enumC0690f: InputSource): Boolean {
+    /** @param inputSource where the request came from */
+    fun updateSuggestionsFromSubtype(inputSource: InputSource): Boolean {
         if (!RichInputMethodManager.isInitialized()) {
             RichInputMethodManager.init(applicationContext)
         }
@@ -1704,22 +1704,22 @@ class BlackBerryIME : InputMethodService(),
     fun shouldShowLanguageSwitchKey(): Boolean =
         richInputMethodManager!!.shouldOfferSwitchingToNextInputMethod(this)
 
-    /** @param i the key code */
-    override fun onKeyDown(i: Int, keyEvent: KeyEvent): Boolean {
-        if (InputPathDebug.on()) Logger.info("CKB_SWIPE_TYPE_DEBUG", "BlackBerryIME.onKeyDown: keyCode=$i deviceId=${keyEvent.deviceId} source=0x${Integer.toHexString(keyEvent.source)} scanCode=${keyEvent.scanCode} flags=0x${Integer.toHexString(keyEvent.flags)}")
+    /** @param keyCode the key code */
+    override fun onKeyDown(keyCode: Int, keyEvent: KeyEvent): Boolean {
+        if (InputPathDebug.on()) Logger.info("CKB_SWIPE_TYPE_DEBUG", "BlackBerryIME.onKeyDown: keyCode=$keyCode deviceId=${keyEvent.deviceId} source=0x${Integer.toHexString(keyEvent.source)} scanCode=${keyEvent.scanCode} flags=0x${Integer.toHexString(keyEvent.flags)}")
         // A firmware-synthesised swipe key (the Titan 2's 322 / 404) is a gesture, not typing:
         // handled and consumed before the typing guard or the key pipeline sees it.
         if (ckbGestures.handleFirmwareGestureKey(keyEvent)) return true
         ckbGestures.onHardwareKey(keyEvent.eventTime)
-        return keyEventProcessor.onKeyDownInternal(i, keyEvent)
+        return keyEventProcessor.onKeyDownInternal(keyCode, keyEvent)
     }
 
-    /** @param i the key code */
-    override fun onKeyUp(i: Int, keyEvent: KeyEvent): Boolean {
-        if (InputPathDebug.on()) Logger.info("CKB_SWIPE_TYPE_DEBUG", "BlackBerryIME.onKeyUp: keyCode=$i deviceId=${keyEvent.deviceId} source=0x${Integer.toHexString(keyEvent.source)} scanCode=${keyEvent.scanCode} flags=0x${Integer.toHexString(keyEvent.flags)}")
+    /** @param keyCode the key code */
+    override fun onKeyUp(keyCode: Int, keyEvent: KeyEvent): Boolean {
+        if (InputPathDebug.on()) Logger.info("CKB_SWIPE_TYPE_DEBUG", "BlackBerryIME.onKeyUp: keyCode=$keyCode deviceId=${keyEvent.deviceId} source=0x${Integer.toHexString(keyEvent.source)} scanCode=${keyEvent.scanCode} flags=0x${Integer.toHexString(keyEvent.flags)}")
         if (ckbGestures.handleFirmwareGestureKey(keyEvent)) return true
         ckbGestures.onHardwareKey(keyEvent.eventTime)
-        return keyEventProcessor.onKeyUpInternal(i, keyEvent)
+        return keyEventProcessor.onKeyUpInternal(keyCode, keyEvent)
     }
 
     /** Modifier/symbol state updates only, for keys the accessibility service sees with no field. */
@@ -1734,19 +1734,19 @@ class BlackBerryIME : InputMethodService(),
     fun requestShowOnKeyPress(): Boolean = keyEventProcessor.requestShowOnKeyPress()
 
     /**
-     * @param i the code point
-     * @param i2 the key code
-     * @param z true if this is a key repeat
+     * @param codePoint the code point
+     * @param keyCode the key code
+     * @param isKeyRepeat true if this is a key repeat
      */
-    fun processHardwareKeyPress(i: Int, i2: Int, z: Boolean) {
-        val event = InputEvent.createHardwareKeyPress(i, i2, null, z, -1L)
+    fun processHardwareKeyPress(codePoint: Int, keyCode: Int, isKeyRepeat: Boolean) {
+        val event = InputEvent.createHardwareKeyPress(codePoint, keyCode, null, isKeyRepeat, -1L)
         applyPostEventUpdates(inputLogic.processInputEvent(settingsManager.getSettingsValues(), event, physicalKeyboardStateTracker, InputSource.UNKNOWN, keyboardSwitcher.getKeyboardElementId(), uiUpdateHandler), true)
         // Typing brings the strip back (AuxBarChoice).
         if (event.editsText()) uiCoordinator.onUserTyped(true)
     }
 
-    /** @param i the original key code */
-    fun remapKeyEvent(i: Int, ev: KeyEvent): KeyEvent {
+    /** @param keyCode the original key code */
+    fun remapKeyEvent(keyCode: Int, ev: KeyEvent): KeyEvent {
         // ControlModeController owns Ctrl, the multifunction key's "held as Ctrl" latch and a
         // config-declared Ctrl-like modifier (the Titan 2's Fn).
         val profileRemapped = controlMode.remapProfileCtrlKey(ev)
@@ -1754,13 +1754,13 @@ class BlackBerryIME : InputMethodService(),
         return controlMode.remapModifierKeyEvent(mfRemapped.keyCode, mfRemapped)
     }
 
-    /** @param i the input device id */
-    fun getOrCreateKeyEventConverter(i: Int): KeyEventConverter {
-        val interfaceC0916c = keyEventConverters.get(i)
+    /** @param deviceId the input device id */
+    fun getOrCreateKeyEventConverter(deviceId: Int): KeyEventConverter {
+        val interfaceC0916c = keyEventConverters.get(deviceId)
         if (interfaceC0916c != null) return interfaceC0916c
         val resolver = hardwareKeys.auxCharacterResolver()
-        val c0917d = KeyEventConverter(i, CompositeKeyCharacterInterpreter(currencyKeyHandler.asKeyCharacterInterpreter(), keyboardSwitcher.getKeyCharacterInterpreter(), multitapEventHandler.asKeyCharacterInterpreter()), this, resolver)
-        keyEventConverters.put(i, c0917d)
+        val c0917d = KeyEventConverter(deviceId, CompositeKeyCharacterInterpreter(currencyKeyHandler.asKeyCharacterInterpreter(), keyboardSwitcher.getKeyCharacterInterpreter(), multitapEventHandler.asKeyCharacterInterpreter()), this, resolver)
+        keyEventConverters.put(deviceId, c0917d)
         return c0917d
     }
 
@@ -1835,9 +1835,9 @@ class BlackBerryIME : InputMethodService(),
         return if (DeviceProfile.current().hasShiftedSymbolKeyboard()) physicalKeyboardStateTracker else keyboardSwitcher
     }
 
-    /** @param z true to leave the symbol shift alone */
-    fun updateSymbolShift(z: Boolean) {
-        if (z) return
+    /** @param isKeyRepeat true to leave the symbol shift alone */
+    fun updateSymbolShift(isKeyRepeat: Boolean) {
+        if (isKeyRepeat) return
         if (isInputViewShown()) {
             keyboardSwitcher.onSymbolShiftToggle(getCurrentInputType(), getCurrentImeOptions(), false, true)
         } else {
@@ -1849,15 +1849,15 @@ class BlackBerryIME : InputMethodService(),
     }
 
     /**
-     * @param i the key code
-     * @param i2 touch x
-     * @param i3 touch y
-     * @param j event time
-     * @param z true if this is a key repeat
+     * @param primaryCode the key code
+     * @param x touch x
+     * @param y touch y
+     * @param eventTime event time
+     * @param isKeyRepeat true if this is a key repeat
      */
-    override fun onCodeInput(i: Int, i2: Int, i3: Int, j: Long, z: Boolean) {
-        vkbGestureListener?.setLastKeyEventTime(j)
-        when (i) {
+    override fun onCodeInput(primaryCode: Int, x: Int, y: Int, eventTime: Long, isKeyRepeat: Boolean) {
+        vkbGestureListener?.setLastKeyEventTime(eventTime)
+        when (primaryCode) {
             -37 -> return
             -29 -> {
                 InputMethodHelper.getInstance().switchToRapidInputIme(this)
@@ -1871,18 +1871,18 @@ class BlackBerryIME : InputMethodService(),
             }
         }
         val mainKeyboardView = keyboardSwitcher.getMainKeyboardView()!!
-        val keyX = mainKeyboardView.getKeyX(i2)
-        val keyY = mainKeyboardView.getKeyY(i3)
+        val keyX = mainKeyboardView.getKeyX(x)
+        val keyY = mainKeyboardView.getKeyY(y)
         // Shift on a non-alphabet keyboard means "symbol shift" (-13).
-        val code = if (i == -1 && keyboardSwitcher.getCurrentKeyboard()?.mId?.isAlphabetKeyboard() != true) -13 else i
+        val code = if (primaryCode == -1 && keyboardSwitcher.getCurrentKeyboard()?.mId?.isAlphabetKeyboard() != true) -13 else primaryCode
         // With on-screen Ctrl on, the key already went to the app as a chord on press.
-        val shouldProcessKey = !controlMode.suppressesSoftCodeInput(i) && ((i < 0) || (i > 0 && isInputViewShown()))
+        val shouldProcessKey = !controlMode.suppressesSoftCodeInput(primaryCode) && ((primaryCode < 0) || (primaryCode > 0 && isInputViewShown()))
         if (shouldProcessKey) {
             val interpretation = softwareMultitapHandler.interpretCodePoint(code)
             val event = if (interpretation != null && interpretation.isModifier()) {
-                createKeyPressEvent(interpretation.codePoint, keyX, keyY, j, interpretation.isModifier(), interpretation.isShiftLocked())
+                createKeyPressEvent(interpretation.codePoint, keyX, keyY, eventTime, interpretation.isModifier(), interpretation.isShiftLocked())
             } else {
-                createKeyPressEvent(code, keyX, keyY, j, z)
+                createKeyPressEvent(code, keyX, keyY, eventTime, isKeyRepeat)
             }
             softwareMultitapHandler.onInputEvent(event)
             applyPostEventUpdates(inputLogic.processInputEvent(settingsManager.getSettingsValues(), event, keyboardSwitcher, InputSource.SOFTWARE, keyboardSwitcher.getKeyboardElementId(), uiUpdateHandler), true)
@@ -1899,37 +1899,37 @@ class BlackBerryIME : InputMethodService(),
     }
 
     /** A key code <= 0 is a function key (no code point); > 0 is a code point with no key code. */
-    private fun splitCode(i: Int): Pair<Int, Int> = if (i <= 0) Pair(-1, i) else Pair(i, 0)
+    private fun splitCode(code: Int): Pair<Int, Int> = if (code <= 0) Pair(-1, code) else Pair(code, 0)
 
     /**
-     * @param i key code (<= 0) or code point
-     * @param i2 touch x
-     * @param i3 touch y
-     * @param j event time
-     * @param z true if this is a key repeat
+     * @param code key code (<= 0) or code point
+     * @param x touch x
+     * @param y touch y
+     * @param eventTime event time
+     * @param isKeyRepeat true if this is a key repeat
      */
-    fun createKeyPressEvent(i: Int, i2: Int, i3: Int, j: Long, z: Boolean): InputEvent {
-        val (codePoint, keyCode) = splitCode(i)
-        return InputEvent.createKeyPress(codePoint, keyCode, i2, i3, j, z)
+    fun createKeyPressEvent(code: Int, x: Int, y: Int, eventTime: Long, isKeyRepeat: Boolean): InputEvent {
+        val (codePoint, keyCode) = splitCode(code)
+        return InputEvent.createKeyPress(codePoint, keyCode, x, y, eventTime, isKeyRepeat)
     }
 
     /**
      * Modifier key press; other params as above.
      *
-     * @param z2 true if Shift is locked
+     * @param isShiftLocked true if Shift is locked
      */
-    fun createKeyPressEvent(i: Int, i2: Int, i3: Int, j: Long, z: Boolean, z2: Boolean): InputEvent {
-        val (codePoint, keyCode) = splitCode(i)
-        return InputEvent.createModifierKeyPress(codePoint, keyCode, i2, i3, j, z, z2)
+    fun createKeyPressEvent(code: Int, x: Int, y: Int, eventTime: Long, isKeyRepeat: Boolean, isShiftLocked: Boolean): InputEvent {
+        val (codePoint, keyCode) = splitCode(code)
+        return InputEvent.createModifierKeyPress(codePoint, keyCode, x, y, eventTime, isKeyRepeat, isShiftLocked)
     }
 
     /**
-     * @param str the text to commit
-     * @param j event time
+     * @param text the text to commit
+     * @param eventTime event time
      */
-    override fun onTextInput(str: String, j: Long) {
+    override fun onTextInput(text: String, eventTime: Long) {
         var z = false
-        val strM4443a0 = inputLogic.stripLeadingDot(str)
+        val strM4443a0 = inputLogic.stripLeadingDot(text)
         val strM4443a = if (getCurrentInputType() == android.text.InputType.TYPE_TEXT_FLAG_CAP_SENTENCES) capitalizeFirstCodePoint(strM4443a0, getCurrentLocale()) else strM4443a0
         val length = strM4443a.length
         val iArr = IntArray(length)
@@ -1968,53 +1968,53 @@ class BlackBerryIME : InputMethodService(),
         } else {
             var c0914aM5909a: InputEvent? = null
             for (i3 in i - 1 downTo 0) {
-                c0914aM5909a = InputEvent.createHardwareKeyEvent(iArr[i3], 0, j, c0914aM5909a)
+                c0914aM5909a = InputEvent.createHardwareKeyEvent(iArr[i3], 0, eventTime, c0914aM5909a)
             }
             if (c0914aM5909a == null) return
             c0920gM4442a = inputLogic.processInputEvent(settingsValues, c0914aM5909a, getSymbolPageProvider(), InputSource.INTERNAL, keyboardSwitcher.getSymbolPageOrder(), uiUpdateHandler)
         }
-        vkbGestureListener?.setLastKeyEventTime(j)
+        vkbGestureListener?.setLastKeyEventTime(eventTime)
         applyPostEventUpdates(c0920gM4442a, true)
         keyboardSwitcher.onInputCodeChanged(-4, getCurrentInputType(), getCurrentImeOptions())
     }
 
     /**
-     * @param i the key code
-     * @param i2 repeat count (0 for the first press)
-     * @param z true if this is the only active pointer
+     * @param primaryCode the key code
+     * @param repeatCount repeat count (0 for the first press)
+     * @param isSinglePointer true if this is the only active pointer
      */
-    override fun onPressKey(i: Int, i2: Int, z: Boolean) {
-        if (controlMode.handleSoftKeyDown(i)) return
+    override fun onPressKey(primaryCode: Int, repeatCount: Int, isSinglePointer: Boolean) {
+        if (controlMode.handleSoftKeyDown(primaryCode)) return
         if (swipeToDeleteAnimatorView?.isAnimating() == true) {
             swipeToDeleteAnimatorView?.endAnimation()
         }
-        keyboardSwitcher.onCodeInput(i, z, getCurrentInputType(), getCurrentImeOptions())
+        keyboardSwitcher.onCodeInput(primaryCode, isSinglePointer, getCurrentInputType(), getCurrentImeOptions())
         multitapEventHandler.commitMultitapIfActive()
-        inputLogic.onSoftKeyDown(i)
-        playKeyFeedback(i, i2)
+        inputLogic.onSoftKeyDown(primaryCode)
+        playKeyFeedback(primaryCode, repeatCount)
         enableCursorMode(false)
-        if (LocaleUtils.isChineseCangjie(SubtypeManager.getInstance().getCurrentSubtypeLocale()) && isInputViewShown() && (i == -40 || i == -39)) {
+        if (LocaleUtils.isChineseCangjie(SubtypeManager.getInstance().getCurrentSubtypeLocale()) && isInputViewShown() && (primaryCode == -40 || primaryCode == -39)) {
             toggleCangjieMode()
         }
-        if (i == -1) {
+        if (primaryCode == -1) {
             inputLogic.sendKeyDown(KeyEvent.KEYCODE_SHIFT_LEFT)
         }
         // The disable-then-restore cycle guards the UIM bar while typing; Shift toggles are not
         // typing and would flash the emoji/voice keys disabled.
-        if (i != -1 && i != -2) {
+        if (primaryCode != -1 && primaryCode != -2) {
             unifiedInputBoardHandler?.scheduleKeyStateRestore()
         }
     }
 
     /**
-     * @param i the key code
-     * @param z true if released during sliding input
+     * @param primaryCode the key code
+     * @param withSliding true if released during sliding input
      */
-    override fun onReleaseKey(i: Int, z: Boolean) {
-        if (controlMode.handleSoftKeyUp(i)) return
-        keyboardSwitcher.onCodeRelease(i, z, getCurrentInputType(), getCurrentImeOptions())
-        inputLogic.onSoftKeyUp(i)
-        if (i == -1) {
+    override fun onReleaseKey(primaryCode: Int, withSliding: Boolean) {
+        if (controlMode.handleSoftKeyUp(primaryCode)) return
+        keyboardSwitcher.onCodeRelease(primaryCode, withSliding, getCurrentInputType(), getCurrentImeOptions())
+        inputLogic.onSoftKeyUp(primaryCode)
+        if (primaryCode == -1) {
             inputLogic.sendKeyUp(59)
         }
     }
@@ -2043,11 +2043,11 @@ class BlackBerryIME : InputMethodService(),
         suggestionUpdater.requestSuggestionsNow()
     }
 
-    /** @param enumC0690f HARDWARE for a keypad swipe, SOFTWARE for an on-screen one */
-    override fun onEndBatchInput(enumC0690f: InputSource) {
-        suggestionUpdater.requestPredictionsNow(enumC0690f)
+    /** @param inputSource HARDWARE for a keypad swipe, SOFTWARE for an on-screen one */
+    override fun onEndBatchInput(inputSource: InputSource) {
+        suggestionUpdater.requestPredictionsNow(inputSource)
         // A swipe is typing (AuxBarChoice).
-        uiCoordinator.onUserTyped(enumC0690f == InputSource.HARDWARE)
+        uiCoordinator.onUserTyped(inputSource == InputSource.HARDWARE)
     }
 
     override fun onCancelBatchInput() {
@@ -2058,9 +2058,9 @@ class BlackBerryIME : InputMethodService(),
         keyboardSwitcher.onMomentaryStateFinish(getCurrentInputType(), getCurrentImeOptions())
     }
 
-    /** @param i the request code (1 = switch language) */
-    override fun onCustomRequest(i: Int): Boolean {
-        if (!isAlertDialogShowing() && i == 1) {
+    /** @param requestCode the request code (1 = switch language) */
+    override fun onCustomRequest(requestCode: Int): Boolean {
+        if (!isAlertDialogShowing() && requestCode == 1) {
             return switchToNextSubtype(InputSource.SOFTWARE)
         }
         return false
@@ -2074,21 +2074,21 @@ class BlackBerryIME : InputMethodService(),
     }
 
     /**
-     * @param c0920g the result of processing the event
-     * @param z true to post the suggestion update delayed instead of now
+     * @param inputEventContext the result of processing the event
+     * @param delaySuggestionUpdate true to post the suggestion update delayed instead of now
      */
-    fun applyPostEventUpdates(c0920g: InputEventContext, z: Boolean) {
-        when (c0920g.getUiUpdateMode()) {
+    fun applyPostEventUpdates(inputEventContext: InputEventContext, delaySuggestionUpdate: Boolean) {
+        when (inputEventContext.getUiUpdateMode()) {
             1 -> resetKeyboardState()
             2 -> uiUpdateHandler.scheduleShiftStateUpdate()
         }
-        if (c0920g.shouldUpdateSuggestions()) {
+        if (inputEventContext.shouldUpdateSuggestions()) {
             val reason = when {
-                c0920g.event.isSuggestionPicked() -> SuggestionUpdater.Reason.AFTER_MANUAL_PICK
-                c0920g.event.isGestureEvent() -> SuggestionUpdater.Reason.AFTER_GESTURE
+                inputEventContext.event.isSuggestionPicked() -> SuggestionUpdater.Reason.AFTER_MANUAL_PICK
+                inputEventContext.event.isGestureEvent() -> SuggestionUpdater.Reason.AFTER_GESTURE
                 else -> SuggestionUpdater.Reason.AFTER_KEYSTROKE
             }
-            if (z) {
+            if (delaySuggestionUpdate) {
                 suggestionUpdater.requestDelayedLocaleAware(reason)
             } else if (LocaleUtils.isCurrentSubtypeJapanese()) {
                 requestSuggestionUpdateAsync(reason.legacyCode)
@@ -2096,24 +2096,24 @@ class BlackBerryIME : InputMethodService(),
                 requestSuggestionUpdateSync(reason.legacyCode)
             }
         }
-        if (c0920g.isKeyHandled()) {
+        if (inputEventContext.isKeyHandled()) {
             subtypeState.setCurrentSubtypeHasBeenUsed()
         }
     }
 
     /**
-     * @param i the key code
-     * @param i2 repeat count
+     * @param code the key code
+     * @param repeatCount repeat count
      */
-    fun playKeyFeedback(i: Int, i2: Int) {
+    fun playKeyFeedback(code: Int, repeatCount: Int) {
         val mainKeyboardViewM6790T = keyboardSwitcher.getMainKeyboardView()
         if (mainKeyboardViewM6790T == null || !mainKeyboardViewM6790T.isInDraggingFinger()) {
-            if (i2 <= 0 || ((i != -5 || inputLogic.mRichInputConnection.hasCursorPosition()) && i2 % 2 != 0)) {
+            if (repeatCount <= 0 || ((code != -5 || inputLogic.mRichInputConnection.hasCursorPosition()) && repeatCount % 2 != 0)) {
                 val c0662aM4226a = AudioAndHapticFeedbackManager.getInstance()
-                if (i2 == 0 && i != -27 && i != -29 && i != -23) {
+                if (repeatCount == 0 && code != -27 && code != -29 && code != -23) {
                     c0662aM4226a.performHapticFeedback(mainKeyboardViewM6790T)
                 }
-                c0662aM4226a.performAudioFeedback(i)
+                c0662aM4226a.performAudioFeedback(code)
             }
         }
     }
@@ -2135,11 +2135,11 @@ class BlackBerryIME : InputMethodService(),
         return inputLogic.getConfigParserResult()
     }
 
-    /** @param iArr code points to locate on the current keyboard */
-    fun getKeyCoordinates(iArr: IntArray): IntArray {
+    /** @param codePoints code points to locate on the current keyboard */
+    fun getKeyCoordinates(codePoints: IntArray): IntArray {
         val c0965eM6834l = keyboardSwitcher.getCurrentKeyboard()
-            ?: return CoordinateUtils.newCoordinateArray(iArr.size, -1, -1)
-        return c0965eM6834l.getCoordinatesForCodes(iArr)
+            ?: return CoordinateUtils.newCoordinateArray(codePoints.size, -1, -1)
+        return c0965eM6834l.getCoordinatesForCodes(codePoints)
     }
 
     override fun onGenericMotionEvent(motionEvent: MotionEvent): Boolean {
@@ -2239,16 +2239,16 @@ class BlackBerryIME : InputMethodService(),
         return gestureDetector
     }
 
-    /** @param i the swipe code: -18 delete, -19 down, -17 prediction pick */
-    fun handleSwipeGesture(i: Int, motionEvent: MotionEvent, motionEvent2: MotionEvent) {
+    /** @param gestureCode the swipe code: -18 delete, -19 down, -17 prediction pick */
+    fun handleSwipeGesture(gestureCode: Int, motionEvent: MotionEvent, endEvent: MotionEvent) {
         val actionIndex = motionEvent.actionIndex
         var str = ""
         var zM5299a = false
-        if (i == -18) {
+        if (gestureCode == -18) {
             controlMode.clearControlState()
             val rawX = motionEvent.rawX
             val y = motionEvent.getY(actionIndex)
-            val rawX2 = motionEvent2.rawX
+            val rawX2 = endEvent.rawX
             if (inputLogic.hasSelectionOrCursor()) {
                 updateSwipeToDelete(rawX, y, rawX2)
                 if (onSwipeDelete()) {
@@ -2258,7 +2258,7 @@ class BlackBerryIME : InputMethodService(),
                     Logger.warn("IMEGesture", "Delete gesture at valid position did nothing!")
                 }
             }
-        } else if (i == -19) {
+        } else if (gestureCode == -19) {
             val swipeSettings = settingsManager.getSettingsValues()
             run {
                 if (swipeSettings.isVkbSwipeDownEnabled) {
@@ -2277,7 +2277,7 @@ class BlackBerryIME : InputMethodService(),
                     zM5299a = keyboardSwitcher.onSymbolShiftToggle(getCurrentInputType(), getCurrentImeOptions(), true, zM5299a)
                 }
             }
-        } else if (i == -17) {
+        } else if (gestureCode == -17) {
             controlMode.clearControlState()
             val flick = flickSuggestionView
             if (flick != null && flick.isShown) {
@@ -2288,7 +2288,7 @@ class BlackBerryIME : InputMethodService(),
             }
             str = "dev.bbkb.ime.SWIPE_PREDICT_VKB"
         }
-        if (zM5299a) AudioAndHapticFeedbackManager.getInstance().performAudioFeedback(i)
+        if (zM5299a) AudioAndHapticFeedbackManager.getInstance().performAudioFeedback(gestureCode)
         if (str.isNotEmpty()) sendPrivateCommand(str, null)
     }
 
@@ -2322,17 +2322,17 @@ class BlackBerryIME : InputMethodService(),
     }
 
     /**
-     * @param f start x
-     * @param f2 y
-     * @param f3 end x
+     * @param startX start x
+     * @param startY y
+     * @param endX end x
      */
-    fun updateSwipeToDelete(f: Float, f2: Float, f3: Float) {
+    fun updateSwipeToDelete(startX: Float, startY: Float, endX: Float) {
         val mainKeyboardView = keyboardSwitcher.getMainKeyboardView()
         swipeToDeleteAnimatorView?.setCurrentKeyboardHeight(mainKeyboardView?.height ?: 0)
         val auxBarShown = auxBarManager != null && auxBarManager!!.getAuxBarView() != null && (auxBarManager!!.getAuxBarView()?.isShowing() ?: false)
         swipeToDeleteAnimatorView?.setSuggestionStripShown(auxBarShown)
         swipeToDeleteAnimatorView?.setCurrentKeyboardWidth(animationWidth())
-        swipeToDeleteAnimatorView?.startSwipeAnimation(f, f2, f3)
+        swipeToDeleteAnimatorView?.startSwipeAnimation(startX, startY, endX)
     }
 
     fun shouldHandleGestureEvent(motionEvent: MotionEvent): Boolean {
@@ -2366,38 +2366,38 @@ class BlackBerryIME : InputMethodService(),
         return mainKeyboardViewM6790T != null && mainKeyboardViewM6790T.isGestureHandlingActive()
     }
 
-    /** @param str the private command action */
-    fun sendPrivateCommand(str: String, bundle: Bundle?) {
+    /** @param action the private command action */
+    fun sendPrivateCommand(action: String, bundle: Bundle?) {
         if (!isBlackBerryApp) return
         val currentInputConnection = getCurrentInputConnection() ?: return
-        currentInputConnection.performPrivateCommand(str, bundle)
+        currentInputConnection.performPrivateCommand(action, bundle)
     }
 
-    /** @param i number of steps */
-    override fun moveRight(i: Int) {
+    /** @param count number of steps */
+    override fun moveRight(count: Int) {
         clearStuckMetaState()
-        inputLogic.moveCursorRight(settingsManager.getSettingsValues(), i, isMetaKeyActive())
+        inputLogic.moveCursorRight(settingsManager.getSettingsValues(), count, isMetaKeyActive())
         sendPrivateCommand("dev.bbkb.ime.MOVE_RIGHT_CKB", null)
     }
 
-    /** @param i number of steps */
-    override fun moveLeft(i: Int) {
+    /** @param count number of steps */
+    override fun moveLeft(count: Int) {
         clearStuckMetaState()
-        inputLogic.moveCursorLeft(settingsManager.getSettingsValues(), i, isMetaKeyActive())
+        inputLogic.moveCursorLeft(settingsManager.getSettingsValues(), count, isMetaKeyActive())
         sendPrivateCommand("dev.bbkb.ime.MOVE_LEFT_CKB", null)
     }
 
-    /** @param i number of steps */
-    override fun moveUp(i: Int) {
+    /** @param count number of steps */
+    override fun moveUp(count: Int) {
         clearStuckMetaState()
-        inputLogic.moveCursorUp(i, isMetaKeyActive())
+        inputLogic.moveCursorUp(count, isMetaKeyActive())
         sendPrivateCommand("dev.bbkb.ime.MOVE_UP_CKB", null)
     }
 
-    /** @param i number of steps */
-    override fun moveDown(i: Int) {
+    /** @param count number of steps */
+    override fun moveDown(count: Int) {
         clearStuckMetaState()
-        inputLogic.moveCursorDown(i, isMetaKeyActive())
+        inputLogic.moveCursorDown(count, isMetaKeyActive())
         sendPrivateCommand("dev.bbkb.ime.MOVE_DOWN_CKB", null)
     }
 
@@ -2410,9 +2410,9 @@ class BlackBerryIME : InputMethodService(),
         scheduleCursorModeDisable()
     }
 
-    /** @param z true to enable cursor mode */
-    fun enableCursorMode(z: Boolean) {
-        applyCursorModeState(z, true, false)
+    /** @param enable true to enable cursor mode */
+    fun enableCursorMode(enable: Boolean) {
+        applyCursorModeState(enable, true, false)
     }
 
     fun toggleCursorMode() {
@@ -2422,21 +2422,21 @@ class BlackBerryIME : InputMethodService(),
     }
 
     /**
-     * @param z true to enable cursor mode
-     * @param z2 on exit, true to re-derive the shift state
-     * @param z3 true for a forced entry (FCC reconciling a state it already arranged)
+     * @param enable true to enable cursor mode
+     * @param requestShiftUpdate on exit, true to re-derive the shift state
+     * @param forced true for a forced entry (FCC reconciling a state it already arranged)
      */
-    fun applyCursorModeState(z: Boolean, z2: Boolean, z3: Boolean) {
-        if (BuildConfig.DEBUG) Logger.debug("ARROW_BAR_DIAG", "applyCursorModeState: enable=$z z3=$z3 isUnifiedInputBoardShowing()=${isUnifiedInputBoardShowing()} → will proceed=${z3 || !isUnifiedInputBoardShowing()}")
-        if (z3 || !isUnifiedInputBoardShowing()) {
-            if (z) {
+    fun applyCursorModeState(enable: Boolean, requestShiftUpdate: Boolean, forced: Boolean) {
+        if (BuildConfig.DEBUG) Logger.debug("ARROW_BAR_DIAG", "applyCursorModeState: enable=$enable forced=$forced isUnifiedInputBoardShowing()=${isUnifiedInputBoardShowing()} → will proceed=${forced || !isUnifiedInputBoardShowing()}")
+        if (forced || !isUnifiedInputBoardShowing()) {
+            if (enable) {
                 if (isCursorModeEnabled) return
                 Logger.debug("IMEGesture", "Cursor mode enabled")
                 // A CrossAxisRules row: the arrow bar replaces open boards and suggestion views,
-                // except on a forced entry (z3), where the table leaves the other axes alone.
-                keyboardSwitcher.transitions().apply(KeyboardTransition.enterCursorMode(z3))
+                // except on a forced entry, where the table leaves the other axes alone.
+                keyboardSwitcher.transitions().apply(KeyboardTransition.enterCursorMode(forced))
                 val currentInputConnection = getCurrentInputConnection()
-                if (currentInputConnection != null && lastCursorAnchorInfo != null && !isMetaKeyActive() && (!z3 || !inputLogic.mRichInputConnection.hasSelection())) {
+                if (currentInputConnection != null && lastCursorAnchorInfo != null && !isMetaKeyActive() && (!forced || !inputLogic.mRichInputConnection.hasSelection())) {
                     if (lastCursorAnchorInfo!!.selectionEnd != lastCursorAnchorInfo!!.selectionStart || inputLogic.mRichInputConnection.hasSelection()) {
                         currentInputConnection.performPrivateCommand("dev.bbkb.ime.FCC_ON", null)
                     } else {
@@ -2444,7 +2444,7 @@ class BlackBerryIME : InputMethodService(),
                     }
                     currentInputConnection.performPrivateCommand("dev.bbkb.ime.FCC_OFF", null)
                 }
-                if (!z3) scheduleCursorModeDisable()
+                if (!forced) scheduleCursorModeDisable()
                 if (isGestureInputReady()) {
                     keyboardSwitcher.getMainKeyboardView()!!.cancelAllGestureTracking()
                 }
@@ -2454,7 +2454,7 @@ class BlackBerryIME : InputMethodService(),
                 Logger.debug("IMEGesture", "Cursor mode disabled")
                 // The EXIT_CURSOR_MODE row; the cursor window and auto-disable timer are
                 // cursor-axis internals and stay here.
-                keyboardSwitcher.transitions().apply(KeyboardTransition.exitCursorMode(z2))
+                keyboardSwitcher.transitions().apply(KeyboardTransition.exitCursorMode(requestShiftUpdate))
                 cursorTracker.hide()
                 uiUpdateHandler.removeCallbacks(disableCursorModeRunnable)
                 requestSuggestionsForCursorPosition()
@@ -2536,71 +2536,71 @@ class BlackBerryIME : InputMethodService(),
         uiUpdateHandler.postDelayed(disableCursorModeRunnable, 4000L)
     }
 
-    /** @param z true to re-derive the shift state after the strip returns */
-    private fun hideArrowBar(z: Boolean) {
+    /** @param requestShiftUpdate true to re-derive the shift state after the strip returns */
+    private fun hideArrowBar(requestShiftUpdate: Boolean) {
         val arrowBar = arrowBarController
         if (arrowBar == null || !arrowBar.isShowing()) return
         arrowBar.hide()
         if (hasAuxBarView() || hasCjkSuggestionGrid()) {
-            restoreSuggestionStrip(false, z)
+            restoreSuggestionStrip(false, requestShiftUpdate)
         }
     }
 
     /**
-     * @param z unused
-     * @param z2 true to re-derive the shift state (skipped with a selection)
+     * @param animate unused
+     * @param requestShiftUpdate true to re-derive the shift state (skipped with a selection)
      */
-    fun restoreSuggestionStrip(z: Boolean, z2: Boolean) {
+    fun restoreSuggestionStrip(animate: Boolean, requestShiftUpdate: Boolean) {
         // RESTORE_BAR row; the shift re-derivation is the text pipeline and stays here.
         keyboardSwitcher.transitions().apply(KeyboardTransition.restoreBar())
-        if (!z2 || inputLogic.mRichInputConnection.hasSelection()) return
+        if (!requestShiftUpdate || inputLogic.mRichInputConnection.hasSelection()) return
         uiUpdateHandler.postUpdateShiftState(false, false)
     }
 
-    /** @param i the update reason code ([SuggestionUpdater.Reason.legacyCode]) */
-    fun requestSuggestionUpdateSync(i: Int) {
+    /** @param inputStyle the update reason code ([SuggestionUpdater.Reason.legacyCode]) */
+    fun requestSuggestionUpdateSync(inputStyle: Int) {
         uiUpdateHandler.cancelPendingSuggestionUpdates()
-        inputLogic.updateSuggestionsSync(settingsManager.getSettingsValues(), i)
+        inputLogic.updateSuggestionsSync(settingsManager.getSettingsValues(), inputStyle)
     }
 
-    /** @param i the update reason code */
-    fun requestSuggestionUpdateAsync(i: Int) {
+    /** @param inputStyle the update reason code */
+    fun requestSuggestionUpdateAsync(inputStyle: Int) {
         uiUpdateHandler.cancelPendingSuggestionUpdates()
-        inputLogic.updateSuggestionsAsync(settingsManager.getSettingsValues(), i)
+        inputLogic.updateSuggestionsAsync(settingsManager.getSettingsValues(), inputStyle)
     }
 
     /**
-     * @param i the update reason code
-     * @param aVar receives the suggestions
+     * @param inputStyle the update reason code
+     * @param suggestionCallback receives the suggestions
      */
-    fun runSuggestionRequest(i: Int, aVar: SuggestionEngine.SuggestionCallback) {
+    fun runSuggestionRequest(inputStyle: Int, suggestionCallback: SuggestionEngine.SuggestionCallback) {
         // A main-thread request carries its proximity grid (and shift state) in its snapshot,
         // so the worker reads no keyboard state.
-        val snapshotGrid = InputLogic.snapshotProximityGrid(aVar)
+        val snapshotGrid = InputLogic.snapshotProximityGrid(suggestionCallback)
         if (snapshotGrid != null) {
-            inputLogic.requestSuggestionsWithContext(this, settingsManager.getSettingsValues(), snapshotGrid, 0, i, aVar)
+            inputLogic.requestSuggestionsWithContext(this, settingsManager.getSettingsValues(), snapshotGrid, 0, inputStyle, suggestionCallback)
             return
         }
         val c0965eM6834l = keyboardSwitcher.getCurrentKeyboard()
         if (BuildConfig.DEBUG) Log.d("SUGG", "runSuggestionRequest: keyboard=${c0965eM6834l != null} thread=${Thread.currentThread().name}")
         if (c0965eM6834l == null) {
-            aVar.onSuggestionsReady(SuggestedWords.EMPTY)
+            suggestionCallback.onSuggestionsReady(SuggestedWords.EMPTY)
         } else {
-            inputLogic.requestSuggestionsWithContext(this, settingsManager.getSettingsValues(), c0965eM6834l.getProximityGrid(), getSymbolPageProvider().getSymbolPageOrder(), i, aVar)
+            inputLogic.requestSuggestionsWithContext(this, settingsManager.getSettingsValues(), c0965eM6834l.getProximityGrid(), getSymbolPageProvider().getSymbolPageOrder(), inputStyle, suggestionCallback)
         }
     }
 
     /** Display side of the suggestion pipeline (the request side is [suggestionUpdater]). */
     private val suggestionStrip = SuggestionStripPresenter(this)
 
-    /** @param c0666ac the words to show */
-    override fun showSuggestionStrip(c0666ac: SuggestedWords) = suggestionStrip.showOrNeutral(c0666ac)
+    /** @param suggestedWords the words to show */
+    override fun showSuggestionStrip(suggestedWords: SuggestedWords) = suggestionStrip.showOrNeutral(suggestedWords)
 
     /**
-     * @param c0666ac the words to show
-     * @param z true if the words come from a gesture
+     * @param suggestedWords the words to show
+     * @param isGesture true if the words come from a gesture
      */
-    fun displaySuggestions(c0666ac: SuggestedWords, z: Boolean) = suggestionStrip.display(c0666ac, z)
+    fun displaySuggestions(suggestedWords: SuggestedWords, isGesture: Boolean) = suggestionStrip.display(suggestedWords, isGesture)
 
     fun updateFlickMetrics() = suggestionStrip.updateFlickMetrics()
 
@@ -2617,9 +2617,9 @@ class BlackBerryIME : InputMethodService(),
 
     override fun setNeutralSuggestionStrip() = suggestionStrip.showNeutral()
 
-    /** @param str the word to offer */
-    override fun showAddToDictionaryHint(str: String) {
-        flickSuggestionView?.clearSuggestions(str)
+    /** @param word the word to offer */
+    override fun showAddToDictionaryHint(word: String) {
+        flickSuggestionView?.clearSuggestions(word)
     }
 
     override fun isShowingMoreSuggestions(): Boolean {
@@ -2630,15 +2630,15 @@ class BlackBerryIME : InputMethodService(),
         // AuxBarView handles this.
     }
 
-    override fun onSuggestionPicked(suggestedWordInfoVar: SuggestedWords.SuggestedWordInfo, enumC0690f: InputSource) {
-        if (suggestedWordInfoVar.isKind(EmojibaseStripSuggestion.KIND_EMOJI) && !keyboardSwitcher.isNoPersonalizedLearning()) {
-            EmojiToneMemory.onEmojiPicked(PrefsManager.getPrefs(this), suggestedWordInfoVar.word)
+    override fun onSuggestionPicked(suggestedWordInfo: SuggestedWords.SuggestedWordInfo, inputSource: InputSource) {
+        if (suggestedWordInfo.isKind(EmojibaseStripSuggestion.KIND_EMOJI) && !keyboardSwitcher.isNoPersonalizedLearning()) {
+            EmojiToneMemory.onEmojiPicked(PrefsManager.getPrefs(this), suggestedWordInfo.word)
         }
-        applyPostEventUpdates(inputLogic.handleManualPick(settingsManager.getSettingsValues(), suggestedWordInfoVar, getSymbolPageProvider(), keyboardSwitcher.getKeyboardElementId(), uiUpdateHandler, enumC0690f), true)
+        applyPostEventUpdates(inputLogic.handleManualPick(settingsManager.getSettingsValues(), suggestedWordInfo, getSymbolPageProvider(), keyboardSwitcher.getKeyboardElementId(), uiUpdateHandler, inputSource), true)
     }
 
-    override fun onCjkSuggestionSelected(suggestedWordInfoVar: SuggestedWords.SuggestedWordInfo) {
-        onSuggestionPicked(suggestedWordInfoVar, InputSource.UNKNOWN)
+    override fun onCjkSuggestionSelected(suggestedWordInfo: SuggestedWords.SuggestedWordInfo) {
+        onSuggestionPicked(suggestedWordInfo, InputSource.UNKNOWN)
     }
 
     fun isSuggestionStripActive(): Boolean {
@@ -2657,23 +2657,23 @@ class BlackBerryIME : InputMethodService(),
         return multitapEventHandler.isAltMultitapSupported()
     }
 
-    /** @param z true to commit the next text input as one string */
-    fun setInsertAsString(z: Boolean) {
-        shouldInsertAsString = z
+    /** @param insertAsString true to commit the next text input as one string */
+    fun setInsertAsString(insertAsString: Boolean) {
+        shouldInsertAsString = insertAsString
     }
 
     /**
      * The add-to-dictionary plus: adds the word (also teaching the DLM and the system user
      * dictionary) and re-runs the editor's spell check; if refused, opens BBKB's add-word dialog.
      *
-     * @param str the word to add
+     * @param word the word to add
      */
-    fun addWordToUserDictionary(str: String) {
-        val added = OneTapAddWord.add(DictionaryManager.getInstance(), str, dictionaryLoader.getLocale())
+    fun addWordToUserDictionary(word: String) {
+        val added = OneTapAddWord.add(DictionaryManager.getInstance(), word, dictionaryLoader.getLocale())
         if (added) {
             inputLogic.mRichInputConnection.requestSpellCheck()
         } else {
-            dev.bbkb.ime.personaldictionary.AddWordDialog.start(this, str, dictionaryLoader.getLocale())
+            dev.bbkb.ime.personaldictionary.AddWordDialog.start(this, word, dictionaryLoader.getLocale())
         }
         inputLogic.dismissMoreKeys()
     }
@@ -2713,9 +2713,9 @@ class BlackBerryIME : InputMethodService(),
         c1011iM6838p.refresh()
     }
 
-    /** @param handlerC1013k the UIM board handler */
-    fun attachInputBoardHandler(handlerC1013k: UnifiedInputBoardHandler) {
-        unifiedInputBoardHandler = handlerC1013k
+    /** @param handler the UIM board handler */
+    fun attachInputBoardHandler(handler: UnifiedInputBoardHandler) {
+        unifiedInputBoardHandler = handler
     }
 
     fun hasAuxBarView(): Boolean {
@@ -2903,19 +2903,19 @@ class BlackBerryIME : InputMethodService(),
 
     fun superOnStartInputView(ei: EditorInfo, r: Boolean) { super.onStartInputView(ei, r) }
 
-    /** @param f true if input is finishing too */
-    fun superOnFinishInputView(f: Boolean) { super.onFinishInputView(f) }
+    /** @param finishingInput true if input is finishing too */
+    fun superOnFinishInputView(finishingInput: Boolean) { super.onFinishInputView(finishingInput) }
 
     fun superOnFinishInput() { super.onFinishInput() }
 
-    /** @param i the key code */
-    fun superOnKeyDown(i: Int, ev: KeyEvent): Boolean = super.onKeyDown(i, ev)
+    /** @param keyCode the key code */
+    fun superOnKeyDown(keyCode: Int, ev: KeyEvent): Boolean = super.onKeyDown(keyCode, ev)
 
-    /** @param i the key code */
-    fun superOnKeyUp(i: Int, ev: KeyEvent): Boolean = super.onKeyUp(i, ev)
+    /** @param keyCode the key code */
+    fun superOnKeyUp(keyCode: Int, ev: KeyEvent): Boolean = super.onKeyUp(keyCode, ev)
 
-    override fun dump(fileDescriptor: FileDescriptor, printWriter: PrintWriter, strArr: Array<String>) {
-        super.dump(fileDescriptor, printWriter, strArr)
+    override fun dump(fileDescriptor: FileDescriptor, printWriter: PrintWriter, args: Array<String>) {
+        super.dump(fileDescriptor, printWriter, args)
         val printWriterPrinter = PrintWriterPrinter(printWriter)
         printWriterPrinter.println("BlackBerryIME state :")
         try {

@@ -67,7 +67,7 @@ public class FakeEditor implements InputConnection {
     private EditorActionBehavior mActionBehavior = null;
     private boolean mConnectionValid = true;
 
-    public void setEditorActionBehavior(EditorActionBehavior b) { mActionBehavior = b; }
+    public void setEditorActionBehavior(EditorActionBehavior behavior) { mActionBehavior = behavior; }
 
     /** Simulate the app revoking the connection (field died). All calls return false. */
     public void invalidate() { mConnectionValid = false; }
@@ -106,7 +106,7 @@ public class FakeEditor implements InputConnection {
     /** Drop queued events without delivering (a swallowed/never-delivered update). */
     public void dropPendingSelectionEvents() { mPendingSelectionEvents.clear(); }
 
-    private int clamp(int i) { return Math.max(0, Math.min(i, mText.length())); }
+    private int clamp(int offset) { return Math.max(0, Math.min(offset, mText.length())); }
 
     private void beginMutation() {
         if (mBatchDepth > 0) {

@@ -46,17 +46,17 @@ public class ShakeDetector implements SensorEventListener {
     
     public interface Listener {
         /**
-         * @param i axis 0 to 2 (x, y, z), or 3 for a shake on any axis
-         * @param i2 shake count so far on that axis
-         * @param j sensor timestamp, nanoseconds
+         * @param shakeType axis 0 to 2 (x, y, z), or 3 for a shake on any axis
+         * @param shakeCount shake count so far on that axis
+         * @param timestampNanos sensor timestamp, nanoseconds
          * @return true when handled; no further shakes are reported until the counts reset
          */
-        boolean onShake(int i, int i2, long j);
+        boolean onShake(int shakeType, int shakeCount, long timestampNanos);
     }
 
-    /** @param i the new accuracy, unused */
+    /** @param accuracy the new accuracy, unused */
     @Override // android.hardware.SensorEventListener
-    public void onAccuracyChanged(Sensor sensor, int i) {
+    public void onAccuracyChanged(Sensor sensor, int accuracy) {
         // Accuracy changes do not affect shake detection.
     }
 

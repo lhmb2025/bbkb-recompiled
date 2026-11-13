@@ -131,11 +131,11 @@ public final class InputLogic implements NuanceSDK.AutoCommitCallback {
 
     final TextDecorator mMoreKeysController = new TextDecorator(new TextDecorator.Listener() {
         /**
-         * @param str the word to add to the user dictionary
+         * @param word the word to add to the user dictionary
          */
         @Override
-        public void onWordCommit(String str) {
-            InputLogic.this.mIme.addWordToUserDictionary(str);
+        public void onWordCommit(String word) {
+            InputLogic.this.mIme.addWordToUserDictionary(word);
             InputLogic.this.mIme.dismissMoreSuggestions();
         }
     });
@@ -174,17 +174,17 @@ public final class InputLogic implements NuanceSDK.AutoCommitCallback {
 
 
     /**
-     * @param interfaceC0840e the suggestion strip listener for displaying and hiding suggestions
-     * @param c0691g the dictionary and language-pack loader
+     * @param suggestionStripListener the suggestion strip listener for displaying and hiding suggestions
+     * @param dictionaryLoader the dictionary and language-pack loader
      */
-    public InputLogic(BlackBerryIME blackBerryIME, SuggestionStripListener interfaceC0840e, DictionaryLoader c0691g) {
+    public InputLogic(BlackBerryIME blackBerryIME, SuggestionStripListener suggestionStripListener, DictionaryLoader dictionaryLoader) {
         this.mSuggestionRequestQueue = SuggestionRequestQueue.DISABLED_INSTANCE;
         this.mIme = blackBerryIME;
         // Runs from BlackBerryIME's field initialiser, before onCreate, so it must not touch the
         // engine (getInstance() loads the native library). The manager installs the handler once
         // the engine exists; the tracker fetches the engine lazily.
         NuanceSDKManager.setPrimaryAutoCommitHandler(this);
-        this.mSuggestionStripListener = interfaceC0840e;
+        this.mSuggestionStripListener = suggestionStripListener;
         this.mComposingTracker = new ComposingTextTracker(NuanceSDKManager::getInstance);
         this.mTouchHighlightTracker = new TouchHighlightTracker();
         this.mRichInputConnection = new RichInputConnection(blackBerryIME);
@@ -199,8 +199,8 @@ public final class InputLogic implements NuanceSDK.AutoCommitCallback {
         );
         this.mBackspaceController = new BackspaceController(this);
         this.mSuggestionRequestQueue = new ContextCapturingRequestQueue(blackBerryIME);
-        this.mSuggestionEngine = new SuggestionEngine(c0691g);
-        this.mDictionaryLoader = c0691g;
+        this.mSuggestionEngine = new SuggestionEngine(dictionaryLoader);
+        this.mDictionaryLoader = dictionaryLoader;
         this.mSmartPunctuationAnalyzer = null;
         this.mHasModifiedEvent = false;
         this.mLastCommitFromVoice = false;
@@ -216,14 +216,14 @@ public final class InputLogic implements NuanceSDK.AutoCommitCallback {
 
     /**
      * Resets all transient input state for a new input session and reconnects the suggestion
-     * worker and cursor-update tracking. {@code str} is the converter name (empty removes it).
-     * @param str the converter name (empty removes it)
-     * @param c0804d current settings values
+     * worker and cursor-update tracking. {@code converterName} is the converter name (empty removes it).
+     * @param converterName the converter name (empty removes it)
+     * @param settingsValues current settings values
      */
-    public void resetInputState(String str, SettingsValues c0804d) {
+    public void resetInputState(String converterName, SettingsValues settingsValues) {
         this.mLastCommittedText = null;
         clearTouchEventProcessor(true);
-        this.mComposingTracker.setConverterByName(str);
+        this.mComposingTracker.setConverterByName(converterName);
         clearComposingText(true);
         clearEngineBuffer();
         this.mBackspaceController.reset();
@@ -258,20 +258,20 @@ public final class InputLogic implements NuanceSDK.AutoCommitCallback {
     }
 
     /**
-     * @param str converter name to install after reset
-     * @param c0804d current settings values
+     * @param converterName converter name to install after reset
+     * @param settingsValues current settings values
      */
-    public void fullReset(String str, SettingsValues c0804d) {
+    public void fullReset(String converterName, SettingsValues settingsValues) {
         cancelInput();
-        resetInputState(str, c0804d);
+        resetInputState(converterName, settingsValues);
     }
 
     /**
      * Commits the composing word with no separator, or flushes pending touch-event text.
-     * @param c0804d current settings values
+     * @param settingsValues current settings values
      */
-    public void commitComposingOrReset(SettingsValues c0804d) {
-        mCommitController.commitComposingOrReset(c0804d);
+    public void commitComposingOrReset(SettingsValues settingsValues) {
+        mCommitController.commitComposingOrReset(settingsValues);
     }
 
     /** Drops pending composing text uncommitted, invalidates the connection and cancels suggestion requests. */
@@ -304,38 +304,38 @@ public final class InputLogic implements NuanceSDK.AutoCommitCallback {
 
     /**
      * Commits voice-recognised text, replacing any composing text (auto-space, leading dots
-     * stripped). {@code z}: the dictation included punctuation (suppresses autocaps).
-     * @param c0804d current settings values
-     * @param i symbol page order / shift state
-     * @param z {@code true} if voice input included punctuation (suppresses autocaps)
-     * @param handlerC0650c UI update handler for posting suggestion refreshes
+     * stripped). {@code isFromVoice}: the dictation included punctuation (suppresses autocaps).
+     * @param settingsValues current settings values
+     * @param keyboardShiftMode symbol page order / shift state
+     * @param isFromVoice {@code true} if voice input included punctuation (suppresses autocaps)
+     * @param uiUpdateHandler UI update handler for posting suggestion refreshes
      */
-    public InputEventContext commitVoiceInput(SettingsValues c0804d, InputEvent event, int i, boolean z, UIUpdateHandler handlerC0650c) {
+    public InputEventContext commitVoiceInput(SettingsValues settingsValues, InputEvent event, int keyboardShiftMode, boolean isFromVoice, UIUpdateHandler uiUpdateHandler) {
         this.mHasModifiedEvent = false;
         this.mVoiceComposing = false;
         String string = event.getOutputText().toString();
-        InputEventContext c0920g = new InputEventContext(c0804d, event, SystemClock.uptimeMillis(), this.mCommitType, getShiftState(c0804d, i));
+        InputEventContext c0920g = new InputEventContext(settingsValues, event, SystemClock.uptimeMillis(), this.mCommitType, getShiftState(settingsValues, keyboardShiftMode));
         this.mRichInputConnection.beginBatchEdit();
         // autoCorrectAndCommit may commit `string` itself (a single separator-class code point,
         // such as a one-char emoji), so it reports that and we must not commit it again.
         boolean separatorAlreadyCommitted = false;
         if (this.mComposingTracker.isComposing()) {
-            separatorAlreadyCommitted = autoCorrectAndCommit(c0804d, string, handlerC0650c, InputSource.INTERNAL);
+            separatorAlreadyCommitted = autoCorrectAndCommit(settingsValues, string, uiUpdateHandler, InputSource.INTERNAL);
         } else {
             clearComposingText(true);
         }
         this.mIme.suggestionUpdater.requestDelayed(SuggestionUpdater.Reason.AFTER_KEYSTROKE);
         String strM4443a = stripLeadingDot(string);
         if (4 == this.mCommitType) {
-            appendAutoSpace(c0804d, InputSource.INTERNAL);
+            appendAutoSpace(settingsValues, InputSource.INTERNAL);
         }
         if (!separatorAlreadyCommitted) {
-            this.mCommitController.commitVoiceText(c0804d, strM4443a, InputSource.INTERNAL);
+            this.mCommitController.commitVoiceText(settingsValues, strM4443a, InputSource.INTERNAL);
         }
         this.mRichInputConnection.endBatchEdit();
         this.mCommitType = 0;
         this.mLastCommittedText = strM4443a;
-        this.mLastCommitFromVoice = z;
+        this.mLastCommitFromVoice = isFromVoice;
         c0920g.markKeyHandled();
         c0920g.setUiUpdateMode(1);
         return c0920g;
@@ -381,8 +381,8 @@ public final class InputLogic implements NuanceSDK.AutoCommitCallback {
     }
 
     /** Whether the add-word hint may apply: only a typed (or resumed) word can be unknown. */
-    private static boolean mayBeUnknownWord(SuggestedWords.SuggestedWordInfo suggestedWordInfoVar) {
-        return suggestedWordInfoVar.isKind(0) || suggestedWordInfoVar.isKind(10);
+    private static boolean mayBeUnknownWord(SuggestedWords.SuggestedWordInfo suggestedWordInfo) {
+        return suggestedWordInfo.isKind(0) || suggestedWordInfo.isKind(10);
     }
 
     /**
@@ -414,31 +414,31 @@ public final class InputLogic implements NuanceSDK.AutoCommitCallback {
 
     /**
      * Commits a word tapped in the suggestion strip (prediction path for CJK) and offers add-to-dictionary for unknown words.
-     * @param c0804d current settings values
-     * @param interfaceC0648a keyboard view callback (used for symbol page order)
-     * @param i symbol page order / shift state
-     * @param handlerC0650c UI update handler
-     * @param enumC0690f input source (typically TOUCH for suggestion strip picks)
+     * @param settingsValues current settings values
+     * @param symbolPageProvider keyboard view callback (used for symbol page order)
+     * @param currentKeyboardScriptId symbol page order / shift state
+     * @param uiUpdateHandler UI update handler
+     * @param inputSource input source (typically TOUCH for suggestion strip picks)
      */
-    public InputEventContext handleManualPick(SettingsValues c0804d, SuggestedWords.SuggestedWordInfo suggestedWordInfoVar, SymbolPageProvider interfaceC0648a, int i, UIUpdateHandler handlerC0650c, InputSource enumC0690f) {
+    public InputEventContext handleManualPick(SettingsValues settingsValues, SuggestedWords.SuggestedWordInfo suggestedWordInfo, SymbolPageProvider symbolPageProvider, int currentKeyboardScriptId, UIUpdateHandler uiUpdateHandler, InputSource inputSource) {
         String strMo4204c;
         InputEventContext c0920g;
         boolean zM4410a;
         SuggestedWords c0666ac = this.mCurrentSuggestions;
-        String strM4471b = processClipboardMarker(suggestedWordInfoVar.word);
+        String strM4471b = processClipboardMarker(suggestedWordInfo.word);
         resetSpaceTimestamp();
         if (strM4471b.length() == 1 && c0666ac.isAutoCorrection()) {
-            return processInputEvent(c0804d, InputEvent.createForSuggestionWithFirstChar(suggestedWordInfoVar), interfaceC0648a, InputSource.UNKNOWN, i, handlerC0650c);
+            return processInputEvent(settingsValues, InputEvent.createForSuggestionWithFirstChar(suggestedWordInfo), symbolPageProvider, InputSource.UNKNOWN, currentKeyboardScriptId, uiUpdateHandler);
         }
-        InputEventContext c0920g2 = new InputEventContext(c0804d, InputEvent.createForSuggestion(suggestedWordInfoVar), SystemClock.uptimeMillis(), this.mCommitType, interfaceC0648a.getSymbolPageOrder());
+        InputEventContext c0920g2 = new InputEventContext(settingsValues, InputEvent.createForSuggestion(suggestedWordInfo), SystemClock.uptimeMillis(), this.mCommitType, symbolPageProvider.getSymbolPageOrder());
         c0920g2.markKeyHandled();
         this.mRichInputConnection.beginBatchEdit();
-        if (suggestedWordInfoVar.isKind(6)) {
+        if (suggestedWordInfo.isKind(6)) {
             this.mCurrentSuggestions = SuggestedWords.EMPTY;
             this.mSuggestionStripListener.setNeutralSuggestionStrip();
             c0920g2.setUiUpdateMode(1);
             clearComposingText(true);
-            this.mRichInputConnection.commitCompletion(suggestedWordInfoVar.completionInfo);
+            this.mRichInputConnection.commitCompletion(suggestedWordInfo.completionInfo);
             this.mRichInputConnection.endBatchEdit();
             return c0920g2;
         }
@@ -447,14 +447,14 @@ public final class InputLogic implements NuanceSDK.AutoCommitCallback {
         } else {
             strMo4204c = " ";
         }
-        boolean zM4407a = mayBeUnknownWord(suggestedWordInfoVar);
+        boolean zM4407a = mayBeUnknownWord(suggestedWordInfo);
         this.mShouldAppendSpace = this.mRichInputConnection.isCharAfterCursorInSet(strMo4204c);
         if (LocaleUtils.isChineseOrJapanese(SubtypeManager.getInstance().getCurrentSubtypeLocale())) {
             c0920g = c0920g2;
-            zM4410a = commitPredictionWord(c0804d, suggestedWordInfoVar, CommitEventRecord.CommitType.MANUAL_PICK, enumC0690f, c0920g2, handlerC0650c, strMo4204c);
+            zM4410a = commitPredictionWord(settingsValues, suggestedWordInfo, CommitEventRecord.CommitType.MANUAL_PICK, inputSource, c0920g2, uiUpdateHandler, strMo4204c);
         } else {
             c0920g = c0920g2;
-            commitWord(c0804d, strM4471b, CommitEventRecord.CommitType.MANUAL_PICK, strMo4204c, enumC0690f);
+            commitWord(settingsValues, strM4471b, CommitEventRecord.CommitType.MANUAL_PICK, strMo4204c, inputSource);
             zM4410a = true;
         }
         this.mJustCommitted = true;
@@ -463,7 +463,7 @@ public final class InputLogic implements NuanceSDK.AutoCommitCallback {
         this.mCommitType = 0;
         c0920g.setUiUpdateMode(1);
         if (zM4407a) {
-            showAddWordHintOrUpdate(suggestedWordInfoVar.word, strM4471b, zM4410a);
+            showAddWordHintOrUpdate(suggestedWordInfo.word, strM4471b, zM4410a);
         } else if (zM4410a) {
             this.mIme.suggestionUpdater.requestDelayed(SuggestionUpdater.Reason.AFTER_MANUAL_PICK);
         }
@@ -473,35 +473,35 @@ public final class InputLogic implements NuanceSDK.AutoCommitCallback {
     /**
      * Tracks cursor moves within the composing word and resets composing state when the cursor
      * jumps elsewhere. Returns {@code true} if the change was meaningful.
-     * @param i old selection start
-     * @param i2 old selection end
-     * @param i3 new selection start
-     * @param i4 new selection end
-     * @param c0804d current settings values
+     * @param oldSelStart old selection start
+     * @param oldSelEnd old selection end
+     * @param newSelStart new selection start
+     * @param newSelEnd new selection end
+     * @param settingsValues current settings values
      */
-    public boolean onUpdateSelection(int i, int i2, int i3, int i4, SettingsValues c0804d) {
-        if (this.mRichInputConnection.isSelectionUnchanged(i, i3, i2, i4)) {
-            if (BuildConfig.DEBUG) Log.d("TEXT_EDIT_DEBUG", "onUpdateSelection: UNCHANGED old=[" + i + "," + i2 + "] new=[" + i3 + "," + i4 + "] composing='" + mComposingTracker.getComposingText() + "'");
+    public boolean onUpdateSelection(int oldSelStart, int oldSelEnd, int newSelStart, int newSelEnd, SettingsValues settingsValues) {
+        if (this.mRichInputConnection.isSelectionUnchanged(oldSelStart, newSelStart, oldSelEnd, newSelEnd)) {
+            if (BuildConfig.DEBUG) Log.d("TEXT_EDIT_DEBUG", "onUpdateSelection: UNCHANGED old=[" + oldSelStart + "," + oldSelEnd + "] new=[" + newSelStart + "," + newSelEnd + "] composing='" + mComposingTracker.getComposingText() + "'");
             return false;
         }
         this.mHasModifiedEvent = false;
         this.mCommitType = 0;
-        boolean z = (i == i3 && i2 == i4 && this.mComposingTracker.isComposing()) ? false : true;
-        boolean z2 = (i == i2 && i3 == i4) ? false : true;
-        int i5 = i3 - i;
-        if (BuildConfig.DEBUG) Log.d("TEXT_EDIT_DEBUG", "onUpdateSelection: old=[" + i + "," + i2 + "] new=[" + i3 + "," + i4 + "] z=" + z + " z2=" + z2 + " delta=" + i5 + " composing='" + mComposingTracker.getComposingText() + "' cursorMoved=" + mComposingTracker.isCursorMoved());
+        boolean z = (oldSelStart == newSelStart && oldSelEnd == newSelEnd && this.mComposingTracker.isComposing()) ? false : true;
+        boolean z2 = (oldSelStart == oldSelEnd && newSelStart == newSelEnd) ? false : true;
+        int i5 = newSelStart - oldSelStart;
+        if (BuildConfig.DEBUG) Log.d("TEXT_EDIT_DEBUG", "onUpdateSelection: old=[" + oldSelStart + "," + oldSelEnd + "] new=[" + newSelStart + "," + newSelEnd + "] z=" + z + " z2=" + z2 + " delta=" + i5 + " composing='" + mComposingTracker.getComposingText() + "' cursorMoved=" + mComposingTracker.isCursorMoved());
         // An app emptying the field (a Send button) reports the same [len,len] -> [0,0] jump as a
         // caret placed at the start of a field-initial composing word; only an empty editor tells
         // them apart. Without this the sent word comes back in front of the next key.
-        boolean editorEmptied = z && i3 == 0 && i4 == 0 && this.mRichInputConnection.isEditorEmpty();
-        if (z2 || !c0804d.shouldShowLxxButton || (z && (editorEmptied || !this.mComposingTracker.moveCursorByCharCount(i5)))) {
-            if (BuildConfig.DEBUG) Log.d("TEXT_EDIT_DEBUG", "onUpdateSelection -> resetComposingAndSelect([" + i3 + "," + i4 + "]) editorEmptied=" + editorEmptied);
+        boolean editorEmptied = z && newSelStart == 0 && newSelEnd == 0 && this.mRichInputConnection.isEditorEmpty();
+        if (z2 || !settingsValues.shouldShowLxxButton || (z && (editorEmptied || !this.mComposingTracker.moveCursorByCharCount(i5)))) {
+            if (BuildConfig.DEBUG) Log.d("TEXT_EDIT_DEBUG", "onUpdateSelection -> resetComposingAndSelect([" + newSelStart + "," + newSelEnd + "]) editorEmptied=" + editorEmptied);
             // The emptied field's suggestions describe a word that is no longer there.
-            resetComposingAndSelect(i3, i4, editorEmptied);
+            resetComposingAndSelect(newSelStart, newSelEnd, editorEmptied);
         } else {
-            if (BuildConfig.DEBUG) Log.d("TEXT_EDIT_DEBUG", "onUpdateSelection -> commitPath: resetConnection([" + i3 + "," + i4 + "])");
+            if (BuildConfig.DEBUG) Log.d("TEXT_EDIT_DEBUG", "onUpdateSelection -> commitPath: resetConnection([" + newSelStart + "," + newSelEnd + "])");
             updateDynamicLearningState();
-            this.mRichInputConnection.resetConnection(i3, i4, false);
+            this.mRichInputConnection.resetConnection(newSelStart, newSelEnd, false);
             commitTouchEventText();
         }
         this.mMoreKeysController.reset();
@@ -512,11 +512,11 @@ public final class InputLogic implements NuanceSDK.AutoCommitCallback {
 
     /**
      * Word content on both sides of the cursor: a deliberate mid-word placement that skips recorrection.
-     * @param c0804d current settings values
+     * @param settingsValues current settings values
      */
-    private boolean isCursorMidWord(SettingsValues c0804d) {
-        boolean hasWordCharAfterCursor = this.mRichInputConnection.hasWordAfterCursor(c0804d.spacingAndPunctuation);
-        return hasWordCharAfterCursor && this.mRichInputConnection.hasWordBeforeCursor(c0804d.spacingAndPunctuation);
+    private boolean isCursorMidWord(SettingsValues settingsValues) {
+        boolean hasWordCharAfterCursor = this.mRichInputConnection.hasWordAfterCursor(settingsValues.spacingAndPunctuation);
+        return hasWordCharAfterCursor && this.mRichInputConnection.hasWordBeforeCursor(settingsValues.spacingAndPunctuation);
     }
 
     /** Tracked-key id: device id in the high word (the long cast before the shift matters), key code in the low. */
@@ -547,21 +547,21 @@ public final class InputLogic implements NuanceSDK.AutoCommitCallback {
 
     /**
      * Shift-held tracking for on-screen keys: Shift (-1) sets it, any key but backspace (-5) clears it.
-     * @param i the key code of the pressed soft key
+     * @param primaryCode the key code of the pressed soft key
      */
-    public void onSoftKeyDown(int i) {
-        if (i == -1) {
+    public void onSoftKeyDown(int primaryCode) {
+        if (primaryCode == -1) {
             this.mBackspaceController.mIsShiftHeld = true;
-        } else if (i != -5) {
+        } else if (primaryCode != -5) {
             this.mBackspaceController.mIsShiftHeld = false;
         }
     }
 
     /**
-     * @param i the key code of the released soft key
+     * @param primaryCode the key code of the released soft key
      */
-    public void onSoftKeyUp(int i) {
-        if (i != -5) {
+    public void onSoftKeyUp(int primaryCode) {
+        if (primaryCode != -5) {
             this.mBackspaceController.mIsShiftHeld = false;
         }
     }
@@ -592,13 +592,13 @@ public final class InputLogic implements NuanceSDK.AutoCommitCallback {
     /**
      * Central input pipeline: keyboard-state transform, at-dot substitution, auto-capitalize,
      * gesture end, functional keys, separators and character keys.
-     * @param c0804d current settings values
-     * @param interfaceC0648a keyboard view callback (provides shift state and symbol page)
-     * @param enumC0690f the source of the event (TOUCH, HARDWARE, INTERNAL, etc.)
-     * @param i symbol page order / shift state
-     * @param handlerC0650c UI update handler for posting deferred updates
+     * @param settingsValues current settings values
+     * @param symbolPageProvider keyboard view callback (provides shift state and symbol page)
+     * @param inputSource the source of the event (TOUCH, HARDWARE, INTERNAL, etc.)
+     * @param currentKeyboardScriptId symbol page order / shift state
+     * @param uiUpdateHandler UI update handler for posting deferred updates
      */
-    public InputEventContext processInputEvent(SettingsValues c0804d, InputEvent event, SymbolPageProvider interfaceC0648a, InputSource enumC0690f, int i, UIUpdateHandler handlerC0650c) {
+    public InputEventContext processInputEvent(SettingsValues settingsValues, InputEvent event, SymbolPageProvider symbolPageProvider, InputSource inputSource, int currentKeyboardScriptId, UIUpdateHandler uiUpdateHandler) {
         Keyboard c0965eM6834l;
 
         int i2 = event.mCodePoint;
@@ -607,9 +607,9 @@ public final class InputLogic implements NuanceSDK.AutoCommitCallback {
                 && (c0979iM4088ac.isMainKeyboardShowing() || c0979iM4088ac.isInSymbolMode()))
                 ? InputEvent.createFromSwitchedKeyboard(event) : event;
 
-        InputEventContext c0920g = new InputEventContext(c0804d, c0914a2, SystemClock.uptimeMillis(), this.mCommitType, getShiftState(c0804d, interfaceC0648a.getSymbolPageOrder()));
-        c0920g.setShiftPressed(interfaceC0648a.isManualShiftAndShiftPressing());
-        c0920g.setInputSource(enumC0690f);
+        InputEventContext c0920g = new InputEventContext(settingsValues, c0914a2, SystemClock.uptimeMillis(), this.mCommitType, getShiftState(settingsValues, symbolPageProvider.getSymbolPageOrder()));
+        c0920g.setShiftPressed(symbolPageProvider.isManualShiftAndShiftPressing());
+        c0920g.setInputSource(inputSource);
 
         // Delete acceleration resets unless this is a backspace within 200 ms of the last event.
         if (c0914a2.mKeyCode != -5 || c0920g.timestamp > this.mLastGestureTimestamp + 200) {
@@ -626,7 +626,7 @@ public final class InputLogic implements NuanceSDK.AutoCommitCallback {
 
         InputEvent processedEvent = isEmailVariationField() ? handleAtDotSubstitution(c0914a2) : c0914a2;
 
-        if (c0804d.isAutoCapsEnabled && !processedEvent.isModifierKey()) {
+        if (settingsValues.isAutoCapsEnabled && !processedEvent.isModifierKey()) {
             processedEvent = autoCapitalize(processedEvent, c0920g);
         }
 
@@ -645,7 +645,7 @@ public final class InputLogic implements NuanceSDK.AutoCommitCallback {
                 this.mHasModifiedEvent = false;
                 handleGestureEnd(processedEvent, c0920g);
             } else if (processedEvent.isFunctionalKeyEvent()) {
-                handleFunctionalKeyEvent(processedEvent, c0804d, c0920g, i);
+                handleFunctionalKeyEvent(processedEvent, settingsValues, c0920g, currentKeyboardScriptId);
             } else {
                 SmartPunctuationAnalyzer smartPunctuation = this.mSmartPunctuationAnalyzer;
                 if (smartPunctuation != null) {
@@ -670,7 +670,7 @@ public final class InputLogic implements NuanceSDK.AutoCommitCallback {
                     }
                 }
 
-                processCharacterKeyEvent(processedEvent, c0804d, c0920g, i, handlerC0650c, shouldContinueProcessing);
+                processCharacterKeyEvent(processedEvent, settingsValues, c0920g, currentKeyboardScriptId, uiUpdateHandler, shouldContinueProcessing);
                 isSpaceKey = processedEvent.mCodePoint == 32;
             }
 
@@ -699,23 +699,23 @@ public final class InputLogic implements NuanceSDK.AutoCommitCallback {
 
     /**
      * Deletes the selection, everything in a password field, else a character (CJK) or a word. Returns whether anything was deleted.
-     * @param c0804d current settings values
+     * @param settingsValues current settings values
      */
-    public boolean handleSwipeDelete(SettingsValues c0804d) {
-        return this.mBackspaceController.handleSwipeDelete(c0804d);
+    public boolean handleSwipeDelete(SettingsValues settingsValues) {
+        return this.mBackspaceController.handleSwipeDelete(settingsValues);
     }
 
 
     /**
      * Flushes composing state and re-enables the suggestion worker, e.g. after a tap moves the cursor into a committed word.
-     * @param c0804d current settings values
-     * @param i shift state / symbol page order for the suggestion context
-     * @param handlerC0650c UI update handler for clearing stale pending suggestion updates
+     * @param settingsValues current settings values
+     * @param keyboardShiftMode shift state / symbol page order for the suggestion context
+     * @param uiUpdateHandler UI update handler for clearing stale pending suggestion updates
      */
-    public void onSuggestionStripUpdate(SettingsValues c0804d, int i, UIUpdateHandler handlerC0650c) {
+    public void onSuggestionStripUpdate(SettingsValues settingsValues, int keyboardShiftMode, UIUpdateHandler uiUpdateHandler) {
         this.mSuggestionRequestQueue.enableSuggestions();
-        handlerC0650c.postShowSuggestions(SuggestedWords.EMPTY);
-        handlerC0650c.cancelPendingSuggestionUpdates();
+        uiUpdateHandler.postShowSuggestions(SuggestedWords.EMPTY);
+        uiUpdateHandler.cancelPendingSuggestionUpdates();
         this.mRichInputConnection.beginBatchEdit();
         if (!this.mComposingTracker.isComposing()) {
             this.mRichInputConnection.clearBackgroundSpans();
@@ -724,23 +724,23 @@ public final class InputLogic implements NuanceSDK.AutoCommitCallback {
             resetComposingAndSelect(this.mRichInputConnection.getCursorStart(), this.mRichInputConnection.getCursorEnd(), true);
         }
         int iM5844h = this.mRichInputConnection.getCodePointBeforeCursor();
-        if (Character.isLetterOrDigit(iM5844h) || c0804d.isUsuallyFollowedBySpace(iM5844h)) {
-            boolean z = i != getCapsMode(c0804d);
+        if (Character.isLetterOrDigit(iM5844h) || settingsValues.isUsuallyFollowedBySpace(iM5844h)) {
+            boolean z = keyboardShiftMode != getCapsMode(settingsValues);
             this.mCommitType = 4;
             if (!z) {
                 this.mIme.resetKeyboardState();
             }
         }
         this.mRichInputConnection.endBatchEdit();
-        this.mComposingTracker.setShiftState(getShiftState(c0804d, i));
+        this.mComposingTracker.setShiftState(getShiftState(settingsValues, keyboardShiftMode));
     }
 
     /**
      * Requests suggestions for the composing word; results arrive asynchronously at the strip listener.
-     * @param c0804d current settings values (not forwarded)
+     * @param settingsValues current settings values (not forwarded)
      */
-    public void requestSuggestions(SettingsValues c0804d) {
-        if (!needsSuggestionLookups(c0804d)) {
+    public void requestSuggestions(SettingsValues settingsValues) {
+        if (!needsSuggestionLookups(settingsValues)) {
             return;
         }
         this.mSuggestionRequestQueue.requestSuggestions();
@@ -761,66 +761,66 @@ public final class InputLogic implements NuanceSDK.AutoCommitCallback {
     }
 
     /**
-     * @param enumC0690f the input source that triggered the prediction request
+     * @param inputSource the input source that triggered the prediction request
      */
-    public void requestPredictions(InputSource enumC0690f) {
-        if (InputPathDebug.on()) Logger.info("CKB_SWIPE_TYPE_DEBUG", "InputLogic.requestPredictions: source=" + enumC0690f + " — refreshing suggestion strip (does NOT commit anything)");
+    public void requestPredictions(InputSource inputSource) {
+        if (InputPathDebug.on()) Logger.info("CKB_SWIPE_TYPE_DEBUG", "InputLogic.requestPredictions: source=" + inputSource + " — refreshing suggestion strip (does NOT commit anything)");
         SettingsValues sv = SettingsManager.getInstance().getSettingsValues();
         if (sv != null && !needsSuggestionLookups(sv) && !NuanceSDKManager.isGesturePending()) {
             return;
         }
-        this.mSuggestionRequestQueue.requestPredictions(enumC0690f);
+        this.mSuggestionRequestQueue.requestPredictions(inputSource);
     }
 
     /**
      * Disables the suggestion worker and clears the strip, for editors without suggestions.
-     * @param handlerC0650c UI update handler used to clear the strip immediately
+     * @param uiUpdateHandler UI update handler used to clear the strip immediately
      */
-    public void disableSuggestions(UIUpdateHandler handlerC0650c) {
+    public void disableSuggestions(UIUpdateHandler uiUpdateHandler) {
         this.mSuggestionRequestQueue.disableSuggestions();
-        handlerC0650c.postShowSuggestions(SuggestedWords.EMPTY);
+        uiUpdateHandler.postShowSuggestions(SuggestedWords.EMPTY);
     }
 
     /**
      * Stores the auto-correct candidate in the tracker, caches the list, and refreshes the composing indicator.
-     * @param c0666ac the new suggested words (may be {@link SuggestedWords#EMPTY})
-     * @param c0804d current settings values
-     * @param handlerC0650c UI update handler (unused here)
+     * @param suggestedWords the new suggested words (may be {@link SuggestedWords#EMPTY})
+     * @param settingsValues current settings values
+     * @param uiUpdateHandler UI update handler (unused here)
      */
-    public void onSuggestionsReceived(SuggestedWords c0666ac, SettingsValues c0804d, UIUpdateHandler handlerC0650c) {
+    public void onSuggestionsReceived(SuggestedWords suggestedWords, SettingsValues settingsValues, UIUpdateHandler uiUpdateHandler) {
         String strMo4284a;
         int iM4296a;
         // Tracker writes need a composing word (a reply may cross a session teardown). The
         // mCurrentSuggestions write below must stay ungated: it is also the gesture-commit
         // channel, and a gesture is not composing.
-        if (SuggestedWords.EMPTY != c0666ac && this.mComposingTracker.isComposing()) {
+        if (SuggestedWords.EMPTY != suggestedWords && this.mComposingTracker.isComposing()) {
             // The "score" stored is the candidate's suggestion kind; handleSeparatorInput treats
             // nonzero as AC eligible, relying on a will-auto-correct candidate never being kind 0.
-            if (c0666ac.mWillAutoCorrect) {
-                strMo4284a = c0666ac.getWord(SuggestedWords.getMinSuggestionsIndex());
-                iM4296a = c0666ac.getWordInfo(SuggestedWords.getMinSuggestionsIndex()).getKind();
+            if (suggestedWords.mWillAutoCorrect) {
+                strMo4284a = suggestedWords.getWord(SuggestedWords.getMinSuggestionsIndex());
+                iM4296a = suggestedWords.getWordInfo(SuggestedWords.getMinSuggestionsIndex()).getKind();
             } else {
-                strMo4284a = c0666ac.mAutoCorrectWord;
+                strMo4284a = suggestedWords.mAutoCorrectWord;
                 iM4296a = 0;
             }
             if (BuildConfig.DEBUG) {
-            android.util.Log.d("PKB_SPACE_AUTOCORRECT_DEBUG", "onSuggestionsReceived: willAC=" + c0666ac.mWillAutoCorrect
+            android.util.Log.d("PKB_SPACE_AUTOCORRECT_DEBUG", "onSuggestionsReceived: willAC=" + suggestedWords.mWillAutoCorrect
                 + " acWord='" + strMo4284a + "' score=" + iM4296a
-                + " suggCount=" + c0666ac.size()
+                + " suggCount=" + suggestedWords.size()
                 + " composing='" + this.mComposingTracker.getComposingText() + "'"
                 + " thread=" + Thread.currentThread().getName());
             }
-            if (c0666ac.mRequestEditCount >= 0) {
-                this.mComposingTracker.setAutoCorrection(strMo4284a, iM4296a, c0666ac.mRequestEditCount);
+            if (suggestedWords.mRequestEditCount >= 0) {
+                this.mComposingTracker.setAutoCorrection(strMo4284a, iM4296a, suggestedWords.mRequestEditCount);
             } else {
                 this.mComposingTracker.setAutoCorrection(strMo4284a, iM4296a);
             }
-            if (c0666ac.size() > SuggestedWords.getMinSuggestionsIndex()) {
-                this.mComposingTracker.setPickedSuggestion(c0666ac.getWordInfo(SuggestedWords.getMinSuggestionsIndex()));
+            if (suggestedWords.size() > SuggestedWords.getMinSuggestionsIndex()) {
+                this.mComposingTracker.setPickedSuggestion(suggestedWords.getWordInfo(SuggestedWords.getMinSuggestionsIndex()));
             }
         }
-        this.mCurrentSuggestions = c0666ac;
-        boolean z = c0666ac.mWillAutoCorrect;
+        this.mCurrentSuggestions = suggestedWords;
+        boolean z = suggestedWords.mWillAutoCorrect;
         if (!this.mComposingTracker.isComposing() || this.mBackspaceController.mIsBackspaceActive) {
             return;
         }
@@ -834,7 +834,7 @@ public final class InputLogic implements NuanceSDK.AutoCommitCallback {
         }
         // The resend only changes the auto-correct indicator (off when a word follows the
         // cursor), so skip the setComposingText IPC unless that state changes.
-        boolean effectiveAutoCorrect = z && !this.mRichInputConnection.hasWordAfterCursor(c0804d.spacingAndPunctuation);
+        boolean effectiveAutoCorrect = z && !this.mRichInputConnection.hasWordAfterCursor(settingsValues.spacingAndPunctuation);
         if (this.mIsAutoCorrectActive == effectiveAutoCorrect) {
             return;
         }
@@ -850,27 +850,27 @@ public final class InputLogic implements NuanceSDK.AutoCommitCallback {
     }
 
     /**
-     * @param c0920g the current input event context
+     * @param inputEventContext the current input event context
      */
-    private void handleGestureEnd(InputEvent event, InputEventContext c0920g) {
+    private void handleGestureEnd(InputEvent event, InputEventContext inputEventContext) {
         CharSequence charSequenceM5933n = event.getOutputText();
         if (!TextUtils.isEmpty(charSequenceM5933n)) {
             this.mRichInputConnection.commitText(charSequenceM5933n, 1);
-            c0920g.markKeyHandled();
+            inputEventContext.markKeyHandled();
         }
         if (this.mComposingTracker.isComposing()) {
             setComposingTextInternal(this.mComposingTracker.getComposingText(), 1);
-            c0920g.markKeyHandled();
-            c0920g.setShouldUpdateSuggestions();
+            inputEventContext.markKeyHandled();
+            inputEventContext.setShouldUpdateSuggestions();
         }
     }
 
     /**
-     * @param c0804d current settings values
-     * @param c0920g the current input event context
-     * @param i the symbol page order
+     * @param settingsValues current settings values
+     * @param inputEventContext the current input event context
+     * @param currentKeyboardScriptId the symbol page order
      */
-    private void handleFunctionalKeyEvent(InputEvent event, SettingsValues c0804d, InputEventContext c0920g, int i) {
+    private void handleFunctionalKeyEvent(InputEvent event, SettingsValues settingsValues, InputEventContext inputEventContext, int currentKeyboardScriptId) {
         int i2 = event.mKeyCode;
         if (i2 == -43) {
             DeviceProfile.setForceVkbMode(false);
@@ -926,15 +926,15 @@ public final class InputLogic implements NuanceSDK.AutoCommitCallback {
                                     toggleFullscreenMode();
                                     return;
                                 case -5 /* -5 */:
-                                    if ((c0920g.getInputSource() == InputSource.HARDWARE) && !this.mComposingTracker.isComposing() && !this.mEventDispatcher.isRevertEligible()) {
-                                        if (!isCursorMidWord(c0804d)) {
-                                            performRecorrection(c0804d, true, i);
+                                    if ((inputEventContext.getInputSource() == InputSource.HARDWARE) && !this.mComposingTracker.isComposing() && !this.mEventDispatcher.isRevertEligible()) {
+                                        if (!isCursorMidWord(settingsValues)) {
+                                            performRecorrection(settingsValues, true, currentKeyboardScriptId);
                                         }
                                     }
                                     int i3 = !this.mRichInputConnection.hasCursorPosition() ? 1 : 0;
                                     if (shouldProcessBackspace(event, i3, this.mBackspaceController.mLastDeleteState, this.mRichInputConnection)) {
-                                        handleBackspace(event, c0920g, c0804d, i);
-                                        c0920g.markKeyHandled();
+                                        handleBackspace(event, inputEventContext, settingsValues, currentKeyboardScriptId);
+                                        inputEventContext.markKeyHandled();
                                     }
                                     int i4 = this.mBackspaceController.mDeleteRepeatCount;
                                     if (i4 == 0 || i4 == 1) {
@@ -949,9 +949,9 @@ public final class InputLogic implements NuanceSDK.AutoCommitCallback {
                                         case 0:
                                             return;
                                         case -1 /* -1 */:
-                                            c0920g.setUiUpdateMode(1);
+                                            inputEventContext.setUiUpdateMode(1);
                                             if (this.mCurrentSuggestions.isValidInputStyle() && !this.mRichInputConnection.hasSelection()) {
-                                                c0920g.setShouldUpdateSuggestions();
+                                                inputEventContext.setShouldUpdateSuggestions();
                                             }
                                             return;
                                         default:
@@ -961,19 +961,19 @@ public final class InputLogic implements NuanceSDK.AutoCommitCallback {
                     }
             }
         }
-        handleEnterKey(c0920g);
-        c0920g.markKeyHandled();
+        handleEnterKey(inputEventContext);
+        inputEventContext.markKeyHandled();
     }
 
     /**
      * Whether the IME handles this backspace rather than passing it through: {@code false} only
-     * for a repeat with the cursor unknown ({@code i} = 1) and the delete state {@code i2} unchanged.
-     * @param i current cursor-unavailable flag (1 if cursor position unknown, else 0)
-     * @param i2 delete state from the previous backspace event
-     * @param c0909x the rich input connection
+     * for a repeat with the cursor unknown ({@code deleteCursorState} = 1) and the delete state {@code lastDeleteState} unchanged.
+     * @param deleteCursorState current cursor-unavailable flag (1 if cursor position unknown, else 0)
+     * @param lastDeleteState delete state from the previous backspace event
+     * @param richInputConnection the rich input connection
      */
-    public boolean shouldProcessBackspace(InputEvent event, int i, int i2, RichInputConnection c0909x) {
-        return this.mBackspaceController.shouldProcessBackspace(event, i, i2, c0909x);
+    public boolean shouldProcessBackspace(InputEvent event, int deleteCursorState, int lastDeleteState, RichInputConnection richInputConnection) {
+        return this.mBackspaceController.shouldProcessBackspace(event, deleteCursorState, lastDeleteState, richInputConnection);
     }
 
     public void pasteFromClipboard() {
@@ -997,34 +997,34 @@ public final class InputLogic implements NuanceSDK.AutoCommitCallback {
     }
 
     /**
-     * @param c0804d current settings values
-     * @param c0920g the current input event context
-     * @param i the symbol page order
-     * @param handlerC0650c UI update handler
-     * @param z true when the event is a smart-punctuation rewrite being re-run
+     * @param settingsValues current settings values
+     * @param inputEventContext the current input event context
+     * @param currentKeyboardScriptId the symbol page order
+     * @param uiUpdateHandler UI update handler
+     * @param forceSeparator true when the event is a smart-punctuation rewrite being re-run
      */
-    private void processCharacterKeyEvent(InputEvent event, SettingsValues c0804d, InputEventContext c0920g, int i, UIUpdateHandler handlerC0650c, boolean z) {
-        c0920g.markKeyHandled();
+    private void processCharacterKeyEvent(InputEvent event, SettingsValues settingsValues, InputEventContext inputEventContext, int currentKeyboardScriptId, UIUpdateHandler uiUpdateHandler, boolean forceSeparator) {
+        inputEventContext.markKeyHandled();
         if (event.mCodePoint == 10) {
-            handleEnterKey(c0920g);
+            handleEnterKey(inputEventContext);
             return;
         }
-        if ((c0920g.getInputSource() == InputSource.HARDWARE) && !this.mComposingTracker.isComposing() && !LocaleUtils.isCurrentSubtypePinyin()) {
+        if ((inputEventContext.getInputSource() == InputSource.HARDWARE) && !this.mComposingTracker.isComposing() && !LocaleUtils.isCurrentSubtypePinyin()) {
             // A deliberate mid-word caret inserts there; recorrecting would reopen the word and
             // snap the caret to its end.
-            if (!isCursorMidWord(c0804d)) {
-                performRecorrection(c0804d, true, i);
+            if (!isCursorMidWord(settingsValues)) {
+                performRecorrection(settingsValues, true, currentKeyboardScriptId);
             }
         }
-        routeKeyEvent(event, c0920g, handlerC0650c, z);
+        routeKeyEvent(event, inputEventContext, uiUpdateHandler, forceSeparator);
     }
 
     /**
-     * @param c0920g the current input event context
-     * @param handlerC0650c UI update handler
-     * @param z true when the event is a smart-punctuation rewrite being re-run
+     * @param inputEventContext the current input event context
+     * @param uiUpdateHandler UI update handler
+     * @param forceSeparator true when the event is a smart-punctuation rewrite being re-run
      */
-    private void routeKeyEvent(InputEvent event, InputEventContext c0920g, UIUpdateHandler handlerC0650c, boolean z) {
+    private void routeKeyEvent(InputEvent event, InputEventContext inputEventContext, UIUpdateHandler uiUpdateHandler, boolean forceSeparator) {
         if (!this.mComposingTracker.isComposing()) {
             this.mRichInputConnection.clearBackgroundSpans();
             if (this.mSuggestionStripListener.isShowingMoreSuggestions()) {
@@ -1034,38 +1034,38 @@ public final class InputLogic implements NuanceSDK.AutoCommitCallback {
         }
         int i = event.mCodePoint;
         this.mCommitType = 0;
-        if (isWordSeparator(c0920g.settingsValues, i)) {
-            handleSeparatorInput(event, c0920g, handlerC0650c);
+        if (isWordSeparator(inputEventContext.settingsValues, i)) {
+            handleSeparatorInput(event, inputEventContext, uiUpdateHandler);
             return;
         }
-        if (4 == c0920g.commitType) {
+        if (4 == inputEventContext.commitType) {
             if (this.mComposingTracker.isCursorMoved()) {
                 resetComposingAndSelect(this.mRichInputConnection.getCursorStart(), this.mRichInputConnection.getCursorEnd(), true);
             } else {
-                commitTypedWord(c0920g.settingsValues, "", c0920g.getInputSource());
+                commitTypedWord(inputEventContext.settingsValues, "", inputEventContext.getInputSource());
             }
         }
-        handleCharacterInput(event, c0920g.settingsValues, c0920g, z);
+        handleCharacterInput(event, inputEventContext.settingsValues, inputEventContext, forceSeparator);
     }
 
     /**
-     * @param c0804d current settings values
-     * @param c0920g the current input event context
-     * @param z true when the event is a smart-punctuation rewrite being re-run
+     * @param settingsValues current settings values
+     * @param inputEventContext the current input event context
+     * @param forceSeparator true when the event is a smart-punctuation rewrite being re-run
      */
-    private void handleCharacterInput(InputEvent event, SettingsValues c0804d, InputEventContext c0920g, boolean z) {
+    private void handleCharacterInput(InputEvent event, SettingsValues settingsValues, InputEventContext inputEventContext, boolean forceSeparator) {
         EditorInfo editorInfoM4500g;
         int i = event.mCodePoint;
         boolean zM4354g = this.mComposingTracker.isComposing();
-        if (4 == c0920g.commitType && !c0804d.isWordConnector(i)) {
+        if (4 == inputEventContext.commitType && !settingsValues.isWordConnector(i)) {
             if (zM4354g) {
                 throw new RuntimeException("Should not be composing here");
             }
-            appendAutoSpace(c0804d, c0920g.getInputSource());
+            appendAutoSpace(settingsValues, inputEventContext.getInputSource());
         }
         if (this.mComposingTracker.isCursorMoved() && zM4354g) {
             if (isComposingWordStillInEditor()) {
-                insertCodePointInsideComposingWord(event.mCodePoint, c0920g);
+                insertCodePointInsideComposingWord(event.mCodePoint, inputEventContext);
                 return;
             }
             // The word is no longer in the editor: drop it and type the key as a new word.
@@ -1073,34 +1073,34 @@ public final class InputLogic implements NuanceSDK.AutoCommitCallback {
             zM4354g = this.mComposingTracker.isComposing();
         }
         boolean z2 = this.mComposingTracker.hasInputMethodConverter() && ((editorInfoM4500g = getCurrentEditorInfo()) == null || !(InputTypeUtils.isDateTimeInputType(editorInfoM4500g.inputType) || InputTypeUtils.isNumberInputType(editorInfoM4500g.inputType) || InputTypeUtils.isPhoneInputType(editorInfoM4500g.inputType)));
-        if (!zM4354g && c0804d.isWordCodePoint(i) && ((c0804d.shouldShowLxxButton || z2) && (!LocaleUtils.isCurrentSubtypeJapanese() || !isAnyPasswordField()))) {
-            zM4354g = !c0804d.spacingAndPunctuation.isWordConnector(i);
+        if (!zM4354g && settingsValues.isWordCodePoint(i) && ((settingsValues.shouldShowLxxButton || z2) && (!LocaleUtils.isCurrentSubtypeJapanese() || !isAnyPasswordField()))) {
+            zM4354g = !settingsValues.spacingAndPunctuation.isWordConnector(i);
             clearComposingText(false);
         }
-        if (this.mTouchHighlightTracker.onInputEvent(event, c0804d.textHighlightColorForMultiTap)) {
+        if (this.mTouchHighlightTracker.onInputEvent(event, settingsValues.textHighlightColorForMultiTap)) {
             if (zM4354g) {
                 if (event.isShiftLocked()) {
                     this.mComposingTracker.processInputEvent(InputEvent.createHardwareKeyPress(67, -5, null, false, event.getTimestamp()));
                 }
-                if (z && this.mComposingTracker.getComposingText().length() > 0) {
-                    autoCorrectAndCommitExtended(this.mIme.getSettingsValues(), event.getOutputText().toString(), this.mIme.uiUpdateHandler, InputSource.SOFTWARE, z);
-                    c0920g.setAutoCorrectApplied();
-                    c0920g.setShouldUpdateSuggestions();
+                if (forceSeparator && this.mComposingTracker.getComposingText().length() > 0) {
+                    autoCorrectAndCommitExtended(this.mIme.getSettingsValues(), event.getOutputText().toString(), this.mIme.uiUpdateHandler, InputSource.SOFTWARE, forceSeparator);
+                    inputEventContext.setAutoCorrectApplied();
+                    inputEventContext.setShouldUpdateSuggestions();
                     return;
                 } else {
                     String composingBeforeShift = this.mComposingTracker.getComposingText();
-                    this.mComposingTracker.processInputEventWithShift(event, c0920g.symbolPageOrder);
+                    this.mComposingTracker.processInputEventWithShift(event, inputEventContext.symbolPageOrder);
                     setComposingTextInternal(getComposingTextWithIndicator(this.mComposingTracker.getComposingText()), 1);
-                    c0920g.setShouldUpdateSuggestions();
+                    inputEventContext.setShouldUpdateSuggestions();
                     return;
                 }
             }
             if (this.mTouchHighlightTracker.isHighlightActive()) {
                 this.mRichInputConnection.finishComposingText();
-            } else if (shouldStripSpace(event, c0920g) && trySwapPunctuation(event, c0920g)) {
+            } else if (shouldStripSpace(event, inputEventContext) && trySwapPunctuation(event, inputEventContext)) {
                 this.mCommitType = 3;
             } else {
-                commitCharacter(c0804d, i, c0920g.getInputSource());
+                commitCharacter(settingsValues, i, inputEventContext.getInputSource());
             }
         }
     }
@@ -1110,12 +1110,12 @@ public final class InputLogic implements NuanceSDK.AutoCommitCallback {
      * {@link #retireComposingWordForSeparator}, {@link #appendAutoSpaceBeforeSeparatorIfOwed},
      * {@link #applySeparatorDisposition}. The order is load-bearing: {@code shouldStripSpace} may
      * delete a trailing space, and the last two stages read the editor after the word commit.
-     * @param c0920g the current input event context
-     * @param handlerC0650c UI update handler
+     * @param inputEventContext the current input event context
+     * @param uiUpdateHandler UI update handler
      */
-    private void handleSeparatorInput(InputEvent event, InputEventContext c0920g, UIUpdateHandler handlerC0650c) {
+    private void handleSeparatorInput(InputEvent event, InputEventContext inputEventContext, UIUpdateHandler uiUpdateHandler) {
         final int codePoint = event.mCodePoint;
-        final SettingsValues c0804d = c0920g.settingsValues;
+        final SettingsValues c0804d = inputEventContext.settingsValues;
 
         // Read before the commit below changes what is composing.
         final boolean suppressSpace = resolveSpacelessSpaceSuppression(c0804d, codePoint);
@@ -1124,7 +1124,7 @@ public final class InputLogic implements NuanceSDK.AutoCommitCallback {
             resetComposingAndSelect(this.mRichInputConnection.getCursorStart(), this.mRichInputConnection.getCursorEnd(), true);
         }
         if (BuildConfig.DEBUG) {
-        android.util.Log.d("PKB_SPACE_AUTOCORRECT_DEBUG", "handleSeparatorInput: codePoint=" + codePoint + " src=" + c0920g.getInputSource()
+        android.util.Log.d("PKB_SPACE_AUTOCORRECT_DEBUG", "handleSeparatorInput: codePoint=" + codePoint + " src=" + inputEventContext.getInputSource()
             + " composing=" + this.mComposingTracker.isComposing()
             + " composingText='" + this.mComposingTracker.getComposingText() + "'"
             + " acEnabledPerUser=" + c0804d.isAutoCorrectionEnabledPerUserSettings
@@ -1133,18 +1133,18 @@ public final class InputLogic implements NuanceSDK.AutoCommitCallback {
 
         // True when a word was committed, which means the separator was already written.
         final boolean wordCommitted = retireComposingWordForSeparator(
-                event, c0920g, handlerC0650c, codePoint, suppressSpace);
+                event, inputEventContext, uiUpdateHandler, codePoint, suppressSpace);
 
         // Not a pure read: may delete a trailing space, which the quote-after-digit read must see.
-        final boolean stripSpace = shouldStripSpace(event, c0920g);
+        final boolean stripSpace = shouldStripSpace(event, inputEventContext);
         final boolean quoteAfterDigit = 34 == codePoint && this.mRichInputConnection.endsWithQuoteAfterDigit();
 
-        appendAutoSpaceBeforeSeparatorIfOwed(c0920g, c0804d, codePoint, quoteAfterDigit);
+        appendAutoSpaceBeforeSeparatorIfOwed(inputEventContext, c0804d, codePoint, quoteAfterDigit);
 
-        applySeparatorDisposition(event, c0920g, c0804d, codePoint,
+        applySeparatorDisposition(event, inputEventContext, c0804d, codePoint,
                 wordCommitted, suppressSpace, quoteAfterDigit, stripSpace);
 
-        c0920g.setUiUpdateMode(1);
+        inputEventContext.setUiUpdateMode(1);
     }
 
     /**
@@ -1167,9 +1167,9 @@ public final class InputLogic implements NuanceSDK.AutoCommitCallback {
      * Inserts at the caret inside the composing word. Order matters: derive the region start
      * before mutating the tracker, replace the whole region, then restore the caret with
      * {@link RichInputConnection#setSelectionWithinComposing} (a plain setSelection corrupts the RIC text model).
-     * @param c0920g the current input event context
+     * @param inputEventContext the current input event context
      */
-    private void insertCodePointInsideComposingWord(int codePoint, InputEventContext c0920g) {
+    private void insertCodePointInsideComposingWord(int codePoint, InputEventContext inputEventContext) {
         String oldComposing = this.mComposingTracker.getComposingText();
         int oldCursorCharOffset = Character.offsetByCodePoints(oldComposing, 0,
                 this.mComposingTracker.getComposingCursorPos());
@@ -1189,36 +1189,36 @@ public final class InputLogic implements NuanceSDK.AutoCommitCallback {
                 + " composingNow='" + fullText + "' composingStart=" + composingStart
                 + " newCursorCharOffset=" + newCursorCharOffset + " setSelection=" + desiredCursor);
         }
-        c0920g.setShouldUpdateSuggestions();
+        inputEventContext.setShouldUpdateSuggestions();
     }
 
     /**
      * A space in a language written without spaces, with a word composing: it ends the word but is not inserted.
-     * @param c0804d current settings values
+     * @param settingsValues current settings values
      */
-    private boolean resolveSpacelessSpaceSuppression(SettingsValues c0804d, int codePoint) {
+    private boolean resolveSpacelessSpaceSuppression(SettingsValues settingsValues, int codePoint) {
         return 32 == codePoint
-                && !c0804d.spacingAndPunctuation.currentLanguageHasSpaces
+                && !settingsValues.spacingAndPunctuation.currentLanguageHasSpaces
                 && this.mComposingTracker.isComposing();
     }
 
     /**
      * Commits the composing word with the separator as trailing payload, or flushes touch-event
      * text. Returns {@code true} if a word was committed (the separator must not be written again).
-     * @param c0920g the current input event context
-     * @param handlerC0650c UI update handler
+     * @param inputEventContext the current input event context
+     * @param uiUpdateHandler UI update handler
      */
-    private boolean retireComposingWordForSeparator(InputEvent event, InputEventContext c0920g,
-            UIUpdateHandler handlerC0650c, int codePoint, boolean suppressSpace) {
+    private boolean retireComposingWordForSeparator(InputEvent event, InputEventContext inputEventContext,
+            UIUpdateHandler uiUpdateHandler, int codePoint, boolean suppressSpace) {
         if (!this.mComposingTracker.isComposing()) {
             commitTouchEventText();
             return false;
         }
-        final SettingsValues c0804d = c0920g.settingsValues;
-        flushPendingSuggestions(c0804d, handlerC0650c);
+        final SettingsValues c0804d = inputEventContext.settingsValues;
+        flushPendingSuggestions(c0804d, uiUpdateHandler);
         String separatorPayload = suppressSpace ? "" : new String(Character.toChars(codePoint));
         if (isCjkLocale() || LocaleUtils.isCurrentSubtypeJapanese()) {
-            handleCjkAutoCorrect(c0804d, c0920g, handlerC0650c, separatorPayload);
+            handleCjkAutoCorrect(c0804d, inputEventContext, uiUpdateHandler, separatorPayload);
             return true;
         }
         int iM4368u = this.mComposingTracker.getAutoCorrectionScore();
@@ -1226,13 +1226,13 @@ public final class InputLogic implements NuanceSDK.AutoCommitCallback {
         if (BuildConfig.DEBUG) {
         android.util.Log.d("PKB_SPACE_AUTOCORRECT_DEBUG", "handleSeparatorInput: acWord='" + acWord + "' acScore=" + iM4368u
             + " willTryAC=" + CommitController.shouldCommitAutoCorrectCandidate(acWord, iM4368u, c0804d.isAutoCorrectionEnabledPerUserSettings, c0804d.editorCapabilities.shouldShowSuggestions)
-            + " src=" + c0920g.getInputSource());
+            + " src=" + inputEventContext.getInputSource());
         }
         // Kind 7 (substitution/macro) commits regardless of the auto-correct setting, but not in
         // a field that wants no suggestions.
         if (CommitController.shouldCommitAutoCorrectCandidate(acWord, iM4368u, c0804d.isAutoCorrectionEnabledPerUserSettings, c0804d.editorCapabilities.shouldShowSuggestions)) {
-            autoCorrectAndCommit(c0804d, separatorPayload, handlerC0650c, c0920g.getInputSource());
-            c0920g.setAutoCorrectApplied();
+            autoCorrectAndCommit(c0804d, separatorPayload, uiUpdateHandler, inputEventContext.getInputSource());
+            inputEventContext.setAutoCorrectApplied();
         } else {
             if (BuildConfig.DEBUG) {
             android.util.Log.d("PKB_SPACE_AUTOCORRECT_DEBUG", "handleSeparatorInput: AC REJECTED reason=" +
@@ -1240,7 +1240,7 @@ public final class InputLogic implements NuanceSDK.AutoCommitCallback {
                     : iM4368u == CommitController.KIND_SUBSTITUTION ? "macro_in_no_suggestions_field"
                     : iM4368u == 0 ? "kind_zero" : "ac_disabled"));
             }
-            commitTypedWord(c0804d, separatorPayload, c0920g.getInputSource());
+            commitTypedWord(c0804d, separatorPayload, inputEventContext.getInputSource());
         }
         return true;
     }
@@ -1248,23 +1248,23 @@ public final class InputLogic implements NuanceSDK.AutoCommitCallback {
     /**
      * Inserts the space the previous commit deferred ({@code mCommitType == 4}) before a separator
      * usually preceded by one. Not for a quote after a digit (an inch mark) or clustering symbols ({@code ?!}).
-     * @param c0920g the current input event context
-     * @param c0804d current settings values
+     * @param inputEventContext the current input event context
+     * @param settingsValues current settings values
      */
-    private void appendAutoSpaceBeforeSeparatorIfOwed(InputEventContext c0920g,
-            SettingsValues c0804d, int codePoint, boolean quoteAfterDigit) {
-        if (4 != c0920g.commitType) {
+    private void appendAutoSpaceBeforeSeparatorIfOwed(InputEventContext inputEventContext,
+            SettingsValues settingsValues, int codePoint, boolean quoteAfterDigit) {
+        if (4 != inputEventContext.commitType) {
             return;
         }
         boolean owed = false;
         if (34 == codePoint) {
             owed = !quoteAfterDigit;
-        } else if (!c0804d.spacingAndPunctuation.clustersWithSymbols(codePoint)
-                || !c0804d.spacingAndPunctuation.clustersWithSymbols(this.mRichInputConnection.getCodePointBeforeCursor())) {
-            owed = c0804d.isUsuallyPrecededBySpace(codePoint);
+        } else if (!settingsValues.spacingAndPunctuation.clustersWithSymbols(codePoint)
+                || !settingsValues.spacingAndPunctuation.clustersWithSymbols(this.mRichInputConnection.getCodePointBeforeCursor())) {
+            owed = settingsValues.isUsuallyPrecededBySpace(codePoint);
         }
         if (owed) {
-            appendAutoSpace(c0804d, c0920g.getInputSource());
+            appendAutoSpace(settingsValues, inputEventContext.getInputSource());
         }
     }
 
@@ -1272,39 +1272,39 @@ public final class InputLogic implements NuanceSDK.AutoCommitCallback {
      * One disposition per separator, in priority order: double-space period, punctuation swap,
      * plain space, anything else; each sets the {@link #mCommitType} the next key reads. The
      * short-circuits matter: the first two calls mutate the editor.
-     * @param c0920g the current input event context
-     * @param c0804d current settings values
+     * @param inputEventContext the current input event context
+     * @param settingsValues current settings values
      */
-    private void applySeparatorDisposition(InputEvent event, InputEventContext c0920g,
-            SettingsValues c0804d, int codePoint, boolean wordCommitted, boolean suppressSpace,
+    private void applySeparatorDisposition(InputEvent event, InputEventContext inputEventContext,
+            SettingsValues settingsValues, int codePoint, boolean wordCommitted, boolean suppressSpace,
             boolean quoteAfterDigit, boolean stripSpace) {
-        if (!wordCommitted && handleDoubleSpacePeriod(event, c0920g)) {
+        if (!wordCommitted && handleDoubleSpacePeriod(event, inputEventContext)) {
             this.mCommitType = 1;
-            c0920g.setShouldUpdateSuggestions();
+            inputEventContext.setShouldUpdateSuggestions();
             return;
         }
-        if (stripSpace && trySwapPunctuation(event, c0920g)) {
+        if (stripSpace && trySwapPunctuation(event, inputEventContext)) {
             this.mCommitType = 2;
             this.mSuggestionStripListener.setNeutralSuggestionStrip();
             return;
         }
         if (32 == codePoint) {
             this.mCommitType = 3;
-            recordSpaceTimestamp(c0920g);
-            if (wordCommitted || this.mCurrentSuggestions.isEmpty() || c0920g.isKeyHandled()) {
-                c0920g.setShouldUpdateSuggestions();
+            recordSpaceTimestamp(inputEventContext);
+            if (wordCommitted || this.mCurrentSuggestions.isEmpty() || inputEventContext.isKeyHandled()) {
+                inputEventContext.setShouldUpdateSuggestions();
             }
             if (!suppressSpace && !wordCommitted) {
-                commitCharacter(c0804d, codePoint, c0920g.getInputSource());
+                commitCharacter(settingsValues, codePoint, inputEventContext.getInputSource());
             }
             return;
         }
-        if ((4 == c0920g.commitType && c0804d.isUsuallyFollowedBySpace(codePoint))
+        if ((4 == inputEventContext.commitType && settingsValues.isUsuallyFollowedBySpace(codePoint))
                 || (34 == codePoint && quoteAfterDigit)) {
             this.mCommitType = 4;
         }
         if (!wordCommitted) {
-            commitCharacter(c0804d, codePoint, c0920g.getInputSource());
+            commitCharacter(settingsValues, codePoint, inputEventContext.getInputSource());
         }
         this.mSuggestionStripListener.setNeutralSuggestionStrip();
     }
@@ -1325,11 +1325,11 @@ public final class InputLogic implements NuanceSDK.AutoCommitCallback {
 
     /**
      * Commits the composing word, or resets it when the caret moved inside it; else flushes touch-event text.
-     * @param c0804d current settings values
-     * @param enumC0690f the input source that triggered this flush
+     * @param settingsValues current settings values
+     * @param inputSource the input source that triggered this flush
      */
-    public void commitOrResetComposing(SettingsValues c0804d, InputSource enumC0690f) {
-        mCommitController.commitOrResetComposing(c0804d, enumC0690f);
+    public void commitOrResetComposing(SettingsValues settingsValues, InputSource inputSource) {
+        mCommitController.commitOrResetComposing(settingsValues, inputSource);
     }
 
     /** Neither multi-line flag is set. */
@@ -1340,9 +1340,9 @@ public final class InputLogic implements NuanceSDK.AutoCommitCallback {
     }
 
     /**
-     * @param c0920g the current input event context
+     * @param inputEventContext the current input event context
      */
-    private void handleEnterKey(InputEventContext c0920g) {
+    private void handleEnterKey(InputEventContext inputEventContext) {
         boolean z;
         boolean z2;
 
@@ -1352,22 +1352,22 @@ public final class InputLogic implements NuanceSDK.AutoCommitCallback {
         
         if ((isCjkLocale() || LocaleUtils.isCurrentSubtypeJapanese()) && this.mComposingTracker.isComposing()) {
             String strM4360m = this.mComposingTracker.getComposingText();
-            commitOrResetComposing(c0920g.settingsValues, c0920g.getInputSource());
-            c0920g.setUiUpdateMode(1);
-            c0920g.setShouldUpdateSuggestions();
+            commitOrResetComposing(inputEventContext.settingsValues, inputEventContext.getInputSource());
+            inputEventContext.setUiUpdateMode(1);
+            inputEventContext.setShouldUpdateSuggestions();
             if (strM4360m.length() <= 0 || !strM4360m.matches("[A-Za-z]+")) {
                 return;
             }
-            commitCharacter(c0920g.settingsValues, 32, c0920g.getInputSource());
+            commitCharacter(inputEventContext.settingsValues, 32, inputEventContext.getInputSource());
             return;
         }
         boolean z4 = imeAction == 1;  // IME_ACTION_NONE
         boolean z5 = imeAction == 0;  // IME_ACTION_UNSPECIFIED
-        boolean isHardwareInput = c0920g.getInputSource() == InputSource.HARDWARE;
+        boolean isHardwareInput = inputEventContext.getInputSource() == InputSource.HARDWARE;
 
         // Shift+Enter always inserts a newline. A Shift consumed by an Alt chord does not count
         // (manual shift is pending only once every Shift is released).
-        boolean isShiftPressed = c0920g.isShiftPressed()
+        boolean isShiftPressed = inputEventContext.isShiftPressed()
                 || this.mIme.getPhysicalKeyboardStateTracker().getModifierState().isManualShiftPending();
 
         // Multi-line with a NONE/UNSPECIFIED action inserts a newline. IME_FLAG_NO_ENTER_ACTION is
@@ -1386,28 +1386,28 @@ public final class InputLogic implements NuanceSDK.AutoCommitCallback {
             return;
         }
         if (z2) {
-            commitOrResetComposing(c0920g.settingsValues, c0920g.getInputSource());
+            commitOrResetComposing(inputEventContext.settingsValues, inputEventContext.getInputSource());
         }
-        c0920g.setUiUpdateMode(1);
-        c0920g.setShouldUpdateSuggestions();
+        inputEventContext.setUiUpdateMode(1);
+        inputEventContext.setShouldUpdateSuggestions();
         
         if (z2) {
-            commitCharacter(c0920g.settingsValues, 10, c0920g.getInputSource());
+            commitCharacter(inputEventContext.settingsValues, 10, inputEventContext.getInputSource());
         } else {
             // No clearAll() here: KeyEventProcessor's Enter consumer must finishComposingText()
             // before performEditorAction (keeps the WebView cursor after the word), then clearAll()
             // and cancel the queued suggestion update, or a late reply re-inserts the word.
-            c0920g.setPendingEditorAction(true);
+            inputEventContext.setPendingEditorAction(true);
         }
     }
 
     /**
-     * @param c0920g the current input event context
-     * @param c0804d current settings values
-     * @param i the symbol page order
+     * @param inputEventContext the current input event context
+     * @param settingsValues current settings values
+     * @param currentKeyboardScriptId the symbol page order
      */
-    private void handleBackspace(InputEvent event, InputEventContext c0920g, SettingsValues c0804d, int i) {
-        this.mBackspaceController.handleBackspace(event, c0920g, c0804d, i);
+    private void handleBackspace(InputEvent event, InputEventContext inputEventContext, SettingsValues settingsValues, int currentKeyboardScriptId) {
+        this.mBackspaceController.handleBackspace(event, inputEventContext, settingsValues, currentKeyboardScriptId);
     }
 
     private void launchVoiceInput() {
@@ -1415,32 +1415,32 @@ public final class InputLogic implements NuanceSDK.AutoCommitCallback {
     }
 
     /**
-     * @param z true when the key is auto-repeating
+     * @param isKeyRepeat true when the key is auto-repeating
      */
-    private void toggleKeyboardDirection(boolean z) {
-        this.mIme.updateSymbolShift(z);
+    private void toggleKeyboardDirection(boolean isKeyRepeat) {
+        this.mIme.updateSymbolShift(isKeyRepeat);
     }
 
     /**
-     * @param c0920g the current input event context
+     * @param inputEventContext the current input event context
      */
-    private boolean trySwapPunctuation(InputEvent event, InputEventContext c0920g) {
-        return this.mPunctuationController.trySwapPunctuation(event, c0920g);
+    private boolean trySwapPunctuation(InputEvent event, InputEventContext inputEventContext) {
+        return this.mPunctuationController.trySwapPunctuation(event, inputEventContext);
     }
 
     /**
-     * @param c0920g the current input event context
+     * @param inputEventContext the current input event context
      */
-    private boolean shouldStripSpace(InputEvent event, InputEventContext c0920g) {
-        return this.mPunctuationController.shouldStripSpace(event, c0920g);
+    private boolean shouldStripSpace(InputEvent event, InputEventContext inputEventContext) {
+        return this.mPunctuationController.shouldStripSpace(event, inputEventContext);
     }
 
     /**
      * Arms double-space-to-period detection for the next space.
-     * @param c0920g the current input event context
+     * @param inputEventContext the current input event context
      */
-    public void recordSpaceTimestamp(InputEventContext c0920g) {
-        this.mPunctuationController.recordSpaceTimestamp(c0920g);
+    public void recordSpaceTimestamp(InputEventContext inputEventContext) {
+        this.mPunctuationController.recordSpaceTimestamp(inputEventContext);
     }
 
     public void resetSpaceTimestamp() {
@@ -1448,59 +1448,59 @@ public final class InputLogic implements NuanceSDK.AutoCommitCallback {
     }
 
     /**
-     * @param c0920g the current input event context
+     * @param inputEventContext the current input event context
      */
-    private boolean handleDoubleSpacePeriod(InputEvent event, InputEventContext c0920g) {
-        return this.mPunctuationController.handleDoubleSpacePeriod(event, c0920g, this.mJustCommitted);
+    private boolean handleDoubleSpacePeriod(InputEvent event, InputEventContext inputEventContext) {
+        return this.mPunctuationController.handleDoubleSpacePeriod(event, inputEventContext, this.mJustCommitted);
     }
 
     /**
      * Blocks (up to 1 s) for suggestions and updates the strip; only where async delivery is not feasible.
-     * @param c0804d current settings values
-     * @param i update reason code forwarded to the worker
+     * @param settingsValues current settings values
+     * @param inputStyle update reason code forwarded to the worker
      */
-    public void updateSuggestionsSync(SettingsValues c0804d, int i) {
-        mSuggestionCoordinator.updateSuggestionsSync(c0804d, i);
+    public void updateSuggestionsSync(SettingsValues settingsValues, int inputStyle) {
+        mSuggestionCoordinator.updateSuggestionsSync(settingsValues, inputStyle);
     }
 
     /**
-     * @param c0804d current settings values
-     * @param i update reason code forwarded to the worker
+     * @param settingsValues current settings values
+     * @param inputStyle update reason code forwarded to the worker
      */
-    public void updateSuggestionsAsync(SettingsValues c0804d, int i) {
-        mSuggestionCoordinator.updateSuggestionsAsync(c0804d, i);
+    public void updateSuggestionsAsync(SettingsValues settingsValues, int inputStyle) {
+        mSuggestionCoordinator.updateSuggestionsAsync(settingsValues, inputStyle);
     }
 
     /**
-     * Reopens the word under the cursor as composing and shows its candidates; {@code z} puts the word itself first.
-     * @param c0804d current settings values
-     * @param z {@code true} to include the tapped word itself as the first suggestion
-     * @param i symbol page order / shift state used for suggestion context
+     * Reopens the word under the cursor as composing and shows its candidates; {@code includeWordAtCursor} puts the word itself first.
+     * @param settingsValues current settings values
+     * @param includeWordAtCursor {@code true} to include the tapped word itself as the first suggestion
+     * @param currentKeyboardScriptId symbol page order / shift state used for suggestion context
      */
-    public void performRecorrection(SettingsValues c0804d, final boolean z, int i) {
-        mRecorrectionController.performRecorrection(c0804d, z, i);
+    public void performRecorrection(SettingsValues settingsValues, final boolean includeWordAtCursor, int currentKeyboardScriptId) {
+        mRecorrectionController.performRecorrection(settingsValues, includeWordAtCursor, currentKeyboardScriptId);
     }
 
     /**
-     * @param c0920g the current input event context
-     * @param c0804d current settings values
+     * @param inputEventContext the current input event context
+     * @param settingsValues current settings values
      */
-    void revertAutoCorrection(InputEventContext c0920g, SettingsValues c0804d, boolean dropWhitespaceSeparator) {
-        mRecorrectionController.revertAutoCorrection(c0920g, c0804d, dropWhitespaceSeparator);
+    void revertAutoCorrection(InputEventContext inputEventContext, SettingsValues settingsValues, boolean dropWhitespaceSeparator) {
+        mRecorrectionController.revertAutoCorrection(inputEventContext, settingsValues, dropWhitespaceSeparator);
     }
 
     /**
-     * @param c0804d current settings values
-     * @param i the symbol page order (unused, shift comes from caps mode)
+     * @param settingsValues current settings values
+     * @param keyboardShiftMode the symbol page order (unused, shift comes from caps mode)
      */
-    int getShiftState(SettingsValues c0804d, int i) {
+    int getShiftState(SettingsValues settingsValues, int keyboardShiftMode) {
         KeyboardSwitcher c0979iM4088ac = this.mIme.getKeyboardSwitcher();
         
         if (c0979iM4088ac != null && c0979iM4088ac.isMainKeyboardShowing()) {
             return 0;
         }
         // Always derive from caps mode: i is a symbol page order, not a shift state.
-        int iM4490d = getCapsMode(c0804d);
+        int iM4490d = getCapsMode(settingsValues);
         if ((iM4490d & 4096) != 0) {
             return 7;
         }
@@ -1509,16 +1509,16 @@ public final class InputLogic implements NuanceSDK.AutoCommitCallback {
 
     /**
      * {@link android.text.TextUtils} caps-mode flags, or 0 when auto-caps is off, unsupported or no editor.
-     * @param c0804d current settings values
+     * @param settingsValues current settings values
      */
-    public int getCapsMode(SettingsValues c0804d) {
+    public int getCapsMode(SettingsValues settingsValues) {
         EditorInfo editorInfoM4500g;
         Locale localeM4259h = SubtypeManager.getInstance().getCurrentSubtypeLocale();
         String language = localeM4259h != null ? localeM4259h.getLanguage() : "";
-        if (!c0804d.isAutoCapsEnabled || !ScriptUtils.isUnsupportedScript(language) || !this.mIme.isShiftChording() || (editorInfoM4500g = getCurrentEditorInfo()) == null) {
+        if (!settingsValues.isAutoCapsEnabled || !ScriptUtils.isUnsupportedScript(language) || !this.mIme.isShiftChording() || (editorInfoM4500g = getCurrentEditorInfo()) == null) {
             return 0;
         }
-        return this.mRichInputConnection.getCapsMode(editorInfoM4500g.inputType, c0804d.spacingAndPunctuation, 4 == this.mCommitType);
+        return this.mRichInputConnection.getCapsMode(editorInfoM4500g.inputType, settingsValues.spacingAndPunctuation, 4 == this.mCommitType);
     }
 
     /** Always {@code -1}: no recapitalize state exists. */
@@ -1531,32 +1531,32 @@ public final class InputLogic implements NuanceSDK.AutoCommitCallback {
     }
 
     /**
-     * @param c0806f spacing and punctuation rules (unused in current implementation)
-     * @param i context depth hint (unused in current implementation)
+     * @param spacingAndPunctuation spacing and punctuation rules (unused in current implementation)
+     * @param nthPreviousWord context depth hint (unused in current implementation)
      */
-    PrevWordsInfo getPrevWordsInfo(SpacingAndPunctuation c0806f, int i) {
-        return this.mRichInputConnection.getPrevWordsInfo(c0806f, i);
+    PrevWordsInfo getPrevWordsInfo(SpacingAndPunctuation spacingAndPunctuation, int nthPreviousWord) {
+        return this.mRichInputConnection.getPrevWordsInfo(spacingAndPunctuation, nthPreviousWord);
     }
 
     /**
-     * @param i the editor action id
+     * @param actionId the editor action id
      */
-    private void performEditorActionById(int i) {
-        this.mRichInputConnection.performEditorAction(i);
+    private void performEditorActionById(int actionId) {
+        this.mRichInputConnection.performEditorAction(actionId);
     }
 
     /**
      * Drops a leading '.' (before a letter) when the editor already has '.' before the cursor.
-     * @param str the string to process
+     * @param text the string to process
      */
-    public String stripLeadingDot(String str) {
+    public String stripLeadingDot(String text) {
         int length;
-        if (str.length() <= 1 || str.charAt(0) != '.' || !Character.isLetter(str.charAt(1))) {
-            return str;
+        if (text.length() <= 1 || text.charAt(0) != '.' || !Character.isLetter(text.charAt(1))) {
+            return text;
         }
         this.mCommitType = 0;
         CharSequence charSequenceM5815a = this.mRichInputConnection.getTextBeforeCursor(2, 0);
-        return (charSequenceM5815a != null && (length = charSequenceM5815a.length()) >= 1 && 46 == Character.codePointBefore(charSequenceM5815a, length)) ? str.substring(1) : str;
+        return (charSequenceM5815a != null && (length = charSequenceM5815a.length()) >= 1 && 46 == Character.codePointBefore(charSequenceM5815a, length)) ? text.substring(1) : text;
     }
 
     private void toggleFullscreenMode() {
@@ -1564,40 +1564,40 @@ public final class InputLogic implements NuanceSDK.AutoCommitCallback {
     }
 
     /**
-     * @param i selection start
-     * @param i2 selection end
-     * @param z true to also neutralise the suggestion strip
+     * @param newSelStart selection start
+     * @param newSelEnd selection end
+     * @param clearSuggestionStrip true to also neutralise the suggestion strip
      */
-    void resetComposingAndSelect(int i, int i2, boolean z) {
-        if (BuildConfig.DEBUG) Log.d("TEXT_EDIT_DEBUG", "resetComposingAndSelect: pos=[" + i + "," + i2 + "] clearSuggestions=" + z + " wasComposing='" + mComposingTracker.getComposingText() + "'");
+    void resetComposingAndSelect(int newSelStart, int newSelEnd, boolean clearSuggestionStrip) {
+        if (BuildConfig.DEBUG) Log.d("TEXT_EDIT_DEBUG", "resetComposingAndSelect: pos=[" + newSelStart + "," + newSelEnd + "] clearSuggestions=" + clearSuggestionStrip + " wasComposing='" + mComposingTracker.getComposingText() + "'");
         boolean z2 = this.mComposingTracker.isComposing() || this.mTouchHighlightTracker.isHighlightActive();
         clearComposingText(true);
-        if (z) {
+        if (clearSuggestionStrip) {
             this.mSuggestionStripListener.setNeutralSuggestionStrip();
         }
         updateDynamicLearningState();
-        this.mRichInputConnection.resetConnection(i, i2, z2);
+        this.mRichInputConnection.resetConnection(newSelStart, newSelEnd, z2);
         this.mTouchHighlightTracker.clear();
         clearEngineBuffer();
     }
 
     /**
-     * Clears the composing tracker; {@code z} also drops the last commit record (no revert).
-     * @param z {@code true} to also reset the event dispatcher
+     * Clears the composing tracker; {@code alsoResetLastCommitRecord} also drops the last commit record (no revert).
+     * @param alsoResetLastCommitRecord {@code true} to also reset the event dispatcher
      */
-    public void clearComposingText(boolean z) {
+    public void clearComposingText(boolean alsoResetLastCommitRecord) {
         this.mComposingTracker.clearAll();
-        if (z) {
+        if (alsoResetLastCommitRecord) {
             this.mEventDispatcher = CommitEventRecord.IDLE;
         }
     }
 
     /**
-     * @param z true to commit an active multi-tap first
+     * @param commitPendingMultitap true to commit an active multi-tap first
      */
-    private void clearTouchEventProcessor(boolean z) {
+    private void clearTouchEventProcessor(boolean commitPendingMultitap) {
         if (this.mTouchHighlightTracker.isHighlightActive()) {
-            if (z) {
+            if (commitPendingMultitap) {
                 this.mIme.getMultitapEventHandler().commitMultitapIfActive();
             }
             this.mTouchHighlightTracker.clear();
@@ -1605,80 +1605,80 @@ public final class InputLogic implements NuanceSDK.AutoCommitCallback {
     }
 
     /**
-     * @param str the typed word to put first
-     * @param c0666ac the suggestions to append after the typed word
+     * @param typedWord the typed word to put first
+     * @param previousSuggestions the suggestions to append after the typed word
      */
-    SuggestedWords createSuggestionsWithTypedWord(String str, SuggestedWords c0666ac) {
-        return mSuggestionCoordinator.createSuggestionsWithTypedWord(str, c0666ac);
+    SuggestedWords createSuggestionsWithTypedWord(String typedWord, SuggestedWords previousSuggestions) {
+        return mSuggestionCoordinator.createSuggestionsWithTypedWord(typedWord, previousSuggestions);
     }
 
     /**
-     * @param str the composing text to decorate
+     * @param composingText the composing text to decorate
      */
-    CharSequence getComposingTextWithIndicator(String str) {
+    CharSequence getComposingTextWithIndicator(String composingText) {
         if (this.mTouchHighlightTracker.isHighlightActive()) {
-            return this.mTouchHighlightTracker.applyHighlight(str);
+            return this.mTouchHighlightTracker.applyHighlight(composingText);
         }
-        return this.mIsAutoCorrectActive ? SuggestionSpanBuilder.getTextWithAutoCorrectionIndicator(this.mIme, str) : str;
+        return this.mIsAutoCorrectActive ? SuggestionSpanBuilder.getTextWithAutoCorrectionIndicator(this.mIme, composingText) : composingText;
     }
 
     /**
      * Sends a key-down + key-up pair with no meta state.
-     * @param i the Android key code to send
+     * @param keyCode the Android key code to send
      */
-    public void sendKeyEvent(int i) {
-        sendKeyEventWithMeta(i, 0);
+    public void sendKeyEvent(int keyCode) {
+        sendKeyEventWithMeta(keyCode, 0);
     }
 
     /**
-     * @param i the Android key code
+     * @param keyCode the Android key code
      */
-    public void sendKeyDown(int i) {
+    public void sendKeyDown(int keyCode) {
         long jUptimeMillis = SystemClock.uptimeMillis();
-        this.mRichInputConnection.sendKeyEvent(new KeyEvent(jUptimeMillis, jUptimeMillis, 0, i, 0, 0, -1, 0, 6));
+        this.mRichInputConnection.sendKeyEvent(new KeyEvent(jUptimeMillis, jUptimeMillis, 0, keyCode, 0, 0, -1, 0, 6));
     }
 
     /**
-     * @param i the Android key code
+     * @param keyCode the Android key code
      */
-    public void sendKeyUp(int i) {
+    public void sendKeyUp(int keyCode) {
         long jUptimeMillis = SystemClock.uptimeMillis();
-        this.mRichInputConnection.sendKeyEvent(new KeyEvent(jUptimeMillis, jUptimeMillis, 1, i, 0, 0, -1, 0, 6));
+        this.mRichInputConnection.sendKeyEvent(new KeyEvent(jUptimeMillis, jUptimeMillis, 1, keyCode, 0, 0, -1, 0, 6));
     }
 
     /**
-     * Sends a key-down + key-up pair with meta state {@code i2}.
-     * @param i the Android key code
-     * @param i2 the meta state bitmask (e.g., {@link android.view.KeyEvent#META_SHIFT_ON})
+     * Sends a key-down + key-up pair with meta state {@code metaState}.
+     * @param keyCode the Android key code
+     * @param metaState the meta state bitmask (e.g., {@link android.view.KeyEvent#META_SHIFT_ON})
      */
-    public void sendKeyEventWithMeta(int i, int i2) {
-        CursorController.sendKeyEventWithMeta(this.mRichInputConnection, i, i2);
+    public void sendKeyEventWithMeta(int keyCode, int metaState) {
+        CursorController.sendKeyEventWithMeta(this.mRichInputConnection, keyCode, metaState);
     }
 
     /**
-     * @param i the Android key code
-     * @param i2 the meta state bitmask
+     * @param keyCode the Android key code
+     * @param metaState the meta state bitmask
      */
-    public void sendKeyDownWithMeta(int i, int i2) {
+    public void sendKeyDownWithMeta(int keyCode, int metaState) {
         long jUptimeMillis = SystemClock.uptimeMillis();
-        this.mRichInputConnection.sendKeyEvent(new KeyEvent(jUptimeMillis, jUptimeMillis, 0, i, 0, i2, -1, 0, 6));
+        this.mRichInputConnection.sendKeyEvent(new KeyEvent(jUptimeMillis, jUptimeMillis, 0, keyCode, 0, metaState, -1, 0, 6));
     }
 
     /**
-     * @param i the Android key code
-     * @param i2 the meta state bitmask
+     * @param keyCode the Android key code
+     * @param metaState the meta state bitmask
      */
-    public void sendKeyUpWithMeta(int i, int i2) {
-        this.mRichInputConnection.sendKeyEvent(new KeyEvent(SystemClock.uptimeMillis(), SystemClock.uptimeMillis(), 1, i, 0, i2, -1, 0, 6));
+    public void sendKeyUpWithMeta(int keyCode, int metaState) {
+        this.mRichInputConnection.sendKeyEvent(new KeyEvent(SystemClock.uptimeMillis(), SystemClock.uptimeMillis(), 1, keyCode, 0, metaState, -1, 0, 6));
     }
 
     /**
-     * @param c0804d current settings values (unused by the RAW protocol)
-     * @param i the Unicode code point to commit
-     * @param enumC0690f the input source that triggered this character commit
+     * @param settingsValues current settings values (unused by the RAW protocol)
+     * @param codePoint the Unicode code point to commit
+     * @param inputSource the input source that triggered this character commit
      */
-    private void commitCharacter(SettingsValues c0804d, final int i, InputSource enumC0690f) {
-        mCommitController.commitCharacter(c0804d, i, enumC0690f);
+    private void commitCharacter(SettingsValues settingsValues, final int codePoint, InputSource inputSource) {
+        mCommitController.commitCharacter(settingsValues, codePoint, inputSource);
     }
 
     /** Flushes pending touch-event text: updates the composing span, or commits it as plain text. */
@@ -1731,39 +1731,39 @@ public final class InputLogic implements NuanceSDK.AutoCommitCallback {
 
     /**
      * False for password, URI, email-address, filter, phonetic and non-text input types.
-     * @param i the input type bitmask from the editor's {@link android.view.inputmethod.EditorInfo}
+     * @param inputType the input type bitmask from the editor's {@link android.view.inputmethod.EditorInfo}
      */
-    public static boolean isLearningEnabledForInputType(int i) {
-        int i2 = i & 4080;
-        return (InputTypeUtils.isPasswordInputType(i) || InputTypeUtils.isVisiblePasswordInputType(i) || ((524288 & i) != 0 && i2 == 160) || !InputTypeUtils.isTextClass(i) || InputTypeUtils.isUriVariation(i2) || InputTypeUtils.isFilterVariation(i2) || InputTypeUtils.isPhoneticVariation(i2)) ? false : true;
+    public static boolean isLearningEnabledForInputType(int inputType) {
+        int i2 = inputType & 4080;
+        return (InputTypeUtils.isPasswordInputType(inputType) || InputTypeUtils.isVisiblePasswordInputType(inputType) || ((524288 & inputType) != 0 && i2 == 160) || !InputTypeUtils.isTextClass(inputType) || InputTypeUtils.isUriVariation(i2) || InputTypeUtils.isFilterVariation(i2) || InputTypeUtils.isPhoneticVariation(i2)) ? false : true;
     }
 
     /**
-     * @param c0804d current settings values
-     * @param enumC0690f the input source that triggered the commit
+     * @param settingsValues current settings values
+     * @param inputSource the input source that triggered the commit
      */
-    private void appendAutoSpace(SettingsValues c0804d, InputSource enumC0690f) {
-        this.mPunctuationController.appendAutoSpace(c0804d, enumC0690f);
+    private void appendAutoSpace(SettingsValues settingsValues, InputSource inputSource) {
+        this.mPunctuationController.appendAutoSpace(settingsValues, inputSource);
     }
 
     /**
      * Commits the top swipe suggestion (index 0) with its separator.
-     * @param c0804d current settings values
-     * @param c0666ac the gesture suggestion list (top word at index 0 is committed)
-     * @param enumC0690f the input source (typically TOUCH)
+     * @param settingsValues current settings values
+     * @param suggestedWords the gesture suggestion list (top word at index 0 is committed)
+     * @param inputSource the input source (typically TOUCH)
      */
-    public void commitGestureSuggestion(SettingsValues c0804d, SuggestedWords c0666ac, InputSource enumC0690f) {
-        mCommitController.commitGestureSuggestion(c0804d, c0666ac, enumC0690f);
+    public void commitGestureSuggestion(SettingsValues settingsValues, SuggestedWords suggestedWords, InputSource inputSource) {
+        mCommitController.commitGestureSuggestion(settingsValues, suggestedWords, inputSource);
     }
 
     /**
-     * Commits the composing word verbatim followed by separator {@code str}; no-op when not composing.
-     * @param c0804d current settings values
-     * @param str the separator to append after the word (may be empty)
-     * @param enumC0690f the input source that triggered the commit
+     * Commits the composing word verbatim followed by separator {@code separator}; no-op when not composing.
+     * @param settingsValues current settings values
+     * @param separator the separator to append after the word (may be empty)
+     * @param inputSource the input source that triggered the commit
      */
-    public void commitTypedWord(SettingsValues c0804d, String str, InputSource enumC0690f) {
-        mCommitController.commitTypedWord(c0804d, str, enumC0690f);
+    public void commitTypedWord(SettingsValues settingsValues, String separator, InputSource inputSource) {
+        mCommitController.commitTypedWord(settingsValues, separator, inputSource);
     }
 
     /**
@@ -1780,33 +1780,33 @@ public final class InputLogic implements NuanceSDK.AutoCommitCallback {
     }
 
     /**
-     * @param c0804d current settings values
-     * @param str the separator text that ended the word
-     * @param handlerC0650c UI update handler
-     * @param enumC0690f the input source that triggered the commit
+     * @param settingsValues current settings values
+     * @param separator the separator text that ended the word
+     * @param uiUpdateHandler UI update handler
+     * @param inputSource the input source that triggered the commit
      * @return {@code true} if the separator payload was already committed.
      */
-    private boolean autoCorrectAndCommit(SettingsValues c0804d, String str, UIUpdateHandler handlerC0650c, InputSource enumC0690f) {
-        return mCommitController.autoCorrectAndCommit(c0804d, str, handlerC0650c, enumC0690f);
+    private boolean autoCorrectAndCommit(SettingsValues settingsValues, String separator, UIUpdateHandler uiUpdateHandler, InputSource inputSource) {
+        return mCommitController.autoCorrectAndCommit(settingsValues, separator, uiUpdateHandler, inputSource);
     }
 
     /**
-     * @param c0804d current settings values
-     * @param str the separator text that ended the word
-     * @param handlerC0650c UI update handler used to flush pending async suggestion requests
-     * @param enumC0690f the input source that triggered this commit
-     * @param z force the separator append even for a word character
+     * @param settingsValues current settings values
+     * @param separator the separator text that ended the word
+     * @param uiUpdateHandler UI update handler used to flush pending async suggestion requests
+     * @param inputSource the input source that triggered this commit
+     * @param forceSeparator force the separator append even for a word character
      */
-    private void autoCorrectAndCommitExtended(SettingsValues c0804d, String str, UIUpdateHandler handlerC0650c, InputSource enumC0690f, boolean z) {
-        mCommitController.autoCorrectAndCommitExtended(c0804d, str, handlerC0650c, enumC0690f, z);
+    private void autoCorrectAndCommitExtended(SettingsValues settingsValues, String separator, UIUpdateHandler uiUpdateHandler, InputSource inputSource, boolean forceSeparator) {
+        mCommitController.autoCorrectAndCommitExtended(settingsValues, separator, uiUpdateHandler, inputSource, forceSeparator);
     }
 
     /**
      * Strips internal clipboard and engine boundary markers from a suggestion before commit.
-     * @param str the raw suggestion string (may contain internal markers)
+     * @param text the raw suggestion string (may contain internal markers)
      */
-    public String processClipboardMarker(String str) {
-        return mCommitController.processClipboardMarker(str);
+    public String processClipboardMarker(String text) {
+        return mCommitController.processClipboardMarker(text);
     }
 
     /**
@@ -1889,110 +1889,110 @@ public final class InputLogic implements NuanceSDK.AutoCommitCallback {
     }
 
     /**
-     * @param c0804d current settings values
-     * @param c0920g the current input event context
-     * @param handlerC0650c UI update handler
-     * @param str the separator text that ended the word
+     * @param settingsValues current settings values
+     * @param inputEventContext the current input event context
+     * @param uiUpdateHandler UI update handler
+     * @param separator the separator text that ended the word
      */
-    private void handleCjkAutoCorrect(SettingsValues c0804d, InputEventContext c0920g, UIUpdateHandler handlerC0650c, String str) {
-        flushPendingSuggestions(c0804d, handlerC0650c);
+    private void handleCjkAutoCorrect(SettingsValues settingsValues, InputEventContext inputEventContext, UIUpdateHandler uiUpdateHandler, String separator) {
+        flushPendingSuggestions(settingsValues, uiUpdateHandler);
         SuggestedWords.SuggestedWordInfo suggestedWordInfoVarM4369V = this.mComposingTracker.getPickedSuggestion();
         if (suggestedWordInfoVarM4369V != null) {
             if (TextUtils.isEmpty(suggestedWordInfoVarM4369V.word)) {
                 throw new RuntimeException("We have an first prediction candidate but the typedword is empty? Impossible!");
             }
-            commitPredictionWord(c0804d, this.mComposingTracker.getPickedSuggestion(), CommitEventRecord.CommitType.DECIDED_WORD, c0920g.getInputSource(), c0920g, handlerC0650c, str);
+            commitPredictionWord(settingsValues, this.mComposingTracker.getPickedSuggestion(), CommitEventRecord.CommitType.DECIDED_WORD, inputEventContext.getInputSource(), inputEventContext, uiUpdateHandler, separator);
             return;
         }
         if (this.mComposingTracker.isCursorMoved()) {
             resetComposingAndSelect(this.mRichInputConnection.getCursorStart(), this.mRichInputConnection.getCursorEnd(), true);
-        } else if (LocaleUtils.isCurrentSubtypePinyin() && str.length() == 1 && '0' <= str.charAt(0) && str.charAt(0) <= '9') {
-            commitTypedWord(c0920g.settingsValues, "", c0920g.getInputSource());
-            this.mRichInputConnection.commitText(str, 1);
+        } else if (LocaleUtils.isCurrentSubtypePinyin() && separator.length() == 1 && '0' <= separator.charAt(0) && separator.charAt(0) <= '9') {
+            commitTypedWord(inputEventContext.settingsValues, "", inputEventContext.getInputSource());
+            this.mRichInputConnection.commitText(separator, 1);
         } else {
-            commitTypedWord(c0920g.settingsValues, "", c0920g.getInputSource());
+            commitTypedWord(inputEventContext.settingsValues, "", inputEventContext.getInputSource());
         }
-        c0920g.setUiUpdateMode(1);
-        c0920g.setShouldUpdateSuggestions();
+        inputEventContext.setUiUpdateMode(1);
+        inputEventContext.setShouldUpdateSuggestions();
     }
 
     /**
-     * @param c0804d current settings values
-     * @param handlerC0650c UI update handler used to cancel pending async requests
+     * @param settingsValues current settings values
+     * @param uiUpdateHandler UI update handler used to cancel pending async requests
      */
-    void flushPendingSuggestions(SettingsValues c0804d, UIUpdateHandler handlerC0650c) {
-        mSuggestionCoordinator.flushPendingSuggestions(c0804d, handlerC0650c);
+    void flushPendingSuggestions(SettingsValues settingsValues, UIUpdateHandler uiUpdateHandler) {
+        mSuggestionCoordinator.flushPendingSuggestions(settingsValues, uiUpdateHandler);
     }
 
     /**
-     * @param c0804d current settings values
-     * @param str the word text to commit
-     * @param str2 the separator to append after the word
-     * @param enumC0690f the input source that triggered the commit
+     * @param settingsValues current settings values
+     * @param word the word text to commit
+     * @param separator the separator to append after the word
+     * @param inputSource the input source that triggered the commit
      */
-    int commitWord(SettingsValues c0804d, String str, CommitEventRecord.CommitType commitTypeVar, String str2, InputSource enumC0690f) {
-        return mCommitController.commitWord(c0804d, str, commitTypeVar, str2, enumC0690f);
+    int commitWord(SettingsValues settingsValues, String word, CommitEventRecord.CommitType commitType, String separator, InputSource inputSource) {
+        return mCommitController.commitWord(settingsValues, word, commitType, separator, inputSource);
     }
 
     /**
-     * @param c0804d current settings values
-     * @param str the word text to commit
-     * @param str2 the separator to append after the word
-     * @param enumC0690f the input source that triggered the commit
-     * @param z force the separator append even for a word character
+     * @param settingsValues current settings values
+     * @param word the word text to commit
+     * @param separator the separator to append after the word
+     * @param inputSource the input source that triggered the commit
+     * @param forceSeparator force the separator append even for a word character
      */
-    private int commitWordExtended(SettingsValues c0804d, String str, CommitEventRecord.CommitType commitTypeVar, String str2, InputSource enumC0690f, boolean z) {
-        return mCommitController.commitWordExtended(c0804d, str, commitTypeVar, str2, enumC0690f, z);
+    private int commitWordExtended(SettingsValues settingsValues, String word, CommitEventRecord.CommitType commitType, String separator, InputSource inputSource, boolean forceSeparator) {
+        return mCommitController.commitWordExtended(settingsValues, word, commitType, separator, inputSource, forceSeparator);
     }
 
     /**
-     * @param c0804d current settings values
-     * @param enumC0690f the input source that triggered the commit
-     * @param c0920g the current input event context
-     * @param handlerC0650c UI update handler
-     * @param str the separator that ended the pick
+     * @param settingsValues current settings values
+     * @param inputSource the input source that triggered the commit
+     * @param inputEventContext the current input event context
+     * @param uiUpdateHandler UI update handler
+     * @param separator the separator that ended the pick
      */
-    private boolean commitPredictionWord(SettingsValues c0804d, SuggestedWords.SuggestedWordInfo suggestedWordInfoVar, CommitEventRecord.CommitType commitTypeVar2, InputSource enumC0690f, InputEventContext c0920g, UIUpdateHandler handlerC0650c, String str) {
-        return mCommitController.commitPredictionWord(c0804d, suggestedWordInfoVar, commitTypeVar2, enumC0690f, c0920g, handlerC0650c, str);
+    private boolean commitPredictionWord(SettingsValues settingsValues, SuggestedWords.SuggestedWordInfo suggestedWordInfo, CommitEventRecord.CommitType commitType, InputSource inputSource, InputEventContext inputEventContext, UIUpdateHandler uiUpdateHandler, String separator) {
+        return mCommitController.commitPredictionWord(settingsValues, suggestedWordInfo, commitType, inputSource, inputEventContext, uiUpdateHandler, separator);
     }
 
     /**
-     * Resets the connection after select-all or a keyboard switch; {@code z} updates shift state.
-     * A failed reset with retries left ({@code i > 0}) is re-posted and returns {@code false}.
-     * @param z {@code true} to trigger a shift-state update after reset
-     * @param i retry count
-     * @param handlerC0650c UI update handler
+     * Resets the connection after select-all or a keyboard switch; {@code shouldUpdateShiftState} updates shift state.
+     * A failed reset with retries left ({@code remainingRetries > 0}) is re-posted and returns {@code false}.
+     * @param shouldUpdateShiftState {@code true} to trigger a shift-state update after reset
+     * @param remainingRetries retry count
+     * @param uiUpdateHandler UI update handler
      */
-    public boolean handleSelectAll(boolean z, int i, UIUpdateHandler handlerC0650c) {
+    public boolean handleSelectAll(boolean shouldUpdateShiftState, int remainingRetries, UIUpdateHandler uiUpdateHandler) {
         boolean z2 = this.mRichInputConnection.hasSelection() || !this.mRichInputConnection.isConnected();
         updateDynamicLearningState();
         RichInputConnection c0909x = this.mRichInputConnection;
-        if (!c0909x.resetConnection(c0909x.getCursorStart(), this.mRichInputConnection.getCursorEnd(), z2) && i > 0) {
-            handlerC0650c.postUpdateSwitchKeyboard(z, i - 1);
+        if (!c0909x.resetConnection(c0909x.getCursorStart(), this.mRichInputConnection.getCursorEnd(), z2) && remainingRetries > 0) {
+            uiUpdateHandler.postUpdateSwitchKeyboard(shouldUpdateShiftState, remainingRetries - 1);
             return false;
         }
         this.mRichInputConnection.recalibrateCursorPosition();
-        if (z) {
-            handlerC0650c.postUpdateShiftState(true, true);
+        if (shouldUpdateShiftState) {
+            uiUpdateHandler.postUpdateShiftState(true, true);
         }
         return true;
     }
 
     /**
-     * Runs a suggestion request on the engine thread. {@code i} is the symbol page order,
-     * {@code i2} the request flags.
-     * @param c0804d current settings values
-     * @param c1073o keyboard animator providing key-position context
-     * @param i shift state / symbol page order
-     * @param i2 suggestion request flags
+     * Runs a suggestion request on the engine thread. {@code keyboardShiftMode} is the symbol page order,
+     * {@code inputStyle} the request flags.
+     * @param settingsValues current settings values
+     * @param proximityGrid keyboard animator providing key-position context
+     * @param keyboardShiftMode shift state / symbol page order
+     * @param inputStyle suggestion request flags
      */
-    public void requestSuggestionsWithContext(Context context, SettingsValues c0804d, ProximityGrid c1073o, int i, int i2, SuggestionEngine.SuggestionCallback aVar) {
+    public void requestSuggestionsWithContext(Context context, SettingsValues settingsValues, ProximityGrid proximityGrid, int keyboardShiftMode, int inputStyle, SuggestionEngine.SuggestionCallback suggestionCallback) {
         // Editor-derived inputs come from the main-thread snapshot; a request sent without one
         // (off the main thread, or a plain queue in a test) reads them here.
-        RequestContext snapshot = aVar instanceof ContextCarryingCallback
-                ? ((ContextCarryingCallback) aVar).context : null;
+        RequestContext snapshot = suggestionCallback instanceof ContextCarryingCallback
+                ? ((ContextCarryingCallback) suggestionCallback).context : null;
         if (snapshot == null) {
-            snapshot = captureRequestContext(c0804d, i);
+            snapshot = captureRequestContext(settingsValues, keyboardShiftMode);
         }
         // Engine thread: read only the snapshot, never the tracker.
         final ComposingSnapshot composing = snapshot.composing;
@@ -2000,14 +2000,14 @@ public final class InputLogic implements NuanceSDK.AutoCommitCallback {
             final int engineShift = composing.engineShiftState();
             EngineOps.post("requestShiftState", sdk -> sdk.setShiftState(engineShift));
         }
-        this.mSuggestionEngine.setAutoCorrectMode(c0804d.autoCorrectionMode);
+        this.mSuggestionEngine.setAutoCorrectMode(settingsValues.autoCorrectionMode);
         if (BuildConfig.DEBUG) {
-        android.util.Log.d("PKB_SPACE_AUTOCORRECT_DEBUG", "requestSuggestionsWithContext: acMode=" + c0804d.autoCorrectionMode
-            + " acEnabled=" + c0804d.isAutoCorrectionEnabledPerUserSettings
+        android.util.Log.d("PKB_SPACE_AUTOCORRECT_DEBUG", "requestSuggestionsWithContext: acMode=" + settingsValues.autoCorrectionMode
+            + " acEnabled=" + settingsValues.isAutoCorrectionEnabledPerUserSettings
             + " composing='" + composing.text + "'"
             + " isPredMode=" + composing.isPredictionMode);
         }
-        this.mSuggestionEngine.getSuggestedWords(context, composing, snapshot.prevWordsInfo, c1073o, new SuggestionStripSettings(c0804d.blockPotentiallyOffensiveWords, c0804d.additionalFeaturesSettings, snapshot.fromWorkProfile), c0804d.isAutoCorrectionEnabledPerUserSettings, i2, aVar);
+        this.mSuggestionEngine.getSuggestedWords(context, composing, snapshot.prevWordsInfo, proximityGrid, new SuggestionStripSettings(settingsValues.blockPotentiallyOffensiveWords, settingsValues.additionalFeaturesSettings, snapshot.fromWorkProfile), settingsValues.isAutoCorrectionEnabledPerUserSettings, inputStyle, suggestionCallback);
     }
 
     /**
@@ -2106,38 +2106,38 @@ public final class InputLogic implements NuanceSDK.AutoCommitCallback {
     }
 
     /**
-     * @param i the new cursor position, as in InputConnection.setComposingText
+     * @param newCursorPosition the new cursor position, as in InputConnection.setComposingText
      */
-    void setComposingTextInternal(CharSequence charSequence, int i) {
-        if (BuildConfig.DEBUG) Log.d("TEXT_EDIT_DEBUG", "setComposingTextInternal: text='" + charSequence + "' cursorPos=" + i);
-        setComposingTextWithHighlight(charSequence, i, 0, 0, charSequence.length());
+    void setComposingTextInternal(CharSequence charSequence, int newCursorPosition) {
+        if (BuildConfig.DEBUG) Log.d("TEXT_EDIT_DEBUG", "setComposingTextInternal: text='" + charSequence + "' cursorPos=" + newCursorPosition);
+        setComposingTextWithHighlight(charSequence, newCursorPosition, 0, 0, charSequence.length());
     }
 
     /**
-     * @param i the new cursor position, as in InputConnection.setComposingText
-     * @param i2 highlight background color, 0 for none
-     * @param i3 highlight start offset
-     * @param i4 highlight end offset
+     * @param newCursorPosition the new cursor position, as in InputConnection.setComposingText
+     * @param highlightColor highlight background color, 0 for none
+     * @param highlightStart highlight start offset
+     * @param highlightEnd highlight end offset
      */
-    void setComposingTextWithHighlight(CharSequence charSequence, int i, int i2, int i3, int i4) {
+    void setComposingTextWithHighlight(CharSequence charSequence, int newCursorPosition, int highlightColor, int highlightStart, int highlightEnd) {
         if (charSequence.length() == 0) {
             Logger.debug(TAG, "setComposingTextInternalWithBackgroundColor(): no composing text to set.");
             return;
         }
-        if (i2 != 0) {
+        if (highlightColor != 0) {
             SpannableString spannableString = new SpannableString(charSequence);
-            spannableString.setSpan(new BackgroundColorSpan(i2), i3, Math.min(i4, spannableString.length() - i3),
+            spannableString.setSpan(new BackgroundColorSpan(highlightColor), highlightStart, Math.min(highlightEnd, spannableString.length() - highlightStart),
                     Spanned.SPAN_EXCLUSIVE_EXCLUSIVE | Spanned.SPAN_COMPOSING);
             charSequence = spannableString;
         }
-        this.mRichInputConnection.setComposingText(charSequence, i);
+        this.mRichInputConnection.setComposingText(charSequence, newCursorPosition);
     }
 
     /**
-     * @param interfaceC1076r the timer proxy to install
+     * @param textDecoratorUiOperator the timer proxy to install
      */
-    public void setTimerProxy(TextDecoratorUiOperator interfaceC1076r) {
-        this.mMoreKeysController.setTimerProxy(interfaceC1076r);
+    public void setTimerProxy(TextDecoratorUiOperator textDecoratorUiOperator) {
+        this.mMoreKeysController.setTimerProxy(textDecoratorUiOperator);
     }
 
     public void updateCursorAnchorInfo(CursorAnchorInfo cursorAnchorInfo) {
@@ -2145,10 +2145,10 @@ public final class InputLogic implements NuanceSDK.AutoCommitCallback {
     }
 
     /**
-     * @param z {@code true} to enable
+     * @param enabled {@code true} to enable
      */
-    public void setMoreKeysEnabled(boolean z) {
-        this.mMoreKeysController.setShouldShow(z);
+    public void setMoreKeysEnabled(boolean enabled) {
+        this.mMoreKeysController.setShouldShow(enabled);
     }
 
     /** Dismisses any more-keys popup and clears background highlight spans. */
@@ -2198,11 +2198,11 @@ public final class InputLogic implements NuanceSDK.AutoCommitCallback {
     }
 
     /**
-     * @param c0920g the current input event context
+     * @param inputEventContext the current input event context
      */
-    private InputEvent autoCapitalize(InputEvent event, InputEventContext c0920g) {
+    private InputEvent autoCapitalize(InputEvent event, InputEventContext inputEventContext) {
         int iM5460a;
-        return (c0920g.symbolPageOrder != 5 || event.isFunctionalKeyEvent() || !Character.isLetter(event.mCodePoint) || (iM5460a = toUpperCaseCodePointWithGreek(event.mCodePoint, true, c0920g.settingsValues.locale, true)) == -21) ? event : InputEvent.createKeyPress(iM5460a, event.mKeyCode, event.mX, event.mY, event.getTimestamp(), event.isKeyRepeat());
+        return (inputEventContext.symbolPageOrder != 5 || event.isFunctionalKeyEvent() || !Character.isLetter(event.mCodePoint) || (iM5460a = toUpperCaseCodePointWithGreek(event.mCodePoint, true, inputEventContext.settingsValues.locale, true)) == -21) ? event : InputEvent.createKeyPress(iM5460a, event.mKeyCode, event.mX, event.mY, event.getTimestamp(), event.isKeyRepeat());
     }
 
     private boolean isGestureEnabled() {
@@ -2216,12 +2216,12 @@ public final class InputLogic implements NuanceSDK.AutoCommitCallback {
     }
 
     /**
-     * @param c0920g the current input event context
+     * @param inputEventContext the current input event context
      */
-    private SmartPunctuationAnalyzer.Result processGestureRecognition(InputEvent event, InputEventContext c0920g) {
+    private SmartPunctuationAnalyzer.Result processGestureRecognition(InputEvent event, InputEventContext inputEventContext) {
         String strM4361n = this.mComposingTracker.getComposingTextBeforeCursor();
         String contextBefore = this.mRichInputConnection.getTextContextBefore();
-        SmartPunctuationAnalyzer.Result punctuationResult = this.mSmartPunctuationAnalyzer.analyze((contextBefore != null ? contextBefore : "") + strM4361n, event, this.mHasModifiedEvent, c0920g.settingsValues, c0920g.getInputSource() == InputSource.INTERNAL);
+        SmartPunctuationAnalyzer.Result punctuationResult = this.mSmartPunctuationAnalyzer.analyze((contextBefore != null ? contextBefore : "") + strM4361n, event, this.mHasModifiedEvent, inputEventContext.settingsValues, inputEventContext.getInputSource() == InputSource.INTERNAL);
         this.mSuggestionEngine.setBlockAutoCorrect(this.mSmartPunctuationAnalyzer.isDumbMode());
         if (punctuationResult.backspaceInjected) {
             this.mEventDispatcher.disableRevert();
@@ -2230,17 +2230,17 @@ public final class InputLogic implements NuanceSDK.AutoCommitCallback {
     }
 
     /**
-     * True when {@code i} cannot be word content. Unlike {@link SettingsValues#isWordSeparator(int)}
+     * True when {@code codePoint} cannot be word content. Unlike {@link SettingsValues#isWordSeparator(int)}
      * (the separator table), this tests word content, or under CJK the per-script "not separators"
      * table; keep that double negative (see {@link SettingsValues#isNotWordSeparatorForLocale(int, java.util.Locale)}).
-     * @param c0804d current settings values
-     * @param i the code point to test
+     * @param settingsValues current settings values
+     * @param codePoint the code point to test
      */
-    boolean isWordSeparator(SettingsValues c0804d, int i) {
+    boolean isWordSeparator(SettingsValues settingsValues, int codePoint) {
         if (isCjkLocale()) {
-            return !c0804d.isNotWordSeparatorForLocale(i, SubtypeManager.getInstance().getCurrentSubtypeLocale());
+            return !settingsValues.isNotWordSeparatorForLocale(codePoint, SubtypeManager.getInstance().getCurrentSubtypeLocale());
         }
-        return !c0804d.isWordCodePoint(i);
+        return !settingsValues.isWordCodePoint(codePoint);
     }
 
     /** Drops composing and touch-event text uncommitted, finishes the region and neutralises the strip. */
@@ -2260,38 +2260,38 @@ public final class InputLogic implements NuanceSDK.AutoCommitCallback {
     }
 
     /**
-     * Cursor moves cancel composing first; {@code z} extends the selection.
-     * @param c0804d current settings values (used for layout direction and batching)
-     * @param i number of positions to move
-     * @param z {@code true} to extend the selection while moving
+     * Cursor moves cancel composing first; {@code select} extends the selection.
+     * @param settingsValues current settings values (used for layout direction and batching)
+     * @param count number of positions to move
+     * @param select {@code true} to extend the selection while moving
      */
-    public void moveCursorRight(SettingsValues c0804d, int i, boolean z) {
-        this.mCursorController.moveCursorRight(c0804d, i, z);
+    public void moveCursorRight(SettingsValues settingsValues, int count, boolean select) {
+        this.mCursorController.moveCursorRight(settingsValues, count, select);
     }
 
     /**
-     * @param c0804d current settings values (used for layout direction and batching)
-     * @param i number of positions to move
-     * @param z {@code true} to extend the selection while moving
+     * @param settingsValues current settings values (used for layout direction and batching)
+     * @param count number of positions to move
+     * @param select {@code true} to extend the selection while moving
      */
-    public void moveCursorLeft(SettingsValues c0804d, int i, boolean z) {
-        this.mCursorController.moveCursorLeft(c0804d, i, z);
+    public void moveCursorLeft(SettingsValues settingsValues, int count, boolean select) {
+        this.mCursorController.moveCursorLeft(settingsValues, count, select);
     }
 
     /**
-     * @param i number of lines to move
-     * @param z {@code true} to extend the selection while moving
+     * @param count number of lines to move
+     * @param select {@code true} to extend the selection while moving
      */
-    public void moveCursorUp(int i, boolean z) {
-        this.mCursorController.moveCursorUp(i, z);
+    public void moveCursorUp(int count, boolean select) {
+        this.mCursorController.moveCursorUp(count, select);
     }
 
     /**
-     * @param i number of lines to move
-     * @param z {@code true} to extend the selection while moving
+     * @param count number of lines to move
+     * @param select {@code true} to extend the selection while moving
      */
-    public void moveCursorDown(int i, boolean z) {
-        this.mCursorController.moveCursorDown(i, z);
+    public void moveCursorDown(int count, boolean select) {
+        this.mCursorController.moveCursorDown(count, select);
     }
 
     boolean isCjkLocale() {
@@ -2310,39 +2310,39 @@ public final class InputLogic implements NuanceSDK.AutoCommitCallback {
     }
 
     /**
-     * The separator the dictionary recommends after {@code str} in context; a space with no dictionary.
-     * @param str the word whose trailing separator should be resolved
+     * The separator the dictionary recommends after {@code text} in context; a space with no dictionary.
+     * @param text the word whose trailing separator should be resolved
      */
-    public String getWordSeparator(String str) {
+    public String getWordSeparator(String text) {
         if (!this.mDictionaryLoader.isDictionaryReady()) {
             return " ";
         }
-        return this.mDictionaryLoader.getMainDictionary().getWordSeparator(this.mRichInputConnection.getTextContextBefore() + str);
+        return this.mDictionaryLoader.getMainDictionary().getWordSeparator(this.mRichInputConnection.getTextContextBefore() + text);
     }
 
     /**
      * Engine auto-commit callback; may fire on a native thread, so the commit is moved to the main thread.
-     * @param str the word the engine committed
+     * @param word the word the engine committed
      */
     @Override
-    public void onAutoCommitWord(String str) {
-        if (InputPathDebug.on()) Logger.info("CKB_SWIPE_TYPE_DEBUG", "InputLogic.onAutoCommitWord (NuanceSDK auto-commit callback): word='" + str + "' — this is the gesture-typed word arriving from native");
+    public void onAutoCommitWord(String word) {
+        if (InputPathDebug.on()) Logger.info("CKB_SWIPE_TYPE_DEBUG", "InputLogic.onAutoCommitWord (NuanceSDK auto-commit callback): word='" + word + "' — this is the gesture-typed word arriving from native");
         if (Looper.myLooper() == Looper.getMainLooper()) {
-            if (InputPathDebug.on()) Logger.info("CKB_SWIPE_TYPE_DEBUG", "InputLogic.onAutoCommitWord: committing on main thread — word='" + str + "'");
-            this.mRichInputConnection.commitText(str, 1);
+            if (InputPathDebug.on()) Logger.info("CKB_SWIPE_TYPE_DEBUG", "InputLogic.onAutoCommitWord: committing on main thread — word='" + word + "'");
+            this.mRichInputConnection.commitText(word, 1);
             if (InputPathDebug.on()) Logger.info("CKB_SWIPE_TYPE_DEBUG", "InputLogic.onAutoCommitWord: commitText completed — requesting predictions");
             requestPredictions(InputSource.HARDWARE);
         } else {
-            if (InputPathDebug.on()) Logger.info("CKB_SWIPE_TYPE_DEBUG", "InputLogic.onAutoCommitWord: posting commit to main handler — word='" + str + "' currentThread=" + Thread.currentThread().getName());
+            if (InputPathDebug.on()) Logger.info("CKB_SWIPE_TYPE_DEBUG", "InputLogic.onAutoCommitWord: posting commit to main handler — word='" + word + "' currentThread=" + Thread.currentThread().getName());
             // Refuse to commit into a different session than the one that posted.
             final int postedGeneration = this.mSessionGeneration;
             this.mMainHandler.post(() -> {
                 if (postedGeneration != this.mSessionGeneration) {
-                    if (InputPathDebug.on()) Logger.info("CKB_SWIPE_TYPE_DEBUG", "InputLogic.onAutoCommitWord: DROPPING posted commit — session changed (posted=" + postedGeneration + " now=" + this.mSessionGeneration + ") word='" + str + "'");
+                    if (InputPathDebug.on()) Logger.info("CKB_SWIPE_TYPE_DEBUG", "InputLogic.onAutoCommitWord: DROPPING posted commit — session changed (posted=" + postedGeneration + " now=" + this.mSessionGeneration + ") word='" + word + "'");
                     return;
                 }
-                if (InputPathDebug.on()) Logger.info("CKB_SWIPE_TYPE_DEBUG", "InputLogic.onAutoCommitWord: executing posted commit — word='" + str + "'");
-                this.mRichInputConnection.commitText(str, 1);
+                if (InputPathDebug.on()) Logger.info("CKB_SWIPE_TYPE_DEBUG", "InputLogic.onAutoCommitWord: executing posted commit — word='" + word + "'");
+                this.mRichInputConnection.commitText(word, 1);
                 if (InputPathDebug.on()) Logger.info("CKB_SWIPE_TYPE_DEBUG", "InputLogic.onAutoCommitWord: posted commitText completed — requesting predictions");
                 requestPredictions(InputSource.HARDWARE);
             });
@@ -2350,18 +2350,18 @@ public final class InputLogic implements NuanceSDK.AutoCommitCallback {
     }
 
     /**
-     * @param str text before the cursor
-     * @param i cursor position within the recorrection word
-     * @param str2 the recorrection word
+     * @param textBeforeCursor text before the cursor
+     * @param recorrectionCursorPosition cursor position within the recorrection word
+     * @param recorrectionWord the recorrection word
      */
-    void updateNuanceContext(String str, int i, String str2) {
-        mSuggestionCoordinator.updateNuanceContext(str, i, str2);
+    void updateNuanceContext(String textBeforeCursor, int recorrectionCursorPosition, String recorrectionWord) {
+        mSuggestionCoordinator.updateNuanceContext(textBeforeCursor, recorrectionCursorPosition, recorrectionWord);
     }
 
     /**
-     * @param str the word to learn
+     * @param textBeforeCursor the word to learn
      */
-    private void commitWordToDictionary(String str) {
-        mSuggestionCoordinator.commitWordToDictionary(str);
+    private void commitWordToDictionary(String textBeforeCursor) {
+        mSuggestionCoordinator.commitWordToDictionary(textBeforeCursor);
     }
 }

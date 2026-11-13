@@ -3,8 +3,8 @@ package dev.bbkb.ime.keyboard.internal;
 
 
 final class ShiftKeyState extends ModifierKeyState {
-    public ShiftKeyState(String str) {
-        super(str);
+    public ShiftKeyState(String name) {
+        super(name);
     }
 
     @Override // dev.bbkb.ime.keyboard.internal.ModifierKeyState
@@ -35,14 +35,14 @@ final class ShiftKeyState extends ModifierKeyState {
     }
 
     @Override // dev.bbkb.ime.keyboard.internal.ModifierKeyState
-    protected String stateToString(int i) {
-        switch (i) {
+    protected String stateToString(int state) {
+        switch (state) {
             case 3:
                 return "PRESSING_ON_SHIFTED";
             case 4:
                 return "IGNORING";
             default:
-                return super.stateToString(i);
+                return super.stateToString(state);
         }
     }
 }

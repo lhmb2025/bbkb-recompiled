@@ -222,19 +222,19 @@ class UIUpdateHandler(blackBerryIME: BlackBerryIME) : WeakOwnerHandler<BlackBerr
         blackBerryIMEV.resetKeyboardState()
     }
 
-    /** @param str text to commit */
-    fun postCommitText(str: String) {
-        sendMessage(obtainMessage(MSG_COMMIT_TEXT, str))
+    /** @param text text to commit */
+    fun postCommitText(text: String) {
+        sendMessage(obtainMessage(MSG_COMMIT_TEXT, text))
     }
 
     /**
      * A dictation partial shown as composing text; queued with [postCommitText] so the final commit
      * replaces it. An older queued partial is dropped.
-     * @param str the partial result text
+     * @param text the partial result text
      */
-    fun postSetComposingText(str: String) {
+    fun postSetComposingText(text: String) {
         removeMessages(MSG_SET_COMPOSING_TEXT)
-        sendMessage(obtainMessage(MSG_SET_COMPOSING_TEXT, str))
+        sendMessage(obtainMessage(MSG_SET_COMPOSING_TEXT, text))
     }
 
     /**
@@ -251,19 +251,19 @@ class UIUpdateHandler(blackBerryIME: BlackBerryIME) : WeakOwnerHandler<BlackBerr
         HandlerCompat.postDelayed(this, action, token, delayMillis)
     }
 
-    /** @param i update reason code forwarded to the worker */
-    fun postUpdateSuggestions(i: Int) {
-        sendMessageDelayed(obtainMessage(MSG_UPDATE_SUGGESTIONS, i, 0), suggestionUpdateDelay.toLong())
+    /** @param inputStyle update reason code forwarded to the worker */
+    fun postUpdateSuggestions(inputStyle: Int) {
+        sendMessageDelayed(obtainMessage(MSG_UPDATE_SUGGESTIONS, inputStyle, 0), suggestionUpdateDelay.toLong())
     }
 
-    /** @param i update reason code forwarded to the worker */
-    fun postUpdateJapaneseSuggestions(i: Int) {
-        sendMessageDelayed(obtainMessage(MSG_UPDATE_JAPANESE_SUGGESTIONS, i, 0), suggestionUpdateDelay.toLong())
+    /** @param inputStyle update reason code forwarded to the worker */
+    fun postUpdateJapaneseSuggestions(inputStyle: Int) {
+        sendMessageDelayed(obtainMessage(MSG_UPDATE_JAPANESE_SUGGESTIONS, inputStyle, 0), suggestionUpdateDelay.toLong())
     }
 
-    /** @param i update reason code forwarded to the worker */
-    fun postUpdateGestureSuggestions(i: Int) {
-        sendMessageDelayed(obtainMessage(MSG_UPDATE_GESTURE_SUGGESTIONS, i, 0), gestureInputSuggestionDelay.toLong())
+    /** @param inputStyle update reason code forwarded to the worker */
+    fun postUpdateGestureSuggestions(inputStyle: Int) {
+        sendMessageDelayed(obtainMessage(MSG_UPDATE_GESTURE_SUGGESTIONS, inputStyle, 0), gestureInputSuggestionDelay.toLong())
     }
 
     fun postLoadAdditionalLocales() {
@@ -272,28 +272,28 @@ class UIUpdateHandler(blackBerryIME: BlackBerryIME) : WeakOwnerHandler<BlackBerr
 
     /**
      * Posts a recorrection pass (MSG_UPDATE_SHIFT_MODE) when the suggestion strip is active.
-     * @param z include the word under the cursor as the first suggestion
-     * @param z2 true to delay by the suggestion-update delay, false to post now
+     * @param includeResumedWordInSuggestions include the word under the cursor as the first suggestion
+     * @param shouldDelay true to delay by the suggestion-update delay, false to post now
      */
-    fun postUpdateShiftState(z: Boolean, z2: Boolean) {
+    fun postUpdateShiftState(includeResumedWordInSuggestions: Boolean, shouldDelay: Boolean) {
         val blackBerryIMEV = getOwner()
         if (blackBerryIMEV != null && blackBerryIMEV.isSuggestionStripActive()) {
             removeMessages(MSG_UPDATE_SHIFT_MODE)
-            if (z2) {
-                sendMessageDelayed(obtainMessage(MSG_UPDATE_SHIFT_MODE, if (z) 1 else 0, 0), suggestionUpdateDelay.toLong())
+            if (shouldDelay) {
+                sendMessageDelayed(obtainMessage(MSG_UPDATE_SHIFT_MODE, if (includeResumedWordInSuggestions) 1 else 0, 0), suggestionUpdateDelay.toLong())
             } else {
-                sendMessage(obtainMessage(MSG_UPDATE_SHIFT_MODE, if (z) 1 else 0, 0))
+                sendMessage(obtainMessage(MSG_UPDATE_SHIFT_MODE, if (includeResumedWordInSuggestions) 1 else 0, 0))
             }
         }
     }
 
     /**
-     * @param z true to update shift state after the connection reset
-     * @param i retries left
+     * @param tryResumeSuggestions true to update shift state after the connection reset
+     * @param remainingTries retries left
      */
-    fun postUpdateSwitchKeyboard(z: Boolean, i: Int) {
+    fun postUpdateSwitchKeyboard(tryResumeSuggestions: Boolean, remainingTries: Int) {
         removeMessages(MSG_SWITCH_KEYBOARD)
-        sendMessage(obtainMessage(MSG_SWITCH_KEYBOARD, if (z) 1 else 0, i, null))
+        sendMessage(obtainMessage(MSG_SWITCH_KEYBOARD, if (tryResumeSuggestions) 1 else 0, remainingTries, null))
     }
 
     fun postReloadSettings() {
@@ -376,45 +376,45 @@ class UIUpdateHandler(blackBerryIME: BlackBerryIME) : WeakOwnerHandler<BlackBerr
 
     /**
      * Main-thread callers are in the current session.
-     * @param c0666ac the suggestions to show
+     * @param suggestedWords the suggestions to show
      */
-    fun postShowSuggestions(c0666ac: SuggestedWords) {
-        postShowSuggestions(c0666ac, getOwner()?.getInputLogic()?.getSessionGeneration() ?: 0)
+    fun postShowSuggestions(suggestedWords: SuggestedWords) {
+        postShowSuggestions(suggestedWords, getOwner()?.getInputLogic()?.getSessionGeneration() ?: 0)
     }
 
     /**
      * Sync/gesture producer. [sessionGeneration] is the session the request was dispatched under
      * (the worker may post after teardown); carried in arg2 and checked at delivery.
-     * @param c0666ac the suggestions to show
+     * @param suggestedWords the suggestions to show
      */
-    fun postShowSuggestions(c0666ac: SuggestedWords, sessionGeneration: Int) {
+    fun postShowSuggestions(suggestedWords: SuggestedWords, sessionGeneration: Int) {
         removeMessages(MSG_SHOW_SUGGESTIONS)
-        obtainMessage(MSG_SHOW_SUGGESTIONS, 2, sessionGeneration, c0666ac).sendToTarget()
+        obtainMessage(MSG_SHOW_SUGGESTIONS, 2, sessionGeneration, suggestedWords).sendToTarget()
     }
 
     /**
      * Main-thread callers are in the current session.
-     * @param c0666ac the suggestions to show
+     * @param suggestedWords the suggestions to show
      */
-    fun postShowSuggestionStrip(c0666ac: SuggestedWords) {
-        postShowSuggestionStrip(c0666ac, getOwner()?.getInputLogic()?.getSessionGeneration() ?: 0)
+    fun postShowSuggestionStrip(suggestedWords: SuggestedWords) {
+        postShowSuggestionStrip(suggestedWords, getOwner()?.getInputLogic()?.getSessionGeneration() ?: 0)
     }
 
     /**
      * Async typed-path producer; must stamp the session too, or every reply it posts is dropped.
-     * @param c0666ac the suggestions to show
+     * @param suggestedWords the suggestions to show
      */
-    fun postShowSuggestionStrip(c0666ac: SuggestedWords, sessionGeneration: Int) {
+    fun postShowSuggestionStrip(suggestedWords: SuggestedWords, sessionGeneration: Int) {
         removeMessages(MSG_SHOW_SUGGESTIONS)
-        obtainMessage(MSG_SHOW_SUGGESTIONS, 0, sessionGeneration, c0666ac).sendToTarget()
+        obtainMessage(MSG_SHOW_SUGGESTIONS, 0, sessionGeneration, suggestedWords).sendToTarget()
     }
 
     /**
-     * @param c0666ac the gesture's suggestions; the top word is committed
-     * @param enumC0690f the input source of the gesture
+     * @param suggestedWords the gesture's suggestions; the top word is committed
+     * @param inputSource the input source of the gesture
      */
-    fun postBatchInputSuggestions(c0666ac: SuggestedWords, enumC0690f: InputSource) {
-        obtainMessage(MSG_BATCH_INPUT_SUGGESTIONS, enumC0690f.getId(), 0, c0666ac).sendToTarget()
+    fun postBatchInputSuggestions(suggestedWords: SuggestedWords, inputSource: InputSource) {
+        obtainMessage(MSG_BATCH_INPUT_SUGGESTIONS, inputSource.getId(), 0, suggestedWords).sendToTarget()
     }
 
     fun resetOrientationState() {
@@ -447,8 +447,8 @@ class UIUpdateHandler(blackBerryIME: BlackBerryIME) : WeakOwnerHandler<BlackBerr
         blackBerryIME.startInputViewInternal(editorInfo, restarting)
     }
 
-    /** @param z the restarting flag for a deferred start-input */
-    private fun drainPendingInputEvents(blackBerryIME: BlackBerryIME, editorInfo: EditorInfo?, z: Boolean) {
+    /** @param restarting the restarting flag for a deferred start-input */
+    private fun drainPendingInputEvents(blackBerryIME: BlackBerryIME, editorInfo: EditorInfo?, restarting: Boolean) {
         if (pendingFinishInputView) {
             finishInputView(blackBerryIME, pendingFinishInput)
         }
@@ -456,41 +456,41 @@ class UIUpdateHandler(blackBerryIME: BlackBerryIME) : WeakOwnerHandler<BlackBerr
             blackBerryIME.finishInputInternal()
         }
         if (pendingStartInput) {
-            blackBerryIME.startInputInternal(editorInfo, z)
+            blackBerryIME.startInputInternal(editorInfo, restarting)
         }
         resetPendingInputFlags()
     }
 
-    /** @param z true when restarting input in the same editor */
-    fun handleStartInput(editorInfo: EditorInfo?, z: Boolean) {
+    /** @param restarting true when restarting input in the same editor */
+    fun handleStartInput(editorInfo: EditorInfo?, restarting: Boolean) {
         if (hasMessages(MSG_ORIENTATION_DELAY)) {
             pendingStartInput = true
             return
         }
         val blackBerryIMEV = getOwner()
-        if (needsOrientationChange && z) {
+        if (needsOrientationChange && restarting) {
             needsOrientationChange = false
             shouldDelayInputStart = true
         }
         if (blackBerryIMEV != null) {
-            drainPendingInputEvents(blackBerryIMEV, editorInfo, z)
-            blackBerryIMEV.startInputInternal(editorInfo, z)
+            drainPendingInputEvents(blackBerryIMEV, editorInfo, restarting)
+            blackBerryIMEV.startInputInternal(editorInfo, restarting)
         }
     }
 
     /**
-     * @param str first package name
-     * @param str2 second package name
+     * @param first first package name
+     * @param second second package name
      */
-    private fun equalsNullable(str: String?, str2: String?): Boolean {
-        if (str == null && str2 == null) return true
-        if (str == null || str2 == null) return false
-        return str == str2
+    private fun equalsNullable(first: String?, second: String?): Boolean {
+        if (first == null && second == null) return true
+        if (first == null || second == null) return false
+        return first == second
     }
 
-    /** @param z true when restarting input in the same editor */
+    /** @param restarting true when restarting input in the same editor */
     @Throws(Resources.NotFoundException::class)
-    fun handleStartInputView(editorInfo: EditorInfo?, z: Boolean) {
+    fun handleStartInputView(editorInfo: EditorInfo?, restarting: Boolean) {
         if (editorInfo != null) {
             if (!equalsNullable(editorInfo.packageName, lastPackageName)) {
                 val c1083eM6839q = KeyboardSwitcher.getInstance().getSlideboardManager()
@@ -514,14 +514,14 @@ class UIUpdateHandler(blackBerryIME: BlackBerryIME) : WeakOwnerHandler<BlackBerr
         }
         val blackBerryIMEV = getOwner()
         if (blackBerryIMEV != null) {
-            drainPendingInputEvents(blackBerryIMEV, editorInfo, z)
-            startInputView(blackBerryIMEV, editorInfo, z)
+            drainPendingInputEvents(blackBerryIMEV, editorInfo, restarting)
+            startInputView(blackBerryIMEV, editorInfo, restarting)
             lastEditorInfo = editorInfo
         }
     }
 
-    /** @param z true when input is finishing too, not just the view */
-    fun handleFinishInputView(z: Boolean) {
+    /** @param finishingInput true when input is finishing too, not just the view */
+    fun handleFinishInputView(finishingInput: Boolean) {
         if (hasMessages(MSG_ORIENTATION_DELAY)) {
             pendingFinishInputView = true
             scheduleDeferredCleanupSafety()
@@ -529,7 +529,7 @@ class UIUpdateHandler(blackBerryIME: BlackBerryIME) : WeakOwnerHandler<BlackBerr
         }
         val blackBerryIMEV = getOwner()
         if (blackBerryIMEV != null) {
-            finishInputView(blackBerryIMEV, z)
+            finishInputView(blackBerryIMEV, finishingInput)
             lastEditorInfo = null
         }
     }

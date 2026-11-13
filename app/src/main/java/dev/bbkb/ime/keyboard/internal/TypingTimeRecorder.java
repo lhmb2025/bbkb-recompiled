@@ -14,35 +14,35 @@ public final class TypingTimeRecorder {
 
     private long mLastBatchInputTime;
 
-    public TypingTimeRecorder(int i, int i2) {
-        this.mStaticTimeThresholdAfterFastTyping = i;
-        this.mSuppressKeyPreviewAfterBatchInputDuration = i2;
+    public TypingTimeRecorder(int staticTimeThresholdAfterFastTyping, int suppressKeyPreviewAfterBatchInputDuration) {
+        this.mStaticTimeThresholdAfterFastTyping = staticTimeThresholdAfterFastTyping;
+        this.mSuppressKeyPreviewAfterBatchInputDuration = suppressKeyPreviewAfterBatchInputDuration;
     }
 
     private boolean wasLastInputTyping() {
         return this.mLastTypingTime >= this.mLastBatchInputTime;
     }
 
-    public void onCodeInput(int i, long j) {
-        if (Character.isLetter(i)) {
-            if (wasLastInputTyping() || j - this.mLastTypingTime < this.mStaticTimeThresholdAfterFastTyping) {
-                this.mLastLetterTypingTime = j;
+    public void onCodeInput(int code, long keyEventTime) {
+        if (Character.isLetter(code)) {
+            if (wasLastInputTyping() || keyEventTime - this.mLastTypingTime < this.mStaticTimeThresholdAfterFastTyping) {
+                this.mLastLetterTypingTime = keyEventTime;
             }
-        } else if (j - this.mLastLetterTypingTime < this.mStaticTimeThresholdAfterFastTyping) {
-            this.mLastLetterTypingTime = j;
+        } else if (keyEventTime - this.mLastLetterTypingTime < this.mStaticTimeThresholdAfterFastTyping) {
+            this.mLastLetterTypingTime = keyEventTime;
         }
-        this.mLastTypingTime = j;
+        this.mLastTypingTime = keyEventTime;
     }
 
-    public void onEndBatchInput(long j) {
-        this.mLastBatchInputTime = j;
+    public void onEndBatchInput(long batchInputTime) {
+        this.mLastBatchInputTime = batchInputTime;
     }
 
     public long getLastLetterTypingTime() {
         return this.mLastLetterTypingTime;
     }
 
-    public boolean needsUpdateBatchInput(long j) {
-        return !wasLastInputTyping() && j - this.mLastBatchInputTime < ((long) this.mSuppressKeyPreviewAfterBatchInputDuration);
+    public boolean needsUpdateBatchInput(long keyEventTime) {
+        return !wasLastInputTyping() && keyEventTime - this.mLastBatchInputTime < ((long) this.mSuppressKeyPreviewAfterBatchInputDuration);
     }
 }

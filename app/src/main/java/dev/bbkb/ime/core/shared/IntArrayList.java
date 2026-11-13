@@ -10,49 +10,49 @@ public final class IntArrayList {
 
     private int length;
 
-    public IntArrayList(int i) {
-        reset(i);
+    public IntArrayList(int capacity) {
+        reset(capacity);
     }
 
-    public int get(int i) {
-        if (i < this.length) {
-            return this.array[i];
+    public int get(int index) {
+        if (index < this.length) {
+            return this.array[index];
         }
-        throw new ArrayIndexOutOfBoundsException("length=" + this.length + "; index=" + i);
+        throw new ArrayIndexOutOfBoundsException("length=" + this.length + "; index=" + index);
     }
 
     /**
-     * @param i index; past the end, the list grows to it
-     * @param i2 value
+     * @param index index; past the end, the list grows to it
+     * @param value value
      */
-    public void addAt(int i, int i2) {
-        if (i < this.length) {
-            this.array[i] = i2;
+    public void addAt(int index, int value) {
+        if (index < this.length) {
+            this.array[index] = value;
         } else {
-            this.length = i;
-            add(i2);
+            this.length = index;
+            add(value);
         }
     }
 
-    public void add(int i) {
+    public void add(int value) {
         int i2 = this.length;
         int i3 = i2 + 1;
         ensureCapacity(i3);
-        this.array[i2] = i;
+        this.array[i2] = value;
         this.length = i3;
     }
 
-    private int calculateCapacity(int i) {
+    private int calculateCapacity(int minimumCapacity) {
         int length = this.array.length;
-        if (length >= i) {
+        if (length >= minimumCapacity) {
             return 0;
         }
         int i2 = length * 2;
-        return i > i2 ? i : i2;
+        return minimumCapacity > i2 ? minimumCapacity : i2;
     }
 
-    private void ensureCapacity(int i) {
-        int iM5568f = calculateCapacity(i);
+    private void ensureCapacity(int minimumCapacity) {
+        int iM5568f = calculateCapacity(minimumCapacity);
         if (iM5568f > 0) {
             this.array = Arrays.copyOf(this.array, iM5568f);
         }
@@ -62,13 +62,13 @@ public final class IntArrayList {
         return this.length;
     }
 
-    public void setLength(int i) {
-        ensureCapacity(i);
-        this.length = i;
+    public void setLength(int newLength) {
+        ensureCapacity(newLength);
+        this.length = newLength;
     }
 
-    public void reset(int i) {
-        this.array = new int[i];
+    public void reset(int capacity) {
+        this.array = new int[capacity];
         this.length = 0;
     }
 
@@ -77,36 +77,36 @@ public final class IntArrayList {
     }
 
     /** Adopts {@code other}'s backing array by reference, so the lists share storage; see {@link #copy(IntArrayList)}. */
-    public void setSharingBackingArray(IntArrayList c0865af) {
-        this.array = c0865af.array;
-        this.length = c0865af.length;
+    public void setSharingBackingArray(IntArrayList other) {
+        this.array = other.array;
+        this.length = other.length;
     }
 
     /** Deep-copies {@code other}'s contents into this list; the two lists stay independent. */
-    public void copy(IntArrayList c0865af) {
-        int iM5568f = calculateCapacity(c0865af.length);
+    public void copy(IntArrayList other) {
+        int iM5568f = calculateCapacity(other.length);
         if (iM5568f > 0) {
             this.array = new int[iM5568f];
         }
-        System.arraycopy(c0865af.array, 0, this.array, 0, c0865af.length);
-        this.length = c0865af.length;
+        System.arraycopy(other.array, 0, this.array, 0, other.length);
+        this.length = other.length;
     }
 
-    public void append(IntArrayList c0865af, int i, int i2) {
-        if (i2 == 0) {
+    public void append(IntArrayList src, int startPos, int count) {
+        if (count == 0) {
             return;
         }
         int i3 = this.length;
-        int i4 = i3 + i2;
+        int i4 = i3 + count;
         ensureCapacity(i4);
-        System.arraycopy(c0865af.array, i, this.array, i3, i2);
+        System.arraycopy(src.array, startPos, this.array, i3, count);
         this.length = i4;
     }
 
-    public void dropFirst(int i) {
+    public void dropFirst(int count) {
         int[] iArr = this.array;
-        System.arraycopy(iArr, i, iArr, 0, this.length - i);
-        this.length -= i;
+        System.arraycopy(iArr, count, iArr, 0, this.length - count);
+        this.length -= count;
     }
 
     public String toString() {

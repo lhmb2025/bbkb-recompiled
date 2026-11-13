@@ -13,16 +13,16 @@ public final class TimerHandler extends WeakOwnerHandler<TimerHandler.Callbacks>
 
     
     public interface Callbacks {
-        void onLongPress(PointerTracker c1084t);
+        void onLongPress(PointerTracker pointerTracker);
 
         void startWhileTypingFadeinAnimation();
 
         void startWhileTypingFadeoutAnimation();
     }
 
-    public TimerHandler(Callbacks aVar, int i) {
-        super(aVar);
-        this.mTypingStateTimeout = i;
+    public TimerHandler(Callbacks callbacks, int typingStateTimeout) {
+        super(callbacks);
+        this.mTypingStateTimeout = typingStateTimeout;
     }
 
     @Override // android.os.Handler
@@ -53,17 +53,17 @@ public final class TimerHandler extends WeakOwnerHandler<TimerHandler.Callbacks>
     }
 
     @Override // dev.bbkb.ime.keyboard.internal.TimerProxy
-    public void startKeyRepeatTimer(PointerTracker c1084t, int i, int i2) {
-        Key keyM7652o = c1084t.getKey();
-        if (keyM7652o == null || i2 == 0) {
+    public void startKeyRepeatTimer(PointerTracker pointerTracker, int repeatCount, int delay) {
+        Key keyM7652o = pointerTracker.getKey();
+        if (keyM7652o == null || delay == 0) {
             return;
         }
-        sendMessageDelayed(obtainMessage(1, keyM7652o.getCode(), i, c1084t), i2);
+        sendMessageDelayed(obtainMessage(1, keyM7652o.getCode(), repeatCount, pointerTracker), delay);
     }
 
     @Override // dev.bbkb.ime.keyboard.internal.TimerProxy
-    public void cancelKeyRepeatTimer(PointerTracker c1084t) {
-        removeMessages(1, c1084t);
+    public void cancelKeyRepeatTimer(PointerTracker pointerTracker) {
+        removeMessages(1, pointerTracker);
     }
 
     private void cancelAllKeyRepeatTimers() {
@@ -71,27 +71,27 @@ public final class TimerHandler extends WeakOwnerHandler<TimerHandler.Callbacks>
     }
 
     @Override // dev.bbkb.ime.keyboard.internal.TimerProxy
-    public void startLongPressTimer(PointerTracker c1084t, int i) {
-        Key keyM7652o = c1084t.getKey();
+    public void startLongPressTimer(PointerTracker pointerTracker, int delay) {
+        Key keyM7652o = pointerTracker.getKey();
         if (keyM7652o == null) {
             return;
         }
-        sendMessageDelayed(obtainMessage(keyM7652o.getCode() == -1 ? 3 : 2, c1084t), i);
+        sendMessageDelayed(obtainMessage(keyM7652o.getCode() == -1 ? 3 : 2, pointerTracker), delay);
     }
 
     @Override // dev.bbkb.ime.keyboard.internal.TimerProxy
-    public void cancelLongPressTimers(PointerTracker c1084t) {
-        removeMessages(2, c1084t);
-        removeMessages(3, c1084t);
+    public void cancelLongPressTimers(PointerTracker pointerTracker) {
+        removeMessages(2, pointerTracker);
+        removeMessages(3, pointerTracker);
     }
 
     @Override // dev.bbkb.ime.keyboard.internal.TimerProxy
-    public void startLockFocusTimer(PointerTracker c1084t, int i) {
-        sendMessageDelayed(obtainMessage(5, c1084t), i);
+    public void startLockFocusTimer(PointerTracker pointerTracker, int delay) {
+        sendMessageDelayed(obtainMessage(5, pointerTracker), delay);
     }
 
-    private void cancelLockFocusTimer(PointerTracker c1084t) {
-        removeMessages(5, c1084t);
+    private void cancelLockFocusTimer(PointerTracker pointerTracker) {
+        removeMessages(5, pointerTracker);
     }
 
     @Override // dev.bbkb.ime.keyboard.internal.TimerProxy
@@ -147,10 +147,10 @@ public final class TimerHandler extends WeakOwnerHandler<TimerHandler.Callbacks>
     }
 
     @Override // dev.bbkb.ime.keyboard.internal.TimerProxy
-    public void cancelKeyTimers(PointerTracker c1084t) {
-        cancelKeyRepeatTimer(c1084t);
-        cancelLongPressTimers(c1084t);
-        cancelLockFocusTimer(c1084t);
+    public void cancelKeyTimers(PointerTracker pointerTracker) {
+        cancelKeyRepeatTimer(pointerTracker);
+        cancelLongPressTimers(pointerTracker);
+        cancelLockFocusTimer(pointerTracker);
     }
 
     private void cancelKeyAndLongPressTimers() {

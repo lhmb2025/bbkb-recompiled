@@ -78,9 +78,9 @@ public final class AndroidSpellCheckerSession extends SpellCheckerService.Sessio
 
         public final int mFlags;
 
-        /** @param strArr the cached suggestions */
-        public CachedResult(String[] strArr, int flags) {
-            this.mSuggestions = strArr;
+        /** @param suggestions the cached suggestions */
+        public CachedResult(String[] suggestions, int flags) {
+            this.mSuggestions = suggestions;
             this.mFlags = flags;
         }
     }
@@ -197,20 +197,20 @@ public final class AndroidSpellCheckerSession extends SpellCheckerService.Sessio
                 | (prefs.getBoolean("pref_spellcheck_use_contacts", true) ? 2 : 0);
     }
 
-    /** @param str the word to classify */
-    private static int classifyWord(String str, int scriptCode) {
-        if (TextUtils.isEmpty(str) || str.length() <= 1) {
+    /** @param word the word to classify */
+    private static int classifyWord(String word, int scriptCode) {
+        if (TextUtils.isEmpty(word) || word.length() <= 1) {
             return 5; // TOO_SHORT
         }
-        int firstCodePoint = str.codePointAt(0);
+        int firstCodePoint = word.codePointAt(0);
         if (!ScriptUtils.isLetterPartOfScript(firstCodePoint, scriptCode) && 39 != firstCodePoint) {
             return 4; // NON_LETTER_START
         }
-        int length = str.length();
+        int length = word.length();
         int offset = 0;
         int letterCount = 0;
         while (offset < length) {
-            int codePoint = str.codePointAt(offset);
+            int codePoint = word.codePointAt(offset);
             if (64 == codePoint || 47 == codePoint) {
                 return 3; // URL_OR_EMAIL (contains @ or /)
             }
@@ -220,7 +220,7 @@ public final class AndroidSpellCheckerSession extends SpellCheckerService.Sessio
             if (ScriptUtils.isLetterPartOfScript(codePoint, scriptCode)) {
                 letterCount++;
             }
-            offset = str.offsetByCodePoints(offset, 1);
+            offset = word.offsetByCodePoints(offset, 1);
         }
         return letterCount * 4 < length * 3 ? 1 : 0; // 1=MOSTLY_NON_LETTERS, 0=NORMAL_WORD
     }
@@ -387,8 +387,8 @@ public final class AndroidSpellCheckerSession extends SpellCheckerService.Sessio
     /** Straight or curly (U+2019) apostrophe; each is one UTF-16 unit, which the offsets rely on. */
     private static final String APOSTROPHE_PATTERN = "['’]";
 
-    private static boolean hasApostrophe(CharSequence s) {
-        final String str = s.toString();
+    private static boolean hasApostrophe(CharSequence text) {
+        final String str = text.toString();
         return str.indexOf('\'') >= 0 || str.indexOf('’') >= 0;
     }
 
@@ -459,23 +459,23 @@ public final class AndroidSpellCheckerSession extends SpellCheckerService.Sessio
     }
 
     @Override
-    /** @param i the suggestion limit; 0 means 5 */
-    public SentenceSuggestionsInfo[] onGetSentenceSuggestionsMultiple(TextInfo[] textInfoArr, int i) {
-        if (i == 0) {
-            i = 5;
+    /** @param suggestionsLimit the suggestion limit; 0 means 5 */
+    public SentenceSuggestionsInfo[] onGetSentenceSuggestionsMultiple(TextInfo[] textInfos, int suggestionsLimit) {
+        if (suggestionsLimit == 0) {
+            suggestionsLimit = 5;
         }
-        int length = textInfoArr.length;
+        int length = textInfos.length;
         this.mService.beginRequest();
         try {
             if (!prepareRequest()) {
                 return new SentenceSuggestionsInfo[length];
             }
-            SentenceSuggestionsInfo[] sentenceResults = getSentenceSuggestions(textInfoArr, i);
-            if (sentenceResults == null || sentenceResults.length != textInfoArr.length) {
+            SentenceSuggestionsInfo[] sentenceResults = getSentenceSuggestions(textInfos, suggestionsLimit);
+            if (sentenceResults == null || sentenceResults.length != textInfos.length) {
                 return new SentenceSuggestionsInfo[length];
             }
             for (int i2 = 0; i2 < sentenceResults.length; i2++) {
-                SentenceSuggestionsInfo apostropheFixed = fixApostropheSuggestions(textInfoArr[i2], sentenceResults[i2]);
+                SentenceSuggestionsInfo apostropheFixed = fixApostropheSuggestions(textInfos[i2], sentenceResults[i2]);
                 if (apostropheFixed != null) {
                     sentenceResults[i2] = apostropheFixed;
                 }
@@ -486,9 +486,9 @@ public final class AndroidSpellCheckerSession extends SpellCheckerService.Sessio
         }
     }
 
-    private SentenceSuggestionsInfo[] getSentenceSuggestions(TextInfo[] textInfoArr, int sugLimit) {
+    private SentenceSuggestionsInfo[] getSentenceSuggestions(TextInfo[] textInfos, int sugLimit) {
         SentenceTokenizer tokenizer;
-        if (textInfoArr == null || textInfoArr.length == 0) {
+        if (textInfos == null || textInfos.length == 0) {
             return SentenceTokenizer.getEmptyResult();
         }
         synchronized (this) {
@@ -505,11 +505,11 @@ public final class AndroidSpellCheckerSession extends SpellCheckerService.Sessio
         if (tokenizer == null) {
             return SentenceTokenizer.getEmptyResult();
         }
-        int length = textInfoArr.length;
+        int length = textInfos.length;
         SentenceSuggestionsInfo[] results = new SentenceSuggestionsInfo[length];
         final int verdictSettings = verdictSettings();
         for (int i2 = 0; i2 < length; i2++) {
-            SentenceTextInfoParams tokenizedParams = tokenizer.tokenize(textInfoArr[i2]);
+            SentenceTextInfoParams tokenizedParams = tokenizer.tokenize(textInfos[i2]);
             if (tokenizedParams == null) {
                 return null;
             }
@@ -525,11 +525,11 @@ public final class AndroidSpellCheckerSession extends SpellCheckerService.Sessio
     }
 
     @Override
-    public SuggestionsInfo[] onGetSuggestionsMultiple(TextInfo[] textInfoArr, int sugLimit, boolean sequentialWords) {
+    public SuggestionsInfo[] onGetSuggestionsMultiple(TextInfo[] textInfos, int sugLimit, boolean sequentialWords) {
         long savedIdentity = Binder.clearCallingIdentity();
         this.mService.beginRequest();
         try {
-            return checkWords(textInfoArr, sugLimit, sequentialWords, prepareRequest(), verdictSettings());
+            return checkWords(textInfos, sugLimit, sequentialWords, prepareRequest(), verdictSettings());
         } finally {
             this.mService.endRequest();
             Binder.restoreCallingIdentity(savedIdentity);
@@ -537,22 +537,22 @@ public final class AndroidSpellCheckerSession extends SpellCheckerService.Sessio
     }
 
     /** Checks each word; the request's dictionary load and settings were read once by the caller. */
-    private SuggestionsInfo[] checkWords(TextInfo[] textInfoArr, int sugLimit, boolean sequentialWords,
+    private SuggestionsInfo[] checkWords(TextInfo[] textInfos, int sugLimit, boolean sequentialWords,
             boolean dictionaryLoaded, int verdictSettings) {
         long savedIdentity = Binder.clearCallingIdentity();
         try {
-            int length = textInfoArr.length;
+            int length = textInfos.length;
             SuggestionsInfo[] results = new SuggestionsInfo[length];
             for (int i2 = 0; i2 < length; i2++) {
                 CharSequence prevWord = null;
                 if (sequentialWords && i2 > 0) {
-                    CharSequence prevText = textInfoArr[i2 - 1].getCharSequence();
+                    CharSequence prevText = textInfos[i2 - 1].getCharSequence();
                     if (!TextUtils.isEmpty(prevText)) {
                         prevWord = prevText;
                     }
                 }
                 PrevWordsInfo prevWordsInfo = new PrevWordsInfo(new PrevWordsInfo.WordInfo(prevWord));
-                TextInfo textInfo = textInfoArr[i2];
+                TextInfo textInfo = textInfos[i2];
                 results[i2] = spellCheckWord(textInfo, prevWordsInfo, sugLimit, dictionaryLoaded, verdictSettings);
                 results[i2].setCookieAndSequence(textInfo.getCookie(), textInfo.getSequence());
             }

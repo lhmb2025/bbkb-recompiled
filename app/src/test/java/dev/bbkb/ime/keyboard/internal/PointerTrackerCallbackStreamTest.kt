@@ -91,10 +91,10 @@ class PointerTrackerCallbackStreamTest {
     private val timers = object : TimerProxy {
         override fun startTypingStateTimer(key: Key) { log += "timer.startTypingState(${code(key)})" }
         override fun cancelKeyRepeatTimer(t: PointerTracker) { log += "timer.cancelKeyRepeat(${t.mPointerId})" }
-        override fun startLongPressTimer(t: PointerTracker, i: Int) { log += "timer.startLongPress(${t.mPointerId},$i)" }
-        override fun startKeyRepeatTimer(t: PointerTracker, i: Int, i2: Int) { log += "timer.startKeyRepeat(${t.mPointerId},$i,$i2)" }
+        override fun startLongPressTimer(t: PointerTracker, delayMillis: Int) { log += "timer.startLongPress(${t.mPointerId},$delayMillis)" }
+        override fun startKeyRepeatTimer(t: PointerTracker, repeatCount: Int, delayMillis: Int) { log += "timer.startKeyRepeat(${t.mPointerId},$repeatCount,$delayMillis)" }
         override fun cancelLongPressTimers(t: PointerTracker) { log += "timer.cancelLongPress(${t.mPointerId})" }
-        override fun startLockFocusTimer(t: PointerTracker, i: Int) { log += "timer.startLockFocus(${t.mPointerId},$i)" }
+        override fun startLockFocusTimer(t: PointerTracker, delayMillis: Int) { log += "timer.startLockFocus(${t.mPointerId},$delayMillis)" }
         override fun cancelLongPressShiftKeyTimer() { log += "timer.cancelLongPressShift" }
         override fun cancelKeyTimers(t: PointerTracker) { log += "timer.cancelKeyTimers(${t.mPointerId})" }
         override fun isTypingState() = false
@@ -116,19 +116,19 @@ class PointerTrackerCallbackStreamTest {
     }
 
     private val sliding = object : PointerTracker.SlidingPanel {
-        override fun setSlideTranslation(f: Float, z: Boolean) { log += "slide.set($f,$z)" }
+        override fun setSlideTranslation(translationX: Float, animate: Boolean) { log += "slide.set($translationX,$animate)" }
         override fun getTranslationX() = 0f
         override fun onSlidingFinished() { log += "slide.finished" }
     }
 
     private val listener = object : KeyboardActionListenerInterface {
         override fun onMoreKeysKeyTyped() { log += "L.onMoreKeysKeyTyped" }
-        override fun onCodeInput(i: Int, i2: Int, i3: Int, j: Long, z: Boolean) { log += "L.onCodeInput($i,$i2,$i3,$j,$z)" }
-        override fun onReleaseKey(i: Int, z: Boolean) { log += "L.onReleaseKey($i,$z)" }
-        override fun onTextInput(str: String?, j: Long) { log += "L.onTextInput($str,$j)" }
-        override fun onPressKey(i: Int, i2: Int, z: Boolean) { log += "L.onPressKey($i,$i2,$z)" }
+        override fun onCodeInput(primaryCode: Int, x: Int, y: Int, eventTime: Long, isKeyRepeat: Boolean) { log += "L.onCodeInput($primaryCode,$x,$y,$eventTime,$isKeyRepeat)" }
+        override fun onReleaseKey(primaryCode: Int, withSliding: Boolean) { log += "L.onReleaseKey($primaryCode,$withSliding)" }
+        override fun onTextInput(text: String?, eventTime: Long) { log += "L.onTextInput($text,$eventTime)" }
+        override fun onPressKey(primaryCode: Int, repeatCount: Int, isSinglePointer: Boolean) { log += "L.onPressKey($primaryCode,$repeatCount,$isSinglePointer)" }
         override fun onEndBatchInput(e: InputSource?) { log += "L.onEndBatchInput($e)" }
-        override fun onCustomRequest(i: Int): Boolean { log += "L.onCustomRequest($i)"; return false }
+        override fun onCustomRequest(requestCode: Int): Boolean { log += "L.onCustomRequest($requestCode)"; return false }
         override fun onStartBatchInput() { log += "L.onStartBatchInput" }
         override fun onUpdateBatchInput() { log += "L.onUpdateBatchInput" }
         override fun onCancelBatchInput() { log += "L.onCancelBatchInput" }
@@ -136,10 +136,10 @@ class PointerTrackerCallbackStreamTest {
         override fun onCancelInput() { log += "L.onCancelInput" }
     }
 
-    private fun unsafeAllocate(c: Class<*>): Any {
+    private fun unsafeAllocate(type: Class<*>): Any {
         val unsafeClass = Class.forName("sun.misc.Unsafe")
         val theUnsafe = unsafeClass.getDeclaredField("theUnsafe").apply { isAccessible = true }.get(null)
-        return unsafeClass.getMethod("allocateInstance", Class::class.java).invoke(theUnsafe, c)
+        return unsafeClass.getMethod("allocateInstance", Class::class.java).invoke(theUnsafe, type)
     }
 
     private fun setField(target: Any, owner: Class<*>, name: String, value: Any?) {

@@ -111,10 +111,10 @@ public final class AudioAndHapticFeedbackManager {
         }
     }
 
-    /** @param i key code of the pressed key */
-    public void performAudioAndHapticFeedback(int i, View view) {
+    /** @param code key code of the pressed key */
+    public void performAudioAndHapticFeedback(int code, View view) {
         performHapticFeedback(view);
-        performAudioFeedback(i);
+        performAudioFeedback(code);
     }
 
     public boolean hasVibrator() {
@@ -136,26 +136,26 @@ public final class AudioAndHapticFeedbackManager {
         return c0804d != null && c0804d.isSoundEnabled && (audioManager = this.audioManager) != null && audioManager.getRingerMode() == 2;
     }
 
-    /** @param i key code of the pressed key; picks the sound */
-    public void performAudioFeedback(int i) {
+    /** @param code key code of the pressed key; picks the sound */
+    public void performAudioFeedback(int code) {
         if (!this.soundEnabled || this.soundPool == null) {
             return;
         }
         
         int soundId;
 
-        if (i == -29 || i == -27 || i == -23) {
+        if (code == -29 || code == -27 || code == -23) {
             soundId = 0;
-        } else if (i == -15 || i == -3) {
+        } else if (code == -15 || code == -3) {
             soundId = this.soundIds.get(R.raw.input_aux);
-        } else if (i == -1) {
+        } else if (code == -1) {
             soundId = this.soundIds.get(R.raw.input_modifier);
-        } else if (i == 10) {
+        } else if (code == 10) {
             soundId = this.soundIds.get(R.raw.input_enter);
-        } else if (i == 32) {
+        } else if (code == 32) {
             soundId = this.soundIds.get(R.raw.input_space);
         } else {
-            switch (i) {
+            switch (code) {
                 case -21:
                     soundId = 0;
                     break;
@@ -193,8 +193,8 @@ public final class AudioAndHapticFeedbackManager {
         }
     }
 
-    public void onSettingsChanged(SettingsValues c0804d, Context context) {
-        this.settings = c0804d;
+    public void onSettingsChanged(SettingsValues settingsValues, Context context) {
+        this.settings = settingsValues;
         this.soundEnabled = reevaluateIfSoundIsOn();
         if (this.soundEnabled) {
             loadSounds(context);

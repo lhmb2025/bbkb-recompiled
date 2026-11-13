@@ -12,7 +12,7 @@ class GesturePolicyTest {
     private fun swipe(dir: GestureDirection, fast: Boolean) =
         GestureClassification.Swipe(dir, fast, confidence = 1f)
 
-    private fun act(c: GestureClassification, mode: ModeState = normal) = policy.resolve(c, mode, assignments)
+    private fun act(classification: GestureClassification, mode: ModeState = normal) = policy.resolve(classification, mode, assignments)
 
     private val typing = normal.copy(
         keyTiming = KeyTiming(startedInNoiseWindow = false, keyDuringContact = true, insideSuppressionWindow = false)

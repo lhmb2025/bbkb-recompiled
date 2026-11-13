@@ -51,19 +51,19 @@ public final class LocaleUtils {
         return sb.toString();
     }
 
-    /** @param str locale string, {@code _} or {@code -} separated; {@code tl} becomes {@code fil} */
-    public static Locale constructLocaleFromString(String str) {
-        if (str == null) {
+    /** @param localeString locale string, {@code _} or {@code -} separated; {@code tl} becomes {@code fil} */
+    public static Locale constructLocaleFromString(String localeString) {
+        if (localeString == null) {
             return null;
         }
         synchronized (sLocaleCache) {
-            Locale locale = sLocaleCache.get(str);
+            Locale locale = sLocaleCache.get(localeString);
             if (locale != null) {
                 return locale;
             }
-            String[] strArrSplit = str.split("_", 3);
-            if (strArrSplit.length == 1 && strArrSplit[0].equals(str)) {
-                strArrSplit = str.split("-", 3);
+            String[] strArrSplit = localeString.split("_", 3);
+            if (strArrSplit.length == 1 && strArrSplit[0].equals(localeString)) {
+                strArrSplit = localeString.split("-", 3);
             }
             if (strArrSplit.length >= 1 && "tl".equals(strArrSplit[0])) {
                 strArrSplit[0] = "fil";
@@ -76,7 +76,7 @@ public final class LocaleUtils {
                 locale = new Locale(strArrSplit[0], strArrSplit[1], strArrSplit[2]);
             }
             if (locale != null) {
-                sLocaleCache.put(str, locale);
+                sLocaleCache.put(localeString, locale);
             }
             return locale;
         }

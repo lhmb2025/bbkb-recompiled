@@ -49,10 +49,10 @@ class KeypadEngineTouchTest {
         override fun cancelUpdateBatchInputTimer(h: AbstractDrawingHandler) {}
     }
 
-    private fun unsafeAllocate(c: Class<*>): Any {
+    private fun unsafeAllocate(type: Class<*>): Any {
         val unsafeClass = Class.forName("sun.misc.Unsafe")
         val theUnsafe = unsafeClass.getDeclaredField("theUnsafe").apply { isAccessible = true }.get(null)
-        return unsafeClass.getMethod("allocateInstance", Class::class.java).invoke(theUnsafe, c)
+        return unsafeClass.getMethod("allocateInstance", Class::class.java).invoke(theUnsafe, type)
     }
 
     private fun setField(target: Any?, owner: Class<*>, name: String, value: Any?) {

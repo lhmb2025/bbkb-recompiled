@@ -28,9 +28,9 @@ public final class EmojiCategoryPageIndicatorView extends View {
         this(context, attributeSet, 0);
     }
 
-    /** @param i the default style attribute */
-    public EmojiCategoryPageIndicatorView(Context context, AttributeSet attributeSet, int i) {
-        super(context, attributeSet, i);
+    /** @param defStyleAttr the default style attribute */
+    public EmojiCategoryPageIndicatorView(Context context, AttributeSet attributeSet, int defStyleAttr) {
+        super(context, attributeSet, defStyleAttr);
         this.activePaint = new Paint();
         this.inactivePaint = new Paint();
         this.pageCount = 0;
@@ -39,34 +39,34 @@ public final class EmojiCategoryPageIndicatorView extends View {
     }
 
     /**
-     * @param i the active dot color
-     * @param i2 the inactive dot color
-     * @param i3 the background color
+     * @param activeColor the active dot color
+     * @param inactiveColor the inactive dot color
+     * @param backgroundColor the background color
      */
-    public void setColors(int i, int i2, int i3) {
-        this.activePaint.setColor(i);
-        this.inactivePaint.setColor(i2);
-        setBackgroundColor(i3);
+    public void setColors(int activeColor, int inactiveColor, int backgroundColor) {
+        this.activePaint.setColor(activeColor);
+        this.inactivePaint.setColor(inactiveColor);
+        setBackgroundColor(backgroundColor);
     }
 
     /**
-     * @param f the dot radius as a fraction of half the view height
-     * @param f2 the gap between dots as a fraction of the view width
+     * @param radiusRatio the dot radius as a fraction of half the view height
+     * @param gapRatio the gap between dots as a fraction of the view width
      */
-    public void setIndicatorRatios(float f, float f2) {
-        this.indicatorRadiusRatio = f;
-        this.indicatorGapRatio = f2;
+    public void setIndicatorRatios(float radiusRatio, float gapRatio) {
+        this.indicatorRadiusRatio = radiusRatio;
+        this.indicatorGapRatio = gapRatio;
     }
 
     /**
-     * @param i the page count
-     * @param i2 the current page
-     * @param f the scroll offset toward the next page (stored, not drawn)
+     * @param pageCount the page count
+     * @param currentPage the current page
+     * @param pageOffset the scroll offset toward the next page (stored, not drawn)
      */
-    public void setPageInfo(int i, int i2, float f) {
-        this.pageCount = i;
-        this.currentPage = i2;
-        this.pageOffset = f;
+    public void setPageInfo(int pageCount, int currentPage, float pageOffset) {
+        this.pageCount = pageCount;
+        this.currentPage = currentPage;
+        this.pageOffset = pageOffset;
         invalidate();
     }
 

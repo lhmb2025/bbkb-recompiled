@@ -19,7 +19,7 @@ public class TextDecorator {
 
     private static final Listener EMPTY_LISTENER = new Listener() {
         @Override
-        public void onWordCommit(String str) {
+        public void onWordCommit(String word) {
             // No-op default.
         }
     };
@@ -31,7 +31,7 @@ public class TextDecorator {
         }
 
         @Override
-        public void showIndicator(Matrix matrix, RectF rectF, boolean z) {
+        public void showIndicator(Matrix matrix, RectF rectF, boolean showAtLeftSide) {
             // No-op default.
         }
 
@@ -81,16 +81,16 @@ public class TextDecorator {
 
     
     public interface Listener {
-        void onWordCommit(String str);
+        void onWordCommit(String word);
     }
 
-    public TextDecorator(Listener bVar) {
-        this.mListener = bVar == null ? EMPTY_LISTENER : bVar;
+    public TextDecorator(Listener listener) {
+        this.mListener = listener == null ? EMPTY_LISTENER : listener;
     }
 
-    public void setTimerProxy(TextDecoratorUiOperator interfaceC1076r) {
+    public void setTimerProxy(TextDecoratorUiOperator textDecoratorUiOperator) {
         this.mTimerProxy.cancel();
-        this.mTimerProxy = interfaceC1076r;
+        this.mTimerProxy = textDecoratorUiOperator;
         this.mTimerProxy.setOnClickHandler(getOnClickHandler());
     }
 
@@ -100,24 +100,24 @@ public class TextDecorator {
     }
 
     /**
-     * @param str the committed word
-     * @param i commit flags
-     * @param i2 selection start
-     * @param i3 selection end
+     * @param word the committed word
+     * @param shiftStateAtCommit commit flags
+     * @param selectionStart selection start
+     * @param selectionEnd selection end
      */
-    public void showCommitIndicator(String str, int i, int i2, int i3) {
-        this.mWaitingFlags = i;
-        this.mWaitingWord = str;
-        this.mWaitingSelectionStart = i2;
-        this.mWaitingSelectionEnd = i3;
+    public void showCommitIndicator(String word, int shiftStateAtCommit, int selectionStart, int selectionEnd) {
+        this.mWaitingFlags = shiftStateAtCommit;
+        this.mWaitingWord = word;
+        this.mWaitingSelectionStart = selectionStart;
+        this.mWaitingSelectionEnd = selectionEnd;
         this.mState = 1;
         postUpdateState();
     }
 
-    /** @param z true if the indicator may be shown */
-    public void setShouldShow(boolean z) {
-        boolean z2 = this.mShouldShow != z;
-        this.mShouldShow = z;
+    /** @param shouldShow true if the indicator may be shown */
+    public void setShouldShow(boolean shouldShow) {
+        boolean z2 = this.mShouldShow != shouldShow;
+        this.mShouldShow = shouldShow;
         if (z2) {
             postUpdateState();
         }
@@ -137,14 +137,14 @@ public class TextDecorator {
         postUpdateWithCursorAnchorInfo();
     }
 
-    private void dismiss(String str) {
+    private void dismiss(String reason) {
         this.mTimerProxy.hide();
-        if (BuildConfig.DEBUG) Log.d(TAG, str);
+        if (BuildConfig.DEBUG) Log.d(TAG, reason);
     }
 
-    private void hideIndicator(String str) {
+    private void hideIndicator(String reason) {
         this.mTimerProxy.hide();
-        if (BuildConfig.DEBUG) Log.d(TAG, str);
+        if (BuildConfig.DEBUG) Log.d(TAG, reason);
     }
 
     private void postUpdateState() {
@@ -252,16 +252,16 @@ public class TextDecorator {
 
         private final HandlerC1675a mHandler;
 
-        /** @param c1074p the owner, held weakly */
-        public UpdateHandler(TextDecorator c1074p) {
-            this.mHandler = new HandlerC1675a(c1074p);
+        /** @param textDecorator the owner, held weakly */
+        public UpdateHandler(TextDecorator textDecorator) {
+            this.mHandler = new HandlerC1675a(textDecorator);
         }
 
         
         private static final class HandlerC1675a extends WeakOwnerHandler<TextDecorator> {
-            /** @param c1074p the owner, held weakly */
-            public HandlerC1675a(TextDecorator c1074p) {
-                super(c1074p);
+            /** @param textDecorator the owner, held weakly */
+            public HandlerC1675a(TextDecorator textDecorator) {
+                super(textDecorator);
             }
 
             @Override

@@ -178,79 +178,79 @@ public final class KeyboardIconSet {
         }
     }
 
-    /** @param i the icon id */
-    private static boolean isValidIconId(int i) {
-        return i >= 0 && i < sIconNames.length;
+    /** @param iconId the icon id */
+    private static boolean isValidIconId(int iconId) {
+        return iconId >= 0 && iconId < sIconNames.length;
     }
 
-    /** @param i the icon id */
-    public static String getIconName(int i) {
-        if (isValidIconId(i)) {
-            return sIconNames[i];
+    /** @param iconId the icon id */
+    public static String getIconName(int iconId) {
+        if (isValidIconId(iconId)) {
+            return sIconNames[iconId];
         }
-        return "unknown<" + i + ">";
+        return "unknown<" + iconId + ">";
     }
 
-    /** @param str the icon name */
-    public static int getIconId(String str) {
-        Integer num = sNameToIconId.get(str);
+    /** @param name the icon name */
+    public static int getIconId(String name) {
+        Integer num = sNameToIconId.get(name);
         if (num != null) {
             return num.intValue();
         }
-        throw new RuntimeException("unknown icon name: " + str);
+        throw new RuntimeException("unknown icon name: " + name);
     }
 
-    /** @param str the icon name */
-    public int getIconResourceId(String str) {
+    /** @param name the icon name */
+    public int getIconResourceId(String name) {
         if (this.mDelegate != null) {
-            return this.mDelegate.getIconResourceId(str);
+            return this.mDelegate.getIconResourceId(name);
         }
-        int iM7159a = getIconId(str);
+        int iM7159a = getIconId(name);
         if (isValidIconId(iM7159a)) {
             return this.mIconResourceIds[iM7159a];
         }
-        throw new RuntimeException("unknown icon name: " + str);
+        throw new RuntimeException("unknown icon name: " + name);
     }
 
-    /** @param i the icon id */
-    public Drawable getIconDrawable(int i) {
-        if (isValidIconId(i)) {
+    /** @param iconId the icon id */
+    public Drawable getIconDrawable(int iconId) {
+        if (isValidIconId(iconId)) {
             if (this.mDelegate != null) {
-                return this.mDelegate.getIconDrawable(i);
+                return this.mDelegate.getIconDrawable(iconId);
             }
-            if (this.mShared != null && !this.mResolved[i]) {
-                materialize(i);
+            if (this.mShared != null && !this.mResolved[iconId]) {
+                materialize(iconId);
             }
-            return this.mIcons[i];
+            return this.mIcons[iconId];
         }
-        throw new RuntimeException("unknown icon id: " + getIconName(i));
+        throw new RuntimeException("unknown icon id: " + getIconName(iconId));
     }
 
     /**
      * Makes this set's own copy of an icon from the theme's prototype.
      *
-     * @param i the icon id
+     * @param iconId the icon id
      */
-    private synchronized void materialize(int i) {
-        if (this.mResolved[i]) {
+    private synchronized void materialize(int iconId) {
+        if (this.mResolved[iconId]) {
             return;
         }
-        Drawable prototype = this.mShared.prototype(i);
+        Drawable prototype = this.mShared.prototype(iconId);
         if (prototype != null) {
             Drawable.ConstantState state = prototype.getConstantState();
             Drawable copy = state != null
                     ? state.newDrawable(this.mShared.resources())
-                    : this.mShared.inflate(i);
+                    : this.mShared.inflate(iconId);
             if (copy != null) {
                 // Our own copy for tinting, so a tint never reaches another keyboard's icon.
                 copy = prepare(copy.mutate());
                 if (this.mTinted) {
                     KeyboardColorManager.INSTANCE.tint(copy, this.mTintedIconColor);
                 }
-                this.mIcons[i] = copy;
+                this.mIcons[iconId] = copy;
             }
         }
-        this.mResolved[i] = true;
+        this.mResolved[iconId] = true;
     }
 
     private static void setDefaultBounds(Drawable drawable) {

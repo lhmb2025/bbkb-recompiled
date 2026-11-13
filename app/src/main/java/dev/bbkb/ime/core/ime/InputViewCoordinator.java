@@ -301,12 +301,12 @@ public class InputViewCoordinator implements KeyboardSwitcher.SwitcherCallbacks,
         return auxBarManager;
     }
 
-    /** @param i a View visibility: {@code 0} (VISIBLE) hides the grid, {@code 8} (GONE) shows it */
-    public void onCjkGridVisibilityChanged(int i) {
-        if (i == 0) {
+    /** @param currentGridVisibility a View visibility: {@code 0} (VISIBLE) hides the grid, {@code 8} (GONE) shows it */
+    public void onCjkGridVisibilityChanged(int currentGridVisibility) {
+        if (currentGridVisibility == 0) {
             getCjkSuggestionGrid().setVisible(false);
         } else {
-            if (i != 8) {
+            if (currentGridVisibility != 8) {
                 return;
             }
             getCjkSuggestionGrid().setVisible(true);
@@ -419,11 +419,11 @@ public class InputViewCoordinator implements KeyboardSwitcher.SwitcherCallbacks,
         }
     }
 
-    /** @param i the {@link View} visibility to set */
-    private void setFlickSuggestionVisibility(int i) {
+    /** @param visibility the {@link View} visibility to set */
+    private void setFlickSuggestionVisibility(int visibility) {
         FlickSuggestionView view = getFlickSuggestionView();
         if (view != null) {
-            view.setVisibility(i);
+            view.setVisibility(visibility);
         }
     }
 
@@ -484,33 +484,33 @@ public class InputViewCoordinator implements KeyboardSwitcher.SwitcherCallbacks,
         }
     }
 
-    /** @param c0804d the current settings */
-    private boolean shouldShowPredictionsInStrip(SettingsValues c0804d) {
-        return c0804d.shouldShowPredictionsInCandidateStrip();
+    /** @param settingsValues the current settings */
+    private boolean shouldShowPredictionsInStrip(SettingsValues settingsValues) {
+        return settingsValues.shouldShowPredictionsInCandidateStrip();
     }
 
     /**
      * The main strip: never for Chinese or Japanese.
      *
-     * @param c0804d the current settings
-     * @param z whether the on-screen keyboard is visible
+     * @param settingsValues the current settings
+     * @param isOnScreenKeyboardVisible whether the on-screen keyboard is visible
      */
-    public boolean shouldShowLatinSuggestionStrip(SettingsValues c0804d, boolean z, InputMethodSubtype inputMethodSubtype) {
+    public boolean shouldShowLatinSuggestionStrip(SettingsValues settingsValues, boolean isOnScreenKeyboardVisible, InputMethodSubtype inputMethodSubtype) {
         if (LocaleUtils.isCurrentSubtypeChinese() || LocaleUtils.isCurrentSubtypeJapanese()) {
             return false;
         }
-        return shouldShowSuggestionStrip(c0804d, z, inputMethodSubtype);
+        return shouldShowSuggestionStrip(settingsValues, isOnScreenKeyboardVisible, inputMethodSubtype);
     }
 
     /**
      * The CJK candidate strip: only for Chinese or Japanese.
      *
-     * @param c0804d the current settings
-     * @param z whether the on-screen keyboard is visible
+     * @param settingsValues the current settings
+     * @param isOnScreenKeyboardVisible whether the on-screen keyboard is visible
      */
-    public boolean shouldShowCjkSuggestionStrip(SettingsValues c0804d, boolean z, InputMethodSubtype inputMethodSubtype) {
+    public boolean shouldShowCjkSuggestionStrip(SettingsValues settingsValues, boolean isOnScreenKeyboardVisible, InputMethodSubtype inputMethodSubtype) {
         if (LocaleUtils.isCurrentSubtypeChinese() || LocaleUtils.isCurrentSubtypeJapanese()) {
-            return shouldShowSuggestionStrip(c0804d, z, inputMethodSubtype);
+            return shouldShowSuggestionStrip(settingsValues, isOnScreenKeyboardVisible, inputMethodSubtype);
         }
         return false;
     }
@@ -518,18 +518,18 @@ public class InputViewCoordinator implements KeyboardSwitcher.SwitcherCallbacks,
     /**
      * Hot path (every start input view and suggestion delivery): keep the checks short-circuiting.
      *
-     * @param c0804d the current settings
-     * @param z whether the on-screen keyboard is visible
+     * @param settingsValues the current settings
+     * @param isOnScreenKeyboardVisible whether the on-screen keyboard is visible
      */
-    public boolean shouldShowSuggestionStrip(SettingsValues c0804d, boolean z, InputMethodSubtype inputMethodSubtype) {
-        if (c0804d.editorCapabilities.isPassword) {
+    public boolean shouldShowSuggestionStrip(SettingsValues settingsValues, boolean isOnScreenKeyboardVisible, InputMethodSubtype inputMethodSubtype) {
+        if (settingsValues.editorCapabilities.isPassword) {
             return false;
         }
         // "Show the suggestion bar" off: CJK keyboards still need their candidate strip.
-        if (c0804d.isPkbSuggestionBarHidden() && !isChineseOrJapaneseSubtype()) {
+        if (settingsValues.isPkbSuggestionBarHidden() && !isChineseOrJapaneseSubtype()) {
             return false;
         }
-        if (!shouldShowPredictionsInStrip(c0804d) && !c0804d.shouldShowMoreKeys()) {
+        if (!shouldShowPredictionsInStrip(settingsValues) && !settingsValues.shouldShowMoreKeys()) {
             return false;
         }
         if (!hasAuxBarManager()) {
@@ -542,10 +542,10 @@ public class InputViewCoordinator implements KeyboardSwitcher.SwitcherCallbacks,
         // The flick-suggestion view owns predictions instead of the strip when all of these hold.
         boolean flickViewOwnsPredictions = hasFlickSuggestionView()
                 && ResourceLocaleUtils.isNonCjkLanguage(inputMethodSubtype)
-                && c0804d.isPredictionsEnabled
-                && c0804d.isOnKeyPredictionsEnabled
-                && z
-                && !c0804d.isVkbGestureInputEnabledForLocale();
+                && settingsValues.isPredictionsEnabled
+                && settingsValues.isOnKeyPredictionsEnabled
+                && isOnScreenKeyboardVisible
+                && !settingsValues.isVkbGestureInputEnabledForLocale();
         return !flickViewOwnsPredictions;
     }
 

@@ -29,41 +29,41 @@ public class ShakeGestureHandler implements ShakeDetector.Listener {
     }
 
     @Override // dev.bbkb.ime.core.gesture.ShakeDetector.Listener
-    public boolean onShake(int i, int i2, long j) {
+    public boolean onShake(int shakeType, int shakeCount, long timestampNanos) {
         if (this.ime == null) {
             return false;
         }
         if (Logger.isLoggable(TAG, Log.DEBUG)) {
-            if (BuildConfig.DEBUG) Log.d(TAG, "onShake type= " + i + ", count=" + i2 + ", eventTime=" + j);
+            if (BuildConfig.DEBUG) Log.d(TAG, "onShake type= " + shakeType + ", count=" + shakeCount + ", eventTime=" + timestampNanos);
         }
-        int action = getActionForShakeType(i);
-        int i3 = i == 3 ? this.settingsValues.shakeFallbackTriggerCount : this.settingsValues.shakeOnAxisTriggerCount;
-        if (action == 0 || i2 != i3) {
+        int action = getActionForShakeType(shakeType);
+        int i3 = shakeType == 3 ? this.settingsValues.shakeFallbackTriggerCount : this.settingsValues.shakeOnAxisTriggerCount;
+        if (action == 0 || shakeCount != i3) {
             return false;
         }
-        if (BuildConfig.DEBUG) Log.i(TAG, "Invoking action " + action + " for shake of type " + i);
+        if (BuildConfig.DEBUG) Log.i(TAG, "Invoking action " + action + " for shake of type " + shakeType);
         switch (action) {
             case 1:
                 this.ime.toggleCursorMode();
                 break;
             case 2:
-                sendCodeInput(-37, j);
+                sendCodeInput(-37, timestampNanos);
                 break;
             case 3:
-                sendCodeInput(-10, j);
+                sendCodeInput(-10, timestampNanos);
                 break;
             case 4:
-                sendCodeInput(-26, j);
+                sendCodeInput(-26, timestampNanos);
                 break;
             default:
-                if (BuildConfig.DEBUG) Log.w(TAG, "Unexpected shake action code " + action + " for type " + i);
+                if (BuildConfig.DEBUG) Log.w(TAG, "Unexpected shake action code " + action + " for type " + shakeType);
                 break;
         }
         return false;
     }
 
-    private int getActionForShakeType(int i) {
-        switch (i) {
+    private int getActionForShakeType(int shakeType) {
+        switch (shakeType) {
             case 0:
                 return this.settingsValues.shakeActionX;
             case 1:
@@ -73,13 +73,13 @@ public class ShakeGestureHandler implements ShakeDetector.Listener {
             case 3:
                 return this.settingsValues.shakeActionFallback;
             default:
-                if (BuildConfig.DEBUG) Log.w(TAG, "Unknown shake type " + i);
+                if (BuildConfig.DEBUG) Log.w(TAG, "Unknown shake type " + shakeType);
                 return 0;
         }
     }
 
-    private void sendCodeInput(int i, long j) {
-        this.actionListener.onCodeInput(i, -1, -1, j / 1000000, false);
+    private void sendCodeInput(int code, long timestampNanos) {
+        this.actionListener.onCodeInput(code, -1, -1, timestampNanos / 1000000, false);
     }
 
     public void start() {

@@ -76,8 +76,8 @@ private fun toggleInfo(id: String): UimToggleInfo = when (id) {
 }
 
 /** Visual slot of a toggle at order index i: the "not shown" divider sits after 4. */
-private fun visualSlotOf(i: Int): Int =
-    if (i < UimMenuOrder.SHOWN_COUNT) i else i + 1
+private fun visualSlotOf(orderIndex: Int): Int =
+    if (orderIndex < UimMenuOrder.SHOWN_COUNT) orderIndex else orderIndex + 1
 
 @Composable
 fun CustomizeMenuScreen(

@@ -17,10 +17,10 @@ public class RomajiInputProcessor extends AbstractInputProcessor {
     /**
      * Unused for Romaji; always null.
      *
-     * @param c0697m the touch-coordinate tracker (ignored)
+     * @param sourceTracker the touch-coordinate tracker (ignored)
      */
     @Override
-    public InputMethodCallback.ConversionResult revertLastConversion(CharSequence charSequence, TouchPointerCoordTracker c0697m, NuanceSDK nuanceSDK) {
+    public InputMethodCallback.ConversionResult revertLastConversion(CharSequence charSequence, TouchPointerCoordTracker sourceTracker, NuanceSDK nuanceSDK) {
         return null;
     }
 
@@ -45,12 +45,12 @@ public class RomajiInputProcessor extends AbstractInputProcessor {
         return (isAllLetters(charSeqStr) && isAllLetters(inlineWord) && charSeqStr != null && inlineWord != null && primaryLocale != null && charSeqStr.toLowerCase(primaryLocale).startsWith(inlineWord.toLowerCase(primaryLocale))) ? charSeqStr : inlineWord;
     }
 
-    /** @param str the string to test: true when non-empty and all ASCII letters */
-    private static boolean isAllLetters(String str) {
-        if (android.text.TextUtils.isEmpty(str)) {
+    /** @param text the string to test: true when non-empty and all ASCII letters */
+    private static boolean isAllLetters(String text) {
+        if (android.text.TextUtils.isEmpty(text)) {
             return false;
         }
-        for (char c : str.toCharArray()) {
+        for (char c : text.toCharArray()) {
             if ((c < 'a' || c > 'z') && (c < 'A' || c > 'Z')) {
                 return false;
             }

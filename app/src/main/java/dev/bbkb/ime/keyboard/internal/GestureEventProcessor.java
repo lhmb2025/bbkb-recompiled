@@ -83,14 +83,14 @@ public final class GestureEventProcessor extends AbstractDrawingHandler {
     }
 
     /**
-     * @param interfaceC1046e the batch-input update timer
-     * @param aVar tells whether the current keyboard takes gestures
+     * @param timerCallback the batch-input update timer
+     * @param gestureKeyboardChecker tells whether the current keyboard takes gestures
      */
-    public static void init(TypedArray typedArray, TimerCallback interfaceC1046e, GestureKeyboardChecker aVar) {
+    public static void init(TypedArray typedArray, TimerCallback timerCallback, GestureKeyboardChecker gestureKeyboardChecker) {
         sGestureRecognitionParams = new GestureRecognitionParams(typedArray);
         sParams = new Params(typedArray);
-        sTimerCallback = interfaceC1046e;
-        sGestureKeyboardChecker = aVar;
+        sTimerCallback = timerCallback;
+        sGestureKeyboardChecker = gestureKeyboardChecker;
     }
 
     /** Re-installs the checker after {@link #releaseGestureKeyboardChecker} (view re-attached). */
@@ -114,17 +114,17 @@ public final class GestureEventProcessor extends AbstractDrawingHandler {
         return checker != null && checker.isGestureKeyboard();
     }
 
-    /** @param j the event time */
+    /** @param syntheticMoveEventTime the event time */
     @Override // dev.bbkb.ime.keyboard.AbstractDrawingHandler
-    public void updateBatchInputTimer(long j) {
-        this.gesturePathTracker.onUpdateBatchInputTimer(j, this);
+    public void updateBatchInputTimer(long syntheticMoveEventTime) {
+        this.gesturePathTracker.onUpdateBatchInputTimer(syntheticMoveEventTime, this);
     }
 
-    /** @param j the event time */
+    /** @param eventTime the event time */
     @Override // dev.bbkb.ime.keyboard.AbstractDrawingHandler
-    protected void onCancelEventInternal(long j) {
+    protected void onCancelEventInternal(long eventTime) {
         cancelBatchInput();
-        sPointerTrackerQueue.releaseAllPointers(j);
+        sPointerTrackerQueue.releaseAllPointers(eventTime);
     }
 
     private void cancelBatchInput() {
@@ -146,22 +146,22 @@ public final class GestureEventProcessor extends AbstractDrawingHandler {
         sPointerTrackerQueue.cancelAllPointerTrackers();
     }
 
-    /** @param interfaceC0976f receives the batch-input callbacks */
-    public static void setKeyboardActionListener(KeyboardActionListenerInterface interfaceC0976f) {
-        sKeyboardActionListener = interfaceC0976f;
+    /** @param keyboardActionListener receives the batch-input callbacks */
+    public static void setKeyboardActionListener(KeyboardActionListenerInterface keyboardActionListener) {
+        sKeyboardActionListener = keyboardActionListener;
     }
 
     private static int getActivePointerTrackerCount() {
         return sPointerTrackerQueue.size();
     }
 
-    /** @param i the pointer id; processors are created on first use */
-    public static GestureEventProcessor getGestureEventProcessor(int i) {
+    /** @param pointerId the pointer id; processors are created on first use */
+    public static GestureEventProcessor getGestureEventProcessor(int pointerId) {
         ArrayList<GestureEventProcessor> arrayList = sTrackers;
-        for (int size = arrayList.size(); size <= i; size++) {
+        for (int size = arrayList.size(); size <= pointerId; size++) {
             arrayList.add(new GestureEventProcessor(size));
         }
-        return arrayList.get(i);
+        return arrayList.get(pointerId);
     }
 
     /**
@@ -173,10 +173,10 @@ public final class GestureEventProcessor extends AbstractDrawingHandler {
     private static volatile int sStrokeKeyWidth = TouchKeypadGeometry.KEY2_STROKE_KEY_WIDTH;
     private static volatile int sStrokeBoardHeight = TouchKeypadGeometry.KEY2_STROKE_BOARD_HEIGHT;
 
-    /** @param i the pointer id */
-    private GestureEventProcessor(int i) {
-        super(i);
-        this.gesturePathTracker = new GesturePathTracker(i, sGestureRecognitionParams);
+    /** @param pointerId the pointer id */
+    private GestureEventProcessor(int pointerId) {
+        super(pointerId);
+        this.gesturePathTracker = new GesturePathTracker(pointerId, sGestureRecognitionParams);
         this.gesturePathTracker.setKeyboardGeometry(sStrokeKeyWidth, sStrokeBoardHeight);
     }
 
@@ -329,9 +329,9 @@ public final class GestureEventProcessor extends AbstractDrawingHandler {
         return warpY(y);
     }
 
-    /** @param z false ends gesture handling; true resumes it only while a gesture is live */
-    public static void updateGestureHandlingState(boolean z) {
-        if (!z) {
+    /** @param metaKeyActive false ends gesture handling; true resumes it only while a gesture is live */
+    public static void updateGestureHandlingState(boolean metaKeyActive) {
+        if (!metaKeyActive) {
             setGestureHandlingActive(false);
         } else if (sInGesture) {
             setGestureHandlingActive(true);
@@ -348,24 +348,24 @@ public final class GestureEventProcessor extends AbstractDrawingHandler {
      * Must be called after dispatching capacitive motion events, or onDownEvent's noise filter
      * rejects real gestures against a stale key timestamp.
      *
-     * @param j the event time
+     * @param eventTime the event time
      */
-    public static void updateLastKeyTime(long j) {
-        sLastKeyEventTime = j;
+    public static void updateLastKeyTime(long eventTime) {
+        sLastKeyEventTime = eventTime;
     }
 
     /**
-     * @param i x in sensor space
-     * @param i2 y in sensor space
-     * @param j the event time
+     * @param x x in sensor space
+     * @param y y in sensor space
+     * @param eventTime the event time
      */
-    private void onDownEvent(int i, int i2, long j) {
+    private void onDownEvent(int x, int y, long eventTime) {
         if (Logger.isLoggable(TAG, Log.DEBUG)) {
-            printTouchEvent("onDownEvent:", i, i2, j);
+            printTouchEvent("onDownEvent:", x, y, eventTime);
         }
-        long deltaSinceLastKey = j - sLastKeyEventTime;
+        long deltaSinceLastKey = eventTime - sLastKeyEventTime;
         boolean noiseFiltered = deltaSinceLastKey < sParams.mTouchNoiseThresholdTime;
-        if (InputPathDebug.on()) Logger.info("CKB_SWIPE_TYPE_DEBUG", "KeyDetector.onDownEvent: pointer=" + this.mPointerId + " x=" + i + " y=" + i2 + " t=" + j + " deltaSinceLastKey=" + deltaSinceLastKey + " noiseThreshold=" + sParams.mTouchNoiseThresholdTime + " filteredAsNoise=" + noiseFiltered);
+        if (InputPathDebug.on()) Logger.info("CKB_SWIPE_TYPE_DEBUG", "KeyDetector.onDownEvent: pointer=" + this.mPointerId + " x=" + x + " y=" + y + " t=" + eventTime + " deltaSinceLastKey=" + deltaSinceLastKey + " noiseThreshold=" + sParams.mTouchNoiseThresholdTime + " filteredAsNoise=" + noiseFiltered);
         if (noiseFiltered) {
             if (InputPathDebug.on()) Logger.info("CKB_SWIPE_TYPE_DEBUG", "KeyDetector.onDownEvent: BLOCKED as physical-key noise (cancelTrackingForAction called)");
             cancelTrackingForAction();
@@ -381,9 +381,9 @@ public final class GestureEventProcessor extends AbstractDrawingHandler {
             if (this.mIsDetectingGesture) {
                 if (InputPathDebug.on()) Logger.info("CKB_SWIPE_TYPE_DEBUG", "KeyDetector.onDownEvent: mIsDetectingGesture=true → initializing BatchInputTracker (gesture mode ON)");
                 resetGestureStrokeTime();
-                this.gesturePathTracker.addDownEventPoint(i, i2, j, sLastKeyEventTime, getActivePointerTrackerCount());
-                if (InputPathDebug.on()) Logger.info("CKB_SWIPE_TYPE_DEBUG", "KeyDetector.onDownEvent: CALLING NuanceSDK.touchStart pointer=" + this.mPointerId + " x=" + i + " y=" + i2 + " time=" + j + " mIsDetectingGesture=" + this.mIsDetectingGesture + " mInGesture=" + this.mInGesture);
-                EngineTouch.start("GestureEventProcessor.onDownEvent", this.mPointerId, i, scaleEngineY(i2), j);
+                this.gesturePathTracker.addDownEventPoint(x, y, eventTime, sLastKeyEventTime, getActivePointerTrackerCount());
+                if (InputPathDebug.on()) Logger.info("CKB_SWIPE_TYPE_DEBUG", "KeyDetector.onDownEvent: CALLING NuanceSDK.touchStart pointer=" + this.mPointerId + " x=" + x + " y=" + y + " time=" + eventTime + " mIsDetectingGesture=" + this.mIsDetectingGesture + " mInGesture=" + this.mInGesture);
+                EngineTouch.start("GestureEventProcessor.onDownEvent", this.mPointerId, x, scaleEngineY(y), eventTime);
             } else {
                 // The field takes no swipes: the engine gets nothing for this contact.
                 if (InputPathDebug.on()) Logger.info("CKB_SWIPE_TYPE_DEBUG", "KeyDetector.onDownEvent: mIsDetectingGesture=FALSE → BatchInputTracker NOT initialized, no NuanceSDK.touchStart (no gesture word will be produced)");
@@ -394,30 +394,30 @@ public final class GestureEventProcessor extends AbstractDrawingHandler {
     }
 
     /**
-     * @param i x, {@code i2} y, {@code j} event time
-     * @param z true for the event's current sample, false for a historical one
+     * @param x x, {@code y} y, {@code eventTime} event time
+     * @param isMajorEvent true for the event's current sample, false for a historical one
      */
-    private void onGestureMoveEvent(int i, int i2, long j, boolean z) {
+    private void onGestureMoveEvent(int x, int y, long eventTime, boolean isMajorEvent) {
         if (this.mIsDetectingGesture) {
-            if (!this.gesturePathTracker.addMoveEventPoint(this.mInGesture, i, i2, j, z, this, this)) {
+            if (!this.gesturePathTracker.addMoveEventPoint(this.mInGesture, x, y, eventTime, isMajorEvent, this, this)) {
                 cancelBatchInput();
                 return;
             }
             if (!sInGesture && this.gesturePathTracker.tryStartBatchInput(this)) {
                 setInGesture(true);
                 this.mInGesture = true;
-                sPointerTrackerQueue.releaseAllPointersExcept(this, j);
+                sPointerTrackerQueue.releaseAllPointersExcept(this, eventTime);
             }
             if (isInGesture()) {
-                this.gesturePathTracker.updateBatchInput(j, this);
+                this.gesturePathTracker.updateBatchInput(eventTime, this);
             }
         }
     }
 
-    /** @param i x, {@code i2} y, {@code j} event time */
-    private void onMoveEvent(int i, int i2, long j, MotionEvent motionEvent) {
+    /** @param x x, {@code y} y, {@code eventTime} event time */
+    private void onMoveEvent(int x, int y, long eventTime, MotionEvent motionEvent) {
         if (Logger.isLoggable(TAG, Log.DEBUG)) {
-            printTouchEvent("onMoveEvent:", i, i2, j);
+            printTouchEvent("onMoveEvent:", x, y, eventTime);
         }
         if (this.mIsTrackingCanceled) {
             if (InputPathDebug.on()) Logger.info("CKB_SWIPE_TYPE_DEBUG", "KeyDetector.onMoveEvent (onMoveEvent): BLOCKED — mIsTrackingCanceled=true for pointer=" + this.mPointerId);
@@ -428,46 +428,46 @@ public final class GestureEventProcessor extends AbstractDrawingHandler {
             // engine buffer with a stroke-less sample.
             return;
         }
-        if (InputPathDebug.on()) Logger.info("CKB_SWIPE_TYPE_DEBUG", "KeyDetector.onMoveEvent (onMoveEvent): pointer=" + this.mPointerId + " x=" + i + " y=" + i2 + " time=" + j + " calling NuanceSDK.touchMove");
-        EngineTouch.move("GestureEventProcessor.onMoveEvent", this.mPointerId, i, scaleEngineY(i2), j);
+        if (InputPathDebug.on()) Logger.info("CKB_SWIPE_TYPE_DEBUG", "KeyDetector.onMoveEvent (onMoveEvent): pointer=" + this.mPointerId + " x=" + x + " y=" + y + " time=" + eventTime + " calling NuanceSDK.touchMove");
+        EngineTouch.move("GestureEventProcessor.onMoveEvent", this.mPointerId, x, scaleEngineY(y), eventTime);
         int iFindPointerIndex = motionEvent.findPointerIndex(this.mPointerId);
         int historySize = motionEvent.getHistorySize();
         for (int i3 = 0; i3 < historySize; i3++) {
             onGestureMoveEvent((int) motionEvent.getHistoricalX(iFindPointerIndex, i3), (int) motionEvent.getHistoricalY(iFindPointerIndex, i3), motionEvent.getHistoricalEventTime(i3), false);
         }
-        onGestureMoveEvent(i, i2, j, true);
+        onGestureMoveEvent(x, y, eventTime, true);
     }
 
-    /** @param i x, {@code i2} y, {@code j} event time */
-    private void onUpEvent(int i, int i2, long j) {
+    /** @param x x, {@code y} y, {@code eventTime} event time */
+    private void onUpEvent(int x, int y, long eventTime) {
         if (Logger.isLoggable(TAG, Log.DEBUG)) {
-            printTouchEvent("onUpEvent  :", i, i2, j);
+            printTouchEvent("onUpEvent  :", x, y, eventTime);
         }
-        if (InputPathDebug.on()) Logger.info("CKB_SWIPE_TYPE_DEBUG", "KeyDetector.onUpEvent: pointer=" + this.mPointerId + " x=" + i + " y=" + i2 + " mIsDetectingGesture=" + this.mIsDetectingGesture + " gestureActive(sInGesture)=" + sInGesture + " inBatchInput=" + isInGesture());
+        if (InputPathDebug.on()) Logger.info("CKB_SWIPE_TYPE_DEBUG", "KeyDetector.onUpEvent: pointer=" + this.mPointerId + " x=" + x + " y=" + y + " mIsDetectingGesture=" + this.mIsDetectingGesture + " gestureActive(sInGesture)=" + sInGesture + " inBatchInput=" + isInGesture());
         sTimerCallback.cancelUpdateBatchInputTimer(this);
         if (!sInGesture) {
             // A tap or stray edge touch: cancel, never touchEnd, which would register a 1-point
             // gesture in the engine buffer. Taps type through the key path.
             if (InputPathDebug.on()) Logger.info("CKB_SWIPE_TYPE_DEBUG", "KeyDetector.onUpEvent: sInGesture=false → touchCancel only (skip touchEnd)");
-            sPointerTrackerQueue.releaseAllPointersOlderThan(this, j);
+            sPointerTrackerQueue.releaseAllPointersOlderThan(this, eventTime);
             EngineTouch.cancel("GestureEventProcessor.onUpEvent/cancel", this.mPointerId);
         } else {
             if (InputPathDebug.on()) Logger.info("CKB_SWIPE_TYPE_DEBUG", "KeyDetector.onUpEvent: calling NuanceSDK.touchEnd");
             // Deposits the gesture state on the engine thread before finishBatchInput posts the
             // prediction request, so FIFO order runs the request's guarded clear() after it.
-            EngineTouch.end("GestureEventProcessor.onUpEvent/end", this.mPointerId, i, scaleEngineY(i2), j);
+            EngineTouch.end("GestureEventProcessor.onUpEvent/end", this.mPointerId, x, scaleEngineY(y), eventTime);
         }
-        finishBatchInput(j);
+        finishBatchInput(eventTime);
         sPointerTrackerQueue.remove(this);
     }
 
-    /** @param j the event time */
-    private void finishBatchInput(long j) {
+    /** @param upEventTime the event time */
+    private void finishBatchInput(long upEventTime) {
         this.mIsDetectingGesture = false;
         boolean inBatch = isInGesture();
         if (InputPathDebug.on()) Logger.info("CKB_SWIPE_TYPE_DEBUG", "KeyDetector.finishBatchInput: inBatchInput=" + inBatch + (inBatch ? " → finalizing batch via endBatchInput (triggers onEndBatchInput → requestPredictions)" : " → no batch finalization (gesture never started a word)"));
         if (inBatch) {
-            this.gesturePathTracker.endBatchInput(j, this);
+            this.gesturePathTracker.endBatchInput(upEventTime, this);
             setInGesture(false);
             this.mInGesture = false;
         }
@@ -481,9 +481,9 @@ public final class GestureEventProcessor extends AbstractDrawingHandler {
         sKeyboardActionListener.onStartBatchInput();
     }
 
-    /** @param j the event time */
+    /** @param eventTime the event time */
     @Override
-    public void onUpdateBatchInput(long j) {
+    public void onUpdateBatchInput(long eventTime) {
         if (Logger.isLoggable(TAG, Log.DEBUG)) {
             if (BuildConfig.DEBUG) Log.d(TAG, String.format("[%d] onUpdateBatchInput", Integer.valueOf(this.mPointerId)));
         }
@@ -495,9 +495,9 @@ public final class GestureEventProcessor extends AbstractDrawingHandler {
         sTimerCallback.startUpdateBatchInputTimer(this);
     }
 
-    /** @param j the event time */
+    /** @param upEventTime the event time */
     @Override
-    public void onEndBatchInput(long j) {
+    public void onEndBatchInput(long upEventTime) {
         if (InputPathDebug.on()) Logger.info("CKB_SWIPE_TYPE_DEBUG", "KeyDetector.onEndBatchInput: pointer=" + this.mPointerId + " cancelled(mIsTrackingCanceled)=" + this.mIsTrackingCanceled);
         sTimerCallback.cancelAllUpdateBatchInputTimers();
         if (this.mIsTrackingCanceled) {
@@ -511,11 +511,11 @@ public final class GestureEventProcessor extends AbstractDrawingHandler {
         sKeyboardActionListener.onEndBatchInput(InputSource.HARDWARE);
     }
 
-    /** @param j the event time */
+    /** @param eventTime the event time */
     @Override
-    public void onPhantomUpEvent(long j) {
+    public void onPhantomUpEvent(long eventTime) {
         sTimerCallback.cancelUpdateBatchInputTimer(this);
-        finishBatchInput(j);
+        finishBatchInput(eventTime);
         cancelTrackingForAction();
     }
 
@@ -524,17 +524,17 @@ public final class GestureEventProcessor extends AbstractDrawingHandler {
         this.mIsTrackingCanceled = true;
     }
 
-    /** @param z whether a gesture is in progress */
-    private static void setInGesture(boolean z) {
-        sInGesture = z;
+    /** @param inGesture whether a gesture is in progress */
+    private static void setInGesture(boolean inGesture) {
+        sInGesture = inGesture;
     }
 
     public static boolean isGestureHandlingActive() {
         return sGestureHandlingActive;
     }
 
-    /** @param z whether gesture handling is active */
-    public static void setGestureHandlingActive(boolean z) {
-        sGestureHandlingActive = z;
+    /** @param active whether gesture handling is active */
+    public static void setGestureHandlingActive(boolean active) {
+        sGestureHandlingActive = active;
     }
 }

@@ -142,13 +142,13 @@ public final class NativeTouchSource implements KeypadTouchSource {
     }
 
     @Override
-    public void addStatusListener(@NonNull StatusListener l) {
-        listeners.addIfAbsent(l);
+    public void addStatusListener(@NonNull StatusListener statusListener) {
+        listeners.addIfAbsent(statusListener);
     }
 
     @Override
-    public void removeStatusListener(@NonNull StatusListener l) {
-        listeners.remove(l);
+    public void removeStatusListener(@NonNull StatusListener statusListener) {
+        listeners.remove(statusListener);
     }
 
     private void publish(@NonNull TouchSourceStatus next) {

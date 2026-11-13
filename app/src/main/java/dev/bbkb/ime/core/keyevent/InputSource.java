@@ -9,18 +9,18 @@ public enum InputSource {
 
     private final int sourceId;
 
-    /** @param i the wire id */
-    InputSource(int i) {
-        this.sourceId = i;
+    /** @param sourceId the wire id */
+    InputSource(int sourceId) {
+        this.sourceId = sourceId;
     }
 
     public int getId() {
         return this.sourceId;
     }
 
-    /** @param i the wire id; unknown ids map to UNKNOWN */
-    public static InputSource fromId(int i) {
-        switch (i) {
+    /** @param id the wire id; unknown ids map to UNKNOWN */
+    public static InputSource fromId(int id) {
+        switch (id) {
             case 1:
                 return INTERNAL;
             case 2:

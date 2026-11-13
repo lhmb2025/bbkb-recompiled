@@ -88,18 +88,18 @@ final class EmojiCategoryManager {
      */
     private String toneMemorySnapshot;
 
-    /** @param c0978h builder for the page keyboards */
-    public EmojiCategoryManager(SharedPreferences sharedPreferences, Context context, KeyboardBuilder c0978h, TypedArray typedArray) {
+    /** @param keyboardBuilder builder for the page keyboards */
+    public EmojiCategoryManager(SharedPreferences sharedPreferences, Context context, KeyboardBuilder keyboardBuilder, TypedArray typedArray) {
         this.currentCategoryId = -1;
         this.sharedPreferences = sharedPreferences;
         this.resources = context.getResources();
         this.maxPageKeyCount = this.resources.getInteger(R.integer.config_emoji_keyboard_max_page_key_count);
-        this.keyboardBuilder = c0978h;
+        this.keyboardBuilder = keyboardBuilder;
         this.toneMemorySnapshot = EmojiToneMemory.snapshot(sharedPreferences);
         for (int i = 0; i < CATEGORY_COUNT; i++) {
             this.categoryIconIds[i] = typedArray.getResourceId(CATEGORY_ICON_ATTR_IDS[i], 0);
         }
-        this.emojiKeyboardFactory = new EmojiKeyboardFactory(context, sharedPreferences, c0978h);
+        this.emojiKeyboardFactory = new EmojiKeyboardFactory(context, sharedPreferences, keyboardBuilder);
         final int[] ids = new int[CATEGORY_COUNT];
         final int[] starts = new int[CATEGORY_COUNT + 1];
         int present = initializeCategory(0, ids, starts, 0);
@@ -125,31 +125,31 @@ final class EmojiCategoryManager {
     /**
      * Counts a category's pages without building them (this runs on every input view creation) and
      * appends it to {@code ids}/{@code starts} if it has any. Returns the new count of categories with pages.
-     * @param i the category id
+     * @param categoryId the category id
      */
-    private int initializeCategory(int i, int[] ids, int[] starts, int present) {
+    private int initializeCategory(int categoryId, int[] ids, int[] starts, int present) {
         final int pageCount;
-        if (i == 0) {
+        if (categoryId == 0) {
             // Recents is at most one page, read straight from preferences, and the
             // constructor inspects its keys to pick the starting category.
             getOrCreateKeyboard(0, 0);
             pageCount = this.categoryPageCounts[0];
         } else {
-            EmojiCategory category = EmojiCategory.fromId(i);
+            EmojiCategory category = EmojiCategory.fromId(categoryId);
             pageCount = (category == null) ? 0 : this.emojiKeyboardFactory.getPageCount(category);
-            this.categoryPageCounts[i] = pageCount;
+            this.categoryPageCounts[categoryId] = pageCount;
         }
         if (pageCount <= 0) {
             return present;
         }
-        ids[present] = i;
+        ids[present] = categoryId;
         starts[present + 1] = starts[present] + pageCount;
         return present + 1;
     }
 
-    /** @param i the category id */
-    public int getCategoryIconId(int i) {
-        return this.categoryIconIds[i];
+    /** @param categoryId the category id */
+    public int getCategoryIconId(int categoryId) {
+        return this.categoryIconIds[categoryId];
     }
 
     /** The ids of the categories that have pages, in tab order. */
@@ -165,25 +165,25 @@ final class EmojiCategoryManager {
         return getPageCount(this.currentCategoryId);
     }
 
-    /** @param i the category id */
-    public int getPageCount(int i) {
-        final int k = indexOf(i);
+    /** @param categoryId the category id */
+    public int getPageCount(int categoryId) {
+        final int k = indexOf(categoryId);
         if (k < 0) {
-            if (BuildConfig.DEBUG) Log.w(TAG, "Invalid category id: " + i);
+            if (BuildConfig.DEBUG) Log.w(TAG, "Invalid category id: " + categoryId);
             return 0;
         }
         return this.categoryStarts[k + 1] - this.categoryStarts[k];
     }
 
-    /** @param i the category id */
-    public void setCurrentCategoryId(int i) {
-        this.currentCategoryId = i;
-        SettingsManager.setLastShownEmojiCategory(this.sharedPreferences, i);
+    /** @param categoryId the category id */
+    public void setCurrentCategoryId(int categoryId) {
+        this.currentCategoryId = categoryId;
+        SettingsManager.setLastShownEmojiCategory(this.sharedPreferences, categoryId);
     }
 
-    /** @param i the page within the current category */
-    public void setCurrentPageInCategory(int i) {
-        this.currentPageInCategory = i;
+    /** @param pageInCategory the page within the current category */
+    public void setCurrentPageInCategory(int pageInCategory) {
+        this.currentPageInCategory = pageInCategory;
     }
 
     public int getCurrentPageInCategory() {
@@ -196,12 +196,12 @@ final class EmojiCategoryManager {
 
     /**
      * The category's tab index, or 0 when it has no tab.
-     * @param i the category id
+     * @param categoryId the category id
      */
-    public int getCategoryIndex(int i) {
-        final int k = indexOf(i);
+    public int getCategoryIndex(int categoryId) {
+        final int k = indexOf(categoryId);
         if (k < 0) {
-            if (BuildConfig.DEBUG) Log.w(TAG, "categoryId not found: " + i);
+            if (BuildConfig.DEBUG) Log.w(TAG, "categoryId not found: " + categoryId);
             return 0;
         }
         return k;
@@ -209,12 +209,12 @@ final class EmojiCategoryManager {
 
     /**
      * The category's first pager position, or 0 when it has no tab.
-     * @param i the category id
+     * @param categoryId the category id
      */
-    public int getCategoryStartPosition(int i) {
-        final int k = indexOf(i);
+    public int getCategoryStartPosition(int categoryId) {
+        final int k = indexOf(categoryId);
         if (k < 0) {
-            if (BuildConfig.DEBUG) Log.w(TAG, "categoryId not found: " + i);
+            if (BuildConfig.DEBUG) Log.w(TAG, "categoryId not found: " + categoryId);
             return 0;
         }
         return this.categoryStarts[k];
@@ -256,50 +256,50 @@ final class EmojiCategoryManager {
         return position - this.categoryStarts[indexAtPosition(position)];
     }
 
-    /** @param i the pager position */
-    public EmojiKeyboard getKeyboardAtPosition(int i) {
-        final int k = indexAtPosition(i);
+    /** @param position the pager position */
+    public EmojiKeyboard getKeyboardAtPosition(int position) {
+        final int k = indexAtPosition(position);
         if (k < 0) {
             return null;
         }
-        return getOrCreateKeyboard(this.categoryIds[k], i - this.categoryStarts[k]);
+        return getOrCreateKeyboard(this.categoryIds[k], position - this.categoryStarts[k]);
     }
 
     /**
-     * @param i the category id
-     * @param i2 the page
+     * @param categoryId the category id
+     * @param pageIndex the page
      */
-    private static final Long makeCacheKey(int i, int i2) {
-        return Long.valueOf(i2 | ((long)i << 32));
+    private static final Long makeCacheKey(int categoryId, int pageIndex) {
+        return Long.valueOf(pageIndex | ((long)categoryId << 32));
     }
 
     /**
-     * @param i the category id
-     * @param i2 the page within it
+     * @param categoryId the category id
+     * @param pageIndex the page within it
      */
-    public EmojiKeyboard getOrCreateKeyboard(int i, int i2) {
+    public EmojiKeyboard getOrCreateKeyboard(int categoryId, int pageIndex) {
         synchronized (this.keyboardCache) {
-            Long lM6657c = makeCacheKey(i, i2);
+            Long lM6657c = makeCacheKey(categoryId, pageIndex);
             if (this.keyboardCache.containsKey(lM6657c)) {
                 EmojiKeyboard cached = this.keyboardCache.get(lM6657c);
                 return cached;
             }
-            if (i == 0) {
-                EmojiKeyboard c0970a = new EmojiKeyboard(this.sharedPreferences, this.keyboardBuilder.getKeyboard(12), this.maxPageKeyCount, i, this.emojiKeyboardFactory.getLocale());
+            if (categoryId == 0) {
+                EmojiKeyboard c0970a = new EmojiKeyboard(this.sharedPreferences, this.keyboardBuilder.getKeyboard(12), this.maxPageKeyCount, categoryId, this.emojiKeyboardFactory.getLocale());
                 c0970a.loadRecentsFromPreferences();
                 this.keyboardCache.put(lM6657c, c0970a);
-                this.categoryPageCounts[i] = 1;
+                this.categoryPageCounts[categoryId] = 1;
                 return c0970a;
             }
-            EmojiCategory category = EmojiCategory.fromId(i);
+            EmojiCategory category = EmojiCategory.fromId(categoryId);
             if (category == null) {
-                this.categoryPageCounts[i] = 0;
+                this.categoryPageCounts[categoryId] = 0;
                 return null;
             }
             List<EmojiKeyboard> listM6584a = this.emojiKeyboardFactory.createEmojiKeyboards(category);
-            this.categoryPageCounts[i] = listM6584a.size();
+            this.categoryPageCounts[categoryId] = listM6584a.size();
             for (int i3 = 0; i3 < listM6584a.size(); i3++) {
-                this.keyboardCache.put(makeCacheKey(i, i3), listM6584a.get(i3));
+                this.keyboardCache.put(makeCacheKey(categoryId, i3), listM6584a.get(i3));
             }
             return this.keyboardCache.get(lM6657c);
         }

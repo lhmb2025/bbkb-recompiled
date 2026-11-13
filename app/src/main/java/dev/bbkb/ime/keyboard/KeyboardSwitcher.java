@@ -389,14 +389,14 @@ public final class KeyboardSwitcher implements SymbolPageProvider, KeyboardLayou
     private KeyboardSwitcher() {
     }
 
-    /** @param aVar the IME's switcher callbacks */
-    public static void initialize(BlackBerryIME blackBerryIME, SwitcherCallbacks aVar) {
-        INSTANCE.initializeInternal(blackBerryIME, aVar, PrefsManager.INSTANCE.getPrefs());
+    /** @param switcherCallbacks the IME's switcher callbacks */
+    public static void initialize(BlackBerryIME blackBerryIME, SwitcherCallbacks switcherCallbacks) {
+        INSTANCE.initializeInternal(blackBerryIME, switcherCallbacks, PrefsManager.INSTANCE.getPrefs());
     }
 
-    private void initializeInternal(BlackBerryIME blackBerryIME, SwitcherCallbacks aVar, SharedPreferences sharedPreferences) {
+    private void initializeInternal(BlackBerryIME blackBerryIME, SwitcherCallbacks switcherCallbacks, SharedPreferences sharedPreferences) {
         this.blackberryIme = blackBerryIME;
-        this.switcherCallbacks = aVar;
+        this.switcherCallbacks = switcherCallbacks;
         this.sharedPreferences = sharedPreferences;
         this.subtypeManager = SubtypeManager.getInstance();
         this.keyboardState = new KeyboardState(this);
@@ -443,34 +443,34 @@ public final class KeyboardSwitcher implements SymbolPageProvider, KeyboardLayou
     }
 
     /**
-     * @param i the key code: -23 (input menu toggle key) or -10 (space bar)
-     * @param str the secondary icon's name
+     * @param code the key code: -23 (input menu toggle key) or -10 (space bar)
+     * @param iconName the secondary icon's name
      */
-    private void updateSecondaryKeySpec(int i, String str) {
+    private void updateSecondaryKeySpec(int code, String iconName) {
         Key keyM6604b;
         MoreKeySpec c1065xM7444a;
         Keyboard c0965eM6834l = getCurrentKeyboard();
         if (c0965eM6834l == null) {
             return;
         }
-        if (i == -23) {
+        if (code == -23) {
             keyM6604b = c0965eM6834l.getKeyByOutputText("inputBoardToggleKeyStyle");
             if (keyM6604b == null) {
                 keyM6604b = c0965eM6834l.getKeyByOutputText("numInputBoardToggleKeyStyle");
             }
         } else {
-            keyM6604b = i == -10 ? c0965eM6834l.getKeyByCode(32) : null;
+            keyM6604b = code == -10 ? c0965eM6834l.getKeyByCode(32) : null;
         }
         if (keyM6604b == null) {
             return;
         }
         boolean zM6181C = keyM6604b.hasLongPressKey();
-        boolean zM6769d = shouldShowSecondaryIcon(i);
+        boolean zM6769d = shouldShowSecondaryIcon(code);
         if (zM6181C == zM6769d) {
             return;
         }
         if (zM6769d) {
-            c1065xM7444a = new MoreKeySpec(null, KeyboardIconSet.getIconId(str), i, null);
+            c1065xM7444a = new MoreKeySpec(null, KeyboardIconSet.getIconId(iconName), code, null);
         } else {
             c1065xM7444a = MoreKeySpec.getEmpty();
         }
@@ -481,12 +481,12 @@ public final class KeyboardSwitcher implements SymbolPageProvider, KeyboardLayou
         if (BuildConfig.DEBUG) Log.e(TAG, "Could not replace the secondary key spec of the key");
     }
 
-    /** @param i the key code, as for {@link #updateSecondaryKeySpec} */
-    private boolean shouldShowSecondaryIcon(int i) {
-        if (i == -23) {
+    /** @param code the key code, as for {@link #updateSecondaryKeySpec} */
+    private boolean shouldShowSecondaryIcon(int code) {
+        if (code == -23) {
             return SettingsManager.getInstance().getSettingsValues().isUimEnabled();
         }
-        if (i != -10) {
+        if (code != -10) {
             return false;
         }
         // The globe on the space bar: whenever there is another language to switch to.
@@ -494,10 +494,10 @@ public final class KeyboardSwitcher implements SymbolPageProvider, KeyboardLayou
     }
 
     /**
-     * @param i the auto-caps flags (getCapsMode)
-     * @param i2 the recapitalize mode
+     * @param autoCapsFlags the auto-caps flags (getCapsMode)
+     * @param recapitalizeMode the recapitalize mode
      */
-    public void startInput(EditorInfo editorInfo, int i, int i2) throws Resources.NotFoundException {
+    public void startInput(EditorInfo editorInfo, int autoCapsFlags, int recapitalizeMode) throws Resources.NotFoundException {
         if (this.blackberryIme == null) {
             return;
         }
@@ -514,7 +514,7 @@ public final class KeyboardSwitcher implements SymbolPageProvider, KeyboardLayou
         aVar.setInputBoardBarEnabled(this.blackberryIme.isUimEnabled());
         this.keyboardBuilder = aVar.build();
         try {
-            this.keyboardState.onStartInput(i, i2, this.subtypeManager.getCurrentSubtypeLocale(), editorInfo.inputType, editorInfo.packageName);
+            this.keyboardState.onStartInput(autoCapsFlags, recapitalizeMode, this.subtypeManager.getCurrentSubtypeLocale(), editorInfo.inputType, editorInfo.packageName);
             this.keyboardLayoutSet.setLocale(this.subtypeManager.getCurrentSubtypeLocale(), this.themeContext);
             SlideboardManager c1083e = this.slideboardManager;
             if (c1083e != null) {
@@ -539,10 +539,10 @@ public final class KeyboardSwitcher implements SymbolPageProvider, KeyboardLayou
         return (z && LocaleUtils.isChinesePinyin(localeM5625c)) ? InputMethodSubtypeCompat.newInputMethodSubtype(R.string.subtype_no_language_qwerty, R.drawable.ic_ime_switcher, Locale.ENGLISH.toString(), "keyboard", "KeyboardLayoutSet=qwerty,AsciiCapable,EnabledWhenDefaultIsNotAsciiCapable,EmojiCapable", false, false, 0) : inputMethodSubtype;
     }
 
-    /** @param i the editor's input type */
-    public void saveKeyboardState(int i) {
+    /** @param inputType the editor's input type */
+    public void saveKeyboardState(int inputType) {
         if (getCurrentKeyboard() != null || isEmojiKeyboardShowing()) {
-            this.keyboardState.saveKeyboardState(i);
+            this.keyboardState.saveKeyboardState(inputType);
         }
     }
 
@@ -558,8 +558,8 @@ public final class KeyboardSwitcher implements SymbolPageProvider, KeyboardLayou
         }
     }
 
-    /** @param c0965e the keyboard to show */
-    private void setKeyboard(Keyboard c0965e) {
+    /** @param keyboard the keyboard to show */
+    private void setKeyboard(Keyboard keyboard) {
         SettingsValues c0804dM5050c = SettingsManager.getInstance().getSettingsValues();
         // A new layout in the main view means the emoji board is down. Scoped to -11: an unscoped
         // "nothing is open" would make the coordinator forget an open voice board.
@@ -567,10 +567,10 @@ public final class KeyboardSwitcher implements SymbolPageProvider, KeyboardLayou
         MainKeyboardView mainKeyboardView = this.mainKeyboardView;
         if (mainKeyboardView != null) {
             // Tint first: MainKeyboardView.setKeyboard captures the shift/alt icon instances.
-            if (c0965e != null && c0965e.mIconsSet != null) {
-                c0965e.mIconsSet.applyColorTint();
+            if (keyboard != null && keyboard.mIconsSet != null) {
+                keyboard.mIconsSet.applyColorTint();
             }
-            mainKeyboardView.setKeyboard(c0965e);
+            mainKeyboardView.setKeyboard(keyboard);
             mainKeyboardView.setKeyPreviewPopupEnabled(c0804dM5050c.isKeyPreviewPopupEnabled, c0804dM5050c.keyPreviewPopupDismissDelay);
             mainKeyboardView.setKeyPreviewAnimationParams(c0804dM5050c.hasCustomKeyPreviewAnimationParams, c0804dM5050c.keyPreviewShowUpStartScaleX, c0804dM5050c.keyPreviewShowUpStartScaleY, c0804dM5050c.keyPreviewShowUpDuration, c0804dM5050c.keyPreviewDismissEndScaleX, c0804dM5050c.keyPreviewDismissEndScaleY, c0804dM5050c.keyPreviewDismissDuration);
             mainKeyboardView.setFunctionalKeyEnabled(this.subtypeManager.isShortcutImeReady());
@@ -771,22 +771,22 @@ public final class KeyboardSwitcher implements SymbolPageProvider, KeyboardLayou
     }
 
     /**
-     * @param i the auto-caps flags (getCapsMode)
-     * @param i2 the recapitalize mode
+     * @param autoCapsFlags the auto-caps flags (getCapsMode)
+     * @param recapitalizeMode the recapitalize mode
      */
-    public void onBackspaceInSymbolMode(int i, int i2) {
-        this.keyboardState.onBackspaceInSymbolMode(i, i2);
+    public void onBackspaceInSymbolMode(int autoCapsFlags, int recapitalizeMode) {
+        this.keyboardState.onBackspaceInSymbolMode(autoCapsFlags, recapitalizeMode);
     }
 
     /**
-     * @param i the key code
-     * @param z true if this is the only active pointer
-     * @param i2 the auto-caps flags (getCapsMode)
-     * @param i3 the recapitalize mode
+     * @param code the key code
+     * @param isSinglePointer true if this is the only active pointer
+     * @param autoCapsFlags the auto-caps flags (getCapsMode)
+     * @param recapitalizeMode the recapitalize mode
      */
-    public void onCodeInput(int i, boolean z, int i2, int i3) {
+    public void onCodeInput(int code, boolean isSinglePointer, int autoCapsFlags, int recapitalizeMode) {
         boolean zM7248e = this.keyboardState.wasSymbolEnteredFromAlphabet();
-        this.keyboardState.onCodeInput(i, z, i2, i3);
+        this.keyboardState.onCodeInput(code, isSinglePointer, autoCapsFlags, recapitalizeMode);
         if (!zM7248e || this.keyboardState.wasSymbolEnteredFromAlphabet()) {
             return;
         }
@@ -796,32 +796,32 @@ public final class KeyboardSwitcher implements SymbolPageProvider, KeyboardLayou
     }
 
     /**
-     * @param i the key code
-     * @param z true if released during sliding input
-     * @param i2 the auto-caps flags (getCapsMode)
-     * @param i3 the recapitalize mode
+     * @param code the key code
+     * @param withSliding true if released during sliding input
+     * @param autoCapsFlags the auto-caps flags (getCapsMode)
+     * @param recapitalizeMode the recapitalize mode
      */
-    public void onCodeRelease(int i, boolean z, int i2, int i3) {
+    public void onCodeRelease(int code, boolean withSliding, int autoCapsFlags, int recapitalizeMode) {
         KeyboardState c1028ak = this.keyboardState;
         if (c1028ak != null) {
-            c1028ak.onCodeRelease(i, z, i2, i3);
+            c1028ak.onCodeRelease(code, withSliding, autoCapsFlags, recapitalizeMode);
         }
     }
 
     /**
-     * @param i the auto-caps flags (getCapsMode)
-     * @param i2 the recapitalize mode
+     * @param autoCapsFlags the auto-caps flags (getCapsMode)
+     * @param recapitalizeMode the recapitalize mode
      */
-    public void onHardwareKeyEvent(KeyEvent keyEvent, int i, int i2) {
-        this.keyboardState.onHardwareKeyEvent(keyEvent.getKeyCode(), i, i2);
+    public void onHardwareKeyEvent(KeyEvent keyEvent, int autoCapsFlags, int recapitalizeMode) {
+        this.keyboardState.onHardwareKeyEvent(keyEvent.getKeyCode(), autoCapsFlags, recapitalizeMode);
     }
 
     /**
-     * @param i the auto-caps flags (getCapsMode)
-     * @param i2 the recapitalize mode
+     * @param autoCapsFlags the auto-caps flags (getCapsMode)
+     * @param recapitalizeMode the recapitalize mode
      */
-    public void onMomentaryStateFinish(int i, int i2) {
-        this.keyboardState.onMomentaryStateFinish(i, i2);
+    public void onMomentaryStateFinish(int autoCapsFlags, int recapitalizeMode) {
+        this.keyboardState.onMomentaryStateFinish(autoCapsFlags, recapitalizeMode);
     }
 
     @Override
@@ -867,8 +867,8 @@ public final class KeyboardSwitcher implements SymbolPageProvider, KeyboardLayou
         setAlphabetKeyboard(4);
     }
 
-    /** @param i the shift mode: 0 off, 1 shifted once, 2 automatic, 3 locked, 4 momentary */
-    private void setAlphabetKeyboard(int i) {
+    /** @param elementId the shift mode: 0 off, 1 shifted once, 2 automatic, 3 locked, 4 momentary */
+    private void setAlphabetKeyboard(int elementId) {
         // A physical key can reach here before startInput() built the keyboard (cold start). The
         // shift mode is already in keyboardState; startInput() builds from it.
         if (this.keyboardBuilder == null || this.blackberryIme == null) {
@@ -879,31 +879,31 @@ public final class KeyboardSwitcher implements SymbolPageProvider, KeyboardLayou
         if (!zM4042U && this.slideboardManager != null) {
             this.slideboardManager.show();
         }
-        setKeyboard(this.keyboardBuilder.getKeyboardForShift(i, !zM4042U));
+        setKeyboard(this.keyboardBuilder.getKeyboardForShift(elementId, !zM4042U));
     }
 
     @Override
-    public void setVkbSymbolsKeyboard(int i, boolean z, boolean z2, int i2) {
+    public void setVkbSymbolsKeyboard(int symbolPage, boolean usePkbLayout, boolean isCustomPage, int customSymbolPage) {
         Keyboard c0965eM6734a;
         transitions().apply(KeyboardTransition.switchLayout(KeyboardTransition.Layout.SYMBOL));
-        if (z2) {
-            this.keyboardBuilder.setCustomSymbolPage(i2);
-            c0965eM6734a = this.keyboardBuilder.getKeyboardForShift(8, z && !this.blackberryIme.refreshOnScreenKeyboardShowing());
+        if (isCustomPage) {
+            this.keyboardBuilder.setCustomSymbolPage(customSymbolPage);
+            c0965eM6734a = this.keyboardBuilder.getKeyboardForShift(8, usePkbLayout && !this.blackberryIme.refreshOnScreenKeyboardShowing());
         } else {
-            int i3 = i + 5;
+            int i3 = symbolPage + 5;
             boolean z3 = this.sharedPreferences.getBoolean("enable_symbol_customization_vkb", false);
             boolean z4 = this.sharedPreferences.getBoolean("vkb_custom_page_first", false);
             if (z3 && z4) {
                 i3--;
             }
-            c0965eM6734a = this.keyboardBuilder.getKeyboardForShift(i3, z && !this.blackberryIme.refreshOnScreenKeyboardShowing());
+            c0965eM6734a = this.keyboardBuilder.getKeyboardForShift(i3, usePkbLayout && !this.blackberryIme.refreshOnScreenKeyboardShowing());
             replaceCurrencyKey(c0965eM6734a);
         }
         setKeyboard(c0965eM6734a);
     }
 
     @Override
-    public void setPkbSymbolsKeyboard(int i, boolean z, boolean z2, int i2) {
+    public void setPkbSymbolsKeyboard(int symbolPage, boolean usePkbLayout, boolean isCustomPage, int customSymbolPage) {
         Keyboard c0965eM6735b;
         Key keyM6604b;
         // The bar is left as it is: the Sym board comes up under whichever bar is showing.
@@ -911,17 +911,17 @@ public final class KeyboardSwitcher implements SymbolPageProvider, KeyboardLayou
         if (this.slideboardManager != null) {
             this.slideboardManager.showNumericPanel();
         }
-        if (z2) {
-            this.keyboardBuilder.setCustomSymbolPage(i2);
-            c0965eM6735b = this.keyboardBuilder.getKeyboardInternal(8, z);
+        if (isCustomPage) {
+            this.keyboardBuilder.setCustomSymbolPage(customSymbolPage);
+            c0965eM6735b = this.keyboardBuilder.getKeyboardInternal(8, usePkbLayout);
         } else {
-            int i3 = i + 5;
+            int i3 = symbolPage + 5;
             boolean z3 = this.sharedPreferences.getBoolean("enable_symbol_customization_pkb", false);
             boolean z4 = this.sharedPreferences.getBoolean("pkb_custom_page_first", false);
             if (z3 && z4) {
                 i3--;
             }
-            c0965eM6735b = this.keyboardBuilder.getKeyboardInternal(i3, z);
+            c0965eM6735b = this.keyboardBuilder.getKeyboardInternal(i3, usePkbLayout);
             replaceCurrencyKey(c0965eM6735b);
         }
         if (!c0965eM6735b.mId.mVoiceKeyEnabled && (keyM6604b = c0965eM6735b.getKeyByCode(-27)) != null) {
@@ -942,18 +942,18 @@ public final class KeyboardSwitcher implements SymbolPageProvider, KeyboardLayou
         this.unifiedInputBoardManager.hide();
     }
 
-    /** @param c0965e the symbol keyboard whose currency key to replace */
-    private void replaceCurrencyKey(Keyboard c0965e) {
+    /** @param keyboard the symbol keyboard whose currency key to replace */
+    private void replaceCurrencyKey(Keyboard keyboard) {
         if (SettingsManager.getInstance().getSettingsValues().currencySymbol.length() > 0) {
-            Key keyM6597a = c0965e.getKeyByOutputText("currencyExtendedKeyStyle");
+            Key keyM6597a = keyboard.getKeyByOutputText("currencyExtendedKeyStyle");
             if (keyM6597a == null) {
                 if (BuildConfig.DEBUG) Log.e(TAG, "Cannot find currency key on keyboard to replace");
                 return;
             }
             char cCharAt = SettingsManager.getInstance().getSettingsValues().currencySymbol.charAt(0);
             if (cCharAt != keyM6597a.getCode()) {
-                if (c0965e.replaceKey(keyM6597a, new Key(new MoreKeySpec(String.valueOf(cCharAt), 0, cCharAt, String.valueOf(cCharAt)), MoreKeySpec.getEmpty(), KeyHintPosition.HIDDEN, keyM6597a.getHintLabel(), 0, 1, keyM6597a.getX(), keyM6597a.getY(), c0965e.mHorizontalGap + keyM6597a.getWidth(), c0965e.mVerticalGap + keyM6597a.getHeight(), c0965e.mHorizontalGap, c0965e.mVerticalGap, "currencyExtendedKeyStyle", keyM6597a.getMoreKeys(), keyM6597a.getKeyLabelSet(), keyM6597a.getMoreKeysFlags(), 8, keyM6597a.getScanCode()))) {
-                    c0965e.rebuildProximityGrid();
+                if (keyboard.replaceKey(keyM6597a, new Key(new MoreKeySpec(String.valueOf(cCharAt), 0, cCharAt, String.valueOf(cCharAt)), MoreKeySpec.getEmpty(), KeyHintPosition.HIDDEN, keyM6597a.getHintLabel(), 0, 1, keyM6597a.getX(), keyM6597a.getY(), keyboard.mHorizontalGap + keyM6597a.getWidth(), keyboard.mVerticalGap + keyM6597a.getHeight(), keyboard.mHorizontalGap, keyboard.mVerticalGap, "currencyExtendedKeyStyle", keyM6597a.getMoreKeys(), keyM6597a.getKeyLabelSet(), keyM6597a.getMoreKeysFlags(), 8, keyM6597a.getScanCode()))) {
+                    keyboard.rebuildProximityGrid();
                     return;
                 }
                 if (BuildConfig.DEBUG) Log.e(TAG, "Cannot replace currency key: " + cCharAt + " on keyboard");
@@ -1131,10 +1131,10 @@ public final class KeyboardSwitcher implements SymbolPageProvider, KeyboardLayou
     }
 
     @Override
-    public void updateShiftIndicator(boolean z) {
+    public void updateShiftIndicator(boolean isShifted) {
         MainKeyboardView mainKeyboardViewM6790T = getMainKeyboardView();
         if (mainKeyboardViewM6790T != null) {
-            mainKeyboardViewM6790T.setShiftKeyState(z);
+            mainKeyboardViewM6790T.setShiftKeyState(isShifted);
         }
     }
 
@@ -1147,8 +1147,8 @@ public final class KeyboardSwitcher implements SymbolPageProvider, KeyboardLayou
     }
 
     @Override
-    public void setAlphabetKeyboard(int i, int i2) {
-        this.keyboardState.requestShiftMode(i, i2);
+    public void setAlphabetKeyboard(int autoCapsFlags, int recapitalizeMode) {
+        this.keyboardState.requestShiftMode(autoCapsFlags, recapitalizeMode);
     }
 
     @Override
@@ -1197,24 +1197,24 @@ public final class KeyboardSwitcher implements SymbolPageProvider, KeyboardLayou
     }
 
     /**
-     * @param i the key code
-     * @param i2 the auto-caps flags (getCapsMode)
-     * @param i3 the recapitalize mode
+     * @param code the key code
+     * @param autoCapsFlags the auto-caps flags (getCapsMode)
+     * @param recapitalizeMode the recapitalize mode
      */
-    public void onInputCodeChanged(int i, int i2, int i3) {
+    public void onInputCodeChanged(int code, int autoCapsFlags, int recapitalizeMode) {
         // -11 lands on the same emoji toggle as onEmojiKeyPressed(), so it needs the same prologue.
-        if (i == CrossAxisRules.EMOJI_KEY_CODE) {
+        if (code == CrossAxisRules.EMOJI_KEY_CODE) {
             beginEmojiBoardTransition();
         }
-        this.keyboardState.onInputCodeChanged(i, i2, i3);
+        this.keyboardState.onInputCodeChanged(code, autoCapsFlags, recapitalizeMode);
     }
 
     /**
-     * @param i the auto-caps flags (getCapsMode)
-     * @param i2 the recapitalize mode
+     * @param autoCapsFlags the auto-caps flags (getCapsMode)
+     * @param recapitalizeMode the recapitalize mode
      */
-    public void onSoftwareSymbolCommitted(int code, int i, int i2) {
-        this.keyboardState.onSoftwareSymbolCommitted(code, i, i2);
+    public void onSoftwareSymbolCommitted(int code, int autoCapsFlags, int recapitalizeMode) {
+        this.keyboardState.onSoftwareSymbolCommitted(code, autoCapsFlags, recapitalizeMode);
     }
 
     public boolean isEmojiKeyboardShowing() {
@@ -1326,8 +1326,8 @@ public final class KeyboardSwitcher implements SymbolPageProvider, KeyboardLayou
     }
 
     @SuppressLint({"InflateParams"})
-    /** @param z true to enable hardware-accelerated drawing */
-    public View createInputView(boolean z) {
+    /** @param isHardwareAcceleratedDrawingEnabled true to enable hardware-accelerated drawing */
+    public View createInputView(boolean isHardwareAcceleratedDrawingEnabled) {
         // Clean up the previous sub-components so they do not leak. Not destroy(): it nulls
         // blackberryIme and sharedPreferences, which are needed below.
         EmojiPalettesView oldEmoji = this.emojiPalettesView;
@@ -1351,7 +1351,7 @@ public final class KeyboardSwitcher implements SymbolPageProvider, KeyboardLayou
             mainKeyboardView.closing();
         }
         // Remembered for getEmojiPalettesView(), which applies it at first inflation.
-        this.isHardwareAccelerated = z;
+        this.isHardwareAccelerated = isHardwareAcceleratedDrawingEnabled;
         ensureThemeContext(this.blackberryIme);
         this.inputView = (InputView) LayoutInflater.from(this.themeContext).inflate(R.layout.input_view, (ViewGroup) null);
         this.mainKeyboardFrame = this.inputView.findViewById(R.id.main_keyboard_frame);
@@ -1364,7 +1364,7 @@ public final class KeyboardSwitcher implements SymbolPageProvider, KeyboardLayou
         this.numberPadViewStub = this.inputView.findViewById(R.id.number_pad_view_stub);
         this.numberPadView = null;
         this.mainKeyboardView = (MainKeyboardView) this.inputView.findViewById(R.id.keyboard_view);
-        this.mainKeyboardView.setHardwareAcceleratedDrawingEnabled(z);
+        this.mainKeyboardView.setHardwareAcceleratedDrawingEnabled(isHardwareAcceleratedDrawingEnabled);
         this.mainKeyboardView.setKeyboardActionListener(this.blackberryIme);
         this.slideboardManager = new SlideboardManager(new ImeResourcesContext(this.blackberryIme), this.inputView, this.blackberryIme);
         this.unifiedInputBoardManager = new UnifiedInputBoardManager(new ImeResourcesContext(this.blackberryIme), this.inputView, this.blackberryIme);
@@ -1495,12 +1495,12 @@ public final class KeyboardSwitcher implements SymbolPageProvider, KeyboardLayou
     }
 
     /**
-     * @param i the auto-caps flags (getCapsMode)
-     * @param i2 the recapitalize mode
-     * @param z true when triggered by a swipe gesture
-     * @param z2 true for the physical keyboard's symbol pages
+     * @param autoCapsFlags the auto-caps flags (getCapsMode)
+     * @param recapitalizeMode the recapitalize mode
+     * @param fromSwipe true when triggered by a swipe gesture
+     * @param fromPhysicalKeyboard true for the physical keyboard's symbol pages
      */
-    public boolean onSymbolShiftToggle(int i, int i2, boolean z, boolean z2) {
+    public boolean onSymbolShiftToggle(int autoCapsFlags, int recapitalizeMode, boolean fromSwipe, boolean fromPhysicalKeyboard) {
         // The page turn may land on another symbol page or the alphabet: layout UNCHANGED.
         transitions().apply(KeyboardTransition.switchLayout(KeyboardTransition.Layout.UNCHANGED));
         Keyboard c0965eM6834l = getCurrentKeyboard();
@@ -1510,53 +1510,53 @@ public final class KeyboardSwitcher implements SymbolPageProvider, KeyboardLayou
         if (c0965eM6834l.getKeyByCode(-3) == null && (!c0965eM6834l.isTouchKeyboard() || c0965eM6834l.isNumberOrDatetimeVariation())) {
             return false;
         }
-        this.keyboardState.onSymbolShiftToggle(i, i2, z, z2);
+        this.keyboardState.onSymbolShiftToggle(autoCapsFlags, recapitalizeMode, fromSwipe, fromPhysicalKeyboard);
         return true;
     }
 
     /**
-     * @param i the auto-caps flags (getCapsMode)
-     * @param i2 the recapitalize mode
+     * @param autoCapsFlags the auto-caps flags (getCapsMode)
+     * @param recapitalizeMode the recapitalize mode
      */
-    public void onSymbolKeyLongPress(int i, int i2) {
-        this.keyboardState.onSymbolKeyLongPress(i, i2);
+    public void onSymbolKeyLongPress(int autoCapsFlags, int recapitalizeMode) {
+        this.keyboardState.onSymbolKeyLongPress(autoCapsFlags, recapitalizeMode);
     }
 
     /**
-     * @param i the physical key's scan code
-     * @param z the pressed state to show on the matching key
+     * @param scanCode the physical key's scan code
+     * @param pressed the pressed state to show on the matching key
      */
-    public Key getKeyByPhysicalScanCode(int i, boolean z) {
+    public Key getKeyByPhysicalScanCode(int scanCode, boolean pressed) {
         Keyboard c0965eM6834l;
         if (!this.keyboardState.wasSymbolEnteredFromAlphabet() || (c0965eM6834l = getCurrentKeyboard()) == null) {
             return null;
         }
-        Key keyM6611d = c0965eM6834l.getKeyByScanCode(i);
+        Key keyM6611d = c0965eM6834l.getKeyByScanCode(scanCode);
         if (keyM6611d != null) {
-            this.mainKeyboardView.setKeyPressed(keyM6611d, z);
+            this.mainKeyboardView.setKeyPressed(keyM6611d, pressed);
         }
         return keyM6611d;
     }
 
     /**
-     * What holding the physical key that typed {@code str} offers, the same on every keyboard
+     * What holding the physical key that typed {@code baseCharacter} offers, the same on every keyboard
      * ({@link PhysicalKeyResolver#moreKeys}).
      *
-     * @param str the character the key typed
+     * @param baseCharacter the character the key typed
      */
     @Override // dev.bbkb.ime.core.KeyboardLayoutCallback
-    public String[] getMoreKeysForKey(String str) {
-        return PhysicalKeyResolver.moreKeys(str);
+    public String[] getMoreKeysForKey(String baseCharacter) {
+        return PhysicalKeyResolver.moreKeys(baseCharacter);
     }
 
     /**
-     * The double-tap sequence for {@code str} ({@link PhysicalKeyResolver#multitap}).
+     * The double-tap sequence for {@code baseCharacter} ({@link PhysicalKeyResolver#multitap}).
      *
-     * @param str the character the key typed
+     * @param baseCharacter the character the key typed
      */
     @Override // dev.bbkb.ime.core.KeyboardLayoutCallback
-    public String[] getMoreKeysForKeyByStyle(String str) {
-        return PhysicalKeyResolver.multitap(str);
+    public String[] getMoreKeysForKeyByStyle(String baseCharacter) {
+        return PhysicalKeyResolver.multitap(baseCharacter);
     }
 
     /**
@@ -1568,11 +1568,11 @@ public final class KeyboardSwitcher implements SymbolPageProvider, KeyboardLayou
         return this.keyboardState != null && this.keyboardState.isInSymbolMode();
     }
 
-    /** @param i the key code */
-    public String[] getMoreKeysForCode(int i) {
+    /** @param code the key code */
+    public String[] getMoreKeysForCode(int code) {
         Keyboard c0965eM6834l = getCurrentKeyboard();
         if (c0965eM6834l != null) {
-            return c0965eM6834l.getKeyLabelSetForCode(i);
+            return c0965eM6834l.getKeyLabelSetForCode(code);
         }
         return null;
     }
@@ -1631,7 +1631,7 @@ public final class KeyboardSwitcher implements SymbolPageProvider, KeyboardLayou
     }
 
     @Override // KeyCharacterInterpreter
-    public KeyCharacterResult.Interpretation interpretKeyCharacter(KeyEvent keyEvent, int i) {
+    public KeyCharacterResult.Interpretation interpretKeyCharacter(KeyEvent keyEvent, int metaState) {
         int iM6232c;
         String strM7448e;
         int iM6596a;
@@ -1702,12 +1702,12 @@ public final class KeyboardSwitcher implements SymbolPageProvider, KeyboardLayou
         return c1011i != null && c1011i.isPanelBoardShowing();
     }
 
-    /** @param i 0 to unshift; otherwise the main keyboard view's new visibility */
-    public void onUnifiedInputBoardAction(int i) {
-        if (i == 0) {
+    /** @param visibility 0 to unshift; otherwise the main keyboard view's new visibility */
+    public void onUnifiedInputBoardAction(int visibility) {
+        if (visibility == 0) {
             requestShiftOff();
         } else {
-            this.unifiedInputBoardManager.onMainKeyboardViewVisibilityChanged(i);
+            this.unifiedInputBoardManager.onMainKeyboardViewVisibilityChanged(visibility);
         }
     }
 

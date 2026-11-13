@@ -12,13 +12,13 @@ public class SuggestionStripSettings {
     public final int[] suggestionCounts;
 
     /**
-     * @param z whether the strip is visible
-     * @param iArr the suggestion counts
-     * @param z2 whether suggestions are enabled in the current input field
+     * @param isVisible whether the strip is visible
+     * @param suggestionCounts the suggestion counts
+     * @param isEnabledInCurrentInputField whether suggestions are enabled in the current input field
      */
-    public SuggestionStripSettings(boolean z, int[] iArr, boolean z2) {
-        this.isVisible = z;
-        this.suggestionCounts = iArr;
-        this.isEnabledInCurrentInputField = z2;
+    public SuggestionStripSettings(boolean isVisible, int[] suggestionCounts, boolean isEnabledInCurrentInputField) {
+        this.isVisible = isVisible;
+        this.suggestionCounts = suggestionCounts;
+        this.isEnabledInCurrentInputField = isEnabledInCurrentInputField;
     }
 }

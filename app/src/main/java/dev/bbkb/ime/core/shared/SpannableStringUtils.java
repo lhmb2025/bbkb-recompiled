@@ -10,43 +10,43 @@ import android.text.style.URLSpan;
 
 
 public final class SpannableStringUtils {
-    public static void copyNonParagraphSuggestionSpansTo(Spanned spanned, int i, int i2, Spannable spannable, int i3) {
-        Object[] spans = spanned.getSpans(i, i2, SuggestionSpan.class);
+    public static void copyNonParagraphSuggestionSpansTo(Spanned spanned, int start, int end, Spannable spannable, int destoff) {
+        Object[] spans = spanned.getSpans(start, end, SuggestionSpan.class);
         for (int i4 = 0; i4 < spans.length; i4++) {
             int spanFlags = spanned.getSpanFlags(spans[i4]) & (-52);
             int spanStart = spanned.getSpanStart(spans[i4]);
             int spanEnd = spanned.getSpanEnd(spans[i4]);
-            if (spanStart < i) {
-                spanStart = i;
+            if (spanStart < start) {
+                spanStart = start;
             }
-            if (spanEnd > i2) {
-                spanEnd = i2;
+            if (spanEnd > end) {
+                spanEnd = end;
             }
-            spannable.setSpan(spans[i4], (spanStart - i) + i3, (spanEnd - i) + i3, spanFlags);
+            spannable.setSpan(spans[i4], (spanStart - start) + destoff, (spanEnd - start) + destoff, spanFlags);
         }
     }
 
-    public static CharSequence concatWithNonParagraphSuggestionSpansOnly(CharSequence... charSequenceArr) {
-        if (charSequenceArr.length == 0) {
+    public static CharSequence concatWithNonParagraphSuggestionSpansOnly(CharSequence... charSequences) {
+        if (charSequences.length == 0) {
             return "";
         }
         boolean z = true;
-        if (charSequenceArr.length == 1) {
-            return charSequenceArr[0];
+        if (charSequences.length == 1) {
+            return charSequences[0];
         }
         int i = 0;
         while (true) {
-            if (i >= charSequenceArr.length) {
+            if (i >= charSequences.length) {
                 z = false;
                 break;
             }
-            if (charSequenceArr[i] instanceof Spanned) {
+            if (charSequences[i] instanceof Spanned) {
                 break;
             }
             i++;
         }
         StringBuilder sb = new StringBuilder();
-        for (CharSequence charSequence : charSequenceArr) {
+        for (CharSequence charSequence : charSequences) {
             sb.append(charSequence);
         }
         if (!z) {
@@ -54,18 +54,18 @@ public final class SpannableStringUtils {
         }
         SpannableString spannableString = new SpannableString(sb);
         int i2 = 0;
-        for (int i3 = 0; i3 < charSequenceArr.length; i3++) {
-            int length = charSequenceArr[i3].length();
-            if (charSequenceArr[i3] instanceof Spanned) {
-                copyNonParagraphSuggestionSpansTo((Spanned) charSequenceArr[i3], 0, length, spannableString, i2);
+        for (int i3 = 0; i3 < charSequences.length; i3++) {
+            int length = charSequences[i3].length();
+            if (charSequences[i3] instanceof Spanned) {
+                copyNonParagraphSuggestionSpansTo((Spanned) charSequences[i3], 0, length, spannableString, i2);
             }
             i2 += length;
         }
         return new SpannedString(spannableString);
     }
 
-    public static boolean hasUrlSpans(CharSequence charSequence, int i, int i2) {
+    public static boolean hasUrlSpans(CharSequence charSequence, int startIndex, int endIndex) {
         URLSpan[] uRLSpanArr;
-        return (charSequence instanceof Spanned) && (uRLSpanArr = (URLSpan[]) ((Spanned) charSequence).getSpans(i - 1, i2 + 1, URLSpan.class)) != null && uRLSpanArr.length > 0;
+        return (charSequence instanceof Spanned) && (uRLSpanArr = (URLSpan[]) ((Spanned) charSequence).getSpans(startIndex - 1, endIndex + 1, URLSpan.class)) != null && uRLSpanArr.length > 0;
     }
 }

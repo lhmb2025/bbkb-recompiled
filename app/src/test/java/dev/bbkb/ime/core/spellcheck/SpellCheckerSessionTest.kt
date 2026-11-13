@@ -281,8 +281,8 @@ class SpellCheckerSessionTest {
         assertEquals("fr_CA", session.locale)
     }
 
-    private fun info(attrs: Int, seq: Int, vararg s: String) =
-        SuggestionsInfo(attrs, arrayOf(*s)).apply { setCookieAndSequence(0, seq) }
+    private fun info(attrs: Int, seq: Int, vararg suggestions: String) =
+        SuggestionsInfo(attrs, arrayOf(*suggestions)).apply { setCookieAndSequence(0, seq) }
 
     private fun params(vararg items: Triple<Int, Int, Int>): SentenceTextInfoParams {
         val original = TextInfo("hello big world", 0, 15, 7, 9)

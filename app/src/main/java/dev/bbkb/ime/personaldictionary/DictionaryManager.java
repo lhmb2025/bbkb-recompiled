@@ -112,9 +112,9 @@ public final class DictionaryManager {
 
     /**
      * @param list the active input locales
-     * @param z true to register the AUD content observer once loaded
+     * @param registerAudObserver true to register the AUD content observer once loaded
      */
-    private void doInitialiseOrSwitchLanguages(final Context context, final List<Locale> list, final boolean z) {
+    private void doInitialiseOrSwitchLanguages(final Context context, final List<Locale> list, final boolean registerAudObserver) {
         Iterator<Locale> it = list.iterator();
         while (it.hasNext()) {
             if (it.next() == null) {
@@ -130,14 +130,14 @@ public final class DictionaryManager {
                 public void run() {
                     if (DictionaryManager.this.initStarted.compareAndSet(false, true)) {
                         try {
-                            DictionaryManager.this.doInitBasl(context, list, z);
+                            DictionaryManager.this.doInitBasl(context, list, registerAudObserver);
                         } catch (IOException e) {
                             DictionaryManager.this.initStarted.set(false);
                             Logger.error(DictionaryManager.TAG, "IOException in doInitBasl(): " + e.getMessage());
                         }
                         return;
                     }
-                    if (z) {
+                    if (registerAudObserver) {
                         DictionaryManager.this.registerAudContentObserver();
                     }
                     DictionaryManager.this.switchInputLanguages((List<Locale>) list);
@@ -150,19 +150,19 @@ public final class DictionaryManager {
 
     /**
      * @param list the active input locales
-     * @param z true to register the AUD content observer once loaded
+     * @param registerAudObserver true to register the AUD content observer once loaded
      */
-        void doInitBasl(Context context, List<Locale> list, final boolean z) throws IOException {
+        void doInitBasl(Context context, List<Locale> list, final boolean registerAudObserver) throws IOException {
         Logger.debug(TAG, "Initialising PersonalDictionaryManager and PDU");
         this.personalDictionaryManager = PersonalDictionaryManager.getInstance(NuanceSDKManager.getInstance(), context, context.getFilesDir());
         this.personalDictionaryUtil = this.personalDictionaryManager.getPersonalDictionaryUtil("substitution_macros", "primary-model");
         this.personalDictionaryUtil.load(list, new CompletionListener() {
             @Override
-            public void complete(boolean z2) {
-                Logger.debug(DictionaryManager.TAG, "Load complete: " + z2);
-                if (z2) {
+            public void complete(boolean success) {
+                Logger.debug(DictionaryManager.TAG, "Load complete: " + success);
+                if (success) {
                     DictionaryManager.this.onLoadComplete();
-                    if (z) {
+                    if (registerAudObserver) {
                         DictionaryManager.this.registerAudContentObserver();
                         return;
                     }
@@ -197,8 +197,8 @@ public final class DictionaryManager {
         Logger.debug(TAG, "Switching languages");
         this.personalDictionaryUtil.switchInputLanguages(list, new CompletionListener() {
             @Override
-            public void complete(boolean z) {
-                Logger.debug(DictionaryManager.TAG, "Language switch completed: " + z);
+            public void complete(boolean success) {
+                Logger.debug(DictionaryManager.TAG, "Language switch completed: " + success);
             }
         });
     }
@@ -219,41 +219,41 @@ public final class DictionaryManager {
     }
 
     /**
-     * @param str the shortcut key
-     * @param str2 unused
+     * @param key the shortcut key
+     * @param word unused
      */
-    public void removeWordSubstitution(String str, String str2) {
+    public void removeWordSubstitution(String key, String word) {
         if (!isLoaded()) {
             Logger.error(TAG, "PersonalDictionaryManager and PDU not loaded");
             return;
         }
-        WordSubstitution wordSubstitution = this.personalDictionaryUtil.getWordSubstitutions().get(str);
+        WordSubstitution wordSubstitution = this.personalDictionaryUtil.getWordSubstitutions().get(key);
         if (wordSubstitution != null) {
             this.personalDictionaryUtil.remove(wordSubstitution);
         }
     }
 
     /**
-     * @param str unused
-     * @param str2 the existing key, or empty to add
-     * @param str3 the new word
-     * @param str4 the new key; nothing happens when empty
-     * @param str5 the locale, or empty for all locales
-     * @param z true to keep the word's case (no auto caps)
+     * @param oldWord unused
+     * @param oldKey the existing key, or empty to add
+     * @param newWord the new word
+     * @param newKey the new key; nothing happens when empty
+     * @param locale the locale, or empty for all locales
+     * @param fixedCase true to keep the word's case (no auto caps)
      */
-    public boolean updateOrAddWordSubstitution(String str, String str2, String str3, String str4, String str5, boolean z) {
+    public boolean updateOrAddWordSubstitution(String oldWord, String oldKey, String newWord, String newKey, String locale, boolean fixedCase) {
         if (!isLoaded()) {
             Logger.error(TAG, "PersonalDictionaryManager and PDU not loaded");
             return false;
         }
-        WordSubstitution wordSubstitution = TextUtils.isEmpty(str2) ? null : this.personalDictionaryUtil.getWordSubstitutions().get(str2);
-        if (!TextUtils.isEmpty(str4)) {
+        WordSubstitution wordSubstitution = TextUtils.isEmpty(oldKey) ? null : this.personalDictionaryUtil.getWordSubstitutions().get(oldKey);
+        if (!TextUtils.isEmpty(newKey)) {
             try {
-                WordSubstitution wordSubstitutionCreateUserSubstitution = WordSubstitution.createUserSubstitution(str5.equals("") ? PersonalDictionaryConstants.LOCALE_ALL : str5, str4, str3, !z);
+                WordSubstitution wordSubstitutionCreateUserSubstitution = WordSubstitution.createUserSubstitution(locale.equals("") ? PersonalDictionaryConstants.LOCALE_ALL : locale, newKey, newWord, !fixedCase);
                 if (wordSubstitution != null) {
                     this.personalDictionaryUtil.update(wordSubstitution, wordSubstitutionCreateUserSubstitution);
                 } else {
-                    addWordSubstitution(str3, str4, str5, z);
+                    addWordSubstitution(newWord, newKey, locale, fixedCase);
                 }
             } catch (IllegalArgumentException | KeyNotFoundException | AudDeleteException | KeyAlreadyDefinedException | InterruptedException | AudAddException unused) {
                 return false;
@@ -263,42 +263,42 @@ public final class DictionaryManager {
     }
 
     /**
-     * @param str the word (expansion)
-     * @param str2 the key (shortcut)
-     * @param str3 the locale, or empty for all locales
-     * @param z true to keep the word's case (no auto caps)
+     * @param word the word (expansion)
+     * @param key the key (shortcut)
+     * @param locale the locale, or empty for all locales
+     * @param fixedCase true to keep the word's case (no auto caps)
      * @return false when not loaded or refused; the one-tap add then falls back to a dialog
      */
-    public boolean addWordSubstitution(String str, String str2, String str3, boolean z) {
+    public boolean addWordSubstitution(String word, String key, String locale, boolean fixedCase) {
         if (!isLoaded()) {
             Logger.error(TAG, "PersonalDictionaryManager and PDU not loaded");
             return false;
         }
-        if (str3.equals("")) {
-            str3 = PersonalDictionaryConstants.LOCALE_ALL;
+        if (locale.equals("")) {
+            locale = PersonalDictionaryConstants.LOCALE_ALL;
         }
         try {
-            this.personalDictionaryUtil.add(WordSubstitution.createUserSubstitution(str3, str2, str, !z));
+            this.personalDictionaryUtil.add(WordSubstitution.createUserSubstitution(locale, key, word, !fixedCase));
             return true;
         } catch (IllegalArgumentException | AudAddException | InitialisationIncompleteException | KeyAlreadyDefinedException e) {
             // Logged so an AUD refusing writes is distinguishable from a duplicate.
-            Logger.warn(TAG, "addWordSubstitution(" + str2 + ") refused: " + e);
+            Logger.warn(TAG, "addWordSubstitution(" + key + ") refused: " + e);
             return false;
         }
     }
 
     /**
-     * @param str the key
-     * @param str2 the word
-     * @param z true to keep the word's case (no auto caps)
+     * @param key the key
+     * @param word the word
+     * @param fixedCase true to keep the word's case (no auto caps)
      */
-    public boolean syncAddWordSubstitution(String str, String str2, boolean z) {
+    public boolean syncAddWordSubstitution(String key, String word, boolean fixedCase) {
         if (!isLoaded()) {
             Logger.error(TAG, "PersonalDictionaryManager and PDU not loaded");
             return false;
         }
         try {
-            this.personalDictionaryUtil.add(WordSubstitution.createUserSubstitution(PersonalDictionaryConstants.LOCALE_ALL, str, str2, !z));
+            this.personalDictionaryUtil.add(WordSubstitution.createUserSubstitution(PersonalDictionaryConstants.LOCALE_ALL, key, word, !fixedCase));
             return true;
         } catch (IllegalArgumentException | AudAddException | InitialisationIncompleteException | KeyAlreadyDefinedException e4) {
             Logger.errorWithException(TAG, e4, "PersonalDictionaryManager sync new word substitution, IllegalArgumentException");
@@ -306,8 +306,8 @@ public final class DictionaryManager {
         }
     }
 
-    /** @param z true to include shortcut words */
-    public void getLearnedWords(final LearnedWordsCallback callback, boolean z) {
+    /** @param isWorkProfile true to include shortcut words */
+    public void getLearnedWords(final LearnedWordsCallback callback, boolean isWorkProfile) {
         LearnedWordsListener learnedWordsListener = new LearnedWordsListener() {
             @Override
             public void complete(List<String> list) {
@@ -320,7 +320,7 @@ public final class DictionaryManager {
         } else {
             synchronized (this.lock) {
                 if (this.personalDictionaryManager != null) {
-                    this.personalDictionaryManager.getLearnedWordsUtil("primary-model").getLearnedWords(learnedWordsListener, z);
+                    this.personalDictionaryManager.getLearnedWordsUtil("primary-model").getLearnedWords(learnedWordsListener, isWorkProfile);
                 }
             }
         }
@@ -352,8 +352,8 @@ public final class DictionaryManager {
             } else {
                 this.personalDictionaryUtil.save(new CompletionListener() {
                     @Override
-                    public void complete(boolean z) {
-                        Logger.debug(DictionaryManager.TAG, "Save complete: " + z);
+                    public void complete(boolean success) {
+                        Logger.debug(DictionaryManager.TAG, "Save complete: " + success);
                     }
                 });
             }
@@ -439,12 +439,12 @@ public final class DictionaryManager {
         clearInstance();
     }
 
-    /** @param str the typed input */
-    public String getWordSubstitutionForInput(String str, CapsMode mode, Locale locale) {
+    /** @param input the typed input */
+    public String getWordSubstitutionForInput(String input, CapsMode mode, Locale locale) {
         PersonalDictionaryUtil.CapsMode capsMode;
         if (!isLoaded()) {
             Logger.error(TAG, "PersonalDictionaryManager and PDU not loaded - returning verbatim!");
-            return str;
+            return input;
         }
         switch (mode) {
             case NO_CAPS:
@@ -460,7 +460,7 @@ public final class DictionaryManager {
                 capsMode = null;
                 break;
         }
-        return this.personalDictionaryUtil.getWordSubstitutionForInput(str, capsMode, locale);
+        return this.personalDictionaryUtil.getWordSubstitutionForInput(input, capsMode, locale);
     }
 
 
@@ -478,19 +478,19 @@ public final class DictionaryManager {
         }
     }
 
-    /** @param obj a {@link DictionaryWord} */
-    public DictionaryWord asDictionaryWord(Object obj) {
-        return (DictionaryWord) obj;
+    /** @param entry a {@link DictionaryWord} */
+    public DictionaryWord asDictionaryWord(Object entry) {
+        return (DictionaryWord) entry;
     }
 
-    /** @param obj a {@link DictionaryWord} */
-    public String getWord(Object obj) {
-        return asDictionaryWord(obj).getWord();
+    /** @param entry a {@link DictionaryWord} */
+    public String getWord(Object entry) {
+        return asDictionaryWord(entry).getWord();
     }
 
-    /** @param obj a {@link DictionaryWord}; null is returned unless it is a WordSubstitution */
-    public String getSubstitutionKey(Object obj) {
-        DictionaryWord dictionaryWordM3844a = asDictionaryWord(obj);
+    /** @param entry a {@link DictionaryWord}; null is returned unless it is a WordSubstitution */
+    public String getSubstitutionKey(Object entry) {
+        DictionaryWord dictionaryWordM3844a = asDictionaryWord(entry);
         if (dictionaryWordM3844a instanceof WordSubstitution) {
             return ((WordSubstitution) dictionaryWordM3844a).getKey();
         }
@@ -498,22 +498,22 @@ public final class DictionaryManager {
     }
 
     /**
-     * @param str the locale string, or empty for entries stored for all locales
-     * @param z true for word substitutions, false for personal words
+     * @param locale the locale string, or empty for entries stored for all locales
+     * @param wantSubstitutions true for word substitutions, false for personal words
      */
-    public List<DictionaryWord> getWordsForLocale(String str, boolean z) {
+    public List<DictionaryWord> getWordsForLocale(String locale, boolean wantSubstitutions) {
         Map personalDictionary;
         PersonalDictionaryUtil personalDictionaryUtilM3859d = getPersonalDictionaryUtil();
         ArrayList arrayList = new ArrayList();
         if (personalDictionaryUtilM3859d != null) {
-            if (z) {
+            if (wantSubstitutions) {
                 personalDictionary = personalDictionaryUtilM3859d.getWordSubstitutions();
             } else {
                 personalDictionary = personalDictionaryUtilM3859d.getPersonalDictionary();
             }
             for (Object obj : personalDictionary.values()) {
                 DictionaryWord dictionaryWord = (DictionaryWord) obj;
-                if (dictionaryWord.getLocale().toString().equals(str) || (str.equals("") && dictionaryWord.getLocale().equals(PersonalDictionaryConstants.LOCALE_ALL))) {
+                if (dictionaryWord.getLocale().toString().equals(locale) || (locale.equals("") && dictionaryWord.getLocale().equals(PersonalDictionaryConstants.LOCALE_ALL))) {
                     arrayList.add(dictionaryWord);
                 }
             }

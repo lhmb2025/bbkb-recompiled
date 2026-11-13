@@ -54,23 +54,23 @@ public final class ModifierState {
     private final boolean shiftKeyPhysicallyDown;
     private final boolean altKeyPhysicallyDown;
 
-    private ModifierState(Builder b) {
-        this.eventMeta = b.eventMeta;
-        this.modifierKeyMeta = b.modifierKeyMeta;
-        this.interpretedMeta = b.interpretedMeta;
-        this.altGr = b.altGr;
-        this.shiftKeyDown = b.shiftKeyDown;
-        this.shiftKeyConsumed = b.shiftKeyConsumed;
-        this.altKeyDown = b.altKeyDown;
-        this.altSpanHeld = b.altSpanHeld;
-        this.altUsedWithKey = b.altUsedWithKey;
-        this.symKeyHeld = b.symKeyHeld;
-        this.ctrlActive = b.ctrlActive;
-        this.ctrlLocked = b.ctrlLocked;
-        this.shiftSurvivesMask = b.shiftSurvivesMask;
-        this.keysHeld = b.keysHeld;
-        this.shiftKeyPhysicallyDown = b.shiftKeyPhysicallyDown;
-        this.altKeyPhysicallyDown = b.altKeyPhysicallyDown;
+    private ModifierState(Builder builder) {
+        this.eventMeta = builder.eventMeta;
+        this.modifierKeyMeta = builder.modifierKeyMeta;
+        this.interpretedMeta = builder.interpretedMeta;
+        this.altGr = builder.altGr;
+        this.shiftKeyDown = builder.shiftKeyDown;
+        this.shiftKeyConsumed = builder.shiftKeyConsumed;
+        this.altKeyDown = builder.altKeyDown;
+        this.altSpanHeld = builder.altSpanHeld;
+        this.altUsedWithKey = builder.altUsedWithKey;
+        this.symKeyHeld = builder.symKeyHeld;
+        this.ctrlActive = builder.ctrlActive;
+        this.ctrlLocked = builder.ctrlLocked;
+        this.shiftSurvivesMask = builder.shiftSurvivesMask;
+        this.keysHeld = builder.keysHeld;
+        this.shiftKeyPhysicallyDown = builder.shiftKeyPhysicallyDown;
+        this.altKeyPhysicallyDown = builder.altKeyPhysicallyDown;
     }
 
     /** From the event alone, with no tracker. */

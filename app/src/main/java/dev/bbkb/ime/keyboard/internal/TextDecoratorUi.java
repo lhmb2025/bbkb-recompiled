@@ -80,10 +80,10 @@ public final class TextDecoratorUi implements TextDecoratorUiOperator {
         this.mPopupWindow.dismiss();
     }
 
-    private static final RectF transformRect(Matrix matrix, RectF rectF, boolean z) {
+    private static final RectF transformRect(Matrix matrix, RectF rectF, boolean toLeft) {
         RectF rectF2;
         float fHeight = rectF.height();
-        if (z) {
+        if (toLeft) {
             rectF2 = new RectF(rectF.left - fHeight, rectF.top, rectF.left, rectF.top + fHeight);
         } else {
             rectF2 = new RectF(rectF.right, rectF.top, rectF.right + fHeight, rectF.top + fHeight);
@@ -93,11 +93,11 @@ public final class TextDecoratorUi implements TextDecoratorUiOperator {
     }
 
     @Override
-    /** @param z true to place the indicator left of the word, false for right */
-    public void showIndicator(Matrix matrix, RectF rectF, boolean z) {
-        RectF rectFM7504b = transformRect(matrix, rectF, z);
+    /** @param showAtLeftSide true to place the indicator left of the word, false for right */
+    public void showIndicator(Matrix matrix, RectF rectF, boolean showAtLeftSide) {
+        RectF rectFM7504b = transformRect(matrix, rectF, showAtLeftSide);
         if (rectFM7504b.left < this.mBounds.left || this.mBounds.right < rectFM7504b.right) {
-            rectFM7504b = transformRect(matrix, rectF, !z);
+            rectFM7504b = transformRect(matrix, rectF, !showAtLeftSide);
         }
         this.mDrawingView.setBounds(rectFM7504b);
         RectF rectF2 = new RectF();
@@ -149,21 +149,21 @@ public final class TextDecoratorUi implements TextDecoratorUiOperator {
         private final RectF bounds;
 
         /**
-         * @param i int-array resource of the indicator path's x,y pairs
-         * @param i2 integer resource the path coordinates are divided by
-         * @param i3 background color resource
-         * @param i4 indicator color resource
+         * @param pathResId int-array resource of the indicator path's x,y pairs
+         * @param sizeResId integer resource the path coordinates are divided by
+         * @param backgroundColorResId background color resource
+         * @param indicatorColorResId indicator color resource
          */
-        public IndicatorView(Context context, int i, int i2, int i3, int i4) {
+        public IndicatorView(Context context, int pathResId, int sizeResId, int backgroundColorResId, int indicatorColorResId) {
             super(context);
             this.mHighlightPath2 = new Path();
             this.mPaint = new Paint(1);
             this.scaleMatrix = new Matrix();
             this.bounds = new RectF();
             Resources resources = context.getResources();
-            this.mHighlightPath1 = loadIndicatorPath(resources, i, i2);
-            this.backgroundColor = ContextCompat.getColor(context, i3);
-            this.indicatorColor = ContextCompat.getColor(context, i4);
+            this.mHighlightPath1 = loadIndicatorPath(resources, pathResId, sizeResId);
+            this.backgroundColor = ContextCompat.getColor(context, backgroundColorResId);
+            this.indicatorColor = ContextCompat.getColor(context, indicatorColorResId);
         }
 
         public void setBounds(RectF rectF) {
@@ -182,9 +182,9 @@ public final class TextDecoratorUi implements TextDecoratorUiOperator {
             canvas.drawPath(this.mHighlightPath2, this.mPaint);
         }
 
-        private static Path loadIndicatorPath(Resources resources, int i, int i2) throws Resources.NotFoundException {
-            float integer = 1.0f / resources.getInteger(i2);
-            int[] intArray = resources.getIntArray(i);
+        private static Path loadIndicatorPath(Resources resources, int pathResId, int sizeResId) throws Resources.NotFoundException {
+            float integer = 1.0f / resources.getInteger(sizeResId);
+            int[] intArray = resources.getIntArray(pathResId);
             Path path = new Path();
             for (int i3 = 0; i3 < intArray.length; i3 += 2) {
                 if (i3 == 0) {

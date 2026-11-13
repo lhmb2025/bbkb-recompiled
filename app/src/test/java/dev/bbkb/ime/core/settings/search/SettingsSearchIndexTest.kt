@@ -358,7 +358,7 @@ class SettingsSearchIndexTest {
 
     @Test
     fun screensAndRowsTheDeviceDoesNotShowAreNotOffered() {
-        fun routes(c: SearchDeviceCapabilities) = SettingsSearchIndex.screensFor(c).map { it.route }.toSet()
+        fun routes(capabilities: SearchDeviceCapabilities) = SettingsSearchIndex.screensFor(capabilities).map { it.route }.toSet()
 
         assertFalse(SettingsRoute.PhysicalKeyboard.route in routes(touchDevice))
         assertTrue(SettingsRoute.PhysicalKeyboard.route in routes(pkbDevice))

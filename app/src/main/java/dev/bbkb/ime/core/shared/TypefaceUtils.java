@@ -35,28 +35,28 @@ public final class TypefaceUtils {
         }
     };
 
-    private static float getCharHeight(char[] cArr, Paint paint) {
-        long cacheKey = getCharGeometryCacheKey(cArr[0], paint);
+    private static float getCharHeight(char[] referenceChar, Paint paint) {
+        long cacheKey = getCharGeometryCacheKey(referenceChar[0], paint);
         synchronized (sTextHeightCache) {
             float cached = sTextHeightCache.getOrDefault(cacheKey, NOT_CACHED);
             if (!Float.isNaN(cached)) {
                 return cached;
             }
-            paint.getTextBounds(cArr, 0, 1, sTextHeightBounds);
+            paint.getTextBounds(referenceChar, 0, 1, sTextHeightBounds);
             float fHeight = sTextHeightBounds.height();
             sTextHeightCache.set(cacheKey, fHeight);
             return fHeight;
         }
     }
 
-    private static float getCharWidth(char[] cArr, Paint paint) {
-        long cacheKey = getCharGeometryCacheKey(cArr[0], paint);
+    private static float getCharWidth(char[] referenceChar, Paint paint) {
+        long cacheKey = getCharGeometryCacheKey(referenceChar[0], paint);
         synchronized (sTextWidthCache) {
             float cached = sTextWidthCache.getOrDefault(cacheKey, NOT_CACHED);
             if (!Float.isNaN(cached)) {
                 return cached;
             }
-            paint.getTextBounds(cArr, 0, 1, sTextWidthBounds);
+            paint.getTextBounds(referenceChar, 0, 1, sTextWidthBounds);
             float fWidth = sTextWidthBounds.width();
             sTextWidthCache.set(cacheKey, fWidth);
             return fWidth;
@@ -80,9 +80,9 @@ public final class TypefaceUtils {
     }
 
     /** Key = (typeface id, char, text size); every typeface needs its own id or faces share metrics. */
-    private static long getCharGeometryCacheKey(char c, Paint paint) {
+    private static long getCharGeometryCacheKey(char referenceChar, Paint paint) {
         long textSize = ((long) (int) paint.getTextSize()) & 0xFFFFFFL;
-        return ((long) typefaceId(paint.getTypeface()) << 40) | ((long) c << 24) | textSize;
+        return ((long) typefaceId(paint.getTypeface()) << 40) | ((long) referenceChar << 24) | textSize;
     }
 
     public static float getReferenceCharHeight(Paint paint) {
@@ -97,9 +97,9 @@ public final class TypefaceUtils {
         return getCharWidth(KEY_NUMERIC_HINT_LABEL_REFERENCE_CHAR, paint);
     }
 
-    public static float getStringWidth(String str, Paint paint) {
+    public static float getStringWidth(String string, Paint paint) {
         final Rect bounds = sStringWidthBounds.get();
-        paint.getTextBounds(str, 0, str.length(), bounds);
+        paint.getTextBounds(string, 0, string.length(), bounds);
         return bounds.width();
     }
 }

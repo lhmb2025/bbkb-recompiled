@@ -31,17 +31,17 @@ class PersonalDictionaryManager private constructor(
 
     @Throws(IOException::class)
     /**
-     * @param str the resource directory for the built-in shortcuts
-     * @param str2 unused (model name)
+     * @param resourceDir the resource directory for the built-in shortcuts
+     * @param modelName unused (model name)
      */
-    fun getPersonalDictionaryUtil(str: String, @Suppress("UNUSED_PARAMETER") str2: String): PersonalDictionaryUtil {
-        pdu = PersonalDictionaryUtil.getInstance(context!!, internalStorageDir!!.absolutePath, str, nuanceSDK)
+    fun getPersonalDictionaryUtil(resourceDir: String, @Suppress("UNUSED_PARAMETER") modelName: String): PersonalDictionaryUtil {
+        pdu = PersonalDictionaryUtil.getInstance(context!!, internalStorageDir!!.absolutePath, resourceDir, nuanceSDK)
         return pdu!!
     }
 
-    /** @param str the model name (unused) */
-    fun getLearnedWordsUtil(str: String): LearnedWordsUtil {
-        return LearnedWordsUtil.getInstance(nuanceSDK, context!!, str)
+    /** @param modelName the model name (unused) */
+    fun getLearnedWordsUtil(modelName: String): LearnedWordsUtil {
+        return LearnedWordsUtil.getInstance(nuanceSDK, context!!, modelName)
     }
 
     @Throws(IOException::class)

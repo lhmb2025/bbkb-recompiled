@@ -93,13 +93,13 @@ final class EmojiPagerAdapter extends RecyclerView.Adapter<EmojiPagerAdapter.Pag
     }
 
     /**
-     * @param c0971b the category manager that builds the pages
-     * @param interfaceC0967a receives emoji key presses and releases
+     * @param emojiCategoryManager the category manager that builds the pages
+     * @param onEmojiKeyListener receives emoji key presses and releases
      */
-    public EmojiPagerAdapter(EmojiCategoryManager c0971b, EmojiPageKeyboardView.OnEmojiKeyListener interfaceC0967a,
+    public EmojiPagerAdapter(EmojiCategoryManager emojiCategoryManager, EmojiPageKeyboardView.OnEmojiKeyListener onEmojiKeyListener,
             EmojiPageKeyboardView.SharedMoreKeysPanel moreKeysPanel) {
-        this.mCategoryManager = c0971b;
-        this.mKeyListener = interfaceC0967a;
+        this.mCategoryManager = emojiCategoryManager;
+        this.mKeyListener = onEmojiKeyListener;
         this.mMoreKeysPanel = moreKeysPanel;
     }
 
@@ -111,14 +111,14 @@ final class EmojiPagerAdapter extends RecyclerView.Adapter<EmojiPagerAdapter.Pag
         }
     }
 
-    /** @param str the emoji to add */
-    public void addToRecents(String str) {
+    /** @param emoji the emoji to add */
+    public void addToRecents(String emoji) {
         final EmojiKeyboard recents = this.mCategoryManager.getRecentsKeyboard();
         if (this.mCategoryManager.isRecentsCategory()) {
-            recents.enqueueEmoji(str);
+            recents.enqueueEmoji(emoji);
             return;
         }
-        recents.addEmojiToRecents(str);
+        recents.addEmojiToRecents(emoji);
         EmojiPageKeyboardView emojiPageKeyboardView = this.mPageViews.get(this.mCategoryManager.getRecentsIndex());
         if (emojiPageKeyboardView != null) {
             emojiPageKeyboardView.invalidateAllKeys();
@@ -145,11 +145,11 @@ final class EmojiPagerAdapter extends RecyclerView.Adapter<EmojiPagerAdapter.Pag
     /**
      * The page left behind drops its pressed keys and timers.
      *
-     * @param i the newly selected position
+     * @param position the newly selected position
      */
-    public void onPageSelected(int i) {
+    public void onPageSelected(int position) {
         int i2 = this.mCurrentPosition;
-        if (i2 == i) {
+        if (i2 == position) {
             return;
         }
         EmojiPageKeyboardView emojiPageKeyboardView = this.mPageViews.get(i2);
@@ -157,7 +157,7 @@ final class EmojiPagerAdapter extends RecyclerView.Adapter<EmojiPagerAdapter.Pag
             emojiPageKeyboardView.cleanup();
             emojiPageKeyboardView.releaseAllKeys();
         }
-        this.mCurrentPosition = i;
+        this.mCurrentPosition = position;
     }
 
     @Override
@@ -198,9 +198,9 @@ final class EmojiPagerAdapter extends RecyclerView.Adapter<EmojiPagerAdapter.Pag
     /**
      * No effect; kept because {@code KeyboardSwitcher} still calls it.
      *
-     * @param z whether the board is switching to emoji
+     * @param switchingToEmoji whether the board is switching to emoji
      */
-    public void setSwitchingToEmoji(boolean z) {
+    public void setSwitchingToEmoji(boolean switchingToEmoji) {
         // Nothing to do with ViewPager2.
     }
 }

@@ -19,8 +19,8 @@ public final class PointerTrackerQueue {
 
     /** One queued pointer tracker. */
     public interface Element {
-        /** @param j event time */
-        void onPhantomUpEvent(long j);
+        /** @param eventTime event time */
+        void onPhantomUpEvent(long eventTime);
 
         boolean isModifier();
 
@@ -39,50 +39,50 @@ public final class PointerTrackerQueue {
         }
     }
 
-    public void add(Element aVar) {
+    public void add(Element element) {
         synchronized (this.mActivePointers) {
-            this.mActivePointers.add(aVar);
+            this.mActivePointers.add(element);
         }
     }
 
-    public void remove(Element aVar) {
+    public void remove(Element element) {
         synchronized (this.mActivePointers) {
             final int size = this.mActivePointers.size();
             int kept = 0;
             for (int i = 0; i < size; i++) {
                 Element e = this.mActivePointers.get(i);
-                if (e != aVar) {
+                if (e != element) {
                     this.mActivePointers.set(kept++, e);
                 } else if (kept != i) {
-                    if (BuildConfig.DEBUG) Log.w(TAG, "Found duplicated element in remove: " + aVar);
+                    if (BuildConfig.DEBUG) Log.w(TAG, "Found duplicated element in remove: " + element);
                 }
             }
             trimTo(kept);
         }
     }
 
-    /** @param j event time */
-    public void releaseAllPointersOlderThan(Element aVar, long j) {
+    /** @param eventTime event time */
+    public void releaseAllPointersOlderThan(Element element, long eventTime) {
         synchronized (this.mActivePointers) {
             final int size = this.mActivePointers.size();
             int i = 0;
             int kept = 0;
             for (; i < size; i++) {
                 Element e = this.mActivePointers.get(i);
-                if (e == aVar) {
+                if (e == element) {
                     break;
                 }
                 if (e.isModifier()) {
                     this.mActivePointers.set(kept++, e);
                 } else {
-                    e.onPhantomUpEvent(j);
+                    e.onPhantomUpEvent(eventTime);
                 }
             }
             int pivots = 0;
             for (; i < size; i++) {
                 Element e = this.mActivePointers.get(i);
-                if (e == aVar && ++pivots > 1) {
-                    if (BuildConfig.DEBUG) Log.w(TAG, "Found duplicated element in releaseAllPointersOlderThan: " + aVar);
+                if (e == element && ++pivots > 1) {
+                    if (BuildConfig.DEBUG) Log.w(TAG, "Found duplicated element in releaseAllPointersOlderThan: " + element);
                 }
                 this.mActivePointers.set(kept++, e);
             }
@@ -90,37 +90,37 @@ public final class PointerTrackerQueue {
         }
     }
 
-    /** @param j event time */
-    public void releaseAllPointers(long j) {
-        releaseAllPointersExcept(null, j);
+    /** @param eventTime event time */
+    public void releaseAllPointers(long eventTime) {
+        releaseAllPointersExcept(null, eventTime);
     }
 
-    /** @param j event time */
-    public void releaseAllPointersExcept(Element aVar, long j) {
+    /** @param eventTime event time */
+    public void releaseAllPointersExcept(Element element, long eventTime) {
         synchronized (this.mActivePointers) {
             final int size = this.mActivePointers.size();
             int kept = 0;
             for (int i = 0; i < size; i++) {
                 Element e = this.mActivePointers.get(i);
-                if (e == aVar) {
+                if (e == element) {
                     if (kept > 0) {
-                        if (BuildConfig.DEBUG) Log.w(TAG, "Found duplicated element in releaseAllPointersExcept: " + aVar);
+                        if (BuildConfig.DEBUG) Log.w(TAG, "Found duplicated element in releaseAllPointersExcept: " + element);
                     }
                     this.mActivePointers.set(kept++, e);
                 } else {
-                    e.onPhantomUpEvent(j);
+                    e.onPhantomUpEvent(eventTime);
                 }
             }
             trimTo(kept);
         }
     }
 
-    public boolean hasModifierKeyOlderThan(Element aVar) {
+    public boolean hasModifierKeyOlderThan(Element element) {
         synchronized (this.mActivePointers) {
             final int size = this.mActivePointers.size();
             for (int i = 0; i < size; i++) {
                 Element e = this.mActivePointers.get(i);
-                if (e == aVar) {
+                if (e == element) {
                     return false;
                 }
                 if (e.isModifier()) {

@@ -27,13 +27,13 @@ public interface InputMethodCallback {
         JAPANESE_ROMAJI
     }
 
-    ConversionResult convert(CharSequence charSequence, TouchPointerCoordTracker c0697m, NuanceSDK nuanceSDK);
+    ConversionResult convert(CharSequence charSequence, TouchPointerCoordTracker sourceTracker, NuanceSDK nuanceSDK);
 
     void reset();
 
     void processSymbols(CharSequence charSequence, NuanceSDK nuanceSDK);
 
-    ConversionResult revertLastConversion(CharSequence charSequence, TouchPointerCoordTracker c0697m, NuanceSDK nuanceSDK);
+    ConversionResult revertLastConversion(CharSequence charSequence, TouchPointerCoordTracker sourceTracker, NuanceSDK nuanceSDK);
 
     ConverterType getConverterType();
 }

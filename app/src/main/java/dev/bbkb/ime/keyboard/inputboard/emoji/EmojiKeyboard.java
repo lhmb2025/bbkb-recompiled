@@ -62,12 +62,12 @@ public final class EmojiKeyboard extends Keyboard {
     private String syncedRecentsJson;
 
     /**
-     * @param c0965e the template keyboard
-     * @param i the maximum number of keys on the page
-     * @param i2 the category id (0 is Recents)
+     * @param keyboard the template keyboard
+     * @param maxKeyCount the maximum number of keys on the page
+     * @param categoryId the category id (0 is Recents)
      */
-    public EmojiKeyboard(SharedPreferences sharedPreferences, Keyboard c0965e, int i, int i2, Locale locale) {
-        super(c0965e);
+    public EmojiKeyboard(SharedPreferences sharedPreferences, Keyboard keyboard, int maxKeyCount, int categoryId, Locale locale) {
+        super(keyboard);
         this.lock = new Object();
         this.keyDeque = new ArrayDeque<>();
         this.pendingEmojiQueue = new ArrayDeque<>();
@@ -77,22 +77,22 @@ public final class EmojiKeyboard extends Keyboard {
         this.keyWidth = Math.abs(this.rightTemplateKey.getX() - this.leftTemplateKey.getX());
         this.keyHeight = this.leftTemplateKey.getHeight() + this.mVerticalGap;
         this.columnCount = this.mBaseWidth / this.keyWidth;
-        this.maxKeyCount = i;
-        this.isRecentsKeyboard = i2 == 0;
+        this.maxKeyCount = maxKeyCount;
+        this.isRecentsKeyboard = categoryId == 0;
         this.sharedPreferences = sharedPreferences;
         this.locale = locale;
     }
 
-    /** @param i the template key's code */
-    private Key findTemplateKey(int i) {
+    /** @param code the template key's code */
+    private Key findTemplateKey(int code) {
         List<Key> keys = super.getKeys();
         for (int j = 0; j < keys.size(); j++) {
             Key key = keys.get(j);
-            if (key.getCode() == i) {
+            if (key.getCode() == code) {
                 return key;
             }
         }
-        throw new RuntimeException("Can't find template key: code=" + i);
+        throw new RuntimeException("Can't find template key: code=" + code);
     }
 
     /** A recents key for {@code emoji} (output-text code -4); the parse rejects a malformed entry. */
@@ -101,10 +101,10 @@ public final class EmojiKeyboard extends Keyboard {
                 new MoreKeySpec[] { new MoreKeySpec(emoji, false, this.locale) });
     }
 
-    /** @param str the emoji to add on the next processEmojiQueue */
-    public void enqueueEmoji(String str) {
+    /** @param emoji the emoji to add on the next processEmojiQueue */
+    public void enqueueEmoji(String emoji) {
         synchronized (this.lock) {
-            this.pendingEmojiQueue.addLast(str);
+            this.pendingEmojiQueue.addLast(emoji);
         }
     }
 
@@ -122,19 +122,19 @@ public final class EmojiKeyboard extends Keyboard {
         }
     }
 
-    /** @param str the emoji to move to the front */
-    public void addEmojiToRecents(String str) {
-        if (str == null || str.isEmpty()) {
+    /** @param emoji the emoji to move to the front */
+    public void addEmojiToRecents(String emoji) {
+        if (emoji == null || emoji.isEmpty()) {
             return;
         }
         synchronized (this.lock) {
             this.cachedKeyList = null;
-            GridKey aVar = new GridKey(emojiKey(str));
+            GridKey aVar = new GridKey(emojiKey(emoji));
             ArrayDeque arrayDeque = new ArrayDeque();
             while (!this.keyDeque.isEmpty()) {
                 GridKey aVarPollFirst = this.keyDeque.pollFirst();
                 String emojiString = aVarPollFirst.getEmojiString();
-                if (emojiString != null && !emojiString.equals(str)) {
+                if (emojiString != null && !emojiString.equals(emoji)) {
                     arrayDeque.addLast(aVarPollFirst);
                 }
             }
@@ -206,9 +206,9 @@ public final class EmojiKeyboard extends Keyboard {
         }
     }
 
-    /** @param aVar the key to place in the next free slot */
-    private void positionKey(GridKey aVar) {
-        aVar.setPosition(getKeyX(this.nextKeyIndex), getKeyY(this.nextKeyIndex), getKeyRight(this.nextKeyIndex), getKeyBottom(this.nextKeyIndex));
+    /** @param gridKey the key to place in the next free slot */
+    private void positionKey(GridKey gridKey) {
+        gridKey.setPosition(getKeyX(this.nextKeyIndex), getKeyY(this.nextKeyIndex), getKeyRight(this.nextKeyIndex), getKeyBottom(this.nextKeyIndex));
         this.nextKeyIndex++;
     }
 
@@ -298,21 +298,21 @@ public final class EmojiKeyboard extends Keyboard {
         }
     }
 
-    /** @param i the slot index (also for getKeyRight, getKeyY and getKeyBottom) */
-    private int getKeyX(int i) {
-        return (i % this.columnCount) * this.keyWidth;
+    /** @param index the slot index (also for getKeyRight, getKeyY and getKeyBottom) */
+    private int getKeyX(int index) {
+        return (index % this.columnCount) * this.keyWidth;
     }
 
-    private int getKeyRight(int i) {
-        return ((i % this.columnCount) + 1) * this.keyWidth;
+    private int getKeyRight(int index) {
+        return ((index % this.columnCount) + 1) * this.keyWidth;
     }
 
-    private int getKeyY(int i) {
-        return ((i / this.columnCount) * this.keyHeight) + (this.mVerticalGap / 2);
+    private int getKeyY(int index) {
+        return ((index / this.columnCount) * this.keyHeight) + (this.mVerticalGap / 2);
     }
 
-    private int getKeyBottom(int i) {
-        return (((i / this.columnCount) + 1) * this.keyHeight) + (this.mVerticalGap / 2);
+    private int getKeyBottom(int index) {
+        return (((index / this.columnCount) + 1) * this.keyHeight) + (this.mVerticalGap / 2);
     }
 
     @Override // dev.bbkb.ime.keyboard.Keyboard
@@ -328,10 +328,10 @@ public final class EmojiKeyboard extends Keyboard {
 
     @Override // dev.bbkb.ime.keyboard.Keyboard
     /**
-     * @param i x coordinate
-     * @param i2 y coordinate
+     * @param x x coordinate
+     * @param y y coordinate
      */
-    public List<Key> getNearestKeys(int i, int i2) {
+    public List<Key> getNearestKeys(int x, int y) {
         return getKeys();
     }
 
@@ -346,11 +346,11 @@ public final class EmojiKeyboard extends Keyboard {
             super(key);
         }
 
-        /** @param i left, {@code i2} top, {@code i3} right, {@code i4} bottom of the hit box */
-        public void setPosition(int i, int i2, int i3, int i4) {
-            this.x = i;
-            this.y = i2;
-            getHitBox().set(i, i2, i3, i4);
+        /** @param left left, {@code top} top, {@code right} right, {@code bottom} bottom of the hit box */
+        public void setPosition(int left, int top, int right, int bottom) {
+            this.x = left;
+            this.y = top;
+            getHitBox().set(left, top, right, bottom);
         }
 
         @Override // dev.bbkb.ime.keyboard.Key

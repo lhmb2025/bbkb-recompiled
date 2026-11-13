@@ -59,12 +59,12 @@ public final class CustomPackRegistryStore {
         return isCodePart(country, 2, 3);
     }
 
-    private static boolean isCodePart(String s, int min, int max) {
-        if (s == null || s.length() < min || s.length() > max) {
+    private static boolean isCodePart(String part, int min, int max) {
+        if (part == null || part.length() < min || part.length() > max) {
             return false;
         }
-        for (int i = 0; i < s.length(); i++) {
-            if (!Character.isLetterOrDigit(s.charAt(i))) {
+        for (int i = 0; i < part.length(); i++) {
+            if (!Character.isLetterOrDigit(part.charAt(i))) {
                 return false;
             }
         }

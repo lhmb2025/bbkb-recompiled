@@ -26,7 +26,7 @@ public class SimplifiedKeyboardView extends KeyboardView {
         }
 
         @Override // dev.bbkb.ime.keyboard.SimplifiedKeyboardView.onKeyEventListener
-        public void onKeyUp(Key key, boolean z) {
+        public void onKeyUp(Key key, boolean releasedOnKey) {
         }
 
         @Override // dev.bbkb.ime.keyboard.SimplifiedKeyboardView.onKeyEventListener
@@ -57,8 +57,8 @@ public class SimplifiedKeyboardView extends KeyboardView {
     public interface onKeyEventListener {
         void onKeyDown(Key key);
 
-        /** @param z true if released on the pressed key */
-        void onKeyUp(Key key, boolean z);
+        /** @param releasedOnKey true if released on the pressed key */
+        void onKeyUp(Key key, boolean releasedOnKey);
 
         void onKeyLongPress(Key key);
     }
@@ -67,9 +67,9 @@ public class SimplifiedKeyboardView extends KeyboardView {
         this(context, attributeSet, R.attr.mainKeyboardViewStyle);
     }
 
-    /** @param i default style attribute */
-    public SimplifiedKeyboardView(Context context, AttributeSet attributeSet, int i) {
-        super(context, attributeSet, i);
+    /** @param defStyleAttr default style attribute */
+    public SimplifiedKeyboardView(Context context, AttributeSet attributeSet, int defStyleAttr) {
+        super(context, attributeSet, defStyleAttr);
         this.keyboardActionListener = new KeyDetector();
         this.keyboardCoordinates = new LongPressTimer();
         this.keyEventListener = NO_OP_KEY_LISTENER;
@@ -242,18 +242,18 @@ public class SimplifiedKeyboardView extends KeyboardView {
         return null;
     }
 
-    /** @param z true if released on the pressed key (commits) */
-    private boolean releasedKey(boolean z) {
+    /** @param releasedOnKey true if released on the pressed key (commits) */
+    private boolean releasedKey(boolean releasedOnKey) {
         Key key = this.pressedKey;
         if (key == null) {
             return false;
         }
         key.onReleased();
         invalidateKey(this.pressedKey);
-        if (this.keyboardCoordinates.getCount() == 2 && z) {
+        if (this.keyboardCoordinates.getCount() == 2 && releasedOnKey) {
             this.keyEventListener.onKeyLongPress(this.pressedKey);
         } else {
-            this.keyEventListener.onKeyUp(this.pressedKey, z);
+            this.keyEventListener.onKeyUp(this.pressedKey, releasedOnKey);
         }
         this.pressedKey = null;
         return true;
@@ -268,11 +268,11 @@ public class SimplifiedKeyboardView extends KeyboardView {
     }
 
     @Override // android.view.View
-    protected void onVisibilityChanged(View view, int i) {
-        if (i != 0) {
+    protected void onVisibilityChanged(View view, int visibility) {
+        if (visibility != 0) {
             releasedKey(false);
         }
-        super.onVisibilityChanged(view, i);
+        super.onVisibilityChanged(view, visibility);
     }
 
     void handleKeyUp(Key key) {

@@ -27,122 +27,122 @@ public final class TouchPointerCoordTracker {
     private final IntArrayList intentionalFlags;
 
     /**
-     * @param i initial capacity for each coordinate array
+     * @param defaultCapacity initial capacity for each coordinate array
      */
-    public TouchPointerCoordTracker(int i) {
-        this.defaultCapacity = i;
-        this.codePoints = new IntArrayList(i);
-        this.xCoordinates = new IntArrayList(i);
-        this.yCoordinates = new IntArrayList(i);
-        this.pointerIds = new IntArrayList(i);
-        this.times = new IntArrayList(i);
-        this.intentionalFlags = new IntArrayList(i);
+    public TouchPointerCoordTracker(int defaultCapacity) {
+        this.defaultCapacity = defaultCapacity;
+        this.codePoints = new IntArrayList(defaultCapacity);
+        this.xCoordinates = new IntArrayList(defaultCapacity);
+        this.yCoordinates = new IntArrayList(defaultCapacity);
+        this.pointerIds = new IntArrayList(defaultCapacity);
+        this.times = new IntArrayList(defaultCapacity);
+        this.intentionalFlags = new IntArrayList(defaultCapacity);
     }
 
     /**
-     * Overwrites sample {@code i} (args: code point, x, y, pointer id, time, intentional).
-     * @param i index of the sample to overwrite
-     * @param i2 code point
-     * @param i3 x coordinate
-     * @param i4 y coordinate
-     * @param i5 pointer id
-     * @param i6 timestamp
-     * @param i7 intentional flag
+     * Overwrites sample {@code index} (args: code point, x, y, pointer id, time, intentional).
+     * @param index index of the sample to overwrite
+     * @param codePoint code point
+     * @param x x coordinate
+     * @param y y coordinate
+     * @param pointerId pointer id
+     * @param time timestamp
+     * @param intentionalFlag intentional flag
      */
-    public void addPointerAt(int i, int i2, int i3, int i4, int i5, int i6, int i7) {
-        this.codePoints.addAt(i, i2);
-        this.xCoordinates.addAt(i, i3);
-        this.yCoordinates.addAt(i, i4);
-        this.pointerIds.addAt(i, i5);
-        this.times.addAt(i, i6);
-        this.intentionalFlags.addAt(i, i7);
+    public void addPointerAt(int index, int codePoint, int x, int y, int pointerId, int time, int intentionalFlag) {
+        this.codePoints.addAt(index, codePoint);
+        this.xCoordinates.addAt(index, x);
+        this.yCoordinates.addAt(index, y);
+        this.pointerIds.addAt(index, pointerId);
+        this.times.addAt(index, time);
+        this.intentionalFlags.addAt(index, intentionalFlag);
     }
 
     /**
      * Appends one sample (args: code point, x, y, pointer id, time, intentional).
-     * @param i code point
-     * @param i2 x coordinate
-     * @param i3 y coordinate
-     * @param i4 pointer id
-     * @param i5 timestamp
-     * @param i6 intentional flag
+     * @param codePoint code point
+     * @param x x coordinate
+     * @param y y coordinate
+     * @param pointerId pointer id
+     * @param time timestamp
+     * @param intentionalFlag intentional flag
      */
-    public void addPointer(int i, int i2, int i3, int i4, int i5, int i6) {
-        this.codePoints.add(i);
-        this.xCoordinates.add(i2);
-        this.yCoordinates.add(i3);
-        this.pointerIds.add(i4);
-        this.times.add(i5);
-        this.intentionalFlags.add(i6);
+    public void addPointer(int codePoint, int x, int y, int pointerId, int time, int intentionalFlag) {
+        this.codePoints.add(codePoint);
+        this.xCoordinates.add(x);
+        this.yCoordinates.add(y);
+        this.pointerIds.add(pointerId);
+        this.times.add(time);
+        this.intentionalFlags.add(intentionalFlag);
     }
 
     /**
-     * Adopts {@code c0697m}'s arrays by reference: both trackers share storage afterwards.
-     * @param c0697m the source tracker whose arrays are adopted
+     * Adopts {@code touchPointerCoordTracker}'s arrays by reference: both trackers share storage afterwards.
+     * @param touchPointerCoordTracker the source tracker whose arrays are adopted
      */
-    public void setTo(TouchPointerCoordTracker c0697m) {
-        this.codePoints.setSharingBackingArray(c0697m.codePoints);
-        this.xCoordinates.setSharingBackingArray(c0697m.xCoordinates);
-        this.yCoordinates.setSharingBackingArray(c0697m.yCoordinates);
-        this.pointerIds.setSharingBackingArray(c0697m.pointerIds);
-        this.times.setSharingBackingArray(c0697m.times);
-        this.intentionalFlags.setSharingBackingArray(c0697m.intentionalFlags);
+    public void setTo(TouchPointerCoordTracker touchPointerCoordTracker) {
+        this.codePoints.setSharingBackingArray(touchPointerCoordTracker.codePoints);
+        this.xCoordinates.setSharingBackingArray(touchPointerCoordTracker.xCoordinates);
+        this.yCoordinates.setSharingBackingArray(touchPointerCoordTracker.yCoordinates);
+        this.pointerIds.setSharingBackingArray(touchPointerCoordTracker.pointerIds);
+        this.times.setSharingBackingArray(touchPointerCoordTracker.times);
+        this.intentionalFlags.setSharingBackingArray(touchPointerCoordTracker.intentionalFlags);
     }
 
     /**
-     * Replaces this tracker's contents with an independent copy of {@code c0697m}'s samples.
-     * @param c0697m the source tracker whose samples are copied
+     * Replaces this tracker's contents with an independent copy of {@code touchPointerCoordTracker}'s samples.
+     * @param touchPointerCoordTracker the source tracker whose samples are copied
      */
-    public void copyFrom(TouchPointerCoordTracker c0697m) {
-        this.codePoints.copy(c0697m.codePoints);
-        this.xCoordinates.copy(c0697m.xCoordinates);
-        this.yCoordinates.copy(c0697m.yCoordinates);
-        this.pointerIds.copy(c0697m.pointerIds);
-        this.times.copy(c0697m.times);
-        this.intentionalFlags.copy(c0697m.intentionalFlags);
+    public void copyFrom(TouchPointerCoordTracker touchPointerCoordTracker) {
+        this.codePoints.copy(touchPointerCoordTracker.codePoints);
+        this.xCoordinates.copy(touchPointerCoordTracker.xCoordinates);
+        this.yCoordinates.copy(touchPointerCoordTracker.yCoordinates);
+        this.pointerIds.copy(touchPointerCoordTracker.pointerIds);
+        this.times.copy(touchPointerCoordTracker.times);
+        this.intentionalFlags.copy(touchPointerCoordTracker.intentionalFlags);
     }
 
     /**
-     * Keeps the first {@code i} samples; {@code i <= 0} clears all.
-     * @param i maximum number of samples to retain
+     * Keeps the first {@code length} samples; {@code length <= 0} clears all.
+     * @param length maximum number of samples to retain
      */
-    public void truncate(int i) {
-        if (i <= 0) {
-            i = 0;
+    public void truncate(int length) {
+        if (length <= 0) {
+            length = 0;
         }
-        this.codePoints.setLength(i);
-        this.xCoordinates.setLength(i);
-        this.yCoordinates.setLength(i);
-        this.pointerIds.setLength(i);
-        this.times.setLength(i);
-        this.intentionalFlags.setLength(i);
+        this.codePoints.setLength(length);
+        this.xCoordinates.setLength(length);
+        this.yCoordinates.setLength(length);
+        this.pointerIds.setLength(length);
+        this.times.setLength(length);
+        this.intentionalFlags.setLength(length);
     }
 
     /**
-     * @param i number of leading samples to drop
+     * @param count number of leading samples to drop
      */
-    public void dropFirstSamples(int i) {
-        this.codePoints.dropFirst(i);
-        this.xCoordinates.dropFirst(i);
-        this.yCoordinates.dropFirst(i);
-        this.pointerIds.dropFirst(i);
-        this.times.dropFirst(i);
-        this.intentionalFlags.dropFirst(i);
+    public void dropFirstSamples(int count) {
+        this.codePoints.dropFirst(count);
+        this.xCoordinates.dropFirst(count);
+        this.yCoordinates.dropFirst(count);
+        this.pointerIds.dropFirst(count);
+        this.times.dropFirst(count);
+        this.intentionalFlags.dropFirst(count);
     }
 
     /**
-     * A new tracker (capacity 48) holding the first {@code i} samples.
-     * @param i number of samples to copy into the new tracker
+     * A new tracker (capacity 48) holding the first {@code count} samples.
+     * @param count number of samples to copy into the new tracker
      */
-    public TouchPointerCoordTracker copyFirst(int i) {
+    public TouchPointerCoordTracker copyFirst(int count) {
         TouchPointerCoordTracker c0697m = new TouchPointerCoordTracker(48);
-        if (i != 0) {
-            c0697m.codePoints.append(this.codePoints, 0, i);
-            c0697m.xCoordinates.append(this.xCoordinates, 0, i);
-            c0697m.yCoordinates.append(this.yCoordinates, 0, i);
-            c0697m.pointerIds.append(this.pointerIds, 0, i);
-            c0697m.times.append(this.times, 0, i);
-            c0697m.intentionalFlags.append(this.intentionalFlags, 0, i);
+        if (count != 0) {
+            c0697m.codePoints.append(this.codePoints, 0, count);
+            c0697m.xCoordinates.append(this.xCoordinates, 0, count);
+            c0697m.yCoordinates.append(this.yCoordinates, 0, count);
+            c0697m.pointerIds.append(this.pointerIds, 0, count);
+            c0697m.times.append(this.times, 0, count);
+            c0697m.intentionalFlags.append(this.intentionalFlags, 0, count);
         }
         return c0697m;
     }

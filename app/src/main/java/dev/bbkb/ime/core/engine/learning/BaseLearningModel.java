@@ -42,28 +42,28 @@ public abstract class BaseLearningModel {
         }
     }
 
-    void learnWord(SuggestedWords.SuggestedWordInfo suggestedWordInfoVar) {
-        learnWord(suggestedWordInfoVar, true);
+    void learnWord(SuggestedWords.SuggestedWordInfo suggestedWordInfo) {
+        learnWord(suggestedWordInfo, true);
     }
 
     /**
      * @param learnByContent whether a stale index may fall back to {@code addWord}; false for a
      *                       session that may not learn (a forced CJK commit still gets its index select).
      */
-    void learnWord(final SuggestedWords.SuggestedWordInfo suggestedWordInfoVar, final boolean learnByContent) {
+    void learnWord(final SuggestedWords.SuggestedWordInfo suggestedWordInfo, final boolean learnByContent) {
         // One engine-thread op, posted at commit: it runs before the next word's first feed, and
         // nothing can build a list between its steps.
         EngineThreads.post(() -> {
             NuanceSDK sdk = engineForOp("learnWord");
             if (sdk != null) {
-                learnWordOnEngine(sdk, suggestedWordInfoVar, learnByContent);
+                learnWordOnEngine(sdk, suggestedWordInfo, learnByContent);
             }
         });
     }
 
     /** {@link #learnWord(SuggestedWords.SuggestedWordInfo, boolean)}'s body; engine thread. */
-    private void learnWordOnEngine(NuanceSDK engine, SuggestedWords.SuggestedWordInfo suggestedWordInfoVar, boolean learnByContent) {
-        WordInfo wordInfo = suggestedWordInfoVar.nuanceWordInfo;
+    private void learnWordOnEngine(NuanceSDK engine, SuggestedWords.SuggestedWordInfo suggestedWordInfo, boolean learnByContent) {
+        WordInfo wordInfo = suggestedWordInfo.nuanceWordInfo;
         if (wordInfo == null) {
             // A commit must always end the word in the engine; with nothing to select, just clear.
             engine.clear();

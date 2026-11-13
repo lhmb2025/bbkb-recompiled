@@ -14,8 +14,8 @@ public class KeyRepeatHandler extends WeakOwnerHandler<KeyRepeatHandler.Callback
 
     
     public interface Callback {
-        /** @param i key code */
-        void onKeyRepeat(MetaKeyStateTracker abstractC0918e, int i);
+        /** @param keyCode key code */
+        void onKeyRepeat(MetaKeyStateTracker metaKeyStateTracker, int keyCode);
     }
 
     
@@ -25,9 +25,9 @@ public class KeyRepeatHandler extends WeakOwnerHandler<KeyRepeatHandler.Callback
         void onModifierKeyRepeatStart();
     }
 
-    /** @param abstractC0918e the owner, held weakly */
-    public KeyRepeatHandler(MetaKeyStateTracker abstractC0918e) {
-        super(abstractC0918e);
+    /** @param metaKeyStateTracker the owner, held weakly */
+    public KeyRepeatHandler(MetaKeyStateTracker metaKeyStateTracker) {
+        super(metaKeyStateTracker);
     }
 
     @Override
@@ -52,13 +52,13 @@ public class KeyRepeatHandler extends WeakOwnerHandler<KeyRepeatHandler.Callback
     }
 
     /**
-     * @param abstractC0918e the tracker to call back
-     * @param i key code
-     * @param i2 delay in ms
+     * @param metaKeyStateTracker the tracker to call back
+     * @param keyCode key code
+     * @param delayMillis delay in ms
      */
-    public void startKeyRepeatTimer(MetaKeyStateTracker abstractC0918e, int i, int i2) {
-        sendMessageDelayed(obtainMessage(1, i, 0, abstractC0918e), i2);
-        if (isShiftKeyCode(i) && this.mModifierListener != null) {
+    public void startKeyRepeatTimer(MetaKeyStateTracker metaKeyStateTracker, int keyCode, int delayMillis) {
+        sendMessageDelayed(obtainMessage(1, keyCode, 0, metaKeyStateTracker), delayMillis);
+        if (isShiftKeyCode(keyCode) && this.mModifierListener != null) {
             this.mModifierListener.onModifierKeyRepeatStart();
         }
     }
@@ -79,7 +79,7 @@ public class KeyRepeatHandler extends WeakOwnerHandler<KeyRepeatHandler.Callback
         return hasMessages(2);
     }
 
-    public void setModifierListener(ModifierListener bVar) {
-        this.mModifierListener = bVar;
+    public void setModifierListener(ModifierListener modifierListener) {
+        this.mModifierListener = modifierListener;
     }
 }

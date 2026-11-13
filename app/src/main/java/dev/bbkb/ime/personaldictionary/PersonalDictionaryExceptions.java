@@ -4,9 +4,9 @@ package dev.bbkb.ime.personaldictionary;
 public class PersonalDictionaryExceptions {
 
     public static class BASLException extends Exception {
-        /** @param str the message */
-        public BASLException(String str) {
-            super(str);
+        /** @param message the message */
+        public BASLException(String message) {
+            super(message);
         }
 
         public BASLException() {
@@ -14,23 +14,23 @@ public class PersonalDictionaryExceptions {
     }
 
     public static class AudAddException extends BASLException {
-        /** @param str the message */
-        public AudAddException(String str) {
-            super(str);
+        /** @param message the message */
+        public AudAddException(String message) {
+            super(message);
         }
     }
 
     public static class AudDeleteException extends BASLException {
-        /** @param str the message */
-        public AudDeleteException(String str) {
-            super(str);
+        /** @param message the message */
+        public AudDeleteException(String message) {
+            super(message);
         }
     }
 
     public static class AudLocaleException extends BASLException {
-        /** @param str the message */
-        public AudLocaleException(String str) {
-            super(str);
+        /** @param message the message */
+        public AudLocaleException(String message) {
+            super(message);
         }
     }
 
@@ -41,17 +41,17 @@ public class PersonalDictionaryExceptions {
         public KeyAlreadyDefinedException() {
         }
 
-        /** @param str the message */
+        /** @param message the message */
 
-        public KeyAlreadyDefinedException(String str) {
-            super(str);
+        public KeyAlreadyDefinedException(String message) {
+            super(message);
         }
     }
 
     public static class KeyNotFoundException extends BASLException {
-        /** @param str the message */
-        public KeyNotFoundException(String str) {
-            super(str);
+        /** @param message the message */
+        public KeyNotFoundException(String message) {
+            super(message);
         }
 
         public KeyNotFoundException() {
@@ -62,10 +62,10 @@ public class PersonalDictionaryExceptions {
         public TermAlreadyDefinedException() {
         }
 
-        /** @param str the message */
+        /** @param message the message */
 
-        public TermAlreadyDefinedException(String str) {
-            super(str);
+        public TermAlreadyDefinedException(String message) {
+            super(message);
         }
     }
 

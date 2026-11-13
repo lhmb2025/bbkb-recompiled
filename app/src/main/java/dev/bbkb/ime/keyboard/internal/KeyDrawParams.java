@@ -75,8 +75,8 @@ public final class KeyDrawParams {
     /** Alpha (0-255) for key icons/text during the alt-code fade; KeyboardView resets it to 255 per draw. */
     public int animAlpha;
 
-    private static float getFloatOrDefault(float f, float f2) {
-        return f != 0.0f ? f : f2;
+    private static float getFloatOrDefault(float value, float defaultValue) {
+        return value != 0.0f ? value : defaultValue;
     }
 
     public KeyDrawParams() {
@@ -101,22 +101,22 @@ public final class KeyDrawParams {
         this.animAlpha = source.animAlpha;
     }
 
-    /** @param i key height the size ratios apply to */
-    public void applyKeyStyleData(int i, KeyVisualAttributes source) {
+    /** @param keyHeight key height the size ratios apply to */
+    public void applyKeyStyleData(int keyHeight, KeyVisualAttributes source) {
         if (source == null) {
             return;
         }
         if (source.typeface != null) {
             this.typeface = source.typeface;
         }
-        this.letterSizePixels = computeSizeInPixels(i, source.letterSizeUnit, source.letterSize, this.letterSizePixels);
-        this.labelSizePixels = computeSizeInPixels(i, source.labelSizeUnit, source.labelSize, this.labelSizePixels);
-        this.largeLetterSizePixels = computeSizeFromRatio(i, source.largeLetterRatio, this.largeLetterSizePixels);
-        this.hintLetterSizePixels = computeSizeFromRatio(i, source.hintLetterRatio, this.hintLetterSizePixels);
-        this.shiftedLetterHintSizePixels = computeSizeFromRatio(i, source.shiftedLetterHintRatio, this.shiftedLetterHintSizePixels);
-        this.multilineHintLabelSizePixels = computeSizeFromRatio(i, source.multilineHintLabelRatio, this.multilineHintLabelSizePixels);
-        this.hintLabelSizePixels = computeSizeFromRatio(i, source.hintLabelRatio, this.hintLabelSizePixels);
-        this.previewTextSizePixels = computeSizeFromRatio(i, source.previewTextRatio, this.previewTextSizePixels);
+        this.letterSizePixels = computeSizeInPixels(keyHeight, source.letterSizeUnit, source.letterSize, this.letterSizePixels);
+        this.labelSizePixels = computeSizeInPixels(keyHeight, source.labelSizeUnit, source.labelSize, this.labelSizePixels);
+        this.largeLetterSizePixels = computeSizeFromRatio(keyHeight, source.largeLetterRatio, this.largeLetterSizePixels);
+        this.hintLetterSizePixels = computeSizeFromRatio(keyHeight, source.hintLetterRatio, this.hintLetterSizePixels);
+        this.shiftedLetterHintSizePixels = computeSizeFromRatio(keyHeight, source.shiftedLetterHintRatio, this.shiftedLetterHintSizePixels);
+        this.multilineHintLabelSizePixels = computeSizeFromRatio(keyHeight, source.multilineHintLabelRatio, this.multilineHintLabelSizePixels);
+        this.hintLabelSizePixels = computeSizeFromRatio(keyHeight, source.hintLabelRatio, this.hintLabelSizePixels);
+        this.previewTextSizePixels = computeSizeFromRatio(keyHeight, source.previewTextRatio, this.previewTextSizePixels);
         this.hintLabelVerticalAdjustment = getFloatOrDefault(source.hintLabelVerticalAdjustment, this.hintLabelVerticalAdjustment);
         this.labelOffCenterRatio = getFloatOrDefault(source.labelOffCenterRatio, this.labelOffCenterRatio);
         this.labelVerticalBaselineRatio = getFloatOrDefault(source.labelVerticalBaselineRatio, this.labelVerticalBaselineRatio);
@@ -133,11 +133,11 @@ public final class KeyDrawParams {
         return source;
     }
 
-    private static int computeSizeInPixels(int i, int i2, float f, int i3) {
-        return ResourceConfigManager.isValidPixelSize(i2) ? i2 : ResourceConfigManager.isValidFraction(f) ? (int) (i * f) : i3;
+    private static int computeSizeInPixels(int keyHeight, int pixelSize, float ratio, int defaultSize) {
+        return ResourceConfigManager.isValidPixelSize(pixelSize) ? pixelSize : ResourceConfigManager.isValidFraction(ratio) ? (int) (keyHeight * ratio) : defaultSize;
     }
 
-    private static int computeSizeFromRatio(int i, float f, int i2) {
-        return ResourceConfigManager.isValidFraction(f) ? (int) (i * f) : i2;
+    private static int computeSizeFromRatio(int keyHeight, float ratio, int defaultSize) {
+        return ResourceConfigManager.isValidFraction(ratio) ? (int) (keyHeight * ratio) : defaultSize;
     }
 }

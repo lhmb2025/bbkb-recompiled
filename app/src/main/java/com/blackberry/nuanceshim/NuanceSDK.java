@@ -166,114 +166,114 @@ public class NuanceSDK {
 
     
     public interface AutoCommitCallback {
-        /** @param str the word the engine auto-committed */
-        void onAutoCommitWord(String str);
+        /** @param word the word the engine auto-committed */
+        void onAutoCommitWord(String word);
     }
 
     
     public interface ManagedModeCallback {
-        /** @param z true for managed (work profile) mode */
-        void onManagedModeChanged(boolean z);
+        /** @param isManaged true for managed (work profile) mode */
+        void onManagedModeChanged(boolean isManaged);
     }
 
-    // Natives: j is the engine handle; the other parameters match the public wrappers below.
-    private native int addCategoryWords(long j, char c, String[] strArr);
+    // Natives: handle is the engine handle; the other parameters match the public wrappers below.
+    private native int addCategoryWords(long handle, char category, String[] words);
 
-    private native boolean addExplicitSymb(long j, char c);
+    private native boolean addExplicitSymb(long handle, char symbol);
 
-    private native boolean addWord(long j, String str);
+    private native boolean addWord(long handle, String word);
 
-    private native boolean attachDLMFile(long j, String str);
+    private native boolean attachDLMFile(long handle, String dlmPath);
 
-    private native String buildHangul(long j);
+    private native String buildHangul(long handle);
 
-    private native int buildSelectionList(long j);
+    private native int buildSelectionList(long handle);
 
-    private native boolean clear(long j);
+    private native boolean clear(long handle);
 
-    private native boolean clearOneSymbol(long j);
+    private native boolean clearOneSymbol(long handle);
 
-    private native String compatibilityJamoToJamo(String str);
+    private native String compatibilityJamoToJamo(String jamo);
 
-    private native String convertBpmfSymbolToLower(long j, char c);
+    private native String convertBpmfSymbolToLower(long handle, char symbol);
 
-    private native String decodeHangul(long j, String str, boolean z);
+    private native String decodeHangul(long handle, String text, boolean forDisplay);
 
-    private native boolean deleteDLMWord(long j, String str);
+    private native boolean deleteDLMWord(long handle, String word);
 
-    private native void deregisterLdb(long j, String[] strArr);
+    private native void deregisterLdb(long handle, String[] languageAndCountry);
 
-    private native boolean detachDLMFile(long j);
+    private native boolean detachDLMFile(long handle);
 
-    private native void dispose(long j);
+    private native void dispose(long handle);
 
-    private native String getDLMWord(long j, int i);
+    private native String getDLMWord(long handle, int cursorCommand);
 
-    private native int getDLMWordCount(long j, boolean z);
+    private native int getDLMWordCount(long handle, boolean explicitOnly);
 
-    private native char getDefaultWordSeparator(long j);
+    private native char getDefaultWordSeparator(long handle);
 
-    private native String getInlineWord(long j);
+    private native String getInlineWord(long handle);
 
-    private native KeyInfo[] getKeys(long j);
+    private native KeyInfo[] getKeys(long handle);
 
-    private native String[] getLanguage(long j);
+    private native String[] getLanguage(long handle);
 
-    private native int getSelectionListSize(long j);
+    private native int getSelectionListSize(long handle);
 
-    private native WordInfo getSelectionListWord(long j, int i);
+    private native WordInfo getSelectionListWord(long handle, int index);
 
-    private native long init(AssetManager assetManager, String str, String str2);
+    private native long init(AssetManager assetManager, String filesDirPath, String noBackupFilesDirPath);
 
-    private native boolean invalidateKeyboard(long j, String str);
+    private native boolean invalidateKeyboard(long handle, String path);
 
-    private native boolean isBpmfUpperCaseSymbol(long j, char c);
+    private native boolean isBpmfUpperCaseSymbol(long handle, char symbol);
 
-    private native boolean isChineseBPMFMode(long j);
+    private native boolean isChineseBPMFMode(long handle);
 
-    private native boolean isChineseCangjieMode(long j);
+    private native boolean isChineseCangjieMode(long handle);
 
-    private native boolean isChineseStrokeMode(long j);
+    private native boolean isChineseStrokeMode(long handle);
 
-    private native boolean isSpellingCorrect(long j, String str);
+    private native boolean isSpellingCorrect(long handle, String word);
 
-    private native boolean loadKeyboardLayout(long j, boolean z, String str);
+    private native boolean loadKeyboardLayout(long handle, boolean isPkb, String locale);
 
     private static native void nativeInit();
 
-    private native boolean processKeyBySymbol(long j, char c);
+    private native boolean processKeyBySymbol(long handle, char symbol);
 
-    private native boolean registerLdb(long j, String str);
+    private native boolean registerLdb(long handle, String ldbPath);
 
-    private native boolean scanBuffer(long j, String str);
+    private native boolean scanBuffer(long handle, String text);
 
-    private native boolean selectionListSelectWord(long j, int i, boolean z, String str);
+    private native boolean selectionListSelectWord(long handle, int index, boolean isExplicitSelection, String spelling);
 
-    private native boolean setCategoryState(long j, char c, boolean z);
+    private native boolean setCategoryState(long handle, char category, boolean enabled);
 
-    private native boolean setContextBuffer(long j, String str);
+    private native boolean setContextBuffer(long handle, String contextText);
 
-    private native boolean setEmojiPredictionEnabled(long j, boolean z);
+    private native boolean setEmojiPredictionEnabled(long handle, boolean enabled);
 
-    private native boolean setExplicitLearning(long j, boolean z);
+    private native boolean setExplicitLearning(long handle, boolean enabled);
 
-    private native boolean setInputMethod(long j, String str);
+    private native boolean setInputMethod(long handle, String inputMethodName);
 
-    private native boolean setKeyboardSize(long j, short s, short s2);
+    private native boolean setKeyboardSize(long handle, short width, short height);
 
-    private native boolean setLanguage(long j, String[] strArr);
+    private native boolean setLanguage(long handle, String[] localeNames);
 
-    private native boolean setShiftState(long j, int i);
+    private native boolean setShiftState(long handle, int shiftState);
 
-    private native boolean touchCancel(long j, long j2);
+    private native boolean touchCancel(long handle, long pointerId);
 
-    private native boolean touchEnd(long j, long j2, float f, float f2, long j3);
+    private native boolean touchEnd(long handle, long pointerId, float x, float y, long eventTime);
 
-    private native boolean touchMove(long j, long j2, float f, float f2, long j3);
+    private native boolean touchMove(long handle, long pointerId, float x, float y, long eventTime);
 
-    private native boolean touchStart(long j, long j2, float f, float f2, long j3);
+    private native boolean touchStart(long handle, long pointerId, float x, float y, long eventTime);
 
-    private native boolean wordChanged(long j, String str, int i, String str2, String str3);
+    private native boolean wordChanged(long handle, String textBeforeCursor, int cursorPosition, String originalWord, String currentWord);
 
     static {
         System.loadLibrary("native-lib");
@@ -336,15 +336,15 @@ public class NuanceSDK {
 
     /**
      * JNI callback from the blob; do not remove.
-     * @param str the auto-committed word
+     * @param word the auto-committed word
      */
-    public void updateAutoCommittedString(String str) {
-        if (InputPathDebug.on()) android.util.Log.i("CKB_SWIPE_TYPE_DEBUG", "NuanceSDK.updateAutoCommittedString: str=" + str + " mAutoCommitHandler=" + this.mAutoCommitHandler);
+    public void updateAutoCommittedString(String word) {
+        if (InputPathDebug.on()) android.util.Log.i("CKB_SWIPE_TYPE_DEBUG", "NuanceSDK.updateAutoCommittedString: str=" + word + " mAutoCommitHandler=" + this.mAutoCommitHandler);
         AutoCommitCallback autoCommitCallback = this.mAutoCommitHandler;
         if (autoCommitCallback == null) {
             if (BuildConfig.DEBUG) Log.w(TAG, "Callback handler is null.");
         } else {
-            autoCommitCallback.onAutoCommitWord(str);
+            autoCommitCallback.onAutoCommitWord(word);
         }
     }
 
@@ -395,28 +395,28 @@ public class NuanceSDK {
         return z;
     }
 
-    /** @param z true for managed (work profile) mode */
-    public void setIsManaged(boolean z) {
+    /** @param isManaged true for managed (work profile) mode */
+    public void setIsManaged(boolean isManaged) {
         enter("setIsManaged");
         synchronized (sMutex) {
-            this.mIsManaged = z;
+            this.mIsManaged = isManaged;
         }
     }
 
-    /** @param z whether explicit learning is on; remembered and reapplied for Chinese */
-    public void setIsExplicitLearning(boolean z) {
+    /** @param isExplicitLearning whether explicit learning is on; remembered and reapplied for Chinese */
+    public void setIsExplicitLearning(boolean isExplicitLearning) {
         enter("setIsExplicitLearning");
         synchronized (sMutex) {
-            this.mIsExplicitLearning = z;
-            setExplicitLearning(this.mNativeHandle, z);
+            this.mIsExplicitLearning = isExplicitLearning;
+            setExplicitLearning(this.mNativeHandle, isExplicitLearning);
         }
     }
 
-    /** @param z true while the physical keypad is the input */
-    public void setIsPkb(boolean z) {
+    /** @param isPkb true while the physical keypad is the input */
+    public void setIsPkb(boolean isPkb) {
         enter("setIsPkb");
         synchronized (sMutex) {
-            this.mIsPkb = z;
+            this.mIsPkb = isPkb;
         }
     }
 
@@ -470,24 +470,24 @@ public class NuanceSDK {
     }
 
     /**
-     * @param str the jamo sequence to decode
-     * @param z engine flag: false from the keypad's per-key decode, true from the flick strip
+     * @param text the jamo sequence to decode
+     * @param forDisplay engine flag: false from the keypad's per-key decode, true from the flick strip
      */
-    public String decodeHangul(String str, boolean z) {
+    public String decodeHangul(String text, boolean forDisplay) {
         enter("decodeHangul");
         String strDecodeHangul;
         synchronized (sMutex) {
-            strDecodeHangul = decodeHangul(this.mNativeHandle, str, z);
+            strDecodeHangul = decodeHangul(this.mNativeHandle, text, forDisplay);
         }
         return strDecodeHangul;
     }
 
-    /** @param c a compatibility jamo; {@code CODE_NULL} when it has no conjoining form */
-    public char compatibilityJamoToJamoTransform(char c) {
+    /** @param jamo a compatibility jamo; {@code CODE_NULL} when it has no conjoining form */
+    public char compatibilityJamoToJamoTransform(char jamo) {
         enter("compatibilityJamoToJamoTransform");
         char cCharAt;
         synchronized (sMutex) {
-            String strCompatibilityJamoToJamo = compatibilityJamoToJamo(Character.toString(c));
+            String strCompatibilityJamoToJamo = compatibilityJamoToJamo(Character.toString(jamo));
             boolean zIsEmpty = TextUtils.isEmpty(strCompatibilityJamoToJamo);
             cCharAt = CODE_NULL;
             if (!zIsEmpty) {
@@ -523,12 +523,12 @@ public class NuanceSDK {
         }
     }
 
-    /** @param i index into the current selection list */
-    public WordInfo getSelectionListWord(int i) {
+    /** @param index index into the current selection list */
+    public WordInfo getSelectionListWord(int index) {
         enter("getSelectionListWord");
         WordInfo selectionListWord;
         synchronized (sMutex) {
-            selectionListWord = getSelectionListWord(this.mNativeHandle, i);
+            selectionListWord = getSelectionListWord(this.mNativeHandle, index);
             if (this.mEthiopicTranslation && selectionListWord != null) {
                 selectionListWord.word = EthiopicSyllables.compose(selectionListWord.word);
                 selectionListWord.spell = EthiopicSyllables.compose(selectionListWord.spell);
@@ -549,37 +549,37 @@ public class NuanceSDK {
         return inlineWord;
     }
 
-    /** @param c the typed symbol; decomposed first while an Ethiopic language is primary */
-    public boolean processKeyBySymbol(char c) {
+    /** @param symbol the typed symbol; decomposed first while an Ethiopic language is primary */
+    public boolean processKeyBySymbol(char symbol) {
         enter("processKeyBySymbol");
         boolean zProcessKeyBySymbol;
         synchronized (sMutex) {
             sInputBufferEpoch++;
             if (BuildConfig.DEBUG) {
                 Log.d("PIPELINE", "IME:nuanceSDK:processKey" +
-                    " char='" + c + "'" +
+                    " char='" + symbol + "'" +
                     " handle=" + this.mNativeHandle +
                     " thread=" + Thread.currentThread().getName());
             }
-            final String symbols = this.mEthiopicTranslation ? EthiopicSyllables.decompose(String.valueOf(c)) : null;
+            final String symbols = this.mEthiopicTranslation ? EthiopicSyllables.decompose(String.valueOf(symbol)) : null;
             if (symbols != null && symbols.length() > 1) {
                 zProcessKeyBySymbol = true;
                 for (int i = 0; i < symbols.length(); i++) {
                     zProcessKeyBySymbol &= processKeyBySymbol(this.mNativeHandle, symbols.charAt(i));
                 }
             } else {
-                zProcessKeyBySymbol = processKeyBySymbol(this.mNativeHandle, c);
+                zProcessKeyBySymbol = processKeyBySymbol(this.mNativeHandle, symbol);
             }
         }
         return zProcessKeyBySymbol;
     }
 
-    /** @param c the symbol to add as typed */
-    public boolean addExplicitSymb(char c) {
+    /** @param symbol the symbol to add as typed */
+    public boolean addExplicitSymb(char symbol) {
         enter("addExplicitSymb");
         boolean zAddExplicitSymb;
         synchronized (sMutex) {
-            zAddExplicitSymb = addExplicitSymb(this.mNativeHandle, c);
+            zAddExplicitSymb = addExplicitSymb(this.mNativeHandle, symbol);
         }
         return zAddExplicitSymb;
     }
@@ -612,28 +612,28 @@ public class NuanceSDK {
     }
 
     /**
-     * @param z true for the physical keypad, which always passes (0,0)
-     * @param s keyboard width
-     * @param s2 keyboard height
+     * @param isPkb true for the physical keypad, which always passes (0,0)
+     * @param width keyboard width
+     * @param height keyboard height
      */
-    public boolean setKeyboardSize(boolean z, short s, short s2) {
+    public boolean setKeyboardSize(boolean isPkb, short width, short height) {
         enter("setKeyboardSize");
         synchronized (sMutex) {
-            if (z) {
+            if (isPkb) {
                 // PKB: (0,0) means a 1:1 sensor-to-authored mapping. The athena KDB is authored
                 // 1080x450 to match the touch surface anchored at the top; any scaling stretches it.
                 return setKeyboardSize(this.mNativeHandle, (short) 0, (short) 0);
             }
-            return setKeyboardSize(this.mNativeHandle, s, s2);
+            return setKeyboardSize(this.mNativeHandle, width, height);
         }
     }
 
-    public boolean setLanguage(Locale[] localeArr) {
+    public boolean setLanguage(Locale[] locales) {
         enter("setLanguage");
         // A long hold (whole LDB + DLM load) on the loader thread; engine-thread ops wait for it.
         synchronized (sMutex) {
             try {
-                return setLanguageLocked(localeArr);
+                return setLanguageLocked(locales);
             } finally {
                 // On every path, published before setLanguage returns.
                 refreshFactsLocked();
@@ -641,24 +641,24 @@ public class NuanceSDK {
         }
     }
 
-    private boolean setLanguageLocked(Locale[] localeArr) {
+    private boolean setLanguageLocked(Locale[] locales) {
         synchronized (sMutex) {
-            if (localeArr != null) {
-                if (localeArr.length > 0) {
+            if (locales != null) {
+                if (locales.length > 0) {
                     this.mPrevPrimaryLocale = getPrimaryLanguage();
-                    boolean activated = setLanguage(this.mNativeHandle, localeToString(localeArr));
+                    boolean activated = setLanguage(this.mNativeHandle, localeToString(locales));
                     // Native setLanguage turns multithreaded list builds back on (3 to 7 threads per
                     // keystroke, non-deterministic lists), so switch it off after every activation.
                     Et9EngineOptions.setMultiThreading(this.mNativeHandle, false);
                     if (activated) {
                         this.mLanguageActive = true;
-                        this.mEthiopicTranslation = EthiopicSyllables.appliesTo(localeArr[0]);
+                        this.mEthiopicTranslation = EthiopicSyllables.appliesTo(locales[0]);
                         // Re-apply per-engine options: activation may reset them inside the blob.
                         this.mEmojiPredictionApplied = null;
                         // Debug: log whether common words are in the active LDB.
                         if (BuildConfig.DEBUG) {
                             String[] probe = {"hello", "hell", "help", "the", "jello", "he'll", "hero", "teh", "vey", "adn"};
-                            StringBuilder sb = new StringBuilder("DICTPROBE lang=").append(java.util.Arrays.toString(localeToString(localeArr))).append(" ->");
+                            StringBuilder sb = new StringBuilder("DICTPROBE lang=").append(java.util.Arrays.toString(localeToString(locales))).append(" ->");
                             for (String w : probe) sb.append(' ').append(w).append('=').append(isSpellingCorrect(this.mNativeHandle, w));
                             Log.i(TAG, sb.toString());
                         }
@@ -690,13 +690,13 @@ public class NuanceSDK {
         setExplicitLearning(this.mIsExplicitLearning);
     }
 
-    private String[] localeToString(Locale[] localeArr) {
-        String[] strArr = new String[localeArr.length * 2];
-        for (int i = 0; i < localeArr.length; i++) {
+    private String[] localeToString(Locale[] locales) {
+        String[] strArr = new String[locales.length * 2];
+        for (int i = 0; i < locales.length; i++) {
             int i2 = i * 2;
             // The blob's language table holds `in` and `iw`, never `id` or `he`.
-            strArr[i2] = LocaleUtils.languageCode(localeArr[i]);
-            strArr[i2 + 1] = localeArr[i].getCountry();
+            strArr[i2] = LocaleUtils.languageCode(locales[i]);
+            strArr[i2 + 1] = locales[i].getCountry();
         }
         return strArr;
     }
@@ -778,8 +778,8 @@ public class NuanceSDK {
         return Locale.ENGLISH;
     }
 
-    /** @param str path of the language pack's LDB file */
-    public boolean registerLdb(String str) {
+    /** @param ldbPath path of the language pack's LDB file */
+    public boolean registerLdb(String ldbPath) {
         enter("registerLdb");
         boolean zRegisterLdb;
         synchronized (sMutex) {
@@ -788,50 +788,50 @@ public class NuanceSDK {
             if (this.mNativeHandle == 0L) {
                 return false;
             }
-            zRegisterLdb = registerLdb(this.mNativeHandle, str);
+            zRegisterLdb = registerLdb(this.mNativeHandle, ldbPath);
         }
         return zRegisterLdb;
     }
 
     /**
-     * @param str language code
-     * @param str2 country code, or null
+     * @param language language code
+     * @param country country code, or null
      */
-    public void deregisterLdb(String str, String str2) {
+    public void deregisterLdb(String language, String country) {
         enter("deregisterLdb");
         synchronized (sMutex) {
             if (this.mNativeHandle == 0L) {
                 return;
             }
             String[] strArr = new String[2];
-            strArr[0] = str;
-            if (str2 == null) {
-                str2 = "";
+            strArr[0] = language;
+            if (country == null) {
+                country = "";
             }
-            strArr[1] = str2;
+            strArr[1] = country;
             deregisterLdb(this.mNativeHandle, strArr);
         }
     }
 
-    /** @param str the word to check */
-    public boolean isSpellingCorrect(String str) {
+    /** @param word the word to check */
+    public boolean isSpellingCorrect(String word) {
         enter("isSpellingCorrect");
         boolean zIsSpellingCorrect;
         synchronized (sMutex) {
-            zIsSpellingCorrect = isSpellingCorrect(this.mNativeHandle, toEngineForm(str));
+            zIsSpellingCorrect = isSpellingCorrect(this.mNativeHandle, toEngineForm(word));
         }
         return zIsSpellingCorrect;
     }
 
     /**
-     * Whether the language dictionaries alone know {@code str}: the learned model (which also holds
+     * Whether the language dictionaries alone know {@code inputWord}: the learned model (which also holds
      * added words and contacts) is switched off for this check on this instance only, then back on.
      * Falls back to the ordinary check if it cannot be switched off.
      */
-    public boolean isSpellingCorrectWithoutLearnedWords(String str) {
+    public boolean isSpellingCorrectWithoutLearnedWords(String inputWord) {
         enter("isSpellingCorrectWithoutLearnedWords");
         synchronized (sMutex) {
-            String word = toEngineForm(str);
+            String word = toEngineForm(inputWord);
             if (!this.mDlmAttached || !Et9Dlm.isLoaded()) {
                 return isSpellingCorrect(this.mNativeHandle, word);
             }
@@ -855,16 +855,16 @@ public class NuanceSDK {
     }
 
     /**
-     * @param i raw index into the current selection list (check the list generation first)
-     * @param z engine select flag; callers pass true
-     * @param str the word's spell
+     * @param index raw index into the current selection list (check the list generation first)
+     * @param isExplicitSelection engine select flag; callers pass true
+     * @param spelling the word's spell
      */
-    public boolean selectionListSelectWord(int i, boolean z, String str) {
+    public boolean selectionListSelectWord(int index, boolean isExplicitSelection, String spelling) {
         enter("selectionListSelectWord");
         boolean zSelectionListSelectWord;
         synchronized (sMutex) {
             this.mDlmMutations++;
-            zSelectionListSelectWord = selectionListSelectWord(this.mNativeHandle, i, z, toEngineForm(str));
+            zSelectionListSelectWord = selectionListSelectWord(this.mNativeHandle, index, isExplicitSelection, toEngineForm(spelling));
         }
         return zSelectionListSelectWord;
     }
@@ -898,30 +898,30 @@ public class NuanceSDK {
         return keys;
     }
 
-    /** @param z whether explicit learning is on */
-    public boolean setExplicitLearning(boolean z) {
+    /** @param enabled whether explicit learning is on */
+    public boolean setExplicitLearning(boolean enabled) {
         enter("setExplicitLearning");
         boolean explicitLearning;
         synchronized (sMutex) {
-            explicitLearning = setExplicitLearning(this.mNativeHandle, z);
+            explicitLearning = setExplicitLearning(this.mNativeHandle, enabled);
         }
         return explicitLearning;
     }
 
-    /** @param str text for the engine to scan and learn from */
-    public boolean scanBuffer(String str) {
+    /** @param text text for the engine to scan and learn from */
+    public boolean scanBuffer(String text) {
         enter("scanBuffer");
         boolean zScanBuffer;
         synchronized (sMutex) {
-            zScanBuffer = scanBuffer(this.mNativeHandle, toEngineForm(str));
+            zScanBuffer = scanBuffer(this.mNativeHandle, toEngineForm(text));
         }
         return zScanBuffer;
     }
 
-    /** @param str word or phrase to add to the learned model; phrases are added word by word */
-    public boolean addWord(String str) {
+    /** @param text word or phrase to add to the learned model; phrases are added word by word */
+    public boolean addWord(String text) {
         enter("addWord");
-        if (str == null || str.isEmpty()) {
+        if (text == null || text.isEmpty()) {
             return false;
         }
         synchronized (sMutex) {
@@ -929,57 +929,57 @@ public class NuanceSDK {
                 return false;
             }
             this.mDlmMutations++;
-            str = toEngineForm(str);
+            text = toEngineForm(text);
             // The DLM has no phrases; every non-empty token is added, single letters included.
-            if (str.contains(" ")) {
+            if (text.contains(" ")) {
                 boolean anyAdded = false;
-                for (String word : WHITESPACE.split(str)) {
+                for (String word : WHITESPACE.split(text)) {
                     if (!word.isEmpty()) {
                         anyAdded |= addWord(this.mNativeHandle, word);
                     }
                 }
                 return anyAdded;
             }
-            return addWord(this.mNativeHandle, str);
+            return addWord(this.mNativeHandle, text);
         }
     }
 
     /**
-     * @param str the text holding the recorrected word
-     * @param i the recorrection cursor position in {@code str}
-     * @param str2 the original word
-     * @param str3 the replacement word
+     * @param textBeforeCursor the text holding the recorrected word
+     * @param cursorPosition the recorrection cursor position in {@code textBeforeCursor}
+     * @param originalWord the original word
+     * @param currentWord the replacement word
      */
-    public boolean wordChanged(String str, int i, String str2, String str3) {
+    public boolean wordChanged(String textBeforeCursor, int cursorPosition, String originalWord, String currentWord) {
         enter("wordChanged");
         synchronized (sMutex) {
             this.mDlmMutations++;
-            return wordChanged(this.mNativeHandle, toEngineForm(str), toEnginePosition(str, i), toEngineForm(str2), toEngineForm(str3));
+            return wordChanged(this.mNativeHandle, toEngineForm(textBeforeCursor), toEnginePosition(textBeforeCursor, cursorPosition), toEngineForm(originalWord), toEngineForm(currentWord));
         }
     }
 
-    public void addContactsWords(String[] strArr) {
+    public void addContactsWords(String[] names) {
         enter("addContactsWords");
         // A long hold (one native call over every contact name): a loader op.
         synchronized (sMutex) {
             if (!mIsLanguageInit) {
-                if (BuildConfig.DEBUG) Log.d(TAG, "DLM not ready, skipping addContactsWords (" + strArr.length + " words)");
+                if (BuildConfig.DEBUG) Log.d(TAG, "DLM not ready, skipping addContactsWords (" + names.length + " words)");
                 return;
             }
             this.mDlmMutations++;
-            addCategoryWords(this.mNativeHandle, CATEGORY_CONTACTS, toEngineForm(strArr));
+            addCategoryWords(this.mNativeHandle, CATEGORY_CONTACTS, toEngineForm(names));
         }
     }
 
     /**
-     * @param strArr contact names
-     * @param z true for work-profile contacts; added only when it matches the managed mode
+     * @param names contact names
+     * @param isWorkProfile true for work-profile contacts; added only when it matches the managed mode
      */
-    public void addContactsWords(String[] strArr, boolean z) {
+    public void addContactsWords(String[] names, boolean isWorkProfile) {
         enter("addContactsWords");
         synchronized (sMutex) {
-            if (z == this.mIsManaged) {
-                addContactsWords(strArr);
+            if (isWorkProfile == this.mIsManaged) {
+                addContactsWords(names);
             }
         }
     }
@@ -1023,15 +1023,15 @@ public class NuanceSDK {
         return ok;
     }
 
-    /** @param str path of the changed model file */
-    public boolean invalidateKeyboard(String str) {
+    /** @param path path of the changed model file */
+    public boolean invalidateKeyboard(String path) {
         enter("invalidateKeyboard");
         synchronized (sMutex) {
             if (this.mNativeHandle == 0L) {
-                if (BuildConfig.DEBUG) Log.w(TAG, "invalidateKeyboard called with no native handle; ignoring path=" + str);
+                if (BuildConfig.DEBUG) Log.w(TAG, "invalidateKeyboard called with no native handle; ignoring path=" + path);
                 return false;
             }
-            return invalidateKeyboard(this.mNativeHandle, str);
+            return invalidateKeyboard(this.mNativeHandle, path);
         }
     }
 
@@ -1132,58 +1132,58 @@ public class NuanceSDK {
     }
 
     /**
-     * @param j pointer id
-     * @param f x in sensor coordinates
-     * @param f2 y in sensor coordinates
-     * @param j2 event time
+     * @param pointerId pointer id
+     * @param x x in sensor coordinates
+     * @param y y in sensor coordinates
+     * @param eventTime event time
      */
-    public boolean touchStart(long j, float f, float f2, long j2) {
+    public boolean touchStart(long pointerId, float x, float y, long eventTime) {
         enter("touchStart");
-        if (InputPathDebug.on()) android.util.Log.i("CKB_SWIPE_TYPE_DEBUG", "NuanceSDK.touchStart: pointer=" + j + " x=" + f + " y=" + f2 + " time=" + j2);
+        if (InputPathDebug.on()) android.util.Log.i("CKB_SWIPE_TYPE_DEBUG", "NuanceSDK.touchStart: pointer=" + pointerId + " x=" + x + " y=" + y + " time=" + eventTime);
         boolean z;
         synchronized (sMutex) {
-            startGestureMoves(j);
+            startGestureMoves(pointerId);
             if (InputPathDebug.perGesture() && mDbgKeys == null) {
                 mDbgKeys = getKeys(this.mNativeHandle);
                 if (InputPathDebug.on()) Xt9Trace.dumpNkl(this.mNativeHandle);
             }
-            z = touchStart(this.mNativeHandle, j, f, f2, j2);
+            z = touchStart(this.mNativeHandle, pointerId, x, y, eventTime);
         }
-        if (InputPathDebug.perGesture()) logTapKey(f, f2);   // one line per gesture — cheap
-        if (InputPathDebug.on()) Xt9Kdb.logTap(f, f2);           // tap calibration: owned resolution + coords (any contact)
-        if (InputPathDebug.on()) Xt9Kdb.traceStart(f, f2, j2);   // mirror to owned scratch trace
+        if (InputPathDebug.perGesture()) logTapKey(x, y);   // one line per gesture — cheap
+        if (InputPathDebug.on()) Xt9Kdb.logTap(x, y);           // tap calibration: owned resolution + coords (any contact)
+        if (InputPathDebug.on()) Xt9Kdb.traceStart(x, y, eventTime);   // mirror to owned scratch trace
         if (InputPathDebug.on()) android.util.Log.i("CKB_SWIPE_TYPE_DEBUG", "NuanceSDK.touchStart: returned " + z);
         return z;
     }
 
     /** Parameters as in {@link #touchStart}: pointer id, sensor x, sensor y, event time. */
-    public boolean touchMove(long j, float f, float f2, long j2) {
+    public boolean touchMove(long pointerId, float x, float y, long eventTime) {
         enter("touchMove");
-        if (InputPathDebug.on()) android.util.Log.i("CKB_SWIPE_TYPE_DEBUG", "NuanceSDK.touchMove: pointer=" + j + " x=" + f + " y=" + f2 + " time=" + j2);
+        if (InputPathDebug.on()) android.util.Log.i("CKB_SWIPE_TYPE_DEBUG", "NuanceSDK.touchMove: pointer=" + pointerId + " x=" + x + " y=" + y + " time=" + eventTime);
         boolean z;
         synchronized (sMutex) {
-            countGestureMove(j);
-            z = touchMove(this.mNativeHandle, j, f, f2, j2);
+            countGestureMove(pointerId);
+            z = touchMove(this.mNativeHandle, pointerId, x, y, eventTime);
         }
-        if (InputPathDebug.on()) Xt9Kdb.traceMove(f, f2, j2);   // mirror to owned scratch trace
+        if (InputPathDebug.on()) Xt9Kdb.traceMove(x, y, eventTime);   // mirror to owned scratch trace
         if (InputPathDebug.on()) android.util.Log.i("CKB_SWIPE_TYPE_DEBUG", "NuanceSDK.touchMove: returned " + z);
         return z;
     }
 
     /**
-     * Finishes pointer {@code j}'s gesture; parameters as in {@link #touchStart}. True means the
+     * Finishes pointer {@code pointerId}'s gesture; parameters as in {@link #touchStart}. True means the
      * engine took a gesture and there is a deposit to consume (callers then call
      * {@code noteGestureDeposit()}), not that the native call succeeded: native touchEnd always succeeds.
      */
-    public boolean touchEnd(long j, float f, float f2, long j2) {
+    public boolean touchEnd(long pointerId, float x, float y, long eventTime) {
         enter("touchEnd");
-        if (InputPathDebug.on()) android.util.Log.i("CKB_SWIPE_TYPE_DEBUG", "NuanceSDK.touchEnd: pointer=" + j + " x=" + f + " y=" + f2 + " time=" + j2);
+        if (InputPathDebug.on()) android.util.Log.i("CKB_SWIPE_TYPE_DEBUG", "NuanceSDK.touchEnd: pointer=" + pointerId + " x=" + x + " y=" + y + " time=" + eventTime);
         boolean z;
         synchronized (sMutex) {
-            int n = endGestureMoves(j);
+            int n = endGestureMoves(pointerId);
             if (n < MIN_GESTURE_MOVES) {
                 // Stray / tap: cancel so it doesn't register as a 1-point gesture record.
-                touchCancel(this.mNativeHandle, j);
+                touchCancel(this.mNativeHandle, pointerId);
                 // False, not touchCancel's result (always true): nothing was deposited.
                 z = false;
                 if (InputPathDebug.on()) android.util.Log.i("CKB_SWIPE_TYPE_DEBUG", "NuanceSDK.touchEnd: stray (" + n + " moves) -> touchCancel");
@@ -1192,26 +1192,26 @@ public class NuanceSDK {
                 // Bracket the native call: touchEnd consumes and frees the record, so "pre" shows
                 // the in-progress record and "post" the consumed state.
                 if (InputPathDebug.on()) Xt9Trace.dumpTraceRec(this.mNativeHandle, "pre");
-                z = touchEnd(this.mNativeHandle, j, f, f2, j2);
+                z = touchEnd(this.mNativeHandle, pointerId, x, y, eventTime);
                 if (InputPathDebug.on()) Xt9Trace.dump(this.mNativeHandle, "touchEnd", 0);
                 if (InputPathDebug.on()) Xt9Trace.dumpTraceRec(this.mNativeHandle, "post");
                 // Gestures leave the tap symbol buffer (ctx+0x52) empty; their output is the
                 // selection list, logged as XT9WORDS in buildSelectionList.
-                if (InputPathDebug.on()) Xt9Kdb.traceEnd(f, f2, j2);   // owned decode + XT9OWNED log
+                if (InputPathDebug.on()) Xt9Kdb.traceEnd(x, y, eventTime);   // owned decode + XT9OWNED log
             }
         }
         if (InputPathDebug.on()) android.util.Log.i("CKB_SWIPE_TYPE_DEBUG", "NuanceSDK.touchEnd: returned " + z);
         return z;
     }
 
-    /** @param j pointer id */
-    public boolean touchCancel(long j) {
+    /** @param pointerId pointer id */
+    public boolean touchCancel(long pointerId) {
         enter("touchCancel");
-        if (InputPathDebug.on()) android.util.Log.i("CKB_SWIPE_TYPE_DEBUG", "NuanceSDK.touchCancel: pointer=" + j);
+        if (InputPathDebug.on()) android.util.Log.i("CKB_SWIPE_TYPE_DEBUG", "NuanceSDK.touchCancel: pointer=" + pointerId);
         boolean z;
         synchronized (sMutex) {
-            endGestureMoves(j);
-            z = touchCancel(this.mNativeHandle, j);
+            endGestureMoves(pointerId);
+            z = touchCancel(this.mNativeHandle, pointerId);
         }
         if (InputPathDebug.on()) android.util.Log.i("CKB_SWIPE_TYPE_DEBUG", "NuanceSDK.touchCancel: returned " + z);
         return z;
@@ -1222,41 +1222,41 @@ public class NuanceSDK {
      * isTouchKb; passing the wrong one silently loads a VKB layout for the keypad (verified by NKL
      * dump: 1080x600/33 keys instead of 1080x450/30), so keypad touches resolve to wrong keys.
      *
-     * @param z true for the on-screen keyboard (isTouchKb)
-     * @param str locale string of the layout
-     * @param i keyboard width
-     * @param i2 keyboard height
+     * @param isOnScreenKeyboard true for the on-screen keyboard (isTouchKb)
+     * @param locale locale string of the layout
+     * @param width keyboard width
+     * @param height keyboard height
      */
-    public boolean syncKeyboardLayout(boolean z, String str, int i, int i2) {
+    public boolean syncKeyboardLayout(boolean isOnScreenKeyboard, String locale, int width, int height) {
         enter("syncKeyboardLayout");
-        final boolean isPkb = !z;   // engine wants isPkb; callers hand us isTouchKb
+        final boolean isPkb = !isOnScreenKeyboard;   // engine wants isPkb; callers hand us isTouchKb
         // May queue a letter-layout KDB switch on the registration thread, awaited below.
         dev.bbkb.ime.core.layout.LetterLayoutEngineSync.beforeEngineLayoutSync(isPkb);
-        sDbgKbZ = z; sDbgKbStr = str;   // remember for the debug re-parse trigger
+        sDbgKbZ = isOnScreenKeyboard; sDbgKbStr = locale;   // remember for the debug re-parse trigger
         // Runs on the engine thread, so input posted after it uses the new layout by FIFO order.
         // The KDB registry must be populated before the engine's first SetKdbNum.
         Xt9KdbVariant.awaitReady(2000);
-        if (InputPathDebug.on()) android.util.Log.i("CKB_SWIPE_TYPE_DEBUG", "NuanceSDK.syncKeyboardLayout: isTouchKb=" + z + " locale='" + str + "' width=" + i + " height=" + i2 + " kdbVariant='" + Xt9KdbVariant.applied() + "'");
+        if (InputPathDebug.on()) android.util.Log.i("CKB_SWIPE_TYPE_DEBUG", "NuanceSDK.syncKeyboardLayout: isTouchKb=" + isOnScreenKeyboard + " locale='" + locale + "' width=" + width + " height=" + height + " kdbVariant='" + Xt9KdbVariant.applied() + "'");
         synchronized (sMutex) {
-            return applyKeyboardLayoutLocked(z, isPkb, str, i, i2);
+            return applyKeyboardLayoutLocked(isOnScreenKeyboard, isPkb, locale, width, height);
         }
     }
 
     /** The native half of {@link #syncKeyboardLayout}; callers hold sMutex. */
-    private boolean applyKeyboardLayoutLocked(boolean z, boolean isPkb, String str, int i, int i2) {
+    private boolean applyKeyboardLayoutLocked(boolean isOnScreenKeyboard, boolean isPkb, String locale, int width, int height) {
         if (this.mNativeHandle == 0) {
             return false;   // disposed before this op ran
         }
-        boolean loadResult = dbgFirstLoad(this.mNativeHandle, isPkb, str);
+        boolean loadResult = dbgFirstLoad(this.mNativeHandle, isPkb, locale);
         if (InputPathDebug.on()) android.util.Log.i("CKB_SWIPE_TYPE_DEBUG", "NuanceSDK.syncKeyboardLayout: loadKeyboardLayout returned " + loadResult);
         if (!loadResult) {
             return false;
         }
-        boolean sizeResult = setKeyboardSize(isPkb, (short) i, (short) i2);
+        boolean sizeResult = setKeyboardSize(isPkb, (short) width, (short) height);
         if (InputPathDebug.on()) android.util.Log.i("CKB_SWIPE_TYPE_DEBUG", "NuanceSDK.syncKeyboardLayout: setKeyboardSize returned " + sizeResult);
         if (InputPathDebug.on()) {
             android.util.Log.i("CKB_SWIPE_TYPE_DEBUG", "NuanceSDK.syncKeyboardLayout: isPkb=" + isPkb
-                + " (isTouchKb=" + z + ")");
+                + " (isTouchKb=" + isOnScreenKeyboard + ")");
             // Dump the KDB the engine ended up with; the first-touch dump predates this sync.
             Xt9Trace.dumpNkl(this.mNativeHandle);
         }
@@ -1282,46 +1282,46 @@ public class NuanceSDK {
      *  (then cached), so a watchpoint is armed before that call and its writer PC reported after.
      *  Every loadKeyboardLayout routes through here. View: adb logcat -s XT9WP:I
      *  @param h engine handle
-     *  @param z isPkb
-     *  @param s layout locale string */
-    private boolean dbgFirstLoad(long h, boolean z, String s) {
+     *  @param isPkb isPkb
+     *  @param locale layout locale string */
+    private boolean dbgFirstLoad(long h, boolean isPkb, String locale) {
         boolean reArm = BuildConfig.DEBUG && !sDescWatchDone && h != 0;
         if (reArm) { sDescWatchDone = true; Xt9Trace.armDescWatch(h, 0x4c, 1); }
-        boolean r = loadKeyboardLayout(h, z, s);
+        boolean r = loadKeyboardLayout(h, isPkb, locale);
         if (reArm) Xt9Trace.reportDescWatch(h);
         return r;
     }
 
-    /** @param str the text before the cursor, as context for predictions */
-    public boolean setContextBuffer(String str) {
+    /** @param contextText the text before the cursor, as context for predictions */
+    public boolean setContextBuffer(String contextText) {
         enter("setContextBuffer");
         boolean contextBuffer;
         synchronized (sMutex) {
-            contextBuffer = setContextBuffer(this.mNativeHandle, toEngineForm(str));
+            contextBuffer = setContextBuffer(this.mNativeHandle, toEngineForm(contextText));
         }
         return contextBuffer;
     }
 
-    /** @param z whether the engine may predict emoji */
-    public boolean setEmojiPredictionEnabled(boolean z) {
+    /** @param enabled whether the engine may predict emoji */
+    public boolean setEmojiPredictionEnabled(boolean enabled) {
         enter("setEmojiPredictionEnabled");
         // Called on every field focus: skip the lock when the engine already holds the value.
         Boolean applied = this.mEmojiPredictionApplied;
-        if (applied != null && applied == z) {
+        if (applied != null && applied == enabled) {
             return true;
         }
         synchronized (sMutex) {
-            return applyEmojiPredictionLocked(z);
+            return applyEmojiPredictionLocked(enabled);
         }
     }
 
     /** The native half of {@link #setEmojiPredictionEnabled(boolean)}; callers hold sMutex. */
-    private boolean applyEmojiPredictionLocked(boolean z) {
+    private boolean applyEmojiPredictionLocked(boolean enabled) {
         if (this.mNativeHandle == 0) {
             return false;
         }
-        boolean emojiPredictionEnabled = setEmojiPredictionEnabled(this.mNativeHandle, z);
-        this.mEmojiPredictionApplied = emojiPredictionEnabled ? z : null;
+        boolean emojiPredictionEnabled = setEmojiPredictionEnabled(this.mNativeHandle, enabled);
+        this.mEmojiPredictionApplied = emojiPredictionEnabled ? enabled : null;
         return emojiPredictionEnabled;
     }
 
@@ -1370,22 +1370,22 @@ public class NuanceSDK {
         }
     }
 
-    /** @param z true to count explicitly added words (Et9Probe logs both counts) */
-    public int getDLMWordCount(boolean z) {
+    /** @param explicitOnly true to count explicitly added words (Et9Probe logs both counts) */
+    public int getDLMWordCount(boolean explicitOnly) {
         enter("getDLMWordCount");
         int dLMWordCount;
         synchronized (sMutex) {
-            dLMWordCount = getDLMWordCount(this.mNativeHandle, z);
+            dLMWordCount = getDLMWordCount(this.mNativeHandle, explicitOnly);
         }
         return dLMWordCount;
     }
 
-    /** @param i cursor command, not an index: 0 rewinds to the first word, anything else steps (see {@link #getDLMWords}) */
-    public String getDLMWord(int i) {
+    /** @param cursorCommand cursor command, not an index: 0 rewinds to the first word, anything else steps (see {@link #getDLMWords}) */
+    public String getDLMWord(int cursorCommand) {
         enter("getDLMWord");
         String dLMWord;
         synchronized (sMutex) {
-            dLMWord = getDLMWord(this.mNativeHandle, i);
+            dLMWord = getDLMWord(this.mNativeHandle, cursorCommand);
         }
         return dLMWord;
     }
@@ -1397,13 +1397,13 @@ public class NuanceSDK {
         }
     }
 
-    /** @param str the word to delete from the learned model */
-    public boolean deleteDLMWord(String str) {
+    /** @param word the word to delete from the learned model */
+    public boolean deleteDLMWord(String word) {
         enter("deleteDLMWord");
         boolean zDeleteDLMWord;
         synchronized (sMutex) {
             this.mDlmMutations++;
-            zDeleteDLMWord = deleteDLMWord(this.mNativeHandle, str);
+            zDeleteDLMWord = deleteDLMWord(this.mNativeHandle, word);
         }
         return zDeleteDLMWord;
     }
@@ -1588,22 +1588,22 @@ public class NuanceSDK {
         return zIsChineseBPMFMode;
     }
 
-    /** @param c a Bopomofo symbol */
-    public boolean isBpmfUpperCaseSymbol(char c) {
+    /** @param symbol a Bopomofo symbol */
+    public boolean isBpmfUpperCaseSymbol(char symbol) {
         enter("isBpmfUpperCaseSymbol");
         boolean zIsBpmfUpperCaseSymbol;
         synchronized (sMutex) {
-            zIsBpmfUpperCaseSymbol = isBpmfUpperCaseSymbol(this.mNativeHandle, c);
+            zIsBpmfUpperCaseSymbol = isBpmfUpperCaseSymbol(this.mNativeHandle, symbol);
         }
         return zIsBpmfUpperCaseSymbol;
     }
 
-    /** @param c a Bopomofo symbol */
-    public String convertBpmfSymbolToLower(char c) {
+    /** @param symbol a Bopomofo symbol */
+    public String convertBpmfSymbolToLower(char symbol) {
         enter("convertBpmfSymbolToLower");
         String strConvertBpmfSymbolToLower;
         synchronized (sMutex) {
-            strConvertBpmfSymbolToLower = convertBpmfSymbolToLower(this.mNativeHandle, c);
+            strConvertBpmfSymbolToLower = convertBpmfSymbolToLower(this.mNativeHandle, symbol);
         }
         return strConvertBpmfSymbolToLower;
     }
@@ -1661,29 +1661,29 @@ public class NuanceSDK {
         return z;
     }
 
-    /** @param z the managed mode to restore */
-    private void setDLMToPrevState(boolean z) {
-        this.mIsManaged = z;
-        if (z) {
+    /** @param wasManaged the managed mode to restore */
+    private void setDLMToPrevState(boolean wasManaged) {
+        this.mIsManaged = wasManaged;
+        if (wasManaged) {
             return;
         }
         reattachDLM();
     }
 
-    /** @param str the engine input method name (Chinese input modes) */
-    public void setInputMethod(String str) {
+    /** @param inputMethodName the engine input method name (Chinese input modes) */
+    public void setInputMethod(String inputMethodName) {
         enter("setInputMethod");
         synchronized (sMutex) {
-            setInputMethod(this.mNativeHandle, str);
+            setInputMethod(this.mNativeHandle, inputMethodName);
             refreshFactsLocked();
         }
     }
 
-    /** @param i the engine's shift state */
-    public void setShiftState(int i) {
+    /** @param shiftState the engine's shift state */
+    public void setShiftState(int shiftState) {
         enter("setShiftState");
         synchronized (sMutex) {
-            setShiftState(this.mNativeHandle, i);
+            setShiftState(this.mNativeHandle, shiftState);
         }
     }
 }

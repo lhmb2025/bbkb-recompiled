@@ -22,11 +22,11 @@ public class MultiLanguageConfig implements Comparable<MultiLanguageConfig> {
 
     private String serializedForm;
 
-    public MultiLanguageConfig(LocaleItem c0711f, ArrayList<LocaleItem> arrayList, String str) {
-        this.primaryLocale = c0711f;
+    public MultiLanguageConfig(LocaleItem primaryLocale, ArrayList<LocaleItem> arrayList, String keyboardLayoutSet) {
+        this.primaryLocale = primaryLocale;
         this.supportingLocales = arrayList;
         Collections.sort(this.supportingLocales);
-        this.keyboardLayoutSet = str;
+        this.keyboardLayoutSet = keyboardLayoutSet;
         buildSerializedForm();
     }
 
@@ -68,13 +68,13 @@ public class MultiLanguageConfig implements Comparable<MultiLanguageConfig> {
     }
 
     @Override // java.lang.Comparable
-    public int compareTo(MultiLanguageConfig c0710e) {
-        int iCompareTo = this.primaryLocale.compareTo(c0710e.primaryLocale);
+    public int compareTo(MultiLanguageConfig other) {
+        int iCompareTo = this.primaryLocale.compareTo(other.primaryLocale);
         if (iCompareTo == 0) {
-            iCompareTo = this.supportingLocales.size() - c0710e.supportingLocales.size();
+            iCompareTo = this.supportingLocales.size() - other.supportingLocales.size();
         }
         for (int i = 0; i < this.supportingLocales.size() && iCompareTo == 0; i++) {
-            iCompareTo = this.supportingLocales.get(i).compareTo(c0710e.supportingLocales.get(i));
+            iCompareTo = this.supportingLocales.get(i).compareTo(other.supportingLocales.get(i));
         }
         return iCompareTo;
     }

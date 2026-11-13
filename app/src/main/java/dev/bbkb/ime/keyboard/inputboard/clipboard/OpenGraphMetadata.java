@@ -51,18 +51,18 @@ public final class OpenGraphMetadata {
         return this.mUrl;
     }
 
-    /** @param str the link the preview is for */
-    public void setUrl(String str) {
-        this.mUrl = str;
+    /** @param url the link the preview is for */
+    public void setUrl(String url) {
+        this.mUrl = url;
     }
 
     public String getImageUrl() {
         return this.mImageUrl;
     }
 
-    /** @param str the preview image URL */
-    public void setImageUrl(String str) {
-        this.mImageUrl = str;
+    /** @param imageUrl the preview image URL */
+    public void setImageUrl(String imageUrl) {
+        this.mImageUrl = imageUrl;
     }
 
     public Bitmap getImage() {

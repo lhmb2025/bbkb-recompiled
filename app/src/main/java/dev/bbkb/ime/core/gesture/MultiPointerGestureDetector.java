@@ -113,18 +113,18 @@ public class MultiPointerGestureDetector {
         void onLongPress(MotionEvent motionEvent);
 
         /**
-         * @param f x velocity in px/s (the focus x while dragging after a long press)
-         * @param f2 y velocity in px/s (the focus y while dragging after a long press)
+         * @param velocityX x velocity in px/s (the focus x while dragging after a long press)
+         * @param velocityY y velocity in px/s (the focus y while dragging after a long press)
          */
-        boolean onFling(MotionEvent motionEvent, MotionEvent motionEvent2, float f, float f2);
+        boolean onFling(MotionEvent motionEvent, MotionEvent e2, float velocityX, float velocityY);
 
         boolean onDown(MotionEvent motionEvent);
 
         /**
-         * @param f focus x of the event
-         * @param f2 focus y of the event
+         * @param distanceX focus x of the event
+         * @param distanceY focus y of the event
          */
-        boolean onScroll(MotionEvent motionEvent, MotionEvent motionEvent2, float f, float f2);
+        boolean onScroll(MotionEvent motionEvent, MotionEvent e2, float distanceX, float distanceY);
 
         boolean onSingleTapUp(MotionEvent motionEvent);
 
@@ -137,7 +137,7 @@ public class MultiPointerGestureDetector {
             // No-op default.
         }
 
-        public boolean onFling(MotionEvent motionEvent, MotionEvent motionEvent2, float f, float f2) {
+        public boolean onFling(MotionEvent motionEvent, MotionEvent e2, float velocityX, float velocityY) {
             return false;
         }
 
@@ -145,7 +145,7 @@ public class MultiPointerGestureDetector {
             return false;
         }
 
-        public boolean onScroll(MotionEvent motionEvent, MotionEvent motionEvent2, float f, float f2) {
+        public boolean onScroll(MotionEvent motionEvent, MotionEvent e2, float distanceX, float distanceY) {
             return false;
         }
 
@@ -255,9 +255,9 @@ public class MultiPointerGestureDetector {
         this.doubleTapListener = dtListener;
     }
 
-    /** @param z true to detect long presses */
-    public void setIsLongpressEnabled(boolean z) {
-        this.isLongpressEnabled = z;
+    /** @param isLongpressEnabled true to detect long presses */
+    public void setIsLongpressEnabled(boolean isLongpressEnabled) {
+        this.isLongpressEnabled = isLongpressEnabled;
     }
 
     public boolean onTouchEvent(MotionEvent motionEvent) {
@@ -497,14 +497,14 @@ public class MultiPointerGestureDetector {
     }
 
     /**
-     * @param f x of the first point
-     * @param f2 y of the first point
-     * @param f3 x of the second point
-     * @param f4 y of the second point
+     * @param x1 x of the first point
+     * @param y1 y of the first point
+     * @param x2 x of the second point
+     * @param y2 y of the second point
      */
-    private static float distanceSquared(float f, float f2, float f3, float f4) {
-        final float dx = f - f3;
-        final float dy = f2 - f4;
+    private static float distanceSquared(float x1, float y1, float x2, float y2) {
+        final float dx = x1 - x2;
+        final float dy = y1 - y2;
         return (dx * dx) + (dy * dy);
     }
 
@@ -529,45 +529,45 @@ public class MultiPointerGestureDetector {
     }
 
     /**
-     * @param i pointer id
-     * @param i2 the pointer's index in {@code motionEvent}
+     * @param pointerId pointer id
+     * @param pointerIndex the pointer's index in {@code motionEvent}
      */
-    private void updateConfirmSingleTapEligibility(int i, MotionEvent motionEvent, int i2) {
-        MotionEvent motionEvent2 = this.downEventByPointer.get(i);
-        if (motionEvent2 == null || !this.confirmSingleTapOnUpByPointer.get(i) || this.alwaysInTapRegionByPointer.get(i)) {
+    private void updateConfirmSingleTapEligibility(int pointerId, MotionEvent motionEvent, int pointerIndex) {
+        MotionEvent motionEvent2 = this.downEventByPointer.get(pointerId);
+        if (motionEvent2 == null || !this.confirmSingleTapOnUpByPointer.get(pointerId) || this.alwaysInTapRegionByPointer.get(pointerId)) {
             return;
         }
-        if (!hadPreviousMovePointer(i)) {
+        if (!hadPreviousMovePointer(pointerId)) {
             return;
         }
         int actionIndex = motionEvent2.getActionIndex();
         float x = motionEvent2.getX(actionIndex);
         float y = motionEvent2.getY(actionIndex);
-        float x2 = motionEvent.getX(i2);
-        float y2 = motionEvent.getY(i2);
-        float x3 = this.previousMoveX[i];
-        float y3 = this.previousMoveY[i];
+        float x2 = motionEvent.getX(pointerIndex);
+        float y2 = motionEvent.getY(pointerIndex);
+        float x3 = this.previousMoveX[pointerId];
+        float y3 = this.previousMoveY[pointerId];
         float fM6009a = distanceSquared(x2, y2, x, y);
         float fM6009a2 = distanceSquared(x3, y3, x, y);
         float f = ((x2 - x) * (x3 - x2)) + ((y2 - y) * (y3 - y2));
-        this.confirmSingleTapOnUpByPointer.put(i, fM6009a > fM6009a2 && ((double) ((f * f) / (fM6009a * distanceSquared(x2, y2, x3, y3)))) > DIRECTION_COS_SQ_THRESHOLD);
+        this.confirmSingleTapOnUpByPointer.put(pointerId, fM6009a > fM6009a2 && ((double) ((f * f) / (fM6009a * distanceSquared(x2, y2, x3, y3)))) > DIRECTION_COS_SQ_THRESHOLD);
     }
 
     /**
-     * @param i pointer id
-     * @param i2 the pointer's index in {@code motionEvent}
+     * @param pointerId pointer id
+     * @param pointerIndex the pointer's index in {@code motionEvent}
      */
-    private void updateTapRegions(int i, MotionEvent motionEvent, int i2) {
+    private void updateTapRegions(int pointerId, MotionEvent motionEvent, int pointerIndex) {
         MotionEvent motionEvent2;
-        if (!this.alwaysInBiggerTapRegionByPointer.get(i) || (motionEvent2 = this.downEventByPointer.get(i)) == null) {
+        if (!this.alwaysInBiggerTapRegionByPointer.get(pointerId) || (motionEvent2 = this.downEventByPointer.get(pointerId)) == null) {
             return;
         }
         int actionIndex = motionEvent2.getActionIndex();
-        int x = (int) (motionEvent.getX(i2) - motionEvent2.getX(actionIndex));
-        int y = (int) (motionEvent.getY(i2) - motionEvent2.getY(actionIndex));
+        int x = (int) (motionEvent.getX(pointerIndex) - motionEvent2.getX(actionIndex));
+        int y = (int) (motionEvent.getY(pointerIndex) - motionEvent2.getY(actionIndex));
         int i3 = (x * x) + (y * y);
-        if (this.alwaysInTapRegionByPointer.get(i) && i3 > this.touchSlopSquare) {
-            this.alwaysInTapRegionByPointer.put(i, false);
+        if (this.alwaysInTapRegionByPointer.get(pointerId) && i3 > this.touchSlopSquare) {
+            this.alwaysInTapRegionByPointer.put(pointerId, false);
             this.handler.removeMessages(3);
             this.handler.removeMessages(1);
             this.handler.removeMessages(2);
@@ -575,10 +575,10 @@ public class MultiPointerGestureDetector {
                 this.hasMovedBeyondSlop = true;
             }
         }
-        if (!this.alwaysInBiggerTapRegionByPointer.get(i) || i3 <= this.doubleTapTouchSlopSquare) {
+        if (!this.alwaysInBiggerTapRegionByPointer.get(pointerId) || i3 <= this.doubleTapTouchSlopSquare) {
             return;
         }
-        this.alwaysInBiggerTapRegionByPointer.put(i, false);
+        this.alwaysInBiggerTapRegionByPointer.put(pointerId, false);
     }
 
     private boolean cancelDoubleTapTracking(MotionEvent motionEvent) {
@@ -658,22 +658,22 @@ public class MultiPointerGestureDetector {
 
     /**
      * @param motionEvent the first DOWN
-     * @param motionEvent2 the first UP
-     * @param motionEvent3 the second DOWN
-     * @param i pointer id
+     * @param firstUp the first UP
+     * @param secondDown the second DOWN
+     * @param pointerId pointer id
      */
-    private boolean isConsideredDoubleTap(MotionEvent motionEvent, MotionEvent motionEvent2, MotionEvent motionEvent3, int i) {
-        if (!this.alwaysInBiggerTapRegionByPointer.get(i)) {
+    private boolean isConsideredDoubleTap(MotionEvent motionEvent, MotionEvent firstUp, MotionEvent secondDown, int pointerId) {
+        if (!this.alwaysInBiggerTapRegionByPointer.get(pointerId)) {
             return false;
         }
-        long eventTime = motionEvent3.getEventTime() - motionEvent2.getEventTime();
+        long eventTime = secondDown.getEventTime() - firstUp.getEventTime();
         if (eventTime > DOUBLE_TAP_TIMEOUT || eventTime < 40) {
             return false;
         }
         int actionIndex = motionEvent.getActionIndex();
-        int actionIndex2 = motionEvent3.getActionIndex();
+        int actionIndex2 = secondDown.getActionIndex();
         Point point = new Point((int) motionEvent.getX(actionIndex), (int) motionEvent.getY(actionIndex));
-        Point point2 = new Point((int) motionEvent3.getX(actionIndex2), (int) motionEvent3.getY(actionIndex2));
+        Point point2 = new Point((int) secondDown.getX(actionIndex2), (int) secondDown.getY(actionIndex2));
         if (DeviceProfile.current().isFromTouchKeypad(motionEvent) && (!this.doubleTapRegion.contains(point.x, point.y) || !this.doubleTapRegion.contains(point2.x, point2.y))) {
             return false;
         }
@@ -681,7 +681,7 @@ public class MultiPointerGestureDetector {
         int i3 = point.y - point2.y;
         boolean z = (i2 * i2) + (i3 * i3) < this.doubleTapSlopSquare;
         if (z) {
-            if (BuildConfig.DEBUG) Logger.info("IMEGestureDetector", "DoubleTap " + i + " t=" + motionEvent.getEventTime() + "," + motionEvent2.getEventTime() + "," + motionEvent3.getEventTime() + " p1d=" + point.x + "," + point.y + " p2d=" + point2.x + "," + point2.y);
+            if (BuildConfig.DEBUG) Logger.info("IMEGestureDetector", "DoubleTap " + pointerId + " t=" + motionEvent.getEventTime() + "," + firstUp.getEventTime() + "," + secondDown.getEventTime() + " p1d=" + point.x + "," + point.y + " p2d=" + point2.x + "," + point2.y);
         }
         return z;
     }

@@ -20,9 +20,9 @@ public class NumberPadView extends SimplifiedKeyboardView {
         this(context, attributeSet, R.attr.mainKeyboardViewStyle);
     }
 
-    /** @param i the default style attribute */
-    public NumberPadView(Context context, AttributeSet attributeSet, int i) {
-        super(context, attributeSet, i);
+    /** @param defStyleAttr the default style attribute */
+    public NumberPadView(Context context, AttributeSet attributeSet, int defStyleAttr) {
+        super(context, attributeSet, defStyleAttr);
     }
 
     @Override

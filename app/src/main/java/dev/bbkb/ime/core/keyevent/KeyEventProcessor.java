@@ -145,8 +145,8 @@ public class KeyEventProcessor {
         return true;
     }
 
-    /** @param i the key code */
-    public boolean onKeyDownInternal(int i, KeyEvent keyEvent) throws Resources.NotFoundException {
+    /** @param rawKeyCode the key code */
+    public boolean onKeyDownInternal(int rawKeyCode, KeyEvent keyEvent) throws Resources.NotFoundException {
         boolean zM5997a;
         InputEventContext c0920gM4442a;
         boolean z2 = false;
@@ -186,19 +186,19 @@ public class KeyEventProcessor {
 
         if (!rawIsPhysical) {
             ime.applyCursorModeState(false, false, false);
-            return ime.superOnKeyDown(i, keyEvent);
+            return ime.superOnKeyDown(rawKeyCode, keyEvent);
         }
 
         // BACK goes straight to super.onKeyDown so startTracking() runs; otherwise
         // event.isTracking() is false and the dismiss-on-up branch in onKeyUpInternal fails.
-        if (i == KeyEvent.KEYCODE_BACK) {
-            return ime.superOnKeyDown(i, keyEvent);
+        if (rawKeyCode == KeyEvent.KEYCODE_BACK) {
+            return ime.superOnKeyDown(rawKeyCode, keyEvent);
         }
 
-        if (handleAltEnterLanguageSwitch(i, keyEvent)) {
+        if (handleAltEnterLanguageSwitch(rawKeyCode, keyEvent)) {
             return true;
         }
-        KeyEvent keyEventRemapped = ime.remapKeyEvent(i, keyEvent);
+        KeyEvent keyEventRemapped = ime.remapKeyEvent(rawKeyCode, keyEvent);
 
         // Identity of the remapped event, resolved once. Board keys are exempt from the
         // ordinary-key behaviours below, e.g. the MP01's SYM (KEYCODE_ALT_RIGHT) would otherwise
@@ -403,8 +403,8 @@ public class KeyEventProcessor {
         return ime.superOnKeyDown(keyCode, keyEventRemapped);
     }
 
-    /** @param i the key code */
-    public boolean onKeyUpInternal(int i, KeyEvent keyEvent) {
+    /** @param rawKeyCode the key code */
+    public boolean onKeyUpInternal(int rawKeyCode, KeyEvent keyEvent) {
         // Heal as on key-down, or a release after onWindowHidden skips onHardwareKeyUp and leaves
         // BackspaceController.mIsBackspaceActive stuck true.
         ime.refreshInputActive();
@@ -421,14 +421,14 @@ public class KeyEventProcessor {
         }
         if (!rawIsPhysical) {
             // For BACK, super.onKeyUp() calls handleBack(true).
-            return ime.superOnKeyUp(i, keyEvent);
+            return ime.superOnKeyUp(rawKeyCode, keyEvent);
         }
         // Physical BACK: record it and reset symbol mode; super.onKeyUp() dismisses.
         if (ime.isInputViewShown() && keyEvent.getKeyCode() == KeyEvent.KEYCODE_BACK
                 && keyEvent.isTracking() && !keyEvent.isCanceled()) {
             ime.setWasBackPressed(true);
             ime.getKeyboardSwitcher().onBackspaceInSymbolMode(ime.getCurrentInputType(), ime.getCurrentImeOptions());
-            return ime.superOnKeyUp(i, keyEvent);
+            return ime.superOnKeyUp(rawKeyCode, keyEvent);
         }
         if (ime.isAltEnterPressed()) {
             ime.setAltEnterPressed(false);
@@ -437,7 +437,7 @@ public class KeyEventProcessor {
                 return true;
             }
         }
-        KeyEvent keyEventRemapped = ime.remapKeyEvent(i, keyEvent);
+        KeyEvent keyEventRemapped = ime.remapKeyEvent(rawKeyCode, keyEvent);
 
         final ResolvedKey key = ResolvedKey.of(keyEventRemapped);
         final int keyCode = key.keyCode();

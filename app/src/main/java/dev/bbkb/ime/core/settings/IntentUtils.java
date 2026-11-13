@@ -16,13 +16,13 @@ public final class IntentUtils {
     private IntentUtils() {
     }
 
-    public static Intent getInputLanguageSelectionIntent(String str, int i) {
+    public static Intent getInputLanguageSelectionIntent(String inputMethodId, int flagsForSubtypeSettings) {
         Intent intent = new Intent(Settings.ACTION_INPUT_METHOD_SUBTYPE_SETTINGS);
-        if (!TextUtils.isEmpty(str)) {
-            intent.putExtra(Settings.EXTRA_INPUT_METHOD_ID, str);
+        if (!TextUtils.isEmpty(inputMethodId)) {
+            intent.putExtra(Settings.EXTRA_INPUT_METHOD_ID, inputMethodId);
         }
-        if (i > 0) {
-            intent.setFlags(i);
+        if (flagsForSubtypeSettings > 0) {
+            intent.setFlags(flagsForSubtypeSettings);
         }
         return intent;
     }

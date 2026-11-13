@@ -72,9 +72,9 @@ public class VoiceInputController extends AbstractBoardController<VoiceInputCont
         void onVoicePanelHidden();
     }
 
-    /** @param aVar receives panel shown/hidden events */
-    public VoiceInputController(BlackBerryIME blackBerryIME, Listener aVar) {
-        super(KEY_CODE, blackBerryIME, aVar);
+    /** @param listener receives panel shown/hidden events */
+    public VoiceInputController(BlackBerryIME blackBerryIME, Listener listener) {
+        super(KEY_CODE, blackBerryIME, listener);
         this.mContext = blackBerryIME.getApplicationContext();
         this.mRecognitionManager = new VoiceRecognitionManager(this.mContext, this);
     }
@@ -214,35 +214,35 @@ public class VoiceInputController extends AbstractBoardController<VoiceInputCont
      * The on-screen mic while listening: finish and keep what was heard. The mic key and close
      * path use {@link #cancelVoiceInput}, which discards.
      *
-     * @param aVar the recognizer's current mode
+     * @param mode the recognizer's current mode
      */
-    private boolean stopIfListening(VoiceRecognitionManager.Mode aVar) {
-        if (aVar == VoiceRecognitionManager.Mode.NONE) {
+    private boolean stopIfListening(VoiceRecognitionManager.Mode mode) {
+        if (mode == VoiceRecognitionManager.Mode.NONE) {
             return false;
         }
         this.mRecognitionManager.stopDictation();
         return true;
     }
 
-    /** @param str the final transcription */
+    /** @param text the final transcription */
     @Override
-    public void onDictationResult(String str) {
+    public void onDictationResult(String text) {
         BlackBerryIME blackBerryIME = this.ime;
         if (blackBerryIME == null) {
             return;
         }
-        String strM4483c = blackBerryIME.getInputLogic().getWordSeparator(str);
-        this.ime.uiUpdateHandler.postCommitText(str + strM4483c);
+        String strM4483c = blackBerryIME.getInputLogic().getWordSeparator(text);
+        this.ime.uiUpdateHandler.postCommitText(text + strM4483c);
     }
 
     /**
-     * @param aVar the recognizer's new mode
-     * @param i the status passed through to {@code VoiceInputView.updateState}
+     * @param mode the recognizer's new mode
+     * @param state the status passed through to {@code VoiceInputView.updateState}
      */
     @Override
-    public void onStateChanged(VoiceRecognitionManager.Mode aVar, int i) {
+    public void onStateChanged(VoiceRecognitionManager.Mode mode, int state) {
         if (hasView()) {
-            this.mVoiceInputView.updateState(aVar, i, this.mRecognitionManager.isContinuous());
+            this.mVoiceInputView.updateState(mode, state, this.mRecognitionManager.isContinuous());
         }
     }
 
@@ -250,12 +250,12 @@ public class VoiceInputController extends AbstractBoardController<VoiceInputCont
     public void onPermissionNeeded() {
         new PermissionRequestHandler(this.mContext, new PermissionRequestHandler.Callback() {
             /**
-             * @param str the permission asked for
-             * @param cVar whether it was granted
+             * @param permission the permission asked for
+             * @param result whether it was granted
              */
             @Override
-            public void onPermissionResult(String str, PermissionRequestHandler.Result cVar) {
-                boolean z = cVar == PermissionRequestHandler.Result.PERMISSION_GRANTED;
+            public void onPermissionResult(String permission, PermissionRequestHandler.Result result) {
+                boolean z = result == PermissionRequestHandler.Result.PERMISSION_GRANTED;
                 if (VoiceInputController.this.ime != null) {
                     VoiceInputController.this.ime.showImeWindow();
                 }

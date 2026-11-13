@@ -21,9 +21,9 @@ class LanguagePackInfo {
     LanguagePackInfo() {
     }
 
-    /** @param z true if the pack ships in the APK assets */
-    void setPreinstalledFlag(boolean z) {
-        this.preinstalledFlag = z ? 1 : 0;
+    /** @param preinstalled true if the pack ships in the APK assets */
+    void setPreinstalledFlag(boolean preinstalled) {
+        this.preinstalledFlag = preinstalled ? 1 : 0;
     }
 
     boolean isPreinstalled() {

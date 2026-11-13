@@ -47,11 +47,11 @@ public final class GestureTrailsDrawingPreview extends AbstractDrawingPreview im
     }
 
     @Override
-    public void setKeyboardViewGeometry(int[] iArr, int i, int i2) {
-        super.setKeyboardViewGeometry(iArr, i, i2);
-        this.mOffscreenOffsetY = (int) (i2 * 0.25f);
-        this.mOffscreenWidth = i;
-        this.mOffscreenHeight = this.mOffscreenOffsetY + i2;
+    public void setKeyboardViewGeometry(int[] originCoords, int width, int height) {
+        super.setKeyboardViewGeometry(originCoords, width, height);
+        this.mOffscreenOffsetY = (int) (height * 0.25f);
+        this.mOffscreenWidth = width;
+        this.mOffscreenHeight = this.mOffscreenOffsetY + height;
     }
 
     @Override
@@ -147,18 +147,18 @@ public final class GestureTrailsDrawingPreview extends AbstractDrawingPreview im
         }
     }
 
-    /** @param c1084t the tracker whose stroke to draw */
-    public void setGestureStroke(PointerTracker c1084t) {
+    /** @param pointerTracker the tracker whose stroke to draw */
+    public void setGestureStroke(PointerTracker pointerTracker) {
         GestureTrailDrawingPoints c1057p;
         if (isPreviewEnabled()) {
             synchronized (this.mGestureTrails) {
-                c1057p = this.mGestureTrails.get(c1084t.mPointerId);
+                c1057p = this.mGestureTrails.get(pointerTracker.mPointerId);
                 if (c1057p == null) {
                     c1057p = new GestureTrailDrawingPoints();
-                    this.mGestureTrails.put(c1084t.mPointerId, c1057p);
+                    this.mGestureTrails.put(pointerTracker.mPointerId, c1057p);
                 }
             }
-            c1057p.addStroke(c1084t.getGestureStrokeRecognizer(), c1084t.getDownTime());
+            c1057p.addStroke(pointerTracker.getGestureStrokeRecognizer(), pointerTracker.getDownTime());
             invalidateDrawingView();
         }
     }

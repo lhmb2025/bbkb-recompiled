@@ -42,11 +42,11 @@ class RecorrectionController {
     /**
      * Re-opens the word at the cursor as composing text. No-op mid-word, in CJK/Japanese, or
      * when the editor does not support suggestions.
-     * @param z include the tapped word itself as the first suggestion
-     * @param c0804d current settings values
-     * @param i symbol page order / shift state used for suggestion context
+     * @param includeWordAtCursor include the tapped word itself as the first suggestion
+     * @param settingsValues current settings values
+     * @param currentKeyboardScriptId symbol page order / shift state used for suggestion context
      */
-    public void performRecorrection(SettingsValues c0804d, final boolean z, int i) {
+    public void performRecorrection(SettingsValues settingsValues, final boolean includeWordAtCursor, int currentKeyboardScriptId) {
         CursorWordRange c0875apM5829b = null;
         int iM5646a = -1;
 
@@ -57,24 +57,24 @@ class RecorrectionController {
             return;
         }
 
-        if (c0804d.isSupportedAndroidApp() || !c0804d.shouldShowLxxButton || mInputLogic.mSuggestionRequestQueue.isSuggestionsEnabled() || mInputLogic.mRichInputConnection.hasSelection() || mInputLogic.mRichInputConnection.getCursorStart() < 0) {
+        if (settingsValues.isSupportedAndroidApp() || !settingsValues.shouldShowLxxButton || mInputLogic.mSuggestionRequestQueue.isSuggestionsEnabled() || mInputLogic.mRichInputConnection.hasSelection() || mInputLogic.mRichInputConnection.getCursorStart() < 0) {
             mInputLogic.mSuggestionStripListener.setNeutralSuggestionStrip();
             return;
         }
 
         int iM5853q = mInputLogic.mRichInputConnection.getCursorStart();
 
-        if (z2 || !mInputLogic.mRichInputConnection.hasWordBeforeCursor(c0804d.spacingAndPunctuation) || ((LocaleUtils.isCurrentSubtypeChinese() && !LocaleUtils.isCurrentSubtypePinyin()) || LocaleUtils.isCurrentSubtypeJapanese())) {
-            mInputLogic.mComposingTracker.setShiftState(mInputLogic.getShiftState(c0804d, mInputLogic.mIme.getSymbolPageProvider().getSymbolPageOrder()));
+        if (z2 || !mInputLogic.mRichInputConnection.hasWordBeforeCursor(settingsValues.spacingAndPunctuation) || ((LocaleUtils.isCurrentSubtypeChinese() && !LocaleUtils.isCurrentSubtypePinyin()) || LocaleUtils.isCurrentSubtypeJapanese())) {
+            mInputLogic.mComposingTracker.setShiftState(mInputLogic.getShiftState(settingsValues, mInputLogic.mIme.getSymbolPageProvider().getSymbolPageOrder()));
             mInputLogic.mIme.suggestionUpdater.requestDelayed(SuggestionUpdater.Reason.AFTER_CURSOR_MOVE);
             mInputLogic.updateNuanceContext(mInputLogic.mRichInputConnection.getTextContextBefore(), mInputLogic.mComposingTracker.getRecorrectionCursorPosition(), mInputLogic.mComposingTracker.getRecorrectionOriginalWord());
             return;
         }
 
         if (mInputLogic.mEventDispatcher.isBatchInput()) {
-            c0875apM5829b = mInputLogic.mRichInputConnection.getWordAtCursor(mInputLogic.mEventDispatcher.committedWord, c0804d.spacingAndPunctuation, i);
+            c0875apM5829b = mInputLogic.mRichInputConnection.getWordAtCursor(mInputLogic.mEventDispatcher.committedWord, settingsValues.spacingAndPunctuation, currentKeyboardScriptId);
         } else {
-            c0875apM5829b = mInputLogic.mRichInputConnection.getWordRangeAtCursor(c0804d.spacingAndPunctuation, i);
+            c0875apM5829b = mInputLogic.mRichInputConnection.getWordRangeAtCursor(settingsValues.spacingAndPunctuation, currentKeyboardScriptId);
         }
 
         if (c0875apM5829b == null) {
@@ -90,17 +90,17 @@ class RecorrectionController {
             ArrayList<SuggestedWords.SuggestedWordInfo> arrayList = new ArrayList<>();
             String string = c0875apM5829b.word.toString();
 
-            if (z) {
+            if (includeWordAtCursor) {
                 arrayList.add(new SuggestedWords.SuggestedWordInfo(string, SuggestedWords.getMaxSuggestionCount() + 1, 0, Dictionary.DICTIONARY_USER_TYPED, -1, -1, null));
             }
 
-            if (LocaleUtils.isCurrentSubtypePinyin() && !isValidPinyinWord(c0804d, string)) {
+            if (LocaleUtils.isCurrentSubtypePinyin() && !isValidPinyinWord(settingsValues, string)) {
                 mInputLogic.mComposingTracker.setShiftState(0);
                 mInputLogic.mIme.suggestionUpdater.requestDelayed(SuggestionUpdater.Reason.AFTER_CURSOR_MOVE);
                 return;
             }
 
-            if (!isValidRecorrectionWord(c0804d, string)) {
+            if (!isValidRecorrectionWord(settingsValues, string)) {
                 mInputLogic.mSuggestionStripListener.setNeutralSuggestionStrip();
                 return;
             }
@@ -136,15 +136,15 @@ class RecorrectionController {
             if (arrayList.size() > 0) {
                 mInputLogic.mSuggestionRequestQueue.sendToWorkerThread(0, new SuggestionEngine.SuggestionCallback() {
                     /**
-                     * @param c0666ac the suggestions for the recorrection word
+                     * @param suggestedWords the suggestions for the recorrection word
                      */
                     @Override
-                    public void onSuggestionsReady(SuggestedWords c0666ac) {
-                        if (c0666ac.size() > 1 && !z && !LocaleUtils.isCurrentSubtypeJapanese()) {
-                            c0666ac = c0666ac.getSuggestedWordsForDisplay();
+                    public void onSuggestionsReady(SuggestedWords suggestedWords) {
+                        if (suggestedWords.size() > 1 && !includeWordAtCursor && !LocaleUtils.isCurrentSubtypeJapanese()) {
+                            suggestedWords = suggestedWords.getSuggestedWordsForDisplay();
                         }
                         mInputLogic.mIsAutoCorrectActive = false;
-                        mInputLogic.mIme.uiUpdateHandler.postShowSuggestionStrip(c0666ac);
+                        mInputLogic.mIme.uiUpdateHandler.postShowSuggestionStrip(suggestedWords);
                     }
                 });
                 return;
@@ -160,10 +160,10 @@ class RecorrectionController {
      * @param dropWhitespaceSeparator true for a keyboard backspace: a whitespace separator is
      *        deleted, not restored, so the typed word comes back composing (else the next space
      *        leaves two). Swipe-to-delete passes false and keeps it.
-     * @param c0920g the current input event context
-     * @param c0804d current settings values
+     * @param inputEventContext the current input event context
+     * @param settingsValues current settings values
      */
-    void revertAutoCorrection(InputEventContext c0920g, SettingsValues c0804d, boolean dropWhitespaceSeparator) {
+    void revertAutoCorrection(InputEventContext inputEventContext, SettingsValues settingsValues, boolean dropWhitespaceSeparator) {
         String str;
         int i;
         CharSequence charSequence;
@@ -174,8 +174,8 @@ class RecorrectionController {
         String string2 = charSequence2.toString();
         int length = charSequence2.length();
         String str3 = mInputLogic.mEventDispatcher.wordSeparator;
-        Locale locale = c0920g.settingsValues.locale;
-        if (1 == c0920g.commitType) {
+        Locale locale = inputEventContext.settingsValues.locale;
+        if (1 == inputEventContext.commitType) {
             str3 = ". ";
         }
         int length2 = str3.length();
@@ -253,7 +253,7 @@ class RecorrectionController {
             }
             spannableString.setSpan(new SuggestionSpan(locale, (String[]) arrayList.toArray(new String[arrayList.size()]), 0), 0, length4, 0);
         }
-        boolean zM4409a = shouldShowAddToDictionary(mInputLogic.mEventDispatcher, c0804d);
+        boolean zM4409a = shouldShowAddToDictionary(mInputLogic.mEventDispatcher, settingsValues);
         mInputLogic.mSuggestionEngine.setSkipNuanceCheck(true);
         if (!z) {
             int[] iArrM5474a = toCodePointArray((CharSequence) string3);
@@ -268,12 +268,12 @@ class RecorrectionController {
             mInputLogic.updateNuanceContext(str, mInputLogic.mRichInputConnection.getCursorStart(), string2);
             mInputLogic.mComposingTracker.updateRecorrectionSnapshot();
             if (zM4409a) {
-                mInputLogic.setComposingTextWithHighlight(spannableString, 1, c0804d.textHighlightColorForAddToDictionary, 0, string.length());
+                mInputLogic.setComposingTextWithHighlight(spannableString, 1, settingsValues.textHighlightColorForAddToDictionary, 0, string.length());
             } else {
                 mInputLogic.setComposingTextInternal(spannableString, 1);
             }
         } else if (zM4409a) {
-            mInputLogic.mRichInputConnection.commitTextWithHighlight(spannableString, 1, c0804d.textHighlightColorForAddToDictionary, string.length());
+            mInputLogic.mRichInputConnection.commitTextWithHighlight(spannableString, 1, settingsValues.textHighlightColorForAddToDictionary, string.length());
         } else {
             mInputLogic.mRichInputConnection.commitText(spannableString, 1);
         }
@@ -286,21 +286,21 @@ class RecorrectionController {
             mInputLogic.mSuggestionStripListener.showAddToDictionaryHint(string);
             return;
         }
-        c0920g.setShouldUpdateSuggestions();
+        inputEventContext.setShouldUpdateSuggestions();
     }
 
     /**
-     * @param c0713o the last commit record
-     * @param c0804d current settings values
+     * @param commitEventRecord the last commit record
+     * @param settingsValues current settings values
      */
-    private boolean shouldShowAddToDictionary(CommitEventRecord c0713o, SettingsValues c0804d) {
+    private boolean shouldShowAddToDictionary(CommitEventRecord commitEventRecord, SettingsValues settingsValues) {
         // An incognito field offers no add-to-dictionary: the word would outlive the session.
         if (mInputLogic.mIme.getDynamicLearningManager().isNoPersonalizedLearning()) {
             return false;
         }
-        if (mInputLogic.mRichInputConnection.isMonitoringCursorUpdates() && c0804d.showUiToAcceptTypedWord && !TextUtils.isEmpty(c0713o.typedWord) && !TextUtils.equals(c0713o.typedWord, c0713o.committedWord)) {
+        if (mInputLogic.mRichInputConnection.isMonitoringCursorUpdates() && settingsValues.showUiToAcceptTypedWord && !TextUtils.isEmpty(commitEventRecord.typedWord) && !TextUtils.equals(commitEventRecord.typedWord, commitEventRecord.committedWord)) {
             // Bounded engine query. On a timeout the word counts as known (no add-word hint).
-            final String typedWord = c0713o.typedWord;
+            final String typedWord = commitEventRecord.typedWord;
             final DictionaryLoader loader = mInputLogic.mDictionaryLoader;
             return !EngineThreads.query(() -> loader.isWordValid(typedWord, true),
                     RECORRECTION_VALIDITY_TIMEOUT_MS, Boolean.TRUE);
@@ -309,26 +309,26 @@ class RecorrectionController {
     }
 
     /**
-     * @param c0804d current settings values
-     * @param str the candidate word
+     * @param settingsValues current settings values
+     * @param word the candidate word
      */
-    private static boolean isValidRecorrectionWord(SettingsValues c0804d, String str) {
-        if (str.isEmpty()) {
+    private static boolean isValidRecorrectionWord(SettingsValues settingsValues, String word) {
+        if (word.isEmpty()) {
             return false;
         }
-        int iCodePointAt = str.codePointAt(0);
-        return (!c0804d.isWordCodePoint(iCodePointAt) || 39 == iCodePointAt || 45 == iCodePointAt) ? false : true;
+        int iCodePointAt = word.codePointAt(0);
+        return (!settingsValues.isWordCodePoint(iCodePointAt) || 39 == iCodePointAt || 45 == iCodePointAt) ? false : true;
     }
 
     /**
-     * @param c0804d current settings values
-     * @param str the candidate word
+     * @param settingsValues current settings values
+     * @param word the candidate word
      */
-    private static boolean isValidPinyinWord(SettingsValues c0804d, String str) {
-        if (str.isEmpty()) {
+    private static boolean isValidPinyinWord(SettingsValues settingsValues, String word) {
+        if (word.isEmpty()) {
             return false;
         }
-        int iCodePointAt = str.codePointAt(0);
-        return (!c0804d.isLetterOrDigit(iCodePointAt) || 39 == iCodePointAt || 45 == iCodePointAt || Character.isWhitespace(str.codePointAt(str.length() - 1))) ? false : true;
+        int iCodePointAt = word.codePointAt(0);
+        return (!settingsValues.isLetterOrDigit(iCodePointAt) || 39 == iCodePointAt || 45 == iCodePointAt || Character.isWhitespace(word.codePointAt(word.length() - 1))) ? false : true;
     }
 }

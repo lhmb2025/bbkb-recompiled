@@ -42,27 +42,27 @@ public final class CommitEventRecord {
     }
 
     /**
-     * @param c0697m the touch coordinates of the word, copied (may be null)
-     * @param str the typed word
-     * @param str2 the separator committed after the word
-     * @param i the shift state at commit time
-     * @param z true to skip learning this word
+     * @param touchPointerCoordTracker the touch coordinates of the word, copied (may be null)
+     * @param typedWord the typed word
+     * @param wordSeparator the separator committed after the word
+     * @param shiftStateAtCommit the shift state at commit time
+     * @param skipLearning true to skip learning this word
      */
-    public CommitEventRecord(TouchPointerCoordTracker c0697m, String str, CharSequence charSequence, String str2, PrevWordsInfo prevWordsInfo, int i, CommitType commitTypeVar, boolean z) {
-        if (c0697m != null) {
+    public CommitEventRecord(TouchPointerCoordTracker touchPointerCoordTracker, String typedWord, CharSequence charSequence, String wordSeparator, PrevWordsInfo prevWordsInfo, int shiftStateAtCommit, CommitType commitType, boolean skipLearning) {
+        if (touchPointerCoordTracker != null) {
             this.coordinateTracker = new TouchPointerCoordTracker(48);
-            this.coordinateTracker.copyFrom(c0697m);
+            this.coordinateTracker.copyFrom(touchPointerCoordTracker);
         } else {
             this.coordinateTracker = null;
         }
-        this.typedWord = str;
+        this.typedWord = typedWord;
         this.committedWord = charSequence;
-        this.wordSeparator = str2;
+        this.wordSeparator = wordSeparator;
         this.revertEligible = true;
-        this.skipLearning = z;
+        this.skipLearning = skipLearning;
         this.prevWordsInfo = prevWordsInfo;
-        this.shiftStateAtCommit = i;
-        this.commitType = commitTypeVar;
+        this.shiftStateAtCommit = shiftStateAtCommit;
+        this.commitType = commitType;
     }
 
     /** No-op on the shared {@link #IDLE} singleton, which InputLogic also calls this on. */

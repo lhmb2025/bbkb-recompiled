@@ -73,69 +73,69 @@ public class Keyboard {
 
     private final Locale mLocale;
 
-    /** @param c1025ah the parsed keyboard params */
-    public Keyboard(KeyboardParams c1025ah) {
+    /** @param keyboardParams the parsed keyboard params */
+    public Keyboard(KeyboardParams keyboardParams) {
         this.mKeyCache = new SparseArray<>();
-        this.mId = c1025ah.mId;
-        this.mOccupiedHeight = c1025ah.mOccupiedHeight;
-        this.mOccupiedWidth = c1025ah.mOccupiedWidth;
-        this.mBaseHeight = c1025ah.mBaseHeight;
-        this.mBaseWidth = c1025ah.mBaseWidth;
-        this.mMostCommonKeyHeight = c1025ah.mMostCommonKeyHeight;
-        this.mMostCommonKeyWidth = c1025ah.mMostCommonKeyWidth;
-        this.mMoreKeysTemplate = c1025ah.mMoreKeysTemplate;
-        this.mMaxMoreKeysKeyboardColumn = c1025ah.mMaxMoreKeysKeyboardColumn;
-        this.mMoreKeySpec = c1025ah.mMoreKeySpec;
-        this.mTopPadding = c1025ah.mTopPadding;
-        this.mLeftPadding = c1025ah.mLeftPadding;
-        this.mRightPadding = c1025ah.mRightPadding;
-        this.mVerticalGap = c1025ah.mVerticalGap;
-        this.mHorizontalGap = c1025ah.mHorizontalGap;
-        this.mKeysByScanCode = c1025ah.mKeysByScanCode;
-        this.mLocale = c1025ah.mId.mLocale;
-        this.mSortedKeys = new ArrayList(c1025ah.mSortedKeys);
-        this.mShiftKeys = Collections.unmodifiableList(c1025ah.mShiftKeys);
-        this.mAltCodeKeysWhileTyping = Collections.unmodifiableList(c1025ah.mAltCodeKeysWhileTyping);
-        this.mIconsSet = c1025ah.mIconsSet;
-        this.mProximityGrid = new ProximityGrid(c1025ah.mGridWidth, c1025ah.mGridHeight, this.mOccupiedWidth, this.mOccupiedHeight, this.mMostCommonKeyWidth, this.mSortedKeys);
-        this.mAllowRedundantMoreKeys = c1025ah.mAllowRedundantMoreKeys;
+        this.mId = keyboardParams.mId;
+        this.mOccupiedHeight = keyboardParams.mOccupiedHeight;
+        this.mOccupiedWidth = keyboardParams.mOccupiedWidth;
+        this.mBaseHeight = keyboardParams.mBaseHeight;
+        this.mBaseWidth = keyboardParams.mBaseWidth;
+        this.mMostCommonKeyHeight = keyboardParams.mMostCommonKeyHeight;
+        this.mMostCommonKeyWidth = keyboardParams.mMostCommonKeyWidth;
+        this.mMoreKeysTemplate = keyboardParams.mMoreKeysTemplate;
+        this.mMaxMoreKeysKeyboardColumn = keyboardParams.mMaxMoreKeysKeyboardColumn;
+        this.mMoreKeySpec = keyboardParams.mMoreKeySpec;
+        this.mTopPadding = keyboardParams.mTopPadding;
+        this.mLeftPadding = keyboardParams.mLeftPadding;
+        this.mRightPadding = keyboardParams.mRightPadding;
+        this.mVerticalGap = keyboardParams.mVerticalGap;
+        this.mHorizontalGap = keyboardParams.mHorizontalGap;
+        this.mKeysByScanCode = keyboardParams.mKeysByScanCode;
+        this.mLocale = keyboardParams.mId.mLocale;
+        this.mSortedKeys = new ArrayList(keyboardParams.mSortedKeys);
+        this.mShiftKeys = Collections.unmodifiableList(keyboardParams.mShiftKeys);
+        this.mAltCodeKeysWhileTyping = Collections.unmodifiableList(keyboardParams.mAltCodeKeysWhileTyping);
+        this.mIconsSet = keyboardParams.mIconsSet;
+        this.mProximityGrid = new ProximityGrid(keyboardParams.mGridWidth, keyboardParams.mGridHeight, this.mOccupiedWidth, this.mOccupiedHeight, this.mMostCommonKeyWidth, this.mSortedKeys);
+        this.mAllowRedundantMoreKeys = keyboardParams.mAllowRedundantMoreKeys;
         int iM6595g = computeDefaultMetaState();
         this.mDefaultKeyInterpretation = new KeyCharacterInterpreter.MetaMask(iM6595g, iM6595g);
     }
 
-    /** @param c0965e the keyboard to copy */
-    protected Keyboard(Keyboard c0965e) {
+    /** @param keyboard the keyboard to copy */
+    protected Keyboard(Keyboard keyboard) {
         this.mKeyCache = new SparseArray<>();
-        this.mId = c0965e.mId;
-        this.mOccupiedHeight = c0965e.mOccupiedHeight;
-        this.mOccupiedWidth = c0965e.mOccupiedWidth;
-        this.mBaseHeight = c0965e.mBaseHeight;
-        this.mBaseWidth = c0965e.mBaseWidth;
-        this.mMostCommonKeyHeight = c0965e.mMostCommonKeyHeight;
-        this.mMostCommonKeyWidth = c0965e.mMostCommonKeyWidth;
-        this.mMoreKeysTemplate = c0965e.mMoreKeysTemplate;
-        this.mMaxMoreKeysKeyboardColumn = c0965e.mMaxMoreKeysKeyboardColumn;
-        this.mMoreKeySpec = c0965e.mMoreKeySpec;
-        this.mTopPadding = c0965e.mTopPadding;
-        this.mLeftPadding = c0965e.mLeftPadding;
-        this.mRightPadding = c0965e.mRightPadding;
-        this.mVerticalGap = c0965e.mVerticalGap;
-        this.mHorizontalGap = c0965e.mHorizontalGap;
-        this.mKeysByScanCode = c0965e.mKeysByScanCode;
+        this.mId = keyboard.mId;
+        this.mOccupiedHeight = keyboard.mOccupiedHeight;
+        this.mOccupiedWidth = keyboard.mOccupiedWidth;
+        this.mBaseHeight = keyboard.mBaseHeight;
+        this.mBaseWidth = keyboard.mBaseWidth;
+        this.mMostCommonKeyHeight = keyboard.mMostCommonKeyHeight;
+        this.mMostCommonKeyWidth = keyboard.mMostCommonKeyWidth;
+        this.mMoreKeysTemplate = keyboard.mMoreKeysTemplate;
+        this.mMaxMoreKeysKeyboardColumn = keyboard.mMaxMoreKeysKeyboardColumn;
+        this.mMoreKeySpec = keyboard.mMoreKeySpec;
+        this.mTopPadding = keyboard.mTopPadding;
+        this.mLeftPadding = keyboard.mLeftPadding;
+        this.mRightPadding = keyboard.mRightPadding;
+        this.mVerticalGap = keyboard.mVerticalGap;
+        this.mHorizontalGap = keyboard.mHorizontalGap;
+        this.mKeysByScanCode = keyboard.mKeysByScanCode;
         this.mLocale = Locale.getDefault();
-        this.mSortedKeys = c0965e.mSortedKeys;
-        this.mShiftKeys = c0965e.mShiftKeys;
-        this.mAltCodeKeysWhileTyping = c0965e.mAltCodeKeysWhileTyping;
-        this.mIconsSet = c0965e.mIconsSet;
-        this.mProximityGrid = c0965e.mProximityGrid;
-        this.mAllowRedundantMoreKeys = c0965e.mAllowRedundantMoreKeys;
-        this.mDefaultKeyInterpretation = c0965e.mDefaultKeyInterpretation;
+        this.mSortedKeys = keyboard.mSortedKeys;
+        this.mShiftKeys = keyboard.mShiftKeys;
+        this.mAltCodeKeysWhileTyping = keyboard.mAltCodeKeysWhileTyping;
+        this.mIconsSet = keyboard.mIconsSet;
+        this.mProximityGrid = keyboard.mProximityGrid;
+        this.mAllowRedundantMoreKeys = keyboard.mAllowRedundantMoreKeys;
+        this.mDefaultKeyInterpretation = keyboard.mDefaultKeyInterpretation;
     }
 
-    /** @param i the key code */
-    public boolean allowsGestureForCode(int i) {
+    /** @param code the key code */
+    public boolean allowsGestureForCode(int code) {
         if (this.mAllowRedundantMoreKeys) {
-            return (this.mId.mElementId == 0 || this.mId.mElementId == 2) || Character.isLetter(i);
+            return (this.mId.mElementId == 0 || this.mId.mElementId == 2) || Character.isLetter(code);
         }
         return false;
     }
@@ -157,53 +157,53 @@ public class Keyboard {
         return this.mSortedKeys;
     }
 
-    /** @param str the output text */
-    public Key getKeyByOutputText(String str) {
-        if (str == null) {
+    /** @param outputText the output text */
+    public Key getKeyByOutputText(String outputText) {
+        if (outputText == null) {
             return null;
         }
         for (Key key : getKeys()) {
-            if (str.equals(key.getOutputText())) {
+            if (outputText.equals(key.getOutputText())) {
                 return key;
             }
         }
         return null;
     }
 
-    /** @param i the key code */
-    public Key getKeyByCode(int i) {
-        if (i == -21) {
+    /** @param code the key code */
+    public Key getKeyByCode(int code) {
+        if (code == -21) {
             return null;
         }
         synchronized (this.mKeyCache) {
-            int iIndexOfKey = this.mKeyCache.indexOfKey(i);
+            int iIndexOfKey = this.mKeyCache.indexOfKey(code);
             if (iIndexOfKey >= 0) {
                 return this.mKeyCache.valueAt(iIndexOfKey);
             }
             for (Key key : getKeys()) {
-                if (key.getCode() == i) {
-                    this.mKeyCache.put(i, key);
+                if (key.getCode() == code) {
+                    this.mKeyCache.put(code, key);
                     return key;
                 }
             }
-            this.mKeyCache.put(i, null);
+            this.mKeyCache.put(code, null);
             return null;
         }
     }
 
-    /** @param i the code point */
-    public Key getActionKeyForCode(int i) {
+    /** @param codePoint the code point */
+    public Key getActionKeyForCode(int codePoint) {
         String strM6239e;
         for (Key key : getKeys()) {
             if (key.isActionKey() && (strM6239e = key.getLabel()) != null && strM6239e.length() > 0) {
-                if (containsCodePoint(strM6239e, i)) {
+                if (containsCodePoint(strM6239e, codePoint)) {
                     return key;
                 }
                 MoreKeySpec[] c1034aqArrM6245i = key.getMoreKeys();
                 if (c1034aqArrM6245i != null && c1034aqArrM6245i.length > 0) {
                     for (MoreKeySpec c1034aq : c1034aqArrM6245i) {
                         String strD = c1034aq.getLabel();
-                        if (strD != null && strD.length() > 0 && containsCodePoint(strD, i)) {
+                        if (strD != null && strD.length() > 0 && containsCodePoint(strD, codePoint)) {
                             return key;
                         }
                     }
@@ -229,21 +229,21 @@ public class Keyboard {
     }
 
     /**
-     * Swaps {@code key} for {@code key2} in place. Does not rebuild the proximity grid (a keys x cells
+     * Swaps {@code key} for {@code newKey} in place. Does not rebuild the proximity grid (a keys x cells
      * scan; callers replace in batches): call {@link #rebuildProximityGrid()} once after a batch.
      */
-    public boolean replaceKey(Key key, Key key2) {
+    public boolean replaceKey(Key key, Key newKey) {
         int iIndexOf = this.mSortedKeys.indexOf(key);
         if (iIndexOf <= -1) {
             return false;
         }
-        this.mSortedKeys.set(iIndexOf, key2);
+        this.mSortedKeys.set(iIndexOf, newKey);
         int iIndexOfKey = this.mKeysByScanCode.indexOfKey(key.getScanCode());
         if (iIndexOfKey > -1) {
-            this.mKeysByScanCode.setValueAt(iIndexOfKey, key2);
+            this.mKeysByScanCode.setValueAt(iIndexOfKey, newKey);
         }
         synchronized (this.mKeyCache) {
-            this.mKeyCache.put(key2.getCode(), key2);
+            this.mKeyCache.put(newKey.getCode(), newKey);
         }
         return true;
     }
@@ -258,18 +258,18 @@ public class Keyboard {
     }
 
     /**
-     * @param i x
-     * @param i2 y
+     * @param x x
+     * @param y y
      */
-    public List<Key> getNearestKeys(int i, int i2) {
-        return this.mProximityGrid.getKeysInColumns(Math.max(0, Math.min(i, this.mOccupiedWidth - 1)), Math.max(0, Math.min(i2, this.mOccupiedHeight - 1)));
+    public List<Key> getNearestKeys(int x, int y) {
+        return this.mProximityGrid.getKeysInColumns(Math.max(0, Math.min(x, this.mOccupiedWidth - 1)), Math.max(0, Math.min(y, this.mOccupiedHeight - 1)));
     }
 
-    public int[] getCoordinatesForCodes(int[] iArr) {
-        int length = iArr.length;
+    public int[] getCoordinatesForCodes(int[] codes) {
+        int length = codes.length;
         int[] iArrM5688a = CoordinateUtils.newCoordinateArray(length);
         for (int i = 0; i < length; i++) {
-            Key keyM6604b = getKeyByCode(iArr[i]);
+            Key keyM6604b = getKeyByCode(codes[i]);
             if (keyM6604b != null) {
                 CoordinateUtils.setXYInArray(iArrM5688a, i, keyM6604b.getX() + (keyM6604b.getWidth() / 2), keyM6604b.getY() + (keyM6604b.getHeight() / 2));
             } else {
@@ -279,14 +279,14 @@ public class Keyboard {
         return iArrM5688a;
     }
 
-    /** The key mapped to physical scan code {@code i} ({@code keyMapScanCode}), or null. */
-    public Key getKeyByScanCode(int i) {
-        return this.mKeysByScanCode.get(i);
+    /** The key mapped to physical scan code {@code scanCode} ({@code keyMapScanCode}), or null. */
+    public Key getKeyByScanCode(int scanCode) {
+        return this.mKeysByScanCode.get(scanCode);
     }
 
-    /** @param i the key code */
-    public String[] getKeyLabelSetForCode(int i) {
-        Key keyM6604b = getKeyByCode(i);
+    /** @param code the key code */
+    public String[] getKeyLabelSetForCode(int code) {
+        Key keyM6604b = getKeyByCode(code);
         if (keyM6604b == null || !keyM6604b.isActive()) {
             return null;
         }

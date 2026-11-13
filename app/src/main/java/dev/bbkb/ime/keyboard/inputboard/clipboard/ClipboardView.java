@@ -53,9 +53,9 @@ public class ClipboardView extends RelativeLayout implements ClipboardHistoryMan
         this(context, attributeSet, 0);
     }
 
-    /** @param i the default style attribute */
-    public ClipboardView(Context context, AttributeSet attributeSet, int i) {
-        super(context, attributeSet, i);
+    /** @param defStyleAttr the default style attribute */
+    public ClipboardView(Context context, AttributeSet attributeSet, int defStyleAttr) {
+        super(context, attributeSet, defStyleAttr);
         // Assigned here so every constructor path sets it.
         this.context = context;
         LayoutInflater.from(context).inflate(R.layout.clipboard, this);
@@ -174,9 +174,9 @@ public class ClipboardView extends RelativeLayout implements ClipboardHistoryMan
         return this.isOpening;
     }
 
-    /** @param z true while the board is being opened */
-    public void setOpening(boolean z) {
-        this.isOpening = z;
+    /** @param opening true while the board is being opened */
+    public void setOpening(boolean opening) {
+        this.isOpening = opening;
     }
 
     /** Open the board; pruning also loads the history the first time after unlock. */
@@ -198,11 +198,11 @@ public class ClipboardView extends RelativeLayout implements ClipboardHistoryMan
     }
 
     /**
-     * @param i the width measure spec
-     * @param i2 the height measure spec
+     * @param widthMeasureSpec the width measure spec
+     * @param heightMeasureSpec the height measure spec
      */
     @Override
-    public void onMeasure(int i, int i2) {
+    public void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         setMeasuredDimension(
                 BoardHeightPolicy.measuredWidth(this),
                 BoardHeightPolicy.measuredHeight(this, this.keyboardSwitcher, this.clipboardMaxSize));

@@ -15,10 +15,10 @@ public final class SuggestionResult {
 
     private ArrayList<SuggestedWords.SuggestedWordInfo> suggestions = new ArrayList<>();
 
-    public SuggestionResult(Locale locale, int i, boolean z) {
+    public SuggestionResult(Locale locale, int maxSuggestions, boolean isBeginningOfSentence) {
         this.locale = locale;
-        this.maxSuggestions = i;
-        this.hasNextWordSuggestions = z;
+        this.maxSuggestions = maxSuggestions;
+        this.hasNextWordSuggestions = isBeginningOfSentence;
     }
 
     public ArrayList<SuggestedWords.SuggestedWordInfo> getSuggestions() {

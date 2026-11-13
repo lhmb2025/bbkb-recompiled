@@ -9,17 +9,17 @@ public interface KeyboardActionListenerInterface {
 
     default void onMoreKeysKeyTyped() {}
 
-    default void onCodeInput(int i, int i2, int i3, long j, boolean z) {}
+    default void onCodeInput(int primaryCode, int x, int y, long eventTime, boolean isKeyRepeat) {}
 
-    default void onReleaseKey(int i, boolean z) {}
+    default void onReleaseKey(int primaryCode, boolean withSliding) {}
 
-    default void onTextInput(String str, long j) {}
+    default void onTextInput(String text, long eventTime) {}
 
-    default void onPressKey(int i, int i2, boolean z) {}
+    default void onPressKey(int primaryCode, int repeatCount, boolean isSinglePointer) {}
 
-    default void onEndBatchInput(InputSource enumC0690f) {}
+    default void onEndBatchInput(InputSource inputSource) {}
 
-    default boolean onCustomRequest(int i) {
+    default boolean onCustomRequest(int requestCode) {
         return false;
     }
 

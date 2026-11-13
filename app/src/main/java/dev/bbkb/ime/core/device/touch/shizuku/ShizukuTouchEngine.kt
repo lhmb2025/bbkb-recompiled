@@ -663,9 +663,9 @@ object ShizukuTouchEngine {
         }
 
         // Posting under [lock] keeps deliveries in decode order across binder threads.
-        private fun decodeAndPost(d: TouchStreamDecoder, packed: LongArray) {
+        private fun decodeAndPost(decoder: TouchStreamDecoder, packed: LongArray) {
             var touches: ArrayList<DecodedTouch>? = null
-            d.feed(packed) { touch -> (touches ?: ArrayList<DecodedTouch>(4).also { touches = it }).add(touch) }
+            decoder.feed(packed) { touch -> (touches ?: ArrayList<DecodedTouch>(4).also { touches = it }).add(touch) }
             touches?.let { post(it) }
         }
 

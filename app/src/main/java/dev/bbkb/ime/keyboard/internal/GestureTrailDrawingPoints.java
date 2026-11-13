@@ -30,77 +30,77 @@ final class GestureTrailDrawingPoints {
 
     private final Rect mRoundedLineBounds = new Rect();
 
-    private static int markAsDownEvent(int i) {
-        return (-128) - i;
+    private static int markAsDownEvent(int xCoord) {
+        return (-128) - xCoord;
     }
 
-    private static boolean isDownEventXCoord(int i) {
-        return i <= -128;
+    private static boolean isDownEventXCoord(int xCoordOrMark) {
+        return xCoordOrMark <= -128;
     }
 
     GestureTrailDrawingPoints() {
         // Fields start at their defaults.
     }
 
-    private static int getXCoordValue(int i) {
-        return isDownEventXCoord(i) ? (-128) - i : i;
+    private static int getXCoordValue(int xCoordOrMark) {
+        return isDownEventXCoord(xCoordOrMark) ? (-128) - xCoordOrMark : xCoordOrMark;
     }
 
     /**
-     * @param c1053l the stroke to copy new points from
-     * @param j down time of the stroke
+     * @param gestureStrokeRecognizer the stroke to copy new points from
+     * @param downTime down time of the stroke
      */
-    public void addStroke(GestureStrokeRecognizer c1053l, long j) {
+    public void addStroke(GestureStrokeRecognizer gestureStrokeRecognizer, long downTime) {
         synchronized (this.mEventTimes) {
-            addStrokeInternal(c1053l, j);
+            addStrokeInternal(gestureStrokeRecognizer, downTime);
         }
     }
 
-    private void addStrokeInternal(GestureStrokeRecognizer c1053l, long j) {
+    private void addStrokeInternal(GestureStrokeRecognizer gestureStrokeRecognizer, long downTime) {
         int iM5570a = this.mEventTimes.getLength();
-        c1053l.appendIncrementalBatchPoints(this.mEventTimes, this.mXCoordinates, this.mYCoordinates);
+        gestureStrokeRecognizer.appendIncrementalBatchPoints(this.mEventTimes, this.mXCoordinates, this.mYCoordinates);
         if (this.mEventTimes.getLength() == iM5570a) {
             return;
         }
         int[] iArrM5577b = this.mEventTimes.getPrimitiveArray();
-        int iM7369a = c1053l.getGestureStrokeId();
-        this.mLastInterpolatedDrawIndex = c1053l.appendAllBatchPoints(iM7369a == this.mCurrentStrokeId ? this.mLastInterpolatedDrawIndex : iM5570a, this.mEventTimes, this.mXCoordinates, this.mYCoordinates);
+        int iM7369a = gestureStrokeRecognizer.getGestureStrokeId();
+        this.mLastInterpolatedDrawIndex = gestureStrokeRecognizer.appendAllBatchPoints(iM7369a == this.mCurrentStrokeId ? this.mLastInterpolatedDrawIndex : iM5570a, this.mEventTimes, this.mXCoordinates, this.mYCoordinates);
         if (iM7369a != this.mCurrentStrokeId) {
-            int i = (int) (j - this.mCurrentTimeBase);
+            int i = (int) (downTime - this.mCurrentTimeBase);
             for (int i2 = this.mTrailStartIndex; i2 < iM5570a; i2++) {
                 iArrM5577b[i2] = iArrM5577b[i2] - i;
             }
             int[] iArrM5577b2 = this.mXCoordinates.getPrimitiveArray();
             iArrM5577b2[iM5570a] = markAsDownEvent(iArrM5577b2[iM5570a]);
-            this.mCurrentTimeBase = j - iArrM5577b[iM5570a];
+            this.mCurrentTimeBase = downTime - iArrM5577b[iM5570a];
             this.mCurrentStrokeId = iM7369a;
         }
     }
 
-    private static int getAlpha(int i, GestureTrailDrawingParams c1056o) {
-        if (i < c1056o.mFadeoutStartDelay) {
+    private static int getAlpha(int elapsedTime, GestureTrailDrawingParams gestureTrailDrawingParams) {
+        if (elapsedTime < gestureTrailDrawingParams.mFadeoutStartDelay) {
             return 255;
         }
-        return 255 - (((i - c1056o.mFadeoutStartDelay) * 255) / c1056o.mFadeoutDuration);
+        return 255 - (((elapsedTime - gestureTrailDrawingParams.mFadeoutStartDelay) * 255) / gestureTrailDrawingParams.mFadeoutDuration);
     }
 
-    private static float getWidth(int i, GestureTrailDrawingParams c1056o) {
-        return c1056o.mTrailStartWidth - (((c1056o.mTrailStartWidth - c1056o.mTrailEndWidth) * i) / c1056o.mTrailLingerDuration);
+    private static float getWidth(int elapsedTime, GestureTrailDrawingParams gestureTrailDrawingParams) {
+        return gestureTrailDrawingParams.mTrailStartWidth - (((gestureTrailDrawingParams.mTrailStartWidth - gestureTrailDrawingParams.mTrailEndWidth) * elapsedTime) / gestureTrailDrawingParams.mTrailLingerDuration);
     }
 
     /**
      * @param rect receives the drawn bounds
-     * @param c1056o trail drawing params
+     * @param gestureTrailDrawingParams trail drawing params
      */
-    public boolean drawGestureTrail(Canvas canvas, Paint paint, Rect rect, GestureTrailDrawingParams c1056o) {
+    public boolean drawGestureTrail(Canvas canvas, Paint paint, Rect rect, GestureTrailDrawingParams gestureTrailDrawingParams) {
         boolean zM7396b;
         synchronized (this.mEventTimes) {
-            zM7396b = drawGestureTrailInternal(canvas, paint, rect, c1056o);
+            zM7396b = drawGestureTrailInternal(canvas, paint, rect, gestureTrailDrawingParams);
         }
         return zM7396b;
     }
 
-    private boolean drawGestureTrailInternal(Canvas canvas, Paint paint, Rect rect, GestureTrailDrawingParams c1056o) {
+    private boolean drawGestureTrailInternal(Canvas canvas, Paint paint, Rect rect, GestureTrailDrawingParams gestureTrailDrawingParams) {
         boolean z;
         int i;
         int i2;
@@ -115,7 +115,7 @@ final class GestureTrailDrawingPoints {
         int[] iArrM5577b3 = this.mYCoordinates.getPrimitiveArray();
         int iUptimeMillis = (int) (SystemClock.uptimeMillis() - this.mCurrentTimeBase);
         int i4 = this.mTrailStartIndex;
-        while (i4 < iM5570a && iUptimeMillis - iArrM5577b[i4] >= c1056o.mTrailLingerDuration) {
+        while (i4 < iM5570a && iUptimeMillis - iArrM5577b[i4] >= gestureTrailDrawingParams.mTrailLingerDuration) {
             i4++;
         }
         this.mTrailStartIndex = i4;
@@ -127,14 +127,14 @@ final class GestureTrailDrawingPoints {
             RoundedLine c1038au = this.mRoundedLine;
             int iM7397c = getXCoordValue(iArrM5577b2[i4]);
             int i5 = iArrM5577b3[i4];
-            float fM7393b = getWidth(iUptimeMillis - iArrM5577b[i4], c1056o) / 2.0f;
+            float fM7393b = getWidth(iUptimeMillis - iArrM5577b[i4], gestureTrailDrawingParams) / 2.0f;
             int i6 = i4 + 1;
             while (i6 < iM5570a) {
                 int i7 = iUptimeMillis - iArrM5577b[i6];
                 int iM7397c2 = getXCoordValue(iArrM5577b2[i6]);
                 int i8 = iUptimeMillis;
                 int i9 = iArrM5577b3[i6];
-                float fM7393b2 = getWidth(i7, c1056o) / 2.0f;
+                float fM7393b2 = getWidth(i7, gestureTrailDrawingParams) / 2.0f;
                 if (isDownEventXCoord(iArrM5577b2[i6])) {
                     i = iM7397c2;
                     i2 = i9;
@@ -143,17 +143,17 @@ final class GestureTrailDrawingPoints {
                     i = iM7397c2;
                     i2 = i9;
                     i3 = i6;
-                    Path pathM7298a = c1038au.makeRoundedLine(iM7397c, i5, c1056o.mTrailBodyRatio * fM7393b, iM7397c2, i9, fM7393b2 * c1056o.mTrailBodyRatio);
+                    Path pathM7298a = c1038au.makeRoundedLine(iM7397c, i5, gestureTrailDrawingParams.mTrailBodyRatio * fM7393b, iM7397c2, i9, fM7393b2 * gestureTrailDrawingParams.mTrailBodyRatio);
                     if (!pathM7298a.isEmpty()) {
                         c1038au.getBounds(this.mRoundedLineBounds);
-                        if (c1056o.mTrailShadowEnabled) {
-                            float f = c1056o.mTrailShadowRatio * fM7393b2;
+                        if (gestureTrailDrawingParams.mTrailShadowEnabled) {
+                            float f = gestureTrailDrawingParams.mTrailShadowRatio * fM7393b2;
                             paint.setShadowLayer(f, 0.0f, 0.0f, trailColor);
                             int i10 = -((int) Math.ceil(f));
                             this.mRoundedLineBounds.inset(i10, i10);
                         }
                         rect.union(this.mRoundedLineBounds);
-                        paint.setAlpha(getAlpha(i7, c1056o));
+                        paint.setAlpha(getAlpha(i7, gestureTrailDrawingParams));
                         canvas.drawPath(pathM7298a, paint);
                     }
                 }

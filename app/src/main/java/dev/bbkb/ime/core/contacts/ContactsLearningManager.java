@@ -90,19 +90,19 @@ public class ContactsLearningManager implements ContactsDataProvider.Listener {
         SettingsManager.setHasAskedContactsDictPermission(defaultSharedPreferences, true);
         new PermissionRequestHandler(this.context, new PermissionRequestHandler.Callback() {
             /**
-             * @param str the permission
-             * @param cVar the user's answer
+             * @param permission the permission
+             * @param result the user's answer
              */
             @Override
-            public void onPermissionResult(String str, PermissionRequestHandler.Result cVar) {
+            public void onPermissionResult(String permission, PermissionRequestHandler.Result result) {
                 SharedPreferences defaultSharedPreferences2 = PrefsManager.INSTANCE.getPrefs(ContactsLearningManager.this.context);
-                if (cVar == PermissionRequestHandler.Result.PERMISSION_GRANTED) {
+                if (result == PermissionRequestHandler.Result.PERMISSION_GRANTED) {
                     SettingsManager.enableContactsDict(defaultSharedPreferences2);
                     ContactsLearningManager.this.contactsDictEnabled = true;
                     ContactsLearningManager.this.initialSyncStarted = false;
                     ContactsLearningManager.this.startInitialSync();
                 }
-                SettingsManager.setHasAskedContactsDictPermission(defaultSharedPreferences2, cVar != PermissionRequestHandler.Result.OTHER);
+                SettingsManager.setHasAskedContactsDictPermission(defaultSharedPreferences2, result != PermissionRequestHandler.Result.OTHER);
             }
         }).requestPermission("android.permission.READ_CONTACTS", this.context.getString(R.string.contact_permission_rationale));
     }
@@ -113,10 +113,10 @@ public class ContactsLearningManager implements ContactsDataProvider.Listener {
         this.dataProvider.release();
     }
 
-    /** @param z true if the contacts dictionary is on */
-    public void setContactsDictEnabled(boolean z) {
-        if (this.contactsDictEnabled != z) {
-            this.contactsDictEnabled = z;
+    /** @param enabled true if the contacts dictionary is on */
+    public void setContactsDictEnabled(boolean enabled) {
+        if (this.contactsDictEnabled != enabled) {
+            this.contactsDictEnabled = enabled;
             if (this.contactsDictEnabled) {
                 if (PermissionUtils.checkAllPermissionsGranted(this.context, "android.permission.READ_CONTACTS")) {
                     syncContacts(ContactsDataProvider.ContactsType.ALL, this);
@@ -134,11 +134,11 @@ public class ContactsLearningManager implements ContactsDataProvider.Listener {
         return this.contactWords.contains(word);
     }
 
-    /** @param bVar which contacts changed */
+    /** @param contactsType which contacts changed */
     @Override
-    public void onContactsChanged(ContactsDataProvider.ContactsType bVar) {
+    public void onContactsChanged(ContactsDataProvider.ContactsType contactsType) {
         if (this.contactsDictEnabled) {
-            syncContacts(bVar, this);
+            syncContacts(contactsType, this);
         }
     }
 
@@ -150,18 +150,18 @@ public class ContactsLearningManager implements ContactsDataProvider.Listener {
     }
 
     /**
-     * @param bVar which contacts to sync
-     * @param aVar the listener to register for later changes
+     * @param contactsType which contacts to sync
+     * @param listener the listener to register for later changes
      */
-    private void syncContacts(final ContactsDataProvider.ContactsType bVar, final ContactsDataProvider.Listener aVar) {
-        m4557aWithRetry(bVar, aVar, 0);
+    private void syncContacts(final ContactsDataProvider.ContactsType contactsType, final ContactsDataProvider.Listener listener) {
+        m4557aWithRetry(contactsType, listener, 0);
     }
 
     /**
-     * @param bVar which contacts to sync
-     * @param aVar the listener to register for later changes
+     * @param contactsType which contacts to sync
+     * @param listener the listener to register for later changes
      */
-    private void m4557aWithRetry(final ContactsDataProvider.ContactsType bVar, final ContactsDataProvider.Listener aVar, final int retryCount) {
+    private void m4557aWithRetry(final ContactsDataProvider.ContactsType contactsType, final ContactsDataProvider.Listener listener, final int retryCount) {
         // Only the keyboard waits for the DLM: the spell checker's sync just collects contactWords,
         // and the keyboard's engine may not be running. Reads the published fact: this is main.
         if (this.released) {
@@ -172,7 +172,7 @@ public class ContactsLearningManager implements ContactsDataProvider.Listener {
                 mainHandler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        m4557aWithRetry(bVar, aVar, retryCount + 1);
+                        m4557aWithRetry(contactsType, listener, retryCount + 1);
                     }
                 }, NUANCE_READY_CHECK_DELAY_MS);
             }
@@ -185,8 +185,8 @@ public class ContactsLearningManager implements ContactsDataProvider.Listener {
                 if (ContactsLearningManager.this.released) {
                     return;
                 }
-                ContactsLearningManager.this.dataProvider.registerListener(aVar);
-                ContactsLearningManager.this.learnAllContacts(bVar);
+                ContactsLearningManager.this.dataProvider.registerListener(listener);
+                ContactsLearningManager.this.learnAllContacts(contactsType);
             }
         });
     }
@@ -201,8 +201,8 @@ public class ContactsLearningManager implements ContactsDataProvider.Listener {
         });
     }
 
-    /** @param bVar which contacts to learn */
-        void learnAllContacts(ContactsDataProvider.ContactsType bVar) {
+    /** @param contactsType which contacts to learn */
+        void learnAllContacts(ContactsDataProvider.ContactsType contactsType) {
         final Set<String> words = ConcurrentHashMap.newKeySet();
         this.collectingWords = words;
         // Collected first and added together, so an address book the engine already holds can
@@ -210,8 +210,8 @@ public class ContactsLearningManager implements ContactsDataProvider.Listener {
         final List<String[]> batches = new ArrayList<>();
         final List<ContactsDataProvider.ContactsType> batchTypes = new ArrayList<>();
         try {
-            collectContactsFromUri(bVar, ContactsContract.Profile.CONTENT_URI, batches, batchTypes);
-            collectContactsFromUri(bVar, ContactsContract.Contacts.CONTENT_URI, batches, batchTypes);
+            collectContactsFromUri(contactsType, ContactsContract.Profile.CONTENT_URI, batches, batchTypes);
+            collectContactsFromUri(contactsType, ContactsContract.Contacts.CONTENT_URI, batches, batchTypes);
         } finally {
             this.collectingWords = null;
         }
@@ -266,8 +266,8 @@ public class ContactsLearningManager implements ContactsDataProvider.Listener {
                 || settings.getSettingsValues().isDynamicLearningEnabled;
     }
 
-    /** @param bVar which contacts to collect */
-    private void collectContactsFromUri(ContactsDataProvider.ContactsType bVar, Uri uri,
+    /** @param contactsType which contacts to collect */
+    private void collectContactsFromUri(ContactsDataProvider.ContactsType contactsType, Uri uri,
             List<String[]> batches, List<ContactsDataProvider.ContactsType> types) {
         if (!PermissionUtils.checkAllPermissionsGranted(this.context, "android.permission.READ_CONTACTS")) {
             // Otherwise the query throws SecurityException, which the observer does not catch.
@@ -276,7 +276,7 @@ public class ContactsLearningManager implements ContactsDataProvider.Listener {
         }
         ArrayList<String> arrayList = new ArrayList<>();
         // The data provider never returns WORK contacts.
-        if (bVar == ContactsDataProvider.ContactsType.PERSONAL || bVar == ContactsDataProvider.ContactsType.ALL) {
+        if (contactsType == ContactsDataProvider.ContactsType.PERSONAL || contactsType == ContactsDataProvider.ContactsType.ALL) {
             arrayList.addAll(this.dataProvider.getContactNames(ContactsDataProvider.ContactsType.PERSONAL, uri));
         }
         collectWords(arrayList, ContactsDataProvider.ContactsType.PERSONAL, batches, types);
@@ -296,9 +296,9 @@ public class ContactsLearningManager implements ContactsDataProvider.Listener {
 
     /**
      * @param list contact names or addresses
-     * @param bVar the batch's contacts type
+     * @param contactsType the batch's contacts type
      */
-    private void collectWords(List<String> list, ContactsDataProvider.ContactsType bVar,
+    private void collectWords(List<String> list, ContactsDataProvider.ContactsType contactsType,
             List<String[]> batches, List<ContactsDataProvider.ContactsType> types) {
         final String[] words = splitNames(list);
         final Set<String> collecting = this.collectingWords;
@@ -307,28 +307,28 @@ public class ContactsLearningManager implements ContactsDataProvider.Listener {
         }
         if (words.length > 0) {
             batches.add(words);
-            types.add(bVar);
+            types.add(contactsType);
         }
     }
 
-    /** @param bVar the batch's contacts type */
-    private void addWordsToDynamicModel(String[] words, ContactsDataProvider.ContactsType bVar) {
+    /** @param contactsType the batch's contacts type */
+    private void addWordsToDynamicModel(String[] words, ContactsDataProvider.ContactsType contactsType) {
         if (words.length > 0 && this.context instanceof BlackBerryIME) {
-            ((BlackBerryIME) this.context).getDynamicLearningManager().addContactsWords(words, bVar);
+            ((BlackBerryIME) this.context).getDynamicLearningManager().addContactsWords(words, contactsType);
         }
     }
 
     /**
      * Adds the words of {@code list} (names or addresses) to the engine now, unconditionally.
      *
-     * @param bVar the contacts type
+     * @param contactsType the contacts type
      */
-    public void addNamesToDynamicModel(List<String> list, ContactsDataProvider.ContactsType bVar) {
+    public void addNamesToDynamicModel(List<String> list, ContactsDataProvider.ContactsType contactsType) {
         final String[] words = splitNames(list);
         final Set<String> collecting = this.collectingWords;
         if (collecting != null) {
             collecting.addAll(Arrays.asList(words));
         }
-        addWordsToDynamicModel(words, bVar);
+        addWordsToDynamicModel(words, contactsType);
     }
 }

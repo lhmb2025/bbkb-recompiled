@@ -72,7 +72,7 @@ public final class KeyboardState {
 
     /**
      * "No recapitalize" value of the {@code recapitalizeMode} argument passed beside
-     * {@code autoCapsFlags} through the entry points (the {@code i, i2} pairs below). It is -1, not
+     * {@code autoCapsFlags} through the entry points (the {@code autoCapsFlags, recapitalizeMode} pairs below). It is -1, not
      * 0: 0 is a real mode, and passing it latches {@link #requestedShiftMode} so
      * {@link #onShiftKeyPress()} never acts again. Production always passes this value.
      */
@@ -121,26 +121,26 @@ public final class KeyboardState {
         boolean isManualTemporaryUppercase();
 
         /**
-         * @param i the symbol page index
-         * @param z whether the PKB variant of the page may be used
-         * @param z2 whether the page is the custom symbol page
-         * @param i2 the custom page's shift action (0 none, 1 shift, 2 unshift)
+         * @param symbolPage the symbol page index
+         * @param usePkbLayout whether the PKB variant of the page may be used
+         * @param isCustomPage whether the page is the custom symbol page
+         * @param customSymbolPage the custom page's shift action (0 none, 1 shift, 2 unshift)
          */
-        void setVkbSymbolsKeyboard(int i, boolean z, boolean z2, int i2);
+        void setVkbSymbolsKeyboard(int symbolPage, boolean usePkbLayout, boolean isCustomPage, int customSymbolPage);
 
-        /** @param z whether shift is on or locked */
-        void updateShiftIndicator(boolean z);
+        /** @param isShifted whether shift is on or locked */
+        void updateShiftIndicator(boolean isShifted);
 
         void updateShiftLockedIndicator(boolean locked);
 
         /** Same parameters as {@link #setVkbSymbolsKeyboard}. */
-        void setPkbSymbolsKeyboard(int i, boolean z, boolean z2, int i2);
+        void setPkbSymbolsKeyboard(int symbolPage, boolean usePkbLayout, boolean isCustomPage, int customSymbolPage);
 
         /**
-         * @param i the auto-caps flags
-         * @param i2 the recapitalize mode, {@link #RECAPITALIZE_NONE} for none
+         * @param autoCapsFlags the auto-caps flags
+         * @param recapitalizeMode the recapitalize mode, {@link #RECAPITALIZE_NONE} for none
          */
-        void setAlphabetKeyboard(int i, int i2);
+        void setAlphabetKeyboard(int autoCapsFlags, int recapitalizeMode);
 
         boolean isPkbDevice();
 
@@ -165,9 +165,9 @@ public final class KeyboardState {
         void onStartShiftLongPress();
     }
 
-    /** @param i the saved shift mode (0 unshifted, 1 manual, 2 automatic) */
-    static String getShiftModeString(int i) {
-        switch (i) {
+    /** @param shiftMode the saved shift mode (0 unshifted, 1 manual, 2 automatic) */
+    static String getShiftModeString(int shiftMode) {
+        switch (shiftMode) {
             case 0:
                 return "UNSHIFT";
             case 1:
@@ -179,14 +179,14 @@ public final class KeyboardState {
         }
     }
 
-    /** @param i the key code */
-    private static boolean isWhitespaceOrEnter(int i) {
-        return i == 32 || i == 10;
+    /** @param code the key code */
+    private static boolean isWhitespaceOrEnter(int code) {
+        return code == 32 || code == 10;
     }
 
-    /** @param i the switch state */
-    private static String getSwitchStateString(int i) {
-        switch (i) {
+    /** @param switchState the switch state */
+    private static String getSwitchStateString(int switchState) {
+        switch (switchState) {
             case 0:
                 return "ALPHA";
             case 1:
@@ -253,14 +253,14 @@ public final class KeyboardState {
         }
     }
 
-    /** @param i the editor's input type, compared with the one saved */
-    public boolean hasImeOptionsChanged(int i) {
-        return i != this.savedKeyboardState.savedImeOptions;
+    /** @param inputType the editor's input type, compared with the one saved */
+    public boolean hasImeOptionsChanged(int inputType) {
+        return inputType != this.savedKeyboardState.savedImeOptions;
     }
 
-    /** @param bVar the keyboard switcher */
-    public KeyboardState(SwitcherCallbacks bVar) {
-        this.switcherCallbacks = bVar;
+    /** @param switcherCallbacks the keyboard switcher */
+    public KeyboardState(SwitcherCallbacks switcherCallbacks) {
+        this.switcherCallbacks = switcherCallbacks;
         this.keyRepeatHandler = this.switcherCallbacks.getKeyRepeatHandler();
         if (this.keyRepeatHandler != null) {
             this.keyRepeatHandler.setModifierListener(new KeyRepeatHandler.ModifierListener() {
@@ -292,12 +292,12 @@ public final class KeyboardState {
     }
 
     /**
-     * @param i the auto-caps flags
-     * @param i2 the recapitalize mode
-     * @param i3 the editor's input type
-     * @param str the editor's package name
+     * @param autoCapsFlags the auto-caps flags
+     * @param recapitalizeMode the recapitalize mode
+     * @param inputType the editor's input type
+     * @param packageName the editor's package name
      */
-    public void onStartInput(int i, int i2, Locale locale, int i3, String str) {
+    public void onStartInput(int autoCapsFlags, int recapitalizeMode, Locale locale, int inputType, String packageName) {
         this.shiftModeTracker.setShiftLocked(false);
         this.wasShiftLockedBeforeSymbol = false;
         this.savedSymbolPageIndex = 0;
@@ -312,12 +312,12 @@ public final class KeyboardState {
         }
         this.maxPkbSymbolPages = isPkbSymbolCustomizationEnabled() ? this.maxSymbolPages + 1 : this.maxSymbolPages;
         this.maxSymbolPages = isVkbSymbolCustomizationEnabled() ? this.maxSymbolPages + 1 : this.maxSymbolPages;
-        restoreKeyboardState(i, i2, i3);
-        this.packageName = str;
+        restoreKeyboardState(autoCapsFlags, recapitalizeMode, inputType);
+        this.packageName = packageName;
     }
 
-    /** @param i the editor's input type */
-    public void saveKeyboardState(int i) {
+    /** @param inputType the editor's input type */
+    public void saveKeyboardState(int inputType) {
         int i2;
         SavedKeyboardState aVar = this.savedKeyboardState;
         aVar.wasAlphabetMode = (this.currentMode == KeyboardModeState.ALPHABET);
@@ -337,21 +337,21 @@ public final class KeyboardState {
             aVar.wasShiftLocked = this.wasShiftLockedBeforeSymbol;
             aVar.savedSymbolPage = this.currentSymbolPageIndex;
         }
-        aVar.savedImeOptions = i;
+        aVar.savedImeOptions = inputType;
         aVar.isValid = true;
     }
 
     /**
-     * @param i the auto-caps flags, {@code i2} the recapitalize mode
-     * @param i3 the editor's input type
+     * @param autoCapsFlags the auto-caps flags, {@code recapitalizeMode} the recapitalize mode
+     * @param inputType the editor's input type
      */
-    private void restoreKeyboardState(int i, int i2, int i3) {
+    private void restoreKeyboardState(int autoCapsFlags, int recapitalizeMode, int inputType) {
         SavedKeyboardState aVar = this.savedKeyboardState;
-        if (hasImeOptionsChanged(i3)) {
+        if (hasImeOptionsChanged(inputType)) {
             aVar.isValid = false;
         }
         if (!aVar.isValid || aVar.wasAlphabetMode) {
-            switchToAlphabetUnshifted(i, i2);
+            switchToAlphabetUnshifted(autoCapsFlags, recapitalizeMode);
         } else if (aVar.wasEmojiMode) {
             this.switcherCallbacks.showEmojiKeyboard();
         } else if (aVar.wasMenuMode) {
@@ -364,7 +364,7 @@ public final class KeyboardState {
             }
         } else {
             if (BuildConfig.DEBUG) Log.e(TAG, "Invalid keyboard state onRestoreKeyboardState: saved=" + aVar + " " + this);
-            switchToAlphabetUnshifted(i, i2);
+            switchToAlphabetUnshifted(autoCapsFlags, recapitalizeMode);
         }
         if (aVar.isValid) {
             aVar.isValid = false;
@@ -380,8 +380,8 @@ public final class KeyboardState {
         }
     }
 
-    /** @param i the shift mode: 0 off, 1 manual, 2 automatic, 4 momentary */
-    private void setShiftMode(int i) {
+    /** @param shiftMode the shift mode: 0 off, 1 manual, 2 automatic, 4 momentary */
+    private void setShiftMode(int shiftMode) {
         int i2;
         if (this.shiftModeTracker.isAutomaticShifted()) {
             i2 = 2;
@@ -390,25 +390,25 @@ public final class KeyboardState {
         } else {
             i2 = this.shiftModeTracker.isShiftLocked() ? 3 : 0;
         }
-        if (i != 4) {
-            switch (i) {
+        if (shiftMode != 4) {
+            switch (shiftMode) {
                 case 0:
                     this.shiftModeTracker.setShifted(false);
-                    if (i != i2 && this.currentMode != KeyboardModeState.SYMBOL) {
+                    if (shiftMode != i2 && this.currentMode != KeyboardModeState.SYMBOL) {
                         this.switcherCallbacks.requestShiftOff();
                         break;
                     }
                     break;
                 case 1:
                     this.shiftModeTracker.setShifted(true);
-                    if (i != i2 && this.currentMode != KeyboardModeState.SYMBOL) {
+                    if (shiftMode != i2 && this.currentMode != KeyboardModeState.SYMBOL) {
                         this.switcherCallbacks.requestShiftOnce();
                         break;
                     }
                     break;
                 case 2:
                     this.shiftModeTracker.setAutomaticShifted();
-                    if (i != i2 && this.currentMode != KeyboardModeState.SYMBOL) {
+                    if (shiftMode != i2 && this.currentMode != KeyboardModeState.SYMBOL) {
                         this.switcherCallbacks.requestAutomaticShift();
                         break;
                     }
@@ -424,23 +424,23 @@ public final class KeyboardState {
         this.switcherCallbacks.updateShiftLockedIndicator(this.shiftModeTracker.isShiftLocked());
     }
 
-    /** @param z true to lock shift */
-    private void setShiftLocked(boolean z) {
+    /** @param shiftLocked true to lock shift */
+    private void setShiftLocked(boolean shiftLocked) {
         if (this.currentMode == KeyboardModeState.ALPHABET) {
-            if (z && ((!this.shiftModeTracker.isShiftLocked() || this.shiftModeTracker.isShiftLockShifted()) && this.currentMode != KeyboardModeState.SYMBOL)) {
+            if (shiftLocked && ((!this.shiftModeTracker.isShiftLocked() || this.shiftModeTracker.isShiftLockShifted()) && this.currentMode != KeyboardModeState.SYMBOL)) {
                 this.switcherCallbacks.requestShiftLocked();
             }
-            if (!z && this.shiftModeTracker.isShiftLocked() && this.currentMode != KeyboardModeState.SYMBOL) {
+            if (!shiftLocked && this.shiftModeTracker.isShiftLocked() && this.currentMode != KeyboardModeState.SYMBOL) {
                 this.switcherCallbacks.requestShiftOff();
             }
-            this.shiftModeTracker.setShiftLocked(z);
+            this.shiftModeTracker.setShiftLocked(shiftLocked);
             this.switcherCallbacks.updateShiftIndicator(this.shiftModeTracker.isShiftedOrShiftLocked());
             this.switcherCallbacks.updateShiftLockedIndicator(this.shiftModeTracker.isShiftLocked());
         }
     }
 
-    /** @param i the auto-caps flags, {@code i2} the recapitalize mode (likewise below) */
-    private void switchToAlphabetFromSymbol(int i, int i2) {
+    /** @param autoCapsFlags the auto-caps flags, {@code recapitalizeMode} the recapitalize mode (likewise below) */
+    private void switchToAlphabetFromSymbol(int autoCapsFlags, int recapitalizeMode) {
         this.symbolEntryMethod = 1;
         if (this.currentMode == KeyboardModeState.ALPHABET) {
             this.wasShiftLockedBeforeSymbol = this.shiftModeTracker.isShiftLocked();
@@ -450,21 +450,21 @@ public final class KeyboardState {
             return;
         }
         this.savedSymbolPageIndex = this.currentSymbolPageIndex;
-        switchToAlphabetUnshifted(i, i2);
+        switchToAlphabetUnshifted(autoCapsFlags, recapitalizeMode);
         if (this.wasShiftLockedBeforeSymbol) {
             setShiftLocked(true);
         }
         this.wasShiftLockedBeforeSymbol = false;
     }
 
-    private void switchToSymbolFromAlphabet(int i, int i2) {
+    private void switchToSymbolFromAlphabet(int autoCapsFlags, int recapitalizeMode) {
         this.symbolEntryMethod = 0;
         if (this.currentMode == KeyboardModeState.SYMBOL) {
             this.savedSymbolPageIndex = this.currentSymbolPageIndex;
             if (this.switcherCallbacks.isManualTemporaryUppercase()) {
-                switchToAlphabetManualShifted(i, i2);
+                switchToAlphabetManualShifted(autoCapsFlags, recapitalizeMode);
             } else {
-                switchToAlphabetUnshifted(i, i2);
+                switchToAlphabetUnshifted(autoCapsFlags, recapitalizeMode);
             }
             if (this.wasShiftLockedBeforeSymbol) {
                 setShiftLocked(true);
@@ -484,15 +484,15 @@ public final class KeyboardState {
      */
     private static final String PKG_BANAMEX = "com.citibanamex.banamexmobile";
 
-    private void onBackspace(int i, int i2) {
+    private void onBackspace(int autoCapsFlags, int recapitalizeMode) {
         if (this.currentMode == KeyboardModeState.ALPHABET) {
             return;
         }
         this.savedSymbolPageIndex = this.currentSymbolPageIndex;
         if (PKG_BANAMEX.equals(this.packageName) && this.switcherCallbacks.isManualTemporaryUppercase()) {
-            switchToAlphabetManualShifted(i, i2);
+            switchToAlphabetManualShifted(autoCapsFlags, recapitalizeMode);
         } else {
-            switchToAlphabetUnshifted(i, i2);
+            switchToAlphabetUnshifted(autoCapsFlags, recapitalizeMode);
         }
         if (this.wasShiftLockedBeforeSymbol) {
             setShiftLocked(true);
@@ -516,24 +516,24 @@ public final class KeyboardState {
         this.requestedShiftMode = RECAPITALIZE_NONE;
     }
 
-    private void switchToAlphabetUnshifted(int i, int i2) {
+    private void switchToAlphabetUnshifted(int autoCapsFlags, int recapitalizeMode) {
         this.switcherCallbacks.requestShiftOff();
         this.currentMode = KeyboardModeState.ALPHABET;
         this.currentSymbolPageIndex = 0;
         this.requestedShiftMode = RECAPITALIZE_NONE;
         this.switchState = 0;
         this.shiftModeTracker.setShifted(false);
-        loadAlphabetKeyboard(i, i2);
+        loadAlphabetKeyboard(autoCapsFlags, recapitalizeMode);
     }
 
-    private void switchToAlphabetManualShifted(int i, int i2) {
+    private void switchToAlphabetManualShifted(int autoCapsFlags, int recapitalizeMode) {
         this.switcherCallbacks.requestManualShiftOff();
         this.currentMode = KeyboardModeState.ALPHABET;
         this.currentSymbolPageIndex = 0;
         this.requestedShiftMode = RECAPITALIZE_NONE;
         this.switchState = 0;
         this.shiftModeTracker.setShifted(false);
-        loadAlphabetKeyboard(i, i2);
+        loadAlphabetKeyboard(autoCapsFlags, recapitalizeMode);
     }
 
     private void switchToMenuMode() {
@@ -545,40 +545,40 @@ public final class KeyboardState {
     }
 
     /**
-     * @param i the symbol page index
-     * @param z whether the PKB variant of the page may be used
-     * @param z2 whether the page is the custom symbol page (also for setVkbSymbolsKeyboard)
+     * @param symbolPage the symbol page index
+     * @param usePkbLayout whether the PKB variant of the page may be used
+     * @param isCustomPage whether the page is the custom symbol page (also for setVkbSymbolsKeyboard)
      */
-        void setPkbSymbolsKeyboard(int i, boolean z, boolean z2) {
-        Logger.debug(TAG, "setPkbSymbolsKeyboard page=" + i + (z2 ? "-custom" : ""));
+        void setPkbSymbolsKeyboard(int symbolPage, boolean usePkbLayout, boolean isCustomPage) {
+        Logger.debug(TAG, "setPkbSymbolsKeyboard page=" + symbolPage + (isCustomPage ? "-custom" : ""));
         int iM7219l = 0;
-        if (z2) {
+        if (isCustomPage) {
             iM7219l = getPkbSymbolShiftAction();
             this.isPkbCustomSymbolPage = true;
         } else {
             this.isPkbCustomSymbolPage = false;
         }
-        this.switcherCallbacks.setPkbSymbolsKeyboard(i, z, z2, iM7219l);
-        if (z2) {
+        this.switcherCallbacks.setPkbSymbolsKeyboard(symbolPage, usePkbLayout, isCustomPage, iM7219l);
+        if (isCustomPage) {
             this.savedPkbSymbolShiftState = this.pkbSymbolShiftState;
         }
-        setSymbolModeCommon(i);
+        setSymbolModeCommon(symbolPage);
     }
 
-    private void setVkbSymbolsKeyboard(int i, boolean z, boolean z2) {
-        Logger.debug(TAG, "setVkbSymbolsKeyboard page=" + i + (z2 ? "-custom" : ""));
+    private void setVkbSymbolsKeyboard(int symbolPage, boolean usePkbLayout, boolean isCustomPage) {
+        Logger.debug(TAG, "setVkbSymbolsKeyboard page=" + symbolPage + (isCustomPage ? "-custom" : ""));
         int iM7216k = 0;
-        if (z2) {
+        if (isCustomPage) {
             this.isVkbCustomSymbolPage = true;
             iM7216k = getVkbSymbolShiftAction();
         } else {
             this.isVkbCustomSymbolPage = false;
         }
-        this.switcherCallbacks.setVkbSymbolsKeyboard(i, z, z2, iM7216k);
-        if (z2) {
+        this.switcherCallbacks.setVkbSymbolsKeyboard(symbolPage, usePkbLayout, isCustomPage, iM7216k);
+        if (isCustomPage) {
             this.savedVkbSymbolShiftState = this.vkbSymbolShiftState;
         }
-        setSymbolModeCommon(i);
+        setSymbolModeCommon(symbolPage);
     }
 
     private int getVkbSymbolShiftAction() {
@@ -589,10 +589,10 @@ public final class KeyboardState {
         return this.pkbSymbolShiftState != 0 ? this.savedPkbSymbolShiftState == 0 ? 1 : 0 : this.savedPkbSymbolShiftState != 0 ? 2 : 0;
     }
 
-    /** @param i the symbol page index */
-    private void setSymbolModeCommon(int i) {
+    /** @param page the symbol page index */
+    private void setSymbolModeCommon(int page) {
         this.currentMode = KeyboardModeState.SYMBOL;
-        this.currentSymbolPageIndex = i;
+        this.currentSymbolPageIndex = page;
         this.shiftModeTracker.setShiftLocked(false);
         this.switchState = 1;
     }
@@ -606,16 +606,16 @@ public final class KeyboardState {
     }
 
     /**
-     * @param i the key code
-     * @param z true if this is the only active pointer
-     * @param i2 the auto-caps flags, {@code i3} the recapitalize mode
+     * @param code the key code
+     * @param isSinglePointer true if this is the only active pointer
+     * @param autoCapsFlags the auto-caps flags, {@code recapitalizeMode} the recapitalize mode
      */
-    public void onCodeInput(int i, boolean z, int i2, int i3) {
+    public void onCodeInput(int code, boolean isSinglePointer, int autoCapsFlags, int recapitalizeMode) {
         int i4;
-        if (i != -1) {
+        if (code != -1) {
             this.switcherCallbacks.onKeyRelease();
         }
-        switch (i) {
+        switch (code) {
             case -16:
             case -2:
                 break;
@@ -627,7 +627,7 @@ public final class KeyboardState {
                 cycleThroughSymbolPages();
                 break;
             case -3:
-                onSymbolKeyPress(i2, i3);
+                onSymbolKeyPress(autoCapsFlags, recapitalizeMode);
                 break;
             case -1:
                 onShiftKeyPress();
@@ -638,7 +638,7 @@ public final class KeyboardState {
                 // toggle itself does the work.
                 break;
             default:
-                if (this.switchState == 1 && !isWhitespaceOrEnter(i)) {
+                if (this.switchState == 1 && !isWhitespaceOrEnter(code)) {
                     this.switchState = 4;
                 }
                 this.shiftKeyState.onOtherKeyPressed();
@@ -650,18 +650,18 @@ public final class KeyboardState {
                     // This runs on touch-down. For PKB on-screen Sym entry (method 2) leaving symbol
                     // mode now would lose the tap, which commits on touch-up, so a character key
                     // returns to the alphabet in onSoftwareSymbolCommitted() instead.
-                    if (pkbSymEntry && Constants.isLetterCode(i)) {
+                    if (pkbSymEntry && Constants.isLetterCode(code)) {
                         // Keep symbolEntryMethod 2 for the post-commit hook.
                     } else {
                         this.symbolEntryMethod = 0;
                         if (pkbSymEntry) {
-                            switchToAlphabetFromSymbol(i2, i3);
+                            switchToAlphabetFromSymbol(autoCapsFlags, recapitalizeMode);
                             this.switcherCallbacks.onReturnToAlphabetFromSymbol();
                             this.savedSymbolPageIndex = 0;
                         }
                     }
                 }
-                if (!z && this.currentMode == KeyboardModeState.ALPHABET && i2 != 4096) {
+                if (!isSinglePointer && this.currentMode == KeyboardModeState.ALPHABET && autoCapsFlags != 4096) {
                     if (this.shiftModeTracker.isAutomaticShifted() || (this.shiftModeTracker.isManualShifted() && this.shiftKeyState.isReleasing())) {
                         z2 = true;
                     }
@@ -680,27 +680,27 @@ public final class KeyboardState {
      * toggles on release against the current mode, so ending the entry first would toggle wrong.
      *
      * @param code the soft key's code, as given to the IME's onCodeInput
-     * @param i the auto-caps flags, {@code i2} the recapitalize mode
+     * @param autoCapsFlags the auto-caps flags, {@code recapitalizeMode} the recapitalize mode
      */
-    public void onSoftwareSymbolCommitted(int code, int i, int i2) {
+    public void onSoftwareSymbolCommitted(int code, int autoCapsFlags, int recapitalizeMode) {
         if (!Constants.isLetterCode(code)) {
             return;
         }
         if (this.currentMode == KeyboardModeState.SYMBOL && this.symbolEntryMethod == 2
                 && this.switcherCallbacks.isPkbDevice() && !this.switcherCallbacks.isSymHeld()) {
             this.symbolEntryMethod = 0;
-            switchToAlphabetFromSymbol(i, i2);
+            switchToAlphabetFromSymbol(autoCapsFlags, recapitalizeMode);
             this.switcherCallbacks.onReturnToAlphabetFromSymbol();
             this.savedSymbolPageIndex = 0;
         }
     }
 
     /**
-     * @param i the Android key code
-     * @param i2 the auto-caps flags, {@code i3} the recapitalize mode
+     * @param keyCode the Android key code
+     * @param autoCapsFlags the auto-caps flags, {@code recapitalizeMode} the recapitalize mode
      */
-    public void onHardwareKeyEvent(int i, int i2, int i3) {
-        switch (i) {
+    public void onHardwareKeyEvent(int keyCode, int autoCapsFlags, int recapitalizeMode) {
+        switch (keyCode) {
             case 59:
             case 60:
             case 62:
@@ -715,7 +715,7 @@ public final class KeyboardState {
                 if (this.currentMode == KeyboardModeState.SYMBOL && this.symbolEntryMethod == 2
                         && this.switcherCallbacks.isPkbDevice() && !this.switcherCallbacks.isSymHeld()) {
                     this.symbolEntryMethod = 0;
-                    switchToAlphabetFromSymbol(i2, i3);
+                    switchToAlphabetFromSymbol(autoCapsFlags, recapitalizeMode);
                     this.switcherCallbacks.onReturnToAlphabetFromSymbol();
                     this.savedSymbolPageIndex = 0;
                 }
@@ -730,7 +730,7 @@ public final class KeyboardState {
                 break;
             case 63:
                 if (this.switchState == 4) {
-                    onBackspace(i2, i3);
+                    onBackspace(autoCapsFlags, recapitalizeMode);
                     break;
                 } else if (this.switcherCallbacks.isPkbDevice()) {
                     this.symbolEntryMethod = 2;
@@ -747,38 +747,38 @@ public final class KeyboardState {
     }
 
     /**
-     * @param i the key code
-     * @param z true if released during sliding input
-     * @param i2 the auto-caps flags, {@code i3} the recapitalize mode
+     * @param code the key code
+     * @param withSliding true if released during sliding input
+     * @param autoCapsFlags the auto-caps flags, {@code recapitalizeMode} the recapitalize mode
      */
-    public void onCodeRelease(int i, boolean z, int i2, int i3) {
-        if (i == -15) {
+    public void onCodeRelease(int code, boolean withSliding, int autoCapsFlags, int recapitalizeMode) {
+        if (code == -15) {
             onSymbolPagingKeyRelease();
             return;
         }
-        if (i != 32) {
-            switch (i) {
+        if (code != 32) {
+            switch (code) {
                 case -3:
-                    onSymbolKeyRelease(z, i2, i3);
+                    onSymbolKeyRelease(withSliding, autoCapsFlags, recapitalizeMode);
                     break;
                 case -2:
                     setShiftLocked(!this.shiftModeTracker.isShiftLocked() || this.shiftModeTracker.isShiftLockShifted());
                     break;
                 case -1:
-                    onShiftKeyRelease(z, i2, i3);
+                    onShiftKeyRelease(withSliding, autoCapsFlags, recapitalizeMode);
                     break;
             }
             return;
         }
-        onSpaceRelease(z, i2, i3);
+        onSpaceRelease(withSliding, autoCapsFlags, recapitalizeMode);
     }
 
     /**
-     * @param z true if released during sliding input (likewise for the other release handlers)
-     * @param i the auto-caps flags, {@code i2} the recapitalize mode
+     * @param withSliding true if released during sliding input (likewise for the other release handlers)
+     * @param autoCapsFlags the auto-caps flags, {@code recapitalizeMode} the recapitalize mode
      */
-    private void onSpaceRelease(boolean z, int i, int i2) {
-        if (z) {
+    private void onSpaceRelease(boolean withSliding, int autoCapsFlags, int recapitalizeMode) {
+        if (withSliding) {
             return;
         }
         this.shiftKeyState.onOtherKeyPressed();
@@ -786,12 +786,12 @@ public final class KeyboardState {
         this.symbolPagingKeyState.onOtherKeyPressed();
         if ((this.currentMode == KeyboardModeState.SYMBOL || this.currentMode == KeyboardModeState.EMOJI) && !this.switcherCallbacks.isPkbDevice()) {
             this.switcherCallbacks.onStartShiftLongPress();
-            switchToAlphabetUnshifted(i, i2);
+            switchToAlphabetUnshifted(autoCapsFlags, recapitalizeMode);
             this.switcherCallbacks.onFinishShiftLongPress();
         }
     }
 
-    private void onSymbolKeyPress(int i, int i2) {
+    private void onSymbolKeyPress(int autoCapsFlags, int recapitalizeMode) {
         this.symbolKeyState.onPress();
         this.switchState = 2;
     }
@@ -800,35 +800,35 @@ public final class KeyboardState {
      * Sym released. {@link #switchToSymbolFromAlphabet} is a toggle: call it at most once. Symbol
      * mode is entered on release, so a chorded Sym never left the alphabet and must stay there.
      */
-    private void onSymbolKeyRelease(boolean z, int i, int i2) {
+    private void onSymbolKeyRelease(boolean withSliding, int autoCapsFlags, int recapitalizeMode) {
         if (this.symbolKeyState.isChording()) {
             // Stay on the alphabet; undo the marker onSymbolKeyPress() set.
             this.switchState = 0;
             this.symbolKeyState.onRelease();
             return;
         }
-        if (!z) {
+        if (!withSliding) {
             // A plain tap, not a slide: symbol mode opens on page 0 next time.
             this.savedSymbolPageIndex = 0;
         }
-        switchToSymbolFromAlphabet(i, i2);
+        switchToSymbolFromAlphabet(autoCapsFlags, recapitalizeMode);
         this.symbolKeyState.onRelease();
     }
 
-    /** @param i the auto-caps flags, {@code i2} the recapitalize mode */
-    public void requestShiftMode(int i, int i2) {
-        this.requestedShiftMode = i2;
-        updateShiftStateOnInput(i, i2);
+    /** @param autoCapsFlags the auto-caps flags, {@code recapitalizeMode} the recapitalize mode */
+    public void requestShiftMode(int autoCapsFlags, int recapitalizeMode) {
+        this.requestedShiftMode = recapitalizeMode;
+        updateShiftStateOnInput(autoCapsFlags, recapitalizeMode);
     }
 
-    /** @param i the auto-caps flags, {@code i2} the recapitalize mode */
-    public void onBackspaceInSymbolMode(int i, int i2) {
-        onBackspace(i, i2);
+    /** @param autoCapsFlags the auto-caps flags, {@code recapitalizeMode} the recapitalize mode */
+    public void onBackspaceInSymbolMode(int autoCapsFlags, int recapitalizeMode) {
+        onBackspace(autoCapsFlags, recapitalizeMode);
     }
 
-    /** @param i the recapitalize mode */
-    private void setShiftModeFromRequest(int i) {
-        switch (i) {
+    /** @param recapitalizeMode the recapitalize mode */
+    private void setShiftModeFromRequest(int recapitalizeMode) {
+        switch (recapitalizeMode) {
             case 2:
                 setShiftMode(2);
                 break;
@@ -841,10 +841,10 @@ public final class KeyboardState {
         }
     }
 
-    private void updateShiftStateOnInput(int i, int i2) {
+    private void updateShiftStateOnInput(int autoCapsFlags, int recapitalizeMode) {
         if (this.currentMode == KeyboardModeState.ALPHABET) {
-            if (RECAPITALIZE_NONE != i2) {
-                setShiftModeFromRequest(i2);
+            if (RECAPITALIZE_NONE != recapitalizeMode) {
+                setShiftModeFromRequest(recapitalizeMode);
                 return;
             }
             if (!this.shiftKeyState.isReleasing() || this.shiftModeTracker.isShiftLocked() || this.shiftKeyState.isIgnoring()) {
@@ -852,7 +852,7 @@ public final class KeyboardState {
             }
             // A chorded shift cannot reach here (the guard requires isReleasing()); handle it
             // before the guard if ever needed.
-            setShiftMode(i == 0 ? 0 : 2);
+            setShiftMode(autoCapsFlags == 0 ? 0 : 2);
         }
     }
 
@@ -914,7 +914,7 @@ public final class KeyboardState {
         this.symbolPagingKeyState.onRelease();
     }
 
-    private void onShiftKeyRelease(boolean z, int i, int i2) {
+    private void onShiftKeyRelease(boolean withSliding, int autoCapsFlags, int recapitalizeMode) {
         int i3 = this.requestedShiftMode;
         if (RECAPITALIZE_NONE != i3) {
             setShiftModeFromRequest(i3);
@@ -927,23 +927,23 @@ public final class KeyboardState {
                 if (this.shiftKeyState.isChording()) {
                     setShiftMode(0);
                     this.shiftKeyState.onRelease();
-                    loadAlphabetKeyboard(i, i2);
+                    loadAlphabetKeyboard(autoCapsFlags, recapitalizeMode);
                     return;
                 }
-                if (this.shiftModeTracker.isShiftLockShifted() && z) {
+                if (this.shiftModeTracker.isShiftLockShifted() && withSliding) {
                     setShiftLocked(true);
-                } else if (this.shiftModeTracker.isManualShifted() && z) {
+                } else if (this.shiftModeTracker.isManualShifted() && withSliding) {
                     this.switchState = 6;
-                } else if (!zM7317c || this.shiftModeTracker.isShiftLockShifted() || ((!this.shiftKeyState.isPressing() && !this.shiftKeyState.isPressingOnShifted()) || z)) {
-                    if (zM7317c && !this.shiftKeyState.isIgnoring() && !z) {
+                } else if (!zM7317c || this.shiftModeTracker.isShiftLockShifted() || ((!this.shiftKeyState.isPressing() && !this.shiftKeyState.isPressingOnShifted()) || withSliding)) {
+                    if (zM7317c && !this.shiftKeyState.isIgnoring() && !withSliding) {
                         setShiftLocked(false);
-                    } else if (this.shiftModeTracker.isShiftedOrShiftLocked() && this.shiftKeyState.isPressingOnShifted() && !z) {
+                    } else if (this.shiftModeTracker.isShiftedOrShiftLocked() && this.shiftKeyState.isPressingOnShifted() && !withSliding) {
                         setShiftMode(0);
                         this.isShiftLockReleased = true;
-                    } else if (this.shiftModeTracker.isManualShiftedFromAutomaticShifted() && this.shiftKeyState.isPressing() && !z) {
+                    } else if (this.shiftModeTracker.isManualShiftedFromAutomaticShifted() && this.shiftKeyState.isPressing() && !withSliding) {
                         setShiftMode(0);
                         this.isShiftLockReleased = true;
-                    } else if ((this.shiftModeTracker.isManualShifted() || this.shiftModeTracker.isShiftLocked()) && this.shiftKeyState.isIgnoring() && !z) {
+                    } else if ((this.shiftModeTracker.isManualShifted() || this.shiftModeTracker.isShiftLocked()) && this.shiftKeyState.isIgnoring() && !withSliding) {
                         setShiftMode(0);
                         this.isShiftLockReleased = true;
                     }
@@ -955,40 +955,40 @@ public final class KeyboardState {
         this.shiftKeyState.onRelease();
     }
 
-    /** @param i the auto-caps flags, {@code i2} the recapitalize mode */
-    public void onMomentaryStateFinish(int i, int i2) {
+    /** @param autoCapsFlags the auto-caps flags, {@code recapitalizeMode} the recapitalize mode */
+    public void onMomentaryStateFinish(int autoCapsFlags, int recapitalizeMode) {
         switch (this.switchState) {
             case 4:
-                switchToAlphabetFromSymbol(i, i2);
+                switchToAlphabetFromSymbol(autoCapsFlags, recapitalizeMode);
                 break;
             case 5:
                 cycleThroughSymbolPages();
                 break;
             case 6:
-                switchToAlphabetUnshifted(i, i2);
+                switchToAlphabetUnshifted(autoCapsFlags, recapitalizeMode);
                 break;
         }
     }
 
     /**
-     * @param i the key code
-     * @param i2 the auto-caps flags, {@code i3} the recapitalize mode
+     * @param code the key code
+     * @param autoCapsFlags the auto-caps flags, {@code recapitalizeMode} the recapitalize mode
      */
-    public void onInputCodeChanged(int i, int i2, int i3) {
+    public void onInputCodeChanged(int code, int autoCapsFlags, int recapitalizeMode) {
         switch (this.switchState) {
             case 1:
                 if (this.currentMode != KeyboardModeState.EMOJI) {
-                    if (!isWhitespaceOrEnter(i) && (Constants.isLetterCode(i) || i == -4)) {
+                    if (!isWhitespaceOrEnter(code) && (Constants.isLetterCode(code) || code == -4)) {
                         this.switchState = 2;
                         break;
-                    } else if (i == -3) {
+                    } else if (code == -3) {
                         this.switchState = 4;
                         break;
                     }
                 }
                 break;
             case 2:
-                if (i == 32) {
+                if (code == 32) {
                     this.switchState = 3;
                     break;
                 } else {
@@ -996,18 +996,18 @@ public final class KeyboardState {
                     break;
                 }
             case 3:
-                if (Character.isAlphabetic(i) && this.currentMode != KeyboardModeState.ALPHABET) {
-                    switchToAlphabetFromSymbol(i2, i3);
+                if (Character.isAlphabetic(code) && this.currentMode != KeyboardModeState.ALPHABET) {
+                    switchToAlphabetFromSymbol(autoCapsFlags, recapitalizeMode);
                     this.savedSymbolPageIndex = 0;
                     break;
-                } else if (i != -1) {
+                } else if (code != -1) {
                     this.switchState = 4;
                     break;
                 }
                 break;
             case 4:
-                if (i != -3) {
-                    if (i == 32) {
+                if (code != -3) {
+                    if (code == 32) {
                         this.switchState = 3;
                         break;
                     }
@@ -1020,13 +1020,13 @@ public final class KeyboardState {
                 }
                 break;
             case 5:
-                if (i == -1) {
+                if (code == -1) {
                     this.switchState = 1;
                     break;
                 }
                 break;
         }
-        if (Constants.isLetterCode(i)) {
+        if (Constants.isLetterCode(code)) {
             if (this.currentMode == KeyboardModeState.SYMBOL) {
                 if (this.isVkbCustomSymbolPage) {
                     onCharacterInCustomPage();
@@ -1036,31 +1036,31 @@ public final class KeyboardState {
                     setPkbSymbolsKeyboard(0, true, true);
                 }
             } else {
-                updateShiftStateOnInput(i2, i3);
+                updateShiftStateOnInput(autoCapsFlags, recapitalizeMode);
             }
             this.switcherCallbacks.onCharacterKey();
             return;
         }
-        if (i == -43) {
-            switchToAlphabetUnshifted(i2, i3);
+        if (code == -43) {
+            switchToAlphabetUnshifted(autoCapsFlags, recapitalizeMode);
             this.switcherCallbacks.onReturnToAlphabetFromSymbol();
             return;
         }
-        if (i != -37) {
-            if (i == -14) {
-                switchToAlphabetUnshifted(i2, i3);
+        if (code != -37) {
+            if (code == -14) {
+                switchToAlphabetUnshifted(autoCapsFlags, recapitalizeMode);
                 return;
             }
-            if (i == -11) {
+            if (code == -11) {
                 onEmojiInput();
                 return;
             }
-            switch (i) {
+            switch (code) {
                 case -40:
                 case -39:
                     break;
                 default:
-                    switch (i) {
+                    switch (code) {
                         case -23:
                             switchToMenuMode();
                             break;
@@ -1068,7 +1068,7 @@ public final class KeyboardState {
                     return;
             }
         }
-        switchToAlphabetUnshifted(i2, i3);
+        switchToAlphabetUnshifted(autoCapsFlags, recapitalizeMode);
     }
 
 
@@ -1077,13 +1077,13 @@ public final class KeyboardState {
     }
 
     /**
-     * @param i the auto-caps flags, {@code i2} the recapitalize mode
-     * @param z true when triggered by a swipe gesture
-     * @param z2 true for the physical keyboard's symbol pages
+     * @param autoCapsFlags the auto-caps flags, {@code recapitalizeMode} the recapitalize mode
+     * @param fromSwipe true when triggered by a swipe gesture
+     * @param fromPhysicalKeyboard true for the physical keyboard's symbol pages
      */
-    public void onSymbolShiftToggle(int i, int i2, boolean z, boolean z2) {
+    public void onSymbolShiftToggle(int autoCapsFlags, int recapitalizeMode, boolean fromSwipe, boolean fromPhysicalKeyboard) {
         if (this.currentMode != KeyboardModeState.SYMBOL) {
-            if (z2) {
+            if (fromPhysicalKeyboard) {
                 // The hardware Sym key always enters from the alphabet. Set it explicitly:
                 // resetSymbolMode() leaves 0, which would make hinted keys type letters.
                 this.symbolEntryMethod = 1;
@@ -1093,8 +1093,8 @@ public final class KeyboardState {
                 setVkbSymbolShiftState(getVkbSymbolShiftStateFromShiftMode());
                 setVkbSymbolsKeyboard(0, false, isVkbSymbolCustomizationEnabled() && shouldShowVkbCustomPageFirst());
             }
-            if (z) {
-                this.symbolEntryMethod = z2 ? 2 : 3;
+            if (fromSwipe) {
+                this.symbolEntryMethod = fromPhysicalKeyboard ? 2 : 3;
                 return;
             }
             return;
@@ -1103,7 +1103,7 @@ public final class KeyboardState {
             int i3 = this.currentSymbolPageIndex;
             if (i3 == this.maxPkbSymbolPages - 1) {
                 DeviceProfile.setForceVkbMode(false);
-                switchToAlphabetFromSymbol(i, i2);
+                switchToAlphabetFromSymbol(autoCapsFlags, recapitalizeMode);
                 this.switcherCallbacks.onReturnToAlphabetFromSymbol();
                 this.savedSymbolPageIndex = 0;
                 return;
@@ -1113,18 +1113,18 @@ public final class KeyboardState {
         }
         int i4 = this.currentSymbolPageIndex;
         if (i4 == this.maxSymbolPages - 1) {
-            switchToAlphabetFromSymbol(i, i2);
+            switchToAlphabetFromSymbol(autoCapsFlags, recapitalizeMode);
             this.savedSymbolPageIndex = 0;
         } else {
             setVkbSymbolsKeyboard(i4 + 1, false, isVkbCustomSymbolPage(i4 + 1));
         }
     }
 
-    /** @param i the auto-caps flags, {@code i2} the recapitalize mode */
-    public void onSymbolKeyLongPress(int i, int i2) {
+    /** @param autoCapsFlags the auto-caps flags, {@code recapitalizeMode} the recapitalize mode */
+    public void onSymbolKeyLongPress(int autoCapsFlags, int recapitalizeMode) {
         int i3 = this.symbolEntryMethod;
         if ((i3 == 2 || i3 == 3) && this.currentMode == KeyboardModeState.SYMBOL) {
-            switchToAlphabetFromSymbol(i, i2);
+            switchToAlphabetFromSymbol(autoCapsFlags, recapitalizeMode);
             this.savedSymbolPageIndex = 0;
         }
     }
@@ -1141,9 +1141,9 @@ public final class KeyboardState {
         return this.shiftModeTracker.isShiftLocked() ? 2 : 0;
     }
 
-    /** @param i 0 unshifted, 1 shifted, 2 locked */
-    private void setVkbSymbolShiftState(int i) {
-        this.vkbSymbolShiftState = i;
+    /** @param shiftState 0 unshifted, 1 shifted, 2 locked */
+    private void setVkbSymbolShiftState(int shiftState) {
+        this.vkbSymbolShiftState = shiftState;
     }
 
     public boolean isInSymbolMode() {
@@ -1155,18 +1155,18 @@ public final class KeyboardState {
         return this.currentMode;
     }
 
-    /** @param i the symbol page index */
-    public boolean isVkbCustomSymbolPage(int i) {
+    /** @param page the symbol page index */
+    public boolean isVkbCustomSymbolPage(int page) {
         if (isVkbSymbolCustomizationEnabled()) {
-            return shouldShowVkbCustomPageFirst() ? i == 0 : i == this.maxSymbolPages - 1;
+            return shouldShowVkbCustomPageFirst() ? page == 0 : page == this.maxSymbolPages - 1;
         }
         return false;
     }
 
-    /** @param i the symbol page index */
-    public boolean isPkbCustomSymbolPage(int i) {
+    /** @param page the symbol page index */
+    public boolean isPkbCustomSymbolPage(int page) {
         if (isPkbSymbolCustomizationEnabled()) {
-            return shouldShowPkbCustomPageFirst() ? i == 0 : i == this.maxPkbSymbolPages - 1;
+            return shouldShowPkbCustomPageFirst() ? page == 0 : page == this.maxPkbSymbolPages - 1;
         }
         return false;
     }
@@ -1267,9 +1267,9 @@ public final class KeyboardState {
         return this.vkbSymbolShiftState == 1;
     }
 
-    /** @param i 0 unshifted, 1 shifted, 2 locked */
-        void setPkbSymbolShiftState(int i) {
-        this.pkbSymbolShiftState = i;
+    /** @param shiftState 0 unshifted, 1 shifted, 2 locked */
+        void setPkbSymbolShiftState(int shiftState) {
+        this.pkbSymbolShiftState = shiftState;
     }
 
     private int getSymbolShiftStateFromOrder() {

@@ -4,28 +4,28 @@ package dev.bbkb.ime.core;
 
 
 public final class Constants {
-    public static boolean isValidCoordinate(int i) {
-        return i >= 0;
+    public static boolean isValidCoordinate(int coordinate) {
+        return coordinate >= 0;
     }
 
-    public static boolean isLetterCode(int i) {
-        return i >= 32;
+    public static boolean isLetterCode(int code) {
+        return code >= 32;
     }
 
-    public static String printableCode(int i) {
-        if (i == -21) {
+    public static String printableCode(int code) {
+        if (code == -21) {
             return "unspec";
         }
-        if (i == -16) {
+        if (code == -16) {
             return "diacritics";
         }
-        if (i == -14) {
+        if (code == -14) {
             return "alpha";
         }
-        if (i == 32) {
+        if (code == 32) {
             return "space";
         }
-        switch (i) {
+        switch (code) {
             case -45:
                 return "showKeyboardSettings";
             case -44:
@@ -61,7 +61,7 @@ public final class Constants {
             case -29:
                 return "rapidInput";
             default:
-                switch (i) {
+                switch (code) {
                     case -27:
                         return "voiceDictation";
                     case -26:
@@ -73,7 +73,7 @@ public final class Constants {
                     case -23:
                         return "showInputMenu";
                     default:
-                        switch (i) {
+                        switch (code) {
                             case -12:
                                 return "shiftEnter";
                             case -11:
@@ -99,13 +99,13 @@ public final class Constants {
                             case -1:
                                 return "shift";
                             default:
-                                switch (i) {
+                                switch (code) {
                                     case 9:
                                         return "tab";
                                     case 10:
                                         return "enter";
                                     default:
-                                        return i < 32 ? String.format("\\u%02X", Integer.valueOf(i)) : i < 256 ? String.format("%c", Integer.valueOf(i)) : i < 65536 ? String.format("\\u%04X", Integer.valueOf(i)) : String.format("\\U%05X", Integer.valueOf(i));
+                                        return code < 32 ? String.format("\\u%02X", Integer.valueOf(code)) : code < 256 ? String.format("%c", Integer.valueOf(code)) : code < 65536 ? String.format("\\u%04X", Integer.valueOf(code)) : String.format("\\U%05X", Integer.valueOf(code));
                                 }
                         }
                 }

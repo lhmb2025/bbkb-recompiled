@@ -24,10 +24,10 @@ public final class KeyboardCodesSet {
         }
     }
 
-    public static int getCode(String str) {
-        Integer num = sNameToIdMap.get(str);
+    public static int getCode(String name) {
+        Integer num = sNameToIdMap.get(name);
         if (num == null) {
-            throw new RuntimeException("Unknown key code: " + str);
+            throw new RuntimeException("Unknown key code: " + name);
         }
         return KEY_CODES[num.intValue()];
     }

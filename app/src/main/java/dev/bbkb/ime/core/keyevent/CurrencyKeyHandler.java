@@ -12,18 +12,18 @@ public final class CurrencyKeyHandler implements KeyCharacterInterpreter {
         return this;
     }
 
-    /** @param i the meta state; Sym on the 4 key also gives the currency symbol */
+    /** @param metaState the meta state; Sym on the 4 key also gives the currency symbol */
     @Override
-    public KeyCharacterResult.Interpretation interpretKeyCharacter(KeyEvent keyEvent, int i) {
+    public KeyCharacterResult.Interpretation interpretKeyCharacter(KeyEvent keyEvent, int metaState) {
         if (keyEvent.getKeyCode() != KeyEvent.KEYCODE_4) {
             return null;
         }
         // On Arabic, Hebrew and Cyrillic keycaps this key carries a letter, which wins over currency.
-        if (PhysicalKeyResolver.letter(keyEvent, i) != 0) {
+        if (PhysicalKeyResolver.letter(keyEvent, metaState) != 0) {
             return null;
         }
         boolean isCurrencyKey = Character.getType(keyEvent.getUnicodeChar()) == Character.CURRENCY_SYMBOL
-                || (KeyEvent.normalizeMetaState(i) & KeyEvent.META_SYM_ON) != 0;
+                || (KeyEvent.normalizeMetaState(metaState) & KeyEvent.META_SYM_ON) != 0;
         if (!isCurrencyKey) {
             return null;
         }

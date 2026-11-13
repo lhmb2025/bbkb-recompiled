@@ -14,7 +14,7 @@ public interface MoreKeysPanel {
         }
 
         @Override
-        public void onShowMoreKeysPanel(MoreKeysPanel interfaceC1071m) {
+        public void onShowMoreKeysPanel(MoreKeysPanel moreKeysPanel) {
         }
 
         @Override
@@ -26,28 +26,28 @@ public interface MoreKeysPanel {
     public interface Controller {
         void onCancelMoreKeysPanel();
 
-        void onShowMoreKeysPanel(MoreKeysPanel interfaceC1071m);
+        void onShowMoreKeysPanel(MoreKeysPanel moreKeysPanel);
 
         void onDismissMoreKeysPanel();
     }
 
-    void onDownEvent(int i, int i2, int i3, long j);
+    void onDownEvent(int x, int y, int pointerId, long eventTime);
 
-    void showMoreKeysPanel(View view, Controller aVar, int i, int i2, KeyboardActionListenerInterface interfaceC0976f);
+    void showMoreKeysPanel(View view, Controller controller, int pointX, int pointY, KeyboardActionListenerInterface listener);
 
     void showInParent(ViewGroup viewGroup);
 
     void dismissMoreKeysPanel();
 
-    void onMoveEvent(int i, int i2, int i3, long j);
+    void onMoveEvent(int x, int y, int pointerId, long eventTime);
 
-    int translateX(int i);
+    int translateX(int x);
 
     void removeFromParent();
 
-    void onUpEvent(int i, int i2, int i3, long j);
+    void onUpEvent(int x, int y, int pointerId, long eventTime);
 
-    int translateY(int i);
+    int translateY(int y);
 
     boolean isShowingInParent();
 }

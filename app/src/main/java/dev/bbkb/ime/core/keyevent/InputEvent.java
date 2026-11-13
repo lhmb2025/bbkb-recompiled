@@ -51,28 +51,28 @@ public class InputEvent {
     private final int mFlags;
 
     /**
-     * @param i event type (EVENT_*)
-     * @param i2 code point, or -1 for none
-     * @param i3 key code
-     * @param i4 x coordinate or a COORD_* marker
-     * @param i5 y coordinate or a COORD_* marker
-     * @param i6 FLAG_* bits
-     * @param c0914a next event in the chain, or null
-     * @param j timestamp, or -1
-     * @param z true if from a switched keyboard
+     * @param eventType event type (EVENT_*)
+     * @param codePoint code point, or -1 for none
+     * @param keyCode key code
+     * @param x x coordinate or a COORD_* marker
+     * @param y y coordinate or a COORD_* marker
+     * @param flags FLAG_* bits
+     * @param nextEvent next event in the chain, or null
+     * @param timestamp timestamp, or -1
+     * @param isFromSwitchedKeyboard true if from a switched keyboard
      */
-    private InputEvent(int i, CharSequence charSequence, int i2, int i3, int i4, int i5, SuggestedWords.SuggestedWordInfo suggestedWordInfoVar, int i6, InputEvent c0914a, long j, boolean z) {
-        this.mEventType = i;
+    private InputEvent(int eventType, CharSequence charSequence, int codePoint, int keyCode, int x, int y, SuggestedWords.SuggestedWordInfo suggestedWordInfo, int flags, InputEvent nextEvent, long timestamp, boolean isFromSwitchedKeyboard) {
+        this.mEventType = eventType;
         this.mText = charSequence;
-        this.mCodePoint = i2;
-        this.mKeyCode = i3;
-        this.mX = i4;
-        this.mY = i5;
-        this.mTimestamp = j;
-        this.mSuggestedWordInfo = suggestedWordInfoVar;
-        this.mFlags = i6;
-        this.mNextEvent = c0914a;
-        this.mIsFromSwitchedKeyboard = z;
+        this.mCodePoint = codePoint;
+        this.mKeyCode = keyCode;
+        this.mX = x;
+        this.mY = y;
+        this.mTimestamp = timestamp;
+        this.mSuggestedWordInfo = suggestedWordInfo;
+        this.mFlags = flags;
+        this.mNextEvent = nextEvent;
+        this.mIsFromSwitchedKeyboard = isFromSwitchedKeyboard;
         if (EVENT_SUGGESTION_PICKED == this.mEventType) {
             if (this.mSuggestedWordInfo == null) {
                 throw new RuntimeException("Wrong event: SUGGESTION_PICKED event must have a non-null SuggestedWordInfo");
@@ -83,122 +83,122 @@ public class InputEvent {
     }
 
     /**
-     * @param i code point
-     * @param i2 key code
-     * @param i3 x coordinate
-     * @param i4 y coordinate
-     * @param j timestamp
-     * @param z true for a key repeat
+     * @param codePoint code point
+     * @param keyCode key code
+     * @param x x coordinate
+     * @param y y coordinate
+     * @param timestamp timestamp
+     * @param isKeyRepeat true for a key repeat
      */
-    public static InputEvent createKeyPress(int i, int i2, int i3, int i4, long j, boolean z) {
-        return new InputEvent(EVENT_KEY_PRESS, null, i, i2, i3, i4, null, z ? FLAG_KEY_REPEAT : 0, null, j, false);
+    public static InputEvent createKeyPress(int codePoint, int keyCode, int x, int y, long timestamp, boolean isKeyRepeat) {
+        return new InputEvent(EVENT_KEY_PRESS, null, codePoint, keyCode, x, y, null, isKeyRepeat ? FLAG_KEY_REPEAT : 0, null, timestamp, false);
     }
 
     /**
-     * @param i code point
-     * @param i2 key code
-     * @param c0914a next event, or null
-     * @param z true for a key repeat
-     * @param j timestamp
-     * @param z2 true if from a switched keyboard
+     * @param codePoint code point
+     * @param keyCode key code
+     * @param nextEvent next event, or null
+     * @param isKeyRepeat true for a key repeat
+     * @param timestamp timestamp
+     * @param isFromSwitchedKeyboard true if from a switched keyboard
      */
-    public static InputEvent createHardwareKeyPressEx(int i, int i2, InputEvent c0914a, boolean z, long j, boolean z2) {
-        return new InputEvent(EVENT_KEY_PRESS, null, i, i2, COORD_NO_COORDINATES, COORD_NO_COORDINATES, null, z ? FLAG_KEY_REPEAT : 0, c0914a, j, z2);
+    public static InputEvent createHardwareKeyPressEx(int codePoint, int keyCode, InputEvent nextEvent, boolean isKeyRepeat, long timestamp, boolean isFromSwitchedKeyboard) {
+        return new InputEvent(EVENT_KEY_PRESS, null, codePoint, keyCode, COORD_NO_COORDINATES, COORD_NO_COORDINATES, null, isKeyRepeat ? FLAG_KEY_REPEAT : 0, nextEvent, timestamp, isFromSwitchedKeyboard);
     }
 
     /**
-     * @param i code point
-     * @param i2 key code
-     * @param c0914a next event, or null
-     * @param z true for a key repeat
-     * @param j timestamp
-     * @param z2 true if from a switched keyboard
+     * @param codePoint code point
+     * @param keyCode key code
+     * @param nextEvent next event, or null
+     * @param isKeyRepeat true for a key repeat
+     * @param timestamp timestamp
+     * @param isFromSwitchedKeyboard true if from a switched keyboard
      */
-    public static InputEvent createTextEvent(int i, CharSequence charSequence, int i2, InputEvent c0914a, boolean z, long j, boolean z2) {
-        return new InputEvent(EVENT_TEXT_INPUT, charSequence, i, i2, COORD_NO_COORDINATES, COORD_NO_COORDINATES, null, z ? FLAG_KEY_REPEAT : 0, c0914a, j, z2);
+    public static InputEvent createTextEvent(int codePoint, CharSequence charSequence, int keyCode, InputEvent nextEvent, boolean isKeyRepeat, long timestamp, boolean isFromSwitchedKeyboard) {
+        return new InputEvent(EVENT_TEXT_INPUT, charSequence, codePoint, keyCode, COORD_NO_COORDINATES, COORD_NO_COORDINATES, null, isKeyRepeat ? FLAG_KEY_REPEAT : 0, nextEvent, timestamp, isFromSwitchedKeyboard);
     }
 
     /**
-     * @param i code point
-     * @param i2 key code
-     * @param c0914a next event, or null
-     * @param z true for a key repeat
-     * @param j timestamp
+     * @param codePoint code point
+     * @param keyCode key code
+     * @param nextEvent next event, or null
+     * @param isKeyRepeat true for a key repeat
+     * @param timestamp timestamp
      */
-    public static InputEvent createHardwareKeyPress(int i, int i2, InputEvent c0914a, boolean z, long j) {
-        return createHardwareKeyPressEx(i, i2, c0914a, z, j, false);
+    public static InputEvent createHardwareKeyPress(int codePoint, int keyCode, InputEvent nextEvent, boolean isKeyRepeat, long timestamp) {
+        return createHardwareKeyPressEx(codePoint, keyCode, nextEvent, isKeyRepeat, timestamp, false);
     }
 
     /**
-     * @param i code point
-     * @param i2 key code
-     * @param c0914a next event, or null
-     * @param z true for a key repeat
-     * @param z2 true if Shift is locked
-     * @param j timestamp
+     * @param codePoint code point
+     * @param keyCode key code
+     * @param nextEvent next event, or null
+     * @param isKeyRepeat true for a key repeat
+     * @param isShiftLocked true if Shift is locked
+     * @param timestamp timestamp
      */
-    public static InputEvent createModifierKeyEvent(int i, int i2, InputEvent c0914a, boolean z, boolean z2, long j) {
-        return new InputEvent(EVENT_KEY_PRESS, null, i, i2, COORD_NO_COORDINATES, COORD_NO_COORDINATES, null, (z ? FLAG_KEY_REPEAT : 0) | FLAG_MODIFIER_KEY | (z2 ? FLAG_SHIFT_LOCKED : 0), c0914a, j, false);
+    public static InputEvent createModifierKeyEvent(int codePoint, int keyCode, InputEvent nextEvent, boolean isKeyRepeat, boolean isShiftLocked, long timestamp) {
+        return new InputEvent(EVENT_KEY_PRESS, null, codePoint, keyCode, COORD_NO_COORDINATES, COORD_NO_COORDINATES, null, (isKeyRepeat ? FLAG_KEY_REPEAT : 0) | FLAG_MODIFIER_KEY | (isShiftLocked ? FLAG_SHIFT_LOCKED : 0), nextEvent, timestamp, false);
     }
 
     /**
-     * @param i code point
-     * @param i2 key code
-     * @param c0914a next event, or null
+     * @param codePoint code point
+     * @param keyCode key code
+     * @param nextEvent next event, or null
      */
-    public static InputEvent createFunctionalKeyEvent(int i, int i2, InputEvent c0914a) {
-        return new InputEvent(EVENT_KEY_PRESS, null, i, i2, COORD_NO_COORDINATES, COORD_NO_COORDINATES, null, FLAG_FUNCTIONAL_KEY, c0914a, -1L, false);
+    public static InputEvent createFunctionalKeyEvent(int codePoint, int keyCode, InputEvent nextEvent) {
+        return new InputEvent(EVENT_KEY_PRESS, null, codePoint, keyCode, COORD_NO_COORDINATES, COORD_NO_COORDINATES, null, FLAG_FUNCTIONAL_KEY, nextEvent, -1L, false);
     }
 
     /**
-     * @param i code point
-     * @param i2 key code
-     * @param j timestamp
-     * @param c0914a next event, or null
+     * @param codePoint code point
+     * @param keyCode key code
+     * @param timestamp timestamp
+     * @param nextEvent next event, or null
      */
-    public static InputEvent createHardwareKeyEvent(int i, int i2, long j, InputEvent c0914a) {
-        return new InputEvent(EVENT_KEY_PRESS, null, i, i2, COORD_UNKNOWN, COORD_UNKNOWN, null, 0, c0914a, j, false);
+    public static InputEvent createHardwareKeyEvent(int codePoint, int keyCode, long timestamp, InputEvent nextEvent) {
+        return new InputEvent(EVENT_KEY_PRESS, null, codePoint, keyCode, COORD_UNKNOWN, COORD_UNKNOWN, null, 0, nextEvent, timestamp, false);
     }
 
     /**
-     * @param i code point
-     * @param i2 key code
-     * @param i3 x coordinate
-     * @param i4 y coordinate
-     * @param j timestamp
-     * @param z true for a key repeat
-     * @param z2 true if Shift is locked
+     * @param codePoint code point
+     * @param keyCode key code
+     * @param x x coordinate
+     * @param y y coordinate
+     * @param timestamp timestamp
+     * @param isKeyRepeat true for a key repeat
+     * @param isShiftLocked true if Shift is locked
      */
-    public static InputEvent createModifierKeyPress(int i, int i2, int i3, int i4, long j, boolean z, boolean z2) {
-        return new InputEvent(EVENT_KEY_PRESS, null, i, i2, i3, i4, null, (z ? FLAG_KEY_REPEAT : 0) | FLAG_MODIFIER_KEY | (z2 ? FLAG_SHIFT_LOCKED : 0), null, j, false);
+    public static InputEvent createModifierKeyPress(int codePoint, int keyCode, int x, int y, long timestamp, boolean isKeyRepeat, boolean isShiftLocked) {
+        return new InputEvent(EVENT_KEY_PRESS, null, codePoint, keyCode, x, y, null, (isKeyRepeat ? FLAG_KEY_REPEAT : 0) | FLAG_MODIFIER_KEY | (isShiftLocked ? FLAG_SHIFT_LOCKED : 0), null, timestamp, false);
     }
 
     /**
-     * @param i code point
-     * @param i2 x coordinate
-     * @param i3 y coordinate
-     * @param z true if from a switched keyboard
+     * @param codePoint code point
+     * @param x x coordinate
+     * @param y y coordinate
+     * @param isFromSwitchedKeyboard true if from a switched keyboard
      */
-    public static InputEvent createTouchEvent(int i, int i2, int i3, boolean z) {
-        return new InputEvent(EVENT_KEY_PRESS, null, i, 0, i2, i3, null, 0, null, -1L, z);
+    public static InputEvent createTouchEvent(int codePoint, int x, int y, boolean isFromSwitchedKeyboard) {
+        return new InputEvent(EVENT_KEY_PRESS, null, codePoint, 0, x, y, null, 0, null, -1L, isFromSwitchedKeyboard);
     }
 
-    public static InputEvent createForSuggestion(SuggestedWords.SuggestedWordInfo suggestedWordInfoVar) {
-        return new InputEvent(EVENT_SUGGESTION_PICKED, suggestedWordInfoVar.word, -1, 0, COORD_VIRTUAL, COORD_VIRTUAL, suggestedWordInfoVar, 0, null, -1L, false);
+    public static InputEvent createForSuggestion(SuggestedWords.SuggestedWordInfo suggestedWordInfo) {
+        return new InputEvent(EVENT_SUGGESTION_PICKED, suggestedWordInfo.word, -1, 0, COORD_VIRTUAL, COORD_VIRTUAL, suggestedWordInfo, 0, null, -1L, false);
     }
 
-    /** @param i key code */
-    public static InputEvent createTextInputEvent(CharSequence charSequence, int i) {
-        return new InputEvent(EVENT_TEXT_INPUT, charSequence, -1, i, COORD_UNKNOWN, COORD_UNKNOWN, null, 0, null, -1L, false);
+    /** @param keyCode key code */
+    public static InputEvent createTextInputEvent(CharSequence charSequence, int keyCode) {
+        return new InputEvent(EVENT_TEXT_INPUT, charSequence, -1, keyCode, COORD_UNKNOWN, COORD_UNKNOWN, null, 0, null, -1L, false);
     }
 
-    public static InputEvent createForSuggestionWithFirstChar(SuggestedWords.SuggestedWordInfo suggestedWordInfoVar) {
-        return new InputEvent(EVENT_SUGGESTION_PICKED, suggestedWordInfoVar.word, suggestedWordInfoVar.word.charAt(0), 0, COORD_VIRTUAL, COORD_VIRTUAL, suggestedWordInfoVar, 0, null, -1L, false);
+    public static InputEvent createForSuggestionWithFirstChar(SuggestedWords.SuggestedWordInfo suggestedWordInfo) {
+        return new InputEvent(EVENT_SUGGESTION_PICKED, suggestedWordInfo.word, suggestedWordInfo.word.charAt(0), 0, COORD_VIRTUAL, COORD_VIRTUAL, suggestedWordInfo, 0, null, -1L, false);
     }
 
-    /** @param c0914a the event to copy */
-    public static InputEvent createGestureEndCopy(InputEvent c0914a) {
-        return new InputEvent(c0914a.mEventType, c0914a.mText, c0914a.mCodePoint, c0914a.mKeyCode, c0914a.mX, c0914a.mY, c0914a.mSuggestedWordInfo, c0914a.mFlags | FLAG_GESTURE_END, c0914a.mNextEvent, c0914a.mTimestamp, false);
+    /** @param source the event to copy */
+    public static InputEvent createGestureEndCopy(InputEvent source) {
+        return new InputEvent(source.mEventType, source.mText, source.mCodePoint, source.mKeyCode, source.mX, source.mY, source.mSuggestedWordInfo, source.mFlags | FLAG_GESTURE_END, source.mNextEvent, source.mTimestamp, false);
     }
 
     public static InputEvent createEmptyEvent() {
@@ -310,8 +310,8 @@ public class InputEvent {
         }
     }
 
-    /** @param c0914a the event to copy */
-    public static InputEvent createFromSwitchedKeyboard(InputEvent c0914a) {
-        return new InputEvent(c0914a.mEventType, c0914a.mText, c0914a.mCodePoint, c0914a.mKeyCode, c0914a.mX, c0914a.mY, c0914a.mSuggestedWordInfo, c0914a.mFlags, c0914a.mNextEvent, c0914a.mTimestamp, true);
+    /** @param source the event to copy */
+    public static InputEvent createFromSwitchedKeyboard(InputEvent source) {
+        return new InputEvent(source.mEventType, source.mText, source.mCodePoint, source.mKeyCode, source.mX, source.mY, source.mSuggestedWordInfo, source.mFlags, source.mNextEvent, source.mTimestamp, true);
     }
 }

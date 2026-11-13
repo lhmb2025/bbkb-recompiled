@@ -22,9 +22,9 @@ public final class MoreSuggestionsKeyboard extends Keyboard {
 
     public final SuggestedWords mSuggestedWords;
 
-    MoreSuggestionsKeyboard(MoreSuggestionsParam dVar, SuggestedWords c0666ac) {
-        super(dVar);
-        this.mSuggestedWords = c0666ac;
+    MoreSuggestionsKeyboard(MoreSuggestionsParam params, SuggestedWords suggestedWords) {
+        super(params);
+        this.mSuggestedWords = suggestedWords;
     }
 
     
@@ -57,36 +57,36 @@ public final class MoreSuggestionsKeyboard extends Keyboard {
         private int mNumRows;
 
         /**
-         * @param c0666ac the words
-         * @param i the first word index
-         * @param i2 the maximum width
-         * @param i3 the minimum width
-         * @param i4 the maximum number of rows
+         * @param suggestedWords the words
+         * @param fromIndex the first word index
+         * @param maxWidth the maximum width
+         * @param minWidth the minimum width
+         * @param maxRow the maximum number of rows
          * @return how many words were laid out
          */
-        public int layout(SuggestedWords c0666ac, int i, int i2, int i3, int i4, Paint paint, Resources resources) throws Resources.NotFoundException {
+        public int layout(SuggestedWords suggestedWords, int fromIndex, int maxWidth, int minWidth, int maxRow, Paint paint, Resources resources) throws Resources.NotFoundException {
             String strMo4286b;
             clearKeys();
             this.mDivider = makeDivider(resources);
             this.mDividerWidth = this.mDivider.getIntrinsicWidth();
             float dimension = resources.getDimension(R.dimen.config_more_suggestions_key_horizontal_padding);
-            int iMin = Math.min(c0666ac.size(), 18);
-            int i5 = i;
+            int iMin = Math.min(suggestedWords.size(), 18);
+            int i5 = fromIndex;
             int i6 = i5;
             int i7 = 0;
             while (i5 < iMin) {
-                if (MoreSuggestionsKeyboard.isAutoCorrectionIndex(c0666ac, i5)) {
-                    strMo4286b = c0666ac.getWordForDisplay(0);
+                if (MoreSuggestionsKeyboard.isAutoCorrectionIndex(suggestedWords, i5)) {
+                    strMo4286b = suggestedWords.getWordForDisplay(0);
                 } else {
-                    strMo4286b = c0666ac.getWordForDisplay(i5);
+                    strMo4286b = suggestedWords.getWordForDisplay(i5);
                 }
                 this.mWidths[i5] = (int) (TypefaceUtils.getStringWidth(strMo4286b, paint) + dimension);
                 int i8 = i5 - i6;
                 int i9 = i8 + 1;
-                int i10 = (i2 - (this.mDividerWidth * (i9 - 1))) / i9;
+                int i10 = (maxWidth - (this.mDividerWidth * (i9 - 1))) / i9;
                 if (i9 > 3 || !fitInWidth(i6, i5 + 1, i10)) {
                     int i11 = i7 + 1;
-                    if (i11 >= i4) {
+                    if (i11 >= maxRow) {
                         break;
                     }
                     this.mNumColumnsInRow[i7] = i8;
@@ -99,41 +99,41 @@ public final class MoreSuggestionsKeyboard extends Keyboard {
             }
             this.mNumColumnsInRow[i7] = i5 - i6;
             this.mNumRows = i7 + 1;
-            int iMax = Math.max(i3, calculateMaxColumnWidth(i, i5));
+            int iMax = Math.max(minWidth, calculateMaxColumnWidth(fromIndex, i5));
             this.mOccupiedWidth = iMax;
             this.mBaseWidth = iMax;
             int i12 = (this.mNumRows * this.mDefaultRowHeight) + this.mVerticalGap;
             this.mOccupiedHeight = i12;
             this.mBaseHeight = i12;
-            return i5 - i;
+            return i5 - fromIndex;
         }
 
         /**
-         * @param i the first word index
-         * @param i2 the end word index (exclusive)
-         * @param i3 the column width
+         * @param startIndex the first word index
+         * @param endIndex the end word index (exclusive)
+         * @param width the column width
          */
-        private boolean fitInWidth(int i, int i2, int i3) {
-            while (i < i2) {
-                if (this.mWidths[i] > i3) {
+        private boolean fitInWidth(int startIndex, int endIndex, int width) {
+            while (startIndex < endIndex) {
+                if (this.mWidths[startIndex] > width) {
                     return false;
                 }
-                i++;
+                startIndex++;
             }
             return true;
         }
 
         /**
-         * @param i the first word index
-         * @param i2 the end word index (exclusive)
+         * @param startIndex the first word index
+         * @param endIndex the end word index (exclusive)
          */
-        private int calculateMaxColumnWidth(int i, int i2) {
-            int i3 = i;
+        private int calculateMaxColumnWidth(int startIndex, int endIndex) {
+            int i3 = startIndex;
             int iMax = 0;
             for (int i4 = 0; i4 < this.mNumRows; i4++) {
                 int i5 = this.mNumColumnsInRow[i4];
                 int iMax2 = 0;
-                while (i3 < i2 && this.mRowNumbers[i3] == i4) {
+                while (i3 < endIndex && this.mRowNumbers[i3] == i4) {
                     iMax2 = Math.max(iMax2, this.mWidths[i3]);
                     i3++;
                 }
@@ -142,31 +142,31 @@ public final class MoreSuggestionsKeyboard extends Keyboard {
             return iMax;
         }
 
-        /** @param i the word index (also for the getters below) */
-        public int getNumColumnInRow(int i) {
-            return this.mNumColumnsInRow[this.mRowNumbers[i]];
+        /** @param index the word index (also for the getters below) */
+        public int getNumColumnInRow(int index) {
+            return this.mNumColumnsInRow[this.mRowNumbers[index]];
         }
 
-        public int getColumnNumber(int i) {
-            return COLUMN_ORDER[getNumColumnInRow(i) - 1][this.mColumnOrders[i]];
+        public int getColumnNumber(int index) {
+            return COLUMN_ORDER[getNumColumnInRow(index) - 1][this.mColumnOrders[index]];
         }
 
-        public int getX(int i) {
-            return getColumnNumber(i) * (getWidth(i) + this.mDividerWidth);
+        public int getX(int index) {
+            return getColumnNumber(index) * (getWidth(index) + this.mDividerWidth);
         }
 
-        public int getY(int i) {
-            return (((this.mNumRows - 1) - this.mRowNumbers[i]) * this.mDefaultRowHeight) + this.mTopPadding;
+        public int getY(int index) {
+            return (((this.mNumRows - 1) - this.mRowNumbers[index]) * this.mDefaultRowHeight) + this.mTopPadding;
         }
 
-        public int getWidth(int i) {
-            int iM5342a = getNumColumnInRow(i);
+        public int getWidth(int index) {
+            int iM5342a = getNumColumnInRow(index);
             return (this.mOccupiedWidth - (this.mDividerWidth * (iM5342a - 1))) / iM5342a;
         }
 
-        /** @param i the word index */
-        public void markAsEdgeKey(Key key, int i) {
-            int i2 = this.mRowNumbers[i];
+        /** @param index the word index */
+        public void markAsEdgeKey(Key key, int index) {
+            int i2 = this.mRowNumbers[index];
             if (i2 == 0) {
                 key.setBottomEdge(this);
             }
@@ -174,7 +174,7 @@ public final class MoreSuggestionsKeyboard extends Keyboard {
                 key.setTopEdge(this);
             }
             int i3 = this.mNumColumnsInRow[i2];
-            int iM5345b = getColumnNumber(i);
+            int iM5345b = getColumnNumber(index);
             if (iM5345b == 0) {
                 key.setLeftEdge(this);
             }
@@ -185,11 +185,11 @@ public final class MoreSuggestionsKeyboard extends Keyboard {
     }
 
     /**
-     * @param c0666ac the words
-     * @param i the word index
+     * @param suggestedWords the words
+     * @param index the word index
      */
-    static boolean isAutoCorrectionIndex(SuggestedWords c0666ac, int i) {
-        return c0666ac.mWillAutoCorrect && i == 1;
+    static boolean isAutoCorrectionIndex(SuggestedWords suggestedWords, int index) {
+        return suggestedWords.mWillAutoCorrect && index == 1;
     }
 
     
@@ -209,25 +209,25 @@ public final class MoreSuggestionsKeyboard extends Keyboard {
         }
 
         /**
-         * @param c0666ac the words
-         * @param i the first word index
-         * @param i2 the maximum width
-         * @param i3 the minimum width
-         * @param i4 the maximum number of rows
-         * @param c0965e the keyboard the pane opens over
+         * @param suggestedWords the words
+         * @param fromIndex the first word index
+         * @param maxWidth the maximum width
+         * @param minWidth the minimum width
+         * @param maxRow the maximum number of rows
+         * @param parentKeyboard the keyboard the pane opens over
          */
-        public Builder layout(SuggestedWords c0666ac, int i, int i2, int i3, int i4, Keyboard c0965e) throws Resources.NotFoundException {
-            load(R.xml.kbd_suggestions_pane_template, c0965e.mId);
+        public Builder layout(SuggestedWords suggestedWords, int fromIndex, int maxWidth, int minWidth, int maxRow, Keyboard parentKeyboard) throws Resources.NotFoundException {
+            load(R.xml.kbd_suggestions_pane_template, parentKeyboard.mId);
             MoreSuggestionsParam dVar = (MoreSuggestionsParam) this.mParams;
             MoreSuggestionsParam dVar2 = (MoreSuggestionsParam) this.mParams;
-            int i5 = c0965e.mVerticalGap / 2;
+            int i5 = parentKeyboard.mVerticalGap / 2;
             dVar2.mTopPadding = i5;
             dVar.mVerticalGap = i5;
             this.mPaneView.applyDefaultRowHeight(((MoreSuggestionsParam) this.mParams).mDefaultRowHeight);
-            int iM5343a = ((MoreSuggestionsParam) this.mParams).layout(c0666ac, i, i2, i3, i4, this.mPaneView.createPaintForKey((Key) null), this.mResources);
-            this.mFromIndex = i;
-            this.mToIndex = i + iM5343a;
-            this.mSuggestedWords = c0666ac;
+            int iM5343a = ((MoreSuggestionsParam) this.mParams).layout(suggestedWords, fromIndex, maxWidth, minWidth, maxRow, this.mPaneView.createPaintForKey((Key) null), this.mResources);
+            this.mFromIndex = fromIndex;
+            this.mToIndex = fromIndex + iM5343a;
+            this.mSuggestedWords = suggestedWords;
             return this;
         }
 
@@ -260,13 +260,13 @@ public final class MoreSuggestionsKeyboard extends Keyboard {
         public final int mSuggestedWordIndex;
 
         /**
-         * @param str the word shown
-         * @param i the word index
-         * @param dVar the pane's layout params
+         * @param word the word shown
+         * @param index the word index
+         * @param params the pane's layout params
          */
-        public MoreSuggestionKey(String str, int i, MoreSuggestionsParam dVar) {
-            super(new MoreKeySpec(str, 0, -4, str), MoreKeySpec.getEmpty(), KeyHintPosition.HIDDEN, null, 0, 1, dVar.getX(i), dVar.getY(i), dVar.getWidth(i), dVar.mDefaultRowHeight, dVar.mHorizontalGap, dVar.mVerticalGap, null, null, null, 0, 2, -1);
-            this.mSuggestedWordIndex = i;
+        public MoreSuggestionKey(String word, int index, MoreSuggestionsParam params) {
+            super(new MoreKeySpec(word, 0, -4, word), MoreKeySpec.getEmpty(), KeyHintPosition.HIDDEN, null, 0, 1, params.getX(index), params.getY(index), params.getWidth(index), params.mDefaultRowHeight, params.mHorizontalGap, params.mVerticalGap, null, null, null, 0, 2, -1);
+            this.mSuggestedWordIndex = index;
         }
     }
 
@@ -276,23 +276,23 @@ public final class MoreSuggestionsKeyboard extends Keyboard {
         private final Drawable mDivider;
 
         /**
-         * @param c1025ah the pane's layout params
-         * @param i x
-         * @param i2 y
-         * @param i3 width
-         * @param i4 height
+         * @param keyboardParams the pane's layout params
+         * @param x x
+         * @param y y
+         * @param width width
+         * @param height height
          */
-        public MoreSuggestionDivider(KeyboardParams c1025ah, Drawable drawable, int i, int i2, int i3, int i4) {
-            super(c1025ah, i, i2, i3, i4);
+        public MoreSuggestionDivider(KeyboardParams keyboardParams, Drawable drawable, int x, int y, int width, int height) {
+            super(keyboardParams, x, y, width, height);
             this.mDivider = drawable;
         }
 
         /**
-         * @param c1024ag unused
-         * @param i unused
+         * @param keyboardIconSet unused
+         * @param alpha unused
          */
         @Override
-        public Drawable getIcon(KeyboardIconSet c1024ag, int i) {
+        public Drawable getIcon(KeyboardIconSet keyboardIconSet, int alpha) {
             this.mDivider.setAlpha(128);
             return this.mDivider;
         }

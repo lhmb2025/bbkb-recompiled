@@ -3,11 +3,11 @@ package dev.bbkb.ime.core.ime;
 
 
 public interface CursorMovementListener {
-    void moveRight(int i);
+    void moveRight(int count);
 
-    void moveLeft(int i);
+    void moveLeft(int count);
 
-    void moveUp(int i);
+    void moveUp(int count);
 
-    void moveDown(int i);
+    void moveDown(int count);
 }

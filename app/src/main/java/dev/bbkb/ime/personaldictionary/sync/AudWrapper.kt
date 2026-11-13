@@ -66,11 +66,11 @@ object AudWrapper {
         )
     }
 
-    /** @param i the maximum operations per applyBatch call */
+    /** @param maxBatchSize the maximum operations per applyBatch call */
     @VisibleForTesting
-    fun addBatchWithMaxBatchSize(context: Context, collection: Collection<DictionaryWord>, i: Int): Boolean {
+    fun addBatchWithMaxBatchSize(context: Context, collection: Collection<DictionaryWord>, maxBatchSize: Int): Boolean {
         return try {
-            performAudBatchOperation(context, collection, i, BatchOperation.INSERT)
+            performAudBatchOperation(context, collection, maxBatchSize, BatchOperation.INSERT)
         } catch (e: InterruptedException) {
             LogUtil.w(TAG, "Add batch interrupted")
             Thread.currentThread().interrupt()
@@ -85,11 +85,11 @@ object AudWrapper {
         )
     }
 
-    /** @param i the maximum operations per applyBatch call */
+    /** @param maxBatchSize the maximum operations per applyBatch call */
     @VisibleForTesting
-    fun deleteBatchWithMaxBatchSize(context: Context, collection: Collection<DictionaryWord>, i: Int): Boolean {
+    fun deleteBatchWithMaxBatchSize(context: Context, collection: Collection<DictionaryWord>, maxBatchSize: Int): Boolean {
         return try {
-            performAudBatchOperation(context, collection, i, BatchOperation.DELETE)
+            performAudBatchOperation(context, collection, maxBatchSize, BatchOperation.DELETE)
         } catch (e: InterruptedException) {
             LogUtil.w(TAG, "Delete batch interrupted")
             Thread.currentThread().interrupt()

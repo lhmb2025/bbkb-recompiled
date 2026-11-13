@@ -98,17 +98,17 @@ public final class FccView extends RelativeLayout {
 
     
     public interface ActionListener {
-        /** @param i the key code, sent with Ctrl */
-        void onKeyDown(int i);
+        /** @param keyCode the key code, sent with Ctrl */
+        void onKeyDown(int keyCode);
 
-        /** @param enumC0992a the arrow pressed */
-        void onMove(Direction enumC0992a);
+        /** @param direction the arrow pressed */
+        void onMove(Direction direction);
 
-        /** @param i the key code, sent with Ctrl */
-        void onKeyUp(int i);
+        /** @param keyCode the key code, sent with Ctrl */
+        void onKeyUp(int keyCode);
 
-        /** @param i how to collapse a selection on exit: 1 to its end, 0 to its start, -1 leave it */
-        void onToggleSelect(int i);
+        /** @param collapseDirection how to collapse a selection on exit: 1 to its end, 0 to its start, -1 leave it */
+        void onToggleSelect(int collapseDirection);
     }
 
     
@@ -161,9 +161,9 @@ public final class FccView extends RelativeLayout {
         return this.mRepeatRunnable;
     }
 
-    /** @param z true while the nub is held down */
-    public void setNubDepressed(boolean z) {
-        this.mNubDepressed = z;
+    /** @param depressed true while the nub is held down */
+    public void setNubDepressed(boolean depressed) {
+        this.mNubDepressed = depressed;
     }
 
     public void setRepeatRunnable(Runnable runnable) {
@@ -174,9 +174,9 @@ public final class FccView extends RelativeLayout {
         return this.mOpening;
     }
 
-    /** @param z true while the board is being opened */
-    public void setOpening(boolean z) {
-        this.mOpening = z;
+    /** @param opening true while the board is being opened */
+    public void setOpening(boolean opening) {
+        this.mOpening = opening;
     }
 
     public boolean isToggling() {
@@ -184,15 +184,15 @@ public final class FccView extends RelativeLayout {
     }
 
     /**
-     * @param interfaceC0993b receives the board's actions; null stops key repeat
-     * @param interfaceC0994c reports whether the editor has a selection
+     * @param actionListener receives the board's actions; null stops key repeat
+     * @param selectionProvider reports whether the editor has a selection
      */
-    public void setListeners(ActionListener interfaceC0993b, SelectionProvider interfaceC0994c) {
-        if (interfaceC0993b == null) {
+    public void setListeners(ActionListener actionListener, SelectionProvider selectionProvider) {
+        if (actionListener == null) {
             stopRepeat();
         }
-        this.mListener = interfaceC0993b;
-        this.mSelectionProvider = interfaceC0994c;
+        this.mListener = actionListener;
+        this.mSelectionProvider = selectionProvider;
     }
 
     public FccView(Context context, AttributeSet attributeSet) {
@@ -449,11 +449,11 @@ public final class FccView extends RelativeLayout {
     }
 
     /**
-     * @param i the width measure spec (ignored)
-     * @param i2 the height measure spec (ignored)
+     * @param widthMeasureSpec the width measure spec (ignored)
+     * @param heightMeasureSpec the height measure spec (ignored)
      */
     @Override
-    protected void onMeasure(int i, int i2) {
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         setMeasuredDimension(
                 BoardHeightPolicy.measuredWidth(this),
                 BoardHeightPolicy.measuredHeight(this, this.mKeyboardSwitcher, this.mKeyboardHeight));
@@ -485,11 +485,11 @@ public final class FccView extends RelativeLayout {
         }
     }
 
-    /** @param i how to collapse a selection on exit: 1 to its end, 0 to its start, -1 leave it */
-        void toggleSelectMode(int i) {
+    /** @param collapseDirection how to collapse a selection on exit: 1 to its end, 0 to its start, -1 leave it */
+        void toggleSelectMode(int collapseDirection) {
         this.mIsToggling = true;
         this.mSelectMode = true ^ this.mSelectMode;
-        this.mListener.onToggleSelect(i);
+        this.mListener.onToggleSelect(collapseDirection);
         if (this.mSelectMode) {
             this.mSelectButton.setImageResource(R.drawable.ic_inputboard_fcc_selecting_mode);
             this.mLeftArrow.setImageResource(R.drawable.ic_inputboard_fcc_arrow_left);
@@ -617,8 +617,8 @@ public final class FccView extends RelativeLayout {
         });
     }
 
-    /** @param enumC0992a the arrow this listener drives */
-    private View.OnTouchListener createArrowTouchListener(final Direction enumC0992a) {
+    /** @param direction the arrow this listener drives */
+    private View.OnTouchListener createArrowTouchListener(final Direction direction) {
         return new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
@@ -627,12 +627,12 @@ public final class FccView extends RelativeLayout {
                         if (FccView.this.mNubDepressed || FccView.this.mRepeatRunnable != null) {
                             return false;
                         }
-                        FccView.this.animateNub(enumC0992a, true);
+                        FccView.this.animateNub(direction, true);
                         FccView.this.mArrowBounds = new Rect(view.getLeft(), view.getTop(), view.getRight(), view.getBottom());
                         if (FccView.this.mListener != null) {
-                            FccView.this.mListener.onMove(enumC0992a);
+                            FccView.this.mListener.onMove(direction);
                         }
-                        FccView.this.startRepeat(enumC0992a);
+                        FccView.this.startRepeat(direction);
                         FccView.this.playKeyFeedback();
                         return true;
                     case 2:
@@ -662,13 +662,13 @@ public final class FccView extends RelativeLayout {
     }
 
     /**
-     * @param enumC0992a which way to nudge the nub
-     * @param z true to spring it back when the nudge ends
+     * @param direction which way to nudge the nub
+     * @param resetAfter true to spring it back when the nudge ends
      */
-        void animateNub(Direction enumC0992a, boolean z) {
+        void animateNub(Direction direction, boolean resetAfter) {
         ViewPropertyAnimator viewPropertyAnimatorY;
-        this.mCurrentDirection = enumC0992a;
-        switch (enumC0992a) {
+        this.mCurrentDirection = direction;
+        switch (direction) {
             case UP:
                 viewPropertyAnimatorY = this.mNub.animate().y(this.mNubOriginalY - this.mNubOffset);
                 break;
@@ -687,7 +687,7 @@ public final class FccView extends RelativeLayout {
         }
         if (viewPropertyAnimatorY != null) {
             viewPropertyAnimatorY.setDuration(75L);
-            if (z) {
+            if (resetAfter) {
                 viewPropertyAnimatorY.withEndAction(this.mResetNubRunnable);
             }
         }
@@ -697,19 +697,19 @@ public final class FccView extends RelativeLayout {
         return this.mNub.animate().x(this.mNubOriginalX).y(this.mNubOriginalY).setDuration(125L);
     }
 
-    /** @param enumC0992a the direction to repeat */
-        void startRepeat(final Direction enumC0992a) {
+    /** @param direction the direction to repeat */
+        void startRepeat(final Direction direction) {
         this.mHandler.removeCallbacks(this.mRepeatRunnable);
         this.mRepeatRunnable = new Runnable() {
             @Override
             public void run() {
                 if (FccView.this.mListener != null) {
                     if (!FccView.this.mNubMoved) {
-                        FccView.this.animateNub(enumC0992a, false);
+                        FccView.this.animateNub(direction, false);
                         FccView.this.playKeyFeedback();
                         FccView.this.mNubMoved = true;
                     }
-                    FccView.this.mListener.onMove(enumC0992a);
+                    FccView.this.mListener.onMove(direction);
                 }
                 FccView.this.mHandler.postDelayed(this, FccView.this.mRepeatInterval);
             }

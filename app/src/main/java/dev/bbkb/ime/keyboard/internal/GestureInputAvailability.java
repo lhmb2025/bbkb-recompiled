@@ -23,36 +23,36 @@ public final class GestureInputAvailability {
         return false;
     }
 
-    private void updateVkbGestureAvailability(boolean z) {
-        this.isVkbGestureAvailable = z && this.isVkbGestureEnabledByUser;
+    private void updateVkbGestureAvailability(boolean baseConditionsMet) {
+        this.isVkbGestureAvailable = baseConditionsMet && this.isVkbGestureEnabledByUser;
     }
 
-    private void updateCkbGestureAvailability(boolean z) {
-        this.isCkbGestureAvailable = z && this.isCkbGestureEnabledByUser;
+    private void updateCkbGestureAvailability(boolean baseConditionsMet) {
+        this.isCkbGestureAvailable = baseConditionsMet && this.isCkbGestureEnabledByUser;
     }
 
-    /** @param z true if the main dictionary is loaded */
-    public synchronized void setMainDictionaryAvailable(boolean z) {
-        if (this.isMainDictionaryAvailable != z) {
-            this.isMainDictionaryAvailable = z;
+    /** @param available true if the main dictionary is loaded */
+    public synchronized void setMainDictionaryAvailable(boolean available) {
+        if (this.isMainDictionaryAvailable != available) {
+            this.isMainDictionaryAvailable = available;
             boolean zM7357c = areBaseGestureConditionsMet();
             updateVkbGestureAvailability(zM7357c);
             updateCkbGestureAvailability(zM7357c);
         }
     }
 
-    /** @param z the user's on-screen keyboard swipe setting */
-    public void setVkbGestureEnabledByUser(boolean z) {
-        if (this.isVkbGestureEnabledByUser != z) {
-            this.isVkbGestureEnabledByUser = z;
+    /** @param enabled the user's on-screen keyboard swipe setting */
+    public void setVkbGestureEnabledByUser(boolean enabled) {
+        if (this.isVkbGestureEnabledByUser != enabled) {
+            this.isVkbGestureEnabledByUser = enabled;
             updateVkbGestureAvailability(areBaseGestureConditionsMet());
         }
     }
 
-    /** @param z the user's capacitive keypad swipe setting */
-    public void setCkbGestureEnabledByUser(boolean z) {
-        if (this.isCkbGestureEnabledByUser != z) {
-            this.isCkbGestureEnabledByUser = z;
+    /** @param enabled the user's capacitive keypad swipe setting */
+    public void setCkbGestureEnabledByUser(boolean enabled) {
+        if (this.isCkbGestureEnabledByUser != enabled) {
+            this.isCkbGestureEnabledByUser = enabled;
             updateCkbGestureAvailability(areBaseGestureConditionsMet());
         }
     }

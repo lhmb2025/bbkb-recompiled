@@ -30,38 +30,38 @@ public final class VkbGestureListener extends MultiPointerGestureDetector.Simple
 
     private long lastKeyEventTime;
 
-    /** @param c0804d current settings values */
-    public VkbGestureListener(BlackBerryIME blackBerryIME, SettingsValues c0804d) {
+    /** @param settingsValues current settings values */
+    public VkbGestureListener(BlackBerryIME blackBerryIME, SettingsValues settingsValues) {
         this.ime = blackBerryIME;
-        updateSettings(c0804d);
+        updateSettings(settingsValues);
     }
 
-    /** @param f horizontal displacement in px (negative is leftward) */
-    private boolean isBackwardSwipe(float f) {
+    /** @param deltaX horizontal displacement in px (negative is leftward) */
+    private boolean isBackwardSwipe(float deltaX) {
         if (this.ime.isCurrentLanguageRtl()) {
-            if (f > 0.0f) {
+            if (deltaX > 0.0f) {
                 return true;
             }
-        } else if (f < 0.0f) {
+        } else if (deltaX < 0.0f) {
             return true;
         }
         return false;
     }
 
     /**
-     * @param f horizontal fling velocity
-     * @param f2 vertical fling velocity
+     * @param velocityX horizontal fling velocity
+     * @param velocityY vertical fling velocity
      */
     @Override
-    public boolean onFling(MotionEvent motionEvent, MotionEvent motionEvent2, float f, float f2) {
-        if (motionEvent == null || motionEvent2 == null || this.ime.getLastKeyEventTime() > motionEvent.getEventTime()) {
+    public boolean onFling(MotionEvent motionEvent, MotionEvent endEvent, float velocityX, float velocityY) {
+        if (motionEvent == null || endEvent == null || this.ime.getLastKeyEventTime() > motionEvent.getEventTime()) {
             if (BuildConfig.DEBUG) Logger.info("VKBGesture", "onFling: ignored (null event or newer physical key event)");
             return false;
         }
         int actionIndex = motionEvent.getActionIndex();
-        int actionIndex2 = motionEvent2.getActionIndex();
-        float x = motionEvent2.getX(actionIndex2) - motionEvent.getX(actionIndex);
-        float y = motionEvent2.getY(actionIndex2) - motionEvent.getY(actionIndex);
+        int actionIndex2 = endEvent.getActionIndex();
+        float x = endEvent.getX(actionIndex2) - motionEvent.getX(actionIndex);
+        float y = endEvent.getY(actionIndex2) - motionEvent.getY(actionIndex);
         float fAbs = Math.abs(x);
         float fAbs2 = Math.abs(y);
         double d = fAbs2;
@@ -70,19 +70,19 @@ public final class VkbGestureListener extends MultiPointerGestureDetector.Simple
         if (d <= this.settings.horizontalSwipeTanTheta * d2) {
             if (this.ime.shouldHandleGestureEvent(motionEvent) && d > (this.settings.horizontalSwipeTanTheta / 8.0d) * d2) {
                 if (BuildConfig.DEBUG) Logger.info("VKBGesture", "onFling: horizontal swipe ignored - exceeded flow typing's reduced threshold");
-            } else if (this.ime.shouldHandleGestureEvent(motionEvent) && motionEvent2.getEventTime() - motionEvent.getEventTime() > this.settings.swipeGestureTimeout) {
+            } else if (this.ime.shouldHandleGestureEvent(motionEvent) && endEvent.getEventTime() - motionEvent.getEventTime() > this.settings.swipeGestureTimeout) {
                 if (BuildConfig.DEBUG) Logger.info("VKBGesture", "onFling: flow typing horizontal swipe ignored - too slow");
             } else {
-                float fAbs3 = Math.abs(f);
+                float fAbs3 = Math.abs(velocityX);
                 if ((fAbs >= this.settings.fastHorizontalSwipeMinX && fAbs3 >= this.settings.fastHorizontalSwipeMinVelocity) || (fAbs >= this.settings.slowHorizontalSwipeMinX && fAbs3 >= this.settings.slowHorizontalSwipeMinVelocity)) {
                     if (isBackwardSwipe(x)) {
                         if (this.ime.getKeyboardSwitcher().getMainKeyboardView().getTranslationX() > 0.0f) {
                             this.ime.getKeyboardSwitcher().getMainKeyboardView().setSlideTranslation(0.0f, true);
                             return true;
                         }
-                        return dispatchSwipeGesture(-18, motionEvent, motionEvent2);
+                        return dispatchSwipeGesture(-18, motionEvent, endEvent);
                     }
-                    if (isSpacebarLanguageSwitchSwipe(motionEvent, motionEvent2)) {
+                    if (isSpacebarLanguageSwitchSwipe(motionEvent, endEvent)) {
                         return switchToNextLanguage();
                     }
                     if (this.ime.getKeyboardSwitcher().getMainKeyboardView().getTranslationX() < 0.0f) {
@@ -95,8 +95,8 @@ public final class VkbGestureListener extends MultiPointerGestureDetector.Simple
                 return false;
             }
         } else if (d2 < this.settings.verticalSwipeTanTheta * d) {
-            float fAbs4 = Math.abs(f2);
-            if (this.ime.shouldHandleGestureEvent(motionEvent) && motionEvent2.getEventTime() - motionEvent.getEventTime() > this.settings.swipeGestureTimeout) {
+            float fAbs4 = Math.abs(velocityY);
+            if (this.ime.shouldHandleGestureEvent(motionEvent) && endEvent.getEventTime() - motionEvent.getEventTime() > this.settings.swipeGestureTimeout) {
                 if (BuildConfig.DEBUG) Logger.info("VKBGesture", "onFling: flow typing vertical swipe ignored - too slow");
                 z = false;
             } else if (fAbs2 >= this.settings.fastVerticalSwipeMinY && fAbs4 >= this.settings.fastVerticalSwipeMinVelocity) {
@@ -112,10 +112,10 @@ public final class VkbGestureListener extends MultiPointerGestureDetector.Simple
                     if (this.ime.shouldHandleGestureEvent(motionEvent) && (d2 > (this.settings.verticalSwipeTanTheta / 8.0d) * d && fAbs4 <= this.settings.flowModeVerticalSwipeMinVelocity)) {
                         if (BuildConfig.DEBUG) Logger.info("VKBGesture", "onFling: vertical swipe ignored - exceeded flow typing's reduced threshold");
                     } else {
-                        return dispatchSwipeGesture(-19, motionEvent, motionEvent2);
+                        return dispatchSwipeGesture(-19, motionEvent, endEvent);
                     }
                 } else if (y < 0.0f && this.ime.isInputViewShown()) {
-                    return dispatchSwipeGesture(-17, motionEvent, motionEvent2);
+                    return dispatchSwipeGesture(-17, motionEvent, endEvent);
                 }
             }
         }
@@ -141,15 +141,15 @@ public final class VkbGestureListener extends MultiPointerGestureDetector.Simple
         }
     }
 
-    /** @param c0804d current settings values */
-    public void updateSettings(SettingsValues c0804d) {
-        this.settings = c0804d;
+    /** @param settingsValues current settings values */
+    public void updateSettings(SettingsValues settingsValues) {
+        this.settings = settingsValues;
     }
 
-    /** @param i swipe gesture code (-17 up, -18 delete word, -19 down) */
-    private boolean dispatchSwipeGesture(int i, MotionEvent motionEvent, MotionEvent motionEvent2) {
-        if (this.settings.vkbGestureSuppressionTimeout <= (this.settings.applySwipeSuppressionToEnd ? motionEvent2.getEventTime() : motionEvent.getEventTime()) - this.lastKeyEventTime) {
-            this.ime.handleSwipeGesture(i, motionEvent, motionEvent2);
+    /** @param gestureCode swipe gesture code (-17 up, -18 delete word, -19 down) */
+    private boolean dispatchSwipeGesture(int gestureCode, MotionEvent motionEvent, MotionEvent endEvent) {
+        if (this.settings.vkbGestureSuppressionTimeout <= (this.settings.applySwipeSuppressionToEnd ? endEvent.getEventTime() : motionEvent.getEventTime()) - this.lastKeyEventTime) {
+            this.ime.handleSwipeGesture(gestureCode, motionEvent, endEvent);
             return true;
         }
         if (BuildConfig.DEBUG) Logger.info("VKBGesture", "Suppressing gesture around key event");
@@ -160,19 +160,19 @@ public final class VkbGestureListener extends MultiPointerGestureDetector.Simple
         setLastKeyEventTime(0L);
     }
 
-    /** @param j event time of the last key event (uptime ms) */
-    public void setLastKeyEventTime(long j) {
-        this.lastKeyEventTime = j;
+    /** @param eventTime event time of the last key event (uptime ms) */
+    public void setLastKeyEventTime(long eventTime) {
+        this.lastKeyEventTime = eventTime;
     }
 
-    private boolean isSpacebarLanguageSwitchSwipe(MotionEvent motionEvent, MotionEvent motionEvent2) {
+    private boolean isSpacebarLanguageSwitchSwipe(MotionEvent motionEvent, MotionEvent endEvent) {
         RichInputMethodManager c0910yM5863a = RichInputMethodManager.getInstance();
         if (c0910yM5863a == null || !c0910yM5863a.hasMultipleEnabledSubtypesInThisIme(false) || !this.settings.isSpacebarLanguageSwitchingEnabled) {
             return false;
         }
         float x = motionEvent.getX(motionEvent.getActionIndex());
         float y = motionEvent.getY(motionEvent.getActionIndex());
-        float y2 = motionEvent2.getY(motionEvent2.getActionIndex());
+        float y2 = endEvent.getY(endEvent.getActionIndex());
         Key keyM6604b = KeyboardSwitcher.getInstance().getCurrentKeyboard().getKeyByCode(32);
         if (keyM6604b == null) {
             return false;

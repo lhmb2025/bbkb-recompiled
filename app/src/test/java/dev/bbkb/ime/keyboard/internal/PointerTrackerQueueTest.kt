@@ -21,9 +21,9 @@ class PointerTrackerQueueTest {
         var sliding: Boolean = false,
     ) : PointerTrackerQueue.Element {
         var onPhantom: ((Long) -> Unit)? = null
-        override fun onPhantomUpEvent(j: Long) {
-            log += "$name.phantom($j)"
-            onPhantom?.invoke(j)
+        override fun onPhantomUpEvent(eventTime: Long) {
+            log += "$name.phantom($eventTime)"
+            onPhantom?.invoke(eventTime)
         }
         override fun isModifier() = modifier
         override fun isOnShiftKey() = onShift

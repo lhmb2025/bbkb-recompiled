@@ -10,8 +10,8 @@ class ModifierKeyState {
 
     protected int mState = 0;
 
-    protected String stateToString(int i) {
-        switch (i) {
+    protected String stateToString(int state) {
+        switch (state) {
             case 0:
                 return "RELEASING";
             case 1:
@@ -23,8 +23,8 @@ class ModifierKeyState {
         }
     }
 
-    public ModifierKeyState(String str) {
-        this.name = str;
+    public ModifierKeyState(String name) {
+        this.name = name;
     }
 
     public void onPress() {

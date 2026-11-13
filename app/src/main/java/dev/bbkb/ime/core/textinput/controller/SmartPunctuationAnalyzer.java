@@ -42,15 +42,15 @@ public final class SmartPunctuationAnalyzer {
         public final boolean appendAutoSpace;
 
         /**
-         * @param z a backspace was injected
-         * @param z2 events were prepended to the chain
-         * @param z3 a trailing auto-space should be appended
+         * @param backspaceInjected a backspace was injected
+         * @param eventsPrepended events were prepended to the chain
+         * @param appendAutoSpace a trailing auto-space should be appended
          */
-        private Result(InputEvent event, boolean z, boolean z2, boolean z3) {
+        private Result(InputEvent event, boolean backspaceInjected, boolean eventsPrepended, boolean appendAutoSpace) {
             this.event = event;
-            this.backspaceInjected = z;
-            this.eventsPrepended = z2;
-            this.appendAutoSpace = z3;
+            this.backspaceInjected = backspaceInjected;
+            this.eventsPrepended = eventsPrepended;
+            this.appendAutoSpace = appendAutoSpace;
         }
     }
 
@@ -64,11 +64,11 @@ public final class SmartPunctuationAnalyzer {
     }
 
     /**
-     * @param str text immediately before the cursor
-     * @param z   auto-space is currently active
-     * @param z2  the previous commit was a gesture
+     * @param textBeforeCursor text immediately before the cursor
+     * @param isAutoSpaceActive   auto-space is currently active
+     * @param isInternalInput  the previous commit was a gesture
      */
-    public Result analyze(String str, InputEvent event, boolean z, SettingsValues settingsValues, boolean z2) {
+    public Result analyze(String textBeforeCursor, InputEvent event, boolean isAutoSpaceActive, SettingsValues settingsValues, boolean isInternalInput) {
         boolean z3;
         boolean z4;
         InputEvent chainedEvent;
@@ -78,11 +78,11 @@ public final class SmartPunctuationAnalyzer {
         if (!event.isKeyPressEvent()) {
             return new Result(event, false, false, false);
         }
-        int length = str.length();
-        if (length > 0 && str.charAt(length - 1) == ' ' && !z) {
+        int length = textBeforeCursor.length();
+        if (length > 0 && textBeforeCursor.charAt(length - 1) == ' ' && !isAutoSpaceActive) {
             return new Result(event, false, false, false);
         }
-        Action[] actions = decideActions(str, event.mCodePoint, settingsValues, event);
+        Action[] actions = decideActions(textBeforeCursor, event.mCodePoint, settingsValues, event);
         int length2 = actions.length - 1;
         if (containsAction(actions, Action.DUMB_MODE)) {
             this.dumbMode = true;
@@ -92,7 +92,7 @@ public final class SmartPunctuationAnalyzer {
         if (length2 > 0 || (length2 == 0 && actions[0] != Action.INS_FOCUS)) {
             if (actions[length2] != Action.INS_SPACE) {
                 z3 = false;
-            } else if (!z || z2) {
+            } else if (!isAutoSpaceActive || isInternalInput) {
                 length2--;
                 z3 = false;
             } else {
@@ -176,14 +176,14 @@ public final class SmartPunctuationAnalyzer {
     }
 
     /**
-     * Ordered actions for typing code point {@code i} after context {@code str}.
-     * @param str the text before the cursor
-     * @param i the code point being typed
+     * Ordered actions for typing code point {@code codePoint} after context {@code textBeforeCursor}.
+     * @param textBeforeCursor the text before the cursor
+     * @param codePoint the code point being typed
      */
-    private Action[] decideActions(String str, int i, SettingsValues settingsValues, InputEvent event) {
+    private Action[] decideActions(String textBeforeCursor, int codePoint, SettingsValues settingsValues, InputEvent event) {
         ArrayList<Action> arrayList = new ArrayList<>(4);
-        boolean zM5184f = settingsValues.isPrecededBySpaceFrench(i);
-        boolean zM5186g = settingsValues.isUsuallyFollowedBySpace(i);
+        boolean zM5184f = settingsValues.isPrecededBySpaceFrench(codePoint);
+        boolean zM5186g = settingsValues.isUsuallyFollowedBySpace(codePoint);
 
         if (event.mNextEvent != null && !this.dumbMode) {
             if (isSymbolType(event.mNextEvent.mCodePoint)) {
@@ -193,16 +193,16 @@ public final class SmartPunctuationAnalyzer {
         } else {
             // Both need a preceding character (len > 0). An empty context gets no French space:
             // there is no word at the start of a field to separate the mark from.
-            if (zM5184f && str.length() > 0 && !Character.isWhitespace(str.charAt(str.length() - 1))) {
+            if (zM5184f && textBeforeCursor.length() > 0 && !Character.isWhitespace(textBeforeCursor.charAt(textBeforeCursor.length() - 1))) {
                 arrayList.add(Action.INS_SPACE);
-            } else if (zM5186g && str.length() > 0 && Character.isWhitespace(str.charAt(str.length() - 1)) && str.charAt(str.length() - 1) != '\n') {
+            } else if (zM5186g && textBeforeCursor.length() > 0 && Character.isWhitespace(textBeforeCursor.charAt(textBeforeCursor.length() - 1)) && textBeforeCursor.charAt(textBeforeCursor.length() - 1) != '\n') {
                 arrayList.add(Action.BACKSPACE);
             }
 
             arrayList.add(Action.INS_FOCUS);
 
-            // Not `str + i`: that appends the int's decimal digits, not the character.
-            String combinedStr = str + new String(Character.toChars(i));
+            // Not `textBeforeCursor + codePoint`: that appends the int's decimal digits, not the character.
+            String combinedStr = textBeforeCursor + new String(Character.toChars(codePoint));
             if (!looksLikeEmail((CharSequence) combinedStr)) {
                 if (looksLikeURL((CharSequence) combinedStr)) {
                     arrayList.add(Action.DUMB_MODE);

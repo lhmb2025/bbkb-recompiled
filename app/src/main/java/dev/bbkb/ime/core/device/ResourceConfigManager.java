@@ -27,14 +27,14 @@ public final class ResourceConfigManager {
     private static volatile int sCachedDensityDpi = -1;
     private static volatile int sCachedScreenWidthDp = -1;
 
-    /** @param f a fraction read with an invalid default of -1 */
-    public static boolean isValidFraction(float f) {
-        return f >= 0.0f;
+    /** @param fraction a fraction read with an invalid default of -1 */
+    public static boolean isValidFraction(float fraction) {
+        return fraction >= 0.0f;
     }
 
-    /** @param i a pixel size read with an invalid default of -1 */
-    public static boolean isValidPixelSize(int i) {
-        return i > 0;
+    /** @param pixelSize a pixel size read with an invalid default of -1 */
+    public static boolean isValidPixelSize(int pixelSize) {
+        return pixelSize > 0;
     }
 
     private ResourceConfigManager() {
@@ -112,58 +112,58 @@ public final class ResourceConfigManager {
         return (((((((iM5592b - fraction2) - fraction3) + fraction) / 4) * 4) + fraction3) + fraction2) - fraction;
     }
 
-    /** @param i fraction resource id */
-    public static float getFractionValue(Resources resources, int i) {
-        return resources.getFraction(i, 1, 1);
+    /** @param resId fraction resource id */
+    public static float getFractionValue(Resources resources, int resId) {
+        return resources.getFraction(resId, 1, 1);
     }
 
     /**
-     * @param i attribute index
-     * @param f default when the attribute is missing or not a fraction
+     * @param index attribute index
+     * @param defaultValue default when the attribute is missing or not a fraction
      */
-    public static float getFractionOrDefault(TypedArray typedArray, int i, float f) {
-        TypedValue typedValuePeekValue = typedArray.peekValue(i);
-        return (typedValuePeekValue == null || !isFractionType(typedValuePeekValue)) ? f : typedArray.getFraction(i, 1, 1, f);
+    public static float getFractionOrDefault(TypedArray typedArray, int index, float defaultValue) {
+        TypedValue typedValuePeekValue = typedArray.peekValue(index);
+        return (typedValuePeekValue == null || !isFractionType(typedValuePeekValue)) ? defaultValue : typedArray.getFraction(index, 1, 1, defaultValue);
     }
 
-    /** @param i attribute index; -1 when missing or not a fraction */
-    public static float getFractionOrInvalid(TypedArray typedArray, int i) {
-        return getFractionOrDefault(typedArray, i, -1.0f);
+    /** @param index attribute index; -1 when missing or not a fraction */
+    public static float getFractionOrInvalid(TypedArray typedArray, int index) {
+        return getFractionOrDefault(typedArray, index, -1.0f);
     }
 
-    /** @param i attribute index; -1 when missing or not a dimension */
-    public static int getDimensionPixelSizeOrInvalid(TypedArray typedArray, int i) {
-        TypedValue typedValuePeekValue = typedArray.peekValue(i);
+    /** @param index attribute index; -1 when missing or not a dimension */
+    public static int getDimensionPixelSizeOrInvalid(TypedArray typedArray, int index) {
+        TypedValue typedValuePeekValue = typedArray.peekValue(index);
         if (typedValuePeekValue == null || !isDimensionType(typedValuePeekValue)) {
             return -1;
         }
-        return typedArray.getDimensionPixelSize(i, -1);
+        return typedArray.getDimensionPixelSize(index, -1);
     }
 
     /**
-     * @param i attribute index
-     * @param i2 base a fraction is taken of
-     * @param f default when the attribute is missing or neither type
+     * @param index attribute index
+     * @param base base a fraction is taken of
+     * @param defaultValue default when the attribute is missing or neither type
      */
-    public static float getFractionOrDimensionOrDefault(TypedArray typedArray, int i, int i2, float f) {
-        TypedValue typedValuePeekValue = typedArray.peekValue(i);
+    public static float getFractionOrDimensionOrDefault(TypedArray typedArray, int index, int base, float defaultValue) {
+        TypedValue typedValuePeekValue = typedArray.peekValue(index);
         if (typedValuePeekValue == null) {
-            return f;
+            return defaultValue;
         }
         if (isFractionType(typedValuePeekValue)) {
-            return typedArray.getFraction(i, i2, i2, f);
+            return typedArray.getFraction(index, base, base, defaultValue);
         }
         // getDimensionPixelSize rounds (52.5 -> 53) as SuggestionStripView does; getDimension would truncate.
-        return isDimensionType(typedValuePeekValue) ? typedArray.getDimensionPixelSize(i, (int) f) : f;
+        return isDimensionType(typedValuePeekValue) ? typedArray.getDimensionPixelSize(index, (int) defaultValue) : defaultValue;
     }
 
     /**
-     * @param i attribute index
-     * @param i2 default when the attribute is missing or not an integer
+     * @param index attribute index
+     * @param defaultValue default when the attribute is missing or not an integer
      */
-    public static int getIntOrDefault(TypedArray typedArray, int i, int i2) {
-        TypedValue typedValuePeekValue = typedArray.peekValue(i);
-        return (typedValuePeekValue != null && isIntegerType(typedValuePeekValue)) ? typedArray.getInt(i, i2) : i2;
+    public static int getIntOrDefault(TypedArray typedArray, int index, int defaultValue) {
+        TypedValue typedValuePeekValue = typedArray.peekValue(index);
+        return (typedValuePeekValue != null && isIntegerType(typedValuePeekValue)) ? typedArray.getInt(index, defaultValue) : defaultValue;
     }
 
     public static boolean isFractionType(TypedValue typedValue) {

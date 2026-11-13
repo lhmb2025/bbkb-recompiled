@@ -343,10 +343,10 @@ public final class ComposingTextTracker {
     }
 
     /**
-     * @param abstractC0679d the converter to install, or {@code null} to remove the current one
+     * @param converter the converter to install, or {@code null} to remove the current one
      */
-    public void setInputMethodConverter(AbstractInputProcessor abstractC0679d) {
-        this.mInputMethodConverter = abstractC0679d;
+    public void setInputMethodConverter(AbstractInputProcessor converter) {
+        this.mInputMethodConverter = converter;
     }
 
     public synchronized InputMethodCallback.ConverterType getConverterType() {
@@ -354,28 +354,28 @@ public final class ComposingTextTracker {
     }
 
     /**
-     * Installs the converter registered under {@code str}; empty, null or unknown names clear it.
-     * @param str the converter name, or empty/null to clear the converter
+     * Installs the converter registered under {@code converterName}; empty, null or unknown names clear it.
+     * @param converterName the converter name, or empty/null to clear the converter
      */
-    public synchronized void setConverterByName(String str) {
-        if (TextUtils.isEmpty(str)) {
+    public synchronized void setConverterByName(String converterName) {
+        if (TextUtils.isEmpty(converterName)) {
             this.mConverterName = "";
             this.mInputMethodConverter = null;
             return;
         }
-        if (!str.equals(this.mConverterName)) {
-            this.mConverterName = str;
+        if (!converterName.equals(this.mConverterName)) {
+            this.mConverterName = converterName;
             // An unknown converter is a configuration problem, not a reason to crash on a locale switch.
             Class<? extends InputMethodCallback> converterClass = CONVERTER_REGISTRY.get(this.mConverterName);
             if (converterClass == null) {
-                if (BuildConfig.DEBUG) android.util.Log.w("ComposingTextTracker", "Converter " + str + " is requested, but it is not listed in IME");
+                if (BuildConfig.DEBUG) android.util.Log.w("ComposingTextTracker", "Converter " + converterName + " is requested, but it is not listed in IME");
                 this.mInputMethodConverter = null;
                 return;
             }
             try {
                 this.mInputMethodConverter = converterClass.getDeclaredConstructor().newInstance();
             } catch (ReflectiveOperationException e) {
-                throw new RuntimeException("Unable to instantiate converter: " + str, e);
+                throw new RuntimeException("Unable to instantiate converter: " + converterName, e);
             }
         }
     }
@@ -500,9 +500,9 @@ public final class ComposingTextTracker {
     }
 
     /**
-     * @param z true to recount digits and capitals even if the text grew
+     * @param forceFullRecount true to recount digits and capitals even if the text grew
      */
-    private final synchronized void recalculateTextStats(boolean z) {
+    private final synchronized void recalculateTextStats(boolean forceFullRecount) {
         int i = this.mCodePointCount;
         TriState aVar = TriState.NOT_INITIALIZED;
         this.mCachedUrlCheck = aVar;
@@ -510,7 +510,7 @@ public final class ComposingTextTracker {
         int length = this.mComposingText.length();
         int iCharCount = 0;
         this.mCodePointCount = Character.codePointCount(this.mComposingText, 0, length);
-        if (z || i > this.mCodePointCount) {
+        if (forceFullRecount || i > this.mCodePointCount) {
             this.mDigitCount = 0;
             this.mUpperCaseCount = 0;
             while (iCharCount < length) {
@@ -557,23 +557,23 @@ public final class ComposingTextTracker {
     }
 
     /**
-     * @param c0914a the input event to process (key press or backspace)
+     * @param inputEvent the input event to process (key press or backspace)
      */
-    public synchronized void processInputEvent(InputEvent c0914a) {
-        processInputEventWithShift(c0914a, 0);
+    public synchronized void processInputEvent(InputEvent inputEvent) {
+        processInputEventWithShift(inputEvent, 0);
     }
 
     /**
-     * @param i keyboard shift state (from {@code InputEventContext.symbolPageOrder})
-     * @param c0914a the input event to process
+     * @param shiftState keyboard shift state (from {@code InputEventContext.symbolPageOrder})
+     * @param inputEvent the input event to process
      */
-    public synchronized void processInputEventWithShift(InputEvent c0914a, int i) {
-        if (c0914a == null) {
+    public synchronized void processInputEventWithShift(InputEvent inputEvent, int shiftState) {
+        if (inputEvent == null) {
             return;
         }
         beginEngineBatch();
         try {
-            processInputEventInBatch(c0914a, i);
+            processInputEventInBatch(inputEvent, shiftState);
         } finally {
             endEngineBatch();
         }
@@ -581,14 +581,14 @@ public final class ComposingTextTracker {
 
     /**
      * {@link #processInputEventWithShift}; its engine calls become one op (see {@link #mPendingSteps}).
-     * @param c0914a the input event to process (key press or backspace)
-     * @param i the shift state to apply
+     * @param inputEvent the input event to process (key press or backspace)
+     * @param shiftState the shift state to apply
      */
-    private void processInputEventInBatch(InputEvent c0914a, int i) {
+    private void processInputEventInBatch(InputEvent inputEvent, int shiftState) {
         int iM4319b;
         boolean z;
         int length = this.mComposingText.length();
-        if (-5 == c0914a.mKeyCode) {
+        if (-5 == inputEvent.mKeyCode) {
             boolean zM4314I = this.mInputMethodConverter != null ? processConverterBackspace() : false;
             if (zM4314I || length <= 0) {
                 z = zM4314I;
@@ -599,7 +599,7 @@ public final class ComposingTextTracker {
                 iM4319b = -1;
             }
         } else {
-            iM4319b = appendInputEventText(c0914a);
+            iM4319b = appendInputEventText(inputEvent);
             z = false;
         }
         recalculateTextStats(false);
@@ -607,28 +607,28 @@ public final class ComposingTextTracker {
         if (this.mCodePointCount == 0) {
             this.mFirstLetterUppercase = false;
         }
-        updateCoordinatesAndCaps(c0914a, iM4319b, length);
+        updateCoordinatesAndCaps(inputEvent, iM4319b, length);
         clearAutoCorrection();
         if (length == 0) {
             engineStep(sdk -> sdk.clear());
             if (iM4319b == 1) {
-                setShiftState(i);
+                setShiftState(shiftState);
             }
         }
-        processNuanceAndConverter(z ? false : true, c0914a, iM4319b);
+        processNuanceAndConverter(z ? false : true, inputEvent, iM4319b);
     }
 
     /**
-     * @param i the current composing text length
+     * @param composingLength the current composing text length
      */
-    private void deleteLastCodePoint(int i) {
-        int iCodePointBefore = Character.codePointBefore(this.mComposingText, i);
-        if (i == 1 && !HangulInputProcessor.isHangulSyllable(iCodePointBefore)) {
+    private void deleteLastCodePoint(int composingLength) {
+        int iCodePointBefore = Character.codePointBefore(this.mComposingText, composingLength);
+        if (composingLength == 1 && !HangulInputProcessor.isHangulSyllable(iCodePointBefore)) {
             this.mComposingText.clear();
             this.mCoordinateTracker.truncate(0);
             engineStep(sdk -> sdk.clear());
         } else {
-            this.mComposingText.delete(i - Character.charCount(iCodePointBefore), i);
+            this.mComposingText.delete(composingLength - Character.charCount(iCodePointBefore), composingLength);
             engineStep(sdk -> sdk.clearOneSymbol());
             TouchPointerCoordTracker c0697m = this.mCoordinateTracker;
             c0697m.truncate(c0697m.getPointerSize() - 1);
@@ -654,10 +654,10 @@ public final class ComposingTextTracker {
     }
 
     /**
-     * @param c0914a the input event to process (key press or backspace)
+     * @param inputEvent the input event to process (key press or backspace)
      */
-    private int appendInputEventText(InputEvent c0914a) {
-        CharSequence charSequenceM5933n = c0914a.getOutputText();
+    private int appendInputEventText(InputEvent inputEvent) {
+        CharSequence charSequenceM5933n = inputEvent.getOutputText();
         int iCodePointCount = Character.codePointCount(charSequenceM5933n, 0, charSequenceM5933n.length());
         if (!TextUtils.isEmpty(charSequenceM5933n)) {
             this.mComposingText.append(charSequenceM5933n);
@@ -666,24 +666,24 @@ public final class ComposingTextTracker {
     }
 
     /**
-     * @param c0914a the input event to process (key press or backspace)
-     * @param i the number of code points just added
-     * @param i2 the char offset where they start
+     * @param inputEvent the input event to process (key press or backspace)
+     * @param codePointDelta the number of code points just added
+     * @param startIndex the char offset where they start
      */
-    private void updateCoordinatesAndCaps(InputEvent c0914a, int i, int i2) {
+    private void updateCoordinatesAndCaps(InputEvent inputEvent, int codePointDelta, int startIndex) {
         boolean z;
-        if (i > 0) {
+        if (codePointDelta > 0) {
             boolean z2 = false;
             if (this.mIsPredictionMode) {
                 z = false;
             } else {
-                int i3 = c0914a.mX;
-                int i4 = c0914a.mY;
-                boolean zM5931l = c0914a.isFromSwitchedKeyboard();
-                int iCharCount = i2;
+                int i3 = inputEvent.mX;
+                int i4 = inputEvent.mY;
+                boolean zM5931l = inputEvent.isFromSwitchedKeyboard();
+                int iCharCount = startIndex;
                 z = false;
                 int i5 = 0;
-                while (i5 < i && iCharCount < this.mComposingText.length()) {
+                while (i5 < codePointDelta && iCharCount < this.mComposingText.length()) {
                     int iCodePointAt = Character.codePointAt(this.mComposingText, iCharCount);
                     boolean zIsUpperCase = Character.isUpperCase(iCodePointAt);
                     if (zIsUpperCase) {
@@ -710,15 +710,15 @@ public final class ComposingTextTracker {
     }
 
     /**
-     * @param z true to feed the converter (false when it already handled a backspace)
-     * @param c0914a the input event to process (key press or backspace)
-     * @param i the code point count change (negative for a delete)
+     * @param runConverter true to feed the converter (false when it already handled a backspace)
+     * @param inputEvent the input event to process (key press or backspace)
+     * @param codePointDelta the code point count change (negative for a delete)
      */
-    private void processNuanceAndConverter(boolean z, InputEvent c0914a, int i) {
+    private void processNuanceAndConverter(boolean runConverter, InputEvent inputEvent, int codePointDelta) {
         final InputMethodCallback converter = this.mInputMethodConverter;
-        CharSequence charSequenceM5933n = c0914a.getOutputText();
+        CharSequence charSequenceM5933n = inputEvent.getOutputText();
         EngineStep feed = null;
-        if (i > 0) {
+        if (codePointDelta > 0) {
             InputMethodCallback.ConverterType type = getConverterType();
             if ((type == InputMethodCallback.ConverterType.HANGUL || type == InputMethodCallback.ConverterType.VIETNAMESE_TELEX) && converter != null) {
                 final String text = charSequenceM5933n.toString();
@@ -761,7 +761,7 @@ public final class ComposingTextTracker {
             }
         }
         updateRecorrectionSnapshot();
-        if (converter != null && z) {
+        if (converter != null && runConverter) {
             // A converter language shows the engine's composed text, so feed and conversion run as
             // one bounded query on copies. On a timeout the unconverted text stays.
             final EngineStep feedStep = feed;
@@ -789,10 +789,10 @@ public final class ComposingTextTracker {
 
     /**
      * In code point units; equal to the code point count means at the end.
-     * @param i the new in-composing cursor position (0 = before first character)
+     * @param position the new in-composing cursor position (0 = before first character)
      */
-    public synchronized void setComposingCursorPosition(int i) {
-        this.mComposingCursorPos = i;
+    public synchronized void setComposingCursorPosition(int position) {
+        this.mComposingCursorPos = position;
     }
 
     public synchronized boolean isCursorMoved() {
@@ -804,11 +804,11 @@ public final class ComposingTextTracker {
     }
 
     /**
-     * Moves the composing cursor by {@code i} UTF-16 chars (positive is right); false unless the move
+     * Moves the composing cursor by {@code charDelta} UTF-16 chars (positive is right); false unless the move
      * is exact. Landing on position 0 returns true so {@code onUpdateSelection} keeps the word composing.
-     * @param i the number of code points to move (positive = right, negative = left)
+     * @param charDelta the number of code points to move (positive = right, negative = left)
      */
-    public synchronized boolean moveCursorByCharCount(int i) {
+    public synchronized boolean moveCursorByCharCount(int charDelta) {
         int i2;
         int iCharCount;
         if (this.mInputMethodConverter != null) {
@@ -816,10 +816,10 @@ public final class ComposingTextTracker {
         }
         int i3 = this.mComposingCursorPos;
         int[] iArrM5474a = toCodePointArray(this.mComposingText);
-        if (i >= 0) {
+        if (charDelta >= 0) {
             i2 = i3;
             iCharCount = 0;
-            while (iCharCount < i && i2 < this.mCodePointCount) {
+            while (iCharCount < charDelta && i2 < this.mCodePointCount) {
                 iCharCount += Character.charCount(iArrM5474a[i2]);
                 i2++;
             }
@@ -829,14 +829,14 @@ public final class ComposingTextTracker {
             }
             i2 = i3;
             iCharCount = 0;
-            while (iCharCount > i && i2 > 0) {
+            while (iCharCount > charDelta && i2 > 0) {
                 i2--;
                 iCharCount -= Character.charCount(iArrM5474a[i2]);
             }
         }
-        if (iCharCount != i) {
+        if (iCharCount != charDelta) {
             if (BuildConfig.DEBUG) {
-            android.util.Log.d("TEXT_EDIT_DEBUG", "moveCursorByCharCount: FAILED charDelta=" + i
+            android.util.Log.d("TEXT_EDIT_DEBUG", "moveCursorByCharCount: FAILED charDelta=" + charDelta
                     + " achievedCharCount=" + iCharCount + " newCodePtPos=" + i2
                     + " composing='" + this.mComposingText + "'");
             }
@@ -844,7 +844,7 @@ public final class ComposingTextTracker {
         }
         this.mComposingCursorPos = i2;
         if (BuildConfig.DEBUG) {
-        android.util.Log.d("TEXT_EDIT_DEBUG", "moveCursorByCharCount: charDelta=" + i
+        android.util.Log.d("TEXT_EDIT_DEBUG", "moveCursorByCharCount: charDelta=" + charDelta
                 + " newCodePtPos=" + i2 + " mCodePointCount=" + this.mCodePointCount
                 + " composing='" + this.mComposingText + "'");
         }
@@ -867,41 +867,41 @@ public final class ComposingTextTracker {
     }
 
     /**
-     * Rebuilds the composing text by replaying code points as touch events. {@code iArr2} holds
-     * {@link CoordinateUtils} x,y pairs; a non-zero {@code iArr3} entry forces upper case.
-     * @param iArr array of Unicode code points
-     * @param iArr2 flattened coordinate array (x,y pairs per pointer) from {@link dev.bbkb.ime.core.shared.CoordinateUtils}
-     * @param iArr3 per-code-point upper-case override flags (non-zero = force upper case)
+     * Rebuilds the composing text by replaying code points as touch events. {@code coordinates} holds
+     * {@link CoordinateUtils} x,y pairs; a non-zero {@code upperCaseFlags} entry forces upper case.
+     * @param codePoints array of Unicode code points
+     * @param coordinates flattened coordinate array (x,y pairs per pointer) from {@link dev.bbkb.ime.core.shared.CoordinateUtils}
+     * @param upperCaseFlags per-code-point upper-case override flags (non-zero = force upper case)
      */
-    public synchronized void setComposingFromCodePoints(int[] iArr, int[] iArr2, int[] iArr3) {
+    public synchronized void setComposingFromCodePoints(int[] codePoints, int[] coordinates, int[] upperCaseFlags) {
         // One engine op for the whole rebuild.
         beginEngineBatch();
         try {
-            setComposingFromCodePointsInBatch(iArr, iArr2, iArr3);
+            setComposingFromCodePointsInBatch(codePoints, coordinates, upperCaseFlags);
         } finally {
             endEngineBatch();
         }
     }
 
     /**
-     * @param iArr the code points
-     * @param iArr2 interleaved x,y coordinates per code point
-     * @param iArr3 per code point, nonzero forces upper case
+     * @param codePoints the code points
+     * @param coordinates interleaved x,y coordinates per code point
+     * @param upperCaseFlags per code point, nonzero forces upper case
      */
-    private void setComposingFromCodePointsInBatch(int[] iArr, int[] iArr2, int[] iArr3) {
+    private void setComposingFromCodePointsInBatch(int[] codePoints, int[] coordinates, int[] upperCaseFlags) {
         clearAll();
-        int length = iArr.length;
-        int length2 = iArr3.length;
+        int length = codePoints.length;
+        int length2 = upperCaseFlags.length;
         int i = 0;
         while (true) {
             boolean z = true;
             if (i >= length) {
                 break;
             }
-            if (i >= length2 || iArr3[i] == 0) {
+            if (i >= length2 || upperCaseFlags[i] == 0) {
                 z = false;
             }
-            processInputEvent(InputEvent.createTouchEvent(iArr[i], CoordinateUtils.xFromArray(iArr2, i), CoordinateUtils.yFromArray(iArr2, i), z));
+            processInputEvent(InputEvent.createTouchEvent(codePoints[i], CoordinateUtils.xFromArray(coordinates, i), CoordinateUtils.yFromArray(coordinates, i), z));
             i++;
         }
         // Must not set mIsGestureInput: only non-gesture paths (recorrection, spell checker, accent
@@ -909,11 +909,11 @@ public final class ComposingTextTracker {
     }
 
     /**
-     * @param iArr array of Unicode code points
-     * @param iArr2 flattened coordinate array (x,y pairs per pointer)
+     * @param codePoints array of Unicode code points
+     * @param coordinates flattened coordinate array (x,y pairs per pointer)
      */
-    public synchronized void setComposingFromCodePoints(int[] iArr, int[] iArr2) {
-        setComposingFromCodePoints(iArr, iArr2, new int[0]);
+    public synchronized void setComposingFromCodePoints(int[] codePoints, int[] coordinates) {
+        setComposingFromCodePoints(codePoints, coordinates, new int[0]);
     }
 
     public synchronized String getComposingText() {
@@ -969,11 +969,11 @@ public final class ComposingTextTracker {
     /**
      * Shift states: 0 unshifted, 1 manual shift, 3 caps lock, 5 auto shift, 7 auto caps lock. No-op
      * if unchanged.
-     * @param i the shift state integer (0 = unshifted, 1 = manual shifted, 3 = caps-lock, 5 = auto-shifted, 7 = auto caps-lock)
+     * @param shiftState the shift state integer (0 = unshifted, 1 = manual shifted, 3 = caps-lock, 5 = auto-shifted, 7 = auto caps-lock)
      */
-    public synchronized void setShiftState(int i) {
-        if (this.mShiftState != i) {
-            this.mShiftState = i;
+    public synchronized void setShiftState(int shiftState) {
+        if (this.mShiftState != shiftState) {
+            this.mShiftState = shiftState;
             final int nuanceState = getKeyboardShiftState();
             // The op skips a missing engine.
             engineStep(sdk -> sdk.setShiftState(nuanceState));
@@ -986,17 +986,17 @@ public final class ComposingTextTracker {
 
     /**
      * The engine's shift state (0 none, 1 shift, 2 lock) for a tracker shift state.
-     * @param i the tracker shift state
+     * @param shiftState the tracker shift state
      */
-    public static int toEngineShiftState(int i) {
+    public static int toEngineShiftState(int shiftState) {
         int nuanceState;
-        if (i == 1) {
+        if (shiftState == 1) {
             nuanceState = 1;  // MANUAL_SHIFTED → SHIFT
-        } else if (i == 3) {
+        } else if (shiftState == 3) {
             nuanceState = 2;  // SHIFT_LOCKED → SHIFT_LOCK
-        } else if (i == 5) {
+        } else if (shiftState == 5) {
             nuanceState = 1;  // Auto-caps → SHIFT
-        } else if (i == 7) {
+        } else if (shiftState == 7) {
             nuanceState = 2;  // Auto variant → SHIFT_LOCK
         } else {
             nuanceState = 0;  // UNSHIFTED → NO_SHIFT
@@ -1006,34 +1006,34 @@ public final class ComposingTextTracker {
 
     /**
      * No-op while composing, so the composing shift state is not overwritten.
-     * @param i the shift state to apply when not composing
+     * @param shiftState the shift state to apply when not composing
      */
-    public synchronized void setShiftStateIfNotComposing(int i) {
+    public synchronized void setShiftStateIfNotComposing(int shiftState) {
         if (!isComposing()) {
             // Delegate so the engine's shift state stays in sync.
-            setShiftState(i);
+            setShiftState(shiftState);
         }
     }
 
     /**
      * Pass {@code null}/0 to clear; a score of 0 means none.
-     * @param str the auto-correction word, or {@code null} to clear
-     * @param i confidence score (0 = disabled/none)
+     * @param autoCorrection the auto-correction word, or {@code null} to clear
+     * @param score confidence score (0 = disabled/none)
      */
-    public synchronized void setAutoCorrection(String str, int i) {
-        setAutoCorrection(str, i, this.mEditCount);
+    public synchronized void setAutoCorrection(String autoCorrection, int score) {
+        setAutoCorrection(autoCorrection, score, this.mEditCount);
     }
 
     /**
      * Stores the auto-correction candidate from a suggestion request made at {@code editCount}
      * (see {@link #getEditCount()}). A request made before the latest edit leaves
      * {@link #hasAutoCorrectionForComposingText()} false.
-     * @param str the auto-correction word, or {@code null} to clear
-     * @param i confidence score (0 = disabled/none)
+     * @param autoCorrection the auto-correction word, or {@code null} to clear
+     * @param score confidence score (0 = disabled/none)
      */
-    public synchronized void setAutoCorrection(String str, int i, int editCount) {
-        this.mAutoCorrection = str;
-        this.mAutoCorrectionScore = i;
+    public synchronized void setAutoCorrection(String autoCorrection, int score, int editCount) {
+        this.mAutoCorrection = autoCorrection;
+        this.mAutoCorrectionScore = score;
         this.mAutoCorrectionEditCount = editCount;
     }
 
@@ -1068,8 +1068,8 @@ public final class ComposingTextTracker {
     }
 
     /** The highlighted suggestion, kept as the pending pick for CJK commit-on-separator. */
-    public synchronized void setPickedSuggestion(SuggestedWords.SuggestedWordInfo suggestedWordInfoVar) {
-        this.mPickedSuggestion = suggestedWordInfoVar;
+    public synchronized void setPickedSuggestion(SuggestedWords.SuggestedWordInfo suggestedWordInfo) {
+        this.mPickedSuggestion = suggestedWordInfo;
     }
 
     public synchronized SuggestedWords.SuggestedWordInfo getPickedSuggestion() {
@@ -1102,11 +1102,11 @@ public final class ComposingTextTracker {
     }
 
     /**
-     * @param i recorrection start position, in characters before the cursor
-     * @param str the typed word before any edits
+     * @param cursorPosition recorrection start position, in characters before the cursor
+     * @param originalWord the typed word before any edits
      */
-    public synchronized void setRecorrectionInfo(int i, String str) {
-        this.mRecorrectionState.setInfo(i, str);
+    public synchronized void setRecorrectionInfo(int cursorPosition, String originalWord) {
+        this.mRecorrectionState.setInfo(cursorPosition, originalWord);
     }
 
     public synchronized void updateRecorrectionSnapshot() {
@@ -1133,21 +1133,21 @@ public final class ComposingTextTracker {
 
     /**
      * Typically the character count between the recorrection start and the cursor.
-     * @param i the new event index value
+     * @param eventIndex the new event index value
      */
-    public synchronized void setEventIndex(int i) {
-        this.mEventIndex = i;
+    public synchronized void setEventIndex(int eventIndex) {
+        this.mEventIndex = eventIndex;
     }
 
     /**
      * Records the just-committed word for auto-correction revert and learning, then clears the
      * composing state. Revert stays enabled only for DECIDED_WORD, MANUAL_PICK and BATCH_INPUT_WORD.
-     * @param str the word separator that followed the committed word
+     * @param separator the word separator that followed the committed word
      */
-    public synchronized CommitEventRecord createEventDispatcher(CommitEventRecord.CommitType commitTypeVar, CharSequence charSequence, String str, PrevWordsInfo prevWordsInfo) {
+    public synchronized CommitEventRecord createEventDispatcher(CommitEventRecord.CommitType commitType, CharSequence charSequence, String separator, PrevWordsInfo prevWordsInfo) {
         CommitEventRecord c0713o;
-        c0713o = new CommitEventRecord(this.mCoordinateTracker, this.mComposingText.toString(), charSequence, str, prevWordsInfo, this.mShiftState, commitTypeVar, false);
-        if (commitTypeVar != CommitEventRecord.CommitType.DECIDED_WORD && commitTypeVar != CommitEventRecord.CommitType.MANUAL_PICK && commitTypeVar != CommitEventRecord.CommitType.BATCH_INPUT_WORD) {
+        c0713o = new CommitEventRecord(this.mCoordinateTracker, this.mComposingText.toString(), charSequence, separator, prevWordsInfo, this.mShiftState, commitType, false);
+        if (commitType != CommitEventRecord.CommitType.DECIDED_WORD && commitType != CommitEventRecord.CommitType.MANUAL_PICK && commitType != CommitEventRecord.CommitType.BATCH_INPUT_WORD) {
             c0713o.disableRevert();
         }
         clearAll();
@@ -1157,14 +1157,14 @@ public final class ComposingTextTracker {
     /**
      * Record for a picked suggestion. When the pick covers only a prefix of the composing buffer (CJK
      * pinyin/stroke/BPMF, Japanese inline word), that prefix is split off and the rest stays composing.
-     * @param z {@code true} if learning should be skipped for this commit
+     * @param previousPickWasPartial {@code true} if learning should be skipped for this commit
      */
-    public synchronized CommitEventRecord createEventDispatcherForPickedSuggestion(CommitEventRecord.CommitType commitTypeVar, SuggestedWords.SuggestedWordInfo suggestedWordInfoVar2, PrevWordsInfo prevWordsInfo, boolean z) {
+    public synchronized CommitEventRecord createEventDispatcherForPickedSuggestion(CommitEventRecord.CommitType commitType, SuggestedWords.SuggestedWordInfo suggestedWordInfo, PrevWordsInfo prevWordsInfo, boolean previousPickWasPartial) {
         String string;
         int iIndexOf;
         CommitEventRecord c0713o;
-        if (suggestedWordInfoVar2.nuanceWordInfo != null) {
-            string = suggestedWordInfoVar2.nuanceWordInfo.spell;
+        if (suggestedWordInfo.nuanceWordInfo != null) {
+            string = suggestedWordInfo.nuanceWordInfo.spell;
         } else {
             string = this.mComposingText.toString();
         }
@@ -1176,12 +1176,12 @@ public final class ComposingTextTracker {
                 string = this.mComposingText.subSequence(0, this.mComposingText.length() - inlineWord.length()).toString();
             }
         }
-        String str = suggestedWordInfoVar2.word;
+        String str = suggestedWordInfo.word;
         boolean z2 = string.length() < this.mComposingText.length();
         if (z2) {
             Locale locale = Locale.getDefault();
-            if (facts().isCurrLocaleChinese() && suggestedWordInfoVar2.nuanceWordInfo != null && !TextUtils.isEmpty(suggestedWordInfoVar2.nuanceWordInfo.spell)) {
-                iIndexOf = getChineseSpellLength(string, suggestedWordInfoVar2);
+            if (facts().isCurrLocaleChinese() && suggestedWordInfo.nuanceWordInfo != null && !TextUtils.isEmpty(suggestedWordInfo.nuanceWordInfo.spell)) {
+                iIndexOf = getChineseSpellLength(string, suggestedWordInfo);
             } else {
                 iIndexOf = this.mComposingText.toString().toLowerCase(locale).indexOf(string.toLowerCase(locale)) + string.length();
             }
@@ -1194,7 +1194,7 @@ public final class ComposingTextTracker {
             if (string3.length() > iIndexOf) {
                 string3 = string3.substring(0, iIndexOf);
             }
-            CommitEventRecord c0713o2 = new CommitEventRecord(c0697mM4701c, string3, str, "", prevWordsInfo, this.mShiftState, commitTypeVar, z2);
+            CommitEventRecord c0713o2 = new CommitEventRecord(c0697mM4701c, string3, str, "", prevWordsInfo, this.mShiftState, commitType, z2);
             this.mCoordinateTracker.dropFirstSamples(iIndexOf);
             this.mComposingText.delete(0, iIndexOf);
             // Code points, not UTF-16 chars, and refresh the stats for the post-split word.
@@ -1203,8 +1203,8 @@ public final class ComposingTextTracker {
             recalculateTextStats(false);
             c0713o = c0713o2;
         } else {
-            c0713o = new CommitEventRecord(this.mCoordinateTracker, this.mComposingText.toString(), str, "", prevWordsInfo, this.mShiftState, commitTypeVar, z2);
-            if (commitTypeVar != CommitEventRecord.CommitType.DECIDED_WORD && commitTypeVar != CommitEventRecord.CommitType.MANUAL_PICK && commitTypeVar != CommitEventRecord.CommitType.BATCH_INPUT_WORD) {
+            c0713o = new CommitEventRecord(this.mCoordinateTracker, this.mComposingText.toString(), str, "", prevWordsInfo, this.mShiftState, commitType, z2);
+            if (commitType != CommitEventRecord.CommitType.DECIDED_WORD && commitType != CommitEventRecord.CommitType.MANUAL_PICK && commitType != CommitEventRecord.CommitType.BATCH_INPUT_WORD) {
                 c0713o.disableRevert();
             }
             clearAll();
@@ -1213,21 +1213,21 @@ public final class ComposingTextTracker {
     }
 
     /**
-     * @param str the spell prefix the pick consumed
+     * @param pickedSpell the spell prefix the pick consumed
      */
-    private synchronized int getChineseSpellLength(String str, SuggestedWords.SuggestedWordInfo suggestedWordInfoVar) {
+    private synchronized int getChineseSpellLength(String pickedSpell, SuggestedWords.SuggestedWordInfo suggestedWordInfo) {
         EngineFacts engineFacts = facts();
         if (engineFacts.isChineseStrokeMode()) {
-            suggestedWordInfoVar.nuanceWordInfo.spell = str + this.mComposingText.charAt(str.length());
-            return str.length() + 1;
+            suggestedWordInfo.nuanceWordInfo.spell = pickedSpell + this.mComposingText.charAt(pickedSpell.length());
+            return pickedSpell.length() + 1;
         }
         if (engineFacts.isChineseCangjieMode()) {
-            return suggestedWordInfoVar.nuanceWordInfo.spell.length();
+            return suggestedWordInfo.nuanceWordInfo.spell.length();
         }
         if (engineFacts.isChineseBPMFMode()) {
             // The BPMF case table lives in the engine (both helpers take its lock), so the whole
             // spell is converted in one bounded query; on a timeout it is left as it was.
-            final String spell = suggestedWordInfoVar.nuanceWordInfo.spell;
+            final String spell = suggestedWordInfo.nuanceWordInfo.spell;
             String lowered = queryEngine(spell, sdk -> {
                 StringBuilder sb = new StringBuilder();
                 for (char c : spell.toCharArray()) {
@@ -1242,10 +1242,10 @@ public final class ComposingTextTracker {
             if (lowered == null) {
                 lowered = spell;
             }
-            suggestedWordInfoVar.nuanceWordInfo.spell = lowered;
+            suggestedWordInfo.nuanceWordInfo.spell = lowered;
             return lowered.length();
         }
-        return this.mComposingText.toString().toLowerCase(Locale.getDefault()).indexOf(str.toLowerCase(Locale.getDefault())) + str.length();
+        return this.mComposingText.toString().toLowerCase(Locale.getDefault()).indexOf(pickedSpell.toLowerCase(Locale.getDefault())) + pickedSpell.length();
     }
 
     public synchronized boolean isPredictionMode() {
@@ -1255,10 +1255,10 @@ public final class ComposingTextTracker {
 
     /**
      * Context for next-word prediction requests; {@code null} clears.
-     * @param str the word that was just committed, or {@code null} to clear
+     * @param word the word that was just committed, or {@code null} to clear
      */
-    public synchronized void setLastCommittedWord(String str) {
-        this.mLastCommittedWord = str;
+    public synchronized void setLastCommittedWord(String word) {
+        this.mLastCommittedWord = word;
     }
 
     public synchronized String getLastCommittedWord() {
@@ -1271,9 +1271,9 @@ public final class ComposingTextTracker {
     }
 
     /**
-     * @param z {@code true} if the word was auto-corrected, {@code false} if it was user-typed
+     * @param wasAutoCorrected {@code true} if the word was auto-corrected, {@code false} if it was user-typed
      */
-    public synchronized void setWasAutoCorrected(boolean z) {
-        this.wasAutoCorrected = z;
+    public synchronized void setWasAutoCorrected(boolean wasAutoCorrected) {
+        this.wasAutoCorrected = wasAutoCorrected;
     }
 }

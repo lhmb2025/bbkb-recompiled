@@ -21,29 +21,29 @@ public class KeyboardParams {
      */
     private static final Comparator<Key> ROW_COLUMN_COMPARATOR = new Comparator<Key>() {
         @Override
-        public int compare(Key key, Key key2) {
-            if (key.getY() != key2.getY()) {
-                return key.getY() < key2.getY() ? -1 : 1;
+        public int compare(Key key, Key rhs) {
+            if (key.getY() != rhs.getY()) {
+                return key.getY() < rhs.getY() ? -1 : 1;
             }
-            if (key.getX() != key2.getX()) {
-                return key.getX() < key2.getX() ? -1 : 1;
+            if (key.getX() != rhs.getX()) {
+                return key.getX() < rhs.getX() ? -1 : 1;
             }
-            if (key.getCode() != key2.getCode()) {
-                return key.getCode() < key2.getCode() ? -1 : 1;
+            if (key.getCode() != rhs.getCode()) {
+                return key.getCode() < rhs.getCode() ? -1 : 1;
             }
             String spec1 = key.getKeySpec() != null ? key.getKeySpec().getOutputText() : "";
-            String spec2 = key2.getKeySpec() != null ? key2.getKeySpec().getOutputText() : "";
+            String spec2 = rhs.getKeySpec() != null ? rhs.getKeySpec().getOutputText() : "";
             if (spec1 == null) spec1 = "";
             if (spec2 == null) spec2 = "";
             int specDiff = spec1.compareTo(spec2);
             if (specDiff != 0) {
                 return specDiff;
             }
-            if (key.getHeight() != key2.getHeight()) {
-                return key.getHeight() < key2.getHeight() ? -1 : 1;
+            if (key.getHeight() != rhs.getHeight()) {
+                return key.getHeight() < rhs.getHeight() ? -1 : 1;
             }
-            if (key.getWidth() != key2.getWidth()) {
-                return key.getWidth() < key2.getWidth() ? -1 : 1;
+            if (key.getWidth() != rhs.getWidth()) {
+                return key.getWidth() < rhs.getWidth() ? -1 : 1;
             }
             return 0;
         }
@@ -158,9 +158,9 @@ public class KeyboardParams {
         this.mWidthHistogram.clear();
     }
 
-    private static int updateHistogramCounter(SparseIntArray sparseIntArray, int i) {
-        int i2 = (sparseIntArray.indexOfKey(i) >= 0 ? sparseIntArray.get(i) : 0) + 1;
-        sparseIntArray.put(i, i2);
+    private static int updateHistogramCounter(SparseIntArray sparseIntArray, int size) {
+        int i2 = (sparseIntArray.indexOfKey(size) >= 0 ? sparseIntArray.get(size) : 0) + 1;
+        sparseIntArray.put(size, i2);
         return i2;
     }
 

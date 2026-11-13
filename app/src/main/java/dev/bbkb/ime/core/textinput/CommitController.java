@@ -227,12 +227,12 @@ class CommitController {
 
     /**
      * Commits the composing word, or flushes pending touch text. Used before focus change or voice.
-     * @param c0804d current settings values
+     * @param settingsValues current settings values
      */
-    void commitComposingOrReset(SettingsValues c0804d) {
+    void commitComposingOrReset(SettingsValues settingsValues) {
         if (mInputLogic.mComposingTracker.isComposing()) {
             mInputLogic.mRichInputConnection.beginBatchEdit();
-            commitTypedWord(c0804d, "", InputSource.INTERNAL);
+            commitTypedWord(settingsValues, "", InputSource.INTERNAL);
             mInputLogic.mRichInputConnection.endBatchEdit();
             return;
         }
@@ -241,16 +241,16 @@ class CommitController {
 
     /**
      * Like {@link #commitComposingOrReset}, but resets instead when the cursor moved mid-word.
-     * @param c0804d current settings values
-     * @param enumC0690f the input source that triggered this flush
+     * @param settingsValues current settings values
+     * @param inputSource the input source that triggered this flush
      */
-    void commitOrResetComposing(SettingsValues c0804d, InputSource enumC0690f) {
+    void commitOrResetComposing(SettingsValues settingsValues, InputSource inputSource) {
         if (mInputLogic.mComposingTracker.isComposing()) {
             if (mInputLogic.mComposingTracker.isCursorMoved()) {
                 mInputLogic.resetComposingAndSelect(mInputLogic.mRichInputConnection.getCursorStart(), mInputLogic.mRichInputConnection.getCursorEnd(), true);
                 return;
             } else {
-                commitTypedWord(c0804d, "", enumC0690f);
+                commitTypedWord(settingsValues, "", inputSource);
                 return;
             }
         }
@@ -258,12 +258,12 @@ class CommitController {
     }
 
     /**
-     * @param c0804d current settings values (unused by the RAW protocol)
-     * @param i the Unicode code point to commit
-     * @param enumC0690f the input source that triggered this character commit
+     * @param settingsValues current settings values (unused by the RAW protocol)
+     * @param codePoint the Unicode code point to commit
+     * @param inputSource the input source that triggered this character commit
      */
-    void commitCharacter(SettingsValues c0804d, int i, InputSource enumC0690f) {
-        execute(c0804d, CommitRequest.character(new String(Character.toChars(i)), enumC0690f),
+    void commitCharacter(SettingsValues settingsValues, int codePoint, InputSource inputSource) {
+        execute(settingsValues, CommitRequest.character(new String(Character.toChars(codePoint)), inputSource),
                 null, null);
     }
 
@@ -285,11 +285,11 @@ class CommitController {
 
     /**
      * Voice or palette text; only called when the payload was not already written as a separator.
-     * @param c0804d current settings values
-     * @param enumC0690f the input source that triggered the commit
+     * @param settingsValues current settings values
+     * @param inputSource the input source that triggered the commit
      */
-    void commitVoiceText(SettingsValues c0804d, String text, InputSource enumC0690f) {
-        execute(c0804d, CommitRequest.voiceText(text, enumC0690f), null, null);
+    void commitVoiceText(SettingsValues settingsValues, String text, InputSource inputSource) {
+        execute(settingsValues, CommitRequest.voiceText(text, inputSource), null, null);
     }
 
     /**
@@ -314,19 +314,19 @@ class CommitController {
     }
 
     /**
-     * @param c0804d current settings values
-     * @param c0666ac the gesture suggestion list (top word at index 0 is committed)
-     * @param enumC0690f the input source
+     * @param settingsValues current settings values
+     * @param suggestedWords the gesture suggestion list (top word at index 0 is committed)
+     * @param inputSource the input source
      */
-    void commitGestureSuggestion(SettingsValues c0804d, SuggestedWords c0666ac, InputSource enumC0690f) {
-        String word = pickSingleWordGestureCandidate(c0666ac);
+    void commitGestureSuggestion(SettingsValues settingsValues, SuggestedWords suggestedWords, InputSource inputSource) {
+        String word = pickSingleWordGestureCandidate(suggestedWords);
         if (TextUtils.isEmpty(word)) {
             mInputLogic.mComposingTracker.resetPredictionState();
             mInputLogic.mIme.uiUpdateHandler.postShowSuggestions(SuggestedWords.EMPTY);
             return;
         }
         mInputLogic.mRichInputConnection.beginBatchEdit();
-        execute(c0804d, CommitRequest.gesture(word, resolveSeparatorFor(word), enumC0690f),
+        execute(settingsValues, CommitRequest.gesture(word, resolveSeparatorFor(word), inputSource),
                 null, null);
         mInputLogic.mJustCommitted = true;
         mInputLogic.mRichInputConnection.endBatchEdit();
@@ -334,7 +334,7 @@ class CommitController {
         mInputLogic.mCommitType = 0;
         KeyboardSwitcher c0979iM4088ac = mInputLogic.mIme.getKeyboardSwitcher();
         if (c0979iM4088ac != null) {
-            c0979iM4088ac.setAlphabetKeyboard(mInputLogic.getCapsMode(c0804d), mInputLogic.getConfigParserResult());
+            c0979iM4088ac.setAlphabetKeyboard(mInputLogic.getCapsMode(settingsValues), mInputLogic.getConfigParserResult());
         }
         // The commit spent a tapped Shift; only the Shift span resets.
         mInputLogic.mIme.getPhysicalKeyboardStateTracker()
@@ -352,12 +352,12 @@ class CommitController {
     }
 
     /**
-     * Commits the composing word verbatim plus separator {@code str}; no-op when not composing.
-     * @param c0804d current settings values
-     * @param str the separator to append after the word (may be empty)
-     * @param enumC0690f the input source that triggered the commit
+     * Commits the composing word verbatim plus separator {@code separator}; no-op when not composing.
+     * @param settingsValues current settings values
+     * @param separator the separator to append after the word (may be empty)
+     * @param inputSource the input source that triggered the commit
      */
-    void commitTypedWord(SettingsValues c0804d, String str, InputSource enumC0690f) {
+    void commitTypedWord(SettingsValues settingsValues, String separator, InputSource inputSource) {
         if (!mInputLogic.mComposingTracker.isComposing()) {
             return;
         }
@@ -365,40 +365,40 @@ class CommitController {
         if (word.length() <= 0) {
             return;
         }
-        execute(c0804d, CommitRequest.typedWord(word, str, enumC0690f), null, null);
+        execute(settingsValues, CommitRequest.typedWord(word, separator, inputSource), null, null);
     }
 
     /**
-     * @param c0804d current settings values
-     * @param str the separator text that ended the word
-     * @param handlerC0650c UI update handler
-     * @param enumC0690f the input source that triggered the commit
+     * @param settingsValues current settings values
+     * @param separator the separator text that ended the word
+     * @param uiUpdateHandler UI update handler
+     * @param inputSource the input source that triggered the commit
      * @return {@code true} if the separator payload was already committed
      */
-    boolean autoCorrectAndCommit(SettingsValues c0804d, String str, UIUpdateHandler handlerC0650c, InputSource enumC0690f) {
-        return autoCorrectAndCommitExtended(c0804d, str, handlerC0650c, enumC0690f, false);
+    boolean autoCorrectAndCommit(SettingsValues settingsValues, String separator, UIUpdateHandler uiUpdateHandler, InputSource inputSource) {
+        return autoCorrectAndCommitExtended(settingsValues, separator, uiUpdateHandler, inputSource, false);
     }
 
     /**
      * Commits the auto-correction or the typed word. Does nothing when no word is composing.
      *
-     * @param z force the separator append even for a word character
-     * @param c0804d current settings values
-     * @param str the word separator to append after the commit
-     * @param handlerC0650c UI update handler used to flush pending async suggestion requests
-     * @param enumC0690f the input source that triggered this commit
-     * @return {@code true} if {@code str} was already written, so the caller must not write it
+     * @param forceSeparator force the separator append even for a word character
+     * @param settingsValues current settings values
+     * @param separator the word separator to append after the commit
+     * @param uiUpdateHandler UI update handler used to flush pending async suggestion requests
+     * @param inputSource the input source that triggered this commit
+     * @return {@code true} if {@code separator} was already written, so the caller must not write it
      */
-    boolean autoCorrectAndCommitExtended(SettingsValues c0804d, String str, UIUpdateHandler handlerC0650c, InputSource enumC0690f, boolean z) {
-        mInputLogic.flushPendingSuggestions(c0804d, handlerC0650c);
+    boolean autoCorrectAndCommitExtended(SettingsValues settingsValues, String separator, UIUpdateHandler uiUpdateHandler, InputSource inputSource, boolean forceSeparator) {
+        mInputLogic.flushPendingSuggestions(settingsValues, uiUpdateHandler);
         String candidate = mInputLogic.mComposingTracker.getAutoCorrection();
         String typedWord = mInputLogic.mComposingTracker.getComposingText();
         // The text-input and voice paths reach this without handleSeparatorInput's gate.
         String chosen = shouldCommitAutoCorrectCandidate(
                 candidate,
                 mInputLogic.mComposingTracker.getAutoCorrectionScore(),
-                c0804d.isAutoCorrectionEnabledPerUserSettings,
-                c0804d.editorCapabilities.shouldShowSuggestions) ? candidate : typedWord;
+                settingsValues.isAutoCorrectionEnabledPerUserSettings,
+                settingsValues.editorCapabilities.shouldShowSuggestions) ? candidate : typedWord;
         if (chosen == null) {
             return false;
         }
@@ -407,20 +407,20 @@ class CommitController {
             return false;
         }
         CommitResult result = execute(
-                c0804d,
+                settingsValues,
                 CommitRequest.autoCorrected(
-                        processClipboardMarker(chosen), candidate, typedWord, str, z, enumC0690f),
-                handlerC0650c, null);
+                        processClipboardMarker(chosen), candidate, typedWord, separator, forceSeparator, inputSource),
+                uiUpdateHandler, null);
         return result.separatorCommitted;
     }
 
     /**
      * Strips the engine markers from a suggestion; a leading {@code %b} also deletes one char.
-     * @param str the raw suggestion string (may contain engine markers)
+     * @param text the raw suggestion string (may contain engine markers)
      */
-    public String processClipboardMarker(String str) {
-        if (str.contains(MARKER_BOUNDARY_LOWER)) {
-            if (str.startsWith(MARKER_BOUNDARY_LOWER)) {
+    public String processClipboardMarker(String text) {
+        if (text.contains(MARKER_BOUNDARY_LOWER)) {
+            if (text.startsWith(MARKER_BOUNDARY_LOWER)) {
                 // Finish composing first: the cache models this delete as trimming the composing
                 // tail, while the editor deletes the char before the region.
                 if (mInputLogic.mComposingTracker.isComposing()) {
@@ -429,53 +429,53 @@ class CommitController {
                 mInputLogic.mRichInputConnection.deleteSurroundingText(1, 0);
             }
             // Literal replace: a ".%b" regex would also strip the user's preceding character.
-            str = str.replace(MARKER_BOUNDARY_LOWER, "");
+            text = text.replace(MARKER_BOUNDARY_LOWER, "");
         }
-        if (str.contains(MARKER_BOUNDARY)) {
+        if (text.contains(MARKER_BOUNDARY)) {
             // %B carries the following boundary char with it.
-            str = str.replaceAll(java.util.regex.Pattern.quote(MARKER_BOUNDARY) + ".", "");
-            str = str.replace(MARKER_BOUNDARY, "");
+            text = text.replaceAll(java.util.regex.Pattern.quote(MARKER_BOUNDARY) + ".", "");
+            text = text.replace(MARKER_BOUNDARY, "");
         }
-        return str;
+        return text;
     }
 
     /**
-     * @param c0804d current settings values
-     * @param str the word to commit
-     * @param str2 the word separator to append (may be empty)
-     * @param enumC0690f the input source that triggered the commit
+     * @param settingsValues current settings values
+     * @param word the word to commit
+     * @param separator the word separator to append (may be empty)
+     * @param inputSource the input source that triggered the commit
      * @return characters written (word plus any separator)
      */
-    int commitWord(SettingsValues c0804d, String str, CommitEventRecord.CommitType commitTypeVar, String str2, InputSource enumC0690f) {
-        return commitWordExtended(c0804d, str, commitTypeVar, str2, enumC0690f, false);
+    int commitWord(SettingsValues settingsValues, String word, CommitEventRecord.CommitType commitType, String separator, InputSource inputSource) {
+        return commitWordExtended(settingsValues, word, commitType, separator, inputSource, false);
     }
 
     /**
      * Generic word commit; never issues a {@link CorrectionInfo}, even for {@code DECIDED_WORD}.
      *
-     * @param z force the separator append even for a word character
-     * @param c0804d current settings values
-     * @param str the word text to commit
-     * @param str2 the separator to append after the word
-     * @param enumC0690f the input source that triggered the commit
+     * @param forceSeparator force the separator append even for a word character
+     * @param settingsValues current settings values
+     * @param word the word text to commit
+     * @param separator the separator to append after the word
+     * @param inputSource the input source that triggered the commit
      */
-    int commitWordExtended(SettingsValues c0804d, String str, CommitEventRecord.CommitType commitTypeVar, String str2, InputSource enumC0690f, boolean z) {
-        return execute(c0804d, CommitRequest.word(str, commitTypeVar, str2, z, enumC0690f),
+    int commitWordExtended(SettingsValues settingsValues, String word, CommitEventRecord.CommitType commitType, String separator, InputSource inputSource, boolean forceSeparator) {
+        return execute(settingsValues, CommitRequest.word(word, commitType, separator, forceSeparator, inputSource),
                 null, null).lengthWritten;
     }
 
     /**
      * Commits a CJK / Japanese strip pick; returns whether to record the pick.
-     * @param c0804d current settings values
-     * @param enumC0690f the input source that triggered the commit
-     * @param c0920g the current input event context
-     * @param handlerC0650c UI update handler
-     * @param str the separator that ended the pick
+     * @param settingsValues current settings values
+     * @param inputSource the input source that triggered the commit
+     * @param inputEventContext the current input event context
+     * @param uiUpdateHandler UI update handler
+     * @param separator the separator that ended the pick
      */
-    boolean commitPredictionWord(SettingsValues c0804d, SuggestedWords.SuggestedWordInfo suggestedWordInfoVar, CommitEventRecord.CommitType commitTypeVar2, InputSource enumC0690f, InputEventContext c0920g, UIUpdateHandler handlerC0650c, String str) {
+    boolean commitPredictionWord(SettingsValues settingsValues, SuggestedWords.SuggestedWordInfo suggestedWordInfo, CommitEventRecord.CommitType commitType, InputSource inputSource, InputEventContext inputEventContext, UIUpdateHandler uiUpdateHandler, String separator) {
         return execute(
-                c0804d,
-                CommitRequest.predictionPick(suggestedWordInfoVar, commitTypeVar2, str, enumC0690f),
-                handlerC0650c, c0920g).shouldRecordPick;
+                settingsValues,
+                CommitRequest.predictionPick(suggestedWordInfo, commitType, separator, inputSource),
+                uiUpdateHandler, inputEventContext).shouldRecordPick;
     }
 }

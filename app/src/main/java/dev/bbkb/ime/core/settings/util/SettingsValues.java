@@ -326,24 +326,24 @@ public final class SettingsValues {
      * ASCII-only, deliberately narrower than {@link Character#isLetterOrDigit(int)}: callers ask
      * whether a code point is part of a plain latin word.
      *
-     * @param i a code point
+     * @param code a code point
      */
-    public boolean isLetterOrDigit(int i) {
-        return (i >= 'A' && i <= 'Z') || (i >= 'a' && i <= 'z') || (i >= '0' && i <= '9');
+    public boolean isLetterOrDigit(int code) {
+        return (code >= 'A' && code <= 'Z') || (code >= 'a' && code <= 'z') || (code >= '0' && code <= '9');
     }
 
-    /** @param c0696l the focused editor's capabilities, or null for a default plain-text editor */
-    public SettingsValues(Context context, SharedPreferences sharedPreferences, Resources resources, EditorCapabilities c0696l) {
+    /** @param editorCapabilities the focused editor's capabilities, or null for a default plain-text editor */
+    public SettingsValues(Context context, SharedPreferences sharedPreferences, Resources resources, EditorCapabilities editorCapabilities) {
         float touchKeypadResolution = DeviceProfile.current().getTouchKeypadResolution();
         float fM5549d = touchKeypadResolution > 1.0f ? touchKeypadResolution : resources.getDisplayMetrics().density;
         if (BuildConfig.DEBUG) Log.i(TAG, "Using density of " + fM5549d);
         this.locale = LocaleUtils.getConfigurationLocale(resources);
         this.delayToUpdateOldSuggestionsMs = resources.getInteger(R.integer.config_delay_in_msec_to_update_old_suggestions);
         this.spacingAndPunctuation = SpacingAndPunctuation.forResources(resources);
-        if (c0696l == null) {
+        if (editorCapabilities == null) {
             this.editorCapabilities = new EditorCapabilities(null, false, context.getPackageName(), this.locale, false);
         } else {
-            this.editorCapabilities = c0696l;
+            this.editorCapabilities = editorCapabilities;
         }
         this.isAutoCapsEnabled = sharedPreferences.getBoolean("auto_cap", true);
         this.isVibrationEnabled = SettingsManager.isVibrationEnabled(sharedPreferences, resources);
@@ -490,8 +490,8 @@ public final class SettingsValues {
         return new SettingsValues(this, context, editorCapabilities);
     }
 
-    /** @param c0696l the new editor's capabilities, or null for a default plain-text editor */
-    private SettingsValues(SettingsValues base, Context context, EditorCapabilities c0696l) {
+    /** @param editorCapabilities the new editor's capabilities, or null for a default plain-text editor */
+    private SettingsValues(SettingsValues base, Context context, EditorCapabilities editorCapabilities) {
         this.shiftKeyLongPressTimeout = base.shiftKeyLongPressTimeout;
         this.showUiToAcceptTypedWord = base.showUiToAcceptTypedWord;
         this.keypressVibrationDuration = base.keypressVibrationDuration;
@@ -619,7 +619,7 @@ public final class SettingsValues {
         this.autoCorrectionSwitchedOn = base.autoCorrectionSwitchedOn;
         this.autoCorrectionModePkb = base.autoCorrectionModePkb;
         this.autoCorrectionModeVkb = base.autoCorrectionModeVkb;
-        this.editorCapabilities = c0696l != null ? c0696l
+        this.editorCapabilities = editorCapabilities != null ? editorCapabilities
                 : new EditorCapabilities(null, false, context.getPackageName(), this.locale, false);
         this.showsVoiceInputKey = computeShowsVoiceInputKey(context);
         this.useDoubleSpacePeriod = this.doubleSpacePeriodSetting && this.editorCapabilities.normalVariation;
@@ -728,9 +728,9 @@ public final class SettingsValues {
                 || this.editorCapabilities.shouldShowChineseSuggestions;
     }
 
-    /** @param i a code point */
-    public boolean isWordSeparator(int i) {
-        return this.spacingAndPunctuation.isWordSeparator(i);
+    /** @param code a code point */
+    public boolean isWordSeparator(int code) {
+        return this.spacingAndPunctuation.isWordSeparator(code);
     }
 
     /**
@@ -738,15 +738,15 @@ public final class SettingsValues {
      * CJK code point in the "not separators" table is treated as not a word character. Check CJK
      * backspace and word boundaries before simplifying the double negative.
      *
-     * @param i a code point
+     * @param code a code point
      */
-    public boolean isNotWordSeparatorForLocale(int i, Locale locale) {
-        return this.spacingAndPunctuation.isNotWordSeparatorForLocale(i, locale);
+    public boolean isNotWordSeparatorForLocale(int code, Locale locale) {
+        return this.spacingAndPunctuation.isNotWordSeparatorForLocale(code, locale);
     }
 
-    /** @param i a code point */
-    public boolean isWordConnector(int i) {
-        return this.spacingAndPunctuation.isWordConnector(i);
+    /** @param code a code point */
+    public boolean isWordConnector(int code) {
+        return this.spacingAndPunctuation.isWordConnector(code);
     }
 
     /**
@@ -754,48 +754,48 @@ public final class SettingsValues {
      * mark classes (Mn covers Tibetan subjoined letters, Arabic/Hebrew points, Thai and Indic
      * vowel signs, which must not end a word).
      *
-     * @param i a code point
+     * @param code a code point
      */
-    public boolean isWordCodePoint(int i) {
-        return Character.isLetterOrDigit(i) || isWordConnector(i) || isCombiningMark(i);
+    public boolean isWordCodePoint(int code) {
+        return Character.isLetterOrDigit(code) || isWordConnector(code) || isCombiningMark(code);
     }
 
     /**
      * Package-private for {@code WordCodePointTest}.
      *
-     * @param i a code point
+     * @param code a code point
      */
-    static boolean isCombiningMark(int i) {
-        final int type = Character.getType(i);
+    static boolean isCombiningMark(int code) {
+        final int type = Character.getType(code);
         return Character.COMBINING_SPACING_MARK == type || Character.NON_SPACING_MARK == type;
     }
 
     /**
      * True for symbols usually preceded by a space ({@code symbolsPrecededBySpace}).
      *
-     * @param i a code point
+     * @param code a code point
      */
-    public boolean isUsuallyPrecededBySpace(int i) {
-        return this.spacingAndPunctuation.isPrecededBySpace(i);
+    public boolean isUsuallyPrecededBySpace(int code) {
+        return this.spacingAndPunctuation.isPrecededBySpace(code);
     }
 
     /**
      * True for the French-only preceded-by-space symbol set; false outside French locales.
      *
-     * @param i a code point
+     * @param code a code point
      */
-    public boolean isPrecededBySpaceFrench(int i) {
-        return this.spacingAndPunctuation.isPrecededBySpaceFrench(i);
+    public boolean isPrecededBySpaceFrench(int code) {
+        return this.spacingAndPunctuation.isPrecededBySpaceFrench(code);
     }
 
     /**
      * True for symbols usually followed by a space ({@code symbolsFollowedBySpace}); not the
      * same as {@link SpacingAndPunctuation#isSentenceSeparator(int)}.
      *
-     * @param i a code point
+     * @param code a code point
      */
-    public boolean isUsuallyFollowedBySpace(int i) {
-        return this.spacingAndPunctuation.isFollowedBySpace(i);
+    public boolean isUsuallyFollowedBySpace(int code) {
+        return this.spacingAndPunctuation.isFollowedBySpace(code);
     }
 
     public boolean isApplicationSpecifiedCompletionsOn() {

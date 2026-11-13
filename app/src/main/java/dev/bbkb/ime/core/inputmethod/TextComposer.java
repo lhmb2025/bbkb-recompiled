@@ -59,9 +59,9 @@ public class TextComposer extends AbstractInputProcessor {
         return !Normalizer.isNormalized(inlineWord, Normalizer.Form.NFC) ? Normalizer.normalize(inlineWord, Normalizer.Form.NFC) : inlineWord;
     }
 
-    /** @param c0697m the touch-coordinate tracker, returned unchanged with the reverted text */
+    /** @param sourceTracker the touch-coordinate tracker, returned unchanged with the reverted text */
     @Override
-    public InputMethodCallback.ConversionResult revertLastConversion(CharSequence charSequence, TouchPointerCoordTracker c0697m, NuanceSDK nuanceSDK) {
+    public InputMethodCallback.ConversionResult revertLastConversion(CharSequence charSequence, TouchPointerCoordTracker sourceTracker, NuanceSDK nuanceSDK) {
         if (!this.historyEnabled) {
             return null;
         }
@@ -77,7 +77,7 @@ public class TextComposer extends AbstractInputProcessor {
                 this.textHistory.remove(size);
                 nuanceSDK.clearOneSymbol();
                 aVar.text = size > 0 ? this.textHistory.get(size - 1) : "";
-                aVar.coordTracker = c0697m;
+                aVar.coordTracker = sourceTracker;
                 return aVar;
             }
         }

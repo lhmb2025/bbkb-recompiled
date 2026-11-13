@@ -51,22 +51,22 @@ public class VoiceInputDialog extends Activity {
 
     public static final String EXTRA_RESULT_CODE = "voice_dialog_result";
 
-    private void finishWithResult(Result enumC1120a) {
+    private void finishWithResult(Result result) {
         Bundle extras = new Bundle();
-        extras.putInt(EXTRA_RESULT_CODE, enumC1120a.ordinal());
+        extras.putInt(EXTRA_RESULT_CODE, result.ordinal());
         InAppEventBus.getInstance().post(this.mResultReceiver, extras);
         finish();
     }
 
-    private void showDialog(String str) {
-        final AlertDialog alertDialogCreate = dev.bbkb.ime.core.settings.ui.BbkbDialogs.builder(this).setTitle(R.string.voice_input_manage_language_title).setMessage(str).setPositiveButton(R.string.go_to_settings, new DialogInterface.OnClickListener() {
+    private void showDialog(String message) {
+        final AlertDialog alertDialogCreate = dev.bbkb.ime.core.settings.ui.BbkbDialogs.builder(this).setTitle(R.string.voice_input_manage_language_title).setMessage(message).setPositiveButton(R.string.go_to_settings, new DialogInterface.OnClickListener() {
             @Override // android.content.DialogInterface.OnClickListener
-            public void onClick(DialogInterface dialogInterface, int i) {
+            public void onClick(DialogInterface dialogInterface, int which) {
                 VoiceInputDialog.this.finishWithResult(Result.OK);
             }
         }).setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
             @Override // android.content.DialogInterface.OnClickListener
-            public void onClick(DialogInterface dialogInterface, int i) {
+            public void onClick(DialogInterface dialogInterface, int which) {
                 VoiceInputDialog.this.finishWithResult(Result.CANCEL);
             }
         }).setIcon(R.mipmap.ic_launcher_round).setCancelable(false).create();

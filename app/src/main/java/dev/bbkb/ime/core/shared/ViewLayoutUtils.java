@@ -11,12 +11,12 @@ import android.widget.RelativeLayout;
 
 
 public final class ViewLayoutUtils {
-    public static ViewGroup.MarginLayoutParams newLayoutParam(ViewGroup viewGroup, int i, int i2) {
+    public static ViewGroup.MarginLayoutParams newLayoutParam(ViewGroup viewGroup, int width, int height) {
         if (viewGroup instanceof FrameLayout) {
-            return new FrameLayout.LayoutParams(i, i2);
+            return new FrameLayout.LayoutParams(width, height);
         }
         if (viewGroup instanceof RelativeLayout) {
-            return new RelativeLayout.LayoutParams(i, i2);
+            return new RelativeLayout.LayoutParams(width, height);
         }
         if (viewGroup == null) {
             throw new NullPointerException("placer is null");
@@ -24,38 +24,38 @@ public final class ViewLayoutUtils {
         throw new IllegalArgumentException("placer is neither FrameLayout nor RelativeLayout: " + viewGroup.getClass().getName());
     }
 
-    public static void placeViewAt(View view, int i, int i2, int i3, int i4) {
+    public static void placeViewAt(View view, int x, int y, int width, int height) {
         ViewGroup.LayoutParams layoutParams = view.getLayoutParams();
         if (layoutParams instanceof ViewGroup.MarginLayoutParams) {
             ViewGroup.MarginLayoutParams marginLayoutParams = (ViewGroup.MarginLayoutParams) layoutParams;
-            marginLayoutParams.width = i3;
-            marginLayoutParams.height = i4;
-            marginLayoutParams.setMargins(i, i2, 0, 0);
+            marginLayoutParams.width = width;
+            marginLayoutParams.height = height;
+            marginLayoutParams.setMargins(x, y, 0, 0);
         }
     }
 
-    public static void updateLayoutHeightOf(Window window, int i) {
+    public static void updateLayoutHeightOf(Window window, int layoutHeight) {
         WindowManager.LayoutParams attributes = window.getAttributes();
-        if (attributes.height != i) {
-            attributes.height = i;
+        if (attributes.height != layoutHeight) {
+            attributes.height = layoutHeight;
             window.setAttributes(attributes);
         }
     }
 
-    public static void updateLayoutHeightOf(View view, int i) {
+    public static void updateLayoutHeightOf(View view, int layoutHeight) {
         ViewGroup.LayoutParams layoutParams = view.getLayoutParams();
-        if (layoutParams.height != i) {
-            layoutParams.height = i;
+        if (layoutParams.height != layoutHeight) {
+            layoutParams.height = layoutHeight;
             view.setLayoutParams(layoutParams);
         }
     }
 
-    public static void updateLayoutGravityOf(View view, int i) {
+    public static void updateLayoutGravityOf(View view, int layoutGravity) {
         ViewGroup.LayoutParams layoutParams = view.getLayoutParams();
         if (layoutParams instanceof LinearLayout.LayoutParams) {
             LinearLayout.LayoutParams layoutParams2 = (LinearLayout.LayoutParams) layoutParams;
-            if (layoutParams2.gravity != i) {
-                layoutParams2.gravity = i;
+            if (layoutParams2.gravity != layoutGravity) {
+                layoutParams2.gravity = layoutGravity;
                 view.setLayoutParams(layoutParams2);
                 return;
             }
@@ -63,8 +63,8 @@ public final class ViewLayoutUtils {
         }
         if (layoutParams instanceof FrameLayout.LayoutParams) {
             FrameLayout.LayoutParams layoutParams3 = (FrameLayout.LayoutParams) layoutParams;
-            if (layoutParams3.gravity != i) {
-                layoutParams3.gravity = i;
+            if (layoutParams3.gravity != layoutGravity) {
+                layoutParams3.gravity = layoutGravity;
                 view.setLayoutParams(layoutParams3);
                 return;
             }

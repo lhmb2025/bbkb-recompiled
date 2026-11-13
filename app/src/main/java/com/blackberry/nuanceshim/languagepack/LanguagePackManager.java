@@ -114,12 +114,12 @@ public class LanguagePackManager {
         return status != null && status.isSupported();
     }
 
-    public synchronized boolean setLanguages(NuanceSDK nuanceSDK, Locale[] localeArr) {
-        final LanguagePackInstaller[] statuses = new LanguagePackInstaller[localeArr.length];
-        for (int i = 0; i < localeArr.length; i++) {
-            statuses[i] = getStatus(localeArr[i]);
+    public synchronized boolean setLanguages(NuanceSDK nuanceSDK, Locale[] locales) {
+        final LanguagePackInstaller[] statuses = new LanguagePackInstaller[locales.length];
+        for (int i = 0; i < locales.length; i++) {
+            statuses[i] = getStatus(locales[i]);
             if (statuses[i] == null) {
-                Logger.warn("LPM", "No language pack status for locale: " + localeArr[i]);
+                Logger.warn("LPM", "No language pack status for locale: " + locales[i]);
                 return false;
             }
         }

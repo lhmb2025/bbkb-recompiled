@@ -63,8 +63,8 @@ public final class KeyPreviewDrawParams {
         this.mDismissAnimatorResId = typedArray.getResourceId(R.styleable.MainKeyboardView_keyPreviewDismissAnimator, 0);
     }
 
-    public void setVisibleOffset(int i) {
-        this.mPreviewVisibleOffset = i;
+    public void setVisibleOffset(int previewVisibleOffset) {
+        this.mPreviewVisibleOffset = previewVisibleOffset;
     }
 
     public int getVisibleOffset() {
@@ -87,9 +87,9 @@ public final class KeyPreviewDrawParams {
         return this.mPreviewVisibleHeight;
     }
 
-    public void setPopupEnabled(boolean z, int i) {
-        this.mShowPopup = z;
-        this.mLingerTimeout = i;
+    public void setPopupEnabled(boolean enabled, int lingerTimeout) {
+        this.mShowPopup = enabled;
+        this.mLingerTimeout = lingerTimeout;
     }
 
     public boolean isPopupEnabled() {
@@ -100,14 +100,14 @@ public final class KeyPreviewDrawParams {
         return this.mLingerTimeout;
     }
 
-    public void setAnimationParams(boolean z, float f, float f2, int i, float f3, float f4, int i2) {
-        this.mHasCustomAnimationParams = z;
-        this.mShowUpStartScaleX = f;
-        this.mShowUpStartScaleY = f2;
-        this.mShowUpDuration = i;
-        this.mDismissEndScaleX = f3;
-        this.mDismissEndScaleY = f4;
-        this.mDismissDuration = i2;
+    public void setAnimationParams(boolean hasCustomAnimationParams, float showUpStartScaleX, float showUpStartScaleY, int showUpDuration, float dismissEndScaleX, float dismissEndScaleY, int dismissDuration) {
+        this.mHasCustomAnimationParams = hasCustomAnimationParams;
+        this.mShowUpStartScaleX = showUpStartScaleX;
+        this.mShowUpStartScaleY = showUpStartScaleY;
+        this.mShowUpDuration = showUpDuration;
+        this.mDismissEndScaleX = dismissEndScaleX;
+        this.mDismissEndScaleY = dismissEndScaleY;
+        this.mDismissDuration = dismissDuration;
     }
 
     public Animator createShowUpAnimator(View view) throws Resources.NotFoundException {

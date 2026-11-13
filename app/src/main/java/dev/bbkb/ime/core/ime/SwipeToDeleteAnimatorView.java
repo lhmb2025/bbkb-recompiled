@@ -79,11 +79,11 @@ public class SwipeToDeleteAnimatorView extends AppCompatImageView implements Ani
     }
 
     /**
-     * @param f start x of the sweep
-     * @param f2 start y of the touch
-     * @param f3 end x of the sweep
+     * @param startX start x of the sweep
+     * @param startY start y of the touch
+     * @param endX end x of the sweep
      */
-    public void startSwipeAnimation(float f, float f2, float f3) {
+    public void startSwipeAnimation(float startX, float startY, float endX) {
         float f4;
         if (this.keyboardHeight > this.suggestionsStripHeight || this.suggestionStripShown) {
             AnimatorSet animatorSet = this.animatorSet;
@@ -92,9 +92,9 @@ public class SwipeToDeleteAnimatorView extends AppCompatImageView implements Ani
             }
             this.animatorSet = new AnimatorSet();
             this.animatorSet.addListener(this);
-            this.startX = f;
-            this.startY = f2;
-            this.endX = f3;
+            this.startX = startX;
+            this.startY = startY;
+            this.endX = endX;
             this.viewHeight = getHeight();
             int iAbs = (int) (this.maxDurationMs * (Math.abs(this.endX - this.startX) / this.keyboardWidth));
             int i = this.minDurationMs;
@@ -137,19 +137,19 @@ public class SwipeToDeleteAnimatorView extends AppCompatImageView implements Ani
         }
     }
 
-    /** @param i keyboard height in px */
-    public void setCurrentKeyboardHeight(int i) {
-        this.keyboardHeight = i;
+    /** @param height keyboard height in px */
+    public void setCurrentKeyboardHeight(int height) {
+        this.keyboardHeight = height;
     }
 
-    /** @param z true if the suggestion strip is shown */
-    public void setSuggestionStripShown(boolean z) {
-        this.suggestionStripShown = z;
+    /** @param shown true if the suggestion strip is shown */
+    public void setSuggestionStripShown(boolean shown) {
+        this.suggestionStripShown = shown;
     }
 
-    /** @param i keyboard width in px */
-    public void setCurrentKeyboardWidth(int i) {
-        this.keyboardWidth = i;
+    /** @param width keyboard width in px */
+    public void setCurrentKeyboardWidth(int width) {
+        this.keyboardWidth = width;
     }
 
     @Override
@@ -176,24 +176,24 @@ public class SwipeToDeleteAnimatorView extends AppCompatImageView implements Ani
 
         final float fadeInEndFraction;
 
-        /** @param f fraction of the animation spent fading in */
-        FadeInOutInterpolator(float f) {
-            this.fadeInEndFraction = f;
-            this.fadeInSlope = 1.0f / f;
+        /** @param fadeInEndFraction fraction of the animation spent fading in */
+        FadeInOutInterpolator(float fadeInEndFraction) {
+            this.fadeInEndFraction = fadeInEndFraction;
+            this.fadeInSlope = 1.0f / fadeInEndFraction;
             this.fadeOutSlope = 1.0f / (1.0f - SwipeToDeleteAnimatorView.this.fadeInRatio);
         }
 
         @Override
-        public float getInterpolation(float f) {
+        public float getInterpolation(float input) {
             float f2 = this.fadeInEndFraction;
             if (f2 >= 1.0f || f2 == 0.0f) {
                 return 1.0f;
             }
-            if (f <= f2) {
-                return f * this.fadeInSlope;
+            if (input <= f2) {
+                return input * this.fadeInSlope;
             }
             float f3 = this.fadeOutSlope;
-            return ((-f3) * f) + f3;
+            return ((-f3) * input) + f3;
         }
     }
 }

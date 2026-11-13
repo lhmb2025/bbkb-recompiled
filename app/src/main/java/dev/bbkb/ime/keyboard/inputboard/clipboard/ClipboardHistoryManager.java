@@ -203,9 +203,9 @@ public class ClipboardHistoryManager implements ClipboardManager.OnPrimaryClipCh
         }
     }
 
-    /** @param z true if the focused field asked for no personalized learning */
-    public void setNoPersonalizedLearning(boolean z) {
-        this.mNoPersonalizedLearning = z;
+    /** @param noPersonalizedLearning true if the focused field asked for no personalized learning */
+    public void setNoPersonalizedLearning(boolean noPersonalizedLearning) {
+        this.mNoPersonalizedLearning = noPersonalizedLearning;
     }
 
     /** Marked {@link ClipDescription#EXTRA_IS_SENSITIVE} (API 33+) by its source: never stored. */
@@ -602,14 +602,14 @@ public class ClipboardHistoryManager implements ClipboardManager.OnPrimaryClipCh
         }
     }
 
-    /** @param cVar the listener to add */
-    public void addHistoryChangedListener(OnHistoryChangedListener cVar) {
-        this.mChangeListeners.add(cVar);
+    /** @param onHistoryChangedListener the listener to add */
+    public void addHistoryChangedListener(OnHistoryChangedListener onHistoryChangedListener) {
+        this.mChangeListeners.add(onHistoryChangedListener);
     }
 
-    /** @param cVar the listener to remove */
-    public void removeHistoryChangedListener(OnHistoryChangedListener cVar) {
-        this.mChangeListeners.remove(cVar);
+    /** @param onHistoryChangedListener the listener to remove */
+    public void removeHistoryChangedListener(OnHistoryChangedListener onHistoryChangedListener) {
+        this.mChangeListeners.remove(onHistoryChangedListener);
     }
 
     private void notifyHistoryChanged() {
@@ -625,10 +625,10 @@ public class ClipboardHistoryManager implements ClipboardManager.OnPrimaryClipCh
         }
     }
 
-    /** @param str the label to match against the clip description's label */
-    public static boolean hasLabel(ClipData clipData, String str) {
+    /** @param label the label to match against the clip description's label */
+    public static boolean hasLabel(ClipData clipData, String label) {
         ClipDescription description;
         return clipData != null && (description = clipData.getDescription()) != null
-                && str.equals(description.getLabel());
+                && label.equals(description.getLabel());
     }
 }

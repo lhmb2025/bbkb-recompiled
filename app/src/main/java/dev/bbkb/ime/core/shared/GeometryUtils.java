@@ -3,32 +3,32 @@ package dev.bbkb.ime.core.shared;
 
 
 public final class GeometryUtils {
-    public static float getDistance(float f, float f2, float f3, float f4) {
-        final double dx = f - f3;
-        final double dy = f2 - f4;
+    public static float getDistance(float x1, float y1, float x2, float y2) {
+        final double dx = x1 - x2;
+        final double dy = y1 - y2;
         return (float) Math.sqrt((dx * dx) + (dy * dy));
     }
 
-    public static float getDistanceToRect(float f, float f2, float f3, float f4, float f5, float f6) {
-        float f7 = f5 + f3;
-        float f8 = f6 + f4;
-        if (f < f3) {
-            if (f2 < f4) {
-                return getDistance(f, f2, f3, f4);
+    public static float getDistanceToRect(float x, float y, float left, float top, float width, float height) {
+        float f7 = width + left;
+        float f8 = height + top;
+        if (x < left) {
+            if (y < top) {
+                return getDistance(x, y, left, top);
             }
-            return (f2 < f4 || f2 > f8) ? getDistance(f, f2, f3, f8) : f3 - f;
+            return (y < top || y > f8) ? getDistance(x, y, left, f8) : left - x;
         }
-        if (f < f3 || f > f7) {
-            if (f2 < f4) {
-                return getDistance(f, f2, f7, f4);
+        if (x < left || x > f7) {
+            if (y < top) {
+                return getDistance(x, y, f7, top);
             }
-            return (f2 < f4 || f2 > f8) ? getDistance(f, f2, f7, f8) : f - f7;
+            return (y < top || y > f8) ? getDistance(x, y, f7, f8) : x - f7;
         }
-        if (f2 < f4) {
-            return f4 - f2;
+        if (y < top) {
+            return top - y;
         }
-        if (f2 < f4 || f2 > f8) {
-            return f2 - f8;
+        if (y < top || y > f8) {
+            return y - f8;
         }
         return 0.0f;
     }

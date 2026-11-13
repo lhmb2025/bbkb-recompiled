@@ -98,9 +98,9 @@ public class NumericSubpanelController implements SimplifiedKeyboardView.onKeyEv
         return aVar.build();
     }
 
-    /** @param z unused */
+    /** @param releasedOnKey unused */
     @Override
-    public void onKeyUp(Key key, boolean z) {
+    public void onKeyUp(Key key, boolean releasedOnKey) {
         this.ime.onCodeInput(key.getCode(), -6, -6, SystemClock.uptimeMillis(), false);
     }
 

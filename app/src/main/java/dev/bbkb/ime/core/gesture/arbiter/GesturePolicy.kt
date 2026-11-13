@@ -33,8 +33,8 @@ sealed interface PolicyOutcome {
  */
 class GesturePolicy {
 
-    fun resolve(c: GestureClassification, mode: ModeState, a: GestureAssignments): PolicyOutcome {
-        when (c) {
+    fun resolve(classification: GestureClassification, mode: ModeState, a: GestureAssignments): PolicyOutcome {
+        when (classification) {
             is GestureClassification.Tap -> return PolicyOutcome.Yield
             is GestureClassification.FlowTrace -> return PolicyOutcome.Yield
             else -> {}
@@ -44,14 +44,14 @@ class GesturePolicy {
         if (!mode.gesturesEnabled) return PolicyOutcome.Yield
         if (mode.keyTiming.suppressesGestures) return PolicyOutcome.Yield
 
-        val action = when (c) {
+        val action = when (classification) {
             is GestureClassification.Hold -> a.hold
             is GestureClassification.DoubleTap -> a.doubleTap
-            is GestureClassification.Swipe -> when (c.direction) {
+            is GestureClassification.Swipe -> when (classification.direction) {
                 GestureDirection.UP -> GestureAction.COMMIT_SUGGESTION
                 GestureDirection.DOWN -> a.swipeDown
-                GestureDirection.LEFT -> if (c.fast) a.flickLeft else a.swipeLeft
-                GestureDirection.RIGHT -> if (c.fast) a.flickRight else a.swipeRight
+                GestureDirection.LEFT -> if (classification.fast) a.flickLeft else a.swipeLeft
+                GestureDirection.RIGHT -> if (classification.fast) a.flickRight else a.swipeRight
             }
             else -> GestureAction.NONE
         }

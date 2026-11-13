@@ -154,29 +154,29 @@ public final class PhysicalKeyboardStateTracker extends MetaKeyStateTracker impl
         publishModifierState(false);
     }
 
-    /** @param i the key code */
-    public void handleKeyDown(int i, KeyEvent keyEvent) {
+    /** @param keyCode the key code */
+    public void handleKeyDown(int keyCode, KeyEvent keyEvent) {
         if (KeyEventDeviceClassifier.getInstance().isPhysicalKeyboardEvent(keyEvent) && keyEvent.getRepeatCount() == 0) {
             if (BuildConfig.DEBUG) {
             int _internalMetaBefore = getInternalMetaState();
             android.util.Log.d("AltChordDebug", "ts=" + android.os.SystemClock.uptimeMillis() +
                 " where=PhysicalKeyboardStateTracker#handleKeyDown" +
-                " keyCode=" + i +
-                " isModifier=" + isModifierKey(i) +
+                " keyCode=" + keyCode +
+                " isModifier=" + isModifierKey(keyCode) +
                 " keysDownBefore=" + getNumberOfKeysDown() +
                 " internalMetaBefore=" + hex(_internalMetaBefore));
             }
 
-            this.mKeysHeld.put(i, true);
-            if (!isModifierKeyEvent(i, keyEvent)) {
-                if (i == 63) {
+            this.mKeysHeld.put(keyCode, true);
+            if (!isModifierKeyEvent(keyCode, keyEvent)) {
+                if (keyCode == 63) {
                     if (!dev.bbkb.ime.core.device.profile.DeviceProfile.current().usesMetaSymHandling()) {
                         resetAltStateAndNotify();
                     }
                 }
             } else {
-                super.onKeyDown((View) null, this.mMetaKeyText, i, keyEvent);
-                markModifierPressed(i);
+                super.onKeyDown((View) null, this.mMetaKeyText, keyCode, keyEvent);
+                markModifierPressed(keyCode);
                 publishModifierState(false);
             }
 
@@ -184,32 +184,32 @@ public final class PhysicalKeyboardStateTracker extends MetaKeyStateTracker impl
             int _internalMetaAfter = getInternalMetaState();
             android.util.Log.d("AltChordDebug", "ts=" + android.os.SystemClock.uptimeMillis() +
                 " where=PhysicalKeyboardStateTracker#handleKeyDown_after" +
-                " keyCode=" + i +
+                " keyCode=" + keyCode +
                 " keysDownAfter=" + getNumberOfKeysDown() +
                 " internalMetaAfter=" + hex(_internalMetaAfter));
             }
         }
     }
 
-    /** @param i the key code */
-    public void handleKeyUp(int i, KeyEvent keyEvent) {
+    /** @param keyCode the key code */
+    public void handleKeyUp(int keyCode, KeyEvent keyEvent) {
         if (KeyEventDeviceClassifier.getInstance().isPhysicalKeyboardEvent(keyEvent)) {
-            boolean trackPrev = isAltKey(i) ? isAltKeyConsumed() : isShiftKey(i) ? isShiftKeyConsumed() : false;
+            boolean trackPrev = isAltKey(keyCode) ? isAltKeyConsumed() : isShiftKey(keyCode) ? isShiftKeyConsumed() : false;
             if (BuildConfig.DEBUG) {
             int _internalMetaBefore = getInternalMetaState();
             android.util.Log.d("AltChordDebug", "ts=" + android.os.SystemClock.uptimeMillis() +
                 " where=PhysicalKeyboardStateTracker#handleKeyUp" +
-                " keyCode=" + i +
-                " isModifier=" + isModifierKey(i) +
+                " keyCode=" + keyCode +
+                " isModifier=" + isModifierKey(keyCode) +
                 " trackPrev=" + trackPrev +
                 " keysDownBefore=" + getNumberOfKeysDown() +
                 " internalMetaBefore=" + hex(_internalMetaBefore));
             }
 
-            this.mKeysHeld.delete(i);
-            if (isModifierKeyEvent(i, keyEvent)) {
-                super.onKeyUp(null, this.mMetaKeyText, i, keyEvent, trackPrev);
-                markModifierReleased(i);
+            this.mKeysHeld.delete(keyCode);
+            if (isModifierKeyEvent(keyCode, keyEvent)) {
+                super.onKeyUp(null, this.mMetaKeyText, keyCode, keyEvent, trackPrev);
+                markModifierReleased(keyCode);
                 publishModifierState(false);
             }
 
@@ -217,7 +217,7 @@ public final class PhysicalKeyboardStateTracker extends MetaKeyStateTracker impl
             int _internalMetaAfter = getInternalMetaState();
             android.util.Log.d("AltChordDebug", "ts=" + android.os.SystemClock.uptimeMillis() +
                 " where=PhysicalKeyboardStateTracker#handleKeyUp_after" +
-                " keyCode=" + i +
+                " keyCode=" + keyCode +
                 " keysDownAfter=" + getNumberOfKeysDown() +
                 " internalMetaAfter=" + hex(_internalMetaAfter));
             }
@@ -227,31 +227,31 @@ public final class PhysicalKeyboardStateTracker extends MetaKeyStateTracker impl
     /**
      * Spends sticky/pressed modifiers after a non-modifier key.
      *
-     * @param i the key code
-     * @param z true if the key came from the physical keyboard
+     * @param keyCode the key code
+     * @param isPhysicalKeyboard true if the key came from the physical keyboard
      */
-    public void consumeModifiersAfterKey(int i, boolean z) {
+    public void consumeModifiersAfterKey(int keyCode, boolean isPhysicalKeyboard) {
         if (BuildConfig.DEBUG) {
         int _internalMetaBefore = getInternalMetaState();
         android.util.Log.d("AltChordDebug", "ts=" + android.os.SystemClock.uptimeMillis() +
             " where=PhysicalKeyboardStateTracker#consumeModifiersAfterKey" +
-            " keyCode=" + i +
-            " isPhysicalKb=" + z +
-            " isModifierKey=" + KeyEvent.isModifierKey(i) +
+            " keyCode=" + keyCode +
+            " isPhysicalKb=" + isPhysicalKeyboard +
+            " isModifierKey=" + KeyEvent.isModifierKey(keyCode) +
             " internalMetaBefore=" + hex(_internalMetaBefore));
         }
 
-        if (KeyEvent.isModifierKey(i) || !z) {
+        if (KeyEvent.isModifierKey(keyCode) || !isPhysicalKeyboard) {
             if (BuildConfig.DEBUG) {
             android.util.Log.d("AltChordDebug", "ts=" + android.os.SystemClock.uptimeMillis() +
                 " where=PhysicalKeyboardStateTracker#consumeModifiersAfterKey_SKIP" +
-                " reason=" + (KeyEvent.isModifierKey(i) ? "isModifierKey" : "notPhysicalKb"));
+                " reason=" + (KeyEvent.isModifierKey(keyCode) ? "isModifierKey" : "notPhysicalKb"));
             }
             return;
         }
         clearPressedModifiers(this.mMetaKeyText);
         if (!isShiftReleased()) {
-            this.mAltUsedWithKey = i != 0;
+            this.mAltUsedWithKey = keyCode != 0;
         }
         commitModifierState(true);
         // A sticky modifier this key just spent is off: publish now, since its key-up already
@@ -370,20 +370,20 @@ public final class PhysicalKeyboardStateTracker extends MetaKeyStateTracker impl
     }
 
     /**
-     * @param i the current editor input type (0 clears AltGr)
-     * @param aVar the keyboard's meta mask
+     * @param autoCapsFlags the current editor input type (0 clears AltGr)
+     * @param metaMask the keyboard's meta mask
      */
-    public void updateFilterAndAltGr(int i, KeyCharacterInterpreter.MetaMask aVar) {
-        this.mKeyInterpreter = aVar;
+    public void updateFilterAndAltGr(int autoCapsFlags, KeyCharacterInterpreter.MetaMask metaMask) {
+        this.mKeyInterpreter = metaMask;
         if (isShiftReleased()) {
-            setAltGrPressed((!hasInternalMetaFlag(KeyEvent.META_SHIFT_ON) || isAltGrPressed()) && i != 0);
+            setAltGrPressed((!hasInternalMetaFlag(KeyEvent.META_SHIFT_ON) || isAltGrPressed()) && autoCapsFlags != 0);
         }
         publishModifierState(false);
     }
 
-    /** @param i the key code */
-    public static boolean isModifierKey(int i) {
-        return isShiftKey(i) || isAltKey(i);
+    /** @param keyCode the key code */
+    public static boolean isModifierKey(int keyCode) {
+        return isShiftKey(keyCode) || isAltKey(keyCode);
     }
 
     /**
@@ -409,11 +409,11 @@ public final class PhysicalKeyboardStateTracker extends MetaKeyStateTracker impl
     }
 
     /**
-     * @param abstractC0918e the tracker whose key repeated
-     * @param i the repeating key code
+     * @param metaKeyStateTracker the tracker whose key repeated
+     * @param keyCode the repeating key code
      */
     @Override // KeyRepeatHandler.Callback
-    public void onKeyRepeat(MetaKeyStateTracker abstractC0918e, int i) {
+    public void onKeyRepeat(MetaKeyStateTracker metaKeyStateTracker, int keyCode) {
         // No-op: modifier lock is double-tap only.
     }
 
@@ -427,9 +427,9 @@ public final class PhysicalKeyboardStateTracker extends MetaKeyStateTracker impl
         resetModifiers(ModifierResetReason.MANUAL_SHIFT_SPENT);
     }
 
-    /** @param i the modifier key code */
-    private void markModifierPressed(int i) {
-        switch (i) {
+    /** @param keyCode the modifier key code */
+    private void markModifierPressed(int keyCode) {
+        switch (keyCode) {
             case 57:
                 this.mAltState[0] = -1;
                 break;
@@ -446,9 +446,9 @@ public final class PhysicalKeyboardStateTracker extends MetaKeyStateTracker impl
         commitModifierState(false);
     }
 
-    /** @param z consume held modifiers even when only one key is down */
-    private void commitModifierState(boolean z) {
-        if (z || getNumberOfKeysDown() > 1) {
+    /** @param force consume held modifiers even when only one key is down */
+    private void commitModifierState(boolean force) {
+        if (force || getNumberOfKeysDown() > 1) {
             super.cancelLongPressTimer();
             super.cancelDoubleTapTimer();
             markShiftConsumed();
@@ -478,9 +478,9 @@ public final class PhysicalKeyboardStateTracker extends MetaKeyStateTracker impl
         }
     }
 
-    /** @param i the modifier key code */
-    private void markModifierReleased(int i) {
-        switch (i) {
+    /** @param keyCode the modifier key code */
+    private void markModifierReleased(int keyCode) {
+        switch (keyCode) {
             case 57:
                 this.mAltState[0] = -2;
                 break;
@@ -548,14 +548,14 @@ public final class PhysicalKeyboardStateTracker extends MetaKeyStateTracker impl
         return iArr[0] == -3 || iArr[1] == -3;
     }
 
-    /** @param i the meta flag bits to test */
-    public boolean hasInternalMetaFlag(int i) {
-        return (i & computeInternalMetaState()) != 0;
+    /** @param metaFlag the meta flag bits to test */
+    public boolean hasInternalMetaFlag(int metaFlag) {
+        return (metaFlag & computeInternalMetaState()) != 0;
     }
 
-    /** @param i the meta flag bits to test */
-    public boolean hasMetaFlag(int i) {
-        return (getMetaState((CharSequence) this.mMetaKeyText) & i) != 0 && (this.mKeyInterpreter.apply(i) & i) == i;
+    /** @param metaFlag the meta flag bits to test */
+    public boolean hasMetaFlag(int metaFlag) {
+        return (getMetaState((CharSequence) this.mMetaKeyText) & metaFlag) != 0 && (this.mKeyInterpreter.apply(metaFlag) & metaFlag) == metaFlag;
     }
 
     @Override // SymbolPageProvider

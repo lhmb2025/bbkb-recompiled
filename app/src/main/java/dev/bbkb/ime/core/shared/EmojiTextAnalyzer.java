@@ -37,34 +37,34 @@ public final class EmojiTextAnalyzer {
     }
 
     /** Whether the text starts with an emoji, or is the legacy U+25E9 modifier. */
-    public static boolean isEmoji(String str) {
-        if (TextUtils.isEmpty(str)) {
+    public static boolean isEmoji(String text) {
+        if (TextUtils.isEmpty(text)) {
             return false;
         }
-        return isEmojiRelated(str.codePointAt(0)) || LEGACY_MODIFIER.equals(str);
+        return isEmojiRelated(text.codePointAt(0)) || LEGACY_MODIFIER.equals(text);
     }
 
-    /** @param i a code point; negative is never an emoji */
-    public static boolean isEmoji(int i) {
-        if (i < 0) {
+    /** @param codePoint a code point; negative is never an emoji */
+    public static boolean isEmoji(int codePoint) {
+        if (codePoint < 0) {
             return false;
         }
-        return isEmoji(new String(Character.toChars(i)));
+        return isEmoji(new String(Character.toChars(codePoint)));
     }
 
     /**
      * Length of an emoticon shortcode ("/::)", "[Bye]") at the cursor, or 0.
      *
-     * @param z true to look before the cursor (end of {@code charSequence}), false for after it
-     * @param i the code point after the cursor; a forward match must start with '/'
+     * @param isBeforeCursor true to look before the cursor (end of {@code charSequence}), false for after it
+     * @param adjacentCodePoint the code point after the cursor; a forward match must start with '/'
      */
-    public static int findEmoticonShortcodeLength(boolean z, CharSequence charSequence, int i) {
+    public static int findEmoticonShortcodeLength(boolean isBeforeCursor, CharSequence charSequence, int adjacentCodePoint) {
         if (charSequence == null || charSequence.length() == 0) {
             return 0;
         }
         int i2 = 3;
-        if (!z) {
-            if (i == 47 && charSequence.length() >= 2 && Character.codePointAt(charSequence, 1) == 58) {
+        if (!isBeforeCursor) {
+            if (adjacentCodePoint == 47 && charSequence.length() >= 2 && Character.codePointAt(charSequence, 1) == 58) {
                 int i3 = 0;
                 while (i2 < 9 && i2 < charSequence.length()) {
                     i2++;
@@ -101,17 +101,17 @@ public final class EmojiTextAnalyzer {
         return 0;
     }
 
-    /** @param i the index where the candidate shortcode starts */
-    private static int getEmoticonLengthFrom(CharSequence charSequence, int i) {
-        CharSequence charSequenceSubSequence = charSequence.subSequence(i, charSequence.length());
+    /** @param start the index where the candidate shortcode starts */
+    private static int getEmoticonLengthFrom(CharSequence charSequence, int start) {
+        CharSequence charSequenceSubSequence = charSequence.subSequence(start, charSequence.length());
         if (matchesEmoticonPattern(charSequenceSubSequence.toString())) {
             return charSequenceSubSequence.length();
         }
         return 0;
     }
 
-    /** @param str the candidate shortcode */
-    private static boolean matchesEmoticonPattern(String str) {
-        return EMOTICON_SHORTCODE_PATTERN.matcher(str).matches();
+    /** @param candidate the candidate shortcode */
+    private static boolean matchesEmoticonPattern(String candidate) {
+        return EMOTICON_SHORTCODE_PATTERN.matcher(candidate).matches();
     }
 }

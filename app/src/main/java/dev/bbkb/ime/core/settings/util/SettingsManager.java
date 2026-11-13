@@ -82,13 +82,13 @@ public final class SettingsManager implements SharedPreferences.OnSharedPreferen
 
     
     public interface OnSettingsChangeListener {
-        /** @param c0804d the rebuilt settings */
-        void onSettingsValuesChanged(SettingsValues c0804d);
+        /** @param settingsValues the rebuilt settings */
+        void onSettingsValuesChanged(SettingsValues settingsValues);
     }
 
-    /** @param i a resource id */
-    public static boolean isResourceNonZero(int i, Resources resources) {
-        return i != 0;
+    /** @param value a resource id */
+    public static boolean isResourceNonZero(int value, Resources resources) {
+        return value != 0;
     }
 
     static {
@@ -158,10 +158,10 @@ public final class SettingsManager implements SharedPreferences.OnSharedPreferen
         return true;
     }
 
-    /** @param str the changed key, null after clear() */
+    /** @param key the changed key, null after clear() */
     @Override
-    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String str) {
-        if (!isReadBySettingsValues(str) || this.settingsValues == null) {
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+        if (!isReadBySettingsValues(key) || this.settingsValues == null) {
             return;
         }
         this.rebuildPending = true;
@@ -216,28 +216,28 @@ public final class SettingsManager implements SharedPreferences.OnSharedPreferen
         }
     }
 
-    /** @param aVar the listener to add */
-    public void addOnSettingsChangeListener(OnSettingsChangeListener aVar) {
+    /** @param onSettingsChangeListener the listener to add */
+    public void addOnSettingsChangeListener(OnSettingsChangeListener onSettingsChangeListener) {
         this.lock.lock();
         try {
-            this.listeners.add(aVar);
+            this.listeners.add(onSettingsChangeListener);
         } finally {
             this.lock.unlock();
         }
     }
 
-    /** @param aVar the listener to remove */
-    public void removeOnSettingsChangeListener(OnSettingsChangeListener aVar) {
+    /** @param onSettingsChangeListener the listener to remove */
+    public void removeOnSettingsChangeListener(OnSettingsChangeListener onSettingsChangeListener) {
         this.lock.lock();
         try {
-            this.listeners.remove(aVar);
+            this.listeners.remove(onSettingsChangeListener);
         } finally {
             this.lock.unlock();
         }
     }
 
-    /** @param c0696l the focused editor's capabilities */
-    public void loadSettings(final Context context, Locale locale, final EditorCapabilities c0696l) {
+    /** @param editorCapabilities the focused editor's capabilities */
+    public void loadSettings(final Context context, Locale locale, final EditorCapabilities editorCapabilities) {
         final long token = StartupTiming.begin();
         this.lock.lock();
         this.context = context.getApplicationContext();
@@ -251,12 +251,12 @@ public final class SettingsManager implements SharedPreferences.OnSharedPreferen
             if (previous != null && !preferencesChanged && this.listeningForChanges
                     && isSnapshotFor(this.snapshotLocale, this.snapshotConfiguration, locale, configuration)) {
                 // A new field with nothing else changed: only the per-editor fields are redone.
-                this.settingsValues = previous.forEditor(this.context, c0696l);
+                this.settingsValues = previous.forEditor(this.context, editorCapabilities);
             } else {
                 this.settingsValues = new RunInLocale<SettingsValues>() {
                     @Override
                     public SettingsValues job(Resources resources) {
-                        return new SettingsValues(context, sharedPreferences, resources, c0696l);
+                        return new SettingsValues(context, sharedPreferences, resources, editorCapabilities);
                     }
                 }.runInLocale(this.context, locale);
                 this.snapshotLocale = locale;
@@ -398,9 +398,9 @@ public final class SettingsManager implements SharedPreferences.OnSharedPreferen
         return sharedPreferences.getString("custom_input_styles", strM5503a);
     }
 
-    /** @param i the Cangjie mode to store */
-    public static void setCangjieMode(SharedPreferences sharedPreferences, int i) {
-        sharedPreferences.edit().putInt("cangjie_mode", i).apply();
+    /** @param mode the Cangjie mode to store */
+    public static void setCangjieMode(SharedPreferences sharedPreferences, int mode) {
+        sharedPreferences.edit().putInt("cangjie_mode", mode).apply();
     }
 
     public static int getCangjieMode(SharedPreferences sharedPreferences, Resources resources) {
@@ -425,17 +425,17 @@ public final class SettingsManager implements SharedPreferences.OnSharedPreferen
     }
 
     /**
-     * @param str the preference key
-     * @param i the integer resource id of the default, used when the stored value is -1 or absent
+     * @param key the preference key
+     * @param defaultResId the integer resource id of the default, used when the stored value is -1 or absent
      */
-    public static int getIntPref(SharedPreferences sharedPreferences, Resources resources, String str, int i) {
-        int i2 = sharedPreferences.getInt(str, -1);
-        return i2 != -1 ? i2 : getIntResource(resources, i);
+    public static int getIntPref(SharedPreferences sharedPreferences, Resources resources, String key, int defaultResId) {
+        int i2 = sharedPreferences.getInt(key, -1);
+        return i2 != -1 ? i2 : getIntResource(resources, defaultResId);
     }
 
-    /** @param i an integer resource id */
-    private static int getIntResource(Resources resources, int i) {
-        return resources.getInteger(i);
+    /** @param resId an integer resource id */
+    private static int getIntResource(Resources resources, int resId) {
+        return resources.getInteger(resId);
     }
 
     public static int getVibrationDuration(SharedPreferences sharedPreferences, Resources resources) {
@@ -448,12 +448,12 @@ public final class SettingsManager implements SharedPreferences.OnSharedPreferen
     }
 
     /**
-     * @param str the preference key
-     * @param i the default when the stored value is -1 or absent
+     * @param key the preference key
+     * @param defaultValue the default when the stored value is -1 or absent
      */
-    public static int getIntPrefOrDefault(SharedPreferences sharedPreferences, String str, int i) {
-        int i2 = sharedPreferences.getInt(str, -1);
-        return i2 != -1 ? i2 : i;
+    public static int getIntPrefOrDefault(SharedPreferences sharedPreferences, String key, int defaultValue) {
+        int i2 = sharedPreferences.getInt(key, -1);
+        return i2 != -1 ? i2 : defaultValue;
     }
 
     public static boolean isFullscreenModeEnabled(Resources resources) {
@@ -470,23 +470,23 @@ public final class SettingsManager implements SharedPreferences.OnSharedPreferen
         return sharedPreferences.getBoolean("pref_key_is_internal", defaultValue);
     }
 
-    /** @param str the serialized recent-emoji list */
-    public static void setEmojiRecentKeys(SharedPreferences sharedPreferences, String str) {
-        sharedPreferences.edit().putString("emoji_recent_keys", str).apply();
+    /** @param recentKeys the serialized recent-emoji list */
+    public static void setEmojiRecentKeys(SharedPreferences sharedPreferences, String recentKeys) {
+        sharedPreferences.edit().putString("emoji_recent_keys", recentKeys).apply();
     }
 
     public static String getEmojiRecentKeys(SharedPreferences sharedPreferences) {
         return sharedPreferences.getString("emoji_recent_keys", "");
     }
 
-    /** @param i the emoji category id */
-    public static void setLastShownEmojiCategory(SharedPreferences sharedPreferences, int i) {
-        sharedPreferences.edit().putInt("last_shown_emoji_category_id", i).apply();
+    /** @param categoryId the emoji category id */
+    public static void setLastShownEmojiCategory(SharedPreferences sharedPreferences, int categoryId) {
+        sharedPreferences.edit().putInt("last_shown_emoji_category_id", categoryId).apply();
     }
 
-    /** @param i the category id to return when none is stored */
-    public static int getLastShownEmojiCategory(SharedPreferences sharedPreferences, int i) {
-        return sharedPreferences.getInt("last_shown_emoji_category_id", i);
+    /** @param defaultCategoryId the category id to return when none is stored */
+    public static int getLastShownEmojiCategory(SharedPreferences sharedPreferences, int defaultCategoryId) {
+        return sharedPreferences.getInt("last_shown_emoji_category_id", defaultCategoryId);
     }
 
     public static int getControlMode(SharedPreferences sharedPreferences, Resources resources) {
@@ -574,29 +574,29 @@ public final class SettingsManager implements SharedPreferences.OnSharedPreferen
     }
 
     /**
-     * @param str the preference key
-     * @param i the integer resource id of the default
+     * @param key the preference key
+     * @param defaultResId the integer resource id of the default
      */
-    public static int getIntPrefWithResourceDefault(SharedPreferences sharedPreferences, Resources resources, String str, int i) {
-        int i2 = sharedPreferences.getInt(str, -1);
-        return i2 != -1 ? i2 : resources.getInteger(i);
+    public static int getIntPrefWithResourceDefault(SharedPreferences sharedPreferences, Resources resources, String key, int defaultResId) {
+        int i2 = sharedPreferences.getInt(key, -1);
+        return i2 != -1 ? i2 : resources.getInteger(defaultResId);
     }
 
     /**
-     * @param str the preference key
-     * @param i the fraction resource id of the default
+     * @param key the preference key
+     * @param defaultResId the fraction resource id of the default
      */
-    public static float getFloatPrefWithResourceDefault(SharedPreferences sharedPreferences, Resources resources, String str, int i) {
+    public static float getFloatPrefWithResourceDefault(SharedPreferences sharedPreferences, Resources resources, String key, int defaultResId) {
         float f;
         try {
-            f = sharedPreferences.getFloat(str, -1.0f);
+            f = sharedPreferences.getFloat(key, -1.0f);
         } catch (ClassCastException e) {
             // Some cursor tap-region scales may be stored as ints, on which getFloat throws: drop
             // the bad value and use the resource default.
-            sharedPreferences.edit().remove(str).apply();
+            sharedPreferences.edit().remove(key).apply();
             f = -1.0f;
         }
-        return f != -1.0f ? f : ResourceConfigManager.getFractionValue(resources, i);
+        return f != -1.0f ? f : ResourceConfigManager.getFractionValue(resources, defaultResId);
     }
 
     public static int getScrollHorizontalDistanceForCursorMove(SharedPreferences sharedPreferences, Resources resources) {
@@ -640,25 +640,25 @@ public final class SettingsManager implements SharedPreferences.OnSharedPreferen
     }
 
     /**
-     * @param str the preference key
-     * @param i the string resource id of the default
+     * @param key the preference key
+     * @param defaultResId the string resource id of the default
      */
-    public static int getStringAsInt(SharedPreferences sharedPreferences, Resources resources, String str, int i) {
-        String string = sharedPreferences.getString(str, resources.getString(i));
+    public static int getStringAsInt(SharedPreferences sharedPreferences, Resources resources, String key, int defaultResId) {
+        String string = sharedPreferences.getString(key, resources.getString(defaultResId));
         try {
             return Integer.parseInt(string);
         } catch (NumberFormatException unused) {
-            if (BuildConfig.DEBUG) Log.e(TAG, "Setting for " + str + " of \"" + string + "\" cannot be converted to int.");
+            if (BuildConfig.DEBUG) Log.e(TAG, "Setting for " + key + " of \"" + string + "\" cannot be converted to int.");
             return 0;
         }
     }
 
     /**
-     * @param str the preference key
-     * @param i the string resource id of the default
+     * @param key the preference key
+     * @param defaultResId the string resource id of the default
      */
-    public static String getStringPref(SharedPreferences sharedPreferences, Resources resources, String str, int i) {
-        return sharedPreferences.getString(str, resources.getString(i));
+    public static String getStringPref(SharedPreferences sharedPreferences, Resources resources, String key, int defaultResId) {
+        return sharedPreferences.getString(key, resources.getString(defaultResId));
     }
 
     public static boolean isKoreanDoubleConsonantResolutionEnabled(SharedPreferences sharedPreferences, Resources resources) {
@@ -689,10 +689,10 @@ public final class SettingsManager implements SharedPreferences.OnSharedPreferen
         return sharedPreferences.getBoolean("pref_key_has_asked_contacts_dict_permission", false);
     }
 
-    /** @param z true once the contacts permission has been asked for */
-    public static void setHasAskedContactsDictPermission(SharedPreferences sharedPreferences, boolean z) {
+    /** @param hasAsked true once the contacts permission has been asked for */
+    public static void setHasAskedContactsDictPermission(SharedPreferences sharedPreferences, boolean hasAsked) {
         SharedPreferences.Editor editorEdit = sharedPreferences.edit();
-        editorEdit.putBoolean("pref_key_has_asked_contacts_dict_permission", z);
+        editorEdit.putBoolean("pref_key_has_asked_contacts_dict_permission", hasAsked);
         editorEdit.apply();
     }
 
@@ -789,21 +789,21 @@ public final class SettingsManager implements SharedPreferences.OnSharedPreferen
     /**
      * Stores the list joined by U+0378, an unassigned code point.
      *
-     * @param str the preference key
+     * @param key the preference key
      */
-    public static void setStringListPref(SharedPreferences sharedPreferences, String str, List<String> list) {
+    public static void setStringListPref(SharedPreferences sharedPreferences, String key, List<String> list) {
         StringBuilder sb = new StringBuilder();
         Iterator<String> it = list.iterator();
         while (it.hasNext()) {
             sb.append(it.next());
             sb.append("\u0378");
         }
-        sharedPreferences.edit().putString(str, sb.toString()).apply();
+        sharedPreferences.edit().putString(key, sb.toString()).apply();
     }
 
-    /** @param str the preference key */
-    public static List<String> getStringListPref(SharedPreferences sharedPreferences, String str) {
-        String savedString = sharedPreferences.getString(str, "");
+    /** @param key the preference key */
+    public static List<String> getStringListPref(SharedPreferences sharedPreferences, String key) {
+        String savedString = sharedPreferences.getString(key, "");
         if (savedString.isEmpty()) {
             return new ArrayList<>();
         }

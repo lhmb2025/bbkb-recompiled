@@ -178,9 +178,9 @@ public final class MainKeyboardView extends KeyboardView implements GestureEvent
         this(context, attributeSet, R.attr.mainKeyboardViewStyle);
     }
 
-    /** @param i default style attribute */
-    public MainKeyboardView(Context context, AttributeSet attributeSet, int i) throws Resources.NotFoundException {
-        super(context, attributeSet, i);
+    /** @param defStyleAttr default style attribute */
+    public MainKeyboardView(Context context, AttributeSet attributeSet, int defStyleAttr) throws Resources.NotFoundException {
+        super(context, attributeSet, defStyleAttr);
         this.mAutoCorrectionText = "";
         this.mAltCodeKeyWhileTypingAnimAlpha = 255;
         this.mOriginCoords = CoordinateUtils.newCoordinateArray();
@@ -194,7 +194,7 @@ public final class MainKeyboardView extends KeyboardView implements GestureEvent
         final int resourceId3;
         final int resourceId4;
         final int resourceId5;
-        TypedArray typedArrayObtainStyledAttributes = context.obtainStyledAttributes(attributeSet, R.styleable.MainKeyboardView, i, R.style.MainKeyboardView);
+        TypedArray typedArrayObtainStyledAttributes = context.obtainStyledAttributes(attributeSet, R.styleable.MainKeyboardView, defStyleAttr, R.style.MainKeyboardView);
         try {
         int i2 = typedArrayObtainStyledAttributes.getInt(R.styleable.MainKeyboardView_ignoreAltCodeKeyTimeout, 0);
         int i3 = typedArrayObtainStyledAttributes.getInt(R.styleable.MainKeyboardView_gestureRecognitionUpdateTime, 0);
@@ -240,22 +240,22 @@ public final class MainKeyboardView extends KeyboardView implements GestureEvent
     }
 
     /**
-     * @param i animator resource id, 0 for none
-     * @param obj the animation target
+     * @param resId animator resource id, 0 for none
+     * @param target the animation target
      */
-    private ObjectAnimator loadObjectAnimator(int i, Object obj) {
-        if (i == 0) {
+    private ObjectAnimator loadObjectAnimator(int resId, Object target) {
+        if (resId == 0) {
             return null;
         }
-        ObjectAnimator objectAnimator = (ObjectAnimator) AnimatorInflater.loadAnimator(getContext(), i);
+        ObjectAnimator objectAnimator = (ObjectAnimator) AnimatorInflater.loadAnimator(getContext(), resId);
         if (objectAnimator != null) {
-            objectAnimator.setTarget(obj);
+            objectAnimator.setTarget(target);
         }
         return objectAnimator;
     }
 
-    private static void cancelAndStartAnimators(ObjectAnimator objectAnimator, ObjectAnimator objectAnimator2) {
-        if (objectAnimator == null || objectAnimator2 == null) {
+    private static void cancelAndStartAnimators(ObjectAnimator objectAnimator, ObjectAnimator animatorToStart) {
+        if (objectAnimator == null || animatorToStart == null) {
             return;
         }
         float animatedFraction = 0.0f;
@@ -263,8 +263,8 @@ public final class MainKeyboardView extends KeyboardView implements GestureEvent
             objectAnimator.cancel();
             animatedFraction = 1.0f - objectAnimator.getAnimatedFraction();
         }
-        objectAnimator2.start();
-        objectAnimator2.setCurrentPlayTime((long) (objectAnimator2.getDuration() * animatedFraction));
+        animatorToStart.start();
+        animatorToStart.setCurrentPlayTime((long) (animatorToStart.getDuration() * animatedFraction));
     }
 
     @Override // dev.bbkb.ime.keyboard.internal.TimerHandler
@@ -321,26 +321,26 @@ public final class MainKeyboardView extends KeyboardView implements GestureEvent
         }
     }
 
-    /** @param interfaceC0976f the key action listener */
-    public void setKeyboardActionListener(KeyboardActionListenerInterface interfaceC0976f) {
-        this.mKeyboardActionListener = interfaceC0976f;
-        PointerTracker.setKeyboardActionListener(interfaceC0976f);
-        GestureEventProcessor.setKeyboardActionListener(interfaceC0976f);
+    /** @param listener the key action listener */
+    public void setKeyboardActionListener(KeyboardActionListenerInterface listener) {
+        this.mKeyboardActionListener = listener;
+        PointerTracker.setKeyboardActionListener(listener);
+        GestureEventProcessor.setKeyboardActionListener(listener);
     }
 
-    /** @param c0924a the multi-pointer gesture detector */
-    public void setGestureDetector(MultiPointerGestureDetector c0924a) {
-        this.mGestureDetector = c0924a;
+    /** @param multiPointerGestureDetector the multi-pointer gesture detector */
+    public void setGestureDetector(MultiPointerGestureDetector multiPointerGestureDetector) {
+        this.mGestureDetector = multiPointerGestureDetector;
     }
 
-    /** @param i touch x coordinate */
-    public int getKeyX(int i) {
-        return Constants.isValidCoordinate(i) ? this.mKeyDetector.getTouchX(i) : i;
+    /** @param x touch x coordinate */
+    public int getKeyX(int x) {
+        return Constants.isValidCoordinate(x) ? this.mKeyDetector.getTouchX(x) : x;
     }
 
-    /** @param i touch y coordinate */
-    public int getKeyY(int i) {
-        return Constants.isValidCoordinate(i) ? this.mKeyDetector.getTouchY(i) : i;
+    /** @param y touch y coordinate */
+    public int getKeyY(int y) {
+        return Constants.isValidCoordinate(y) ? this.mKeyDetector.getTouchY(y) : y;
     }
 
     @Override // dev.bbkb.ime.keyboard.KeyboardView
@@ -375,24 +375,24 @@ public final class MainKeyboardView extends KeyboardView implements GestureEvent
     }
 
     /**
-     * @param z true to show key previews
-     * @param i preview linger timeout in ms
+     * @param previewEnabled true to show key previews
+     * @param lingerTimeout preview linger timeout in ms
      */
-    public void setKeyPreviewPopupEnabled(boolean z, int i) {
-        this.mKeyPreviewChoreographer.setPopupEnabled(z, i);
+    public void setKeyPreviewPopupEnabled(boolean previewEnabled, int lingerTimeout) {
+        this.mKeyPreviewChoreographer.setPopupEnabled(previewEnabled, lingerTimeout);
     }
 
     /**
-     * @param z true to use these custom params
-     * @param f show-up start scale x
-     * @param f2 show-up start scale y
-     * @param i show-up duration in ms
-     * @param f3 dismiss end scale x
-     * @param f4 dismiss end scale y
-     * @param i2 dismiss duration in ms
+     * @param hasCustomAnimationParams true to use these custom params
+     * @param showUpStartXScale show-up start scale x
+     * @param showUpStartYScale show-up start scale y
+     * @param showUpDuration show-up duration in ms
+     * @param dismissEndXScale dismiss end scale x
+     * @param dismissEndYScale dismiss end scale y
+     * @param dismissDuration dismiss duration in ms
      */
-    public void setKeyPreviewAnimationParams(boolean z, float f, float f2, int i, float f3, float f4, int i2) {
-        this.mKeyPreviewChoreographer.setAnimationParams(z, f, f2, i, f3, f4, i2);
+    public void setKeyPreviewAnimationParams(boolean hasCustomAnimationParams, float showUpStartXScale, float showUpStartYScale, int showUpDuration, float dismissEndXScale, float dismissEndYScale, int dismissDuration) {
+        this.mKeyPreviewChoreographer.setAnimationParams(hasCustomAnimationParams, showUpStartXScale, showUpStartYScale, showUpDuration, dismissEndXScale, dismissEndYScale, dismissDuration);
     }
 
     private void locatePreviewPlacerView() {
@@ -474,9 +474,9 @@ public final class MainKeyboardView extends KeyboardView implements GestureEvent
         }
     }
 
-    /** @param z true to show the sliding key input preview */
-    public void setSlidingKeyInputPreviewEnabled(boolean z) {
-        this.mGestureFloatingPreviewText.setPreviewEnabled(z);
+    /** @param enabled true to show the sliding key input preview */
+    public void setSlidingKeyInputPreviewEnabled(boolean enabled) {
+        this.mGestureFloatingPreviewText.setPreviewEnabled(enabled);
     }
 
     @Override // dev.bbkb.ime.keyboard.PointerTracker
@@ -489,9 +489,9 @@ public final class MainKeyboardView extends KeyboardView implements GestureEvent
     }
     
     @Override // dev.bbkb.ime.keyboard.PointerTracker
-    public void showGestureTrail(PointerTracker c1084t) {
+    public void showGestureTrail(PointerTracker pointerTracker) {
         locatePreviewPlacerView();
-        this.mGestureFloatingPreviewText.showGestureTrail(c1084t);
+        this.mGestureFloatingPreviewText.showGestureTrail(pointerTracker);
     }
 
     @Override // dev.bbkb.ime.keyboard.PointerTracker
@@ -499,11 +499,11 @@ public final class MainKeyboardView extends KeyboardView implements GestureEvent
         this.mGestureFloatingPreviewText.dismissGestureTrail();
     }
 
-    /** @param z true if the gesture trail is requested */
-    private void setVkbGesturePreviewMode(boolean z) {
-        this.mVkbGesturePreviewRequested = z;
+    /** @param gesturePreviewRequested true if the gesture trail is requested */
+    private void setVkbGesturePreviewMode(boolean gesturePreviewRequested) {
+        this.mVkbGesturePreviewRequested = gesturePreviewRequested;
         // No gesture trail on e-ink: it would refresh the panel every frame of a swipe.
-        boolean enabled = z && !this.mEinkDisplay;
+        boolean enabled = gesturePreviewRequested && !this.mEinkDisplay;
         this.mGestureTrailsDrawingPreview.setPreviewEnabled(enabled);
         if (!enabled) {
             this.mGestureTrailsDrawingPreview.releaseOffscreenBuffer();
@@ -511,25 +511,25 @@ public final class MainKeyboardView extends KeyboardView implements GestureEvent
     }
 
     @Override // dev.bbkb.ime.keyboard.PointerTracker
-    public void showSlidingKeyInputPreview(PointerTracker c1084t) {
+    public void showSlidingKeyInputPreview(PointerTracker pointerTracker) {
         locatePreviewPlacerView();
-        this.mGestureTrailsDrawingPreview.setGestureStroke(c1084t);
+        this.mGestureTrailsDrawingPreview.setGestureStroke(pointerTracker);
     }
 
-    /** @param z true if on-screen swipe typing is on */
-    public void setVkbGestureHandlingEnabledByUser(boolean z) {
-        this.mGestureInputAvailability.setVkbGestureEnabledByUser(z);
-        setVkbGesturePreviewMode(z);
+    /** @param enabledByUser true if on-screen swipe typing is on */
+    public void setVkbGestureHandlingEnabledByUser(boolean enabledByUser) {
+        this.mGestureInputAvailability.setVkbGestureEnabledByUser(enabledByUser);
+        setVkbGesturePreviewMode(enabledByUser);
     }
 
-    /** @param z true if capacitive gestures are on */
-    public void setCkbGestureHandlingEnabledByUser(boolean z) {
-        this.mGestureInputAvailability.setCkbGestureEnabledByUser(z);
+    /** @param enabledByUser true if capacitive gestures are on */
+    public void setCkbGestureHandlingEnabledByUser(boolean enabledByUser) {
+        this.mGestureInputAvailability.setCkbGestureEnabledByUser(enabledByUser);
     }
 
-    /** @param z true if the main dictionary is available */
-    public void setMainDictionaryAvailability(boolean z) {
-        this.mGestureInputAvailability.setMainDictionaryAvailable(z);
+    /** @param mainDictionaryAvailable true if the main dictionary is available */
+    public void setMainDictionaryAvailability(boolean mainDictionaryAvailable) {
+        this.mGestureInputAvailability.setMainDictionaryAvailable(mainDictionaryAvailable);
     }
 
     @Override // dev.bbkb.ime.keyboard.PointerTracker
@@ -612,48 +612,48 @@ public final class MainKeyboardView extends KeyboardView implements GestureEvent
     }
 
     @Override // dev.bbkb.ime.keyboard.internal.TimerHandler
-    public void onLongPress(PointerTracker c1084t) {
+    public void onLongPress(PointerTracker pointerTracker) {
         Key keyM7652o;
-        if (isShowingMoreKeysPanel() || (keyM7652o = c1084t.getKey()) == null) {
+        if (isShowingMoreKeysPanel() || (keyM7652o = pointerTracker.getKey()) == null) {
             return;
         }
         KeyboardActionListenerInterface interfaceC0976f = this.mKeyboardActionListener;
         if (keyM7652o.hasBackgroundTypeAction()) {
             int iB = keyM7652o.getMoreKeys()[0].getCode();
-            c1084t.cancelTrackingAndReleaseKey();
+            pointerTracker.cancelTrackingAndReleaseKey();
             interfaceC0976f.onPressKey(iB, 0, true);
-            interfaceC0976f.onCodeInput(iB, -1, -1, c1084t.getLongPressTimeoutTime(keyM7652o.getCode()), false);
+            interfaceC0976f.onCodeInput(iB, -1, -1, pointerTracker.getLongPressTimeoutTime(keyM7652o.getCode()), false);
             interfaceC0976f.onReleaseKey(iB, false);
             return;
         }
         int iM6232c = keyM7652o.getCode();
         if ((iM6232c == -10 || iM6232c == 32) && interfaceC0976f.onCustomRequest(1)) {
-            c1084t.cancelTrackingAndReleaseKey();
+            pointerTracker.cancelTrackingAndReleaseKey();
             interfaceC0976f.onReleaseKey(iM6232c, false);
         } else {
             if (keyM7652o.hasLongPressKey()) {
                 if (keyM7652o.getLongPressCode() != -34) {
-                    c1084t.cancelTrackingAndReleaseKey();
+                    pointerTracker.cancelTrackingAndReleaseKey();
                 }
                 int iM6235d = keyM7652o.getLongPressCode();
                 interfaceC0976f.onPressKey(iM6235d, 0, true);
-                interfaceC0976f.onCodeInput(iM6235d, -1, -1, c1084t.getLongPressTimeoutTime(keyM7652o.getCode()), false);
+                interfaceC0976f.onCodeInput(iM6235d, -1, -1, pointerTracker.getLongPressTimeoutTime(keyM7652o.getCode()), false);
                 interfaceC0976f.onReleaseKey(iM6235d, false);
                 return;
             }
-            openMoreKeysPanel(keyM7652o, c1084t);
+            openMoreKeysPanel(keyM7652o, pointerTracker);
         }
     }
 
-    /** @param c1084t the pointer that long-pressed */
-    private void openMoreKeysPanel(Key key, PointerTracker c1084t) {
+    /** @param pointerTracker the pointer that long-pressed */
+    private void openMoreKeysPanel(Key key, PointerTracker pointerTracker) {
         int iMo6216ab;
         MoreKeysPanel interfaceC1071mM6289a = onCreateMoreKeysKeyboard(key, getContext());
         if (interfaceC1071mM6289a == null) {
             return;
         }
         int[] iArrM5687a = CoordinateUtils.newCoordinateArray();
-        c1084t.getLastCoordinates(iArrM5687a);
+        pointerTracker.getLastCoordinates(iArrM5687a);
         boolean z = this.mKeyPreviewChoreographer.isPopupEnabled() && !key.isNoKeyPreview();
         if (this.mConfigShowMoreKeysKeyboardAtTouchedPoint && !z) {
             iMo6216ab = CoordinateUtils.x(iArrM5687a);
@@ -661,7 +661,7 @@ public final class MainKeyboardView extends KeyboardView implements GestureEvent
             iMo6216ab = key.getX() + (key.getWidth() / 2);
         }
         interfaceC1071mM6289a.showMoreKeysPanel(this, this, iMo6216ab, key.getY() + this.mKeyPreviewChoreographer.getVisibleOffset(), this.mKeyboardActionListener);
-        c1084t.startMoreKeysPanel(interfaceC1071mM6289a);
+        pointerTracker.startMoreKeysPanel(interfaceC1071mM6289a);
         dismissKeyPreviewWithoutDelay(key);
     }
 
@@ -673,10 +673,10 @@ public final class MainKeyboardView extends KeyboardView implements GestureEvent
     }
 
     @Override // dev.bbkb.ime.keyboard.internal.MoreKeysPanel
-    public void onShowMoreKeysPanel(MoreKeysPanel interfaceC1071m) {
+    public void onShowMoreKeysPanel(MoreKeysPanel moreKeysPanel) {
         locatePreviewPlacerView();
-        interfaceC1071m.showInParent(this.mDrawingPreviewPlacerView);
-        this.mMoreKeysPanel = interfaceC1071m;
+        moreKeysPanel.showInParent(this.mDrawingPreviewPlacerView);
+        this.mMoreKeysPanel = moreKeysPanel;
         dimEntireKeyboard(true);
     }
 
@@ -736,30 +736,30 @@ public final class MainKeyboardView extends KeyboardView implements GestureEvent
         GestureEventProcessor.onKeyUp(keyEvent);
     }
 
-    /** @param z true if gesture handling is active */
-    public void updateGestureHandlingState(boolean z) {
-        GestureEventProcessor.updateGestureHandlingState(z);
+    /** @param metaKeyActive true if gesture handling is active */
+    public void updateGestureHandlingState(boolean metaKeyActive) {
+        GestureEventProcessor.updateGestureHandlingState(metaKeyActive);
     }
 
     public boolean isGestureHandlingActive() {
         return GestureEventProcessor.isGestureHandlingActive();
     }
 
-    /** @param z true to mark gesture handling active */
-    public void setGestureInputStartsBeforeRunningShift(boolean z) {
-        GestureEventProcessor.setGestureHandlingActive(z);
+    /** @param active true to mark gesture handling active */
+    public void setGestureInputStartsBeforeRunningShift(boolean active) {
+        GestureEventProcessor.setGestureHandlingActive(active);
     }
 
-    /** @param c1083e the slide board manager */
-    public void setSlideBoardViewManager(SlideboardManager c1083e) {
-        this.mSlideboardManager = c1083e;
+    /** @param slideboardManager the slide board manager */
+    public void setSlideBoardViewManager(SlideboardManager slideboardManager) {
+        this.mSlideboardManager = slideboardManager;
     }
 
     @Override // dev.bbkb.ime.keyboard.PointerTracker
-    public void setSlideTranslation(float f, boolean z) {
+    public void setSlideTranslation(float translationX, boolean animate) {
         SlideboardManager c1083e = this.mSlideboardManager;
         if (c1083e != null) {
-            c1083e.setTranslation(f, z);
+            c1083e.setTranslation(translationX, animate);
         } else {
             if (BuildConfig.DEBUG) Log.e(TAG, "no input board bar");
         }
@@ -817,13 +817,13 @@ public final class MainKeyboardView extends KeyboardView implements GestureEvent
 
     /**
      * KeyboardState calls both setters at the end of every shift update, changed or not.
-     * @param z true if shifted
+     * @param isShifted true if shifted
      */
-    public void setShiftKeyState(boolean z) {
-        if (this.mShiftKeyState == z) {
+    public void setShiftKeyState(boolean isShifted) {
+        if (this.mShiftKeyState == isShifted) {
             return;
         }
-        this.mShiftKeyState = z;
+        this.mShiftKeyState = isShifted;
         invalidateKey(this.mShiftKey);
     }
 
@@ -859,27 +859,27 @@ public final class MainKeyboardView extends KeyboardView implements GestureEvent
         return super.labelFor(key);
     }
 
-    /** @param z true to enable the code -7 key */
-    public void setFunctionalKeyEnabled(boolean z) {
+    /** @param enabled true to enable the code -7 key */
+    public void setFunctionalKeyEnabled(boolean enabled) {
         Key keyM6604b;
         Keyboard keyboard = getKeyboard();
         if (keyboard == null || (keyM6604b = keyboard.getKeyByCode(-7)) == null) {
             return;
         }
         // Called on every keyboard set (KeyboardSwitcher.setKeyboard); usually unchanged.
-        if (keyM6604b.isActive() == z) {
+        if (keyM6604b.isActive() == enabled) {
             return;
         }
-        keyM6604b.setActive(z);
+        keyM6604b.setActive(enabled);
         invalidateKey(keyM6604b);
     }
 
     /**
      * Strips the "%B" bold marker once per prediction change, not on every spacebar repaint.
-     * @param str the prediction text, may hold %B markers
+     * @param text the prediction text, may hold %B markers
      */
-    public void setAutoCorrectionText(String str) {
-        String stripped = str == null ? "" : PERCENT_B_MARKER.matcher(str).replaceAll("");
+    public void setAutoCorrectionText(String text) {
+        String stripped = text == null ? "" : PERCENT_B_MARKER.matcher(text).replaceAll("");
         if (this.mAutoCorrectionText.equals(stripped)) {
             return;
         }
@@ -888,10 +888,10 @@ public final class MainKeyboardView extends KeyboardView implements GestureEvent
         invalidateKeyState(this.mSpaceKey);
     }
 
-    /** @param z true to dim */
-    private void dimEntireKeyboard(boolean z) {
-        boolean z2 = this.mNeedsToDimEntireKeyboard != z;
-        this.mNeedsToDimEntireKeyboard = z;
+    /** @param dim true to dim */
+    private void dimEntireKeyboard(boolean dim) {
+        boolean z2 = this.mNeedsToDimEntireKeyboard != dim;
+        this.mNeedsToDimEntireKeyboard = dim;
         if (z2) {
             invalidateAllKeys();
         }
@@ -1000,9 +1000,9 @@ public final class MainKeyboardView extends KeyboardView implements GestureEvent
         return paint;
     }
 
-    /** @param i the spacebar width */
-    private String getAutoCorrectionText(Paint paint, int i) {
-        return SpacebarTextUtils.truncateTextToWidth(i - (this.mLanguageOnSpacebarHorizontalMargin * 2), this.mAutoCorrectionText, this.mAutoCorrectionSpacebarTextSize, this.mMinimumScaleOfSpacebarText, paint);
+    /** @param width the spacebar width */
+    private String getAutoCorrectionText(Paint paint, int width) {
+        return SpacebarTextUtils.truncateTextToWidth(width - (this.mLanguageOnSpacebarHorizontalMargin * 2), this.mAutoCorrectionText, this.mAutoCorrectionSpacebarTextSize, this.mMinimumScaleOfSpacebarText, paint);
     }
 
     private void drawAutoCorrectionOnSpacebar(Key key, Canvas canvas, Paint paint) {
@@ -1058,10 +1058,10 @@ public final class MainKeyboardView extends KeyboardView implements GestureEvent
         GestureEventProcessor.releaseGestureKeyboardChecker(this);
     }
 
-    /** @param z true if pressed */
-    public void setKeyPressed(Key key, boolean z) {
+    /** @param pressed true if pressed */
+    public void setKeyPressed(Key key, boolean pressed) {
         synchronized (this.mPressedKeys) {
-            if (z) {
+            if (pressed) {
                 key.onPressed();
                 this.mPressedKeys.add(key);
             } else {

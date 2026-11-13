@@ -62,9 +62,9 @@ class DictionaryFactoryTest {
         sdkStatic.close()
     }
 
-    private fun engineOf(d: Dictionary): Any? =
+    private fun engineOf(dictionary: Dictionary): Any? =
         NuanceSDKDictionaryBridge::class.java.getDeclaredField("nuanceSdk")
-            .apply { isAccessible = true }.get(d)
+            .apply { isAccessible = true }.get(dictionary)
 
     @Test
     fun nullLocale_isTheFallback_andNeverTouchesTheEngine() {

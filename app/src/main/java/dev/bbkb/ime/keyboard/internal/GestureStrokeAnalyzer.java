@@ -59,27 +59,27 @@ public final class GestureStrokeAnalyzer {
 
     
     public interface GestureStrokeTimeListener {
-        void addGestureStrokeTime(int i);
+        void addGestureStrokeTime(int distance);
     }
 
     /**
-     * @param i pointer id
-     * @param c1054m recognition thresholds
+     * @param pointerId pointer id
+     * @param gestureRecognitionParams recognition thresholds
      */
-    public GestureStrokeAnalyzer(int i, GestureRecognitionParams c1054m) {
-        this.mPointerId = i;
-        this.mParams = c1054m;
+    public GestureStrokeAnalyzer(int pointerId, GestureRecognitionParams gestureRecognitionParams) {
+        this.mPointerId = pointerId;
+        this.mParams = gestureRecognitionParams;
     }
 
     /**
-     * @param i most common key width
-     * @param i2 keyboard height
+     * @param keyWidth most common key width
+     * @param keyboardHeight keyboard height
      */
-    public void setKeyboardGeometry(int i, int i2) {
-        this.mKeyWidth = i;
-        this.mMinYCoordinate = -((int) (i2 * 0.25f));
-        this.mMaxYCoordinate = i2;
-        float f = i;
+    public void setKeyboardGeometry(int keyWidth, int keyboardHeight) {
+        this.mKeyWidth = keyWidth;
+        this.mMinYCoordinate = -((int) (keyboardHeight * 0.25f));
+        this.mMaxYCoordinate = keyboardHeight;
+        float f = keyWidth;
         this.mDetectFastMoveSpeedThreshold = (int) (this.mParams.mDetectFastMoveSpeedThreshold * f);
         this.mGestureDynamicDistanceThresholdFrom = (int) (this.mParams.mDynamicDistanceThresholdFrom * f);
         this.mGestureDynamicDistanceThresholdTo = (int) (this.mParams.mDynamicDistanceThresholdTo * f);
@@ -92,31 +92,31 @@ public final class GestureStrokeAnalyzer {
     }
 
     /**
-     * @param i x
-     * @param i2 y
-     * @param i3 elapsed gesture time
-     * @param i4 time since the last letter was typed
+     * @param x x
+     * @param y y
+     * @param elapsedTimeSinceFirstDown elapsed gesture time
+     * @param elapsedTimeSinceLastTyping time since the last letter was typed
      */
-    public void addDownEventPoint(int i, int i2, int i3, int i4) {
+    public void addDownEventPoint(int x, int y, int elapsedTimeSinceFirstDown, int elapsedTimeSinceLastTyping) {
         reset();
-        if (i4 < this.mParams.mStaticTimeThresholdAfterFastTyping) {
+        if (elapsedTimeSinceLastTyping < this.mParams.mStaticTimeThresholdAfterFastTyping) {
             this.mAfterFastTyping = true;
         }
-        addEventPoint(i, i2, i3, true, null);
+        addEventPoint(x, y, elapsedTimeSinceFirstDown, true, null);
     }
 
-    private int getGestureDynamicDistanceThreshold(int i) {
-        if (!this.mAfterFastTyping || i >= this.mParams.mDynamicThresholdDecayDuration) {
+    private int getGestureDynamicDistanceThreshold(int deltaTime) {
+        if (!this.mAfterFastTyping || deltaTime >= this.mParams.mDynamicThresholdDecayDuration) {
             return this.mGestureDynamicDistanceThresholdTo;
         }
-        return this.mGestureDynamicDistanceThresholdFrom - (((this.mGestureDynamicDistanceThresholdFrom - this.mGestureDynamicDistanceThresholdTo) * i) / this.mParams.mDynamicThresholdDecayDuration);
+        return this.mGestureDynamicDistanceThresholdFrom - (((this.mGestureDynamicDistanceThresholdFrom - this.mGestureDynamicDistanceThresholdTo) * deltaTime) / this.mParams.mDynamicThresholdDecayDuration);
     }
 
-    private int getGestureDynamicTimeThreshold(int i) {
-        if (!this.mAfterFastTyping || i >= this.mParams.mDynamicThresholdDecayDuration) {
+    private int getGestureDynamicTimeThreshold(int deltaTime) {
+        if (!this.mAfterFastTyping || deltaTime >= this.mParams.mDynamicThresholdDecayDuration) {
             return this.mParams.mDynamicTimeThresholdTo;
         }
-        return this.mParams.mDynamicTimeThresholdFrom - (((this.mParams.mDynamicTimeThresholdFrom - this.mParams.mDynamicTimeThresholdTo) * i) / this.mParams.mDynamicThresholdDecayDuration);
+        return this.mParams.mDynamicTimeThresholdFrom - (((this.mParams.mDynamicTimeThresholdFrom - this.mParams.mDynamicTimeThresholdTo) * deltaTime) / this.mParams.mDynamicThresholdDecayDuration);
     }
 
     public boolean hasRecognitionGesturePoint() {
@@ -132,14 +132,14 @@ public final class GestureStrokeAnalyzer {
         return iM5571a >= getGestureDynamicTimeThreshold(iM5571a) && getDistance(this.mXCoordinates.get(i), this.mYCoordinates.get(i), this.mDetectFastMoveX, this.mDetectFastMoveY) >= getGestureDynamicDistanceThreshold(iM5571a);
     }
 
-    /** @param i elapsed gesture time for the copied point */
-    public void duplicateLastPoint(int i) {
+    /** @param time elapsed gesture time for the copied point */
+    public void duplicateLastPoint(int time) {
         int iM7383a = getLength() - 1;
         if (iM7383a >= 0) {
             int iM5571a = this.mXCoordinates.get(iM7383a);
             int iM5571a2 = this.mYCoordinates.get(iM7383a);
-            appendPoint(iM5571a, iM5571a2, i);
-            updateIncrementalRecognitionSize(iM5571a, iM5571a2, i);
+            appendPoint(iM5571a, iM5571a2, time);
+            updateIncrementalRecognitionSize(iM5571a, iM5571a2, time);
         }
     }
 
@@ -153,40 +153,40 @@ public final class GestureStrokeAnalyzer {
         this.mAfterFastTyping = false;
     }
 
-    private void appendPoint(int i, int i2, int i3) {
+    private void appendPoint(int x, int y, int time) {
         int iM7383a = getLength();
         int i4 = iM7383a - 1;
-        if ((i4 >= 0 && this.mEventTimes.get(i4) > i3) || iM7383a >= MAX_EVENT_COUNT) {
+        if ((i4 >= 0 && this.mEventTimes.get(i4) > time) || iM7383a >= MAX_EVENT_COUNT) {
             if (Logger.isLoggable("StrokeRecPoints", Log.DEBUG)) {
-                if (BuildConfig.DEBUG) Log.d("StrokeRecPoints", String.format("[%d] drop stale event: %d,%d|%d last: %d,%d|%d", Integer.valueOf(this.mPointerId), Integer.valueOf(i), Integer.valueOf(i2), Integer.valueOf(i3), Integer.valueOf(this.mXCoordinates.get(i4)), Integer.valueOf(this.mYCoordinates.get(i4)), Integer.valueOf(this.mEventTimes.get(i4))));
+                if (BuildConfig.DEBUG) Log.d("StrokeRecPoints", String.format("[%d] drop stale event: %d,%d|%d last: %d,%d|%d", Integer.valueOf(this.mPointerId), Integer.valueOf(x), Integer.valueOf(y), Integer.valueOf(time), Integer.valueOf(this.mXCoordinates.get(i4)), Integer.valueOf(this.mYCoordinates.get(i4)), Integer.valueOf(this.mEventTimes.get(i4))));
             }
         } else {
-            this.mEventTimes.add(i3);
-            this.mXCoordinates.add(i);
-            this.mYCoordinates.add(i2);
+            this.mEventTimes.add(time);
+            this.mXCoordinates.add(x);
+            this.mYCoordinates.add(y);
         }
     }
 
-    private void setLastMajorEvent(int i, int i2, int i3) {
-        this.mLastMajorEventTime = i3;
-        this.mLastMajorEventX = i;
-        this.mLastMajorEventY = i2;
+    private void setLastMajorEvent(int x, int y, int time) {
+        this.mLastMajorEventTime = time;
+        this.mLastMajorEventX = x;
+        this.mLastMajorEventY = y;
     }
 
     private final boolean hasDetectedFastMove() {
         return this.mDetectFastMoveTime > 0;
     }
 
-    private int detectFastMove(int i, int i2, int i3) {
+    private int detectFastMove(int x, int y, int time) {
         int iM7383a = getLength() - 1;
-        int iM7376b = getDistance(this.mXCoordinates.get(iM7383a), this.mYCoordinates.get(iM7383a), i, i2);
-        int iM5571a = i3 - this.mEventTimes.get(iM7383a);
+        int iM7376b = getDistance(this.mXCoordinates.get(iM7383a), this.mYCoordinates.get(iM7383a), x, y);
+        int iM5571a = time - this.mEventTimes.get(iM7383a);
         if (iM5571a > 0) {
             int i4 = iM7376b * 1000;
             if (!hasDetectedFastMove() && i4 > this.mDetectFastMoveSpeedThreshold * iM5571a) {
-                this.mDetectFastMoveTime = i3;
-                this.mDetectFastMoveX = i;
-                this.mDetectFastMoveY = i2;
+                this.mDetectFastMoveTime = time;
+                this.mDetectFastMoveX = x;
+                this.mDetectFastMoveY = y;
             }
         }
         return iM7376b;
@@ -194,35 +194,35 @@ public final class GestureStrokeAnalyzer {
 
     /**
      * Returns whether the point is within the keyboard's vertical gesture bounds.
-     * @param i x
-     * @param i2 y
-     * @param i3 elapsed gesture time
-     * @param z true for a major event (not a historical sample)
-     * @param aVar receives the distance moved, or null
+     * @param x x
+     * @param y y
+     * @param time elapsed gesture time
+     * @param isMajorEvent true for a major event (not a historical sample)
+     * @param gestureStrokeTimeListener receives the distance moved, or null
      */
-    public boolean addEventPoint(int i, int i2, int i3, boolean z, GestureStrokeTimeListener aVar) {
+    public boolean addEventPoint(int x, int y, int time, boolean isMajorEvent, GestureStrokeTimeListener gestureStrokeTimeListener) {
         if (getLength() <= 0) {
-            appendPoint(i, i2, i3);
-            setLastMajorEvent(i, i2, i3);
+            appendPoint(x, y, time);
+            setLastMajorEvent(x, y, time);
         } else {
-            int iM7379c = detectFastMove(i, i2, i3);
-            if (aVar != null) {
-                aVar.addGestureStrokeTime(iM7379c);
+            int iM7379c = detectFastMove(x, y, time);
+            if (gestureStrokeTimeListener != null) {
+                gestureStrokeTimeListener.addGestureStrokeTime(iM7379c);
             }
             if (iM7379c > this.mGestureSamplingMinimumDistance) {
-                appendPoint(i, i2, i3);
+                appendPoint(x, y, time);
             }
         }
-        if (z) {
-            updateIncrementalRecognitionSize(i, i2, i3);
-            setLastMajorEvent(i, i2, i3);
+        if (isMajorEvent) {
+            updateIncrementalRecognitionSize(x, y, time);
+            setLastMajorEvent(x, y, time);
         }
-        return i2 >= this.mMinYCoordinate && i2 < this.mMaxYCoordinate;
+        return y >= this.mMinYCoordinate && y < this.mMaxYCoordinate;
     }
 
-    private void updateIncrementalRecognitionSize(int i, int i2, int i3) {
-        int i4 = (int) (i3 - this.mLastMajorEventTime);
-        if (i4 > 0 && getDistance(this.mLastMajorEventX, this.mLastMajorEventY, i, i2) * 1000 < this.mGestureRecognitionSpeedThreshold * i4) {
+    private void updateIncrementalRecognitionSize(int x, int y, int time) {
+        int i4 = (int) (time - this.mLastMajorEventTime);
+        if (i4 > 0 && getDistance(this.mLastMajorEventX, this.mLastMajorEventY, x, y) * 1000 < this.mGestureRecognitionSpeedThreshold * i4) {
             this.mIncrementalRecognitionSize = getLength();
         }
     }
@@ -233,9 +233,9 @@ public final class GestureStrokeAnalyzer {
     }
 
     /** Not Math.hypot: far slower, and its overflow safety is useless for pixel deltas. */
-    private static int getDistance(int i, int i2, int i3, int i4) {
-        final int dx = i - i3;
-        final int dy = i2 - i4;
+    private static int getDistance(int x1, int y1, int x2, int y2) {
+        final int dx = x1 - x2;
+        final int dy = y1 - y2;
         return (int) Math.sqrt((double) ((dx * dx) + (dy * dy)));
     }
 }

@@ -11,8 +11,8 @@ import android.widget.TextView;
 
 
 public final class CursorAnchorInfoUtils {
-    private static boolean isPositionVisible(View view, float f, float f2) {
-        float[] fArr = {f, f2};
+    private static boolean isPositionVisible(View view, float positionX, float positionY) {
+        float[] fArr = {positionX, positionY};
         View view2 = view;
         while (view2 != null) {
             if (view2 != view) {

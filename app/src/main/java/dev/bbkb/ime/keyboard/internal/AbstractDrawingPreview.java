@@ -33,11 +33,11 @@ public abstract class AbstractDrawingPreview {
         return this.mPreviewEnabled && this.mHasValidGeometry;
     }
 
-    public final void setPreviewEnabled(boolean z) {
-        this.mPreviewEnabled = z;
+    public final void setPreviewEnabled(boolean enabled) {
+        this.mPreviewEnabled = enabled;
     }
 
-    public void setKeyboardViewGeometry(int[] iArr, int i, int i2) {
-        this.mHasValidGeometry = i > 0 && i2 > 0;
+    public void setKeyboardViewGeometry(int[] originCoords, int width, int height) {
+        this.mHasValidGeometry = width > 0 && height > 0;
     }
 }

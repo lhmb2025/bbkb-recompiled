@@ -45,11 +45,11 @@ public class MoreKeysKeyboardView extends KeyboardView implements MoreKeysPanel 
         this(context, attributeSet, R.attr.moreKeysKeyboardViewStyle);
     }
 
-    public MoreKeysKeyboardView(Context context, AttributeSet attributeSet, int i) {
-        super(context, attributeSet, i);
+    public MoreKeysKeyboardView(Context context, AttributeSet attributeSet, int defStyle) {
+        super(context, attributeSet, defStyle);
         this.mCoordinates = CoordinateUtils.newCoordinateArray();
         this.mController = EMPTY;
-        TypedArray typedArrayObtainStyledAttributes = context.obtainStyledAttributes(attributeSet, R.styleable.MoreKeysKeyboardView, i, R.style.MoreKeysKeyboardView);
+        TypedArray typedArrayObtainStyledAttributes = context.obtainStyledAttributes(attributeSet, R.styleable.MoreKeysKeyboardView, defStyle, R.style.MoreKeysKeyboardView);
         this.mDivider = typedArrayObtainStyledAttributes.getDrawable(R.styleable.MoreKeysKeyboardView_divider);
         Drawable drawable = this.mDivider;
         if (drawable != null) {
@@ -96,18 +96,18 @@ public class MoreKeysKeyboardView extends KeyboardView implements MoreKeysPanel 
     }
 
     /**
-     * @param aVar the controller told when the panel shows and closes
-     * @param i x to center the panel on (the key's center or the touch point)
-     * @param i2 y the panel's bottom sits at in {@code view}
-     * @param interfaceC0976f receives the typed key
+     * @param controller the controller told when the panel shows and closes
+     * @param pointX x to center the panel on (the key's center or the touch point)
+     * @param pointY y the panel's bottom sits at in {@code view}
+     * @param listener receives the typed key
      */
     @Override
-    public void showMoreKeysPanel(View view, MoreKeysPanel.Controller aVar, int i, int i2, KeyboardActionListenerInterface interfaceC0976f) {
-        this.mController = aVar;
-        this.mListener = interfaceC0976f;
+    public void showMoreKeysPanel(View view, MoreKeysPanel.Controller controller, int pointX, int pointY, KeyboardActionListenerInterface listener) {
+        this.mController = controller;
+        this.mListener = listener;
         View containerView = getContainerView();
-        int defaultCoordX = ((i - getDefaultCoordX()) - containerView.getPaddingLeft()) - getPaddingLeft();
-        int measuredHeight = (i2 - containerView.getMeasuredHeight()) + containerView.getPaddingBottom() + getPaddingBottom();
+        int defaultCoordX = ((pointX - getDefaultCoordX()) - containerView.getPaddingLeft()) - getPaddingLeft();
+        int measuredHeight = (pointY - containerView.getMeasuredHeight()) + containerView.getPaddingBottom() + getPaddingBottom();
         view.getLocationInWindow(this.mCoordinates);
         int iMax = Math.max(0, Math.min(view.getMeasuredWidth() - containerView.getMeasuredWidth(), defaultCoordX)) + CoordinateUtils.x(this.mCoordinates);
         int iM5690b = CoordinateUtils.y(this.mCoordinates) + measuredHeight;
@@ -115,7 +115,7 @@ public class MoreKeysKeyboardView extends KeyboardView implements MoreKeysPanel 
         containerView.setY(iM5690b);
         this.mOriginX = defaultCoordX + containerView.getPaddingLeft();
         this.mOriginY = measuredHeight + containerView.getPaddingTop();
-        aVar.onShowMoreKeysPanel(this);
+        controller.onShowMoreKeysPanel(this);
     }
 
     protected int getDefaultCoordX() {
@@ -123,77 +123,77 @@ public class MoreKeysKeyboardView extends KeyboardView implements MoreKeysPanel 
     }
 
     /**
-     * @param i x
-     * @param i2 y
-     * @param i3 pointer id
-     * @param j event time
+     * @param x x
+     * @param y y
+     * @param pointerId pointer id
+     * @param eventTime event time
      */
     @Override
-    public void onDownEvent(int i, int i2, int i3, long j) {
-        this.mActivePointerId = i3;
-        this.mCurrentKey = detectKey(i, i2);
+    public void onDownEvent(int x, int y, int pointerId, long eventTime) {
+        this.mActivePointerId = pointerId;
+        this.mCurrentKey = detectKey(x, y);
     }
 
     /**
-     * @param i x
-     * @param i2 y
-     * @param i3 pointer id
-     * @param j event time
+     * @param x x
+     * @param y y
+     * @param pointerId pointer id
+     * @param eventTime event time
      */
     @Override
-    public void onMoveEvent(int i, int i2, int i3, long j) {
-        if (this.mActivePointerId != i3) {
+    public void onMoveEvent(int x, int y, int pointerId, long eventTime) {
+        if (this.mActivePointerId != pointerId) {
             return;
         }
         boolean z = this.mCurrentKey != null;
-        this.mCurrentKey = detectKey(i, i2);
+        this.mCurrentKey = detectKey(x, y);
         if (z && this.mCurrentKey == null) {
             this.mController.onDismissMoreKeysPanel();
         }
     }
 
     /**
-     * @param i x
-     * @param i2 y
-     * @param i3 pointer id
-     * @param j event time
+     * @param x x
+     * @param y y
+     * @param pointerId pointer id
+     * @param eventTime event time
      */
     @Override
-    public void onUpEvent(int i, int i2, int i3, long j) {
-        if (this.mActivePointerId != i3) {
+    public void onUpEvent(int x, int y, int pointerId, long eventTime) {
+        if (this.mActivePointerId != pointerId) {
             return;
         }
-        this.mCurrentKey = detectKey(i, i2);
+        this.mCurrentKey = detectKey(x, y);
         Key key = this.mCurrentKey;
         if (key != null) {
             setReleasedKeyGraphics(key);
-            onKeyInput(this.mCurrentKey, i, i2, j);
+            onKeyInput(this.mCurrentKey, x, y, eventTime);
             this.mCurrentKey = null;
         }
     }
 
     /**
-     * @param i x
-     * @param i2 y
-     * @param j event time
+     * @param x x
+     * @param y y
+     * @param eventTime event time
      */
-    protected void onKeyInput(Key key, int i, int i2, long j) {
+    protected void onKeyInput(Key key, int x, int y, long eventTime) {
         int iM6232c = key.getCode();
         if (iM6232c == -4) {
-            this.mListener.onTextInput(this.mCurrentKey.getKeySpecOutputText(), j);
+            this.mListener.onTextInput(this.mCurrentKey.getKeySpecOutputText(), eventTime);
         } else if (iM6232c != -21) {
             if (getKeyboard().allowsGestureForCode(iM6232c)) {
-                this.mListener.onCodeInput(iM6232c, i, i2, j, false);
+                this.mListener.onCodeInput(iM6232c, x, y, eventTime, false);
             } else {
-                this.mListener.onCodeInput(iM6232c, -1, -1, j, false);
+                this.mListener.onCodeInput(iM6232c, -1, -1, eventTime, false);
             }
         }
         this.mListener.onMoreKeysKeyTyped();
     }
 
-    private Key detectKey(int i, int i2) {
+    private Key detectKey(int x, int y) {
         Key key = this.mCurrentKey;
-        Key keyMo6590a = this.mKeyDetector.detectHitKey(i, i2);
+        Key keyMo6590a = this.mKeyDetector.detectHitKey(x, y);
         if (keyMo6590a == key) {
             return keyMo6590a;
         }
@@ -223,16 +223,16 @@ public class MoreKeysKeyboardView extends KeyboardView implements MoreKeysPanel 
         }
     }
 
-    /** @param i x in the parent view */
+    /** @param x x in the parent view */
     @Override
-    public int translateX(int i) {
-        return i - this.mOriginX;
+    public int translateX(int x) {
+        return x - this.mOriginX;
     }
 
-    /** @param i y in the parent view */
+    /** @param y y in the parent view */
     @Override
-    public int translateY(int i) {
-        return i - this.mOriginY;
+    public int translateY(int y) {
+        return y - this.mOriginY;
     }
 
     @Override

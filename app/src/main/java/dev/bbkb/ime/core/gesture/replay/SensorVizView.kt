@@ -240,20 +240,20 @@ class SensorVizView(context: Context) : View(context) {
         return true
     }
 
-    private fun drawBtn(c: Canvas, r: RectF, label: String) {
-        c.drawRoundRect(r, 8f, 8f, pBtn)
-        c.drawText(label, r.centerX(), r.centerY() + 10f, pBtnText)
+    private fun drawBtn(canvas: Canvas, r: RectF, label: String) {
+        canvas.drawRoundRect(r, 8f, 8f, pBtn)
+        canvas.drawText(label, r.centerX(), r.centerY() + 10f, pBtnText)
     }
 
-    override fun onDraw(c: Canvas) {
-        c.drawRect(0f, 0f, width.toFloat(), height.toFloat(), pBg)
-        c.drawRect(content, pField)
+    override fun onDraw(canvas: Canvas) {
+        canvas.drawRect(0f, 0f, width.toFloat(), height.toFloat(), pBg)
+        canvas.drawRect(content, pField)
 
         var gx = 0f
-        while (gx <= SensorViz.SENSOR_W) { c.drawLine(sx(gx), content.top, sx(gx), content.bottom, pGrid); gx += 108f }
+        while (gx <= SensorViz.SENSOR_W) { canvas.drawLine(sx(gx), content.top, sx(gx), content.bottom, pGrid); gx += 108f }
         for (f in listOf(0.25f, 0.5f, 0.75f, 1f)) {
             val yy = content.top + content.height() * f
-            c.drawLine(content.left, yy, content.right, yy, if (f == 0.75f) pGridStrong else pGrid)
+            canvas.drawLine(content.left, yy, content.right, yy, if (f == 0.75f) pGridStrong else pGrid)
         }
 
         if (SensorViz.total > 0) {
@@ -262,44 +262,44 @@ class SensorVizView(context: Context) : View(context) {
             var b = 0
             while (b < SensorViz.yHist.size) {
                 if (SensorViz.yHist[b] >= thr) {
-                    c.drawRect(content.left, sy((b * SensorViz.Y_BIN).toFloat()), content.right, sy(((b + 1) * SensorViz.Y_BIN).toFloat()), pBand)
+                    canvas.drawRect(content.left, sy((b * SensorViz.Y_BIN).toFloat()), content.right, sy(((b + 1) * SensorViz.Y_BIN).toFloat()), pBand)
                 }
                 b++
             }
         }
 
-        accum?.let { c.drawBitmap(it, 0f, 0f, null) }
+        accum?.let { canvas.drawBitmap(it, 0f, 0f, null) }
 
         // Reference model (orange) against the actual touch density (green).
         run {
             val dead = SensorViz.refDeadTop
             val rh = SensorViz.refRowH
-            c.drawRect(content.left, sy(0f), content.right, sy(dead), pDead)
+            canvas.drawRect(content.left, sy(0f), content.right, sy(dead), pDead)
             val labels = arrayOf("R1", "R2", "R3", "SPACE")
             var top = dead
             var i = 0
             while (top < SensorViz.SENSOR_H && i < 4) {
-                c.drawLine(content.left, sy(top), content.right, sy(top), pRefLine)
-                c.drawText("${labels[i]} @${top.toInt()}", content.left + 6f, sy(top) + 22f, pRefText)
+                canvas.drawLine(content.left, sy(top), content.right, sy(top), pRefLine)
+                canvas.drawText("${labels[i]} @${top.toInt()}", content.left + 6f, sy(top) + 22f, pRefText)
                 top += rh
                 i++
             }
-            c.drawText("DEAD ${dead.toInt()}px / rows ${rh.toInt()}px", content.left + 6f, sy(dead) - 6f, pRefText)
+            canvas.drawText("DEAD ${dead.toInt()}px / rows ${rh.toInt()}px", content.left + 6f, sy(dead) - 6f, pRefText)
         }
 
-        c.drawRect(content, pFrame)
+        canvas.drawRect(content, pFrame)
 
-        c.drawText("SENSOR VIZ  1080x525  pts=${SensorViz.total}", 12f, 28f, pText)
+        canvas.drawText("SENSOR VIZ  1080x525  pts=${SensorViz.total}", 12f, 28f, pText)
         if (SensorViz.total > 0) {
-            c.drawText("X[${SensorViz.minX.toInt()}..${SensorViz.maxX.toInt()}]  Y[${SensorViz.minY.toInt()}..${SensorViz.maxY.toInt()}]", 12f, 54f, pTextDim)
+            canvas.drawText("X[${SensorViz.minX.toInt()}..${SensorViz.maxX.toInt()}]  Y[${SensorViz.minY.toInt()}..${SensorViz.maxY.toInt()}]", 12f, 54f, pTextDim)
             val bands = SensorViz.computeBands(SensorViz.yHist, SensorViz.Y_BIN)
-            c.drawText("live Y: " + bands.joinToString(" ") { "${it.first}-${it.second}" }, 12f, 80f, pTextDim)
+            canvas.drawText("live Y: " + bands.joinToString(" ") { "${it.first}-${it.second}" }, 12f, 80f, pTextDim)
         } else {
-            c.drawText("sweep the physical keyboard…", 12f, 54f, pTextDim)
+            canvas.drawText("sweep the physical keyboard…", 12f, 54f, pTextDim)
         }
 
-        drawBtn(c, clearRect(), "CLEAR")
-        drawBtn(c, exportRect(), "EXPORT")
-        drawBtn(c, closeRect(), "CLOSE")
+        drawBtn(canvas, clearRect(), "CLEAR")
+        drawBtn(canvas, exportRect(), "EXPORT")
+        drawBtn(canvas, closeRect(), "CLOSE")
     }
 }

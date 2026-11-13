@@ -27,8 +27,8 @@ class FallbackDictionaryTest {
     private fun tracker(text: String?) =
         mock(ComposingTextTracker::class.java).also { `when`(it.composingText).thenReturn(text) }
 
-    private fun rows(d: FallbackDictionary, text: String?, sessionId: Int) =
-        d.generateSuggestions(tracker(text), null, null, sessionId).map { Triple(it.word, it.score, it.kind) }
+    private fun rows(dictionary: FallbackDictionary, text: String?, sessionId: Int) =
+        dictionary.generateSuggestions(tracker(text), null, null, sessionId).map { Triple(it.word, it.score, it.kind) }
 
     @Test
     fun nullTracker_isEmpty() {

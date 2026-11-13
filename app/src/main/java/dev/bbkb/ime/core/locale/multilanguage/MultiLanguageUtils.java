@@ -45,13 +45,13 @@ public final class MultiLanguageUtils {
     }
 
     /**
-     * @param c0910y the input method manager to register with
+     * @param richInputMethodManager the input method manager to register with
      * @param arrayList the saved multi-language keyboards
      */
-    public static void registerAdditionalSubtypes(RichInputMethodManager c0910y, Resources resources, ArrayList<MultiLanguageConfig> arrayList) {
+    public static void registerAdditionalSubtypes(RichInputMethodManager richInputMethodManager, Resources resources, ArrayList<MultiLanguageConfig> arrayList) {
         ArrayList<InputMethodSubtype> arrayListM4745a = toSubtypes(arrayList);
         arrayListM4745a.addAll(createPredefinedSubtypes(resources));
-        c0910y.setAdditionalInputMethodSubtypes((InputMethodSubtype[]) arrayListM4745a.toArray(new InputMethodSubtype[arrayListM4745a.size()]));
+        richInputMethodManager.setAdditionalInputMethodSubtypes((InputMethodSubtype[]) arrayListM4745a.toArray(new InputMethodSubtype[arrayListM4745a.size()]));
     }
 
     public static ArrayList<InputMethodSubtype> getSubtypesFromPrefs(SharedPreferences sharedPreferences) {
@@ -96,27 +96,27 @@ public final class MultiLanguageUtils {
         sharedPreferences.edit().putString("multi_lang_input_subtypes", sb.toString()).apply();
     }
 
-    /** @param c0710e the keyboard to append */
-    public static boolean appendConfigToPrefs(SharedPreferences sharedPreferences, MultiLanguageConfig c0710e) {
+    /** @param multiLanguageConfig the keyboard to append */
+    public static boolean appendConfigToPrefs(SharedPreferences sharedPreferences, MultiLanguageConfig multiLanguageConfig) {
         String string = sharedPreferences.getString("multi_lang_input_subtypes", "");
         StringBuilder sb = new StringBuilder();
         if (!TextUtils.isEmpty(string)) {
             sb.append(string);
             sb.append(";");
         }
-        sb.append(serializeConfig(c0710e));
+        sb.append(serializeConfig(multiLanguageConfig));
         // apply(): reached on the main thread from the subtype-switch path; the caller ignores the result.
         sharedPreferences.edit().putString("multi_lang_input_subtypes", sb.toString()).apply();
         return true;
     }
 
-    /** @param c0710e the keyboard to write as "primary/extra...:layoutSet" */
-    public static String serializeConfig(MultiLanguageConfig c0710e) {
-        if (c0710e == null) {
+    /** @param multiLanguageConfig the keyboard to write as "primary/extra...:layoutSet" */
+    public static String serializeConfig(MultiLanguageConfig multiLanguageConfig) {
+        if (multiLanguageConfig == null) {
             return "";
         }
-        StringBuilder sb = new StringBuilder((String) c0710e.getPrimaryLocale().first);
-        Iterator<LocaleItem> it = c0710e.getSupportingLocales().iterator();
+        StringBuilder sb = new StringBuilder((String) multiLanguageConfig.getPrimaryLocale().first);
+        Iterator<LocaleItem> it = multiLanguageConfig.getSupportingLocales().iterator();
         while (it.hasNext()) {
             LocaleItem next = it.next();
             if (sb.length() > 0) {
@@ -125,16 +125,16 @@ public final class MultiLanguageUtils {
             sb.append((String) next.first);
         }
         sb.append(":");
-        sb.append(c0710e.getKeyboardLayoutSet());
+        sb.append(multiLanguageConfig.getKeyboardLayoutSet());
         return sb.toString();
     }
 
-    /** @param str one stored entry, "primary/extra...:layoutSet" */
-    public static MultiLanguageConfig parseConfig(String str) {
-        if (TextUtils.isEmpty(str)) {
+    /** @param serializedConfig one stored entry, "primary/extra...:layoutSet" */
+    public static MultiLanguageConfig parseConfig(String serializedConfig) {
+        if (TextUtils.isEmpty(serializedConfig)) {
             return null;
         }
-        String[] strArrSplit = str.split(":");
+        String[] strArrSplit = serializedConfig.split(":");
         if (strArrSplit.length > 1) {
             String str2 = strArrSplit[1];
             // "null": a primary with no Latin layout (e.g. Korean); it would type in the fallback

@@ -43,27 +43,27 @@ public class ProximityGrid {
     private final List<Key>[] mGridNeighbors;
 
     /**
-     * @param i grid columns
-     * @param i2 grid rows
-     * @param i3 occupied width
-     * @param i4 occupied height
-     * @param i5 most common key width
+     * @param gridWidth grid columns
+     * @param gridHeight grid rows
+     * @param keyboardWidth occupied width
+     * @param keyboardHeight occupied height
+     * @param mostCommonKeyWidth most common key width
      * @param list the keyboard's keys
      */
-    ProximityGrid(int i, int i2, int i3, int i4, int i5, List<Key> list) {
-        this.mGridWidth = i;
-        this.mGridHeight = i2;
+    ProximityGrid(int gridWidth, int gridHeight, int keyboardWidth, int keyboardHeight, int mostCommonKeyWidth, List<Key> list) {
+        this.mGridWidth = gridWidth;
+        this.mGridHeight = gridHeight;
         int i7 = this.mGridWidth;
         int i8 = this.mGridHeight;
         this.mGridCellCount = i7 * i8;
         // Guard the divisors too: a moreKeys keyboard built against a zero-height parent has a
         // zero grid dimension. <= because occupied dimensions can be negative (rows*0 - verticalGap).
-        boolean degenerate = i7 <= 0 || i8 <= 0 || i3 <= 0 || i4 <= 0;
-        this.mCellWidth = degenerate ? 0 : ((i3 + i7) - 1) / i7;
-        this.mCellHeight = degenerate ? 0 : ((i4 + i8) - 1) / i8;
-        this.mKeyboardWidth = i3;
-        this.mKeyboardHeight = i4;
-        this.mMostCommonKeyWidth = i5;
+        boolean degenerate = i7 <= 0 || i8 <= 0 || keyboardWidth <= 0 || keyboardHeight <= 0;
+        this.mCellWidth = degenerate ? 0 : ((keyboardWidth + i7) - 1) / i7;
+        this.mCellHeight = degenerate ? 0 : ((keyboardHeight + i8) - 1) / i8;
+        this.mKeyboardWidth = keyboardWidth;
+        this.mKeyboardHeight = keyboardHeight;
+        this.mMostCommonKeyWidth = mostCommonKeyWidth;
         this.mKeys = list;
         this.mGridNeighbors = new List[Math.max(0, this.mGridCellCount)];
         if (degenerate) {
@@ -142,18 +142,18 @@ public class ProximityGrid {
     }
 
     /**
-     * @param i x
-     * @param i2 y
+     * @param x x
+     * @param y y
      */
-    public List<Key> getKeysInColumns(int i, int i2) {
+    public List<Key> getKeysInColumns(int x, int y) {
         int i3;
         List<Key>[] listArr = this.mGridNeighbors;
         if (listArr == null) {
             return EMPTY_KEY_LIST;
         }
         if (this.mCellWidth > 0 && this.mCellHeight > 0
-                && i >= 0 && i < this.mKeyboardWidth && i2 >= 0 && i2 < this.mKeyboardHeight
-                && (i3 = ((i2 / this.mCellHeight) * this.mGridWidth) + (i / this.mCellWidth)) < this.mGridCellCount) {
+                && x >= 0 && x < this.mKeyboardWidth && y >= 0 && y < this.mKeyboardHeight
+                && (i3 = ((y / this.mCellHeight) * this.mGridWidth) + (x / this.mCellWidth)) < this.mGridCellCount) {
             return listArr[i3];
         }
         return EMPTY_KEY_LIST;

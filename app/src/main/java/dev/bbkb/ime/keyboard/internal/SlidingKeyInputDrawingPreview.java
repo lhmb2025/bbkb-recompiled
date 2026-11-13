@@ -55,10 +55,10 @@ public final class SlidingKeyInputDrawingPreview extends AbstractDrawingPreview 
         }
     }
 
-    /** @param c1084t the sliding pointer */
-    public void showGestureTrail(PointerTracker c1084t) {
-        c1084t.getDownCoordinates(this.mPreviousCoords);
-        c1084t.getLastCoordinates(this.mCurrentCoords);
+    /** @param pointerTracker the sliding pointer */
+    public void showGestureTrail(PointerTracker pointerTracker) {
+        pointerTracker.getDownCoordinates(this.mPreviousCoords);
+        pointerTracker.getLastCoordinates(this.mCurrentCoords);
         this.mShowsGestureTrail = true;
         invalidateDrawingView();
     }

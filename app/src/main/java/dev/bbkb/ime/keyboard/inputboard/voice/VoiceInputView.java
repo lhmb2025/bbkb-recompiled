@@ -265,11 +265,11 @@ public class VoiceInputView extends RelativeLayout {
     }
 
     /**
-     * @param i width measure spec (ignored: the board sizes itself)
-     * @param i2 height measure spec (ignored)
+     * @param widthMeasureSpec width measure spec (ignored: the board sizes itself)
+     * @param heightMeasureSpec height measure spec (ignored)
      */
     @Override // android.widget.RelativeLayout, android.view.View
-    protected void onMeasure(int i, int i2) {
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         keepStatusClearOfLanguageChip();
         setMeasuredDimension(
                 BoardHeightPolicy.measuredWidth(this),
@@ -287,35 +287,35 @@ public class VoiceInputView extends RelativeLayout {
         }, 350L);
     }
 
-    /** @param interfaceC1002a the controller receiving button taps, or null to detach */
-    public void setListener(Listener interfaceC1002a) {
-        this.mListener = interfaceC1002a;
+    /** @param listener the controller receiving button taps, or null to detach */
+    public void setListener(Listener listener) {
+        this.mListener = listener;
     }
 
     /**
-     * @param aVar the recognizer's mode
-     * @param i the recognizer state ({@code VoiceRecognitionManager.STATE_*})
+     * @param mode the recognizer's mode
+     * @param state the recognizer state ({@code VoiceRecognitionManager.STATE_*})
      */
-    public void updateState(VoiceRecognitionManager.Mode aVar, int i) {
-        updateState(aVar, i, false);
+    public void updateState(VoiceRecognitionManager.Mode mode, int state) {
+        updateState(mode, state, false);
     }
 
     /**
-     * @param aVar the recognizer's mode
-     * @param i the recognizer state ({@code VoiceRecognitionManager.STATE_*})
+     * @param mode the recognizer's mode
+     * @param state the recognizer state ({@code VoiceRecognitionManager.STATE_*})
      * @param continuous the session keeps listening through pauses, so the status line says the
      *                   mic is what ends it
      */
-    public void updateState(VoiceRecognitionManager.Mode aVar, int i, boolean continuous) {
+    public void updateState(VoiceRecognitionManager.Mode mode, int state, boolean continuous) {
         this.mContinuous = continuous;
-        if (aVar == VoiceRecognitionManager.Mode.NONE) {
+        if (mode == VoiceRecognitionManager.Mode.NONE) {
             deactivateOthers((ImageButton) null);
             fadeOthers(null, false);
             setContentDescriptionMicOnOff(true);
             updateMaterialStatus(false);
-        } else if (i == VoiceRecognitionManager.STATE_STARTED
-                || i == VoiceRecognitionManager.STATE_STOPPED) {
-            ImageButton imageButton = this.mModeButtons.get(aVar);
+        } else if (state == VoiceRecognitionManager.STATE_STARTED
+                || state == VoiceRecognitionManager.STATE_STOPPED) {
+            ImageButton imageButton = this.mModeButtons.get(mode);
             deactivateOthers(imageButton);
             updateButtonIcon(imageButton, true);
             fadeOthers(imageButton, true);
@@ -358,9 +358,9 @@ public class VoiceInputView extends RelativeLayout {
     /**
      * Only the background animation distinguishes listening from idle; the glyph is constant.
      *
-     * @param z true while listening
+     * @param listening true while listening
      */
-    private void updateButtonIcon(ImageButton imageButton, boolean z) {
+    private void updateButtonIcon(ImageButton imageButton, boolean listening) {
         {
             if (imageButton == null) {
                 return;
@@ -369,7 +369,7 @@ public class VoiceInputView extends RelativeLayout {
             if (KeyboardColorManager.styleSpec().getModernBoards() && imageButton == this.mVoiceButton) {
                 // Ring-only pulse so the accent disc's knocked-out mic keeps showing the board
                 // surface; the legacy animation carries its own glyph and would fill the knockout.
-                if (z) {
+                if (listening) {
                     imageButton.setBackgroundResource(R.drawable.ic_inputboard_voice_pulse_ring_animation);
                     Drawable ringBackground = imageButton.getBackground();
                     if (ringBackground instanceof Animatable) {
@@ -382,7 +382,7 @@ public class VoiceInputView extends RelativeLayout {
             }
             // Read the running background first so the idle branch stops the real animation.
             Drawable current = imageButton.getBackground();
-            if (imageButton == this.mVoiceButton && z) {
+            if (imageButton == this.mVoiceButton && listening) {
                 imageButton.setBackgroundResource(R.drawable.ic_inputboard_voice_listen_animation);
                 Drawable background = imageButton.getBackground();
                 if (background instanceof Animatable) {
@@ -407,9 +407,9 @@ public class VoiceInputView extends RelativeLayout {
 
     /**
      * @param imageButton the button to leave unfaded, or null
-     * @param z true to fade the others (listening), false to restore them
+     * @param fade true to fade the others (listening), false to restore them
      */
-    private void fadeOthers(ImageButton imageButton, boolean z) {
+    private void fadeOthers(ImageButton imageButton, boolean fade) {
         Iterator<ImageButton> it = this.mModeButtons.values().iterator();
         while (true) {
             if (!it.hasNext()) {
@@ -417,11 +417,11 @@ public class VoiceInputView extends RelativeLayout {
             }
             ImageButton next = it.next();
             if (next != imageButton && next != null) {
-                next.animate().alpha(z ? 0.3f : 1.0f).setDuration(100L);
+                next.animate().alpha(fade ? 0.3f : 1.0f).setDuration(100L);
             }
         }
-        this.mDeleteButton.animate().alpha(z ? 0.3f : 1.0f).setDuration(100L);
-        this.mDeleteButton.setEnabled(!z);
+        this.mDeleteButton.animate().alpha(fade ? 0.3f : 1.0f).setDuration(100L);
+        this.mDeleteButton.setEnabled(!fade);
     }
 
     private void initButtonMaps() {

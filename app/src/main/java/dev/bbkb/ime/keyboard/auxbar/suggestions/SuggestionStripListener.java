@@ -11,7 +11,7 @@ public interface SuggestionStripListener {
 
     void setNeutralSuggestionStrip();
 
-    void showSuggestionStrip(SuggestedWords c0666ac);
+    void showSuggestionStrip(SuggestedWords suggestedWords);
 
-    void showAddToDictionaryHint(String str);
+    void showAddToDictionaryHint(String word);
 }

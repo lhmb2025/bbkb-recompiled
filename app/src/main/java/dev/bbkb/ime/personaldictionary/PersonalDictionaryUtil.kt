@@ -174,10 +174,10 @@ class PersonalDictionaryUtil private constructor(
 
         /**
          * A string field, or a number or boolean as its text (as Gson read it).
-         * @param obj the JSON entry
+         * @param json the JSON entry
          */
-        private fun requiredText(obj: JSONObject, name: String): String =
-            when (val value = obj.opt(name)) {
+        private fun requiredText(json: JSONObject, name: String): String =
+            when (val value = json.opt(name)) {
                 is String -> value
                 is Int, is Long, is Boolean -> value.toString()
                 else -> throw JSONException("no $name")
@@ -185,9 +185,9 @@ class PersonalDictionaryUtil private constructor(
 
         /**
          * A missing or null boolean reads as false, a string through parseBoolean (as Gson did).
-         * @param obj the JSON entry
+         * @param json the JSON entry
          */
-        private fun flag(obj: JSONObject, name: String): Boolean = when (val value = obj.opt(name)) {
+        private fun flag(json: JSONObject, name: String): Boolean = when (val value = json.opt(name)) {
             is Boolean -> value
             is String -> value.toBoolean()
             else -> false

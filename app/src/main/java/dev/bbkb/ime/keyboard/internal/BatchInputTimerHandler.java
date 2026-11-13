@@ -15,11 +15,11 @@ public final class BatchInputTimerHandler extends Handler implements TimerCallba
 
     private final int mUpdateBatchInputTimerDelay;
 
-    /** @param i update delay in ms; 0 or less disables the timer */
-    public BatchInputTimerHandler(int i) {
+    /** @param updateBatchInputTimerDelay update delay in ms; 0 or less disables the timer */
+    public BatchInputTimerHandler(int updateBatchInputTimerDelay) {
         // Explicit main Looper: the implicit one is deprecated and throws on a thread without one.
         super(Looper.getMainLooper());
-        this.mUpdateBatchInputTimerDelay = i;
+        this.mUpdateBatchInputTimerDelay = updateBatchInputTimerDelay;
     }
 
     @Override
@@ -33,17 +33,17 @@ public final class BatchInputTimerHandler extends Handler implements TimerCallba
     }
 
     @Override
-    public void startUpdateBatchInputTimer(AbstractDrawingHandler abstractC1072n) {
+    public void startUpdateBatchInputTimer(AbstractDrawingHandler abstractDrawingHandler) {
         if (this.mUpdateBatchInputTimerDelay <= 0) {
             return;
         }
-        removeMessages(1, abstractC1072n);
-        sendMessageDelayed(obtainMessage(1, abstractC1072n), this.mUpdateBatchInputTimerDelay);
+        removeMessages(1, abstractDrawingHandler);
+        sendMessageDelayed(obtainMessage(1, abstractDrawingHandler), this.mUpdateBatchInputTimerDelay);
     }
 
     @Override
-    public void cancelUpdateBatchInputTimer(AbstractDrawingHandler abstractC1072n) {
-        removeMessages(1, abstractC1072n);
+    public void cancelUpdateBatchInputTimer(AbstractDrawingHandler abstractDrawingHandler) {
+        removeMessages(1, abstractDrawingHandler);
     }
 
     @Override

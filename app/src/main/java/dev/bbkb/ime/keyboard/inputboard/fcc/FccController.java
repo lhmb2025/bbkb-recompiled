@@ -35,9 +35,9 @@ public class FccController extends AbstractBoardController<FccController.Listene
         void onFccPanelHidden();
     }
 
-    /** @param aVar receives panel shown and hidden events */
-    public FccController(BlackBerryIME blackBerryIME, Listener aVar) {
-        super(KEY_CODE, blackBerryIME, aVar);
+    /** @param listener receives panel shown and hidden events */
+    public FccController(BlackBerryIME blackBerryIME, Listener listener) {
+        super(KEY_CODE, blackBerryIME, listener);
     }
 
     public void bindView(View view) {
@@ -61,10 +61,10 @@ public class FccController extends AbstractBoardController<FccController.Listene
         return hasView() && (this.mFccView.isShowing() || this.mFccView.isOpening());
     }
 
-    /** @param enumC0992a the arrow pressed */
+    /** @param direction the arrow pressed */
     @Override
-    public void onMove(FccView.Direction enumC0992a) {
-        switch (enumC0992a) {
+    public void onMove(FccView.Direction direction) {
+        switch (direction) {
             case LEFT:
                 this.ime.moveLeft(1);
                 break;
@@ -80,30 +80,30 @@ public class FccController extends AbstractBoardController<FccController.Listene
         }
     }
 
-    /** @param i the key code */
+    /** @param keyCode the key code */
     @Override
-    public void onKeyDown(int i) {
-        if (i == 29) {
+    public void onKeyDown(int keyCode) {
+        if (keyCode == 29) {
             this.ime.getCursorTracker().hide();
         }
-        this.ime.getInputLogic().sendKeyDownWithMeta(i, 12288);
+        this.ime.getInputLogic().sendKeyDownWithMeta(keyCode, 12288);
     }
 
-    /** @param i the key code */
+    /** @param keyCode the key code */
     @Override
-    public void onKeyUp(int i) {
-        this.ime.getInputLogic().sendKeyUpWithMeta(i, 12288);
+    public void onKeyUp(int keyCode) {
+        this.ime.getInputLogic().sendKeyUpWithMeta(keyCode, 12288);
     }
 
-    /** @param i how to collapse a selection on exit: 1 to its end, 0 to its start, -1 leave it */
+    /** @param collapseDirection how to collapse a selection on exit: 1 to its end, 0 to its start, -1 leave it */
     @Override
-    public void onToggleSelect(int i) {
-        if (BuildConfig.DEBUG) Log.d("FccController", "FCC selection mode toggle: direction=" + i);
+    public void onToggleSelect(int collapseDirection) {
+        if (BuildConfig.DEBUG) Log.d("FccController", "FCC selection mode toggle: direction=" + collapseDirection);
         if (isViewInSelectMode()) {
             enterSelectMode();
             return;
         }
-        collapseSelection(i);
+        collapseSelection(collapseDirection);
         exitSelectMode();
         // No shift-state reset: the synthetic shift up clears it, and a reset desyncs shift.
     }
@@ -112,17 +112,17 @@ public class FccController extends AbstractBoardController<FccController.Listene
         return hasView() && this.mFccView.isSelectMode();
     }
 
-    /** @param i 1 to collapse to the end (start in RTL), 0 to the start, -1 to leave the selection */
-    private void collapseSelection(int i) {
+    /** @param collapseDirection 1 to collapse to the end (start in RTL), 0 to the start, -1 to leave the selection */
+    private void collapseSelection(int collapseDirection) {
         int iMin;
-        if (i == -1) {
+        if (collapseDirection == -1) {
             return;
         }
         RichInputConnection c0909x = this.ime.getInputLogic().mRichInputConnection;
         boolean zM5623b = ResourceLocaleUtils.isRtlLanguage(SubtypeManager.getInstance().getCurrentSubtypeLocale());
         int iM5853q = c0909x.getCursorStart();
         int iM5854r = c0909x.getCursorEnd();
-        if (i != 1 || zM5623b) {
+        if (collapseDirection != 1 || zM5623b) {
             iMin = Math.min(iM5853q, iM5854r);
         } else {
             iMin = Math.max(iM5853q, iM5854r);
@@ -217,11 +217,11 @@ public class FccController extends AbstractBoardController<FccController.Listene
     }
 
     /**
-     * @param i the new selection start
-     * @param i2 the new selection end
+     * @param newSelStart the new selection start
+     * @param newSelEnd the new selection end
      */
-    public void onSelectionUpdate(int i, int i2) {
-        if (i != i2 && !this.ime.isMetaKeyActive()) {
+    public void onSelectionUpdate(int newSelStart, int newSelEnd) {
+        if (newSelStart != newSelEnd && !this.ime.isMetaKeyActive()) {
             commitPendingSelection();
         }
         if (isViewActive()) {
@@ -240,8 +240,8 @@ public class FccController extends AbstractBoardController<FccController.Listene
         hideFcc();
     }
 
-    /** @param z true if FCC was enabled */
-    public void onFccEnabled(boolean z) {
+    /** @param forced true if FCC was enabled */
+    public void onFccEnabled(boolean forced) {
         // Nothing to do when the setting changes.
     }
 

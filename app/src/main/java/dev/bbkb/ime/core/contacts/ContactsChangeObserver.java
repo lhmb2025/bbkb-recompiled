@@ -56,8 +56,8 @@ public class ContactsChangeObserver implements Runnable {
         this.context = context;
     }
 
-    /** @param aVar listener told after the address book has stayed quiet */
-    public void registerObserver(ContactsDataProvider.Listener aVar) {
+    /** @param listener listener told after the address book has stayed quiet */
+    public void registerObserver(ContactsDataProvider.Listener listener) {
         if (!PermissionUtils.checkAllPermissionsGranted(this.context, "android.permission.READ_CONTACTS")) {
             Logger.info(TAG, "No permission to read contacts. Not registering the observer.");
             return;
@@ -67,10 +67,10 @@ public class ContactsChangeObserver implements Runnable {
             unregisterObserver();
         }
         Logger.debug(TAG, "registerObserver()");
-        this.listener = aVar;
+        this.listener = listener;
         this.contentObserver = new ContentObserver(null) {
             @Override // android.database.ContentObserver
-            public void onChange(boolean z) {
+            public void onChange(boolean selfChange) {
                 // Trailing edge: each notification pushes the check back.
                 debounceHandler.removeCallbacks(checkAfterQuiet);
                 debounceHandler.postDelayed(checkAfterQuiet, CHANGE_DEBOUNCE_MS);

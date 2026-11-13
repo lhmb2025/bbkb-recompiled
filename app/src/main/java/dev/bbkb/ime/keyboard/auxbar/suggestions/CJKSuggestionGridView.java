@@ -35,23 +35,23 @@ public final class CJKSuggestionGridView extends RelativeLayout {
 
     
     public interface Listener {
-        /** @param suggestedWordInfoVar the tapped candidate */
-        void onCjkSuggestionSelected(SuggestedWords.SuggestedWordInfo suggestedWordInfoVar);
+        /** @param suggestedWordInfo the tapped candidate */
+        void onCjkSuggestionSelected(SuggestedWords.SuggestedWordInfo suggestedWordInfo);
     }
 
     
     private class GridAdapter extends CJKSuggestionsAdapter {
-        /** @param c0666ac the initial words */
-        GridAdapter(SuggestedWords c0666ac) {
-            super(c0666ac);
+        /** @param suggestedWords the initial words */
+        GridAdapter(SuggestedWords suggestedWords) {
+            super(suggestedWords);
         }
 
         // One listener for every word view (reads the position at click time), not one per bind.
         private final View.OnClickListener mWordClick = new View.OnClickListener() {
             @Override
-            public void onClick(View view2) {
+            public void onClick(View view) {
                 SuggestedWords words = getSuggestedWords();
-                Object tag = view2.getTag();
+                Object tag = view.getTag();
                 if (words == null || !(tag instanceof Integer)) {
                     return;
                 }
@@ -65,32 +65,32 @@ public final class CJKSuggestionGridView extends RelativeLayout {
         };
 
         /**
-         * @param bVar the holder to bind
-         * @param i the word's position
+         * @param holder the holder to bind
+         * @param position the word's position
          */
         @Override
-        public void onBindViewHolder(CJKSuggestionsAdapter.ViewHolder bVar, int i) {
+        public void onBindViewHolder(CJKSuggestionsAdapter.ViewHolder holder, int position) {
             final SuggestedWords c0666acD = getSuggestedWords();
-            TextView textView = bVar.mWordView;
-            View view = bVar.itemView;
+            TextView textView = holder.mWordView;
+            View view = holder.itemView;
             // setTextLocale forces a relayout of the view even when the locale is the one it has.
             if (LocaleUtils.isCurrentSubtypeJapanese() && !Locale.JAPANESE.equals(textView.getTextLocale())) {
                 textView.setTextLocale(Locale.JAPANESE);
             }
-            textView.setTag(Integer.valueOf(i));
+            textView.setTag(Integer.valueOf(position));
             textView.setOnClickListener(mWordClick);
             // Each view's own params, changed only when they differ.
             applySize(view, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
             applySize(textView, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
             textView.setTextColor(CJKSuggestionGridView.this.getResources().getColor(R.color.suggested_word_dark));
-            String strMo4284a = (c0666acD == null || c0666acD.isEmpty()) ? null : c0666acD.getWord(i);
+            String strMo4284a = (c0666acD == null || c0666acD.isEmpty()) ? null : c0666acD.getWord(position);
             // Reset to the base size first, or the shrink below compounds on a recycled view.
-            textView.setTextSize(TypedValue.COMPLEX_UNIT_PX, bVar.mBaseTextSizePx);
+            textView.setTextSize(TypedValue.COMPLEX_UNIT_PX, holder.mBaseTextSizePx);
             if (strMo4284a != null && strMo4284a.length() > 18) {
                 TextPaint paint = textView.getPaint();
                 float scale = Math.min(1.0f, (CJKSuggestionGridView.this.mRecyclerView.getWidth() * 0.9f)
                         / TypefaceUtils.getStringWidth(strMo4284a, paint));
-                textView.setTextSize(TypedValue.COMPLEX_UNIT_PX, bVar.mBaseTextSizePx * scale);
+                textView.setTextSize(TypedValue.COMPLEX_UNIT_PX, holder.mBaseTextSizePx * scale);
             }
             textView.setText(strMo4284a);
             textView.setContentDescription(strMo4284a);
@@ -106,13 +106,13 @@ public final class CJKSuggestionGridView extends RelativeLayout {
             target.setLayoutParams(params);
         }
 
-        /** @param i the word's position */
-        public int getSpanSize(int i) {
+        /** @param position the word's position */
+        public int getSpanSize(int position) {
             SuggestedWords c0666acD = getSuggestedWords();
             if (c0666acD.isEmpty()) {
                 return 1;
             }
-            String strMo4284a = c0666acD.getWord(i);
+            String strMo4284a = c0666acD.getWord(position);
             int i2 = LocaleUtils.isCurrentSubtypeJapanese() ? 3 : 4;
             int length = strMo4284a.length();
             if (length <= i2) {
@@ -130,9 +130,9 @@ public final class CJKSuggestionGridView extends RelativeLayout {
 
         private final int mSpacing;
 
-        /** @param i the vertical spacing in px */
-        public SpacingItemDecoration(int i) {
-            this.mSpacing = i;
+        /** @param spacing the vertical spacing in px */
+        public SpacingItemDecoration(int spacing) {
+            this.mSpacing = spacing;
         }
 
         @Override
@@ -147,9 +147,9 @@ public final class CJKSuggestionGridView extends RelativeLayout {
         this(context, attributeSet, 0);
     }
 
-    /** @param i the default style attribute */
-    public CJKSuggestionGridView(Context context, AttributeSet attributeSet, int i) throws Resources.NotFoundException {
-        super(context, attributeSet, i);
+    /** @param defStyleAttr the default style attribute */
+    public CJKSuggestionGridView(Context context, AttributeSet attributeSet, int defStyleAttr) throws Resources.NotFoundException {
+        super(context, attributeSet, defStyleAttr);
         this.mMinHeight = (int) getResources().getDimension(R.dimen.config_cjk_suggestions_grid_min_height);
         this.mVisibleHeight = this.mMinHeight;
         LayoutInflater.from(context).inflate(R.layout.cjk_suggestions_grid, this);
@@ -164,29 +164,29 @@ public final class CJKSuggestionGridView extends RelativeLayout {
         GridLayoutManager gridLayoutManager = new GridLayoutManager(context, 5);
         gridLayoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
             @Override
-            /** @param i2 the word's position */
-            public int getSpanSize(int i2) {
-                return c0816a.getSpanSize(i2);
+            /** @param position the word's position */
+            public int getSpanSize(int position) {
+                return c0816a.getSpanSize(position);
             }
         });
         this.mRecyclerView.setLayoutManager(gridLayoutManager);
         setVisible(false);
     }
 
-    /** @param z true to show the grid */
-    public void setVisible(boolean z) {
-        setVisibility(z ? View.VISIBLE : View.GONE);
+    /** @param visible true to show the grid */
+    public void setVisible(boolean visible) {
+        setVisibility(visible ? View.VISIBLE : View.GONE);
     }
 
     public boolean isVisible() {
         return getVisibility() == View.VISIBLE;
     }
 
-    /** @param c0666ac the words to show */
-    public void setSuggestions(SuggestedWords c0666ac) {
+    /** @param suggestedWords the words to show */
+    public void setSuggestions(SuggestedWords suggestedWords) {
         GridAdapter c0816a = (GridAdapter) this.mRecyclerView.getAdapter();
         int oldCount = c0816a.getItemCount();
-        c0816a.setSuggestedWords(c0666ac);
+        c0816a.setSuggestedWords(suggestedWords);
         int newCount = c0816a.getItemCount();
         // Ranged notifications rebind in place; notifyDataSetChanged re-attaches every view.
         int common = Math.min(oldCount, newCount);
@@ -201,23 +201,23 @@ public final class CJKSuggestionGridView extends RelativeLayout {
         this.mRecyclerView.scrollToPosition(0);
     }
 
-    /** @param interfaceC0817b receives tapped candidates */
-    public void setListener(Listener interfaceC0817b) {
-        this.mListener = interfaceC0817b;
+    /** @param listener receives tapped candidates */
+    public void setListener(Listener listener) {
+        this.mListener = listener;
     }
 
-    /** @param i the height in px (at least the minimum) */
-    public void setVisibleHeight(int i) {
-        this.mVisibleHeight = Math.max(i, this.mMinHeight);
+    /** @param height the height in px (at least the minimum) */
+    public void setVisibleHeight(int height) {
+        this.mVisibleHeight = Math.max(height, this.mMinHeight);
     }
 
     /**
-     * @param i the width measure spec
-     * @param i2 the height measure spec (ignored)
+     * @param widthMeasureSpec the width measure spec
+     * @param heightMeasureSpec the height measure spec (ignored)
      */
     @Override
-    public void onMeasure(int i, int i2) {
-        setMeasuredDimension(View.MeasureSpec.getSize(i), this.mVisibleHeight);
+    public void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        setMeasuredDimension(View.MeasureSpec.getSize(widthMeasureSpec), this.mVisibleHeight);
         super.onMeasure(View.MeasureSpec.makeMeasureSpec(getMeasuredWidth(), View.MeasureSpec.EXACTLY), View.MeasureSpec.makeMeasureSpec(getMeasuredHeight(), View.MeasureSpec.EXACTLY));
     }
 }

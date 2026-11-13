@@ -177,8 +177,8 @@ class DeferredWorkCancellationTest {
         /** Two accents for the base char, so the continuation branch has somewhere to go. */
         val STUB_LAYOUT = object : dev.bbkb.ime.core.KeyboardLayoutCallback {
             override fun getKeyLabelForKeyEvent(e: android.view.KeyEvent?): String = ""
-            override fun getMoreKeysForKey(s: String?): Array<String> = arrayOf("è", "é")
-            override fun getMoreKeysForKeyByStyle(s: String?): Array<String> = arrayOf("è", "é")
+            override fun getMoreKeysForKey(baseCharacter: String?): Array<String> = arrayOf("è", "é")
+            override fun getMoreKeysForKeyByStyle(baseCharacter: String?): Array<String> = arrayOf("è", "é")
         }
     }
 

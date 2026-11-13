@@ -60,7 +60,7 @@ class GestureReplayReceiver(private val ime: BlackBerryIME) : BroadcastReceiver(
         try { ime.unregisterReceiver(this) } catch (_: IllegalArgumentException) { /* was not registered */ }
     }
 
-    override fun onReceive(c: Context?, intent: Intent?) {
+    override fun onReceive(context: Context?, intent: Intent?) {
         when (intent?.action) {
             ACTION_GESTURE -> {
                 val trace = intent.getStringExtra("trace") ?: return

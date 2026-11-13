@@ -33,8 +33,8 @@ public final class KeyPreviewChoreographer {
 
     private final KeyPreviewDrawParams mParams;
 
-    public KeyPreviewChoreographer(KeyPreviewDrawParams c1063v) {
-        this.mParams = c1063v;
+    public KeyPreviewChoreographer(KeyPreviewDrawParams keyPreviewDrawParams) {
+        this.mParams = keyPreviewDrawParams;
     }
 
     public KeyPreviewView getKeyPreviewView(Key key, ViewGroup viewGroup) {
@@ -67,14 +67,14 @@ public final class KeyPreviewChoreographer {
         }
     }
 
-    /** @param z true to animate the dismissal */
-    public void dismissKeyPreview(Key key, boolean z) {
+    /** @param withAnimation true to animate the dismissal */
+    public void dismissKeyPreview(Key key, boolean withAnimation) {
         KeyPreviewView c1064w;
         if (key == null || (c1064w = this.mShowingKeyPreviewViews.get(key)) == null) {
             return;
         }
         Object tag = c1064w.getTag();
-        if (z && (tag instanceof KeyPreviewAnimators)) {
+        if (withAnimation && (tag instanceof KeyPreviewAnimators)) {
             ((KeyPreviewAnimators) tag).startDismiss();
             return;
         }
@@ -88,48 +88,48 @@ public final class KeyPreviewChoreographer {
     }
 
     /**
-     * @param i width of the area the preview must stay inside
-     * @param iArr origin of the keyboard view in the placer
-     * @param z true to animate the show-up
+     * @param keyboardViewWidth width of the area the preview must stay inside
+     * @param keyboardOrigin origin of the keyboard view in the placer
+     * @param withAnimation true to animate the show-up
      */
-    public void placeAndShowKeyPreview(Key key, KeyboardIconSet c1024ag, KeyDrawParams c1061t, int i, int[] iArr, ViewGroup viewGroup, boolean z) {
+    public void placeAndShowKeyPreview(Key key, KeyboardIconSet keyboardIconSet, KeyDrawParams keyDrawParams, int keyboardViewWidth, int[] keyboardOrigin, ViewGroup viewGroup, boolean withAnimation) {
         KeyPreviewView c1064wM7424a = getKeyPreviewView(key, viewGroup);
-        placeKeyPreview(key, c1064wM7424a, c1024ag, c1061t, i, iArr);
-        showKeyPreview(key, c1064wM7424a, z);
+        placeKeyPreview(key, c1064wM7424a, keyboardIconSet, keyDrawParams, keyboardViewWidth, keyboardOrigin);
+        showKeyPreview(key, c1064wM7424a, withAnimation);
     }
 
-    private void placeKeyPreview(Key key, KeyPreviewView c1064w, KeyboardIconSet c1024ag, KeyDrawParams c1061t, int i, int[] iArr) {
+    private void placeKeyPreview(Key key, KeyPreviewView keyPreviewView, KeyboardIconSet keyboardIconSet, KeyDrawParams keyDrawParams, int keyboardViewWidth, int[] originCoords) {
         int i2;
-        c1064w.setPreviewVisual(key, c1024ag, c1061t);
+        keyPreviewView.setPreviewVisual(key, keyboardIconSet, keyDrawParams);
 
         // Width = key width, height = 2x key height.
         int keyWidth = key.getWidth();
         int keyHeight = key.getHeight();
-        c1064w.setPreviewDimensions(keyWidth, keyHeight * 2);
+        keyPreviewView.setPreviewDimensions(keyWidth, keyHeight * 2);
         
-        c1064w.measure(-2, -2);
-        int measuredWidth = c1064w.getMeasuredWidth();
-        int measuredHeight = c1064w.getMeasuredHeight();
-        this.mParams.setGeometry(c1064w);
+        keyPreviewView.measure(-2, -2);
+        int measuredWidth = keyPreviewView.getMeasuredWidth();
+        int measuredHeight = keyPreviewView.getMeasuredHeight();
+        this.mParams.setGeometry(keyPreviewView);
         int i3 = this.mParams.mPreviewHeight;
         int i4 = 2;
-        int iM6218ad = (key.getDrawX() - ((measuredWidth - key.getDrawWidth()) / 2)) + CoordinateUtils.x(iArr);
+        int iM6218ad = (key.getDrawX() - ((measuredWidth - key.getDrawWidth()) / 2)) + CoordinateUtils.x(originCoords);
         if (iM6218ad < 0) {
             i2 = 0;
             i4 = 1;
         } else {
-            i2 = i - measuredWidth;
+            i2 = keyboardViewWidth - measuredWidth;
             if (iM6218ad <= i2) {
                 i2 = iM6218ad;
                 i4 = 0;
             }
         }
-        c1064w.setPreviewBackground(key.getMoreKeys() != null, i4);
+        keyPreviewView.setPreviewBackground(key.getMoreKeys() != null, i4);
         // Bottom aligns with the key's bottom.
-        int yPos = (key.getY() + key.getHeight() - measuredHeight) + CoordinateUtils.y(iArr);
-        placePreviewAt(c1064w, i2, yPos, measuredWidth, measuredHeight);
-        c1064w.setPivotX(measuredWidth / 2.0f);
-        c1064w.setPivotY(measuredHeight);
+        int yPos = (key.getY() + key.getHeight() - measuredHeight) + CoordinateUtils.y(originCoords);
+        placePreviewAt(keyPreviewView, i2, yPos, measuredWidth, measuredHeight);
+        keyPreviewView.setPivotX(measuredWidth / 2.0f);
+        keyPreviewView.setPivotY(measuredHeight);
     }
 
     /** Sizes by layout only when the size changes and positions by translation, so a move costs no layout pass. */
@@ -149,31 +149,31 @@ public final class KeyPreviewChoreographer {
         view.setTranslationY(y);
     }
 
-    /** @param z true to animate the show-up */
-    public void showKeyPreview(Key key, KeyPreviewView c1064w, boolean z) {
-        if (!z) {
-            c1064w.setPreviewShown(true);
-            this.mShowingKeyPreviewViews.put(key, c1064w);
+    /** @param withAnimation true to animate the show-up */
+    public void showKeyPreview(Key key, KeyPreviewView keyPreviewView, boolean withAnimation) {
+        if (!withAnimation) {
+            keyPreviewView.setPreviewShown(true);
+            this.mShowingKeyPreviewViews.put(key, keyPreviewView);
         } else {
-            KeyPreviewAnimators aVar = new KeyPreviewAnimators(createShowUpAnimator(key, c1064w), createDismissAnimator(key, c1064w));
-            c1064w.setTag(aVar);
+            KeyPreviewAnimators aVar = new KeyPreviewAnimators(createShowUpAnimator(key, keyPreviewView), createDismissAnimator(key, keyPreviewView));
+            keyPreviewView.setTag(aVar);
             aVar.startShowUp();
         }
     }
 
-    public Animator createShowUpAnimator(final Key key, final KeyPreviewView c1064w) throws Resources.NotFoundException {
-        Animator animatorM7436b = this.mParams.createShowUpAnimator(c1064w);
+    public Animator createShowUpAnimator(final Key key, final KeyPreviewView keyPreviewView) throws Resources.NotFoundException {
+        Animator animatorM7436b = this.mParams.createShowUpAnimator(keyPreviewView);
         animatorM7436b.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationStart(Animator animator) {
-                KeyPreviewChoreographer.this.showKeyPreview(key, c1064w, false);
+                KeyPreviewChoreographer.this.showKeyPreview(key, keyPreviewView, false);
             }
         });
         return animatorM7436b;
     }
 
-    private Animator createDismissAnimator(final Key key, KeyPreviewView c1064w) throws Resources.NotFoundException {
-        Animator animatorM7438c = this.mParams.createDismissAnimator(c1064w);
+    private Animator createDismissAnimator(final Key key, KeyPreviewView keyPreviewView) throws Resources.NotFoundException {
+        Animator animatorM7438c = this.mParams.createDismissAnimator(keyPreviewView);
         animatorM7438c.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationEnd(Animator animator) {
@@ -189,9 +189,9 @@ public final class KeyPreviewChoreographer {
 
         private final Animator mDismissAnimator;
 
-        public KeyPreviewAnimators(Animator animator, Animator animator2) {
+        public KeyPreviewAnimators(Animator animator, Animator dismissAnimator) {
             this.mShowUpAnimator = animator;
-            this.mDismissAnimator = animator2;
+            this.mDismissAnimator = dismissAnimator;
         }
 
         public void startShowUp() {

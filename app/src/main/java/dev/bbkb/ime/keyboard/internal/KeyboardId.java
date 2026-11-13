@@ -123,41 +123,41 @@ public final class KeyboardId {
         return row >= 0 && ((Integer) ELEMENTS[row + 1] & family) != 0;
     }
 
-    /** @param i element id */
-    public static String elementIdToName(int i) {
-        int row = elementRow(i);
+    /** @param elementId element id */
+    public static String elementIdToName(int elementId) {
+        int row = elementRow(elementId);
         return row < 0 ? null : (String) ELEMENTS[row + 2];
     }
 
-    /** @param i keyboard mode */
-    public static String modeName(int i) {
-        return i >= 0 && i < MODE_NAMES.length ? MODE_NAMES[i] : null;
+    /** @param mode keyboard mode */
+    public static String modeName(int mode) {
+        return mode >= 0 && mode < MODE_NAMES.length ? MODE_NAMES[mode] : null;
     }
 
     /**
-     * @param i element id
-     * @param dVar builder params supplying the rest of the identity
+     * @param elementId element id
+     * @param params builder params supplying the rest of the identity
      */
-    public KeyboardId(int i, KeyboardBuilder.Params dVar) {
-        this.mSubtype = dVar.mSubtype;
-        this.mKeyboardLayoutSet = dVar.keyboardLayoutSet();
+    public KeyboardId(int elementId, KeyboardBuilder.Params params) {
+        this.mSubtype = params.mSubtype;
+        this.mKeyboardLayoutSet = params.keyboardLayoutSet();
         this.mLocale = ResourceLocaleUtils.getSubtypeLocale(this.mSubtype);
-        this.mWidth = dVar.mKeyboardWidth;
-        this.mHeight = dVar.mKeyboardHeight;
-        this.mMode = dVar.mMode;
-        this.mElementId = i;
-        this.mEditorInfo = dVar.mEditorInfo;
-        this.mClobberSettingsKey = dVar.mClobberSettingsKey;
-        this.mVoiceKeyEnabled = dVar.mVoiceKeyEnabled;
-        this.mLanguageSwitchKeyEnabled = dVar.mLanguageSwitchKeyEnabled;
-        this.mLanguageQuickSwitchKeyEnabled = dVar.mLanguageQuickSwitchKeyEnabled;
-        this.mInputBoardBarEnabled = dVar.mInputBoardBarEnabled;
+        this.mWidth = params.mKeyboardWidth;
+        this.mHeight = params.mKeyboardHeight;
+        this.mMode = params.mMode;
+        this.mElementId = elementId;
+        this.mEditorInfo = params.mEditorInfo;
+        this.mClobberSettingsKey = params.mClobberSettingsKey;
+        this.mVoiceKeyEnabled = params.mVoiceKeyEnabled;
+        this.mLanguageSwitchKeyEnabled = params.mLanguageSwitchKeyEnabled;
+        this.mLanguageQuickSwitchKeyEnabled = params.mLanguageQuickSwitchKeyEnabled;
+        this.mInputBoardBarEnabled = params.mInputBoardBarEnabled;
         this.mCustomActionLabel = this.mEditorInfo.actionLabel != null ? this.mEditorInfo.actionLabel.toString() : null;
         this.mHashCode = computeHashCode(this);
     }
 
-    private static int computeHashCode(KeyboardId c0977g) {
-        return Arrays.hashCode(new Object[]{Integer.valueOf(c0977g.mElementId), Integer.valueOf(c0977g.mMode), Integer.valueOf(c0977g.mWidth), Integer.valueOf(c0977g.mHeight), Boolean.valueOf(c0977g.passwordInput()), Boolean.valueOf(c0977g.mClobberSettingsKey), Boolean.valueOf(c0977g.mVoiceKeyEnabled), Boolean.valueOf(c0977g.mLanguageSwitchKeyEnabled), Boolean.valueOf(c0977g.mLanguageQuickSwitchKeyEnabled), Boolean.valueOf(c0977g.mInputBoardBarEnabled), Boolean.valueOf(c0977g.isMultiLine()), Integer.valueOf(c0977g.imeAction()), c0977g.mCustomActionLabel, Boolean.valueOf(c0977g.navigateNext()), Boolean.valueOf(c0977g.navigatePrevious()), c0977g.mSubtype, c0977g.mKeyboardLayoutSet});
+    private static int computeHashCode(KeyboardId keyboardId) {
+        return Arrays.hashCode(new Object[]{Integer.valueOf(keyboardId.mElementId), Integer.valueOf(keyboardId.mMode), Integer.valueOf(keyboardId.mWidth), Integer.valueOf(keyboardId.mHeight), Boolean.valueOf(keyboardId.passwordInput()), Boolean.valueOf(keyboardId.mClobberSettingsKey), Boolean.valueOf(keyboardId.mVoiceKeyEnabled), Boolean.valueOf(keyboardId.mLanguageSwitchKeyEnabled), Boolean.valueOf(keyboardId.mLanguageQuickSwitchKeyEnabled), Boolean.valueOf(keyboardId.mInputBoardBarEnabled), Boolean.valueOf(keyboardId.isMultiLine()), Integer.valueOf(keyboardId.imeAction()), keyboardId.mCustomActionLabel, Boolean.valueOf(keyboardId.navigateNext()), Boolean.valueOf(keyboardId.navigatePrevious()), keyboardId.mSubtype, keyboardId.mKeyboardLayoutSet});
     }
 
     /**
@@ -168,11 +168,11 @@ public final class KeyboardId {
         return this.mKeyboardLayoutSet != null ? this.mKeyboardLayoutSet : ResourceLocaleUtils.getKeyboardLayoutSetName(this.mSubtype);
     }
 
-    private boolean equalsInternal(KeyboardId c0977g) {
-        if (c0977g == this) {
+    private boolean equalsInternal(KeyboardId other) {
+        if (other == this) {
             return true;
         }
-        return c0977g.mElementId == this.mElementId && c0977g.mMode == this.mMode && c0977g.mWidth == this.mWidth && c0977g.mHeight == this.mHeight && c0977g.passwordInput() == passwordInput() && c0977g.mClobberSettingsKey == this.mClobberSettingsKey && c0977g.mVoiceKeyEnabled == this.mVoiceKeyEnabled && c0977g.mLanguageSwitchKeyEnabled == this.mLanguageSwitchKeyEnabled && c0977g.mLanguageQuickSwitchKeyEnabled == this.mLanguageQuickSwitchKeyEnabled && c0977g.mInputBoardBarEnabled == this.mInputBoardBarEnabled && c0977g.isMultiLine() == isMultiLine() && c0977g.imeAction() == imeAction() && TextUtils.equals(c0977g.mCustomActionLabel, this.mCustomActionLabel) && c0977g.navigateNext() == navigateNext() && c0977g.navigatePrevious() == navigatePrevious() && c0977g.mSubtype.equals(this.mSubtype) && TextUtils.equals(c0977g.mKeyboardLayoutSet, this.mKeyboardLayoutSet);
+        return other.mElementId == this.mElementId && other.mMode == this.mMode && other.mWidth == this.mWidth && other.mHeight == this.mHeight && other.passwordInput() == passwordInput() && other.mClobberSettingsKey == this.mClobberSettingsKey && other.mVoiceKeyEnabled == this.mVoiceKeyEnabled && other.mLanguageSwitchKeyEnabled == this.mLanguageSwitchKeyEnabled && other.mLanguageQuickSwitchKeyEnabled == this.mLanguageQuickSwitchKeyEnabled && other.mInputBoardBarEnabled == this.mInputBoardBarEnabled && other.isMultiLine() == isMultiLine() && other.imeAction() == imeAction() && TextUtils.equals(other.mCustomActionLabel, this.mCustomActionLabel) && other.navigateNext() == navigateNext() && other.navigatePrevious() == navigatePrevious() && other.mSubtype.equals(this.mSubtype) && TextUtils.equals(other.mKeyboardLayoutSet, this.mKeyboardLayoutSet);
     }
 
     public boolean isAlphabetKeyboard() {
@@ -220,8 +220,8 @@ public final class KeyboardId {
         return InputTypeUtils.getImeOptionsActionIdFromEditorInfo(this.mEditorInfo);
     }
 
-    public boolean equals(Object obj) {
-        return (obj instanceof KeyboardId) && equalsInternal((KeyboardId) obj);
+    public boolean equals(Object other) {
+        return (other instanceof KeyboardId) && equalsInternal((KeyboardId) other);
     }
 
     public int hashCode() {
@@ -250,11 +250,11 @@ public final class KeyboardId {
         return String.format(locale, "[%s %s:%s %dx%d %s %s%s%s%s%s%s%s%s%s%s]", objArr);
     }
 
-    public static boolean equivalentEditorInfo(EditorInfo editorInfo, EditorInfo editorInfo2) {
-        if (editorInfo == null && editorInfo2 == null) {
+    public static boolean equivalentEditorInfo(EditorInfo editorInfo, EditorInfo otherEditorInfo) {
+        if (editorInfo == null && otherEditorInfo == null) {
             return true;
         }
-        return editorInfo != null && editorInfo2 != null && editorInfo.inputType == editorInfo2.inputType && editorInfo.imeOptions == editorInfo2.imeOptions && TextUtils.equals(editorInfo.privateImeOptions, editorInfo2.privateImeOptions);
+        return editorInfo != null && otherEditorInfo != null && editorInfo.inputType == otherEditorInfo.inputType && editorInfo.imeOptions == otherEditorInfo.imeOptions && TextUtils.equals(editorInfo.privateImeOptions, otherEditorInfo.privateImeOptions);
     }
 
     /**
@@ -262,23 +262,23 @@ public final class KeyboardId {
      * "same keyboard?"; two fields with identical options must not be conflated when deciding
      * whether an input-lifecycle callback can be discarded.
      */
-    public static boolean sameEditor(EditorInfo editorInfo, EditorInfo editorInfo2) {
-        if (editorInfo == null && editorInfo2 == null) {
+    public static boolean sameEditor(EditorInfo editorInfo, EditorInfo otherEditorInfo) {
+        if (editorInfo == null && otherEditorInfo == null) {
             return true;
         }
-        return editorInfo != null && editorInfo2 != null
-                && equivalentEditorInfo(editorInfo, editorInfo2)
-                && editorInfo.fieldId == editorInfo2.fieldId
-                && TextUtils.equals(editorInfo.packageName, editorInfo2.packageName);
+        return editorInfo != null && otherEditorInfo != null
+                && equivalentEditorInfo(editorInfo, otherEditorInfo)
+                && editorInfo.fieldId == otherEditorInfo.fieldId
+                && TextUtils.equals(editorInfo.packageName, otherEditorInfo.packageName);
     }
 
-    /** @param i IME action, or 256 for a custom action label */
-    public static String actionName(int i) {
-        return i == 256 ? "actionCustomLabel" : imeActionName(i);
+    /** @param actionId IME action, or 256 for a custom action label */
+    public static String actionName(int actionId) {
+        return actionId == 256 ? "actionCustomLabel" : imeActionName(actionId);
     }
 
-    private static String imeActionName(int i) {
-        int action = i & EditorInfo.IME_MASK_ACTION;
+    private static String imeActionName(int actionId) {
+        int action = actionId & EditorInfo.IME_MASK_ACTION;
         switch (action) {
             case EditorInfo.IME_ACTION_UNSPECIFIED:
                 return "actionUnspecified";

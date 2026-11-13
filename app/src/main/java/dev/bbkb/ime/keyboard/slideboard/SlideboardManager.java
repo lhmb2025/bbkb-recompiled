@@ -116,9 +116,9 @@ public class SlideboardManager implements SettingsManager.OnSettingsChangeListen
         this.quickPhrasesView = null;
     }
 
-    /** @param c0965e the keyboard now shown */
-    public void setKeyboard(Keyboard c0965e) {
-        if (c0965e != null && c0965e.isSlideboardEligible()) {
+    /** @param keyboard the keyboard now shown */
+    public void setKeyboard(Keyboard keyboard) {
+        if (keyboard != null && keyboard.isSlideboardEligible()) {
             SlideboardComponent interfaceC1082d = this.leftComponent;
             if (interfaceC1082d == null || interfaceC1082d.isShowing()) {
                 return;
@@ -129,19 +129,19 @@ public class SlideboardManager implements SettingsManager.OnSettingsChangeListen
         animateTranslation(0.0f, true, true, true);
     }
 
-    /** @param c0804d the new settings */
+    /** @param settingsValues the new settings */
     @Override
-    public void onSettingsValuesChanged(SettingsValues c0804d) {
+    public void onSettingsValuesChanged(SettingsValues settingsValues) {
         applyDividerFill();
-        applySettings(c0804d);
+        applySettings(settingsValues);
         setTranslation(this.translationX, false);
-        this.quickPhrasesController.loadPhrases(c0804d);
-        this.numericSubpanelController.applySettings(c0804d);
+        this.quickPhrasesController.loadPhrases(settingsValues);
+        this.numericSubpanelController.applySettings(settingsValues);
     }
 
-    /** @param c0804d the settings that place the numeric panel left or right */
-    private void applySettings(SettingsValues c0804d) {
-        if (c0804d.slideboardNumericLocation == 0) {
+    /** @param settingsValues the settings that place the numeric panel left or right */
+    private void applySettings(SettingsValues settingsValues) {
+        if (settingsValues.slideboardNumericLocation == 0) {
             this.leftComponent = this.numericSubpanelView;
             this.rightComponent = this.quickPhrasesView;
         } else {
@@ -150,18 +150,18 @@ public class SlideboardManager implements SettingsManager.OnSettingsChangeListen
         }
     }
 
-    /** @param interfaceC1082d the numeric or quick-phrases panel to attach */
-    public void setSlideboardComponent(SlideboardComponent interfaceC1082d) {
-        if (interfaceC1082d instanceof NumericSubpanelKeyboardView) {
-            this.numericSubpanelView = (NumericSubpanelKeyboardView) interfaceC1082d;
+    /** @param slideboardComponent the numeric or quick-phrases panel to attach */
+    public void setSlideboardComponent(SlideboardComponent slideboardComponent) {
+        if (slideboardComponent instanceof NumericSubpanelKeyboardView) {
+            this.numericSubpanelView = (NumericSubpanelKeyboardView) slideboardComponent;
             this.numericSubpanelView.setGestureDetector(this.ime.getOrCreateGestureDetector());
             this.numericSubpanelController.setView(this.numericSubpanelView);
-        } else if (interfaceC1082d instanceof QuickPhrasesView) {
-            this.quickPhrasesView = (QuickPhrasesView) interfaceC1082d;
+        } else if (slideboardComponent instanceof QuickPhrasesView) {
+            this.quickPhrasesView = (QuickPhrasesView) slideboardComponent;
             this.quickPhrasesController.setView(this.quickPhrasesView);
         }
-        this.keyboardFrame.addView((View) interfaceC1082d, 0);
-        interfaceC1082d.setListener(this);
+        this.keyboardFrame.addView((View) slideboardComponent, 0);
+        slideboardComponent.setListener(this);
         applySettings(SettingsManager.getInstance().getSettingsValues());
     }
 
@@ -219,29 +219,29 @@ public class SlideboardManager implements SettingsManager.OnSettingsChangeListen
     }
 
     /**
-     * @param f the keyboard's target x translation
-     * @param z true to animate
+     * @param translationX the keyboard's target x translation
+     * @param animate true to animate
      */
-    public void setTranslation(float f, boolean z) {
-        animateTranslation(f, z, false, false);
+    public void setTranslation(float translationX, boolean animate) {
+        animateTranslation(translationX, animate, false, false);
     }
 
     /**
-     * @param f the keyboard's target x translation
-     * @param z true to animate (a snap), false to set it directly
-     * @param z2 true to move even if the keyboard is not slideboard-eligible
-     * @param z3 true to collapse the panels when the snap ends
+     * @param translationX the keyboard's target x translation
+     * @param animate true to animate (a snap), false to set it directly
+     * @param force true to move even if the keyboard is not slideboard-eligible
+     * @param showOnEnd true to collapse the panels when the snap ends
      */
-    public void animateTranslation(float f, boolean z, boolean z2, boolean z3) {
-        if (f > this.maxTranslation || f < (-this.maxTranslation) || f == this.translationX) {
+    public void animateTranslation(float translationX, boolean animate, boolean force, boolean showOnEnd) {
+        if (translationX > this.maxTranslation || translationX < (-this.maxTranslation) || translationX == this.translationX) {
             return;
         }
         MainKeyboardView mainKeyboardViewM6790T = this.keyboardSwitcher.getMainKeyboardView();
-        if (z2 || (mainKeyboardViewM6790T.getKeyboard() != null && mainKeyboardViewM6790T.getKeyboard().isSlideboardEligible())) {
-            if (this.translationX == 0.0f && f != 0.0f) {
+        if (force || (mainKeyboardViewM6790T.getKeyboard() != null && mainKeyboardViewM6790T.getKeyboard().isSlideboardEligible())) {
+            if (this.translationX == 0.0f && translationX != 0.0f) {
                 this.ime.hideFlickSuggestions();
             }
-            this.translationX = f;
+            this.translationX = translationX;
             // Fully open (either side) or closed: the states that change the UIM's alphabet key.
             if (this.translationX == 0.0f || Math.abs(this.translationX) == this.maxTranslation) {
                 UnifiedInputBoardManager boardManager = this.keyboardSwitcher.getUnifiedInputBoardManager();
@@ -249,32 +249,32 @@ public class SlideboardManager implements SettingsManager.OnSettingsChangeListen
                     boardManager.updateAlphabetKeyForSlideboard();
                 }
             }
-            if (!z) {
-                mainKeyboardViewM6790T.setTranslationX(f);
+            if (!animate) {
+                mainKeyboardViewM6790T.setTranslationX(translationX);
                 if (this.leftComponent != null) {
                     if (SettingsManager.getInstance().getSettingsValues().slideboardStillBoardsEnabled) {
                         this.leftComponent.setXTranslation(0.0f);
                     } else {
-                        this.leftComponent.setXTranslation(f - this.leftComponent.getSlideBoardWidth());
+                        this.leftComponent.setXTranslation(translationX - this.leftComponent.getSlideBoardWidth());
                     }
                 }
                 if (this.rightComponent != null) {
                     if (SettingsManager.getInstance().getSettingsValues().slideboardStillBoardsEnabled) {
                         this.rightComponent.setXTranslation(this.screenWidth / 2.0f);
                     } else {
-                        this.rightComponent.setXTranslation(this.screenWidth + f);
+                        this.rightComponent.setXTranslation(this.screenWidth + translationX);
                     }
                 }
-                if (f < 0.0f) {
+                if (translationX < 0.0f) {
                     this.dividerView.setVisibility(View.VISIBLE);
                     this.dividerView.setScaleX(1.0f);
-                    this.dividerView.setTranslationX(f + this.screenWidth);
+                    this.dividerView.setTranslationX(translationX + this.screenWidth);
                     return;
                 } else {
-                    if (f > 0.0f) {
+                    if (translationX > 0.0f) {
                         this.dividerView.setVisibility(View.VISIBLE);
                         this.dividerView.setScaleX(-1.0f);
-                        this.dividerView.setTranslationX(f - this.dividerView.getWidth());
+                        this.dividerView.setTranslationX(translationX - this.dividerView.getWidth());
                         return;
                     }
                     this.dividerView.setVisibility(View.GONE);
@@ -283,7 +283,7 @@ public class SlideboardManager implements SettingsManager.OnSettingsChangeListen
             }
             int leftWidth = this.leftComponent != null ? this.leftComponent.getSlideBoardWidth() : 0;
             SnapAnimation snap = new SnapAnimation(this.leftComponent, mainKeyboardViewM6790T,
-                    this.rightComponent, f, leftWidth, this.screenWidth, z3);
+                    this.rightComponent, translationX, leftWidth, this.screenWidth, showOnEnd);
             this.activeSnap = snap;
             snap.start();
         }
@@ -340,21 +340,21 @@ public class SlideboardManager implements SettingsManager.OnSettingsChangeListen
         }
 
         /**
-         * @param interfaceC1082d the left panel
+         * @param leftComponent the left panel
          * @param interfaceC1082d2 the right panel
-         * @param f the keyboard's target x translation
-         * @param i the left panel's width
-         * @param i2 the screen width
-         * @param z true to collapse the panels when the snap ends
+         * @param targetTranslation the keyboard's target x translation
+         * @param leftComponentWidth the left panel's width
+         * @param screenWidth the screen width
+         * @param showOnEnd true to collapse the panels when the snap ends
          */
-        SnapAnimation(SlideboardComponent interfaceC1082d, View view, SlideboardComponent interfaceC1082d2, float f, int i, int i2, boolean z) {
-            this.animLeftComponent = interfaceC1082d;
+        SnapAnimation(SlideboardComponent leftComponent, View view, SlideboardComponent interfaceC1082d2, float targetTranslation, int leftComponentWidth, int screenWidth, boolean showOnEnd) {
+            this.animLeftComponent = leftComponent;
             this.keyboardView = view;
             this.animRightComponent = interfaceC1082d2;
-            this.targetTranslation = f;
-            this.leftComponentWidth = i;
-            this.animScreenWidth = i2;
-            this.showOnEnd = z;
+            this.targetTranslation = targetTranslation;
+            this.leftComponentWidth = leftComponentWidth;
+            this.animScreenWidth = screenWidth;
+            this.showOnEnd = showOnEnd;
         }
 
         void cancel() {

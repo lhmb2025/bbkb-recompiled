@@ -85,9 +85,9 @@ public class MultiLanguageRepository {
         }
     }
 
-    /** @param c0711f the keyboard language */
-    public String getLayoutSetFor(LocaleItem c0711f) {
-        return this.localeToLayoutSet.get(c0711f);
+    /** @param localeItem the keyboard language */
+    public String getLayoutSetFor(LocaleItem localeItem) {
+        return this.localeToLayoutSet.get(localeItem);
     }
 
     /** The Latin-script keyboards, the only valid primaries. Extras come from {@link #getAvailableLocalesFor}. */
@@ -186,26 +186,26 @@ public class MultiLanguageRepository {
         return new ArrayList<>(this.configs);
     }
 
-    /** @param c0710e the keyboard config to add */
-    public boolean addConfig(MultiLanguageConfig c0710e) {
-        if (c0710e == null) {
+    /** @param multiLanguageConfig the keyboard config to add */
+    public boolean addConfig(MultiLanguageConfig multiLanguageConfig) {
+        if (multiLanguageConfig == null) {
             return false;
         }
         SharedPreferences defaultSharedPreferences = PrefsManager.INSTANCE.getPrefs(this.context);
         reloadConfigs(defaultSharedPreferences);
-        boolean zAdd = this.configs.add(c0710e);
+        boolean zAdd = this.configs.add(multiLanguageConfig);
         MultiLanguageUtils.saveConfigs(defaultSharedPreferences, this.configs);
         return zAdd;
     }
 
-    /** @param c0710e the keyboard config to remove */
-    public boolean removeConfig(MultiLanguageConfig c0710e) {
-        if (c0710e == null) {
+    /** @param multiLanguageConfig the keyboard config to remove */
+    public boolean removeConfig(MultiLanguageConfig multiLanguageConfig) {
+        if (multiLanguageConfig == null) {
             return false;
         }
         SharedPreferences defaultSharedPreferences = PrefsManager.INSTANCE.getPrefs(this.context);
         reloadConfigs(defaultSharedPreferences);
-        boolean zRemove = this.configs.remove(c0710e);
+        boolean zRemove = this.configs.remove(multiLanguageConfig);
         MultiLanguageUtils.saveConfigs(defaultSharedPreferences, this.configs);
         return zRemove;
     }

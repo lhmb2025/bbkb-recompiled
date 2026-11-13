@@ -17,9 +17,9 @@ public class LongPressHandler extends WeakOwnerHandler<LongPressHandler.KeyPrevi
         void dismissAllKeyPreviews();
     }
 
-    /** @param aVar the owner, held weakly */
-    public LongPressHandler(KeyPreviewDismisser aVar) {
-        super(aVar);
+    /** @param keyPreviewDismisser the owner, held weakly */
+    public LongPressHandler(KeyPreviewDismisser keyPreviewDismisser) {
+        super(keyPreviewDismisser);
     }
 
     @Override
@@ -30,9 +30,9 @@ public class LongPressHandler extends WeakOwnerHandler<LongPressHandler.KeyPrevi
         }
     }
 
-    /** @param j delay in ms */
-    public void postKeyPreviewDismiss(long j, Key key) {
-        sendMessageDelayed(obtainMessage(0, key), j);
+    /** @param delayMillis delay in ms */
+    public void postKeyPreviewDismiss(long delayMillis, Key key) {
+        sendMessageDelayed(obtainMessage(0, key), delayMillis);
     }
 
     private void handleDismiss() {

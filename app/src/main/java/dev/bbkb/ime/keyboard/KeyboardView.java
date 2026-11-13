@@ -1098,11 +1098,11 @@ public class KeyboardView extends View {
         accessibilityNodeInfo.getExtras().putBoolean("bbry.inputmethod.MappedMode", this.mappedMode);
     }
 
-    /** @param str the hint label, or null to draw {@code drawable} */
-    protected void drawHintLabelOrIcon(Key key, String str, Drawable drawable, KeyHintPosition mode, Canvas canvas, Paint paint, KeyDrawParams source) {
+    /** @param hintLabel the hint label, or null to draw {@code drawable} */
+    protected void drawHintLabelOrIcon(Key key, String hintLabel, Drawable drawable, KeyHintPosition mode, Canvas canvas, Paint paint, KeyDrawParams source) {
         float hintX;
         float hintY;
-        if (str == null && drawable == null) {
+        if (hintLabel == null && drawable == null) {
             if (BuildConfig.DEBUG) Log.w("KeyboardView", "Skipping key render: no label or icon (possible legacy theme reference)");
             return;
         }
@@ -1111,14 +1111,14 @@ public class KeyboardView extends View {
             int keyHeight = key.getHeight();
             Rect rect = this.hintBounds;
             rect.setEmpty();
-            boolean hasLabel = !TextUtils.isEmpty(str);
+            boolean hasLabel = !TextUtils.isEmpty(hintLabel);
             boolean hasIcon = drawable != null;
             paint.setColor(source.getHintLabelColor());
             if (hasLabel) {
                 paint.setTypeface(source.typeface);
                 paint.setTextSize(source.hintLetterSizePixels);
                 paint.setTextAlign(Paint.Align.LEFT);
-                paint.getTextBounds(str, 0, str.length(), rect);
+                paint.getTextBounds(hintLabel, 0, hintLabel.length(), rect);
             } else if (hasIcon) {
                 // Every hint icon at the one hint size, whatever its intrinsic size.
                 int hintSize = this.hintIconSize;
@@ -1184,7 +1184,7 @@ public class KeyboardView extends View {
             canvas.translate(hintX, hintY);
             if (hasLabel) {
                 paint.setColor(source.getHintLabelColor());
-                canvas.drawText(str, 0.0f, 0.0f, paint);
+                canvas.drawText(hintLabel, 0.0f, 0.0f, paint);
             } else if (hasIcon) {
                 KeyboardColorManager.INSTANCE.tint(drawable, source.getHintLabelColor());
                 drawable.setBounds(rect);
@@ -1194,17 +1194,17 @@ public class KeyboardView extends View {
         }
     }
 
-    /** @param c1061t the key's draw params */
-    protected void drawPopupHint(Key key, Canvas canvas, Paint paint, KeyDrawParams c1061t) {
-        drawHintLabelOrIcon(key, key.getLongPressLabel(), key.getIcon(this.keyboard.mIconsSet), key.getLongPressKeyHintPosition(), canvas, paint, c1061t);
+    /** @param keyDrawParams the key's draw params */
+    protected void drawPopupHint(Key key, Canvas canvas, Paint paint, KeyDrawParams keyDrawParams) {
+        drawHintLabelOrIcon(key, key.getLongPressLabel(), key.getIcon(this.keyboard.mIconsSet), key.getLongPressKeyHintPosition(), canvas, paint, keyDrawParams);
     }
 
-    /** @param c1061t the key's draw params */
-    protected void drawPopupHintLetter(Key key, Canvas canvas, Paint paint, KeyDrawParams c1061t) {
+    /** @param keyDrawParams the key's draw params */
+    protected void drawPopupHintLetter(Key key, Canvas canvas, Paint paint, KeyDrawParams keyDrawParams) {
         if (TextUtils.isEmpty(this.popupHintLetter)) {
             return;
         }
-        drawHintLabelOrIcon(key, this.popupHintLetter, null, KeyHintPosition.BOTTOM_RIGHT_CORNER, canvas, paint, c1061t);
+        drawHintLabelOrIcon(key, this.popupHintLetter, null, KeyHintPosition.BOTTOM_RIGHT_CORNER, canvas, paint, keyDrawParams);
     }
 
     protected static void drawDrawable(Canvas canvas, Drawable drawable, int x, int y, int width, int height) {

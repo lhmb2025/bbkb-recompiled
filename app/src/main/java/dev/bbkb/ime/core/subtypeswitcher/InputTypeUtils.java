@@ -31,105 +31,105 @@ public final class InputTypeUtils {
         // Static utility, no instances.
     }
 
-    /** @param i an input-type variation */
-    public static boolean isUriVariation(int i) {
-        return i == InputType.TYPE_TEXT_VARIATION_URI;
+    /** @param variation an input-type variation */
+    public static boolean isUriVariation(int variation) {
+        return variation == InputType.TYPE_TEXT_VARIATION_URI;
     }
 
-    /** @param i an input-type variation */
-    public static boolean isPhoneticVariation(int i) {
-        return i == InputType.TYPE_TEXT_VARIATION_PHONETIC;
+    /** @param variation an input-type variation */
+    public static boolean isPhoneticVariation(int variation) {
+        return variation == InputType.TYPE_TEXT_VARIATION_PHONETIC;
     }
 
-    /** @param i an input-type variation */
-    public static boolean isFilterVariation(int i) {
-        return i == InputType.TYPE_TEXT_VARIATION_FILTER;
+    /** @param variation an input-type variation */
+    public static boolean isFilterVariation(int variation) {
+        return variation == InputType.TYPE_TEXT_VARIATION_FILTER;
     }
 
-    /** @param i an EditorInfo input type */
-    public static boolean isVisiblePasswordInputType(int i) {
-        return (i & MASK_CLASS_AND_VARIATION)
+    /** @param inputType an EditorInfo input type */
+    public static boolean isVisiblePasswordInputType(int inputType) {
+        return (inputType & MASK_CLASS_AND_VARIATION)
                 == (InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
     }
 
-    /** @param i an EditorInfo input type */
-    public static boolean isTextClass(int i) {
-        return (i & InputType.TYPE_MASK_CLASS) == InputType.TYPE_CLASS_TEXT;
+    /** @param inputType an EditorInfo input type */
+    public static boolean isTextClass(int inputType) {
+        return (inputType & InputType.TYPE_MASK_CLASS) == InputType.TYPE_CLASS_TEXT;
     }
 
-    /** @param i an EditorInfo input type */
-    public static boolean isDateTimeInputType(int i) {
-        final int classAndVariation = i & MASK_CLASS_AND_VARIATION;
+    /** @param inputType an EditorInfo input type */
+    public static boolean isDateTimeInputType(int inputType) {
+        final int classAndVariation = inputType & MASK_CLASS_AND_VARIATION;
         return classAndVariation == (InputType.TYPE_CLASS_DATETIME | InputType.TYPE_DATETIME_VARIATION_DATE)
                 || classAndVariation == InputType.TYPE_CLASS_DATETIME
                 || classAndVariation == (InputType.TYPE_CLASS_DATETIME | InputType.TYPE_DATETIME_VARIATION_TIME);
     }
 
-    /** @param i an EditorInfo input type */
-    public static boolean isNumberInputType(int i) {
+    /** @param inputType an EditorInfo input type */
+    public static boolean isNumberInputType(int inputType) {
         // The mask strips TYPE_NUMBER_FLAG_SIGNED/DECIMAL, so the two flagged comparisons never match.
-        final int classAndVariation = i & MASK_CLASS_AND_VARIATION;
+        final int classAndVariation = inputType & MASK_CLASS_AND_VARIATION;
         return classAndVariation == (InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_VARIATION_PASSWORD)
                 || classAndVariation == (InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_SIGNED)
                 || classAndVariation == (InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL)
                 || classAndVariation == InputType.TYPE_CLASS_NUMBER;
     }
 
-    /** @param i an EditorInfo input type */
-    public static boolean isPhoneInputType(int i) {
-        return i == InputType.TYPE_CLASS_PHONE;
+    /** @param inputType an EditorInfo input type */
+    public static boolean isPhoneInputType(int inputType) {
+        return inputType == InputType.TYPE_CLASS_PHONE;
     }
 
-    /** @param i an EditorInfo input type */
-    public static boolean isNonMultiLineTextType(int i) {
-        return (i & InputType.TYPE_TEXT_FLAG_IME_MULTI_LINE) == 0
-                && (i & InputType.TYPE_TEXT_FLAG_MULTI_LINE) == 0;
+    /** @param inputType an EditorInfo input type */
+    public static boolean isNonMultiLineTextType(int inputType) {
+        return (inputType & InputType.TYPE_TEXT_FLAG_IME_MULTI_LINE) == 0
+                && (inputType & InputType.TYPE_TEXT_FLAG_MULTI_LINE) == 0;
     }
 
-    /** @param i class plus variation of an input type */
-    private static boolean isWebPasswordInputType(int i) {
-        return i == (InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_WEB_PASSWORD);
+    /** @param inputType class plus variation of an input type */
+    private static boolean isWebPasswordInputType(int inputType) {
+        return inputType == (InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_WEB_PASSWORD);
     }
 
-    /** @param i class plus variation of an input type */
-    private static boolean isNumberPasswordInputType(int i) {
-        return i == (InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_VARIATION_PASSWORD);
+    /** @param inputType class plus variation of an input type */
+    private static boolean isNumberPasswordInputType(int inputType) {
+        return inputType == (InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_VARIATION_PASSWORD);
     }
 
-    /** @param i class plus variation of an input type */
-    private static boolean isTextPasswordInputType(int i) {
-        return i == (InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+    /** @param inputType class plus variation of an input type */
+    private static boolean isTextPasswordInputType(int inputType) {
+        return inputType == (InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
     }
 
-    /** @param i an input-type variation */
-    private static boolean isWebEmailAddressVariation(int i) {
-        return i == InputType.TYPE_TEXT_VARIATION_WEB_EMAIL_ADDRESS;
+    /** @param variation an input-type variation */
+    private static boolean isWebEmailAddressVariation(int variation) {
+        return variation == InputType.TYPE_TEXT_VARIATION_WEB_EMAIL_ADDRESS;
     }
 
-    /** @param i an input-type variation */
-    public static boolean isEmailVariation(int i) {
-        return i == InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS || isWebEmailAddressVariation(i);
+    /** @param variation an input-type variation */
+    public static boolean isEmailVariation(int variation) {
+        return variation == InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS || isWebEmailAddressVariation(variation);
     }
 
-    /** @param i an EditorInfo input type */
-    public static boolean isPasswordInputType(int i) {
-        final int classAndVariation = i & MASK_CLASS_AND_VARIATION;
+    /** @param inputType an EditorInfo input type */
+    public static boolean isPasswordInputType(int inputType) {
+        final int classAndVariation = inputType & MASK_CLASS_AND_VARIATION;
         return isTextPasswordInputType(classAndVariation)
                 || isWebPasswordInputType(classAndVariation)
                 || isNumberPasswordInputType(classAndVariation);
     }
 
-    /** @param i an EditorInfo input type */
-    public static boolean isAnyPasswordInputType(int i) {
-        return isVisiblePasswordInputType(i) || isPasswordInputType(i);
+    /** @param inputType an EditorInfo input type */
+    public static boolean isAnyPasswordInputType(int inputType) {
+        return isVisiblePasswordInputType(inputType) || isPasswordInputType(inputType);
     }
 
-    /** @param i an EditorInfo input type */
-    public static boolean isAutoSpaceFriendlyType(int i) {
-        if (InputType.TYPE_CLASS_TEXT != (i & InputType.TYPE_MASK_CLASS)) {
+    /** @param inputType an EditorInfo input type */
+    public static boolean isAutoSpaceFriendlyType(int inputType) {
+        if (InputType.TYPE_CLASS_TEXT != (inputType & InputType.TYPE_MASK_CLASS)) {
             return false;
         }
-        final int variation = i & InputType.TYPE_MASK_VARIATION;
+        final int variation = inputType & InputType.TYPE_MASK_VARIATION;
         for (final int suppressing : SUPPRESSING_AUTO_SPACES_FIELD_VARIATIONS) {
             if (variation == suppressing) {
                 return false;
@@ -153,12 +153,12 @@ public final class InputTypeUtils {
         return editorInfo.imeOptions & EditorInfo.IME_MASK_ACTION;
     }
 
-    /** @param i an EditorInfo input type */
-    public static boolean isMessagingField(int i) {
-        if (InputType.TYPE_CLASS_TEXT != (i & InputType.TYPE_MASK_CLASS)) {
+    /** @param inputType an EditorInfo input type */
+    public static boolean isMessagingField(int inputType) {
+        if (InputType.TYPE_CLASS_TEXT != (inputType & InputType.TYPE_MASK_CLASS)) {
             return false;
         }
-        final int variation = i & InputType.TYPE_MASK_VARIATION;
+        final int variation = inputType & InputType.TYPE_MASK_VARIATION;
         for (final int message : MESSAGE_FIELD_VARIATIONS) {
             if (variation == message) {
                 return true;

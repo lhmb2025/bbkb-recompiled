@@ -155,10 +155,10 @@ public final class KeyboardBuilder {
 
         public final KeyboardId mKeyboardId;
 
-        /** @param c0977g the id of the keyboard that failed to build */
-        public KeyboardLayoutSetException(Throwable th, KeyboardId c0977g) {
-            super(th);
-            this.mKeyboardId = c0977g;
+        /** @param keyboardId the id of the keyboard that failed to build */
+        public KeyboardLayoutSetException(Throwable cause, KeyboardId keyboardId) {
+            super(cause);
+            this.mKeyboardId = keyboardId;
         }
     }
 
@@ -316,23 +316,23 @@ public final class KeyboardBuilder {
         }
     }
 
-    KeyboardBuilder(Context context, Params dVar) {
+    KeyboardBuilder(Context context, Params params) {
         this.mContext = context;
-        this.mParams = dVar;
+        this.mParams = params;
         this.mPrefs = PrefsManager.INSTANCE.getPrefs(this.mContext);
     }
 
-    /** @param i the requested element id */
-    public Keyboard getKeyboard(int i) {
-        return getKeyboardForShift(i, false);
+    /** @param elementId the requested element id */
+    public Keyboard getKeyboard(int elementId) {
+        return getKeyboardForShift(elementId, false);
     }
 
     /**
-     * @param i the requested element id
-     * @param z true for the physical-keyboard family (pkb)
+     * @param elementId the requested element id
+     * @param pkb true for the physical-keyboard family (pkb)
      */
-    public Keyboard getKeyboardForShift(int i, boolean z) {
-        return getKeyboardInternal(i, z);
+    public Keyboard getKeyboardForShift(int elementId, boolean pkb) {
+        return getKeyboardInternal(elementId, pkb);
     }
 
     /**
@@ -407,17 +407,17 @@ public final class KeyboardBuilder {
     }
 
     /**
-     * @param bVar the layout set element to build from
-     * @param c0977g the id the keyboard gets
+     * @param elementParams the layout set element to build from
+     * @param keyboardId the id the keyboard gets
      */
-    private Keyboard buildKeyboard(ElementParams bVar, KeyboardId c0977g) {
-        if (bVar == null) {
-            throw new IllegalStateException("No keyboard layout found for configuration: " + c0977g);
+    private Keyboard buildKeyboard(ElementParams elementParams, KeyboardId keyboardId) {
+        if (elementParams == null) {
+            throw new IllegalStateException("No keyboard layout found for configuration: " + keyboardId);
         }
         
         Keyboard c0965e = null;
-        boolean zM6720l = c0977g.isTypingKeyboard();
-        final KeyboardCacheKey cacheKey = zM6720l ? new KeyboardCacheKey(c0977g) : null;
+        boolean zM6720l = keyboardId.isTypingKeyboard();
+        final KeyboardCacheKey cacheKey = zM6720l ? new KeyboardCacheKey(keyboardId) : null;
         if (cacheKey != null) {
             synchronized (sKeyboardCache) {
                 purgeClearedKeyboards();
@@ -426,26 +426,26 @@ public final class KeyboardBuilder {
             }
         }
         if (c0965e != null) {
-            if ((c0977g.mElementId == 8 || c0977g.mElementId == 108) && this.mCustomSymbolPage != 0) {
-                applySymbolList(c0965e, loadCustomSymbolList(c0977g.mElementId == 108),
+            if ((keyboardId.mElementId == 8 || keyboardId.mElementId == 108) && this.mCustomSymbolPage != 0) {
+                applySymbolList(c0965e, loadCustomSymbolList(keyboardId.mElementId == 108),
                         this.mCustomSymbolPage);
             }
             return c0965e;
         }
         KeyboardXMLParser c1022ae = new KeyboardXMLParser(this.mContext, new KeyboardParams());
-        if (c0977g.isAlphabetKeyboard()) {
+        if (keyboardId.isAlphabetKeyboard()) {
             c1022ae.setUniqueKeysCache(sKeysCache);
         }
-        c1022ae.load(bVar.mKeyboardXmlId, c0977g);
-        c1022ae.setAllowRedundantMoreKeys(bVar.mProximityCharsCorrectionEnabled);
+        c1022ae.load(elementParams.mKeyboardXmlId, keyboardId);
+        c1022ae.setAllowRedundantMoreKeys(elementParams.mProximityCharsCorrectionEnabled);
         Keyboard c0965eMo5338b = c1022ae.build();
         if (cacheKey != null) {
             synchronized (sKeyboardCache) {
                 sKeyboardCache.put(cacheKey, new KeyboardReference(cacheKey, c0965eMo5338b));
             }
         }
-        if (c0977g.mElementId == 8 || c0977g.mElementId == 108) {
-            applySymbolList(c0965eMo5338b, loadCustomSymbolList(c0977g.mElementId == 108),
+        if (keyboardId.mElementId == 8 || keyboardId.mElementId == 108) {
+            applySymbolList(c0965eMo5338b, loadCustomSymbolList(keyboardId.mElementId == 108),
                     this.mCustomSymbolPage);
         }
         return c0965eMo5338b;
@@ -508,32 +508,32 @@ public final class KeyboardBuilder {
     }
 
     /**
-     * @param str the symbol to put on the key
-     * @param z true for a letter on the letter page (upper-cased spec, no case long-press)
-     * @param c0965e the keyboard the key belongs to
+     * @param label the symbol to put on the key
+     * @param needsToUpperCase true for a letter on the letter page (upper-cased spec, no case long-press)
+     * @param keyboard the keyboard the key belongs to
      */
-    private Key createCustomKey(Key key, String str, boolean z, Keyboard c0965e) {
-        Key key2 = new Key(new MoreKeySpec(str, z, c0965e.mId.mLocale), MoreKeySpec.getEmpty(), KeyHintPosition.HIDDEN, key.getHintLabel(), 0, 1, key.getX(), key.getY(), key.getWidth() + c0965e.mHorizontalGap, key.getHeight() + c0965e.mVerticalGap, c0965e.mHorizontalGap, c0965e.mVerticalGap, "customSymbolKeyStyle", getMoreKeysForCustomKey(str, !z, c0965e.mId.mLocale), null, key.getMoreKeysFlags(), 8, key.getScanCode());
-        if (str.equals("\u0000")) {
+    private Key createCustomKey(Key key, String label, boolean needsToUpperCase, Keyboard keyboard) {
+        Key key2 = new Key(new MoreKeySpec(label, needsToUpperCase, keyboard.mId.mLocale), MoreKeySpec.getEmpty(), KeyHintPosition.HIDDEN, key.getHintLabel(), 0, 1, key.getX(), key.getY(), key.getWidth() + keyboard.mHorizontalGap, key.getHeight() + keyboard.mVerticalGap, keyboard.mHorizontalGap, keyboard.mVerticalGap, "customSymbolKeyStyle", getMoreKeysForCustomKey(label, !needsToUpperCase, keyboard.mId.mLocale), null, key.getMoreKeysFlags(), 8, key.getScanCode());
+        if (label.equals("\u0000")) {
             key2.setActive(false);
         }
         return key2;
     }
 
     /**
-     * @param str the key's symbol
-     * @param z true to upper-case a letter's long-press spec
+     * @param label the key's symbol
+     * @param needsToUpperCase true to upper-case a letter's long-press spec
      */
-    private MoreKeySpec[] getMoreKeysForCustomKey(String str, boolean z, Locale locale) {
-        char[] charArray = str.toCharArray();
+    private MoreKeySpec[] getMoreKeysForCustomKey(String label, boolean needsToUpperCase, Locale locale) {
+        char[] charArray = label.toCharArray();
         if (charArray.length == 0) {
             return null;
         }
         if (charArray.length > 1) {
-            return getEmojiVariantMoreKeys(str, locale);
+            return getEmojiVariantMoreKeys(label, locale);
         }
         if (Character.isLetter(charArray[0])) {
-            return new MoreKeySpec[]{new MoreKeySpec(str, z, locale)};
+            return new MoreKeySpec[]{new MoreKeySpec(label, needsToUpperCase, locale)};
         }
         Keyboard c0965eM6734a = getKeyboardForShift(5, false);
         Key keyM6604b = c0965eM6734a.getKeyByCode(charArray[0]);
@@ -553,13 +553,13 @@ public final class KeyboardBuilder {
     /**
      * Skin-tone variants (from emojibase, as on the emoji board) for a custom symbol key holding an
      * emoji, or null. The data set loads only when an emoji key is present.
-     * @param str the key's text
+     * @param emoji the key's text
      */
-    private MoreKeySpec[] getEmojiVariantMoreKeys(String str, Locale locale) {
-        if (!EmojiTextAnalyzer.isEmoji(str)) {
+    private MoreKeySpec[] getEmojiVariantMoreKeys(String emoji, Locale locale) {
+        if (!EmojiTextAnalyzer.isEmoji(emoji)) {
             return null;
         }
-        List<String> variants = EmojibaseDataProvider.getSharedLoaded(this.mContext).getSkinToneVariants(str);
+        List<String> variants = EmojibaseDataProvider.getSharedLoaded(this.mContext).getSkinToneVariants(emoji);
         if (variants.isEmpty()) {
             return null;
         }
@@ -621,13 +621,13 @@ public final class KeyboardBuilder {
         }
 
         /**
-         * @param i keyboard width in pixels
-         * @param i2 keyboard height in pixels
+         * @param keyboardWidth keyboard width in pixels
+         * @param keyboardHeight keyboard height in pixels
          */
-        public Builder setKeyboardGeometry(int i, int i2) {
+        public Builder setKeyboardGeometry(int keyboardWidth, int keyboardHeight) {
             Params dVar = this.mParams;
-            dVar.mKeyboardWidth = i;
-            dVar.mKeyboardHeight = i2;
+            dVar.mKeyboardWidth = keyboardWidth;
+            dVar.mKeyboardHeight = keyboardHeight;
             return this;
         }
 
@@ -664,39 +664,39 @@ public final class KeyboardBuilder {
             return this;
         }
 
-        /** @param z true to enable the split layout */
-        public Builder setSplitLayoutEnabled(boolean z) {
-            this.mParams.mIsSplitLayout = z;
+        /** @param enabled true to enable the split layout */
+        public Builder setSplitLayoutEnabled(boolean enabled) {
+            this.mParams.mIsSplitLayout = enabled;
             return this;
         }
 
-        /** @param z true to show the voice input key */
-        public Builder setVoiceInputKeyEnabled(boolean z) {
-            this.mParams.mVoiceKeyEnabled = z;
+        /** @param enabled true to show the voice input key */
+        public Builder setVoiceInputKeyEnabled(boolean enabled) {
+            this.mParams.mVoiceKeyEnabled = enabled;
             return this;
         }
 
-        /** @param z true to show the language switch key */
-        public Builder setLanguageSwitchKeyEnabled(boolean z) {
-            this.mParams.mLanguageSwitchKeyEnabled = z;
+        /** @param enabled true to show the language switch key */
+        public Builder setLanguageSwitchKeyEnabled(boolean enabled) {
+            this.mParams.mLanguageSwitchKeyEnabled = enabled;
             return this;
         }
 
-        /** @param z true to show the language quick switch key */
-        public Builder setLanguageQuickSwitchKeyEnabled(boolean z) {
-            this.mParams.mLanguageQuickSwitchKeyEnabled = z;
+        /** @param enabled true to show the language quick switch key */
+        public Builder setLanguageQuickSwitchKeyEnabled(boolean enabled) {
+            this.mParams.mLanguageQuickSwitchKeyEnabled = enabled;
             return this;
         }
 
-        /** @param z true to show the input board bar */
-        public Builder setInputBoardBarEnabled(boolean z) {
-            this.mParams.mInputBoardBarEnabled = z;
+        /** @param enabled true to show the input board bar */
+        public Builder setInputBoardBarEnabled(boolean enabled) {
+            this.mParams.mInputBoardBarEnabled = enabled;
             return this;
         }
 
-        /** @param i the script id (latin = 14) */
-        public void setSupportedScript(int i) {
-            this.mParams.mSupportedScriptId = i;
+        /** @param scriptId the script id (latin = 14) */
+        public void setSupportedScript(int scriptId) {
+            this.mParams.mSupportedScriptId = scriptId;
         }
 
         public KeyboardBuilder build() throws Resources.NotFoundException {
@@ -858,10 +858,10 @@ public final class KeyboardBuilder {
         this.mCustomSymbolPage = page;
     }
 
-    /** @param i the element id being built */
-    private void updateLanguageQuickSwitchKey(int i) {
-        if (i != 38) {
-            switch (i) {
+    /** @param elementId the element id being built */
+    private void updateLanguageQuickSwitchKey(int elementId) {
+        if (elementId != 38) {
+            switch (elementId) {
                 case 5:
                 case 6:
                 case 7:

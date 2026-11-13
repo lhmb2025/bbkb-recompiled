@@ -49,8 +49,8 @@ public class ManifestParser {
         }
     }
 
-    /** @param str source file name, for the error message */
-    static LanguagePackInfo parseLanguagePackEntry(JsonReader jsonReader, String str) throws IOException {
+    /** @param fileName source file name, for the error message */
+    static LanguagePackInfo parseLanguagePackEntry(JsonReader jsonReader, String fileName) throws IOException {
         LanguagePackInfo packInfo = new LanguagePackInfo();
         jsonReader.beginObject();
         while (jsonReader.hasNext()) {
@@ -78,6 +78,6 @@ public class ManifestParser {
         if (packInfo.isValid()) {
             return packInfo;
         }
-        throw new IOException("Encountered incomplete language specification in file " + str);
+        throw new IOException("Encountered incomplete language specification in file " + fileName);
     }
 }

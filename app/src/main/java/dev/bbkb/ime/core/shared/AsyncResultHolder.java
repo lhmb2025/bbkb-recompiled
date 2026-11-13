@@ -22,9 +22,9 @@ public class AsyncResultHolder<E> {
         }
     }
 
-    public E get(E e, long j) {
+    public E get(E e, long timeoutMillis) {
         try {
-            return this.latch.await(j, TimeUnit.MILLISECONDS) ? this.result : e;
+            return this.latch.await(timeoutMillis, TimeUnit.MILLISECONDS) ? this.result : e;
         } catch (InterruptedException unused) {
             return e;
         }

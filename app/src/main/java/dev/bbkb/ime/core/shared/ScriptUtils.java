@@ -112,69 +112,69 @@ public final class ScriptUtils {
     }
 
     /**
-     * @param i code point
-     * @param i2 script code from {@link #getScript}
+     * @param codePoint code point
+     * @param scriptId script code from {@link #getScript}
      */
-    public static boolean isLetterPartOfScript(int i, int i2) {
-        switch (i2) {
+    public static boolean isLetterPartOfScript(int codePoint, int scriptId) {
+        switch (scriptId) {
             case -1:
                 return true;
             case 0:
-                return (i >= 1536 && i <= 1791) || (i >= 1872 && i <= 1983) || ((i >= 2208 && i <= 2303) || ((i >= 64336 && i <= 65023) || (i >= 65136 && i <= 65279)));
+                return (codePoint >= 1536 && codePoint <= 1791) || (codePoint >= 1872 && codePoint <= 1983) || ((codePoint >= 2208 && codePoint <= 2303) || ((codePoint >= 64336 && codePoint <= 65023) || (codePoint >= 65136 && codePoint <= 65279)));
             case 1:
-                return (i >= 1328 && i <= 1423) || (i >= 64275 && i <= 64279);
+                return (codePoint >= 1328 && codePoint <= 1423) || (codePoint >= 64275 && codePoint <= 64279);
             case 2:
-                return i >= 2432 && i <= 2559;
+                return codePoint >= 2432 && codePoint <= 2559;
             case 3:
-                return i >= 1024 && i <= 1327 && Character.isLetter(i);
+                return codePoint >= 1024 && codePoint <= 1327 && Character.isLetter(codePoint);
             case 4:
-                return i >= 2304 && i <= 2431;
+                return codePoint >= 2304 && codePoint <= 2431;
             case 5:
-                return (i >= 4256 && i <= 4351) || (i >= 11520 && i <= 11567);
+                return (codePoint >= 4256 && codePoint <= 4351) || (codePoint >= 11520 && codePoint <= 11567);
             case 6:
-                return (i >= 880 && i <= 1023) || (i >= 7936 && i <= 8191) || i == 242;
+                return (codePoint >= 880 && codePoint <= 1023) || (codePoint >= 7936 && codePoint <= 8191) || codePoint == 242;
             case 7:
-                return (i >= 19968 && i <= 40959) || (i >= 12544 && i <= 12591);
+                return (codePoint >= 19968 && codePoint <= 40959) || (codePoint >= 12544 && codePoint <= 12591);
             case 8:
-                return (i >= 44032 && i <= 55203) || (i >= 4352 && i <= 4607) || ((i >= 12592 && i <= 12687) || ((i >= 43360 && i <= 43391) || (i >= 55216 && i <= 55295)));
+                return (codePoint >= 44032 && codePoint <= 55203) || (codePoint >= 4352 && codePoint <= 4607) || ((codePoint >= 12592 && codePoint <= 12687) || ((codePoint >= 43360 && codePoint <= 43391) || (codePoint >= 55216 && codePoint <= 55295)));
             case 9:
-                return (i >= 1424 && i <= 1535) || (i >= 64285 && i <= 64335);
+                return (codePoint >= 1424 && codePoint <= 1535) || (codePoint >= 64285 && codePoint <= 64335);
             case 10:
-                return (i <= 687 && Character.isLetter(i)) || (i >= 12352 && i <= 12447) || ((i >= 12448 && i <= 12543) || ((i >= 12784 && i <= 12799) || ((i >= 12800 && i <= 13055) || ((i >= 13056 && i <= 13311) || ((i >= 65280 && i <= 65519) || ((i >= 110592 && i <= 110847) || ((i >= 127488 && i <= 127743) || (i >= 12288 && i <= 12351))))))));
+                return (codePoint <= 687 && Character.isLetter(codePoint)) || (codePoint >= 12352 && codePoint <= 12447) || ((codePoint >= 12448 && codePoint <= 12543) || ((codePoint >= 12784 && codePoint <= 12799) || ((codePoint >= 12800 && codePoint <= 13055) || ((codePoint >= 13056 && codePoint <= 13311) || ((codePoint >= 65280 && codePoint <= 65519) || ((codePoint >= 110592 && codePoint <= 110847) || ((codePoint >= 127488 && codePoint <= 127743) || (codePoint >= 12288 && codePoint <= 12351))))))));
             case 11:
-                return i >= 3200 && i <= 3327;
+                return codePoint >= 3200 && codePoint <= 3327;
             case 12:
-                return (i >= 6016 && i <= 6143) || (i >= 6624 && i <= 6655);
+                return (codePoint >= 6016 && codePoint <= 6143) || (codePoint >= 6624 && codePoint <= 6655);
             case 13:
-                return i >= 3712 && i <= 3839;
+                return codePoint >= 3712 && codePoint <= 3839;
             case 14:
-                return i <= 687 && Character.isLetter(i);
+                return codePoint <= 687 && Character.isLetter(codePoint);
             case 15:
-                return i >= 3328 && i <= 3455;
+                return codePoint >= 3328 && codePoint <= 3455;
             case 16:
-                return (i >= 4096 && i <= 4255) || (i >= 43616 && i <= 43647) || (i >= 43488 && i <= 43519);
+                return (codePoint >= 4096 && codePoint <= 4255) || (codePoint >= 43616 && codePoint <= 43647) || (codePoint >= 43488 && codePoint <= 43519);
             case 17:
-                return i >= 3456 && i <= 3583;
+                return codePoint >= 3456 && codePoint <= 3583;
             case 18:
-                return i >= 2944 && i <= 3071;
+                return codePoint >= 2944 && codePoint <= 3071;
             case 19:
-                return i >= 3072 && i <= 3199;
+                return codePoint >= 3072 && codePoint <= 3199;
             case 20:
-                return i >= 3584 && i <= 3711;
+                return codePoint >= 3584 && codePoint <= 3711;
             case 21:
-                return (i <= 687 && Character.isLetter(i)) || i == 769 || i == 768 || i == 777 || i == 771 || i == 803;
+                return (codePoint <= 687 && Character.isLetter(codePoint)) || codePoint == 769 || codePoint == 768 || codePoint == 777 || codePoint == 771 || codePoint == 803;
             case 22:
-                return i >= 2688 && i <= 2815;                                   // Gujarati
+                return codePoint >= 2688 && codePoint <= 2815;                                   // Gujarati
             case 23:
-                return i >= 2560 && i <= 2687;                                   // Gurmukhi
+                return codePoint >= 2560 && codePoint <= 2687;                                   // Gurmukhi
             case 24:
-                return i >= 2816 && i <= 2943;                                   // Oriya
+                return codePoint >= 2816 && codePoint <= 2943;                                   // Oriya
             case 25:
-                return (i >= 4608 && i <= 5023) || (i >= 11648 && i <= 11743);  // Ethiopic + supplement + extended
+                return (codePoint >= 4608 && codePoint <= 5023) || (codePoint >= 11648 && codePoint <= 11743);  // Ethiopic + supplement + extended
             case 26:
-                return i >= 3840 && i <= 4095;                                   // Tibetan
+                return codePoint >= 3840 && codePoint <= 4095;                                   // Tibetan
             default:
-                throw new RuntimeException("Impossible value of script: " + i2);
+                throw new RuntimeException("Impossible value of script: " + scriptId);
         }
     }
 
@@ -183,8 +183,8 @@ public final class ScriptUtils {
         return getScript(LocaleUtils.languageCode(locale));
     }
 
-    public static boolean isUnsupportedScript(String str) {
+    public static boolean isUnsupportedScript(String language) {
         Integer num;
-        return str == null || str.isEmpty() || (num = SCRIPT_MAP.get(str)) == null || num.intValue() == 14 || num.intValue() == 3 || num.intValue() == 1 || num.intValue() == 6 || num.intValue() == 21;
+        return language == null || language.isEmpty() || (num = SCRIPT_MAP.get(language)) == null || num.intValue() == 14 || num.intValue() == 3 || num.intValue() == 1 || num.intValue() == 6 || num.intValue() == 21;
     }
 }

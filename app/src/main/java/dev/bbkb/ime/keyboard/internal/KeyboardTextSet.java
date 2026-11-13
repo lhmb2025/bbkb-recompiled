@@ -221,16 +221,16 @@ public final class KeyboardTextSet {
     }
 
     /**
-     * @param str text name from {@link #NAMES}
-     * @param strArr locale table; null slots fall back to TEXTS_DEFAULT
+     * @param name text name from {@link #NAMES}
+     * @param textsTable locale table; null slots fall back to TEXTS_DEFAULT
      */
-    public static String getTextInternal(String str, String[] strArr) {
-        Integer num = sNameToIndexesMap.get(str);
+    public static String getTextInternal(String name, String[] textsTable) {
+        Integer num = sNameToIndexesMap.get(name);
         if (num == null) {
-            throw new RuntimeException("Unknown text name=" + str + " locale=" + sTextsTableToLocaleMap.get(strArr));
+            throw new RuntimeException("Unknown text name=" + name + " locale=" + sTextsTableToLocaleMap.get(textsTable));
         }
         int iIntValue = num.intValue();
-        String str2 = iIntValue < strArr.length ? strArr[iIntValue] : null;
+        String str2 = iIntValue < textsTable.length ? textsTable[iIntValue] : null;
         if (str2 != null) {
             return str2;
         }
@@ -240,7 +240,7 @@ public final class KeyboardTextSet {
                 return strArr2[iIntValue];
             }
         }
-        throw new RuntimeException("Illegal index=" + iIntValue + " for name=" + str + " locale=" + sTextsTableToLocaleMap.get(strArr));
+        throw new RuntimeException("Illegal index=" + iIntValue + " for name=" + name + " locale=" + sTextsTableToLocaleMap.get(textsTable));
     }
 
     public static String[] getTextsTable(Locale locale) {

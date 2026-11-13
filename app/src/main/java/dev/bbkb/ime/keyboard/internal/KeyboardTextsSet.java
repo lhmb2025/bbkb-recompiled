@@ -44,7 +44,7 @@ public final class KeyboardTextsSet {
         final Resources resources = context.getResources();
         RunInLocale<Void> loader = new RunInLocale<Void>() {
             @Override
-            public Void job(Resources resources2) {
+            public Void job(Resources resources) {
                 KeyboardTextsSet.this.loadStringResourcesInternal(resources);
                 return null;
             }
@@ -66,52 +66,52 @@ public final class KeyboardTextsSet {
         }
     }
 
-    public String getText(String str) {
-        return getTextInternal(str, this.mTextsTable);
+    public String getText(String name) {
+        return getTextInternal(name, this.mTextsTable);
     }
 
     /**
-     * @param str text name
-     * @param strArr locale table to look in after the string resources
+     * @param name text name
+     * @param textsTable locale table to look in after the string resources
      */
-    public String getTextInternal(String str, String[] strArr) {
-        String str2 = this.mResourceNameToValueMap.get(str);
-        return str2 != null ? str2 : KeyboardTextSet.getTextInternal(str, strArr);
+    public String getTextInternal(String name, String[] textsTable) {
+        String str2 = this.mResourceNameToValueMap.get(name);
+        return str2 != null ? str2 : KeyboardTextSet.getTextInternal(name, textsTable);
     }
 
-    private static int searchTextNameEnd(String str, int i) {
-        int length = str.length();
-        while (i < length) {
-            char cCharAt = str.charAt(i);
+    private static int searchTextNameEnd(String text, int start) {
+        int length = text.length();
+        while (start < length) {
+            char cCharAt = text.charAt(start);
             if ((cCharAt < 'a' || cCharAt > 'z') && cCharAt != '_' && (cCharAt < '0' || cCharAt > '9')) {
-                return i;
+                return start;
             }
-            i++;
+            start++;
         }
         return length;
     }
 
-    public String getResolvedText(String str) {
-        return resolveTextReferences(str, false);
+    public String getResolvedText(String text) {
+        return resolveTextReferences(text, false);
     }
 
     /**
      * Resolves {@code !text/name} references.
-     * @param str text that may hold references
-     * @param z true to also append the additional locales' results, comma-separated
+     * @param text text that may hold references
+     * @param withAdditionalTexts true to also append the additional locales' results, comma-separated
      */
-    public String resolveTextReferences(String str, boolean z) {
-        if (TextUtils.isEmpty(str)) {
+    public String resolveTextReferences(String text, boolean withAdditionalTexts) {
+        if (TextUtils.isEmpty(text)) {
             return null;
         }
-        String strM7256b = resolveTextReferenceInTable(str, this.mTextsTable);
-        if (!z) {
+        String strM7256b = resolveTextReferenceInTable(text, this.mTextsTable);
+        if (!withAdditionalTexts) {
             return strM7256b;
         }
         StringBuilder sb = strM7256b != null ? new StringBuilder(strM7256b) : null;
         Iterator<String[]> it = this.mAdditionalTextsTables.iterator();
         while (it.hasNext()) {
-            String strM7256b2 = resolveTextReferenceInTable(str, it.next());
+            String strM7256b2 = resolveTextReferenceInTable(text, it.next());
             if (strM7256b2 != null) {
                 if (sb == null) {
                     sb = new StringBuilder();
@@ -123,9 +123,9 @@ public final class KeyboardTextsSet {
         return sb != null ? sb.toString() : strM7256b;
     }
 
-    private String resolveTextReferenceInTable(String str, String[] strArr) {
+    private String resolveTextReferenceInTable(String text, String[] textsTable) {
         StringBuilder sb;
-        String string = str;
+        String string = text;
         int i = 0;
         do {
             i++;
@@ -146,7 +146,7 @@ public final class KeyboardTextsSet {
                     }
                     int i3 = i2 + 6;
                     int iM7255a = searchTextNameEnd(string, i3);
-                    sb.append(getTextInternal(string.substring(i3, iM7255a), strArr));
+                    sb.append(getTextInternal(string.substring(i3, iM7255a), textsTable));
                     i2 = iM7255a - 1;
                 } else if (cCharAt == '\\') {
                     if (sb != null) {

@@ -98,15 +98,15 @@ class DictionaryLoaderTest {
     private fun dict(initialized: Boolean = true): Dictionary =
         mock(Dictionary::class.java).also { `when`(it.isInitialized).thenReturn(initialized) }
 
-    private fun primaryWillCreate(locale: Locale?, d: Dictionary) =
-        factoryStatic.`when`<Dictionary> { DictionaryFactory.createDictionary(ctx, locale) }.thenReturn(d)
+    private fun primaryWillCreate(locale: Locale?, dictionary: Dictionary) =
+        factoryStatic.`when`<Dictionary> { DictionaryFactory.createDictionary(ctx, locale) }.thenReturn(dictionary)
 
-    private fun secondaryWillCreate(locale: Locale?, d: Dictionary) =
-        factoryStatic.`when`<Dictionary> { DictionaryFactory.createDictionary(ctx, locale, true) }.thenReturn(d)
+    private fun secondaryWillCreate(locale: Locale?, dictionary: Dictionary) =
+        factoryStatic.`when`<Dictionary> { DictionaryFactory.createDictionary(ctx, locale, true) }.thenReturn(dictionary)
 
-    /** Loads [d] for [locale] through the IME path and drains the executor. */
-    private fun loaded(locale: Locale, d: Dictionary) {
-        primaryWillCreate(locale, d)
+    /** Loads [dictionary] for [locale] through the IME path and drains the executor. */
+    private fun loaded(locale: Locale, dictionary: Dictionary) {
+        primaryWillCreate(locale, dictionary)
         loader.initDictionary(ctx, locale, false, false, callback)
         executor.drain()
     }

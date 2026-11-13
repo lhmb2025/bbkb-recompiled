@@ -250,25 +250,25 @@ public final class SuggestionEngine {
         callback.onSuggestionsReady(new SuggestedWords(predictions, true, false, suggestionType));
     }
 
-    static SuggestedWords.SuggestedWordInfo transformCase(SuggestedWords.SuggestedWordInfo suggestedWordInfoVar, Locale locale, boolean allCaps, boolean firstCaps, int trailingApostrophes) {
+    static SuggestedWords.SuggestedWordInfo transformCase(SuggestedWords.SuggestedWordInfo suggestedWordInfo, Locale locale, boolean allCaps, boolean firstCaps, int trailingApostrophes) {
         // Hot path: return the input when nothing changes. `completionInfo` is in the guard
         // because the copying constructor drops it.
         if (!allCaps && !firstCaps && trailingApostrophes == 0
-                && suggestedWordInfoVar.completionInfo == null) {
-            return suggestedWordInfoVar;
+                && suggestedWordInfo.completionInfo == null) {
+            return suggestedWordInfo;
         }
-        StringBuilder sb = new StringBuilder(suggestedWordInfoVar.word.length());
+        StringBuilder sb = new StringBuilder(suggestedWordInfo.word.length());
         if (allCaps) {
-            sb.append(suggestedWordInfoVar.word.toUpperCase(locale));
+            sb.append(suggestedWordInfo.word.toUpperCase(locale));
         } else if (firstCaps) {
-            sb.append(capitalizeFirstCodePoint(suggestedWordInfoVar.word, locale));
+            sb.append(capitalizeFirstCodePoint(suggestedWordInfo.word, locale));
         } else {
-            sb.append(suggestedWordInfoVar.word);
+            sb.append(suggestedWordInfo.word);
         }
-        for (int i2 = (trailingApostrophes - (-1 == suggestedWordInfoVar.word.indexOf(39) ? 0 : 1)) - 1; i2 >= 0; i2--) {
+        for (int i2 = (trailingApostrophes - (-1 == suggestedWordInfo.word.indexOf(39) ? 0 : 1)) - 1; i2 >= 0; i2--) {
             sb.appendCodePoint(39);
         }
-        return new SuggestedWords.SuggestedWordInfo(sb.toString(), suggestedWordInfoVar.score, suggestedWordInfoVar.kindAndFlags, suggestedWordInfoVar.sourceDictionary, suggestedWordInfoVar.indexInDictionary, suggestedWordInfoVar.indexInSuggestions, suggestedWordInfoVar.nuanceWordInfo);
+        return new SuggestedWords.SuggestedWordInfo(sb.toString(), suggestedWordInfo.score, suggestedWordInfo.kindAndFlags, suggestedWordInfo.sourceDictionary, suggestedWordInfo.indexInDictionary, suggestedWordInfo.indexInSuggestions, suggestedWordInfo.nuanceWordInfo);
     }
 
     /**

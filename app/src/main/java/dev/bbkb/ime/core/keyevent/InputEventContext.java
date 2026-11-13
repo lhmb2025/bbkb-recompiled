@@ -37,12 +37,12 @@ public class InputEventContext {
         this.symbolPageOrder = symbolPageOrder;
     }
 
-    public void setInputSource(InputSource enumC0690f) {
-        this.inputSource = enumC0690f;
+    public void setInputSource(InputSource inputSource) {
+        this.inputSource = inputSource;
     }
 
-    public void setPendingEditorAction(boolean z) {
-        this.pendingEditorAction = z;
+    public void setPendingEditorAction(boolean pendingEditorAction) {
+        this.pendingEditorAction = pendingEditorAction;
     }
 
     public boolean hasPendingEditorAction() {
@@ -53,16 +53,16 @@ public class InputEventContext {
         return this.inputSource;
     }
 
-    public void setShiftPressed(boolean z) {
-        this.shiftPressed = z;
+    public void setShiftPressed(boolean shiftPressed) {
+        this.shiftPressed = shiftPressed;
     }
 
     public boolean isShiftPressed() {
         return this.shiftPressed;
     }
 
-    public void setUiUpdateMode(int i) {
-        this.uiUpdateMode = Math.max(this.uiUpdateMode, i);
+    public void setUiUpdateMode(int uiUpdateMode) {
+        this.uiUpdateMode = Math.max(this.uiUpdateMode, uiUpdateMode);
     }
 
     public int getUiUpdateMode() {

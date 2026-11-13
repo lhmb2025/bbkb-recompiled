@@ -180,9 +180,9 @@ public final class EmojiPalettesView extends LinearLayout implements TabLayout.O
         this(context, attributeSet, R.attr.emojiPalettesViewStyle);
     }
 
-    /** @param i default style attribute */
-    public EmojiPalettesView(Context context, AttributeSet attributeSet, int i) throws Resources.NotFoundException {
-        super(context, attributeSet, i);
+    /** @param defStyleAttr default style attribute */
+    public EmojiPalettesView(Context context, AttributeSet attributeSet, int defStyleAttr) throws Resources.NotFoundException {
+        super(context, attributeSet, defStyleAttr);
         this.currentPagePosition = 0;
         this.keyboardActionListener = KeyboardActionListenerInterface.EMPTY;
         Resources resources = context.getResources();
@@ -194,7 +194,7 @@ public final class EmojiPalettesView extends LinearLayout implements TabLayout.O
                 SubtypeManager.getInstance().getEmojiSubtype(),
                 ResourceConfigManager.getScreenWidthPixels(resources),
                 this.layoutParams.pagerHeight);
-        TypedArray typedArrayObtainStyledAttributes2 = context.obtainStyledAttributes(attributeSet, R.styleable.EmojiPalettesView, i, R.style.EmojiPalettesView);
+        TypedArray typedArrayObtainStyledAttributes2 = context.obtainStyledAttributes(attributeSet, R.styleable.EmojiPalettesView, defStyleAttr, R.style.EmojiPalettesView);
         this.categoryManager = new EmojiCategoryManager(PrefsManager.INSTANCE.getPrefs(context), context, c0978hM6751b, typedArrayObtainStyledAttributes2);
         this.categoryIndicatorEnabled = typedArrayObtainStyledAttributes2.getBoolean(R.styleable.EmojiPalettesView_categoryIndicatorEnabled, false);
         this.categoryIndicatorDrawable = typedArrayObtainStyledAttributes2.getResourceId(R.styleable.EmojiPalettesView_categoryIndicatorDrawable, 0);
@@ -212,10 +212,10 @@ public final class EmojiPalettesView extends LinearLayout implements TabLayout.O
     }
 
     @Override // android.widget.LinearLayout, android.view.View
-    protected void onMeasure(int i, int i2) {
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         // Unlike other boards, super runs first (the pager and tabs need their own measure pass)
         // and there is no EXACTLY re-measure.
-        super.onMeasure(i, i2);
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
         setMeasuredDimension(
                 BoardHeightPolicy.measuredWidth(this),
                 BoardHeightPolicy.measuredHeight(this, this.keyboardSwitcher, this.layoutParams.keyboardHeight));
@@ -630,14 +630,14 @@ public final class EmojiPalettesView extends LinearLayout implements TabLayout.O
      * A tab became current, by a tap or from {@link #setCategory}. Re-entry is harmless: the category
      * is already current when setCategory selects the tab.
      */
-    private void onTabChanged(int iM6661a) {
+    private void onTabChanged(int categoryId) {
         AudioAndHapticFeedbackManager.getInstance().performAudioAndHapticFeedback(-21, this);
 
         // On-screen only: with a physical keyboard the query is what is typed into the board.
         SettingsValues sv = SettingsManager.getInstance().getSettingsValues();
         boolean dynamicSearch = sv != null && sv.isEmojiDynamicSearchEnabled
                 && DeviceProfile.isOnScreenKeyboardVisible();
-        boolean isSearchCategory = iM6661a == 0;
+        boolean isSearchCategory = categoryId == 0;
 
         if (!isSearchCategory) {
             if (searchOverlay != null && searchOverlay.isOverlayVisible()) {
@@ -652,15 +652,15 @@ public final class EmojiPalettesView extends LinearLayout implements TabLayout.O
             onEmojiOpened(composing);
         }
 
-        setCategory(iM6661a, false);
+        setCategory(categoryId, false);
         updatePageIndicator();
 
-        updateRecentsForCategory(iM6661a);
+        updateRecentsForCategory(categoryId);
     }
 
-    /** @param z true while switching to the emoji board */
-    public void setSwitchingToEmoji(boolean z) {
-        this.pagerAdapter.setSwitchingToEmoji(z);
+    /** @param switchingToEmoji true while switching to the emoji board */
+    public void setSwitchingToEmoji(boolean switchingToEmoji) {
+        this.pagerAdapter.setSwitchingToEmoji(switchingToEmoji);
     }
 
     private boolean isPage(int position) {
@@ -668,35 +668,35 @@ public final class EmojiPalettesView extends LinearLayout implements TabLayout.O
     }
 
     /** The pager's current page changed (ViewPager2.OnPageChangeCallback). */
-    public void onPageSelected(int i) {
-        this.pagerAdapter.onPageSelected(i);
-        setCategory(this.categoryManager.getCategoryAt(i), false);
-        this.categoryManager.setCurrentPageInCategory(this.categoryManager.getPageInCategoryAt(i));
+    public void onPageSelected(int position) {
+        this.pagerAdapter.onPageSelected(position);
+        setCategory(this.categoryManager.getCategoryAt(position), false);
+        this.categoryManager.setCurrentPageInCategory(this.categoryManager.getPageInCategoryAt(position));
         updatePageIndicator();
-        this.currentPagePosition = i;
+        this.currentPagePosition = position;
     }
 
     /** ViewPager2.OnPageChangeCallback: a drag starting releases the current page's keys. */
-    public void onPageScrollStateChanged(int i) {
-        if (i == ViewPager2.SCROLL_STATE_DRAGGING) {
+    public void onPageScrollStateChanged(int state) {
+        if (state == ViewPager2.SCROLL_STATE_DRAGGING) {
             this.pagerAdapter.releaseCurrentPage();
         }
     }
 
     /** ViewPager2.OnPageChangeCallback: the page dots follow the scroll within the current category. */
-    public void onPageScrolled(int i, float f, int i2) {
-        followRecentsPage(i, i2);
-        int iIntValue = this.categoryManager.getCategoryAt(i);
+    public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+        followRecentsPage(position, positionOffsetPixels);
+        int iIntValue = this.categoryManager.getCategoryAt(position);
         int iM6668c = this.categoryManager.getPageCount(iIntValue);
         int iM6664b = this.categoryManager.getCurrentCategoryId();
         int iM6669d = this.categoryManager.getCurrentPageInCategory();
         int iM6667c = this.categoryManager.getCurrentPageCount();
         if (iIntValue == iM6664b) {
-            this.pageIndicatorView.setPageInfo(iM6668c, this.categoryManager.getPageInCategoryAt(i), f);
+            this.pageIndicatorView.setPageInfo(iM6668c, this.categoryManager.getPageInCategoryAt(position), positionOffset);
         } else if (iIntValue > iM6664b) {
-            this.pageIndicatorView.setPageInfo(iM6667c, iM6669d, f);
+            this.pageIndicatorView.setPageInfo(iM6667c, iM6669d, positionOffset);
         } else if (iIntValue < iM6664b) {
-            this.pageIndicatorView.setPageInfo(iM6667c, iM6669d, f - 1.0f);
+            this.pageIndicatorView.setPageInfo(iM6667c, iM6669d, positionOffset - 1.0f);
         }
     }
 
@@ -785,9 +785,9 @@ public final class EmojiPalettesView extends LinearLayout implements TabLayout.O
         this.keyboardActionListener.onReleaseKey(iM6232c, false);
     }
 
-    /** @param z true to enable hardware-accelerated drawing */
-    public void setHardwareAcceleratedDrawingEnabled(boolean z) {
-        if (z) {
+    /** @param enabled true to enable hardware-accelerated drawing */
+    public void setHardwareAcceleratedDrawingEnabled(boolean enabled) {
+        if (enabled) {
             setLayerType(View.LAYER_TYPE_HARDWARE, null);
         }
     }
@@ -834,9 +834,9 @@ public final class EmojiPalettesView extends LinearLayout implements TabLayout.O
         this.categoryManager.retainPagesAround(position);
     }
 
-    /** @param interfaceC0976f the key action listener */
-    public void setKeyboardActionListener(KeyboardActionListenerInterface interfaceC0976f) {
-        this.keyboardActionListener = interfaceC0976f;
+    /** @param listener the key action listener */
+    public void setKeyboardActionListener(KeyboardActionListenerInterface listener) {
+        this.keyboardActionListener = listener;
         this.deleteKeyTouchListener.setActionListener(this.keyboardActionListener);
     }
 
@@ -849,22 +849,22 @@ public final class EmojiPalettesView extends LinearLayout implements TabLayout.O
     }
 
     /**
-     * @param i the category id
-     * @param z true to apply even if already current
+     * @param categoryId the category id
+     * @param force true to apply even if already current
      */
-    private void setCategory(int i, boolean z) {
+    private void setCategory(int categoryId, boolean force) {
         int iM6664b = this.categoryManager.getCurrentCategoryId();
-        if (iM6664b != i || z) {
+        if (iM6664b != categoryId || force) {
             if (iM6664b == 0) {
                 this.pagerAdapter.commitPendingRecents();
             }
-            this.categoryManager.setCurrentCategoryId(i);
-            int iM6674f = this.categoryManager.getCategoryIndex(i);
-            int iM6676g = this.categoryManager.getCategoryStartPosition(i);
-            if (z || this.categoryManager.getCategoryAt(this.viewPager.getCurrentItem()) != i) {
+            this.categoryManager.setCurrentCategoryId(categoryId);
+            int iM6674f = this.categoryManager.getCategoryIndex(categoryId);
+            int iM6676g = this.categoryManager.getCategoryStartPosition(categoryId);
+            if (force || this.categoryManager.getCategoryAt(this.viewPager.getCurrentItem()) != categoryId) {
                 this.viewPager.setCurrentItem(iM6676g, false);
             }
-            if (z || this.tabLayout.getSelectedTabPosition() != iM6674f) {
+            if (force || this.tabLayout.getSelectedTabPosition() != iM6674f) {
                 // Selected state drives the icon tint (applyColors' ColorStateList).
                 this.tabLayout.selectTab(this.tabLayout.getTabAt(iM6674f));
             }
@@ -943,8 +943,8 @@ public final class EmojiPalettesView extends LinearLayout implements TabLayout.O
             this.repeatInterval = resources.getInteger(R.integer.config_key_repeat_interval);
             this.repeatTimer = new CountDownTimer(MAX_REPEAT_DURATION, this.repeatInterval) {
                 @Override // android.os.CountDownTimer
-                public void onTick(long j) {
-                    if (DeleteKeyTouchListener.MAX_REPEAT_DURATION - j < DeleteKeyTouchListener.this.repeatStartDelay) {
+                public void onTick(long millisUntilFinished) {
+                    if (DeleteKeyTouchListener.MAX_REPEAT_DURATION - millisUntilFinished < DeleteKeyTouchListener.this.repeatStartDelay) {
                         return;
                     }
                     DeleteKeyTouchListener.this.onRepeatTick();
@@ -957,9 +957,9 @@ public final class EmojiPalettesView extends LinearLayout implements TabLayout.O
             };
         }
 
-        /** @param interfaceC0976f the key action listener */
-        public void setActionListener(KeyboardActionListenerInterface interfaceC0976f) {
-            this.keyboardActionListener = interfaceC0976f;
+        /** @param listener the key action listener */
+        public void setActionListener(KeyboardActionListenerInterface listener) {
+            this.keyboardActionListener = listener;
         }
 
         @Override // android.view.View.OnTouchListener

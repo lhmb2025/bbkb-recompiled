@@ -34,14 +34,14 @@ abstract class CJKSuggestionsAdapter extends RecyclerView.Adapter<CJKSuggestions
         }
     }
 
-    /** @param c0666ac the initial words */
-    CJKSuggestionsAdapter(SuggestedWords c0666ac) {
-        this.mSuggestedWords = c0666ac;
+    /** @param suggestedWords the initial words */
+    CJKSuggestionsAdapter(SuggestedWords suggestedWords) {
+        this.mSuggestedWords = suggestedWords;
     }
 
-    /** @param i the view type (only one) */
+    /** @param viewType the view type (only one) */
     @Override
-    public ViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
+    public ViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
         return new ViewHolder(LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.cjk_suggested_word, viewGroup, false));
     }
 
@@ -54,8 +54,8 @@ abstract class CJKSuggestionsAdapter extends RecyclerView.Adapter<CJKSuggestions
         return this.mSuggestedWords;
     }
 
-    /** @param c0666ac the words to show */
-    public void setSuggestedWords(SuggestedWords c0666ac) {
-        this.mSuggestedWords = c0666ac;
+    /** @param suggestedWords the words to show */
+    public void setSuggestedWords(SuggestedWords suggestedWords) {
+        this.mSuggestedWords = suggestedWords;
     }
 }

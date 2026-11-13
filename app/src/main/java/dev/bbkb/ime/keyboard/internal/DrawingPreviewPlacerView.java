@@ -31,9 +31,9 @@ public final class DrawingPreviewPlacerView extends RelativeLayout {
         setLayoutDirection(View.LAYOUT_DIRECTION_LTR);
     }
 
-    /** @param z true to draw previews on a hardware layer */
-    public void setHardwareAcceleratedDrawingEnabled(boolean z) {
-        if (z) {
+    /** @param enabled true to draw previews on a hardware layer */
+    public void setHardwareAcceleratedDrawingEnabled(boolean enabled) {
+        if (enabled) {
             Paint paint = new Paint();
             paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_OVER));
             setLayerType(View.LAYER_TYPE_HARDWARE, paint);
@@ -77,15 +77,15 @@ public final class DrawingPreviewPlacerView extends RelativeLayout {
     }
 
     /**
-     * @param iArr keyboard view origin in this view
-     * @param i keyboard width
-     * @param i2 keyboard height
+     * @param originCoords keyboard view origin in this view
+     * @param width keyboard width
+     * @param height keyboard height
      */
-    public void setKeyboardViewGeometry(int[] iArr, int i, int i2) {
-        CoordinateUtils.copy(this.keyboardViewOrigin, iArr);
+    public void setKeyboardViewGeometry(int[] originCoords, int width, int height) {
+        CoordinateUtils.copy(this.keyboardViewOrigin, originCoords);
         int size = this.previews.size();
         for (int i3 = 0; i3 < size; i3++) {
-            this.previews.get(i3).setKeyboardViewGeometry(iArr, i, i2);
+            this.previews.get(i3).setKeyboardViewGeometry(originCoords, width, height);
         }
     }
 

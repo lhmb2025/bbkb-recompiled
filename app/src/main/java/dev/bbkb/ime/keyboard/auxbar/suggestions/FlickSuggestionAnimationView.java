@@ -50,8 +50,8 @@ public final class FlickSuggestionAnimationView extends AppCompatTextView implem
         // The animation does not repeat.
     }
 
-    /** @param i the text color */
-    public void animateSelection(TextView textView, int i, ViewParent viewParent) {
+    /** @param textColor the text color */
+    public void animateSelection(TextView textView, int textColor, ViewParent viewParent) {
         if (viewParent == null) {
             return;
         }
@@ -70,7 +70,7 @@ public final class FlickSuggestionAnimationView extends AppCompatTextView implem
         setText(textView.getText());
         setTextSize(0, textView.getTextSize());
         setTextScaleX(textView.getTextScaleX());
-        setTextColor(i);
+        setTextColor(textColor);
         setShadowLayer(this.mShadowRadius, 0.0f, 0.0f, this.mShadowColor);
         setGravity(17);
         float alpha = textView.getAlpha();

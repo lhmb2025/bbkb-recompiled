@@ -23,37 +23,37 @@ public final class KeyStylesSet {
 
     private final KeyStyle mEmptyKeyStyle;
 
-    /** @param c1029al texts used to resolve style values */
-    public KeyStylesSet(KeyboardTextsSet c1029al) {
-        this.mTextsSet = c1029al;
-        this.mEmptyKeyStyle = new EmptyKeyStyle(c1029al);
+    /** @param keyboardTextsSet texts used to resolve style values */
+    public KeyStylesSet(KeyboardTextsSet keyboardTextsSet) {
+        this.mTextsSet = keyboardTextsSet;
+        this.mEmptyKeyStyle = new EmptyKeyStyle(keyboardTextsSet);
         this.mStyles.put("<empty>", this.mEmptyKeyStyle);
     }
 
     /** Fallback style that reads attributes straight off the TypedArray. */
     private static final class EmptyKeyStyle extends KeyStyle {
-        EmptyKeyStyle(KeyboardTextsSet c1029al) {
-            super(c1029al);
+        EmptyKeyStyle(KeyboardTextsSet keyboardTextsSet) {
+            super(keyboardTextsSet);
         }
 
         @Override
-        public String[] getStringArray(TypedArray typedArray, int i, boolean z) {
-            return parseStringArrayInternal(typedArray, i, z);
+        public String[] getStringArray(TypedArray typedArray, int index, boolean withAdditionalTexts) {
+            return parseStringArrayInternal(typedArray, index, withAdditionalTexts);
         }
 
         @Override
-        public String getString(TypedArray typedArray, int i) {
-            return parseString(typedArray, i);
+        public String getString(TypedArray typedArray, int index) {
+            return parseString(typedArray, index);
         }
 
         @Override
-        public int getInt(TypedArray typedArray, int i, int i2) {
-            return typedArray.getInt(i, i2);
+        public int getInt(TypedArray typedArray, int index, int defaultValue) {
+            return typedArray.getInt(index, defaultValue);
         }
 
         @Override
-        public int getFlags(TypedArray typedArray, int i) {
-            return typedArray.getInt(i, 0);
+        public int getFlags(TypedArray typedArray, int index) {
+            return typedArray.getInt(index, 0);
         }
     }
 
@@ -67,58 +67,58 @@ public final class KeyStylesSet {
         private final SparseArray<Object> mStyleAttributes;
 
         /**
-         * @param str parent style name
-         * @param c1029al texts used to resolve style values
+         * @param parentStyleName parent style name
+         * @param keyboardTextsSet texts used to resolve style values
          */
-        public DeclaredKeyStyle(String str, KeyboardTextsSet c1029al, HashMap<String, KeyStyle> map) {
-            super(c1029al);
+        public DeclaredKeyStyle(String parentStyleName, KeyboardTextsSet keyboardTextsSet, HashMap<String, KeyStyle> map) {
+            super(keyboardTextsSet);
             this.mStyleAttributes = new SparseArray<>();
-            this.mParentStyleName = str;
+            this.mParentStyleName = parentStyleName;
             this.mStyles = map;
         }
 
         @Override
-        public String[] getStringArray(TypedArray typedArray, int i, boolean z) {
-            if (typedArray.hasValue(i)) {
-                return parseStringArrayInternal(typedArray, i, z);
+        public String[] getStringArray(TypedArray typedArray, int index, boolean withAdditionalTexts) {
+            if (typedArray.hasValue(index)) {
+                return parseStringArrayInternal(typedArray, index, withAdditionalTexts);
             }
-            Object obj = this.mStyleAttributes.get(i);
+            Object obj = this.mStyleAttributes.get(index);
             if (obj != null) {
                 String[] strArr = (String[]) obj;
                 return (String[]) Arrays.copyOf(strArr, strArr.length);
             }
-            return this.mStyles.get(this.mParentStyleName).getStringArray(typedArray, i, z);
+            return this.mStyles.get(this.mParentStyleName).getStringArray(typedArray, index, withAdditionalTexts);
         }
 
         @Override
-        public String getString(TypedArray typedArray, int i) {
-            if (typedArray.hasValue(i)) {
-                return parseString(typedArray, i);
+        public String getString(TypedArray typedArray, int index) {
+            if (typedArray.hasValue(index)) {
+                return parseString(typedArray, index);
             }
-            Object obj = this.mStyleAttributes.get(i);
+            Object obj = this.mStyleAttributes.get(index);
             if (obj != null) {
                 return (String) obj;
             }
-            return this.mStyles.get(this.mParentStyleName).getString(typedArray, i);
+            return this.mStyles.get(this.mParentStyleName).getString(typedArray, index);
         }
 
         @Override
-        public int getInt(TypedArray typedArray, int i, int i2) {
-            if (typedArray.hasValue(i)) {
-                return typedArray.getInt(i, i2);
+        public int getInt(TypedArray typedArray, int index, int defaultValue) {
+            if (typedArray.hasValue(index)) {
+                return typedArray.getInt(index, defaultValue);
             }
-            Object obj = this.mStyleAttributes.get(i);
+            Object obj = this.mStyleAttributes.get(index);
             if (obj != null) {
                 return ((Integer) obj).intValue();
             }
-            return this.mStyles.get(this.mParentStyleName).getInt(typedArray, i, i2);
+            return this.mStyles.get(this.mParentStyleName).getInt(typedArray, index, defaultValue);
         }
 
         @Override
-        public int getFlags(TypedArray typedArray, int i) {
-            int iMo7101c = this.mStyles.get(this.mParentStyleName).getFlags(typedArray, i);
-            Integer num = (Integer) this.mStyleAttributes.get(i);
-            return typedArray.getInt(i, 0) | (num != null ? num.intValue() : 0) | iMo7101c;
+        public int getFlags(TypedArray typedArray, int index) {
+            int iMo7101c = this.mStyles.get(this.mParentStyleName).getFlags(typedArray, index);
+            Integer num = (Integer) this.mStyleAttributes.get(index);
+            return typedArray.getInt(index, 0) | (num != null ? num.intValue() : 0) | iMo7101c;
         }
 
         public void readKeyAttributes(TypedArray typedArray) {
@@ -135,33 +135,33 @@ public final class KeyStylesSet {
             readFlags(typedArray, R.styleable.Keyboard_Key_keyActionFlags);
         }
 
-        private void readString(TypedArray typedArray, int i) {
-            if (typedArray.hasValue(i)) {
-                this.mStyleAttributes.put(i, parseString(typedArray, i));
+        private void readString(TypedArray typedArray, int index) {
+            if (typedArray.hasValue(index)) {
+                this.mStyleAttributes.put(index, parseString(typedArray, index));
             }
         }
 
-        private void readInt(TypedArray typedArray, int i) {
-            if (typedArray.hasValue(i)) {
-                this.mStyleAttributes.put(i, Integer.valueOf(typedArray.getInt(i, 0)));
+        private void readInt(TypedArray typedArray, int index) {
+            if (typedArray.hasValue(index)) {
+                this.mStyleAttributes.put(index, Integer.valueOf(typedArray.getInt(index, 0)));
             }
         }
 
-        private void readFlags(TypedArray typedArray, int i) {
-            if (typedArray.hasValue(i)) {
-                Integer num = (Integer) this.mStyleAttributes.get(i);
-                this.mStyleAttributes.put(i, Integer.valueOf(typedArray.getInt(i, 0) | (num != null ? num.intValue() : 0)));
+        private void readFlags(TypedArray typedArray, int index) {
+            if (typedArray.hasValue(index)) {
+                Integer num = (Integer) this.mStyleAttributes.get(index);
+                this.mStyleAttributes.put(index, Integer.valueOf(typedArray.getInt(index, 0) | (num != null ? num.intValue() : 0)));
             }
         }
 
-        private void readBoolean(TypedArray typedArray, int i) {
-            if (typedArray.hasValue(i)) {
-                this.mStyleAttributes.put(i, parseStringArrayInternal(typedArray, i, false));
+        private void readBoolean(TypedArray typedArray, int index) {
+            if (typedArray.hasValue(index)) {
+                this.mStyleAttributes.put(index, parseStringArrayInternal(typedArray, index, false));
             }
         }
     }
 
-    public void parseKeyStyleAttributes(TypedArray typedArray, TypedArray typedArray2, XmlPullParser xmlPullParser) throws XmlParseUtils.ParseException {
+    public void parseKeyStyleAttributes(TypedArray typedArray, TypedArray keyAttrs, XmlPullParser xmlPullParser) throws XmlParseUtils.ParseException {
         String string = typedArray.getString(R.styleable.Keyboard_KeyStyle_styleName);
         String string2 = "<empty>";
         if (typedArray.hasValue(R.styleable.Keyboard_KeyStyle_parentStyle)) {
@@ -171,7 +171,7 @@ public final class KeyStylesSet {
             }
         }
         DeclaredKeyStyle aVar = new DeclaredKeyStyle(string2, this.mTextsSet, this.mStyles);
-        aVar.readKeyAttributes(typedArray2);
+        aVar.readKeyAttributes(keyAttrs);
         this.mStyles.put(string, aVar);
     }
 

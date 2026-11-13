@@ -19,12 +19,12 @@ import kotlin.collections.HashSet
  * The engine's (DLM) learned words, not filtered against the Android User Dictionary (see
  * [getLearnedWords]).
  *
- * @param str the model name (unused)
+ * @param modelName the model name (unused)
  */
 class LearnedWordsUtil @VisibleForTesting internal constructor(
     private val mNuanceSDK: NuanceSDK,
     context: Context,
-    @Suppress("UNUSED_PARAMETER") str: String
+    @Suppress("UNUSED_PARAMETER") modelName: String
 ) {
     private val appContext: Context = context.applicationContext
 
@@ -40,11 +40,11 @@ class LearnedWordsUtil @VisibleForTesting internal constructor(
             sInstance = null
         }
 
-        /** @param str the model name (unused) */
+        /** @param modelName the model name (unused) */
         @JvmStatic
-        fun getInstance(nuanceSDK: NuanceSDK, context: Context, str: String): LearnedWordsUtil {
+        fun getInstance(nuanceSDK: NuanceSDK, context: Context, modelName: String): LearnedWordsUtil {
             return sInstance ?: synchronized(LearnedWordsUtil::class.java) {
-                sInstance ?: LearnedWordsUtil(nuanceSDK, context, str).also { sInstance = it }
+                sInstance ?: LearnedWordsUtil(nuanceSDK, context, modelName).also { sInstance = it }
             }
         }
     }

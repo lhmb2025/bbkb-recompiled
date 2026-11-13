@@ -36,8 +36,8 @@ public final class AuxCharacterResolver {
             this.source = source;
         }
 
-        public static Result of(char c, String source) {
-            return new Result(c, source);
+        public static Result of(char character, String source) {
+            return new Result(character, source);
         }
 
         public static Result ofCodePoint(int codePoint, String source) {

@@ -8,8 +8,8 @@ public final class VkbShiftModeTracker {
 
     private int mState = 0;
 
-    private static String shiftStateToString(int i) {
-        switch (i) {
+    private static String shiftStateToString(int state) {
+        switch (state) {
             case 0:
                 return "UNSHIFTED";
             case 1:
@@ -27,10 +27,10 @@ public final class VkbShiftModeTracker {
         }
     }
 
-    /** @param z true to shift on (AOSP AlphabetShiftState.setShifted semantics) */
-    public void setShifted(boolean z) {
+    /** @param newShiftState true to shift on (AOSP AlphabetShiftState.setShifted semantics) */
+    public void setShifted(boolean newShiftState) {
         int i = this.mState;
-        if (z) {
+        if (newShiftState) {
             if (i == 0) {
                 this.mState = 1;          // UNSHIFTED -> MANUAL_SHIFTED
             } else {
@@ -48,9 +48,9 @@ public final class VkbShiftModeTracker {
         }
     }
 
-    /** @param z true to lock shift */
-    public void setShiftLocked(boolean z) {
-        if (z) {
+    /** @param newShiftLockState true to lock shift */
+    public void setShiftLocked(boolean newShiftLockState) {
+        if (newShiftLockState) {
             this.mState = 4;
         } else {
             this.mState = 0;

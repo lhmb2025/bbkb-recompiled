@@ -67,8 +67,8 @@ public class LanguagePackInstaller {
         for (File file : fileArrListFiles) {
             if (file.isDirectory() && (list = file.list(new FilenameFilter() {
                 @Override
-                public boolean accept(File file2, String str) {
-                    return str.endsWith(".ldb") || str.equals("version.txt");
+                public boolean accept(File dir, String name) {
+                    return name.endsWith(".ldb") || name.equals("version.txt");
                 }
             })) != null && list.length >= 2) {
                 hashSet.add(file.getName());
@@ -83,12 +83,12 @@ public class LanguagePackInstaller {
     }
 
     /**
-     * @param str language code
-     * @param str2 country code, or null/empty for none
+     * @param language language code
+     * @param country country code, or null/empty for none
      */
-    public LanguagePackInstaller(Context context, String str, String str2, LanguagePackRegistry registry) {
+    public LanguagePackInstaller(Context context, String language, String country, LanguagePackRegistry registry) {
         this.installedVersion = -1.0d;
-        this.languagePackInfo = registry.findLanguagePack(str, str2);
+        this.languagePackInfo = registry.findLanguagePack(language, country);
         this.context = context;
         LanguagePackInfo c1135b = this.languagePackInfo;
         if (c1135b == null || !c1135b.isPreinstalled()) {
@@ -117,9 +117,9 @@ public class LanguagePackInstaller {
         return new Locale(this.languagePackInfo.language, this.languagePackInfo.country);
     }
 
-    /** @param str locale identifier, language or language_COUNTRY */
-    public static File getLanguagePackDirectory(Context context, String str) {
-        return new File(context.getNoBackupFilesDir().getPath() + File.separator + NuanceSDK.DYNAMIC_MODEL_ABSTRACT_DIR + File.separator + str);
+    /** @param localeIdentifier locale identifier, language or language_COUNTRY */
+    public static File getLanguagePackDirectory(Context context, String localeIdentifier) {
+        return new File(context.getNoBackupFilesDir().getPath() + File.separator + NuanceSDK.DYNAMIC_MODEL_ABSTRACT_DIR + File.separator + localeIdentifier);
     }
 
     private File getDirectory() {

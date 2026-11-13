@@ -146,41 +146,41 @@ public class NuanceSDKDictionaryBridge extends Dictionary {
      * Tracker form for the spell checker: the tracker is snapshotted on the calling thread (inside
      * the spell checker's own engine op).
      *
-     * @param c0670ag the composing tracker
-     * @param c0805e the suggestion strip settings
-     * @param i the session id
+     * @param composingTracker the composing tracker
+     * @param stripSettings the suggestion strip settings
+     * @param sessionId the session id
      */
     @Override // dev.bbkb.ime.core.engine.Dictionary
-    public ArrayList<SuggestedWords.SuggestedWordInfo> generateSuggestions(ComposingTextTracker c0670ag, PrevWordsInfo prevWordsInfo, SuggestionStripSettings c0805e, int i) {
-        return generateSuggestions(ComposingSnapshot.of(c0670ag), prevWordsInfo, c0805e, i);
+    public ArrayList<SuggestedWords.SuggestedWordInfo> generateSuggestions(ComposingTextTracker composingTracker, PrevWordsInfo prevWordsInfo, SuggestionStripSettings stripSettings, int sessionId) {
+        return generateSuggestions(ComposingSnapshot.of(composingTracker), prevWordsInfo, stripSettings, sessionId);
     }
 
     @Override // dev.bbkb.ime.core.engine.Dictionary
-    public ArrayList<SuggestedWords.SuggestedWordInfo> generateSuggestionsForSnapshot(ComposingSnapshot composing, PrevWordsInfo prevWordsInfo, SuggestionStripSettings stripSettings, int i) {
-        return generateSuggestions(composing, prevWordsInfo, stripSettings, i);
+    public ArrayList<SuggestedWords.SuggestedWordInfo> generateSuggestionsForSnapshot(ComposingSnapshot composing, PrevWordsInfo prevWordsInfo, SuggestionStripSettings stripSettings, int sessionId) {
+        return generateSuggestions(composing, prevWordsInfo, stripSettings, sessionId);
     }
 
     /**
      * Builds the suggestion list. Runs on the engine thread as one op: feeds for this text were
      * posted before it and feeds for later text after it, so nothing writes the buffer meanwhile.
      *
-     * @param c0670ag the composing state the request was made for
-     * @param c0805e the suggestion strip settings
-     * @param i the session id
+     * @param composing the composing state the request was made for
+     * @param stripSettings the suggestion strip settings
+     * @param sessionId the session id
      */
-    public ArrayList<SuggestedWords.SuggestedWordInfo> generateSuggestions(ComposingSnapshot c0670ag, PrevWordsInfo prevWordsInfo, SuggestionStripSettings c0805e, int i) {
+    public ArrayList<SuggestedWords.SuggestedWordInfo> generateSuggestions(ComposingSnapshot composing, PrevWordsInfo prevWordsInfo, SuggestionStripSettings stripSettings, int sessionId) {
         int i2;
         int i3;
         WordInfo wordInfo;
-        if (c0670ag == null) {
-            c0670ag = ComposingSnapshot.EMPTY;
+        if (composing == null) {
+            composing = ComposingSnapshot.EMPTY;
         }
 
-        String strM4360m = c0670ag.text;
+        String strM4360m = composing.text;
         if (BuildConfig.DEBUG) {
             Log.d("PIPELINE", "IME:nuanceDict:getSuggestions:start" +
                 " composing=\"" + strM4360m + "\"" +
-                " isPredMode=" + c0670ag.isPredictionMode +
+                " isPredMode=" + composing.isPredictionMode +
                 " thread=" + Thread.currentThread().getName());
         }
         ArrayList<SuggestedWords.SuggestedWordInfo> arrayList = new ArrayList<>();
@@ -205,7 +205,7 @@ public class NuanceSDKDictionaryBridge extends Dictionary {
                 // (SuggestionEngine.getCorrections) just rewrote this buffer, and keys fed under
                 // shift yield capitalised candidates; the replay restores the lower-case list the
                 // case transform expects.
-                if (!engineOwnsComposingState(c0670ag, this.nuanceSdk)) {
+                if (!engineOwnsComposingState(composing, this.nuanceSdk)) {
                     this.nuanceSdk.clear();
                     for (int ci = 0; ci < strM4360m.length(); ci++) {
                         this.nuanceSdk.processKeyBySymbol(strM4360m.charAt(ci));
@@ -478,31 +478,31 @@ public class NuanceSDKDictionaryBridge extends Dictionary {
         return composing.hasInputMethodConverter || sdk.isChineseStrokeMode() || sdk.isChineseCangjieMode();
     }
 
-    /** @param str the composing text */
-    private void setNativeContext(PrevWordsInfo prevWordsInfo, String str) {
+    /** @param composingText the composing text */
+    private void setNativeContext(PrevWordsInfo prevWordsInfo, String composingText) {
         if (prevWordsInfo != null && prevWordsInfo.getContextBefore() != null) {
             if (BuildConfig.DEBUG) {
                 Log.d("PIPELINE", "IME:nuanceDict:setCtxBuf" +
                     " prevWord=\"" + prevWordsInfo.getContextBefore() + "\"" +
-                    " composing=\"" + str + "\"" +
+                    " composing=\"" + composingText + "\"" +
                     " thread=" + Thread.currentThread().getName());
             }
             this.nuanceSdk.setContextBuffer(prevWordsInfo.getContextBefore());
-            clearNativeBufferIfJapanese(str);
+            clearNativeBufferIfJapanese(composingText);
         } else {
             if (BuildConfig.DEBUG) {
                 Log.d("PIPELINE", "IME:nuanceDict:setCtxBufEmpty" +
                     " prevWordsNull=" + (prevWordsInfo == null) +
-                    " composing=\"" + str + "\"" +
+                    " composing=\"" + composingText + "\"" +
                     " thread=" + Thread.currentThread().getName());
             }
             this.nuanceSdk.setContextBuffer("");
         }
     }
 
-    /** @param str the composing text */
-    private void clearNativeBufferIfJapanese(String str) {
-        if (TextUtils.isEmpty(str) && LocaleUtils.isCurrentSubtypeJapanese()) {
+    /** @param composingText the composing text */
+    private void clearNativeBufferIfJapanese(String composingText) {
+        if (TextUtils.isEmpty(composingText) && LocaleUtils.isCurrentSubtypeJapanese()) {
             this.nuanceSdk.clear();
         }
     }
@@ -522,16 +522,16 @@ public class NuanceSDKDictionaryBridge extends Dictionary {
         return null;
     }
 
-    /** @param c0908w the suggested punctuation, or null */
-    static boolean isPunctuationSuggestion(WordInfo wordInfo, PunctuationSuggestions c0908w) {
+    /** @param punctuationSuggestions the suggested punctuation, or null */
+    static boolean isPunctuationSuggestion(WordInfo wordInfo, PunctuationSuggestions punctuationSuggestions) {
         if (".".equals(wordInfo.word)) {
             return true;
         }
-        if (c0908w == null) {
+        if (punctuationSuggestions == null) {
             return false;
         }
-        for (int i = 0; i < c0908w.size(); i++) {
-            if (wordInfo.word.equals(c0908w.getWordForDisplay(i))) {
+        for (int i = 0; i < punctuationSuggestions.size(); i++) {
+            if (wordInfo.word.equals(punctuationSuggestions.getWordForDisplay(i))) {
                 return true;
             }
         }
@@ -541,20 +541,20 @@ public class NuanceSDKDictionaryBridge extends Dictionary {
     /**
      * Inserts the personal dictionary substitution for the typed word; true when one was added.
      *
-     * @param c0670ag the composing state
+     * @param composingSnapshot the composing state
      * @param arrayList the suggestions, modified in place
-     * @param c0873an the suggestion result (for its locale)
+     * @param suggestionResult the suggestion result (for its locale)
      */
-    public boolean shouldAutoCorrect(ComposingSnapshot c0670ag, ArrayList<SuggestedWords.SuggestedWordInfo> arrayList, SuggestionResult c0873an) {
+    public boolean shouldAutoCorrect(ComposingSnapshot composingSnapshot, ArrayList<SuggestedWords.SuggestedWordInfo> arrayList, SuggestionResult suggestionResult) {
         DictionaryManager.CapsMode bVar;
-        String strM4360m = c0670ag.text;
+        String strM4360m = composingSnapshot.text;
         if (TextUtils.isEmpty(strM4360m)) {
             if (BuildConfig.DEBUG) Log.d("AC_DEBUG", "NuanceDict.shouldAutoCorrect: SKIP empty composing");
             return false;
         }
-        if (c0670ag.isAllCaps) {
+        if (composingSnapshot.isAllCaps) {
             bVar = DictionaryManager.CapsMode.ALL_CAPS;
-        } else if (c0670ag.shouldCapitalizeFirstLetter) {
+        } else if (composingSnapshot.shouldCapitalizeFirstLetter) {
             bVar = DictionaryManager.CapsMode.FIRST_LETTER_CAPS;
         } else {
             bVar = DictionaryManager.CapsMode.NO_CAPS;
@@ -562,7 +562,7 @@ public class NuanceSDKDictionaryBridge extends Dictionary {
         boolean pduLoaded = DictionaryManager.getInstance().isLoaded();
         if (BuildConfig.DEBUG) Log.d("AC_DEBUG", "NuanceDict.shouldAutoCorrect: typed='" + strM4360m + "' caps=" + bVar + " pduLoaded=" + pduLoaded + " suggestionsSize=" + arrayList.size());
         try {
-            String strM4863a = getWordSubstitution(strM4360m, bVar, c0873an.locale);
+            String strM4863a = getWordSubstitution(strM4360m, bVar, suggestionResult.locale);
             if (BuildConfig.DEBUG) Log.d("AC_DEBUG", "NuanceDict.shouldAutoCorrect: substitution='" + strM4863a + "' changed=" + (!strM4863a.equals(strM4360m)));
             if (!strM4863a.equals(strM4360m)) {
                 Logger.debug("NuanceDictionary", "Adding substitution: " + strM4863a);
@@ -588,34 +588,34 @@ public class NuanceSDKDictionaryBridge extends Dictionary {
     /**
      * The substitution for the typed word, also tried without a trailing punctuation mark.
      *
-     * @param str the typed word
-     * @param bVar its caps mode
+     * @param input the typed word
+     * @param capsMode its caps mode
      */
-    private String getWordSubstitution(String str, DictionaryManager.CapsMode bVar, Locale locale) {
+    private String getWordSubstitution(String input, DictionaryManager.CapsMode capsMode, Locale locale) {
         DictionaryManager c0624aM3831b = DictionaryManager.getInstance();
-        String strM3845a = c0624aM3831b.getWordSubstitutionForInput(str, bVar, locale);
-        if (str.length() <= 0 || !isPosixPunct(str.charAt(str.length() - 1))) {
+        String strM3845a = c0624aM3831b.getWordSubstitutionForInput(input, capsMode, locale);
+        if (input.length() <= 0 || !isPosixPunct(input.charAt(input.length() - 1))) {
             return strM3845a;
         }
-        String strSubstring = str.substring(0, str.length() - 1);
+        String strSubstring = input.substring(0, input.length() - 1);
         if (strSubstring.length() <= 0) {
             return strM3845a;
         }
-        String strM3845a2 = c0624aM3831b.getWordSubstitutionForInput(strSubstring, bVar, locale);
+        String strM3845a2 = c0624aM3831b.getWordSubstitutionForInput(strSubstring, capsMode, locale);
         if (strSubstring.equals(strM3845a)) {
             return strM3845a;
         }
-        return strM3845a2 + str.substring(str.length() - 1);
+        return strM3845a2 + input.substring(input.length() - 1);
     }
 
     @Override // dev.bbkb.ime.core.engine.Dictionary
-    public boolean isWordValid(String str) {
-        return this.nuanceSdk.isSpellingCorrect(str);
+    public boolean isWordValid(String word) {
+        return this.nuanceSdk.isSpellingCorrect(word);
     }
 
     @Override // dev.bbkb.ime.core.engine.Dictionary
-    public boolean isDictionaryWord(String str) {
-        return this.nuanceSdk.isSpellingCorrectWithoutLearnedWords(str);
+    public boolean isDictionaryWord(String word) {
+        return this.nuanceSdk.isSpellingCorrectWithoutLearnedWords(word);
     }
 
     /**
@@ -623,13 +623,12 @@ public class NuanceSDKDictionaryBridge extends Dictionary {
      * too: a sentence-start correction commits "Bout" for a learned "bout".
      */
     @Override // dev.bbkb.ime.core.engine.Dictionary
-    public boolean unlearnWord(String str) {
-        if (TextUtils.isEmpty(str)) {
+    public boolean unlearnWord(String word) {
+        if (TextUtils.isEmpty(word)) {
             return false;
         }
         // Both deletes are one engine op (the retry needs the first answer); true once queued.
         final NuanceSDK sdk = this.nuanceSdk;
-        final String word = str;
         EngineThreads.post(() -> {
             boolean removed = sdk.deleteDLMWord(word);
             if (!removed) {
@@ -647,7 +646,7 @@ public class NuanceSDKDictionaryBridge extends Dictionary {
      * bridge's engine's facts, else the primary's.
      */
     @Override // dev.bbkb.ime.core.engine.Dictionary
-    public String getWordSeparator(String str) {
+    public String getWordSeparator(String precedingText) {
         EngineFacts facts = this.nuanceSdk != null ? this.nuanceSdk.getFacts() : null;
         return wordSeparatorFor(facts != null ? facts : PrimaryEngineFacts.get());
     }
@@ -658,19 +657,19 @@ public class NuanceSDKDictionaryBridge extends Dictionary {
     }
 
     /**
-     * @param str the text holding the recorrected word
-     * @param i the recorrection cursor position in {@code str}
-     * @param str2 the original word
-     * @param str3 the current (replacement) word
+     * @param contextBefore the text holding the recorrected word
+     * @param cursorPosition the recorrection cursor position in {@code contextBefore}
+     * @param originalWord the original word
+     * @param currentWord the current (replacement) word
      */
     @Override // dev.bbkb.ime.core.engine.Dictionary
-    public boolean onWordChanged(String str, int i, String str2, String str3) {
-        if (str == null || str2 == null || str3 == null || str.isEmpty() || str2.isEmpty() || str3.isEmpty()) {
+    public boolean onWordChanged(String contextBefore, int cursorPosition, String originalWord, String currentWord) {
+        if (contextBefore == null || originalWord == null || currentWord == null || contextBefore.isEmpty() || originalWord.isEmpty() || currentWord.isEmpty()) {
             return false;
         }
         // Posted: learning only, nothing waits for it.
         final NuanceSDK sdk = this.nuanceSdk;
-        EngineThreads.post(() -> sdk.wordChanged(str, i, str2, str3));
+        EngineThreads.post(() -> sdk.wordChanged(contextBefore, cursorPosition, originalWord, currentWord));
         return true;
     }
 

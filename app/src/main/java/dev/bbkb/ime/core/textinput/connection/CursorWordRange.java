@@ -64,15 +64,15 @@ public final class CursorWordRange {
         return i2 == i ? suggestionSpanArr : (SuggestionSpan[]) Arrays.copyOfRange(suggestionSpanArr, 0, i2);
     }
 
-    public CursorWordRange(CharSequence charSequence, int i, int i2, int i3, boolean z) {
-        if (i < 0 || i3 < i || i3 > i2 || i2 > charSequence.length()) {
+    public CursorWordRange(CharSequence charSequence, int wordAtCursorStartIndex, int wordAtCursorEndIndex, int cursorIndex, boolean hasUrlSpans) {
+        if (wordAtCursorStartIndex < 0 || cursorIndex < wordAtCursorStartIndex || cursorIndex > wordAtCursorEndIndex || wordAtCursorEndIndex > charSequence.length()) {
             throw new IndexOutOfBoundsException();
         }
         this.textAtCursor = charSequence;
-        this.wordAtCursorStartIndex = i;
-        this.wordAtCursorEndIndex = i2;
-        this.cursorIndex = i3;
-        this.hasUrlSpans = z;
+        this.wordAtCursorStartIndex = wordAtCursorStartIndex;
+        this.wordAtCursorEndIndex = wordAtCursorEndIndex;
+        this.cursorIndex = cursorIndex;
+        this.hasUrlSpans = hasUrlSpans;
         this.word = this.textAtCursor.subSequence(this.wordAtCursorStartIndex, this.wordAtCursorEndIndex);
     }
 }
