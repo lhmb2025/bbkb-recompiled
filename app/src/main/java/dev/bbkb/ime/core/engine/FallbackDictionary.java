@@ -60,22 +60,24 @@ public class FallbackDictionary extends Dictionary {
     }
 
     @Override
-    public ArrayList<SuggestedWords.SuggestedWordInfo> generateSuggestions(ComposingTextTracker c0670ag, PrevWordsInfo prevWordsInfo, SuggestionStripSettings c0805e, int i) {
+    public ArrayList<SuggestedWords.SuggestedWordInfo> generateSuggestions(ComposingTextTracker c0670ag, PrevWordsInfo prevWordsInfo, SuggestionStripSettings c0805e, int sessionId) {
         if (c0670ag == null) {
             return new ArrayList<>();
         }
-        return suggestionsFor(c0670ag.getComposingText(), i);
+        return suggestionsFor(c0670ag.getComposingText());
     }
 
     @Override
-    public ArrayList<SuggestedWords.SuggestedWordInfo> generateSuggestionsForSnapshot(ComposingSnapshot composing, PrevWordsInfo prevWordsInfo, SuggestionStripSettings stripSettings, int i) {
+    public ArrayList<SuggestedWords.SuggestedWordInfo> generateSuggestionsForSnapshot(ComposingSnapshot composing, PrevWordsInfo prevWordsInfo, SuggestionStripSettings stripSettings, int sessionId) {
         if (composing == null) {
             return new ArrayList<>();
         }
-        return suggestionsFor(composing.text, i);
+        return suggestionsFor(composing.text);
     }
 
-    private ArrayList<SuggestedWords.SuggestedWordInfo> suggestionsFor(String currentWord, int i) {
+    private static final int MAX_SUGGESTIONS = 8;
+
+    private ArrayList<SuggestedWords.SuggestedWordInfo> suggestionsFor(String currentWord) {
         ArrayList<SuggestedWords.SuggestedWordInfo> suggestions = new ArrayList<>();
 
         if (currentWord == null || currentWord.isEmpty()) {
@@ -85,7 +87,7 @@ public class FallbackDictionary extends Dictionary {
         }
 
         String lowerInput = currentWord.toLowerCase(locale);
-        int maxSuggestions = Math.min(i > 0 ? i : 8, 8); // Limit to reasonable number
+        int maxSuggestions = MAX_SUGGESTIONS;
 
         // GD-27: a LinkedHashSet keeps insertion order and makes a repeat match a no-op (the word
         // list has duplicates, and the second pass revisits every prefix match).

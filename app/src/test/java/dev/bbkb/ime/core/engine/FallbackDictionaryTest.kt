@@ -29,8 +29,8 @@ class FallbackDictionaryTest {
     private fun tracker(text: String?) =
         mock(ComposingTextTracker::class.java).also { `when`(it.composingText).thenReturn(text) }
 
-    private fun rows(d: FallbackDictionary, text: String?, max: Int) =
-        d.generateSuggestions(tracker(text), null, null, max).map { Triple(it.word, it.score, it.kind) }
+    private fun rows(d: FallbackDictionary, text: String?, sessionId: Int) =
+        d.generateSuggestions(tracker(text), null, null, sessionId).map { Triple(it.word, it.score, it.kind) }
 
     @Test
     fun nullTracker_isEmpty() {
@@ -51,15 +51,12 @@ class FallbackDictionaryTest {
             Triple("there", 4, 2), Triple("these", 3, 2), Triple("they", 2, 2), Triple("thing", 1, 2),
         )
         assertEquals(expected, rows(dict, "th", 0))
-        assertEquals(expected, rows(dict, "th", 20))
     }
 
+    /** The last argument is the request type (0 typing, 1 predictions), not a count: it once capped predictions at one word. */
     @Test
-    fun positiveMaxBelowEight_isHonoured() {
-        assertEquals(
-            listOf(Triple("the", 3, 2), Triple("than", 2, 2), Triple("that", 1, 2)),
-            rows(dict, "th", 3),
-        )
+    fun predictionRequest_getsTheSameEightWords() {
+        assertEquals(rows(dict, "th", 0), rows(dict, "th", 1))
     }
 
     @Test

@@ -1376,12 +1376,17 @@ public class NuanceSDK {
         return sizeResult;
     }
 
-    public boolean loadKeyboardLayout(boolean z) {
+    /**
+     * Loads the physical keyboard's layout when {@code isPkb}, else the on-screen keyboard's.
+     * {@code Keyboard.isTouchKeyboard()} is the right argument: it is true for the touch keypad's
+     * elements (id 100 and up), not for the on-screen keyboard.
+     */
+    public boolean loadKeyboardLayout(boolean isPkb) {
         enter("loadKeyboardLayout");
         Xt9KdbVariant.awaitReady(2000);
         boolean zLoadKeyboardLayout;
         synchronized (sMutex) {
-            zLoadKeyboardLayout = dbgFirstLoad(this.mNativeHandle, z, "");
+            zLoadKeyboardLayout = dbgFirstLoad(this.mNativeHandle, isPkb, "");
         }
         return zLoadKeyboardLayout;
     }
