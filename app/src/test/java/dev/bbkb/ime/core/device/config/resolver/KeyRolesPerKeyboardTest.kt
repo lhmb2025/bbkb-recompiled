@@ -25,10 +25,9 @@ import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
 
 /**
- * Which profile speaks for which keyboard. A profile matched on the phone's build used to match
- * every keyboard attached to that phone, and key roles were asked without saying which keyboard
- * the key came from: on a KEY2 (key code 7 = the mic key) the 0 key of a Bluetooth or USB
- * keyboard started voice input.
+ * Which profile speaks for which keyboard: a profile matched on the phone's build governs only the
+ * built-in keyboard, so an external keyboard's 0 key (key code 7, the mic key on some phones)
+ * does not start voice input.
  */
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [34], manifest = Config.NONE)
@@ -71,8 +70,6 @@ class KeyRolesPerKeyboardTest {
         }
     }
 
-    // ── the match step ───────────────────────────────────────────────────────
-
     @Test
     fun aProfileMatchedOnThePhone_doesNotMatchAnExternalKeyboard() {
         val key2 = profile(R.xml.device_config_athena)
@@ -92,8 +89,6 @@ class KeyRolesPerKeyboardTest {
         assertSame(mp01, config.findMappingForInputDevice(keyboard("aw9523b-key", external = true)))
         assertNull(config.findMappingForInputDevice(keyboard("Logitech K380", external = true)))
     }
-
-    // ── which profile governs a key ──────────────────────────────────────────
 
     @Test
     fun theZeroKeyOfAnExternalKeyboard_isNotTheKey2MicKey() {
@@ -160,8 +155,6 @@ class KeyRolesPerKeyboardTest {
             assertEquals(KeyRole.BOARD_VOICE, DeviceInputResolver.keyRole(11, KeyEvent.KEYCODE_0, 9)!!.role)
         }
     }
-
-    // ── shipped profiles ─────────────────────────────────────────────────────
 
     @Test
     fun theQ25MicKey_typesZeroWithAlt() {

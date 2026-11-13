@@ -9,18 +9,9 @@ import java.util.IllformedLocaleException
 import java.util.Locale
 import java.util.TreeSet
 
-/**
- * Utility functions for locale string conversion and parsing.
- *
- * Handles conversion between internal (BASL) and AUD locale formats.
- */
+/** Locale string parsing and conversion between BASL and AUD locale formats. */
 object LocaleUtil {
-    /**
-     * Hoisted: parse() runs once per word substitution in
-     * PersonalDictionaryUtil.isWsDefaultForLocale and once per AUD row in
-     * AudWrapper.add, and `"_|-".toRegex()` compiled a fresh Regex each time
-     * (audit PD-20).
-     */
+    /** Hoisted: parse() runs once per substitution and per AUD row. */
     private val SEPARATORS_REGEX = Regex("_|-")
 
     fun convertAudLocaleToBaslLocale(audLocale: String?): String {
@@ -55,11 +46,8 @@ object LocaleUtil {
                 else -> throw AudLocaleException("Cannot parse locale: $localeString")
             }
         } catch (e: IllformedLocaleException) {
-            // Locale.Builder throws this *unchecked*, so it escaped both the
-            // @Throws(AudLocaleException) contract and AudWrapper.add's
-            // `catch (unused: AudLocaleException)` - and these strings come from the
-            // system UserDictionary provider, i.e. third-party writable data
-            // (audit PD-20).
+            // Unchecked from Locale.Builder; the input is third-party AUD data, so map it to the
+            // declared exception.
             throw AudLocaleException("Cannot parse locale: $localeString")
         }
     }
@@ -82,11 +70,7 @@ object LocaleUtil {
         return false
     }
 
-    // ========== Methods merged from InputMethodLocaleUtils.java ==========
-
-    /**
-     * Get available locale strings as a TreeSet, including empty string for "All languages".
-     */
+    /** The current input locale plus "" for "All languages". */
     @JvmStatic
     fun getAvailableLocaleStrings(context: Context): TreeSet<String> {
         val treeSet = TreeSet<String>()
@@ -98,9 +82,6 @@ object LocaleUtil {
         return treeSet
     }
 
-    /**
-     * Get available locales as a List<Locale>.
-     */
     @JvmStatic
     fun getAvailableLocales(context: Context): List<Locale> {
         val list = mutableListOf<Locale>()
@@ -111,9 +92,6 @@ object LocaleUtil {
         return list
     }
 
-    /**
-     * Get the current input method subtype's locale string.
-     */
     private fun getCurrentInputMethodLocale(context: Context): String? {
         val inputMethodManager = context.getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
             ?: return null
@@ -121,12 +99,7 @@ object LocaleUtil {
         return currentSubtype.languageTag
     }
 
-    // ========== Methods merged from core.dictionary.LocaleUtils.java ==========
-
-    /**
-     * Returns a display-friendly locale name for dictionary UI.
-     * Returns "All languages" string if locale is empty.
-     */
+    /** The locale's display name, or "All languages" when empty. */
     @JvmStatic
     fun getDisplayNameForDictionary(context: Context, localeString: String?): String {
         return if (localeString.isNullOrEmpty()) {

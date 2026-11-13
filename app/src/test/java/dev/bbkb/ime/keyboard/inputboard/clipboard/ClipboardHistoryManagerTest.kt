@@ -23,17 +23,9 @@ import java.io.File
 import java.util.concurrent.Executor
 
 /**
- * [ClipboardHistoryManager] — the clipboard board's history model, driven through the real system
- * entry point.
- *
- * A clip is put on Robolectric's [ClipboardManager], whose shadow notifies the registered
- * listeners exactly as the framework does, so `onPrimaryClipChanged` runs for real. The manager is
- * built on a store over a temp file with a direct executor (so a save has landed by the next
- * line), a clock the test moves, and an unlock state the test flips.
- *
- * `ShadowClipboardManager` holds its clip and listener list in static fields that Robolectric
- * resets between tests; `PrefsManager`'s preferences instance is shared by every test in the
- * sandbox, so it is cleared on both sides of each test.
+ * [ClipboardHistoryManager] driven through Robolectric's [ClipboardManager], so `onPrimaryClipChanged` runs for
+ * real. The store uses a temp file and a direct executor (a save has landed by the next line), a test clock
+ * and a flippable unlock state. `PrefsManager` is shared by the sandbox, so it is cleared on both sides.
  */
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [34], manifest = Config.NONE)
@@ -50,7 +42,7 @@ class ClipboardHistoryManagerTest {
     private var now = START
     private var unlocked = true
 
-    /** Number of times the manager announced that the history changed. */
+    /** Number of times the manager announced a history change. */
     private var historyChanges = 0
 
     private val changeListener = ClipboardHistoryManager.OnHistoryChangedListener { historyChanges++ }
@@ -78,8 +70,6 @@ class ClipboardHistoryManagerTest {
         { now },
         { unlocked },
     )
-
-    // ── driving the real listener path ────────────────────────────────────────
 
     /** Put [text] on the system clipboard, which fires the manager's primary-clip listener. */
     private fun copy(text: String, label: String = "") {
@@ -114,10 +104,6 @@ class ClipboardHistoryManagerTest {
     private fun passwordAddLabel() = context.getString(dev.bbkb.ime.R.string.clip_password_keeper_add)
 
     private fun passwordClearLabel() = context.getString(dev.bbkb.ime.R.string.clip_password_keeper_clear)
-
-    // ═══════════════════════════════════════════════════════════════════════
-    // 1. Capture and ordering
-    // ═══════════════════════════════════════════════════════════════════════
 
     @Test
     fun aCopiedClipIsCaptured() {
@@ -174,10 +160,6 @@ class ClipboardHistoryManagerTest {
         assertEquals("but the clip was still captured", listOf("two", "one"), texts())
     }
 
-    // ═══════════════════════════════════════════════════════════════════════
-    // 2. The cap: 25 unpinned rows, pinned rows exempt
-    // ═══════════════════════════════════════════════════════════════════════
-
     @Test
     fun theHistoryHoldsTwentyFiveUnpinnedEntries() {
         repeat(25) { copy("clip $it") }
@@ -207,10 +189,6 @@ class ClipboardHistoryManagerTest {
         assertEquals("twenty-five unpinned besides the pin", 25, recentTexts().size)
         assertEquals(26, history.history.size)
     }
-
-    // ═══════════════════════════════════════════════════════════════════════
-    // 3. De-duplication and refresh
-    // ═══════════════════════════════════════════════════════════════════════
 
     @Test
     fun reCopyingExistingTextMovesItToTheFrontWithoutGrowingTheHistory() {
@@ -281,10 +259,6 @@ class ClipboardHistoryManagerTest {
         assertEquals("but its pin time kept", START, entry("pinned text").pinnedAtMs)
     }
 
-    // ═══════════════════════════════════════════════════════════════════════
-    // 4. Clips that are refused
-    // ═══════════════════════════════════════════════════════════════════════
-
     @Test
     fun aClipWithNoTextIsIgnored() {
         system.setPrimaryClip(ClipData.newIntent("intent", android.content.Intent("nothing")))
@@ -333,10 +307,6 @@ class ClipboardHistoryManagerTest {
         assertTrue("off holds nothing, so the earlier clip is dropped too", history.history.isEmpty())
         assertFalse("and nothing is left on disk", file.exists())
     }
-
-    // ═══════════════════════════════════════════════════════════════════════
-    // 5. Password Keeper
-    // ═══════════════════════════════════════════════════════════════════════
 
     @Test
     fun aPasswordAddClipIsCapturedAndMarkedAsAPasswordRow() {
@@ -415,10 +385,6 @@ class ClipboardHistoryManagerTest {
         assertFalse(ClipboardHistoryManager.hasLabel(null, "bb.pk"))
     }
 
-    // ═══════════════════════════════════════════════════════════════════════
-    // 6. Deleting a row
-    // ═══════════════════════════════════════════════════════════════════════
-
     @Test
     fun removingAnEntryThatIsNotTheCurrentClipLeavesTheSystemClipboardAlone() {
         copy("older")
@@ -480,10 +446,6 @@ class ClipboardHistoryManagerTest {
         assertEquals(listOf("b"), stored().map { it.text })
     }
 
-    // ═══════════════════════════════════════════════════════════════════════
-    // 7. Incognito fields and sensitive clips
-    // ═══════════════════════════════════════════════════════════════════════
-
     @Test
     fun nothingIsCapturedWhileTheFocusedFieldIsIncognito() {
         copy("before")
@@ -544,10 +506,6 @@ class ClipboardHistoryManagerTest {
 
         assertFalse(ClipboardHistoryManager.isSensitiveClip(clip))
     }
-
-    // ═══════════════════════════════════════════════════════════════════════
-    // 8. Retention
-    // ═══════════════════════════════════════════════════════════════════════
 
     @Test
     fun byDefaultAnUnpinnedClipExpiresAfterAnHour() {
@@ -679,10 +637,6 @@ class ClipboardHistoryManagerTest {
         assertTrue("and it now expires on the normal schedule", reloaded.history.isEmpty())
     }
 
-    // ═══════════════════════════════════════════════════════════════════════
-    // 9. Pinning
-    // ═══════════════════════════════════════════════════════════════════════
-
     @Test
     fun pinningMovesARowIntoThePinnedSectionAheadOfRecent() {
         copy("one")
@@ -733,10 +687,6 @@ class ClipboardHistoryManagerTest {
         assertEquals("pinned", recentTexts().first())
         assertFalse(recentTexts().contains("clip 0"))
     }
-
-    // ═══════════════════════════════════════════════════════════════════════
-    // 10. Persistence
-    // ═══════════════════════════════════════════════════════════════════════
 
     @Test
     fun theHistoryRoundTripsThroughTheStore() {
@@ -797,8 +747,8 @@ class ClipboardHistoryManagerTest {
     }
 
     /**
-     * Rows too long to store live in memory only, and nothing bounded them: only the newest one
-     * is kept. Short rows are untouched, whatever their age.
+     * Rows too long to store live in memory only, and only the newest one is kept. Short rows are
+     * untouched.
      */
     @Test
     fun onlyTheNewestClipTooLongToPersistIsKept() {
@@ -888,10 +838,6 @@ class ClipboardHistoryManagerTest {
         assertTrue(history.history.isEmpty())
     }
 
-    // ═══════════════════════════════════════════════════════════════════════
-    // 11. Teardown
-    // ═══════════════════════════════════════════════════════════════════════
-
     @Test
     fun releaseUnregistersTheManagerSoLaterClipsAreNotCaptured() {
         history.release()
@@ -912,10 +858,6 @@ class ClipboardHistoryManagerTest {
         assertEquals(listOf("kept"), texts())
     }
 
-    // ═══════════════════════════════════════════════════════════════════════
-    // 12. ClipboardItem.getTextFromClipData — used cross-board by FccView
-    // ═══════════════════════════════════════════════════════════════════════
-
     @Test
     fun getTextFromClipDataReturnsTheFirstItemsText() {
         assertEquals("abc", ClipboardItem.getTextFromClipData(ClipData.newPlainText("", "abc")))
@@ -935,10 +877,6 @@ class ClipboardHistoryManagerTest {
         const val START = 1_700_000_000_000L
         const val HOUR = 60L * 60L * 1000L
     }
-
-    // ═══════════════════════════════════════════════════════════════════════
-    // Background load (H-13): the stored history is read off the main thread
-    // ═══════════════════════════════════════════════════════════════════════
 
     private class QueuedExecutor : Executor {
         val queue = ArrayDeque<Runnable>()

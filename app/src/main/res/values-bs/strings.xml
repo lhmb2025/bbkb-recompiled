@@ -721,7 +721,6 @@
     <string name="device_config_import_unreadable">Ta datoteka nije konfiguracija uređaja</string>
     <string name="device_config_import_failed">Nije moguće uvesti tu datoteku</string>
 
-    <!-- OTA app updates -->
     <string name="settings_updates_title">Ažuriranja</string>
     <string name="settings_updates_summary">Provjeri ima li nove verzije BBKB-a</string>
     <string name="settings_update_installed_version_title">Instalirana verzija</string>
@@ -755,7 +754,6 @@
     <string name="settings_update_ready_title">Spremno za instalaciju</string>
     <string name="settings_update_version_details">Detalji verzije</string>
     <string name="settings_update_unknown_sources_title">Dozvoliti BBKB-u da instalira ažuriranja?</string>
-    <!-- Downloadable language packs (core/languagepack) -->
     <string name="language_packs_installed_header">Instalirano</string>
     <string name="language_packs_available_header">Dostupno za preuzimanje</string>
     <string name="language_packs_download">Preuzmi</string>
@@ -877,7 +875,6 @@
     <string name="settings_voice_stop_on_pause_summary_off">Nastavlja slušati i tokom pauza dok ne dodirnete mikrofon ili dok ne prođe pola minute tišine</string>
     <string name="voice_status_listening_tap_to_stop">Slušam&#8230; Dodirnite mikrofon da zaustavite</string>
 
-    <!-- Settings text moved out of the code (2026-11) -->
     <string name="settings_common_save">Sačuvaj</string>
     <string name="settings_common_edit">Uredi</string>
     <string name="settings_common_back">Nazad</string>

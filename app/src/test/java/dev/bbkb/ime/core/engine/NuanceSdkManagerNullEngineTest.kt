@@ -8,15 +8,9 @@ import org.junit.Test
 import java.io.File
 
 /**
- * Audit L8 (docs/2026-09_kdb-touch-abi_audit.md §5): the touch call sites dereferenced a
- * nullable singleton.
- *
- * The null path is reachable for real — [NuanceSDKManager.getInstance] returns null whenever
- * `NuanceSDK`'s construction fails, including the `UnsatisfiedLinkError` case of the engine's
- * native library not loading, which is exactly the situation where the keyboard must still
- * type. On the JVM it is reachable for the simplest reason of all: `ImeApplication.getInstance()`
- * is null outside an Android process, so the calls below take the same branch the device takes
- * when the engine fails to load.
+ * Touch call sites must survive a null [NuanceSDKManager.getInstance] (engine construction failed,
+ * e.g. `UnsatisfiedLinkError`), where the keyboard must still type. On the JVM
+ * `ImeApplication.getInstance()` is null, so these calls take that same branch.
  */
 class NuanceSdkManagerNullEngineTest {
 
@@ -61,10 +55,8 @@ class NuanceSdkManagerNullEngineTest {
     }
 
     /**
-     * The behavioural checks above cover the choke point; this covers the call sites, which a
-     * JVM test cannot instantiate (PointerTracker needs a live keyboard view). A bare
-     * `getInstance().touch*` in either file is the L8 defect itself, and it is what regresses
-     * when someone adds the next touch entry point.
+     * Covers the call sites, which a JVM test cannot instantiate (PointerTracker needs a live view):
+     * a bare `getInstance().touch*` in either file is the defect, likely when a touch entry is added.
      */
     @Test
     fun noTouchCallSiteDereferencesTheNullableSingleton() {

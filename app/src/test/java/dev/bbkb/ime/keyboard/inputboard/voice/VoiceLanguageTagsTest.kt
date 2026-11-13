@@ -6,9 +6,8 @@ import org.junit.Test
 import java.util.Locale
 
 /**
- * The tag rules, pinned to what Google's recognition service was observed to do on the KEY2
- * (2026-09-28): underscore forms are invalid and silently replaced by the phone default, bare
- * codes work (with iw/in mapped), hyphenated tags pass through.
+ * The tag rules as Google's recognition service behaves: underscore forms are invalid and silently replaced by the
+ * phone default, bare codes work (with iw/in mapped), hyphenated tags pass through.
  */
 class VoiceLanguageTagsTest {
 

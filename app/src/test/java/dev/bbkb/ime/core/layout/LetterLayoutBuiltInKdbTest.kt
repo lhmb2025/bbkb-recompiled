@@ -12,12 +12,10 @@ import org.robolectric.annotation.Config
 import java.io.File
 
 /**
- * The engine's keypad KDBs built from a device's geometry file and the built-in letter layouts,
- * against the per-language files the app used to ship, which `xt9kdb-scaffold/reference/kdb_pkb/`
- * keeps for this comparison: which keys changed, and how.
- *
- * Which shipped file a keyboard loaded was measured on the emulator on 2026-10-15 (every keyboard
- * switched through, the `XT9KDB SetKdbNum` log read): most Latin keyboards share English's file.
+ * Keypad KDBs built from a device geometry file plus the built-in layouts, against the formerly
+ * shipped per-language files in `xt9kdb-scaffold/reference/kdb_pkb/`: which keys changed and how.
+ * Which file each keyboard loaded was measured from the `XT9KDB SetKdbNum` log; most Latin
+ * keyboards share English's.
  */
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [34])
@@ -83,10 +81,8 @@ class LetterLayoutBuiltInKdbTest {
         keyElement.findAll(comment.replace(xml, "")).map { Regex("keyType=\"([^\"]*)\"").find(it.value)?.groupValues?.get(1) }.toList()
 
     /**
-     * Every key whose engine letters the built KDB changes against the shipped file the keyboard
-     * loaded. Only additions, each a letter the key types: the Shift letter of an Arabic, Hebrew or
-     * Korean key, and Turkish's dotted i on the I key, which types i (the shipped file had only the
-     * dotless ı there).
+     * Keys whose engine letters the built KDB changes vs the loaded shipped file. Additions only:
+     * the Shift letter of Arabic, Hebrew or Korean keys, and Turkish's dotted i on the I key.
      */
     private val expectedDifferences = setOf(
         "ar/arabic KEYCODE_4 [ط] -> [ط ى]",
@@ -105,10 +101,9 @@ class LetterLayoutBuiltInKdbTest {
     )
 
     /**
-     * What the engine loads for each measured keyboard while its built-in layout applies (the
-     * device's file for the id, rewritten with the keyboard's own document), against the shipped
-     * file: the same ids, key boxes and key types, the same letters but for the pinned additions.
-     * For both of the KEY2's geometries' even twin and the generic keypad.
+     * What the engine loads per measured keyboard under its built-in layout matches the shipped
+     * file (ids, key boxes, key types, letters) except the pinned additions. Checked for the KEY2
+     * geometry and the generic keypad.
      */
     @Test
     fun eachKeyboardsBuiltKdbHoldsTheShippedLetters_exceptThePinnedAdditions() {

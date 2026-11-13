@@ -52,8 +52,6 @@ public class UnifiedInputBoardManager implements SimplifiedKeyboardView.onKeyEve
 
     private final SimplifiedKeyboardView keyboardView;
 
-    // REMOVED: the separate emoji-bar view - View hierarchy simplified, single unified bar now used
-
     private final KeyboardBuilder keyboardBuilder;
 
     private final BlackBerryIME imeService;
@@ -61,8 +59,8 @@ public class UnifiedInputBoardManager implements SimplifiedKeyboardView.onKeyEve
     private final KeyboardSwitcher keyboardSwwitcher;
 
     private boolean isAnimating;
-    
-    // UIM-05 fix: Safety timeout to prevent isAnimating from getting permanently stuck
+
+    // Safety timeout so isAnimating cannot get stuck.
     private static final long ANIMATION_TIMEOUT_MS = 1000;
 
     /** Element id of kbd_unified_input_menu_pool.xml (attrs.xml elementName unifiedInputMenuPool). */
@@ -82,10 +80,8 @@ public class UnifiedInputBoardManager implements SimplifiedKeyboardView.onKeyEve
     private final UnifiedInputBoardHandler uimHandler;
 
     /**
-     * The typing-delay handler's callback. The handler references it only weakly (so a queued
-     * message cannot pin this manager), which makes this field its ONLY strong holder: without it
-     * the callback is collectable at once and the disable/restore messages silently stop, leaving
-     * the bar's keys disabled.
+     * The only strong reference to the handler's callback (the handler holds it weakly). Without it
+     * the callback is collected and the bar's keys stay disabled.
      */
     private final UnifiedInputBoardHandler.Callback uimHandlerCallback;
 
@@ -94,44 +90,36 @@ public class UnifiedInputBoardManager implements SimplifiedKeyboardView.onKeyEve
     private Key cachedAlphabetKey;
     
     /**
-     * Single owner of board open/close decisions AND of "which board is open".
-     * The UIM keeps no parallel activeComponent field — {@link #getActiveComponent()}
-     * derives it from the coordinator's activeBoard, and every open/close path
-     * reports through {@link #setActiveComponent} to mutate it.
+     * Owns which board is open; {@link #getActiveComponent()} derives from it and every open or
+     * close path reports through {@link #setActiveComponent}.
      */
     private final UnifiedBoardCoordinator boardCoordinator = new UnifiedBoardCoordinator(this);
-    
-    /* Phase 4.1: Queue a single tap received during animation for replay after animation ends */
+
+    /* A single tap received during animation, replayed when it ends. */
     private Key pendingAnimationKey = null;
     private boolean pendingAnimationLongPress = false;
-    
-    /* Phase 1 Optimization: Cache for batching invalidations */
+
     private boolean pendingInvalidation = false;
     private final android.os.Handler invalidationHandler = new android.os.Handler(android.os.Looper.getMainLooper());
-    
-    /* Phase 2 Optimization: Lazy initialization flag */
+
     private boolean componentsRegistered = false;
-    
-    /* Phase 3 Optimization: Cache keyboard to avoid rebuilding */
+
     private Keyboard cachedKeyboard = null;
-    
-    /* Single source of truth: The currently displayed UIM keyboard */
+
+    /* The keyboard currently on the bar. */
     private Keyboard displayedKeyboard = null;
 
-    @Override // dev.bbkb.ime.keyboard.SimplifiedKeyboardView.onKeyEventListener
+    @Override
     public void onKeyDown(Key key) {
+        // Bar keys act on key-up.
     }
 
-    /**
-     * The one place that knows how the bar reaches the screen. Null means the AuxBar is not
-     * installed yet, which selects the legacy direct-visibility fallback in {@link #showBar},
-     * {@link #hideBar} and {@link #isShowing()}.
-     */
+    /** The AuxBar, or null before it is installed (then the direct-visibility fallback is used). */
     private AuxBarManager bar() {
         return this.imeService.getUiCoordinator().getAuxBarManager();
     }
 
-    /** Raise the bar with {@code keyboard} on it, through the AuxBar or the legacy fallback. */
+    /** Raise the bar with {@code keyboard} on it, through the AuxBar or the fallback. */
     private void showBar(Keyboard keyboard) {
         AuxBarManager auxBarManager = bar();
         if (auxBarManager != null) {
@@ -142,7 +130,7 @@ public class UnifiedInputBoardManager implements SimplifiedKeyboardView.onKeyEve
         }
     }
 
-    /** Take the bar down, through the AuxBar or the legacy fallback. */
+    /** Take the bar down, through the AuxBar or the fallback. */
     private void hideBar() {
         AuxBarManager auxBarManager = bar();
         if (auxBarManager != null) {
@@ -153,14 +141,9 @@ public class UnifiedInputBoardManager implements SimplifiedKeyboardView.onKeyEve
     }
 
     /**
-     * Paint the key states, publish {@code keyboard} as the displayed one, raise the bar, and
-     * paint again.
-     *
-     * <p>FABLE_VIEW_REPORT §7: the first paint runs while the view is still GONE, so its
-     * per-component key active/highlight branch is skipped and a cached keyboard can carry stale
-     * states (keys dead on first tap). The second paint runs with the view VISIBLE so the
-     * component keys reflect the current enabled state. Both show paths need exactly this
-     * sequence; it is shared rather than written twice.
+     * Paint key states, publish {@code keyboard}, raise the bar, and paint again. The first paint
+     * runs while the view is GONE and skips the per-component branch, so a cached keyboard could
+     * keep stale states (dead keys on first tap); the second runs with the view VISIBLE.
      */
     private void publishBar(Keyboard keyboard) {
         updateKeyHighlightedStates(keyboard);
@@ -170,16 +153,8 @@ public class UnifiedInputBoardManager implements SimplifiedKeyboardView.onKeyEve
     }
 
     /**
-     * Centralized UIM state dump for debugging state transitions.
-     * Prints activeComponent, showing components, isAnimating, AuxBar state,
-     * and keyboardView visibility. Gated behind Logger.debug (silenced on release).
-     */
-    /**
-     * Audit IB-22: the callers used to build "caller(" + keyCode + ")" before the
-     * call, so the StringBuilder and Integer.toString ran on release builds too - on
-     * the board key-press path, and in setActiveComponent, the funnel every open and
-     * close routes through. This overload composes the label only after the
-     * isLoggable check.
+     * Debug dump of UIM state. This overload builds the label only after the isLoggable check,
+     * so the hot open/close path pays nothing on release builds.
      */
     private void dumpUimState(String caller, int arg) {
         if (!Logger.isLoggable(TAG, android.util.Log.DEBUG)) return;
@@ -209,10 +184,7 @@ public class UnifiedInputBoardManager implements SimplifiedKeyboardView.onKeyEve
             + " kbVis=" + (kbVis == View.VISIBLE ? "VISIBLE" : kbVis == View.GONE ? "GONE" : String.valueOf(kbVis)));
     }
 
-    /**
-     * UIM-02 assertion: verify UIBM isShowing() agrees with AuxBarManager state.
-     * Logs WARN if they diverge. Only runs on debug builds.
-     */
+    /** Debug check: warns when {@link #isShowing()} disagrees with the AuxBar state. */
     private void assertVisibilityConsistency(String caller) {
         if (!Logger.isLoggable(TAG, android.util.Log.DEBUG)) return;
         AuxBarManager abm = bar();
@@ -229,8 +201,6 @@ public class UnifiedInputBoardManager implements SimplifiedKeyboardView.onKeyEve
     }
 
     public UnifiedInputBoardManager(Context context, View view, BlackBerryIME blackBerryIME) {
-        // Legacy unified_input_menu_bar_view removed - now using AuxBarManager
-        // Get shared key view from AuxBarView if available
         dev.bbkb.ime.keyboard.auxbar.AuxBarView auxBarView = view.findViewById(dev.bbkb.ime.R.id.aux_bar_view);
         if (auxBarView != null) {
             this.keyboardView = auxBarView.getSharedKeyView();
@@ -243,17 +213,14 @@ public class UnifiedInputBoardManager implements SimplifiedKeyboardView.onKeyEve
             this.keyboardView.setOnKeyEventListener(this);
             this.keyboardView.setLayerType(View.LAYER_TYPE_HARDWARE, null);
         }
-        // One style tree; colors come from KeyboardColorManager at draw time (C7).
+        // Colors come from KeyboardColorManager at draw time.
         this.context = BoardKeyboardFactory.themedContext(context);
-        // KeyboardBuilder is lightweight to create - actual keyboard building is deferred
         this.keyboardBuilder = createKeyboardBuilder();
         this.imeService = blackBerryIME;
         this.keyboardSwwitcher = KeyboardSwitcher.getInstance();
         setAnimating(false);
-        // UIM-08 fix: Use ConcurrentHashMap for thread safety
         this.componentMap = new ConcurrentHashMap();
-        // Phase 2: Lazy component registration - defer until first show
-        // Initialization deferred - happens lazily on first show
+        // Components register lazily on first show.
         this.enabledStates = new ArrayList();
         this.uimHandlerCallback = new UnifiedInputBoardHandler.Callback() {
             @Override
@@ -279,12 +246,8 @@ public class UnifiedInputBoardManager implements SimplifiedKeyboardView.onKeyEve
                         }
                     }
                 }
-                // UIM-03: A board may have opened (or already been open, e.g. the emoji board)
-                // between the save and this restore, in which case the saved states are stale.
-                // We must NOT simply skip the restore — doing so leaves every key disabled
-                // (disableAllKeys set setActive(false) on all keys), making the UIM bar untappable.
-                // Instead, re-derive the correct board-specific enabled/highlight states from
-                // the single source of truth so the active board's keys stay responsive.
+                // A board may have opened since the save, making the saved states stale. Do not skip
+                // the restore (every key would stay disabled); re-derive the states from the board.
                 UnifiedInputBoardComponent activeForRestore =
                         UnifiedInputBoardManager.this.getActiveComponent();
                 if (activeForRestore != null) {
@@ -304,13 +267,16 @@ public class UnifiedInputBoardManager implements SimplifiedKeyboardView.onKeyEve
         this.imeService.attachInputBoardHandler(this.uimHandler);
     }
 
+    /**
+     * @param i translation Y in pixels
+     * @param i2 translation Z in pixels
+     */
     public void setTranslation(int i, int i2) {
         this.keyboardView.setTranslationY(i);
         this.keyboardView.setTranslationZ(i2);
     }
 
     public void destroy() {
-        // Cancel all pending handlers/timers to prevent stale callbacks
         this.uimHandler.cancelPendingMessages();
         this.invalidationHandler.removeCallbacks(animationSafetyReset);
         this.invalidationHandler.removeCallbacksAndMessages(null);
@@ -324,15 +290,8 @@ public class UnifiedInputBoardManager implements SimplifiedKeyboardView.onKeyEve
     }
 
     /**
-     * Whether {@code keyCode}'s board currently has its view up. The predicate the layout-change
-     * exemption is decided from, exposed so {@code CrossAxisRules} can ask it without this class
-     * keeping a second copy of the exempt list.
-     *
-     * <p>Deliberately NOT filtered to panel boards: it is asked about one named board, and for a
-     * typing board the answer is a true one (the registered controller reports whether that board is
-     * the one that is up). Every caller passes a panel keycode — the exempt lists, all three of whose
-     * members are panels — so the filter would make no difference; leaving it off keeps the method
-     * meaning what its name says.
+     * Whether {@code keyCode}'s board has its view up; the predicate {@code CrossAxisRules} uses
+     * for layout-change exemptions. Not filtered to panel boards.
      */
     public boolean isBoardViewShowing(int keyCode) {
         if (this.componentMap == null) {
@@ -343,29 +302,21 @@ public class UnifiedInputBoardManager implements SimplifiedKeyboardView.onKeyEve
     }
 
     /**
-     * The first board that survives a layout change whose view is up, or
-     * {@link UnifiedBoardCoordinator#NO_BOARD}.
-     *
-     * <p>The list itself and its probe order live in
-     * {@link CrossAxisRules#boardsExemptFromCommitRebuild()} — the one table — so this method is
-     * only the probe. Each exemption is an early return over the WHOLE sweep, not a per-component
-     * skip: that is the long-standing FCC semantics, kept deliberately.
+     * The first up board that survives a layout change (list in
+     * {@link CrossAxisRules#boardsExemptFromCommitRebuild()}), or {@link UnifiedBoardCoordinator#NO_BOARD}.
+     * An exemption skips the whole sweep, not just that board.
      */
     private int findShowingExemptBoard() {
         return CrossAxisRules.firstExemptBoardUp(this::isBoardViewShowing);
     }
 
     /**
-     * The board column of a {@code SWITCH_LAYOUT} transition: sweep the boards closed unless one
-     * that survives a layout change is up. Reached through
-     * {@code KeyboardStateCoordinator.apply(switchLayout(...))}, which re-checks the same two pure
-     * predicates before calling — the gate is kept here as well so the remaining direct callers
-     * ({@code BlackBerryIME.hideUnifiedInputBoard}) still get it.
+     * On a layout switch, sweep the boards closed unless an exempt board is up. The gate is
+     * repeated here for direct callers such as {@code BlackBerryIME.hideUnifiedInputBoard}.
      */
     public void hideKeyboardOnKeyboardStateChange() {
-        // SITE 1 of the Phase 1f split: this gate means "is a PANEL board up". With the typing
-        // boards in the registry, the old isAnyBoardShowing() would be permanently true here and
-        // every layout change — one per committed character — would start sweeping.
+        // Must ask about panel boards only: a typing board is always up, and every committed
+        // character changes layout.
         if (isShowing() && isPanelBoardShowing()) {
             int exempt = findShowingExemptBoard();
             if (exempt != UnifiedBoardCoordinator.NO_BOARD) {
@@ -374,10 +325,7 @@ public class UnifiedInputBoardManager implements SimplifiedKeyboardView.onKeyEve
                 return;
             }
             hideOtherComponents(-37);
-            // hideOtherComponents now reports the close itself when the sweep takes down the
-            // active board (defect 8), so this is no longer that reconcile. It still covers the
-            // case the sweep cannot see: an active board whose view was ALREADY down before the
-            // sweep ran, which the sweep skips and therefore never reports.
+            // The sweep skips (and never reports) an active board whose view was already down.
             UnifiedInputBoardComponent active = getActiveComponent();
             if (active != null && !active.isShowing()) {
                 setActiveComponent(null);
@@ -387,27 +335,25 @@ public class UnifiedInputBoardManager implements SimplifiedKeyboardView.onKeyEve
     }
 
     public void show(boolean force) {
-        // Check if UIM is disabled in settings
         if (!SettingsManager.isUimEnabled(this.context)) {
             return;
         }
         if (!isAnimating() && (!this.keyboardView.isShown() || force)) {
             Logger.debug(TAG, "Showing Input Board Bar");
-            // Phase 2 Optimization: Ensure lazy initialization before first display
             ensureComponentsRegistered();
             
             setAnimating(false);
-            // Phase 3 Optimization: Use cached keyboard
+
             Keyboard c0965eM6734a = getOrBuildKeyboard();
             this.cachedAlphabetKey = c0965eM6734a.getKeyByCode(-3);
-            
-            // Apply color tints BEFORE showing
+
+            // Tint before showing.
             c0965eM6734a.mIconsSet.applyColorTint();
 
             publishBar(c0965eM6734a);
 
             this.imeService.getUiUpdateHandler().cancelPendingSuggestionUpdates();
-            // Phase 1 Optimization: Use batched invalidation
+
             scheduleInvalidation();
             dumpUimState("show.EXIT");
             assertVisibilityConsistency("show");
@@ -417,15 +363,9 @@ public class UnifiedInputBoardManager implements SimplifiedKeyboardView.onKeyEve
     }
 
     /**
-     * The show half of the "Show or hide the input menu" key action. The caller has already set
-     * {@link SettingsValues#setInputMenuRequestedByKey}, which is what lets {@link #show(boolean)}
-     * through where the menu's own settings keep it off.
-     *
-     * <p>A board the menu-off route opened on its own ({@code AbstractBoardController.toggle()}
-     * and the other fallbacks, which the coordinator never hears about) is adopted: with the menu
-     * up, that board's key and its toggle on the bar take the coordinator's route, and a board the
-     * coordinator does not know is open costs them a dead press (an "open" of what is already
-     * open) before the second press closes it.
+     * Show half of the "Show or hide the input menu" key (the caller already set
+     * {@link SettingsValues#setInputMenuRequestedByKey}). A panel board opened while the menu was off
+     * is adopted by the coordinator, so its next press closes it instead of being a dead press.
      *
      * @return whether the menu bar is up afterwards
      */
@@ -451,50 +391,44 @@ public class UnifiedInputBoardManager implements SimplifiedKeyboardView.onKeyEve
     }
 
     public boolean isShowing() {
-        // UIM-02 fix: AuxBarManager is the single source of truth for UIM visibility.
-        // This eliminates dual-ownership between UIBM view check and AuxBarView.currentState.
+        // The AuxBar state is the source of truth for bar visibility.
         AuxBarManager auxBarManager = bar();
         if (auxBarManager != null) {
             return auxBarManager.getCurrentState() == AuxBarState.UNIFIED_INPUT_MENU;
         }
-        // Legacy fallback
         return this.keyboardView.getVisibility() == View.VISIBLE;
     }
 
     public void showWithAnimation(final View suggestionStripView) {
-        // Check if UIM is disabled in settings
         if (!SettingsManager.isUimEnabled(this.context)) {
             return;
         }
         if (isAnimating() || this.keyboardView.isShown()) {
             return;
         }
-        // Phase 2 Optimization: Ensure lazy initialization before display
         ensureComponentsRegistered();
         
         Resources resources = this.context.getResources();
-        // Phase 3 Optimization: Use cached keyboard
+
         Keyboard c0965eM6734a = getOrBuildKeyboard();
         this.imeService.uiUpdateHandler.cancelPendingSuggestionUpdates();
 
         publishBar(c0965eM6734a);
 
-        // Apply color tint when keyboard is set
         c0965eM6734a.mIconsSet.applyColorTint();
         this.keyboardView.setAlpha(0.0f);
         float fM5585a = ResourceConfigManager.getScreenWidthPixels(this.context.getResources());
         this.keyboardView.setTranslationX(fM5585a);
         this.keyboardView.setTranslationY(suggestionStripView != null && suggestionStripView.isShown() ? suggestionStripView.getHeight() : 0);
         this.keyboardView.animate().translationXBy(-fM5585a).setDuration(resources.getInteger(R.integer.config_input_board_bar_slide_in_animation)).setInterpolator(new AccelerateDecelerateInterpolator()).alpha(1.0f).setListener(new AnimatorListenerAdapter() {
-            @Override // android.animation.AnimatorListenerAdapter, android.animation.Animator.AnimatorListener
+            @Override
             public void onAnimationStart(Animator animator) {
                 UnifiedInputBoardManager.this.setAnimating(true);
-                // UIM-05: Start safety timeout
                 UnifiedInputBoardManager.this.invalidationHandler.removeCallbacks(animationSafetyReset);
                 UnifiedInputBoardManager.this.invalidationHandler.postDelayed(animationSafetyReset, ANIMATION_TIMEOUT_MS);
             }
 
-            @Override // android.animation.AnimatorListenerAdapter, android.animation.Animator.AnimatorListener
+            @Override
             public void onAnimationEnd(Animator animator) {
                 UnifiedInputBoardManager.this.invalidationHandler.removeCallbacks(animationSafetyReset);
                 UnifiedInputBoardManager.this.setAnimating(false);
@@ -503,10 +437,9 @@ public class UnifiedInputBoardManager implements SimplifiedKeyboardView.onKeyEve
                     suggestionStripView.setVisibility(View.GONE);
                 }
             }
-            
-            @Override // android.animation.AnimatorListenerAdapter, android.animation.Animator.AnimatorListener
+
+            @Override
             public void onAnimationCancel(Animator animator) {
-                // UIM-05: Ensure flag resets even if animation is cancelled
                 UnifiedInputBoardManager.this.invalidationHandler.removeCallbacks(animationSafetyReset);
                 UnifiedInputBoardManager.this.setAnimating(false);
             }
@@ -515,31 +448,25 @@ public class UnifiedInputBoardManager implements SimplifiedKeyboardView.onKeyEve
 
     public void hide() {
         Logger.debug(TAG, "Hiding Input Board Bar via AuxBarManager");
-        // Whatever takes the menu bar down (the key's second press, the window going away, the
-        // suggestion strip replacing it, cursor mode, a settings change) ends a menu the "Show or
-        // hide the input menu" key asked for: the settings decide again.
+        // Any hide ends a menu the "Show or hide the input menu" key or the hamburger raised.
         SettingsValues.setInputMenuRequestedByKey(false);
-        // ...and a menu the hamburger raised: the bar goes back to the field's own bar.
         dev.bbkb.ime.core.ime.InputViewCoordinator ui = this.imeService.getUiCoordinator();
         if (ui != null) {
             ui.onMenuTakenDown();
         }
-        // The suggestion strip calls this once or twice per update. When nothing is up there is
-        // nothing to take down, and the full pass walked every board and posted a redraw.
+        // Called once or twice per strip update; skip the full pass when nothing is up.
         if (isFullyHidden()) {
             return;
         }
-        // UIM-05: Cancel any running animation and its safety timeout on hide
         this.keyboardView.animate().cancel();
         this.invalidationHandler.removeCallbacks(animationSafetyReset);
         setAnimating(false);
 
         hideBar();
 
-        // Clear displayed keyboard when hiding - will be set again on next show
         this.displayedKeyboard = null;
-        
-        hideAllComponents();  // This will clear active component via setActiveComponent(null)
+
+        hideAllComponents();
         dumpUimState("hide.EXIT");
         assertVisibilityConsistency("hide");
     }
@@ -550,7 +477,6 @@ public class UnifiedInputBoardManager implements SimplifiedKeyboardView.onKeyEve
                 || this.boardCoordinator.activeBoard() != UnifiedBoardCoordinator.NO_BOARD) {
             return false;
         }
-        // The boards hideAllComponents() would take down: the panel ones.
         return !isPanelBoardShowing();
     }
 
@@ -561,11 +487,9 @@ public class UnifiedInputBoardManager implements SimplifiedKeyboardView.onKeyEve
 
     public void showView() {
         Logger.debug(TAG, "Showing Input Board View via AuxBarManager");
-        // NOT showBar(): the legacy fallback here only raises the view, deliberately leaving
-        // whatever keyboard it already carries alone.
+        // Not showBar(): the fallback must only raise the view and keep its current keyboard.
         AuxBarManager auxBarManager = bar();
         if (auxBarManager != null) {
-            // Re-show current keyboard if available, or build default
             Keyboard k = this.keyboardView.getKeyboard();
             if (k == null) {
                 k = getOrBuildKeyboard();
@@ -578,7 +502,6 @@ public class UnifiedInputBoardManager implements SimplifiedKeyboardView.onKeyEve
 
     public void refresh() {
         updateKeyHighlightedStates(this.keyboardView.getKeyboard());
-        // Phase 1 Optimization: Batch invalidations to reduce layout passes
         scheduleInvalidation();
         for (UnifiedInputBoardComponent component : this.componentMap.values()) {
             component.onRefresh();
@@ -586,16 +509,9 @@ public class UnifiedInputBoardManager implements SimplifiedKeyboardView.onKeyEve
     }
 
     /**
-     * Entry bookkeeping every board transition shares, whichever half of the toggle decided it.
-     * A PKB in symbol mode is reset to alphabet so {@code mainKeyboardView} has the alphabet
-     * layout loaded when the panel is dismissed, and any pending typing-delay key-state restore
-     * is cancelled so it cannot land on the board we are about to change (UIM-03).
-     *
-     * <p>The first half is the layout column of the {@code OPEN_BOARD} / {@code CLOSE_BOARD} rows
-     * of {@link CrossAxisRules} ({@code CLEAR_PKB_SYMBOL_MODE}). It stays inside the board
-     * mechanism rather than being applied by the funnel because it has to run before the open or
-     * close — it re-enters the keyboard loader — and both halves of the toggle share this one
-     * prologue.
+     * Shared prologue of open and close. Resets a PKB in symbol mode to alphabet so the alphabet is
+     * loaded when the panel is dismissed (it must run before the open or close, since it re-enters
+     * the keyboard loader), and cancels a pending key-state restore so it cannot hit the new board.
      */
     private void beginBoardTransition() {
         KeyboardSwitcher ks = KeyboardSwitcher.getInstance();
@@ -606,57 +522,26 @@ public class UnifiedInputBoardManager implements SimplifiedKeyboardView.onKeyEve
     }
 
     /**
-     * Bar-action dispatch: the OPEN half of the toggle, plus the bar keys that are not boards at
-     * all (-3 alphabet, -26/-45 settings, anything absent from the component map).
+     * The open half of the toggle (from {@link #openBoard(int)}), plus bar keys that are not
+     * boards (-3 alphabet, -26/-45 settings, unregistered codes). It never re-decides open versus
+     * close from view state: the board is opened unconditionally (show() is guarded) and the
+     * coordinator is set from the result.
      *
-     * <p>It is reached from {@link #openBoard(int)} — i.e. from the coordinator having already
-     * decided "open" — and from {@link #handleKeyEvent} for those non-board codes. Closes go to
-     * {@link #closeBoard(int)}, its matched other half over the same
-     * {@link #beginBoardTransition()} prologue.
-     *
-     * <p>Defect 8 (the board "dead press"): this method used to re-decide open-versus-close from
-     * {@code component.isShowing()} — the clobberable view state the coordinator was introduced to
-     * stop deciding from. When the two disagreed the press did the opposite of what it asked for:
-     * the coordinator said "closed", so {@code requestBoard} took the OPEN path, and the
-     * {@code isShowing()} re-check here saw the view up and CLOSED the board. The user's press to
-     * open closed it; only the second press opened it. (Production reached that desync easily:
-     * {@link #showEmojiBoard()} shows a board straight through the component and reports nothing,
-     * and the PKB symbol load called it — until 2026-10-01, when that load stopped raising the
-     * bar — without the follow-up {@code setActiveComponentByKeyCode} that
-     * {@code showEmojiKeyboard} does.)
-     *
-     * <p>Where the view and the coordinator disagree, <b>the coordinator wins and the view is
-     * repaired to match</b> rather than the disagreement merely being ignored — ignoring it would
-     * leave a visibly-open board the coordinator believes is closed, which just moves the bug one
-     * press later. Repair costs nothing extra: {@link UnifiedInputBoardComponent#show()} is guarded
-     * on the component's own {@code isShowing()}, so a board whose view is already up is simply
-     * left up, and the {@code setActiveComponent} that follows brings the coordinator's copy into
-     * line. Both halves end the press agreeing the board is open, which is what the press asked
-     * for. The audit notes this changes one edge case, and that change IS the fix.
+     * @param iM6232c the bar key's code
      */
     private void dispatchBoardAction(int iM6232c) {
         dumpUimState("dispatchBoardAction.ENTRY", iM6232c);
         beginBoardTransition();
-        // ===== EXCLUSIVE-OPEN INVARIANT (UIM-01/UIM-04/UIM-10) =====
-        // SITE 2 of the Phase 1f split: "whatever else was open" means a PANEL board.
-        // getActiveComponent() can only ever answer with one — the coordinator's activeBoard holds
-        // panel keycodes only, and panelComponent() refuses the typing boards a second time — so
-        // this invariant can never reach round and hide() the keyboard itself.
+        // Exclusive open. Only panel boards can be active, so this never hides the keyboard itself.
         UnifiedInputBoardComponent previousActive = getActiveComponent();
         if (previousActive != null && previousActive.getKeyCode() != iM6232c) {
-            // Defect 8: this guard used to be gated on previousActive.isShowing() as well, so
-            // switching away from a board whose view had been clobbered down skipped the guard
-            // entirely — nothing closed AND the coordinator was left pointing at the old board,
-            // which then made the target's own isShowing() re-check below close it. Result: the
-            // user asked to switch boards and ended up with nothing open. hide() carries its own
-            // isShowing() guard, so dropping the gate is a no-op when the view really is down,
-            // and the setActiveComponent(null) repairs the coordinator either way.
+            // Not gated on isShowing(): a board whose view was clobbered down must still be
+            // cleared from the coordinator (hide() has its own guard).
             Logger.debug(TAG, "Exclusive-open: closing active board " + previousActive.getKeyCode() + " before opening " + iM6232c);
             previousActive.hide();
             setActiveComponent(null);
         }
 
-        // Hide any other stray showing components (defense-in-depth)
         hideOtherComponents(iM6232c);
         
         if (iM6232c == -3) {
@@ -665,8 +550,7 @@ public class UnifiedInputBoardManager implements SimplifiedKeyboardView.onKeyEve
             if (isSlideboardShowing()) {
                 showAndRefreshForSlideboard();
             } else {
-                // The menu's keyboard key puts the menu away: back to the field's own bar, with
-                // the strip's words as they are (InputViewCoordinator.putMenuAway).
+                // Back to the field's own bar, keeping the strip's words.
                 dev.bbkb.ime.core.ime.InputViewCoordinator ui = this.imeService.getUiCoordinator();
                 if (ui != null) {
                     ui.putMenuAway();
@@ -678,47 +562,24 @@ public class UnifiedInputBoardManager implements SimplifiedKeyboardView.onKeyEve
             this.imeService.openSettings();
         } else {
             if (iM6232c == -27) {
-                // Voice input
                 UnifiedInputBoardComponent voiceComponent = panelComponent(iM6232c);
                 if (voiceComponent instanceof dev.bbkb.ime.keyboard.inputboard.voice.VoiceInputController) {
                     dev.bbkb.ime.keyboard.inputboard.voice.VoiceInputController voiceController =
                         (dev.bbkb.ime.keyboard.inputboard.voice.VoiceInputController) voiceComponent;
-                    // Defect 8, voice flavour: this used to call toggleVoiceInput()
-                    // unconditionally and then report null-or-open from the PREVIOUS mode flag —
-                    // the same view-derived toggle as the branch below, so an open request that
-                    // arrived while a recognizer session was already running stopped it. On the
-                    // open path we start voice only when it is not already running, and report the
-                    // open either way so the coordinator matches what the microphone is doing.
+                    // Open never stops a running session.
                     if (!voiceController.isInVoiceMode()) {
                         voiceController.toggleVoiceInput();
                     }
-                    // Report the result, as the branch below does: with no recognition service
-                    // the open is refused and voice mode stays off, and reporting voice open
-                    // anyway made the next press a "close" of nothing.
+                    // Report the result: with no recognition service voice mode stays off.
                     setActiveComponent(voiceController.isInVoiceMode() ? voiceComponent : null);
                 }
             } else {
-                // Every other board, emoji included: EmojiBoardController answers isShowing()
-                // from the KeyboardState machine and drives show/hide through it, so emoji no
-                // longer needs a branch of its own here (§5.6 item 4).
-                // FCC, Clipboard, Number pad, Emoji, Autofill.
+                // FCC, clipboard, number pad, emoji (driven through KeyboardState), autofill.
                 UnifiedInputBoardComponent interfaceC1012j = panelComponent(iM6232c);
                 if (interfaceC1012j != null) {
-                    // Unconditional open — see the method comment. show() is guarded on the
-                    // component's own isShowing(), so a board whose view is already up is left up
-                    // rather than closed, and the report below repairs the coordinator's copy.
-                    // The close half of the old toggle (and its -42 suggestion-strip restore)
-                    // lives in closeBoard(int), which is where the coordinator sends closes.
                     interfaceC1012j.show();
-                    // ...but report the RESULT, not the intention. The BoardHost contract says so
-                    // in as many words ("a failed open leaves the coordinator truthful instead of
-                    // assuming success") and this line was the one place that broke it. A board
-                    // can refuse: FccController.showFcc() carries its own precondition (no
-                    // physical key held) and any board whose ViewStub has not been inflated is a
-                    // silent no-op. Reporting the open anyway left activeBoard pointing at a board
-                    // that never appeared, so the user's NEXT tap on that icon took requestBoard's
-                    // CLOSE branch and did nothing — one refusal cost two taps, not one, which is
-                    // what turns a transient refusal into "the icon sometimes does nothing".
+                    // Report the result, not the intention: a board can refuse (FCC with a physical
+                    // key held, an uninflated ViewStub), and a false "open" makes the next tap dead.
                     if (interfaceC1012j.isShowing()) {
                         setActiveComponent(interfaceC1012j);
                         if (iM6232c == -37) {
@@ -739,7 +600,6 @@ public class UnifiedInputBoardManager implements SimplifiedKeyboardView.onKeyEve
     }
 
     private void handleKeyEvent(Key key, boolean isLongPress) {
-        // Ensure components are registered before handling key events
         ensureComponentsRegistered();
 
         int iM6232c = key.getCode();
@@ -747,16 +607,8 @@ public class UnifiedInputBoardManager implements SimplifiedKeyboardView.onKeyEve
             iM6232c = key.getLongPressCode();
         }
 
-        // PANEL board keys route through the coordinator so touch and physical keys share ONE
-        // toggle decision point (and the coordinator's active-board state stays truthful for both).
-        // Everything else keeps the legacy dispatch: the centre alphabet key (-3), the settings keys
-        // (-26/-45), and anything absent from the registry.
-        //
-        // Phase 1f: this used to ask only "is this keycode registered", which the centre alphabet
-        // key answered no to because the alphabet board was not in the map. Now that it is, the
-        // question has to be the one that was always meant — is this a PANEL board — or a tap on
-        // the centre key would be handed to the coordinator's toggle instead of running the -3
-        // branch (close the board, restore the strip) that it has always run.
+        // Panel board keys go through the coordinator, as physical keys do. The centre -3 key is
+        // registered too but must take dispatchBoardAction's branch (close, restore the strip).
         if (CrossAxisRules.isPanelBoard(iM6232c) && this.componentMap != null
                 && this.componentMap.containsKey(Integer.valueOf(iM6232c))) {
             this.boardCoordinator.requestBoard(iM6232c);
@@ -765,7 +617,8 @@ public class UnifiedInputBoardManager implements SimplifiedKeyboardView.onKeyEve
         dispatchBoardAction(iM6232c);
     }
 
-    @Override // dev.bbkb.ime.keyboard.SimplifiedKeyboardView.onKeyEventListener
+    /** @param z true if released over the key that was pressed (a real tap) */
+    @Override
     public void onKeyUp(Key key, boolean z) {
         if (!z) {
             return;
@@ -778,7 +631,7 @@ public class UnifiedInputBoardManager implements SimplifiedKeyboardView.onKeyEve
         handleKeyEvent(key, false);
     }
 
-    @Override // dev.bbkb.ime.keyboard.SimplifiedKeyboardView.onKeyEventListener
+    @Override
     public void onKeyLongPress(Key key) {
         if (isAnimating()) {
             pendingAnimationKey = key;
@@ -789,9 +642,7 @@ public class UnifiedInputBoardManager implements SimplifiedKeyboardView.onKeyEve
     }
 
     private KeyboardBuilder createKeyboardBuilder() {
-        // The UIM bar is the one board keyboard that is NOT keyboard-height: it is one
-        // suggestion-strip row tall, so it passes its own geometry rather than using
-        // BoardKeyboardFactory's standard board size.
+        // The bar is one suggestion-strip row tall, not keyboard height.
         Resources resources = this.context.getResources();
         return BoardKeyboardFactory.builder(
                 this.context,
@@ -799,11 +650,7 @@ public class UnifiedInputBoardManager implements SimplifiedKeyboardView.onKeyEve
                 ResourceConfigManager.getScreenWidthPixels(resources),
                 ResourceConfigManager.getSuggestionsStripHeight(resources));
     }
-    
-    /**
-     * Phase 2 Optimization: Lazy registration of input board components.
-     * Registers components only when needed, not during construction.
-     */
+
     private void ensureComponentsRegistered() {
         if (!componentsRegistered) {
             Logger.debug("UIMKeyHandler", "Registering components...");
@@ -814,11 +661,8 @@ public class UnifiedInputBoardManager implements SimplifiedKeyboardView.onKeyEve
     }
     
     /**
-     * Phase 3 Optimization: Get or build keyboard with caching.
-     * Reuses cached keyboard when possible to avoid redundant XML parsing.
-     * The actual keyboard building (XML parsing) is expensive and done lazily here.
-     * Public because AuxBarManager's no-argument showUnifiedInputMenu() fallback must
-     * come through here too — a bar built anywhere else would skip the user's menu order.
+     * The bar keyboard, parsed once and cached. AuxBarManager's fallback must build through here
+     * too, or the bar would skip the user's menu order.
      */
     public Keyboard getOrBuildKeyboard() {
         if (cachedKeyboard == null) {
@@ -830,12 +674,9 @@ public class UnifiedInputBoardManager implements SimplifiedKeyboardView.onKeyEve
     }
 
     /**
-     * Rebuilds the four toggle slots of the freshly parsed UIM bar to match
-     * pref_uim_menu_order. The slots are the bar's keys in x order minus the fixed
-     * center alphabet key. Prototypes for every toggle — including ones absent from
-     * the default bar XML — are parsed from kbd_unified_input_menu_pool.xml and cloned
-     * onto slot geometry with Key(prototype, slot). No-op when the stored order already
-     * matches the parsed XML.
+     * Rebuild the four toggle slots (bar keys in x order, minus the centre -3) to match
+     * pref_uim_menu_order, cloning prototypes from kbd_unified_input_menu_pool.xml onto the slot
+     * geometry. No-op when the order already matches the XML.
      */
     private void applyMenuOrder(Keyboard keyboard) {
         List<Integer> desired = UimMenuOrder.getShownKeyCodes(PrefsManager.INSTANCE.getPrefs(this.context));
@@ -881,10 +722,7 @@ public class UnifiedInputBoardManager implements SimplifiedKeyboardView.onKeyEve
         }
     }
 
-    /**
-     * pref_uim_menu_order changed: rebuild the bar (and re-show it if visible).
-     * updateTheme() already does exactly that invalidate-rebuild-reapply cycle.
-     */
+    /** Rebuild (and re-show) the bar; updateTheme() does exactly that cycle. */
     public void onMenuOrderChanged() {
         updateTheme(this.context);
     }
@@ -911,12 +749,8 @@ public class UnifiedInputBoardManager implements SimplifiedKeyboardView.onKeyEve
     }
 
     /**
-     * The registered <b>panel</b> board for {@code keyCode}, or null.
-     *
-     * <p>The one lookup every open/close path uses, so the typing boards cannot be opened or closed
-     * by the board framework even if a keycode reaches a dispatch branch that would try. They are
-     * loaded by {@code KeyboardSwitcher}'s keyboard loaders instead — the layout axis — and their
-     * {@code onShow}/{@code onHide} are documented no-ops for exactly this reason.
+     * The registered panel board for {@code keyCode}, or null. Every open and close path uses it,
+     * so typing boards can never be opened or closed by the board framework.
      */
     private UnifiedInputBoardComponent panelComponent(int keyCode) {
         return (this.componentMap != null && CrossAxisRules.isPanelBoard(keyCode))
@@ -929,22 +763,15 @@ public class UnifiedInputBoardManager implements SimplifiedKeyboardView.onKeyEve
     }
 
     /**
-     * Hide every showing component except the boards named — the sweep with a set of exemptions
-     * rather than one, for the {@code PHYSICAL TEXT KEY} row, whose exempt set
-     * ({@link CrossAxisRules#boardsExemptFromTextKey()}) has two members since owner ruling R3(b).
-     * {@link #hideOtherComponents(int)} is the one-member case.
+     * Hide every showing panel board except those named (e.g.
+     * {@link CrossAxisRules#boardsExemptFromTextKey()}). The active board is not spared.
      */
     public void hideComponentsExcept(int[] exceptKeyCodes) {
-        // Hide all showing components EXCEPT the ones identified.
-        // The activeComponent exclusion was removed (UIM-01 fix): the exclusive-open
-        // invariant in dispatchBoardAction() now handles closing the active board before we get here.
         final int activeKeyCode = this.boardCoordinator.activeBoard();
         boolean sweptTheActiveBoard = false;
         for (Map.Entry<Integer, UnifiedInputBoardComponent> entry : this.componentMap.entrySet()) {
             UnifiedInputBoardComponent value = entry.getValue();
-            // A sweep takes down PANEL boards. A typing board is not something that can be swept:
-            // it is the main keyboard view, and the alphabet board is always up, so before the
-            // Phase 1f split every sweep would have "hidden" the keyboard on every pass.
+            // Panel boards only: a typing board is the main keyboard view.
             if (value != null && CrossAxisRules.isPanelBoard(entry.getKey().intValue())
                     && !isExempt(exceptKeyCodes, entry.getKey().intValue())
                     && value.isShowing()) {
@@ -957,18 +784,9 @@ public class UnifiedInputBoardManager implements SimplifiedKeyboardView.onKeyEve
                 sweptTheActiveBoard |= entry.getKey().intValue() == activeKeyCode;
             }
         }
-        // Defect 8, third finding: this sweep reaches straight into each component's hide(),
-        // bypassing the normal close paths, and used to report nothing — so afterwards the
-        // coordinator still claimed a board it had just taken down and getActiveComponent()
-        // handed back a board whose view was gone. That is precisely the coordinator/view desync
-        // the toggle above has to survive, manufactured by the UIM itself, and only the explicit
-        // reconcile in hideKeyboardOnKeyboardStateChange repaired it. Report the close here so the
-        // sweep stops making the state it is supposed to be defending.
-        //
-        // Recursion is bounded: setActiveComponent -> updateKeyHighlightedStates can call
-        // hideOtherComponents(-37) again, but activeBoard is already NO_BOARD by then (the notify
-        // runs before the highlight pass) and NO_BOARD matches no registered keycode, so the
-        // nested call can never report again.
+        // The sweep bypasses the close paths, so it must report the close or the coordinator would
+        // keep a board that is gone. Recursion via updateKeyHighlightedStates is bounded:
+        // activeBoard is already NO_BOARD when it re-enters.
         if (sweptTheActiveBoard) {
             setActiveComponent(null);
         }
@@ -986,12 +804,10 @@ public class UnifiedInputBoardManager implements SimplifiedKeyboardView.onKeyEve
     public void hideAllComponents() {
         for (Map.Entry<Integer, UnifiedInputBoardComponent> entry : this.componentMap.entrySet()) {
             UnifiedInputBoardComponent component = entry.getValue();
-            // "All" means all the PANEL boards — see hideComponentsExcept.
             if (component != null && CrossAxisRules.isPanelBoard(entry.getKey().intValue())) {
                 component.hide();
             }
         }
-        // All components hidden, clear active state
         setActiveComponent(null);
     }
 
@@ -1004,11 +820,7 @@ public class UnifiedInputBoardManager implements SimplifiedKeyboardView.onKeyEve
         updateAlphabetKeyForSlideboard();
     }
 
-    /**
-     * SITE 4 of the Phase 1f split: the slideboard's centre key is the settings key while no
-     * <em>panel</em> board is open. The typing boards are always behind the slideboard — that is
-     * what a slideboard is over — so counting them here would mean the settings key never appeared.
-     */
+    /** The slideboard's centre key is the settings key while no panel board is open. */
     private boolean isSlideboardActiveAndNoBoardOpen() {
         return isSlideboardShowing() && !isPanelBoardShowing();
     }
@@ -1022,14 +834,13 @@ public class UnifiedInputBoardManager implements SimplifiedKeyboardView.onKeyEve
             Key alphabetKey = keyboard.getKeyByCode(-3);
             if (alphabetKey != null) {
                 Key settingsKey = createSlideboardSettingsKey(alphabetKey, keyboard);
-                settingsKey.setActive(true);  // Set key's internal isActive to true for full brightness
+                settingsKey.setActive(true);  // Full brightness.
                 swapCentreKey(keyboard, alphabetKey, settingsKey);
             }
         } else {
             swapCentreKey(keyboard, keyboard.getKeyByCode(-26), this.cachedAlphabetKey);
         }
         updateKeyHighlightedStates(this.keyboardView.getKeyboard());
-        // Phase 1 Optimization: Batch invalidations
         scheduleInvalidation();
     }
 
@@ -1045,24 +856,9 @@ public class UnifiedInputBoardManager implements SimplifiedKeyboardView.onKeyEve
     }
 
     /**
-     * <b>IS A PANEL BOARD UP.</b> One of the two board questions; the other is <b>which</b> board is
-     * up, {@code KeyboardSwitcher.activeBoard()}.
-     *
-     * <p>Until Phase 1f there was one query for both, because the component map happened to contain
-     * only panel boards: "some component is showing" and "a panel is drawn over the keyboard" were
-     * the same sentence by accident. That accident is what stopped Phase 1d registering the typing
-     * boards — the alphabet board is <em>always</em> up, so every caller of the old
-     * {@code isAnyBoardShowing()} would have started believing a board was open forever: the
-     * layout-change sweep gate, the exclusive-open invariant, the bar's painting pass and the
-     * slideboard's centre key. Each of those means panels, and each of them now says so.
-     *
-     * <p>{@link CrossAxisRules#isPanelBoard(int)} is where the distinction lives; this method is
-     * only the probe. Answered from each component's own view, never from the coordinator — a board
-     * whose view a side effect clobbered down is not up, which is exactly what the sweep gate needs.
-     *
-     * <p>The inline autofill strip (−37) is <em>not</em> filtered out here, although it is not a
-     * board: it is skipped by name in the painting pass and spared by name by the sweeps, but it has
-     * always counted for this question and Phase 1f deliberately did not change that.
+     * Whether a panel board is up (which board is up is {@code KeyboardSwitcher.activeBoard()}).
+     * Answered from each component's own view, not the coordinator. The autofill strip (-37)
+     * counts here, though the painting pass and sweeps skip it.
      */
     public boolean isPanelBoardShowing() {
         if (this.componentMap == null) {
@@ -1079,11 +875,8 @@ public class UnifiedInputBoardManager implements SimplifiedKeyboardView.onKeyEve
     }
 
     /**
-     * The former name of {@link #isPanelBoardShowing()}, kept for one caller:
-     * {@code KeyboardSwitcher.SwitcherAxes.anyBoardIsOpen()}. That is the boundary
-     * {@code KeyboardSwitcherLayoutTransitionTest} characterises against a <em>mock</em> UIM, so the
-     * name it stubs is part of what that file pins; renaming it there would have meant editing the
-     * characterisation that proves this step changed nothing. Prefer the name above everywhere else.
+     * Alias of {@link #isPanelBoardShowing()} kept because
+     * {@code KeyboardSwitcherLayoutTransitionTest} stubs this name on a mock. Prefer the other.
      */
     public boolean isAnyBoardShowing() {
         return isPanelBoardShowing();
@@ -1099,9 +892,8 @@ public class UnifiedInputBoardManager implements SimplifiedKeyboardView.onKeyEve
     }
 
     /**
-     * Hand -14 ("board closed") to the keyboard switcher so the main keyboard comes back with the
-     * right shift state. Not a component call at all despite the name — the boards themselves are
-     * taken down by {@link #closeBoard(int)} / {@link #hideAllComponents()}.
+     * Send -14 ("board closed") to the keyboard switcher so the main keyboard returns with the
+     * right shift state. Does not hide any board.
      */
     public void closeActiveComponent() {
         InputLogic inputLogic = this.imeService.getInputLogic();
@@ -1116,6 +908,7 @@ public class UnifiedInputBoardManager implements SimplifiedKeyboardView.onKeyEve
         }
     }
 
+    /** @param c0965e the bar keyboard to paint */
     public void updateKeyHighlightedStates(Keyboard c0965e) {
         UnifiedInputBoardComponent value;
         if (c0965e == null) {
@@ -1126,44 +919,24 @@ public class UnifiedInputBoardManager implements SimplifiedKeyboardView.onKeyEve
         boolean keyboardIconHighlighted = true; // true when no board is open
         boolean foundActiveBoard = false;
 
-        // The per-component pass — painting AND the two force-closes it performs — runs only
-        // while the bar is up. When keyboardView is GONE the loop is skipped, which is what
-        // leaves keyboardIconHighlighted true and suppresses the hideOtherComponents(-37) below:
-        // in that state it would hide ALL showing components, including a board that was just
-        // opened before the UIM bar became visible.
+        // The per-component pass (painting and force-closes) and the sweep below run only while
+        // the bar is up; otherwise the sweep would close a board opened before the bar appeared.
         final boolean barIsUp = this.keyboardView.getVisibility() != View.GONE;
         if (barIsUp) {
             for (Map.Entry<Integer, UnifiedInputBoardComponent> entry : this.componentMap.entrySet()) {
                 int iIntValue = entry.getKey().intValue();
                 value = entry.getValue();
                 if (value == null || iIntValue == InlineAutofillManager.KEY_CODE_AUTOFILL) {
-                    // The inline-autofill strip is not a bar toggle: it has no key here, it is the
-                    // one component the sweep below spares by name, and it has never counted as
-                    // an open board. Skipping it keeps all three of those true.
+                    // The autofill strip is not a bar toggle and never counts as an open board.
                     continue;
                 }
                 if (!CrossAxisRules.isPanelBoard(iIntValue)) {
-                    // SITE 3 of the Phase 1f split. This pass answers "is a PANEL board open" and
-                    // spends the answer twice: on the centre key's highlight and on whether to run
-                    // the hideOtherComponents(-37) sweep below. The alphabet board is always
-                    // showing and always enabled, so letting a typing board into this loop would
-                    // set foundActiveBoard on every pass — un-highlighting the centre key for good
-                    // and suppressing the sweep that is the last line of defence against a
-                    // component left showing outside the coordinator's knowledge. The typing
-                    // boards also have nothing to paint here: -22 is not a bar toggle, and the
-                    // centre -3 key is painted explicitly after the loop.
+                    // Typing boards are always up: they would un-highlight the centre key for good
+                    // and suppress the sweep. The centre -3 key is painted after the loop.
                     continue;
                 }
-                // Whether a board is OPEN is decided from the component, never from whether its
-                // toggle happens to be on the bar. pref_uim_menu_order lets the user move a toggle
-                // off the four bar slots (the number pad in voice's slot, say), but the board itself
-                // stays reachable: the physical mic and multifunction keys open it through the
-                // coordinator, and every open path reports through setActiveComponent, which ends
-                // here. Deciding from the key used to skip such a board entirely, so the pass
-                // concluded "nothing is open" and the hideOtherComponents(-37) sweep below closed
-                // the board the press had just opened — for voice, recognizer cancelled and panel
-                // gone on every press. Only the PAINTING needs the key; a toggle that is not on the
-                // bar simply has nothing to paint.
+                // Openness comes from the component, not from its key being on the bar: a toggle
+                // moved off the bar is still opened by physical keys, and the sweep must not close it.
                 Key keyM6604b = c0965e.getKeyByCode(iIntValue);
                 boolean shouldHighlight = false;
                 boolean isShowing = value.isShowing();
@@ -1176,7 +949,7 @@ public class UnifiedInputBoardManager implements SimplifiedKeyboardView.onKeyEve
 
                 if (isShowing && isEnabled) {
                     if (foundActiveBoard) {
-                        // UIM-10: Exclusive-open violation detected — auto-heal
+                        // Exclusive-open violation: close the extra board.
                         Logger.warn(TAG, "Multiple boards showing! Force-closing extra: keycode=" + iIntValue);
                         value.hide();
                     } else {
@@ -1198,8 +971,7 @@ public class UnifiedInputBoardManager implements SimplifiedKeyboardView.onKeyEve
                 }
             }
         }
-        // The centre alphabet key is painted either way — while the bar is GONE the states are
-        // set on the Keyboard object for when it becomes visible. Only the sweep is gated.
+        // The centre key is painted even while the bar is GONE, for when it becomes visible.
         Key keyM6604b2 = c0965e.getKeyByCode(-3);
         if (keyM6604b2 != null) {
             keyM6604b2.setActive(true);
@@ -1213,11 +985,8 @@ public class UnifiedInputBoardManager implements SimplifiedKeyboardView.onKeyEve
     }
 
     private void registerComponents() {
-        // The two TYPING boards. Phase 1f: the component map is the single registry of every board,
-        // so the keyboard itself is in it — the alphabet board (-3) and the symbol board (-22), both
-        // of them adapters over KeyboardSwitcher rather than holders of a view. They are not panel
-        // boards ({@link CrossAxisRules#isPanelBoard(int)}), which is what keeps the sweeps, the
-        // exclusive-open invariant, the painting pass and the bar-tap routing off them.
+        // The typing boards are registered too, so the map names every board; they are not panel
+        // boards, which keeps sweeps, exclusive open, painting and bar-tap routing off them.
         registerComponent(new AlphabetBoardController());
         registerComponent(new SymbolBoardController());
 
@@ -1237,64 +1006,38 @@ public class UnifiedInputBoardManager implements SimplifiedKeyboardView.onKeyEve
         if (numberPadController != null) {
             registerComponent(numberPadController);
         }
-        // Emoji: the controller holds no view, so unlike the old arrangement — where
-        // EmojiPalettesView WAS the component and had to be peeked at here, then registered from
-        // the lazy getter at first inflation — it can just be registered with the rest. The
-        // ViewStub deferral (audit IB-1) is untouched; nothing here inflates anything.
+        // The emoji controller holds no view, so registering it inflates nothing.
         registerComponent(new EmojiBoardController(this.imeService));
-        
-        // Register inline autofill manager for Android 11+ autofill suggestions
+
         if (InlineAutofillManager.isSupported()) {
             registerComponent(InlineAutofillManager.getInstance(this.context));
         }
     }
     
     /**
-     * Refreshes the unified input bar to reflect the current theme.
-     * This should be called when the system theme changes to ensure the unified input bar
-     * uses the correct theme colors.
-     * 
-     * The themed context is constant (one style tree); rebuilding the keyboard makes
-     * every key re-pull its colors from KeyboardColorManager's current palette.
+     * Rebuild the bar after a theme change; the rebuild makes every key re-pull its colors from
+     * KeyboardColorManager (the themed context itself never changes).
      */
     public void updateTheme(Context context) {
-        // Phase 3 Optimization: Invalidate keyboard cache on theme change
-        // This forces rebuild with correct theme colors
         cachedKeyboard = null;
-        
-        // Refresh the keyboard layout to apply new theme
-        // The context already uses auto-detection, so this will pick up the new theme
+
         if (this.keyboardView != null && this.keyboardView.getKeyboard() != null) {
-            // Rebuild keyboard with new theme
             Keyboard newKeyboard = getOrBuildKeyboard();
             this.keyboardView.setKeyboard(newKeyboard);
             updateKeyHighlightedStates(newKeyboard);
-            // Apply color tint to icon set
             newKeyboard.mIconsSet.applyColorTint();
         }
-        
-        // Phase 1 Optimization: Single batched invalidation at end
+
         scheduleInvalidation();
     }
     
     /**
-     * The menu came up with the board that just closed: once nothing is open any more, the bar goes
-     * back to what the user had chosen (owner decision 2026-11-05, {@code AuxBarChoice}).
-     *
-     * <p>Deferred, not run here: switching from one board to another closes the first and only
-     * then opens the second ({@code dispatchBoardAction}, after {@code openBoard} has already
-     * raised the menu), so deciding at the close would take the menu down under the new board. The
-     * decision re-checks that nothing is open when it runs.
-     *
-     * <p>Deferred to the start of the next frame, not posted to the handler: the board's own hide
-     * has asked for a layout, and a layout request holds ordinary messages back until that frame
-     * is drawn, so a posted uncover drew one frame with the board gone and the menu still up (KEY2
-     * report, test build .29: "a tiny visual delay"). A frame callback runs before that frame's
-     * layout and draw, so the board goes and the strip comes back in the same frame.
+     * Once no board is open, return the bar to the user's choice ({@code AuxBarChoice}). Deferred
+     * because a board switch closes before it opens, and re-checked when it runs. A frame callback,
+     * not a handler post: the hide's layout request holds messages back, which drew one stale frame.
      */
     private void scheduleUncoverAfterBoardsClosed() {
-        // Created on first use rather than as a field initializer: the JVM harnesses build this
-        // class without running its constructor.
+        // Lazy, not a field initializer: JVM harnesses build this class without its constructor.
         if (this.uncoverAfterBoardsClosed == null) {
             this.uncoverAfterBoardsClosed = frameTimeNanos -> uncoverAfterBoardsClosedNow();
         }
@@ -1313,12 +1056,10 @@ public class UnifiedInputBoardManager implements SimplifiedKeyboardView.onKeyEve
     }
 
     /**
-     * Take the menu down onto the suggestion strip it covers, keeping the strip's words, and close
-     * no board. {@link #hide()} is the other way down: it empties the strip and closes every board,
-     * which is right for the window going away and wrong for "the board is closed, show the strip".
+     * Lower the menu onto the strip it covers, keeping the strip's words and closing no board.
+     * {@link #hide()} instead empties the strip and closes every board.
      */
     public void lowerMenuOntoStrip() {
-        // The menu is going down, so a menu the show-menu key asked for ends, as with hide().
         SettingsValues.setInputMenuRequestedByKey(false);
         this.keyboardView.animate().cancel();
         this.invalidationHandler.removeCallbacks(animationSafetyReset);
@@ -1334,17 +1075,12 @@ public class UnifiedInputBoardManager implements SimplifiedKeyboardView.onKeyEve
     }
 
     /**
-     * Set the currently active input board component and refresh icon colors.
-     * 
-     * @param component The active component, or null if no component is active
+     * The funnel every open and close path reports through; the only writer of the coordinator's
+     * state. Also repaints the bar.
+     *
+     * @param component the open board, or null if none is open
      */
     public void setActiveComponent(UnifiedInputBoardComponent component) {
-        // Single bookkeeping funnel for "which board is open": every open/close path
-        // ends here (dispatch branches, the KeyboardState emoji machine, the voice
-        // paths), and the coordinator's activeBoard — the ONLY copy of that state —
-        // is mutated exclusively from these reports. Syncing nulls became safe once
-        // board keys were exempted from the text-key dismissal (phase 2): nothing
-        // clears board state mid-press anymore.
         if (component != null) {
             this.boardCoordinator.notifyBoardOpened(component.getKeyCode());
         } else {
@@ -1355,29 +1091,18 @@ public class UnifiedInputBoardManager implements SimplifiedKeyboardView.onKeyEve
             }
         }
         dumpUimState("setActiveComponent", component != null ? component.getKeyCode() : 0);
-        
-        // Update key.isHighlighted state - this is what KeyboardView.drawKeyContent() uses
-        // to determine icon tint during rendering
+
+        // drawKeyContent() tints icons from key.isHighlighted.
         SimplifiedKeyboardView displayedView = getDisplayedView();
         Keyboard keyboard = displayedView != null ? displayedView.getKeyboard() : null;
         if (keyboard != null) {
             updateKeyHighlightedStates(keyboard);
         }
-        
-        // Trigger redraw
+
         scheduleInvalidation();
     }
-    
-    /**
-     * Get the currently active input board component.
-     * 
-     * @return The active component, or null if no component is active
-     */
-    /**
-     * Report an open by keycode, for callers that know which board opened but do not hold the
-     * component — the KeyboardState emoji machine, which drives the board from the other side.
-     * A no-op if nothing is registered under that keycode.
-     */
+
+    /** Report an open by keycode (the KeyboardState emoji machine); no-op if unregistered. */
     public void setActiveComponentByKeyCode(int keyCode) {
         UnifiedInputBoardComponent component = panelComponent(keyCode);
         if (component != null) {
@@ -1386,29 +1111,10 @@ public class UnifiedInputBoardManager implements SimplifiedKeyboardView.onKeyEve
     }
 
     /**
-     * Report that <em>{@code keyCode}'s</em> board has closed — the SCOPED counterpart of
-     * {@code setActiveComponent(null)}, for a close path that knows which board it is taking down.
-     *
-     * <p>{@code setActiveComponent(null)} says "nothing is open at all", and the coordinator's
-     * {@code activeBoard} is the only copy of that state, so a close path that calls it while a
-     * DIFFERENT board is open makes the coordinator forget a board that is still on screen. The
-     * next press of that board's key then finds {@code NO_BOARD} and takes the OPEN path — the
-     * press that should have closed the board does nothing (or re-opens it), which is defect 8's
-     * pathology arriving from the other side.
-     *
-     * <p>That is exactly what the physical mic key hit on the Key2. {@code KeyboardSwitcher
-     * .setKeyboard} calls {@code hideEmojiKeyboard()} on EVERY keyboard rebuild, and that method
-     * ended with an unscoped {@code setActiveComponent(null)}. Voice is the one board the user
-     * keeps open while text is committed (dictation results go through
-     * {@code BlackBerryIME.onTextInput}, which ends in {@code onInputCodeChanged} → the shift
-     * chain → {@code setAlphabetKeyboard} → {@code setKeyboard}), so the first dictated word made
-     * the coordinator forget the open voice board while the panel — which
-     * {@code hideEmojiKeyboard} does not touch — stayed up. The number pad, the other board typed
-     * from, was one rebuild away from the same fate.
-     *
-     * <p>The painting half runs either way, so a rebuild repaints the bar exactly as it did when
-     * this was an unconditional {@code setActiveComponent(null)}; only the STATE mutation is
-     * scoped to the board the caller is actually closing.
+     * Scoped close: clears the coordinator only if {@code keyCode} is the active board, but always
+     * repaints. Use it instead of {@code setActiveComponent(null)} when another board may be open;
+     * e.g. {@code hideEmojiKeyboard()} runs on every keyboard rebuild, including while voice or the
+     * number pad is typed from.
      */
     public void reportBoardClosed(int keyCode) {
         if (this.boardCoordinator.activeBoard() == keyCode) {
@@ -1428,20 +1134,9 @@ public class UnifiedInputBoardManager implements SimplifiedKeyboardView.onKeyEve
         return kc != UnifiedBoardCoordinator.NO_BOARD ? panelComponent(kc) : null;
     }
 
-    // ===== UnifiedBoardCoordinator.BoardHost =====
-    // The coordinator owns the single toggle decision for external/physical board
-    // keys, deciding from the authoritative active-board state below — never from a
-    // component's isShowing(), which a key-down side effect can clobber.
-
     /**
-     * The OPEN half. Reached from the coordinator (bar taps, physical board keys, gestures,
-     * accessibility) once it has decided this board should be open.
-     *
-     * <p>Ensures components are registered (lazy init), ensures the UIM bar itself is visible —
-     * transitioning the AuxBar out of suggestions mode — and then dispatches. Raising the bar
-     * first is what makes the dispatch's key painting see the newly-opened board: with the
-     * {@code hideOtherComponents(-37)} guard in {@code updateKeyHighlightedStates}, no component
-     * is force-hidden by the GONE→VISIBLE transition.
+     * Open half, called once the coordinator decided "open". Raises the bar before dispatching so
+     * the painting pass sees the new board instead of sweeping it.
      */
     @Override
     public void openBoard(int keyCode) {
@@ -1453,48 +1148,30 @@ public class UnifiedInputBoardManager implements SimplifiedKeyboardView.onKeyEve
         dispatchBoardAction(keyCode);
     }
 
-    /** The CLOSE half, matching {@link #openBoard(int)} over the same prologue. */
+    /** Close half, over the same prologue as {@link #openBoard(int)}. */
     @Override
     public void closeBoard(int keyCode) {
         beginBoardTransition();
-        // Close by keycode with per-board semantics, not via activeComponent — a
-        // key-down side effect may have already hidden the view and cleared both
-        // activeComponent and the board's own mode flag (isInVoiceMode /
-        // isInEmojiMode), in which case each branch below is a safe no-op.
+        // By keycode, not activeComponent: the view and mode flag may already be cleared, in
+        // which case each branch is a safe no-op.
         UnifiedInputBoardComponent c = panelComponent(keyCode);
         if (keyCode == -27) {
-            // Voice: terminate recognition unconditionally, not gated on the mode
-            // flag — a key-down side effect may have hidden the view and cleared
-            // isInVoiceMode while a recognizer session is still winding down.
-            // cancelVoiceInput() is idempotent (cancels the recognizer, resets the
-            // mode, hides the view), guaranteeing panel-closed ⇒ mic released.
+            // Unconditional, so a winding-down recognizer always releases the mic (idempotent).
             if (c instanceof VoiceInputController) {
                 ((VoiceInputController) c).cancelVoiceInput();
             } else if (c != null && c.isShowing()) {
                 c.hide();
             }
         } else if (c != null) {
-            // Emoji included: EmojiBoardController.hide() carries the state-machine exit and the
-            // "mode flag already cleared but the palettes are still up" fallback that used to be
-            // a branch here, and it is unconditional for the same reason (§5.6 item 4). Every
-            // other board's hide() is guarded on its own isShowing(), so this stays a safe no-op.
+            // Emoji's hide() is unconditional; every other hide() is guarded.
             c.hide();
         }
-        // Report the close through the bookkeeping funnel (idempotent — the per-board
-        // branches above may already have cascaded here via their own close paths).
+        // Idempotent; setActiveComponent also schedules what the bar returns to.
         setActiveComponent(null);
-        // What the bar goes back to is the funnel's business now (setActiveComponent schedules
-        // the uncover). Closing FCC on the on-screen keyboard used to put the strip back here
-        // (the original app's menu-key rule); owner decision 2026-11-05 dropped it, so a menu the
-        // user raised stays up when FCC closes.
         refresh();
     }
 
-    /**
-     * External/physical board-key entry point: toggle {@code keyCode}'s board through
-     * the coordinator so a second press closes it (fixes the reopen bug where a
-     * key-down side effect hid the view before key-up re-derived visibility).
-     */
+    /** Entry point for physical board keys: toggle through the coordinator. */
     public void requestBoard(int keyCode) {
         this.boardCoordinator.requestBoard(keyCode);
     }
@@ -1502,12 +1179,8 @@ public class UnifiedInputBoardManager implements SimplifiedKeyboardView.onKeyEve
     public UnifiedBoardCoordinator getBoardCoordinator() {
         return this.boardCoordinator;
     }
-    
-    /**
-     * Get the SimplifiedKeyboardView that's actually being displayed.
-     * When AuxBarManager is used, it's the sharedKeyView from AuxBarView.
-     * Otherwise, fallback to keyboardView.
-     */
+
+    /** The key view actually on screen: the AuxBar's shared view, else keyboardView. */
     private SimplifiedKeyboardView getDisplayedView() {
         AuxBarManager auxBarManager = bar();
         if (auxBarManager != null) {
@@ -1518,11 +1191,8 @@ public class UnifiedInputBoardManager implements SimplifiedKeyboardView.onKeyEve
         }
         return this.keyboardView;
     }
-    
-    /**
-     * Phase 1 Optimization: Schedule batched invalidation to reduce layout passes.
-     * Multiple calls within ClipboardItem short time window will be coalesced into ClipboardItem single invalidate().
-     */
+
+    /** Coalesce invalidations into one posted invalidate(). */
     private void scheduleInvalidation() {
         if (!pendingInvalidation) {
             pendingInvalidation = true;
@@ -1530,7 +1200,6 @@ public class UnifiedInputBoardManager implements SimplifiedKeyboardView.onKeyEve
                 @Override
                 public void run() {
                     pendingInvalidation = false;
-                    // Invalidate the ACTUAL displayed view, not keyboardView
                     SimplifiedKeyboardView displayedView = getDisplayedView();
                     if (displayedView != null) {
                         displayedView.invalidate();

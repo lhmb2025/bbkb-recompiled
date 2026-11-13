@@ -27,34 +27,10 @@ import org.robolectric.annotation.Config;
 import java.util.Locale;
 
 /**
- * The held-key accounting behind {@link PhysicalKeyboardStateTracker#getNumberOfKeysDown()}.
- *
- * <p>That number is not bookkeeping for its own sake: it is the one extra precondition
- * {@code FccController.showFcc()} carries. While it reads non-zero the fine-cursor-control board
- * refuses to open, silently, from every entry point — the UIM bar icon included. So any way the
- * number can be wrong in the positive direction is a way for FCC to be dead on a real device until
- * the input connection restarts, which is the owner-reported "FCC sometimes does not open when
- * tapping on its icon".
- *
- * <p>It used to be a bare counter incremented on key-down and decremented on key-up, and the two
- * halves are not reliably paired in production:
- *
- * <ul>
- *   <li>{@code KeyEventProcessor.onKeyDownInternal} increments for every physical key-down it
- *       reaches, but the matching decrement in {@code onKeyUpInternal} runs only inside
- *       {@code if (isKeyTracked(event))} — and a key-down whose converted {@code InputEvent}
- *       carries no data is deliberately left untracked.</li>
- *   <li>Several key-up branches return before the tracker is told anything at all: a control-mode
- *       chord ({@code ControlModeController.handleHardKeyUp}, which is consulted on the up path
- *       without the {@code isInputActive && isInputViewShown} gate its down twin has), the Cangjie
- *       shift branch, the Alt+Enter branch.</li>
- *   <li>The accessibility all-keys callback pre-processes keys through
- *       {@code processKeyEventForState}, which reaches the same {@code handleKeyDown}.</li>
- * </ul>
- *
- * <p>Each of those leaks left the counter permanently positive. A set of held key codes cannot be
- * permanently positive in the same way: the next press-and-release of the leaked key discharges
- * it. These tests pin that, and the negative controls pin that ordinary counting is unchanged.
+ * Pins the held-key set behind {@link PhysicalKeyboardStateTracker#getNumberOfKeysDown()}, which
+ * {@code FccController.showFcc()} requires to be zero. Key-downs and key-ups are not reliably paired
+ * (untracked keys, key-up branches that return early, accessibility double dispatch), so a leaked
+ * key must be discharged by its next press and release, and a stray key-up must not release another.
  */
 @RunWith(RobolectricTestRunner.class)
 @Config(sdk = 34, manifest = Config.NONE)
@@ -98,8 +74,6 @@ public class PhysicalKeyboardStateTrackerHeldKeysTest {
     private void up(int keyCode) {
         tracker.handleKeyUp(keyCode, event(KeyEvent.ACTION_UP, keyCode, 0));
     }
-
-    // ── negative controls: ordinary counting is unchanged ────────────────────
 
     @Test
     public void nothingIsHeldToBeginWith() {
@@ -163,14 +137,9 @@ public class PhysicalKeyboardStateTrackerHeldKeysTest {
         assertEquals(0, tracker.getNumberOfKeysDown());
     }
 
-    // ── the leaks the bare counter could not survive ─────────────────────────
-
     /**
-     * The double-dispatch leak. The accessibility all-keys callback pre-processes a key through
-     * {@code processKeyEventForState} and the IME's own {@code onKeyDownInternal} processes it
-     * again; both reach {@code handleKeyDown} with the same event. The counter went to 2 and the
-     * single key-up brought it back to 1 — FCC dead from then on. The same key held once is one
-     * key held, however many times the press was reported.
+     * The accessibility all-keys callback and {@code onKeyDownInternal} both reach
+     * {@code handleKeyDown} with the same event; that is still one held key.
      */
     @Test
     public void theSameKeyReportedDownTwiceIsStillOneHeldKey() {
@@ -185,10 +154,8 @@ public class PhysicalKeyboardStateTrackerHeldKeysTest {
     }
 
     /**
-     * The swallowed-key-up leak, and the one that matters most: it is permanent under a counter.
-     * A key-up consumed before the tracker is told (a control-mode chord release, the Cangjie
-     * shift, Alt+Enter, a key released after {@code isKeyTracked} stopped answering) leaves the
-     * key counted as held forever. Pressing and releasing that same key again must discharge it.
+     * A key-up consumed before the tracker is told (control-mode chord, Cangjie shift, Alt+Enter,
+     * an untracked key) must be discharged by the next press and release of that key.
      */
     @Test
     public void aSwallowedKeyUpIsDischargedByTheNextPressOfTheSameKey() {
@@ -202,11 +169,7 @@ public class PhysicalKeyboardStateTrackerHeldKeysTest {
                 0, tracker.getNumberOfKeysDown());
     }
 
-    /**
-     * And the converse must not be used to paper over a real held key: an unmatched key-up is a
-     * no-op, it does not cancel some <em>other</em> key's press. The old counter decremented
-     * blindly, so a stray release reported FCC as safe to open while a key really was held.
-     */
+    /** An unmatched key-up is a no-op; it must not cancel another key's press. */
     @Test
     public void anUnmatchedKeyUpDoesNotReleaseSomeOtherKey() {
         down(KeyEvent.KEYCODE_A);
@@ -224,13 +187,9 @@ public class PhysicalKeyboardStateTrackerHeldKeysTest {
         assertEquals(0, tracker.getNumberOfKeysDown());
     }
 
-    // ── the held Sym key ─────────────────────────────────────────────────────
-
     /**
-     * The PKB symbol board closes itself after the symbol typed on it; holding Sym is what keeps
-     * it open instead (owner decision, 2026-09-22, replacing the "Close symbol keyboard after
-     * symbol" setting). {@code KeyboardState} asks this question through
-     * {@code SwitcherCallbacks.isSymKeyHeld()}.
+     * The PKB symbol board closes after one symbol unless Sym is held; {@code KeyboardState} asks
+     * through {@code SwitcherCallbacks.isSymKeyHeld()}.
      */
     @Test
     public void theSymKeyIsHeldBetweenItsPressAndItsRelease() {
@@ -250,14 +209,11 @@ public class PhysicalKeyboardStateTrackerHeldKeysTest {
         assertFalse(tracker.isSymKeyHeld());
     }
 
-    /**
-     * The MP01's ROM attaches {@code KEYCODE_ALT_RIGHT} to its Sym scancode, so the key-event
-     * path names the key code it resolved rather than this class assuming {@code KEYCODE_SYM}.
-     */
+    /** Some ROMs map the Sym scancode to {@code KEYCODE_ALT_RIGHT}; the tracker uses the set code. */
     @Test
     public void aDeviceWhoseSymKeyReportsAnotherKeyCodeIsHeldByThatKeyCode() {
-        // KEYCODE_ALT_RIGHT is a modifier key code, so this is the one test here that takes the
-        // tracker's modifier arm — which reads the long-press timeout out of the settings.
+        // A modifier key code takes the tracker's modifier arm, which reads the long-press timeout
+        // from settings.
         Context context = ApplicationProvider.getApplicationContext();
         SettingsManager.initialize(context);
         SettingsManager.getInstance().loadSettings(context, Locale.US,

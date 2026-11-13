@@ -15,16 +15,9 @@ import org.robolectric.annotation.Config
 import java.util.Locale
 
 /**
- * Pins the tier chain of [AuxCharacterResolver] — and, above all, pins that there is no tier
- * below the two tables.
- *
- * There used to be one: a hardcoded AZERTY/QWERTZ table keyed off the keypad-layout name, which
- * fired on any device whose config declared no `<layout-alt-overrides>`. The KEY2 (athena) is
- * exactly such a device, and its firmware already ships a correct per-layout KeyCharacterMap
- * (`/vendor/usr/keychars/stmpe{,_azerty,_qwertz}.kcm`), so that table did nothing but *displace*
- * the right answer with a wrong one: its AZERTY half turned Alt+P from `@` into `*`, Alt+V from
- * `?` into `7` and Alt+Y from `)` into `1`, and its QWERTZ half simply restated the QWERTY
- * values. The keycodes it claimed are the ones asserted dead below.
+ * Pins the tier chain of [AuxCharacterResolver], and that there is no tier below the two tables:
+ * with none declared, keys fall through to the device KCM (on the KEY2 the firmware's
+ * `stmpe{,_azerty,_qwertz}.kcm` already has the right per-layout answer).
  */
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [34], manifest = Config.NONE)
@@ -34,7 +27,7 @@ class AuxCharacterResolverTest {
         pairs.forEach { (keyCode, c) -> addMapping(keyCode, c) }
     }
 
-    /** Every keycode the retired hardcoded AZERTY/QWERTZ table used to claim. */
+    /** Keycodes a hardcoded AZERTY/QWERTZ table would claim; they must fall through to the KCM. */
     private val formerlyHardcoded = intArrayOf(
         KeyEvent.KEYCODE_A, KeyEvent.KEYCODE_P, KeyEvent.KEYCODE_V,
         KeyEvent.KEYCODE_Y, KeyEvent.KEYCODE_Z
@@ -55,7 +48,7 @@ class AuxCharacterResolverTest {
     @Test
     fun keyEventWithNoTables_neverReturnsARetiredHardcodedValue() {
         val resolver = AuxCharacterResolver.Builder().build()
-        // The four AZERTY entries that used to displace the firmware's own answer.
+        // AZERTY values that would displace the firmware's own answer.
         for ((keyCode, retired) in listOf(
             KeyEvent.KEYCODE_A to '#', KeyEvent.KEYCODE_P to '*',
             KeyEvent.KEYCODE_V to '7', KeyEvent.KEYCODE_Y to '1'
@@ -92,8 +85,6 @@ class AuxCharacterResolverTest {
         assertEquals('7', result.character)
         assertEquals("xml", result.source)
     }
-
-    // ── tier 0: the user's letter layout ─────────────────────────────────────
 
     private fun withUserMap(keys: String, languages: String = "", block: () -> Unit) {
         val saved = PhysicalKeyResolver.Snapshot()

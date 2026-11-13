@@ -33,23 +33,9 @@ import org.robolectric.annotation.Config
 import java.util.Locale
 
 /**
- * Phase 1e, the one deliberate behaviour decision (owner, 2026-09-22).
- *
- * <p>`KeyEventProcessor` used to ask "is Sym held?" two different ways, and on a BlackBerry KEY2
- * — whose Sym key does not set `META_SYM_ON` — the two disagreed:
- *
- * <ul>
- *   <li>the key-DOWN Alt fallthrough asked `ModifierState.ofEvent(event)`, i.e. the event's own
- *       meta state and nothing else, so on a KEY2 a held Sym was invisible there;</li>
- *   <li>the key-UP one-shot symbol release asked
- *       `PhysicalKeyboardStateTracker.getModifierState(event)`, which is that meta state OR the
- *       tracker's held-key set, so the held Sym was seen.</li>
- * </ul>
- *
- * <p>Both now read the tracker. This suite is the pin: build an event whose meta state says Sym
- * is NOT pressed while the tracker says the Sym key IS held, and the held-Sym behaviour has to
- * win on both paths. It fails against the pre-Phase-1e key-DOWN path, which is the point —
- * `KeyEvent.isSymPressed()` / `META_SYM_ON` is never the question being asked.
+ * Both "is Sym held?" reads (the key-DOWN Alt fallthrough and the key-UP one-shot symbol release)
+ * ask the tracker, not the event: a KEY2 Sym key sets no `META_SYM_ON`. Each test builds an event
+ * saying Sym is not pressed while the tracker says it is held, and held-Sym must win.
  */
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [34], manifest = Config.NONE)
@@ -134,8 +120,6 @@ class SymHeldReadsTrackerTest {
         )
     }
 
-    // ===================================================== key DOWN (the site that changed)
-
     @Test
     fun `a held Sym suppresses the Alt symbol long press on the key-down path`() {
         trackerSays(symHeld())
@@ -153,8 +137,6 @@ class SymHeldReadsTrackerTest {
 
         verify(ime.getKeyboardSwitcher()).onSymbolKeyLongPress(anyInt(), anyInt())
     }
-
-    // ===================================================== key UP (already read the tracker)
 
     @Test
     fun `a held Sym keeps the symbol board open on the key-up path`() {
@@ -175,8 +157,6 @@ class SymHeldReadsTrackerTest {
 
         verify(ime.getKeyboardSwitcher()).onSymbolKeyLongPress(anyInt(), anyInt())
     }
-
-    // ===================================================== helpers
 
     /** The tracker's answer: Sym held, and no `META_SYM_ON` anywhere in the event. */
     private fun symHeld(): ModifierState = ModifierState.builder().symKeyHeld(true).build()

@@ -29,34 +29,15 @@ import org.robolectric.annotation.Config;
 import java.util.Locale;
 
 /**
- * <b>Equivalence</b> for the modifier read sites Phase 1b could not reach, driven through the real
- * {@code PhysicalKeyboardStateTracker}.
- *
- * <p>Phase 1b routed the physical-keyboard path through one query API, {@link ModifierState}, and
- * listed the sites it had to leave behind because they live in files it did not own:
- * {@code BlackBerryIME}, {@code KeyboardSwitcher}, {@code KeyboardState}, {@code AuxBarManager},
- * {@code MoreKeysProvider}, {@code CommitController}, {@code InputLogic}, {@code CkbGestureBridge}
- * and the screen-off receiver. Phase 1f migrates them.
- *
- * <p>Each migration replaces a hand-rolled tracker expression with a named query, and the claim in
- * every case is that the two are the <em>same</em> answer. That claim is what this file tests: it
- * evaluates the old expression and the new one against the same live tracker state and asserts they
- * agree, over every modifier state the sites can actually be in. {@code ModifierStateContractTest}
- * already pins what each query <em>means</em>; this file pins that the call sites did not change
- * meaning when they started using them.
- *
- * <p>One pair does <b>not</b> agree everywhere, and the divergence is deliberate and narrow — see
- * {@link #lockedAltIsTheOneCaseWhereTheMultifunctionAltCheckChanges()}.
- *
- * <p>Phase 1h moved this file from {@code dev.bbkb.ime.core} into the tracker's package: the
- * tracker's per-key Shift predicates it compares against are package-private now, so that
- * production code has one way to ask. Nothing else about it moved.
+ * Pins that each {@link ModifierState} query used at a read site answers the same as the raw tracker
+ * expression it stands for, over every modifier state the sites can be in. Lives in the tracker's
+ * package because the per-key Shift predicates it compares against are package-private. One
+ * deliberate exception: {@link #lockedAltIsTheOneCaseWhereTheMultifunctionAltCheckChanges()}.
  */
 @RunWith(RobolectricTestRunner.class)
 @Config(sdk = 34, manifest = Config.NONE)
 public class ModifierReadSiteEquivalenceTest {
-
-    /** 256. What {@code BlackBerryIME.isMetaKeyActive()} passed to {@code hasMetaFlag}. */
+    /** 256, the flag {@code isMetaKeyActive()} passes to {@code hasMetaFlag}. */
     private static final int META_CAP_LOCKED = MetaKeyKeyListener.META_CAP_LOCKED;
 
     private PhysicalKeyboardStateTracker tracker;
@@ -103,12 +84,7 @@ public class ModifierReadSiteEquivalenceTest {
         up(keyCode);
     }
 
-    // ═══════════════════════════════════════════════════ the pairs, site by site
-
-    /**
-     * Assert that every migrated read answers exactly what the expression it replaced answered.
-     * Run after each state setup below, so the net covers the whole matrix rather than one point.
-     */
+    /** Asserts every read-site query matches its raw tracker expression in the current state. */
     private void assertEveryReadSiteAgrees(String state) {
         ModifierState modifiers = tracker.getModifierState();
 
@@ -116,8 +92,7 @@ public class ModifierReadSiteEquivalenceTest {
         assertEquals(state + ": isShiftKeyDown/isShiftHeld",
                 tracker.isShiftKeyDown(), modifiers.isShiftHeld());
 
-        // BlackBerryIME.isMetaKeyActive() and isShiftChording(): all migrated terms. The Shift-released
-        // term was left on the tracker in 1f and moved in 1h, once the snapshot carried CONSUMED.
+        // BlackBerryIME.isMetaKeyActive() and isShiftChording()
         assertEquals(state + ": isShiftReleased",
                 tracker.isShiftReleased(), modifiers.isShiftReleased());
         assertEquals(state + ": hasMetaFlag(META_CAP_LOCKED)/isShiftLockedForLayout",
@@ -131,8 +106,7 @@ public class ModifierReadSiteEquivalenceTest {
                         && !modifiers.isAltUsedWithKey(),
                 tracker.isShiftHeldAndLockedForLayout());
 
-        // InputLogic: isManualShiftAndShiftPressing() -> isManualShiftPending(). Unguarded since 1h:
-        // the CONSUMED state agrees too.
+        // InputLogic: isManualShiftAndShiftPressing() -> isManualShiftPending()
         assertEquals(state + ": isManualShiftAndShiftPressing/isManualShiftPending",
                 tracker.isManualShiftAndShiftPressing(), modifiers.isManualShiftPending());
 
@@ -162,8 +136,6 @@ public class ModifierReadSiteEquivalenceTest {
         boolean newAltActive = tracker.getModifierState(plain).isAltActiveForCharacter();
         assertEquals(state + ": multifunction alt check", oldAltActive, newAltActive);
     }
-
-    // ═══════════════════════════════════════════════════════════ the state matrix
 
     @Test
     public void nothingActive() {
@@ -261,20 +233,9 @@ public class ModifierReadSiteEquivalenceTest {
         assertMultifunctionAltCheckAgrees("shift and alt held");
     }
 
-    // ═══════════════════════════════════════════════ what 1f could not migrate, 1h did
-
     /**
-     * <b>Was the pin on the one gap; now asserts agreement.</b> Phase 1f left three reads on the
-     * tracker ({@code BlackBerryIME.isShiftChording()}, the first term of
-     * {@code BlackBerryIME.isMetaKeyActive()}, and {@code InputLogic}'s Shift+Enter check) because
-     * {@link ModifierState#isShiftReleased()} was {@code !shiftKeyDown} and so answered
-     * <em>true</em> for a Shift key that is physically down but CONSUMED, where the tracker's
-     * {@code isShiftReleased()} answers false.
-     *
-     * <p>Pressing Alt while Shift is held reaches that state. Phase 1h taught the snapshot about the
-     * CONSUMED per-key state, and this test (which used to assert the disagreement) now asserts that
-     * the tracker and the snapshot agree in it. {@code ShiftLifecycleTest} checks the same over the
-     * whole Shift lifecycle.
+     * A Shift key physically down but CONSUMED (Alt pressed while Shift held) is neither released
+     * nor held; the snapshot must agree with the tracker there, not treat it as {@code !shiftKeyDown}.
      */
     @Test
     public void theTrackersShiftReleasedIsNowExpressedThroughModifierState() {
@@ -292,7 +253,6 @@ public class ModifierReadSiteEquivalenceTest {
                 tracker.isShiftKeyDown(), modifiers.isShiftHeld());
         assertTrue("the snapshot names the consumed state", modifiers.isShiftConsumed());
 
-        // ...and so the manual-shift read no longer flips.
         assertFalse("the tracker: no manual shift is pending",
                 tracker.isManualShiftAndShiftPressing());
         assertEquals("the snapshot agrees",
@@ -300,23 +260,11 @@ public class ModifierReadSiteEquivalenceTest {
         assertEveryReadSiteAgrees("shift consumed by alt");
     }
 
-    // ═══════════════════════════════════════════════ the one deliberate divergence
-
     /**
-     * <b>A narrow, deliberate behaviour change.</b> The multifunction-Ctrl remap skips itself while
-     * Alt is active at press time, so Alt+multifunction still types the mapping's Alt character
-     * (the '0' on the Key2 mic key). The old check spelled "Alt is active" as
-     * {@code getInternalMetaState() & META_ALT_MASK}, and the span encoding makes that read
-     * <em>false</em> for a LOCKED Alt: {@code getSpanMetaState} returns the locked bit (0x200) OR
-     * the pressed bit (0x2), never both, and 0x200 is not in {@code META_ALT_MASK}. So with Alt
-     * double-tap-locked — the state in which the user is most plainly asking for Alt characters —
-     * the old check said Alt was off and the multifunction key became Ctrl anyway.
-     *
-     * <p>{@link ModifierState#isAltActiveForCharacter()} counts the locked bit, so it says Alt is
-     * on and the key keeps its mapped character. That is what the comment on the remap always
-     * described; the bit test did not implement it. The change is recorded here rather than worked
-     * around, because reproducing the old answer would mean keeping the bit arithmetic at the call
-     * site, which is the thing being removed.
+     * The multifunction-Ctrl remap skips itself while Alt is active (so Alt+mic types '0'). The raw
+     * {@code getInternalMetaState() & META_ALT_MASK} misses a LOCKED Alt: the span state holds the
+     * locked bit (0x200) or the pressed bit (0x2), never both, and 0x200 is outside the mask.
+     * {@link ModifierState#isAltActiveForCharacter()} counts the locked bit, which is intended.
      */
     @Test
     public void lockedAltIsTheOneCaseWhereTheMultifunctionAltCheckChanges() {

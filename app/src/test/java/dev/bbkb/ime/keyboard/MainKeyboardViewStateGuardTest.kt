@@ -23,8 +23,8 @@ import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
 
 /**
- * D-3: the state setters KeyboardState and KeyboardSwitcher call on every update repaint only when
- * the state changed, and the medium-weight key face is created once per base face.
+ * Pins that the state setters KeyboardState and KeyboardSwitcher call on every update repaint only
+ * when the state changed, and that the medium-weight key face is created once per base face.
  */
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [34])

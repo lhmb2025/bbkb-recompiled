@@ -22,86 +22,23 @@ import java.lang.reflect.Field
 import java.util.Locale
 
 /**
- * Characterisation table for the symbol-page dot indicator in [KeyboardView] —
- * `shouldDrawPageIndicator`, `drawPageIndicator`, `getActivePageIndex`,
- * `adjustPageIndexForCustomPage`, and the `maxVkbSymbolPage` / `maxPkbSymbolPage` derivation in
- * `setKeyboard`.
+ * Pins the symbol-page dot indicator in [KeyboardView]: `shouldDrawPageIndicator`,
+ * `drawPageIndicator`, `getActivePageIndex` and the `maxVkbSymbolPage` / `maxPkbSymbolPage`
+ * derivation in `setKeyboard`, swept over locale x custom page x custom-first x elementId.
  *
- * CONTRACT: this pins what the code does. Wave 3 wants to collapse the duplicated PKB and VKB
- * forms into one; every row below is what the collapsed form has to reproduce. The table was
- * written in Wave 2 against the pre-fix code and six of its rows changed in Wave 2.5 when
- * DEFECT 23 was fixed — those rows are called out under "What DEFECT 23 changed" below.
+ * Element ids: 0 alphabet, 4 alphabetShiftLockShifted, 5..8 symbols0/1/2/Custom, 9 phone,
+ * 104, 105..108 symbols0/1/2/CustomPkb, 109 phonePkb, 110 phoneSymbolsPkb. Per row: drawn or not,
+ * dot count, and active dot (`hi`, -1 = none), read off a recording [Canvas].
  *
- * ## What the table covers
- * `(locale zh vs en) x (custom symbol page on/off) x (custom page first on/off) x elementId`,
- * where elementId sweeps both keyboard families and their edges:
- * `0 alphabet, 4 alphabetShiftLockShifted, 5..8 symbols0/1/2/Custom, 9 phone,
- *  104, 105..108 symbols0/1/2/CustomPkb, 109 phonePkb, 110 phoneSymbolsPkb`
- * (names from [KeyboardId.elementIdToName]).
+ * Locale matters: Chinese has three base symbol pages (5,6,7), others two (5,6). The max page is a
+ * dot count bumped by one for the custom page; the custom page is always id 8 / 108.
  *
- * Per row: whether the indicator is drawn at all, how many dots are drawn, and which dot is
- * painted in the active colour (`hi`, `-1` = none — see the bugs below). Dot count and active dot
- * are read off a recording [Canvas], i.e. they are the actual `drawText` calls, not an internal
- * counter.
+ * Each family has its own prefs (`enable_symbol_customization_vkb` / `vkb_custom_page_first`,
+ * `..._pkb` / `pkb_custom_page_first`); on a device with a physical keyboard only the `_pkb` pair
+ * is written. The table's `cust=` / `first=` axis sets both families alike.
  *
- * The locale axis is in the table because it is not incidental: `maxVkbSymbolPage` starts at 7 for
- * Chinese and 6 otherwise — Chinese has three base symbol pages (5,6,7) where every other locale
- * has two (5,6). `adjustPageIndexForCustomPage` still branches on `LocaleUtils.isChinese` under
- * the local name `isRightToLeft` — which has nothing to do with right-to-left script.
- * `shouldDrawPageIndicator` no longer needs that branch at all (see below).
- *
- * ## The two preference families (DEFECT 24, fixed in Wave 2.5)
- * The on-screen and physical keyboards each have their OWN custom-symbol-page setting:
- *  - VKB: `enable_symbol_customization_vkb` / `vkb_custom_page_first`
- *  - PKB: `enable_symbol_customization_pkb` / `pkb_custom_page_first`
- *
- * `SymbolCustomizationScreen` writes both pairs, and on a device WITH a physical keyboard it
- * writes ONLY the `_pkb` pair; `KeyboardSwitcher.isPkbSymbolCustomizationEnabled()` /
- * `isPkbCustomPageFirst()` / `setPkbSymbolsKeyboard()` read the `_pkb` keys, and `KeyboardState`
- * sizes and orders the PKB symbol-page cycle from them.
- *
- * Until Wave 2.5 the view's two `getIsPkb*` accessors read the `_vkb` keys — aliases of their
- * VKB twins. On a KEY2 that made the dot row disagree with the page cycle it annotates: with the
- * custom symbol page on, `KeyboardState` cycled three PKB pages (105, 106, 108) while the dot row
- * drew two dots and `symbolsPkbCustom` (108) drew no indicator at all. The accessors are now
- * aligned on the `_pkb` keys (aligning was chosen over retiring the `_pkb` setting, which is live
- * on-disk state on every KEY2). [pkbAccessorsReadTheirOwnPkbPreferences] asserts the alignment —
- * that each accessor reads its own family's key and is NOT moved by the other family's. That
- * assertion is what stops the alias being reintroduced.
- *
- * Consequently the `cust=` / `first=` axis of the table below means "BOTH families configured
- * this way": the table sweeps both families under one config, so [prefs] writes both key pairs.
- * The cases where the two families are configured DIFFERENTLY — only possible since the fix —
- * are covered by [pkbAndVkbFormsDivergeWhenOnlyOneFamilyEnablesCustomPages] and by the split
- * half of [maxSymbolPageDerivation].
- *
- * ## What DEFECT 23 changed (Wave 2.5)
- * `maxVkbSymbolPage` / `maxPkbSymbolPage` are a DOT COUNT, bumped by one when the custom symbol
- * page is enabled. `shouldDrawPageIndicator` also used the bumped value as an element-id RANGE,
- * but the custom page's element id is always `symbolsCustom` (8) / `symbolsPkbCustom` (108) —
- * which equals "last base page + 1" only for Chinese. The fix strips the bump back off before
- * using the bound as a range and admits the custom page by its own id. Six rows moved, all from
- * `draw=1` to `draw=0`, and all of them cases where the active index fell outside the dot row or
- * the element was not a real page:
- *  1. `zh cust=1 first=0 el=109` and `zh cust=1 first=1 el=109` — `phonePkb` drew a dot row with
- *     no active dot, because `109 == maxPkbSymbolPage + 1` and the PKB half of the out-of-range
- *     clause lacked the `!isRightToLeftLayout` guard its VKB twin carried. `phone` (9) was
- *     already correctly rejected. See [phonePkbDrawsNoPageIndicatorForChineseWithCustomPages].
- *  2. `en cust=1 first=0 el=7` / `el=107` and `en cust=1 first=1 el=7` / `el=107` — `symbols2`
- *     is a Chinese-only page, but the bumped bound of 7 pulled it inside the non-Chinese range.
- *     Under custom-page-first it landed on index 3 of 3 dots, i.e. no active dot. Same root
- *     cause, fixed by the same change. See [symbols2DrawsNoIndicatorOnANonChineseLocale].
- *
- * Also fixed: `getActivePageIndex`'s PKB branch was a dead ternary. It was called with
- * `basePageIndex = elementId - 105`, so `elementId >= basePageIndex` was always true and the
- * false arm unreachable; the parameter was unused on the VKB side too. Both are gone and the
- * second parameter with them. See [pkbActivePageIndexIsAPlainOffsetFromTheFirstPkbPage].
- *
- * ## How the view is built
- * A [KeyboardView] cannot be constructed here: its constructor needs a themed [Context], inflated
- * style attributes, `PrefsManager` and `KeyboardColorManager`. The instance is allocated without
- * running the constructor and the handful of fields the indicator path reads are injected. That is
- * a test-only workaround, not a seam — see SEAMS NEEDED in the Wave 2 report.
+ * [KeyboardView] is allocated without running its constructor (it needs a themed context, styled
+ * attributes, `PrefsManager`, `KeyboardColorManager`); only the fields this path reads are injected.
  */
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [34], manifest = Config.NONE)
@@ -117,8 +54,6 @@ class SymbolPageIndicatorTest {
     private val PREF_VKB_CUSTOM_FIRST = "vkb_custom_page_first"
     private val PREF_PKB_CUSTOM_ENABLED = "enable_symbol_customization_pkb"
     private val PREF_PKB_CUSTOM_FIRST = "pkb_custom_page_first"
-
-    // ---------------------------------------------------------------- table
 
     private val TABLE = arrayOf(
         "en cust=0 first=0 el=0   => draw=0",
@@ -153,7 +88,7 @@ class SymbolPageIndicatorTest {
         "en cust=1 first=0 el=4   => draw=0",
         "en cust=1 first=0 el=5   => draw=1 dots=3 hi=0",
         "en cust=1 first=0 el=6   => draw=1 dots=3 hi=1",
-        // DEFECT 23: symbols2 is Chinese-only; on any other locale it is not a page at all.
+        // symbols2 is Chinese-only; on any other locale it is not a page.
         "en cust=1 first=0 el=7   => draw=0",
         "en cust=1 first=0 el=8   => draw=1 dots=3 hi=2",
         "en cust=1 first=0 el=9   => draw=0",
@@ -218,8 +153,7 @@ class SymbolPageIndicatorTest {
         "zh cust=1 first=0 el=106 => draw=1 dots=4 hi=1",
         "zh cust=1 first=0 el=107 => draw=1 dots=4 hi=2",
         "zh cust=1 first=0 el=108 => draw=1 dots=4 hi=3",
-        // DEFECT 23: phonePkb is not a symbol page; it used to draw a dot row with no
-        // active dot, while its VKB twin phone (9) was already rejected.
+        // phonePkb is not a symbol page.
         "zh cust=1 first=0 el=109 => draw=0",
         "zh cust=1 first=0 el=110 => draw=0",
         "zh cust=1 first=1 el=0   => draw=0",
@@ -238,8 +172,6 @@ class SymbolPageIndicatorTest {
         "zh cust=1 first=1 el=110 => draw=0",
     )
 
-    // ------------------------------------------------------------- plumbing
-
     /** Records the colour of every dot drawn, in draw order. */
     private class RecordingCanvas : Canvas() {
         val dotColors = ArrayList<Int>()
@@ -248,25 +180,18 @@ class SymbolPageIndicatorTest {
         }
     }
 
-    /**
-     * A [KeyboardView] instance whose constructor never ran. Mockito allocates it;
-     * `CALLS_REAL_METHODS` means every method — the four preference accessors included — executes
-     * the production body against whatever fields the test injects.
-     */
+    /** A [KeyboardView] whose constructor never ran; every method runs its real body. */
     private fun bareView(): KeyboardView =
         mock(KeyboardView::class.java, withSettings().defaultAnswer(Mockito.CALLS_REAL_METHODS))
 
     private fun field(name: String): Field =
         KeyboardView::class.java.getDeclaredField(name).apply { isAccessible = true }
 
-    /**
-     * Both families configured alike — the table's `cust=` / `first=` axis. Since DEFECT 24 the
-     * view reads a different key per family, so "custom pages on" has to be written to both.
-     */
+    /** Both families configured alike (the table's `cust=` / `first=` axis). */
     private fun prefs(customEnabled: Boolean, customFirst: Boolean): SharedPreferences =
         prefs(customEnabled, customFirst, customEnabled, customFirst)
 
-    /** The families configured independently, which is only meaningful since DEFECT 24. */
+    /** The two families configured independently. */
     private fun prefs(vkbEnabled: Boolean, vkbFirst: Boolean,
                       pkbEnabled: Boolean, pkbFirst: Boolean): SharedPreferences {
         val p = RuntimeEnvironment.getApplication()
@@ -296,13 +221,9 @@ class SymbolPageIndicatorTest {
     }
 
     /**
-     * A [KeyboardView] wired up for the indicator path only.
-     *
-     * `setKeyboard` is called for real so that the `maxVkbSymbolPage` / `maxPkbSymbolPage`
-     * derivation — including its two live preference reads, one per family — actually runs, which
-     * is what makes the split preferences observable here. It then throws on the
-     * first field the un-constructed instance does not have; the derivation is complete by that
-     * point, and [assertMaxPagesWereDerived] fails loudly if a future change moves it later.
+     * A [KeyboardView] wired for the indicator path. `setKeyboard` runs for real so the max-page
+     * derivation happens, then throws on a missing field; [assertMaxPagesWereDerived] fails if
+     * the derivation ever moves past that point.
      */
     private fun view(elementId: Int, chinese: Boolean,
                      customEnabled: Boolean, customFirst: Boolean): KeyboardView =
@@ -359,13 +280,8 @@ class SymbolPageIndicatorTest {
     }
 
     /**
-     * Reflective call on the private `getActivePageIndex`. `isPkb` is derived here exactly as
-     * `drawPageIndicator` derives it. Used by the offset tests only; the table reads the
-     * highlighted dot off the canvas instead.
-     *
-     * DEFECT 23 removed this method's second parameter (a dead `basePageIndex`), so the
-     * one-argument signature is itself part of what is pinned — a reintroduced parameter fails
-     * here with NoSuchMethodException rather than silently.
+     * Reflective call on private `getActivePageIndex`, deriving `isPkb` as `drawPageIndicator`
+     * does. The one-argument signature is pinned: an added parameter fails with NoSuchMethodException.
      */
     private fun activePageIndex(v: KeyboardView, elementId: Int): Int =
         KeyboardView::class.java
@@ -391,12 +307,7 @@ class SymbolPageIndicatorTest {
         return "draw=1 dots=${canvas.dotColors.size} hi=$hi"
     }
 
-    // ---------------------------------------------------------------- tests
-
-    /**
-     * The table. Every mismatch is collected so a rewrite that shifts one case shows every row it
-     * moved, not just the first.
-     */
+    /** The table. Every mismatch is collected so a change shows every row it moved. */
     @Test
     fun pageIndicatorTable() {
         val mismatches = ArrayList<String>()
@@ -426,23 +337,9 @@ class SymbolPageIndicatorTest {
     }
 
     /**
-     * THE IDENTITY WAVE 3'S PKB/VKB COLLAPSE RESTS ON. **Given the two families are configured
-     * the same way**, the VKB element `5 + n` and the PKB element `105 + n` produce the same
-     * verdict, the same dot count and the same active dot. Anything that breaks this makes the two
-     * forms genuinely different code.
-     *
-     * DEFECT 23 did not weaken it — it strengthened it. Before that fix the sweep had to stop at
-     * the custom page, because phonePkb (109) drew where phone (9) did not; the sweep now runs
-     * across the whole element range the table covers, phone/phoneSymbols included, and the two
-     * families agree on every one of them.
-     *
-     * DEFECT 24 did not weaken it either, but it does narrow what it says. The identity is now
-     * conditional on the CONFIG being equal rather than automatic: before the fix the PKB form
-     * read the VKB preferences, so the two families could not disagree even in principle. Each
-     * family now reads its own preference pair, so agreement holds when they are set alike (below)
-     * and is legitimately absent when they are not — that half is
-     * [pkbAndVkbFormsDivergeWhenOnlyOneFamilyEnablesCustomPages]. Wave 3's collapse is still on:
-     * it has to collapse the *logic*, keeping the preference pair per family as an input.
+     * With both families configured alike, VKB element `5 + n` and PKB element `105 + n` give the
+     * same verdict, dot count and active dot. When configs differ, see
+     * [pkbAndVkbFormsDivergeWhenOnlyOneFamilyEnablesCustomPages].
      */
     @Test
     fun pkbAndVkbFormsAgreeOnEveryPageInRange() {
@@ -463,22 +360,13 @@ class SymbolPageIndicatorTest {
     }
 
     /**
-     * DEFECT 24, FIXED — the other half of the identity above, and the behaviour a KEY2 actually
-     * gets. `SymbolCustomizationScreen` writes only the `_pkb` pair on a physical-keyboard device,
-     * so "custom symbol page on, `_vkb` untouched" is the real on-disk state there. Each family
-     * must now follow its OWN setting, which means the two forms differ exactly when their configs
-     * differ — the dot row agreeing with the page cycle is the point of the fix, not the families
-     * agreeing with each other.
-     *
-     * Expectations are spelled out rather than asserted as "not equal" so that a regression which
-     * merely reshuffles the divergence is caught too. The `en` locale is used throughout: it has
-     * two base symbol pages (5,6 / 105,106) and the custom page a gap away at 8 / 108.
+     * Each family follows its own setting, so the forms differ exactly when their configs differ.
+     * Expectations are spelled out so a reshuffled divergence is caught too. `en` throughout: base
+     * pages 5,6 / 105,106 and the custom page at 8 / 108.
      */
     @Test
     fun pkbAndVkbFormsDivergeWhenOnlyOneFamilyEnablesCustomPages() {
-        // Custom pages on for the physical keyboard only — the KEY2 case. Three PKB dots with the
-        // custom page last, two VKB dots and no VKB custom page. Before the fix the PKB column
-        // read the VKB preference and produced the VKB column's answers.
+        // Custom pages on for the physical keyboard only (the usual state on a keypad device).
         assertEquals("draw=1 dots=2 hi=0", probe(false, false, false, true, false, 5))
         assertEquals("draw=1 dots=3 hi=0", probe(false, false, false, true, false, 105))
         assertEquals("draw=1 dots=2 hi=1", probe(false, false, false, true, false, 6))
@@ -516,14 +404,8 @@ class SymbolPageIndicatorTest {
     }
 
     /**
-     * `setKeyboard`'s derivation: 6/106 for a non-Chinese locale, 7/107 for Chinese, and one more
-     * of each when the custom symbol page is enabled.
-     *
-     * DEFECT 24: the two increments key off DIFFERENT preferences — `maxVkbSymbolPage` off
-     * `enable_symbol_customization_vkb`, `maxPkbSymbolPage` off `enable_symbol_customization_pkb`
-     * — so they can now diverge, and the second half below pins that they do. They used to share
-     * the `_vkb` key, which is why a KEY2 (where only the `_pkb` key is ever written) sized its
-     * PKB dot row as if custom pages were off.
+     * `setKeyboard`'s derivation: 6/106 non-Chinese, 7/107 Chinese, one more of each with the custom
+     * page on. Each bump keys off its own family's `enable_symbol_customization_*` pref.
      */
     @Test
     fun maxSymbolPageDerivation() {
@@ -562,23 +444,12 @@ class SymbolPageIndicatorTest {
     }
 
     /**
-     * DEFECT 24, FIXED — AND THE ASSERTION THAT KEEPS IT FIXED. Each accessor reads its own
-     * family's preference key and is not moved by the other family's:
+     * Each accessor reads its own family's key and ignores the other's, so the PKB dot row matches
+     * the PKB page cycle `KeyboardState` builds from the `_pkb` pair:
      *  - `getIsCustomSymbolPageEnabled` ← `enable_symbol_customization_vkb`
      *  - `getIsPkbCustomSymbolPageEnabled` ← `enable_symbol_customization_pkb`
      *  - `getIsCustomSymbolPageFirst` ← `vkb_custom_page_first`
      *  - `getIsPkbCustomSymbolPageFirst` ← `pkb_custom_page_first`
-     *
-     * The two PKB accessors used to be aliases of their VKB twins, reading the `_vkb` keys. On a
-     * device WITH a physical keyboard `SymbolCustomizationScreen` writes ONLY the `_pkb` pair, and
-     * `KeyboardSwitcher` / `KeyboardState` build the PKB page cycle from that pair — so the dot
-     * row was derived from a preference nothing on that device wrote, and disagreed with the cycle
-     * it annotates (three reachable pages, two dots; see the class doc).
-     *
-     * CORRECT BEHAVIOUR: the families are aligned on their own keys. The `_vkb`-only half below is
-     * the inversion of the old assertion and is the single most important line in this file — with
-     * only the `_vkb` keys set, the PKB accessors must report `false`. Reintroducing the alias
-     * fails there.
      */
     @Test
     fun pkbAccessorsReadTheirOwnPkbPreferences() {
@@ -591,8 +462,7 @@ class SymbolPageIndicatorTest {
             .getSharedPreferences("w2c-alias", Context.MODE_PRIVATE)
         field("sharedPreferences").set(v, p)
 
-        // Only the VKB keys set — the on-screen family follows them, the PKB family does NOT.
-        // This is the assertion that would fail if the accessors were aliased again.
+        // Only the VKB keys set: the PKB accessors must report false.
         p.edit().clear()
             .putBoolean(PREF_VKB_CUSTOM_ENABLED, true)
             .putBoolean(PREF_VKB_CUSTOM_FIRST, true)
@@ -604,7 +474,7 @@ class SymbolPageIndicatorTest {
         assertFalse("getIsPkbCustomSymbolPageFirst must not read the _vkb key",
             accessor(v, "getIsPkbCustomSymbolPageFirst"))
 
-        // Only the PKB keys set — the mirror image. This is the config a real KEY2 is in.
+        // Only the PKB keys set: the mirror image.
         p.edit().clear()
             .putBoolean(PREF_PKB_CUSTOM_ENABLED, true)
             .putBoolean(PREF_PKB_CUSTOM_FIRST, true)
@@ -628,21 +498,14 @@ class SymbolPageIndicatorTest {
     }
 
     /**
-     * DEFECT 23, FIXED. Chinese locale with custom symbol pages on is the config where
-     * `maxPkbSymbolPage` is 108, so `phonePkb` (109) used to satisfy the out-of-range clause's
-     * `elementId == maxPkbSymbolPage + 1` — the PKB half of which lacked the `!isRightToLeftLayout`
-     * guard its VKB twin carried. The phone keyboard drew a dot row, and because the active index
-     * (4) was past the last dot, none of the dots was painted active.
-     *
-     * CORRECT BEHAVIOUR: `phonePkb` is not a symbol page and draws no indicator, matching `phone`
-     * (9), which was already rejected. `symbolsPkbCustom` (108) — the real last page in this
-     * config — still draws, so the fix did not simply shorten the range.
+     * Chinese with custom pages on makes `maxPkbSymbolPage` 108, so `phonePkb` (109) sits at
+     * max + 1. It must draw no indicator, like `phone` (9), while 108 (the real last page) still draws.
      */
     @Test
     fun phonePkbDrawsNoPageIndicatorForChineseWithCustomPages() {
         assertFalse("phonePkb is not a symbol page",
             shouldDraw(view(109, true, true, false), key(CODE_PAGE_SWITCH)))
-        // phone (9), the VKB counterpart, agrees - it always did.
+        // phone (9), the VKB counterpart, agrees.
         assertFalse(shouldDraw(view(9, true, true, false), key(CODE_PAGE_SWITCH)))
         // The page one below it is untouched: 108 is the custom page and still draws, active.
         val custom = view(108, chinese = true, customEnabled = true, customFirst = false)
@@ -652,11 +515,7 @@ class SymbolPageIndicatorTest {
         assertEquals(3, canvas.dotColors.indexOf(ACTIVE_COLOR))
     }
 
-    /**
-     * DEFECT 23, FIXED — the custom-page-first variant, which used to land on index 5 of 4 dots.
-     * CORRECT BEHAVIOUR: no indicator either way, and the custom page is dot 0 as custom-first
-     * asks.
-     */
+    /** Custom-page-first variant: still no indicator on 109, and the custom page is dot 0. */
     @Test
     fun phonePkbWithCustomPageFirstDrawsNoIndicatorEither() {
         assertFalse(shouldDraw(view(109, true, true, true), key(CODE_PAGE_SWITCH)))
@@ -665,22 +524,12 @@ class SymbolPageIndicatorTest {
         assertEquals(0, draw(custom, key(CODE_PAGE_SWITCH)).dotColors.indexOf(ACTIVE_COLOR))
     }
 
-    /**
-     * DEFECT 23, FIXED. `getActivePageIndex`'s PKB branch used to read
-     * `elementId >= basePageIndex ? elementId - 105 : elementId - basePageIndex`, and its only
-     * caller passed `basePageIndex = elementId - 105`. For any PKB element that condition is
-     * `elementId >= elementId - 105`, always true: the false arm was unreachable, and the
-     * parameter was unused on the VKB side too.
-     *
-     * CORRECT BEHAVIOUR: a plain offset from the family's first symbol page, with no second
-     * parameter. Every PKB element gets exactly what the live arm gave it, so the two-argument
-     * signature is gone — [activePageIndex] would fail with NoSuchMethodException if it came back.
-     */
+    /** The active index is a plain offset from the family's first symbol page (5 or 105). */
     @Test
     fun pkbActivePageIndexIsAPlainOffsetFromTheFirstPkbPage() {
         val v = view(106, chinese = false, customEnabled = false, customFirst = false)
         assertEquals(1, activePageIndex(v, 106))
-        // Unchanged for every PKB element, including the ones past the drawable range.
+        // Every PKB element, including the ones past the drawable range.
         for (elementId in 105..110) {
             assertEquals("el=$elementId", elementId - 105,
                 activePageIndex(view(elementId, false, false, false), elementId))
@@ -693,14 +542,8 @@ class SymbolPageIndicatorTest {
     }
 
     /**
-     * DEFECT 23, FIXED — the latent half of the same root cause. On a non-Chinese locale with
-     * custom pages on, the custom-page bump pushed `maxVkbSymbolPage` to 7, which pulled the
-     * Chinese-only `symbols2` (7) / `symbols2Pkb` (107) inside the drawable range. Under
-     * custom-page-first they mapped to active index 3 of 3 dots, so no dot was active.
-     *
-     * CORRECT BEHAVIOUR: `symbols2` is not a page outside Chinese and draws nothing, with or
-     * without custom-page-first — while on Chinese, where it IS a page, it still draws and is
-     * still the third dot.
+     * Non-Chinese with custom pages on bumps `maxVkbSymbolPage` to 7, but `symbols2` (7 / 107) is
+     * Chinese-only and must draw nothing; on Chinese it still draws as the third dot.
      */
     @Test
     fun symbols2DrawsNoIndicatorOnANonChineseLocale() {

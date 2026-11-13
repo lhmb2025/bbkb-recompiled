@@ -5,21 +5,14 @@ import dev.bbkb.ime.BuildConfig
 import dev.bbkb.ime.core.engine.EngineOps
 
 /**
- * Learns from the editor's suggestion popup. When a word is committed with alternatives
- * ([SuggestionSpanBuilder.getTextWithSuggestionSpan]) the pair is remembered here; when the
- * editor later broadcasts `SUGGESTION_PICKED` for that word, the pick is taught to the engine's
- * DLM — but only if the picked word is one of the alternatives we offered for exactly that word.
- * The receiver has to be exported for the app's explicit broadcast to reach it, so any app can
- * send one; the membership check is what keeps an unsolicited broadcast from teaching the
- * dictionary a word we never suggested.
+ * Teaches the DLM a word picked from the editor's suggestion popup, but only if it is one of the
+ * alternatives we attached to exactly that committed word. The receiver must be exported, so any
+ * app can broadcast; this membership check stops unsolicited broadcasts from teaching words.
  */
 object SuggestionPickLearner {
     private const val CAPACITY = 32
 
-    /**
-     * The sink that teaches the engine; replaceable for tests. Returns true once the word is
-     * queued: the add is a posted engine op (Wave 3 Phase A), its outcome is logged there.
-     */
+    /** Teaches the engine; replaceable for tests. True once the add is posted as an engine op. */
     @Volatile
     var sink: (String) -> Boolean = { word ->
         EngineOps.post("suggestionPick") { sdk ->

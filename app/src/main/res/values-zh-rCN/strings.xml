@@ -721,7 +721,6 @@
     <string name="device_config_import_unreadable">该文件不是设备配置</string>
     <string name="device_config_import_failed">无法导入该文件</string>
 
-    <!-- OTA app updates -->
     <string name="settings_updates_title">更新</string>
     <string name="settings_updates_summary">检查 BBKB 的新版本</string>
     <string name="settings_update_installed_version_title">已安装版本</string>
@@ -755,7 +754,6 @@
     <string name="settings_update_ready_title">已准备好安装</string>
     <string name="settings_update_version_details">版本详情</string>
     <string name="settings_update_unknown_sources_title">要允许 BBKB 安装更新吗？</string>
-    <!-- Downloadable language packs (core/languagepack) -->
     <string name="language_packs_installed_header">已安装</string>
     <string name="language_packs_available_header">可下载</string>
     <string name="language_packs_download">下载</string>
@@ -877,7 +875,6 @@
     <string name="settings_voice_stop_on_pause_summary_off">停顿期间继续聆听，直到您点按麦克风或半分钟内没有声音</string>
     <string name="voice_status_listening_tap_to_stop">正在聆听&#8230;点按麦克风即可停止</string>
 
-    <!-- Settings text moved out of the code (2026-11) -->
     <string name="settings_common_save">保存</string>
     <string name="settings_common_edit">编辑</string>
     <string name="settings_common_back">返回</string>

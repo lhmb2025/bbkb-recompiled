@@ -10,137 +10,64 @@ import java.util.Locale
 import java.util.TimeZone
 
 /**
- * Serializing the app's preferences to a JSON document and reading one back.
- *
- * Deliberately free of Android UI: [AdvancedSettingsScreen][dev.bbkb.ime.core.settings.screens]
- * owns the file pickers, the confirmation dialog and the toasts, and this object owns the
- * document format. That split is what makes the format testable — the JVM tests drive
- * [serialize] / [parse] / [apply] against a Robolectric `SharedPreferences` with no Activity
- * anywhere.
- *
- * ## Document shape
- *
- * ```json
- * {
- *   "format": "bbkb-settings",
- *   "version": 1,
- *   "app": "5.0.0-beta.20",
- *   "versionCode": 20,
- *   "created": "2026-09-22T09:14:07Z",
- *   "settings": {
- *     "auto_cap": { "type": "boolean", "value": true },
- *     "control_mode": { "type": "string", "value": "0" },
- *     "enabled_subtypes": { "type": "stringSet", "value": ["en_US", "fr_FR"] }
- *   }
- * }
- * ```
- *
- * Every value carries its own `type` because `SharedPreferences` is typed and reading a key with
- * the wrong getter throws `ClassCastException` at some unrelated point later. A restore that
- * wrote every value back as a string would not fail here — it would fail the next time the
- * keyboard read `auto_cap`.
- *
- * ## Restore semantics
- *
- * [apply] has two modes. By default it **merges**: it writes the keys the backup contains and
- * leaves every other key alone. With `replace = true` — what a backup bundle restore uses — it
- * also **removes every setting the backup does not name**, so the phone ends up with exactly the
- * backup's settings: a setting the user never changed on the backed-up phone was at its default
- * there, and it is put back to its default here.
- *
- * Replace never touches the per-device keys a backup does not carry ([isDenied]): the active
- * device profile, update-check state and the like are this phone's, not the backup's. The caller
- * can name further keys to keep (`keepKeys`): a bundle restore keeps the layout keys, which its
- * Layouts part owns. A backup taken by an older build cannot name settings added since; under
- * replace those go to their defaults, which is what that older build's user had.
- *
- * Merge remains for the old single-document restore path, where the backup might be years old
- * and the user asked to add its settings rather than to reset the rest.
+ * The preferences backup document format, free of UI so JVM tests can drive it. Shape:
+ * `{"format":"bbkb-settings","version":1,"app":…,"versionCode":…,"created":…,"settings":{key:
+ * {"type":"boolean|int|long|float|string|stringSet","value":…}}}`. Each value carries its type
+ * because reading a pref with the wrong getter throws later. [apply] merges by default; with
+ * `replace` it also removes every setting the backup does not name (except [isDenied] and
+ * `keepKeys`), so the phone ends with exactly the backup's settings.
  */
 object SettingsBackup {
-
-    /** `format` header value. Anything else is somebody else's JSON file. */
     const val FORMAT: String = "bbkb-settings"
 
-    /** Highest `version` this build knows how to read, and the one [serialize] writes. */
+    /** Highest `version` this build reads, and the one [serialize] writes. */
     const val VERSION: Int = 1
 
     const val MIME_TYPE: String = "application/json"
 
-    // ── the denylist ─────────────────────────────────────────────────────────
-
     /**
-     * Key prefixes that never travel between devices.
-     *
-     *  - `pref_update_` — the OTA check's own state: last-check timestamp, the version/URL/size/
-     *    hash of whatever the last check found, and which version the user has already been shown.
-     *    Restoring it on another device makes the app believe it already checked, and makes it
-     *    offer a download it has not verified.
-     *  - `pref_distribution_` — the manifest-URL and channel overrides. These point the updater at
-     *    a specific server (often a laptop on the local network during development); carrying them
-     *    to another device silently redirects its update checks.
-     *  - `voice_input_language_cache` — the recogniser languages this device reported last time;
-     *    another device has its own recogniser. Each speech recognizer the user picks keeps its own
-     *    list under this prefix (`voice_input_language_cache_<recognizer>`), and the prefix covers
-     *    them all.
+     * Key prefixes that never travel between devices:
+     *  - `pref_update_`: OTA check state (restored, it would offer an unverified download)
+     *  - `pref_distribution_`: manifest URL/channel overrides (would redirect update checks)
+     *  - `voice_input_language_cache`: per-recognizer language lists reported by this device
      */
     val DENIED_PREFIXES: List<String> = listOf("pref_update_", "pref_distribution_", "voice_input_language_cache")
 
-    /**
-     * The one `pref_update_` key that *is* a user setting rather than check state: the
-     * "check for updates daily" switch on the Updates screen (`UpdateJobService.PREF_BACKGROUND_CHECK`,
-     * and an entry in `SettingsSearchIndex`). It is a preference the user set on purpose, so it
-     * belongs in a backup even though it shares the prefix with the state around it.
-     */
+    /** `pref_update_` keys that are user settings (the daily update check switch), so they travel. */
     val ALLOWED_DESPITE_PREFIX: Set<String> = setOf("pref_update_background_check")
 
     /**
-     * Individual per-device keys, for the same reason the prefixes are excluded.
-     *
-     *  - `active_device_config_id` — names the hardware profile this device resolved or imported
-     *    (`CustomDeviceConfigManager.PREF_ACTIVE_CONFIG_ID`). For a `custom:` id it names a file in
-     *    *this* device's storage. Restoring it onto different hardware points the key mapping at a
-     *    profile for a phone the user is not holding, which is the one setting that can leave the
-     *    keyboard unable to type.
-     *  - `last_shown_emoji_category_id` — which emoji tab was open last. Session scratch state,
-     *    not a preference; there is nothing to restore.
+     * Per-device keys. The device profile keys can name a file in this device's storage, and on
+     * other hardware leave the keyboard unable to type; the emoji tab is session scratch state.
      */
     val DENIED_KEYS: Set<String> = setOf(
         "active_device_config_id",
         "active_device_config_chosen",
         "last_shown_emoji_category_id",
-        // CkbKeyGridCapture's cached key rectangles for THIS device's keypad geometry (a cost
-        // cache, rebuilt on the next layout sync). Carrying it to another device would hand the
-        // gesture arbiter the wrong grid until it refreshed.
+        // Cached key rectangles for this device's keypad geometry (CkbKeyGridCapture).
         "ckb_key_grid_cache_v2",
-        // LetterLayoutRegistry.PREF_ACTIVE_LAYOUT: names a letter-layout file in THIS device's
-        // storage, as active_device_config_id names a config. The layouts themselves travel as
-        // files in a backup (BackupBundle's letter_layouts/), and are switched on by hand after
-        // import. The key it replaced stays here until every phone has migrated off it.
+        // Names a letter-layout file in this device's storage; the layouts travel as files in
+        // BackupBundle. The second key is the legacy one, kept until every phone has migrated.
         "pref_pkb_active_layout",
         "pref_pkb_active_letter_map",
     )
 
-    /** Whether [key] is excluded from both export and import. */
+    /** Whether [key] is excluded from export and import. */
     fun isDenied(key: String): Boolean {
         if (key in ALLOWED_DESPITE_PREFIX) return false
         if (key in DENIED_KEYS) return true
         return DENIED_PREFIXES.any { key.startsWith(it) }
     }
 
-    // ── export ───────────────────────────────────────────────────────────────
-
-    /** `bbkb-settings-2026-09-22.json` — what the save dialog opens pre-filled. */
+    /** `bbkb-settings-<yyyy-MM-dd>.json`, the save dialog's suggested name. */
     fun defaultFileName(nowMillis: Long = System.currentTimeMillis()): String =
         "bbkb-settings-" + dateFormat().format(Date(nowMillis)) + ".json"
 
     /**
      * The whole preference file as a backup document, minus [isDenied] keys.
      *
-     * @param appVersion  `BuildConfig.VERSION_NAME` of the writing build — recorded for the reader,
-     *                    never checked on import. A backup is not tied to a version.
-     * @param excludeKeys further keys to leave out: a backup bundle passes the layout keys
-     *                    ([LayoutsBundle.PREF_KEYS]), which travel in its layouts part instead.
+     * @param appVersion recorded for the reader, never checked on import
+     * @param excludeKeys further keys to leave out (a bundle passes [LayoutsBundle.PREF_KEYS])
      */
     fun serialize(
         prefs: SharedPreferences,
@@ -150,8 +77,7 @@ object SettingsBackup {
         excludeKeys: Set<String> = emptySet(),
     ): String {
         val settings = JSONObject()
-        // Sorted so two backups of the same preferences are the same bytes, which makes them
-        // diffable and makes the round-trip test's failures readable.
+        // Sorted so equal preferences give identical bytes.
         prefs.all.entries.sortedBy { it.key }.forEach { (key, value) ->
             if (isDenied(key) || key in excludeKeys) return@forEach
             typedValue(value)?.let { settings.put(key, it) }
@@ -177,21 +103,14 @@ object SettingsBackup {
             is Long -> { type = "long"; encoded = value }
             is Float -> { type = "float"; encoded = value.toDouble() }
             is String -> { type = "string"; encoded = value }
-            // Sorted for the same reason the keys are: a `Set` has no order of its own, so two
-            // exports of one unchanged preference file would otherwise differ.
+            // Sorted for deterministic output, as with the keys.
             is Set<*> -> { type = "stringSet"; encoded = JSONArray(value.map { it.toString() }.sorted()) }
             else -> return null
         }
         return JSONObject().put("type", type).put("value", encoded)
     }
 
-    // ── import ───────────────────────────────────────────────────────────────
-
-    /**
-     * A parsed, header-validated backup. [values] holds the already-denylisted-and-typed entries
-     * in the order the document listed them; each value is one of `Boolean`, `Int`, `Long`,
-     * `Float`, `String`, `Set<String>` — exactly the six types `SharedPreferences` stores.
-     */
+    /** A parsed, header-validated backup; [values] are denylisted and typed, in document order. */
     class Backup internal constructor(
         val version: Int,
         val app: String?,
@@ -199,22 +118,13 @@ object SettingsBackup {
         val created: String?,
         val values: Map<String, Any>,
     ) {
-        /** How many settings [apply] would write. */
         val size: Int get() = values.size
     }
 
-    /**
-     * Thrown when the document parses but is not one of ours, or does not parse at all — the two
-     * cases that mean "the user picked the wrong file", as opposed to the storage layer failing to
-     * hand us its bytes.
-     */
+    /** The user picked the wrong file (not JSON, or not ours), as opposed to an I/O failure. */
     class NotABackupException(message: String) : Exception(message)
 
-    /**
-     * Reads [json] and validates its header. Failures carry [NotABackupException]; the caller
-     * turns that into the "not a BBKB settings backup" toast and keeps "could not read the backup"
-     * for the `IOException` it may have hit before getting here.
-     */
+    /** Reads [json] and validates its header; failures carry [NotABackupException]. */
     fun parse(json: String): Result<Backup> {
         val root = try {
             JSONObject(json)
@@ -226,8 +136,7 @@ object SettingsBackup {
         if (format != FORMAT) {
             return Result.failure(NotABackupException("format is \"$format\", expected \"$FORMAT\""))
         }
-        // optInt's 0 fallback is itself out of range, so a missing/garbage version is rejected by
-        // the same check that rejects a document from a future build.
+        // optInt's 0 fallback is out of range, so a missing version fails the same check.
         val version = root.optInt("version", 0)
         if (version < 1 || version > VERSION) {
             return Result.failure(NotABackupException("version $version, this build reads up to $VERSION"))
@@ -254,11 +163,7 @@ object SettingsBackup {
         )
     }
 
-    /**
-     * One `{"type": …, "value": …}` entry, or null if the type is unknown or the value does not
-     * fit it. A single malformed entry is skipped rather than failing the whole restore: the
-     * alternative is a backup the user cannot use at all because one key went bad.
-     */
+    /** One typed entry, or null when malformed (skipped, so one bad key cannot sink a restore). */
     private fun decode(entry: JSONObject): Any? {
         if (entry.isNull("value")) return null
         return when (entry.optString("type")) {
@@ -275,12 +180,8 @@ object SettingsBackup {
     }
 
     /**
-     * Writes [backup]'s values into [prefs] in one `apply()` and returns how many were written.
-     *
-     * One editor, so the running IME's `OnSharedPreferenceChangeListener`s (notably
-     * `ThemePrefsListener`) see the whole restore as a single burst of per-key callbacks and
-     * rebuild the keyboard once per concern rather than once per key. See the class KDoc for the
-     * two modes.
+     * Writes [backup] into [prefs] and returns how many values were written. One editor, so the
+     * IME's preference listeners rebuild once per concern, not once per key.
      */
     fun apply(
         prefs: SharedPreferences,
@@ -290,10 +191,6 @@ object SettingsBackup {
     ): Int {
         val editor = prefs.edit()
         if (replace) {
-            // Replace: every setting the backup does not name goes back to its default. What
-            // stays is what a backup never carries — the per-device keys ([isDenied]) — and
-            // whatever the caller asks to keep (a bundle restore keeps the layout keys, which are
-            // the Layouts part's business).
             prefs.all.keys.forEach { key ->
                 if (key in backup.values || isDenied(key) || key in keepKeys) return@forEach
                 editor.remove(key)
@@ -316,9 +213,7 @@ object SettingsBackup {
         return written
     }
 
-    // ── formatting ───────────────────────────────────────────────────────────
-
-    /** Not a field: `SimpleDateFormat` is not thread-safe and these are used off the main thread. */
+    /** Not a field: `SimpleDateFormat` is not thread-safe. */
     private fun dateFormat() = SimpleDateFormat("yyyy-MM-dd", Locale.US)
 
     private fun timestampFormat() =

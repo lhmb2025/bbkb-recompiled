@@ -3,12 +3,7 @@ package dev.bbkb.ime.personaldictionary.storage
 import dev.bbkb.ime.personaldictionary.model.WordSubstitution
 import java.util.*
 
-/**
- * Stores [WordSubstitution] entries organized by locale.
- *
- * Maps locale strings to TreeMaps of word substitutions (keyed by shortcut).
- * Tracks dirty state for JSON persistence.
- */
+/** [WordSubstitution]s by locale string, then by key (case-insensitive). */
 class LocaleWordSubstitutionMap(filename: String) : DictionaryWordObservable() {
     private val localeWsMap = HashMap<String, TreeMap<String, WordSubstitution>>()
 
@@ -80,9 +75,8 @@ class LocaleWordSubstitutionMap(filename: String) : DictionaryWordObservable() {
     }
 
     /**
-     * Every substitution saved for [locales], in [locales] order: the caller keeps the first of
-     * two with the same key, so with a multi-language keyboard the earlier language wins, as it
-     * does for the default substitutions. A HashSet used to make that pick arbitrary.
+     * Every substitution for [locales], in [locales] order: the caller keeps the first of two with
+     * the same key, so the earlier language wins.
      */
     fun getWordSubstitutionsSet(locales: List<Locale>): Set<WordSubstitution> {
         val set = LinkedHashSet<WordSubstitution>()

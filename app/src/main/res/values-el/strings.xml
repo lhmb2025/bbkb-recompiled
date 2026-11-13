@@ -721,7 +721,6 @@
     <string name="device_config_import_unreadable">Αυτό το αρχείο δεν είναι διαμόρφωση συσκευής</string>
     <string name="device_config_import_failed">Δεν ήταν δυνατή η εισαγωγή αυτού του αρχείου</string>
 
-    <!-- OTA app updates -->
     <string name="settings_updates_title">Ενημερώσεις</string>
     <string name="settings_updates_summary">Έλεγχος για νέα έκδοση του BBKB</string>
     <string name="settings_update_installed_version_title">Εγκατεστημένη έκδοση</string>
@@ -755,7 +754,6 @@
     <string name="settings_update_ready_title">Έτοιμο για εγκατάσταση</string>
     <string name="settings_update_version_details">Λεπτομέρειες έκδοσης</string>
     <string name="settings_update_unknown_sources_title">Να επιτρέπεται στο BBKB να εγκαθιστά ενημερώσεις;</string>
-    <!-- Downloadable language packs (core/languagepack) -->
     <string name="language_packs_installed_header">Εγκατεστημένα</string>
     <string name="language_packs_available_header">Διαθέσιμα για λήψη</string>
     <string name="language_packs_download">Λήψη</string>
@@ -877,7 +875,6 @@
     <string name="settings_voice_stop_on_pause_summary_off">Η ακρόαση συνεχίζεται και στις παύσεις μέχρι να πατήσετε το μικρόφωνο ή μετά από μισό λεπτό σιωπής</string>
     <string name="voice_status_listening_tap_to_stop">Ακρόαση&#8230; Πατήστε το μικρόφωνο για διακοπή</string>
 
-    <!-- Settings text moved out of the code (2026-11) -->
     <string name="settings_common_save">Αποθήκευση</string>
     <string name="settings_common_edit">Επεξεργασία</string>
     <string name="settings_common_back">Πίσω</string>

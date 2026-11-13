@@ -1,8 +1,7 @@
-/* parity_drv.c — replay REAL captured gesture traces through the owned decoder and compare its
- * per-trace position count against the blob's observed WSI count (the parity gate for
- * kdb_decode.c; remediation log §8.7 step 1).
+/* parity_drv.c: replays captured traces through kdb_decode.c and compares each trace's position
+ * count with the blob's observed WSI count (the parity gate).
  *
- * Corpus format (built from bbkb-captures by the extraction script; one file, N traces):
+ * Corpus format (one file, N traces):
  *   TRACE src=<session> word=<blobWord> wsi=<blobPosCount> radx=<r> rady=<r> n=<samples>
  *   x y t          (n lines)
  * Sessions 3 and 5 ran the FLAT root layout (pre-scaled Y); everything else ran the athena

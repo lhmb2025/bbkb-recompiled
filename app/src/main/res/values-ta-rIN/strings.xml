@@ -721,7 +721,6 @@
     <string name="device_config_import_unreadable">அந்தக் கோப்பு சாதன உள்ளமைவு அல்ல</string>
     <string name="device_config_import_failed">அந்தக் கோப்பை இறக்குமதி செய்ய முடியவில்லை</string>
 
-    <!-- OTA app updates -->
     <string name="settings_updates_title">புதுப்பிப்புகள்</string>
     <string name="settings_updates_summary">BBKB இன் புதிய பதிப்பைச் சரிபார்க்கவும்</string>
     <string name="settings_update_installed_version_title">நிறுவப்பட்ட பதிப்பு</string>
@@ -755,7 +754,6 @@
     <string name="settings_update_ready_title">நிறுவத் தயார்</string>
     <string name="settings_update_version_details">பதிப்பு விவரங்கள்</string>
     <string name="settings_update_unknown_sources_title">புதுப்பிப்புகளை நிறுவ BBKB-ஐ அனுமதிக்கவா?</string>
-    <!-- Downloadable language packs (core/languagepack) -->
     <string name="language_packs_installed_header">நிறுவப்பட்டது</string>
     <string name="language_packs_available_header">பதிவிறக்கத்திற்கு உள்ளது</string>
     <string name="language_packs_download">பதிவிறக்கு</string>
@@ -877,7 +875,6 @@
     <string name="settings_voice_stop_on_pause_summary_off">மைக்ரோஃபோனைத் தட்டும் வரை அல்லது அரை நிமிடம் அமைதி நிலவும் வரை இடைநிறுத்தங்களின்போதும் தொடர்ந்து கேட்கும்</string>
     <string name="voice_status_listening_tap_to_stop">கேட்கிறது&#8230; நிறுத்த மைக்கைத் தட்டவும்</string>
 
-    <!-- Settings text moved out of the code (2026-11) -->
     <string name="settings_common_save">சேமி</string>
     <string name="settings_common_edit">திருத்து</string>
     <string name="settings_common_back">பின்செல்</string>

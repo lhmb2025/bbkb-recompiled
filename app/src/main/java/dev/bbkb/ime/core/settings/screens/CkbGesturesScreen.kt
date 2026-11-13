@@ -49,26 +49,20 @@ private fun GestureAction.labelRes(): Int = when (this) {
 }
 
 /**
- * The debug flag that reveals this screen's DEVELOPER category.
- *
- * The sensor-map capture tools under it are instrumentation for whoever is working on the gesture
- * decoder — an export that writes a `<ckb-key-grid>` snippet to app files, and a visualizer that
- * spews to logcat — not settings. They are off by default and appear once this is switched on from
- * the debug screen. Nothing else on the screen is gated: the slots and the gesture-timing slider
- * are ordinary settings and always render.
+ * Debug flag revealing the DEVELOPER category: decoder instrumentation (a `<ckb-key-grid>` export
+ * to app files and a logcat visualizer). Nothing else on the screen is gated.
  */
 internal const val PREF_SHOW_CKB_DEVELOPER_SETTINGS = "pref_show_ckb_developer_settings"
 
 /**
- * Per-gesture action assignments for the CKB gesture engine. Reached from Physical Keyboard
- * settings (Configure CKB gestures) once gestures are enabled. Flick/swipe **up** is reserved
- * (commit) and not shown. Writes the `ckb_gesture_<slot>` prefs the policy reads.
+ * Per-gesture action assignments for the CKB gesture engine. Flick/swipe up is reserved (commit)
+ * and not shown. Writes the `ckb_gesture_<slot>` prefs the policy reads.
  */
 @Composable
 fun CkbGesturesScreen(onNavigateBack: () -> Unit) {
     val context = LocalContext.current
     val prefs = remember { PrefsManager.getPrefs(context) }
-    // Read once when the screen first composes, as every other screen here reads its preferences.
+    // Read once on first composition.
     val showDeveloperSettings = remember {
         prefs.getBoolean(PREF_SHOW_CKB_DEVELOPER_SETTINGS, false)
     }
@@ -85,8 +79,8 @@ fun CkbGesturesScreen(onNavigateBack: () -> Unit) {
         ) {
             PreferenceInfo(stringResource(R.string.ckb_gestures_reserved_note))
 
-            // The device's defaults (a profile may give a slot its own, e.g. double-tap: none on
-            // the Titans), so an unset slot shows what the arbiter will actually do.
+            // Device defaults (a profile may override a slot), so an unset slot shows what the
+            // arbiter will actually do.
             val defaults = remember { GestureAssignments.deviceDefaults() }
             PreferenceGroup {
                 GestureSlot(R.string.ckb_gesture_slot_flick_left, GestureAssignments.KEY_FLICK_LEFT, defaults.flickLeft, prefs,
@@ -105,16 +99,12 @@ fun CkbGesturesScreen(onNavigateBack: () -> Unit) {
                     Modifier.settingsSearchAnchor("ckb_gesture_hold"), iconRes = R.drawable.ic_settings_gesture_tap_hold)
             }
 
-            // The "no gesture within N ms of a key press" window the arbiter honours through
-            // KeyTypingGuard. It was exposed only on the debug screen and on Advanced Gesture
-            // Parameters — neither is where someone whose gestures fire while typing looks — so
-            // the single copy lives here, next to the slots it governs.
+            // The "no gesture within N ms of a key press" window (KeyTypingGuard). Its only copy.
             PreferenceCategory(title = stringResource(R.string.settings_gesture_category_timing))
             var suppressionTimeout by remember {
                 mutableStateOf(
                     prefs.getInt(
-                        // Frozen user state, read on the engine side by
-                        // SettingsValues.ckbGestureSuppressionTimeout.
+                        // Persisted key, read by SettingsValues.ckbGestureSuppressionTimeout.
                         "pref_CKB_gesture_suppression_timeout",
                         context.resources.getInteger(
                             R.integer.config_default_CKB_swipe_gesture_suppression_timeout
@@ -140,9 +130,7 @@ fun CkbGesturesScreen(onNavigateBack: () -> Unit) {
                 )
             }
 
-            // Instrumentation for the gesture decoder, not settings: behind the debug flag,
-            // see [PREF_SHOW_CKB_DEVELOPER_SETTINGS]. Nothing here is deleted — switching the flag
-            // on from the debug screen brings the whole category back.
+            // See [PREF_SHOW_CKB_DEVELOPER_SETTINGS].
             if (showDeveloperSettings) {
                 PreferenceCategory(title = stringResource(R.string.ckb_gestures_developer_category))
                 PreferenceGroup {
@@ -194,8 +182,7 @@ fun CkbGesturesScreen(onNavigateBack: () -> Unit) {
                 }
             }
 
-            // The room every settings screen leaves under its last card (SettingsScreenHost adds
-            // the same); without it the last row sits on the bottom edge.
+            // Same bottom room SettingsScreenHost adds.
             Spacer(modifier = Modifier.height(LocalSpacing.current.extraLarge))
         }
     }

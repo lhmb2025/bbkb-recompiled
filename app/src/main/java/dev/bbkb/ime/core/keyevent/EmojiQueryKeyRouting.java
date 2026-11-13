@@ -3,26 +3,16 @@ package dev.bbkb.ime.core.keyevent;
 import android.view.KeyEvent;
 
 /**
- * Which hardware keys the open emoji board takes for its search query, and what text they add.
- *
- * <p>Owner decisions, 2026-11-02: typing while the emoji board is open filters the board instead
- * of closing it (type-to-dismiss is gone for this board); the keys otherwise work normally, so
- * Space is a space in the query and Alt plus a letter is its Alt character; Enter, the modifiers,
- * Sym, Back and every board key pass through untouched; Backspace edits the query while there is
- * one and passes through otherwise. The two halves below are pure so they can be pinned by tests;
- * {@code KeyEventProcessor} supplies the resolved key and the converted event and does the
- * routing.
+ * Which hardware keys the open emoji board takes for its search query, and the text they add. Typing
+ * filters the board instead of closing it; keys type as usual (Space, Alt characters). Enter, modifiers,
+ * Sym, Back and board keys pass through; Backspace edits a non-empty query. Pure, for tests.
  */
 public final class EmojiQueryKeyRouting {
 
     private EmojiQueryKeyRouting() {
     }
 
-    /**
-     * Whether the board may take this key at all. False for Enter, Shift, Alt, Sym, Back, function
-     * keys, every board or multifunction key, any framework modifier, and anything not from a
-     * physical keyboard. Backspace returns true: whether it is consumed depends on the query.
-     */
+    /** False for non-physical, Enter, Shift, Alt, Sym, Back, function, board and modifier keys. */
     public static boolean mayFeedQuery(ResolvedKey key) {
         if (!key.isPhysical()) {
             return false;
@@ -34,11 +24,7 @@ public final class EmojiQueryKeyRouting {
         return !KeyEvent.isModifierKey(key.keyCode());
     }
 
-    /**
-     * The text a converted key adds to the query, or null when the key types nothing visible
-     * (arrows, Tab, function keys, a modifier, a gesture end). Space counts: a two-word query is
-     * allowed.
-     */
+    /** The text a converted key adds, or null if it types nothing visible. Space counts. */
     public static CharSequence queryText(InputEvent event) {
         if (event == null || !event.hasData() || event.isModifierKey() || event.isGestureEnd()) {
             return null;

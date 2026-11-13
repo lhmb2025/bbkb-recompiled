@@ -19,13 +19,7 @@ public final class KeyboardTextsSet {
 
     static final String[] RESOURCE_NAMES = {"label_go_key", "label_send_key", "label_next_key", "label_done_key", "label_search_key", "label_previous_key", "label_pause_key", "label_wait_key"};
 
-    /**
-     * Parallel to {@link #RESOURCE_NAMES}. These were resolved by name with
-     * {@code Resources.getIdentifier}, which is slow and — worse — invisible to the resource
-     * shrinker: a shrunk-away label returned id 0 and {@code getString(0)} threw at
-     * keyboard-build time, taking out every keyboard rather than one label. The array is
-     * fixed at compile time, so there was never a dynamic requirement.
-     */
+    /** Parallel to {@link #RESOURCE_NAMES}; direct ids (not getIdentifier) so the resource shrinker sees them. */
     private static final int[] RESOURCE_IDS = {R.string.label_go_key, R.string.label_send_key, R.string.label_next_key, R.string.label_done_key, R.string.label_search_key, R.string.label_previous_key, R.string.label_pause_key, R.string.label_wait_key};
 
     private String[] mTextsTable;
@@ -49,7 +43,7 @@ public final class KeyboardTextsSet {
         }
         final Resources resources = context.getResources();
         RunInLocale<Void> loader = new RunInLocale<Void>() {
-            @Override // dev.bbkb.ime.core.shareds.RunInLocale
+            @Override
             public Void job(Resources resources2) {
                 KeyboardTextsSet.this.loadStringResourcesInternal(resources);
                 return null;
@@ -76,6 +70,10 @@ public final class KeyboardTextsSet {
         return getTextInternal(str, this.mTextsTable);
     }
 
+    /**
+     * @param str text name
+     * @param strArr locale table to look in after the string resources
+     */
     public String getTextInternal(String str, String[] strArr) {
         String str2 = this.mResourceNameToValueMap.get(str);
         return str2 != null ? str2 : KeyboardTextSet.getTextInternal(str, strArr);
@@ -97,6 +95,11 @@ public final class KeyboardTextsSet {
         return resolveTextReferences(str, false);
     }
 
+    /**
+     * Resolves {@code !text/name} references.
+     * @param str text that may hold references
+     * @param z true to also append the additional locales' results, comma-separated
+     */
     public String resolveTextReferences(String str, boolean z) {
         if (TextUtils.isEmpty(str)) {
             return null;

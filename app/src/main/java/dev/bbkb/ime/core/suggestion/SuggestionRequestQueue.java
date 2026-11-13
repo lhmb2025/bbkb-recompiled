@@ -19,9 +19,7 @@ public class SuggestionRequestQueue implements Handler.Callback {
 
     /**
      * The queue InputLogic holds before (and after) a real one is built. Every entry point
-     * short-circuits on {@link #live()}, which is what the eight no-op overrides of the old
-     * anonymous subclass did: this instance has no handler thread, no IME and no InputLogic,
-     * so the real bodies would NPE.
+     * short-circuits on {@link #live()}: this instance has no handler, IME or InputLogic.
      */
     public static final SuggestionRequestQueue DISABLED_INSTANCE = new SuggestionRequestQueue();
 
@@ -38,7 +36,7 @@ public class SuggestionRequestQueue implements Handler.Callback {
 
     private final Object mLock;
 
-    // FIX Issue 7: volatile ensures cross-thread visibility for unsynchronized reads in isSuggestionsEnabled()
+    // volatile: isSuggestionsEnabled() reads it without the lock.
     private volatile boolean mSuggestionsEnabled;
 
     private SuggestionRequestQueue() {
@@ -50,12 +48,10 @@ public class SuggestionRequestQueue implements Handler.Callback {
 
     public SuggestionRequestQueue(BlackBerryIME ime, InputLogic inputLogic) {
         this.mLock = new Object();
-        // The engine thread (EngineThreads): requests run there, in FIFO order with every other
-        // engine op posted to it, so a key feed posted before a request is in the engine's buffer
-        // when the request runs. Each service instance gets its own Handler on the one shared
-        // thread, which lives as long as the process: the engine keeps pointers into the stack of
-        // the thread that last called it, and quitting a per-instance worker crashed the KEY2
-        // (SIGSEGV in libnative-lib, 2026-11-04). shutdown() only drops this instance's requests.
+        // Requests run on the shared engine thread in FIFO order with every other engine op, so a
+        // key feed posted before a request is in the engine's buffer when it runs. The thread lives
+        // as long as the process (the engine keeps pointers into the last caller's stack), so
+        // shutdown() only drops this instance's requests.
         this.mHandler = new Handler(EngineThreads.engineLooper(), this);
         this.mIme = ime;
         this.mInputLogic = inputLogic;
@@ -113,21 +109,16 @@ public class SuggestionRequestQueue implements Handler.Callback {
     private void dispatchSuggestionRequest(final boolean isPrediction, final InputSource inputSource) {
         synchronized (this.mLock) {
             if (this.mSuggestionsEnabled) {
-                // F10 (W6b): this fires for BOTH suggestion and prediction requests,
-                // flipping the tracker into prediction mode and clearing wasAutoCorrected
-                // even for plain suggestion requests. Scoping it to the prediction branch
-                // needs gesture-dependency verification first; behavior preserved for now.
+                // Runs for plain suggestion requests too (clears wasAutoCorrected); scoping it to
+                // predictions needs the gesture-commit path re-verified first.
                 this.mInputLogic.mComposingTracker.enterPredictionMode();
-                // Audit DW-3: captured HERE, before dispatch, so the reply carries the session it
-                // was requested under rather than whatever session it lands in.
+                // Captured before dispatch so the reply carries the session it was requested under.
                 final int requestGeneration = this.mInputLogic.getSessionGeneration();
-                // A prediction request is also the gesture-commit channel (see C4 below), so it
-                // must run even when typing resumes before the worker gets to it.
+                // A prediction request is also the gesture-commit channel, so it is never dropped.
                 sendToWorkerThread(isPrediction ? 3 : 2, isPrediction, c0666ac -> {
                     if (c0666ac.isEmpty()) {
-                        // C4: this fallback doubles as the gesture-commit channel — the
-                        // gesture word arrives via mCurrentSuggestions when the engine
-                        // returns empty. Do not remove without re-testing gesture commit.
+                        // Gesture-commit channel: the gesture word arrives via mCurrentSuggestions
+                        // when the engine returns empty. Re-test gesture commit before changing.
                         SuggestedWords fallback = SuggestionRequestQueue.this.mInputLogic.mCurrentSuggestions;
                         if (BuildConfig.DEBUG) {
                         android.util.Log.d("SUGG_COMMIT_DEBUG", "dispatchSuggestionRequest callback: worker returned EMPTY"
@@ -136,10 +127,8 @@ public class SuggestionRequestQueue implements Handler.Callback {
                         }
                         c0666ac = fallback;
                     }
-                    // F12: the enabled check and the disable write must be atomic with
-                    // enableSuggestions/disableSuggestions, which hold mLock. This runs on
-                    // the worker thread; the lock's other critical sections are short and
-                    // never block on this thread, so no deadlock risk.
+                    // Check and disable must be atomic with enable/disableSuggestions. No deadlock:
+                    // the lock's other sections are short and never wait on this thread.
                     synchronized (SuggestionRequestQueue.this.mLock) {
                         if (SuggestionRequestQueue.this.mSuggestionsEnabled) {
                             if (isPrediction) {
@@ -195,11 +184,8 @@ public class SuggestionRequestQueue implements Handler.Callback {
         if (!live()) {
             return;
         }
-        // Nothing used to drop queued requests, so a worker that fell behind ran a backlog of
-        // whole-word engine replays (every request clears and refeeds the composing text) for
-        // strings nobody would see: the delivery guards discard the stale replies anyway. The
-        // newest request makes every queued superseding request pointless, so drop those here;
-        // the one already running finishes on its own.
+        // Each request replays the whole word in the engine, so drop queued superseded requests
+        // instead of running a backlog whose replies would be discarded; a running one finishes.
         this.mHandler.removeMessages(MSG_RUN);
         this.mHandler.obtainMessage(keep ? MSG_RUN_KEEP : MSG_RUN, what, 0, callback).sendToTarget();
     }

@@ -30,9 +30,8 @@ import org.robolectric.annotation.Config
 import java.time.Duration
 
 /**
- * P-12: the input-method caches survive field focus and are dropped by the events that change
- * them (RichInputMethodManager's invalidation matrix); the values built on them are asked for at
- * most once per generation.
+ * The input-method caches survive field focus and are dropped by the events that change them
+ * (RichInputMethodManager's invalidation matrix); values built on them are read once per generation.
  */
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [34])

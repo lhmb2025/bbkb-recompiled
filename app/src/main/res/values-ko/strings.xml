@@ -721,7 +721,6 @@
     <string name="device_config_import_unreadable">해당 파일은 기기 구성이 아닙니다</string>
     <string name="device_config_import_failed">해당 파일을 가져올 수 없습니다</string>
 
-    <!-- OTA app updates -->
     <string name="settings_updates_title">업데이트</string>
     <string name="settings_updates_summary">BBKB의 새 버전 확인</string>
     <string name="settings_update_installed_version_title">설치된 버전</string>
@@ -755,7 +754,6 @@
     <string name="settings_update_ready_title">설치 준비 완료</string>
     <string name="settings_update_version_details">버전 세부정보</string>
     <string name="settings_update_unknown_sources_title">BBKB에서 업데이트를 설치하도록 허용할까요?</string>
-    <!-- Downloadable language packs (core/languagepack) -->
     <string name="language_packs_installed_header">설치됨</string>
     <string name="language_packs_available_header">다운로드 가능</string>
     <string name="language_packs_download">다운로드</string>
@@ -877,7 +875,6 @@
     <string name="settings_voice_stop_on_pause_summary_off">마이크를 탭하거나 30초 동안 소리가 없을 때까지 말을 멈춰도 계속 듣습니다</string>
     <string name="voice_status_listening_tap_to_stop">듣는 중&#8230; 마이크를 탭하여 중지</string>
 
-    <!-- Settings text moved out of the code (2026-11) -->
     <string name="settings_common_save">저장</string>
     <string name="settings_common_edit">수정</string>
     <string name="settings_common_back">뒤로</string>

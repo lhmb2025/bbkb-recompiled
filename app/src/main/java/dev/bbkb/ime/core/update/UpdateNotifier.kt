@@ -17,33 +17,23 @@ import dev.bbkb.ime.core.settings.SettingsRoute
 import dev.bbkb.ime.core.shared.Logger
 
 /**
- * The one notification this feature posts: "a newer BBKB is published".
- *
- * Low importance, no sound, no vibration — it is an offer, not an event. Tapping it opens the
- * Updates screen, where downloading and installing are the user's own two taps; nothing about an
- * update ever happens behind their back.
- *
- * On API 33+ posting needs the runtime `POST_NOTIFICATIONS` grant. Without it [notifyAvailable]
- * returns `false` and posts nothing — **silently**, because the daily check runs with no UI to
- * explain itself. The Updates screen is where the permission is asked for, and its own banner
- * still shows the update, so a denied grant costs the notification and nothing else.
+ * The "a newer BBKB is published" notification: low importance and silent; a tap opens the Updates
+ * screen. Without `POST_NOTIFICATIONS` (API 33+) [notifyAvailable] silently posts nothing; the
+ * Updates screen asks for the grant and still shows the update.
  */
 object UpdateNotifier {
 
     private const val TAG = "UpdateNotifier"
 
-    /** Notification channel id. Created on demand; low importance so it never interrupts. */
+    /** Created on demand, low importance. */
     const val CHANNEL_ID: String = "updates"
 
-    /** One notification, replaced in place when a newer version supersedes it. */
+    /** One notification, replaced in place. */
     const val NOTIFICATION_ID: Int = 4801
 
     /**
-     * Post (or replace) the "update available" notification.
-     *
-     * @return whether it went out. `false` means the `POST_NOTIFICATIONS` grant is missing or
-     *   notifications are disabled for the app — the caller must **not** record the version as
-     *   seen in that case, or granting the permission later would never produce a notification.
+     * @return false when the grant is missing or notifications are off; the caller must not mark the
+     *   version seen then, or a later grant would never produce a notification
      */
     fun notifyAvailable(context: Context, build: AppBuild): Boolean {
         if (!canPostNotifications(context)) {
@@ -85,12 +75,11 @@ object UpdateNotifier {
         }
     }
 
-    /** Take the notification down — used once the user has the Updates screen in front of them. */
+    /** Used once the Updates screen is in front of the user. */
     fun cancel(context: Context) {
         NotificationManagerCompat.from(context).cancel(NOTIFICATION_ID)
     }
 
-    /** Whether a notification would actually be shown if we posted one. */
     fun canPostNotifications(context: Context): Boolean {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             val granted = ContextCompat.checkSelfPermission(
@@ -101,7 +90,6 @@ object UpdateNotifier {
         return NotificationManagerCompat.from(context).areNotificationsEnabled()
     }
 
-    /** The "Updates" channel, created idempotently. */
     fun ensureChannel(context: Context) {
         val channel = NotificationChannelCompat.Builder(
             CHANNEL_ID,

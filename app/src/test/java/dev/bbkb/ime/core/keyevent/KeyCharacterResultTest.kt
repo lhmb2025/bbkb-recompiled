@@ -5,8 +5,8 @@ import org.junit.Assert.assertTrue
 import org.junit.Test
 
 /**
- * Audit DK-32: `isTextOutput()` tested `(flags & 3) != 0`, so a modifier-only or shift-locked
- * interpretation reported itself as text output. Only the text-output constructor sets both bits.
+ * `isTextOutput()` is true only when both flag bits are set (the text-output constructor); a
+ * modifier-only or shift-locked interpretation is not text output.
  */
 class KeyCharacterResultTest {
 

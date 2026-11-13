@@ -1,15 +1,9 @@
-/* kdb_load_xml.c — parse an asset KDB (XML) into the in-memory key model.
- *
- * Owns Load_XmlKDB (@0xc39d0) + the Load_* builder family. A hand-rolled attribute
- * scanner (no libxml — same approach as the blob's kdbIndexAssetManager) reads:
+/* kdb_load_xml.c: parse an asset KDB (XML) into the in-memory key model.
+ * Owns Load_XmlKDB (@0xc39d0) and the Load_* builders. A hand-rolled attribute scanner reads
  *   <keyboard primaryId secondaryId defaultLayoutWidth defaultLayoutHeight ...>
- *   <key keyType keyLabel|keyCodes|keyName keyTop keyLeft keyWidth keyHeight [biasX biasY] />
- * and builds an ET9KdbLoaded (key rects + codes + per-key smart-touch bias). Rects are
- * INCLUSIVE, matching the blob's getKeys: right=left+width-1, bottom=top+height-1,
- * center=(left+(width-1)/2, top+(height-1)/2) — verified equal to the device's XT9KEYS output.
- *
- * Memory: a static builder (single active KDB at a time, as on-device).
- */
+ *   <key keyType keyLabel|keyCodes|keyName keyTop keyLeft keyWidth keyHeight />
+ * Rects are inclusive like the engine's getKeys: right=left+width-1, bottom=top+height-1,
+ * center=(left+(width-1)/2, top+(height-1)/2). */
 #include "et9kdb.h"
 #include "et9_context.h"
 #include "et9_nkl.h"
@@ -17,21 +11,15 @@
 #include <string.h>
 #include <pthread.h>
 
-/* 80, the blob's own ceiling (Load_AddKey @0xb95d4: `cmp w2,#0x4f` -> status 0x38). Ours was 64
- * (L12): a 65..80-key layout the blob accepts loaded here silently truncated. */
+/* The engine's own ceiling (Load_AddKey @0xb95d4: `cmp w2,#0x4f` -> status 0x38). */
 #define XT9_MAX_KEYS 80
-/* The blob's status for "too many keys" (audit §5 L12 / L13 census). */
+/* The engine's status for "too many keys". */
 #define ET9STATUS_KDB_TOO_MANY_KEYS ((ET9STATUS)0x38)
 
-/* Per-engine-context model slots (2026-08-16). The primary IME engine AND the
- * spellchecker's secondary engine both load KDBs through this module; the old single
- * static buffer let whichever loaded LAST clobber the other's geometry process-wide.
- * Latent on the KEY2 only because both contexts happen to load the same XML there — on
- * the W2 emulator the spellchecker's qwerty_vkb silently replaced the gesture path's
- * qwerty_pkb and row-shifted every owned decode. Each ctx now owns a slot; ctx-aware
- * consumers resolve via xt9kdb_model_for_ctx(), and the touch path re-publishes its own
- * ctx's model to the legacy global (used by ctx-less debug/JNI readers) at gesture start,
- * so a foreign load can never stick across a gesture. */
+/* Per-engine-context model slots: the IME engine and the spellchecker's engine both load KDBs
+ * here, and must not clobber each other's geometry. Ctx-aware consumers use
+ * xt9kdb_model_for_ctx(); the touch path re-publishes its ctx's model to the legacy global
+ * (read by ctx-less debug/JNI code) at gesture start, so a foreign load never sticks. */
 #define XT9_MODEL_SLOTS 4
 typedef struct {
     ET9KDBInfoPtr ctx;                 /* slot owner; NULL = free */
@@ -66,9 +54,8 @@ const ET9KdbLoaded* xt9kdb_model_for_ctx(ET9KDBInfoPtr ctx) {
     return m;
 }
 
-/* Model generation (C-8): stamped on a slot's model whenever its contents change, from one
- * process-wide counter, so a cache keyed on (model pointer, generation) can tell an in-place
- * reload — same slot, same address, new keys — from the model it was built for. */
+/* Stamped from one process-wide counter whenever a slot's model changes, so a cache keyed on
+ * (model pointer, generation) detects an in-place reload at the same address. */
 static ET9U32 g_model_gen;
 static void model_touched(ET9KdbLoaded* m) {
     m->generation = __atomic_add_fetch(&g_model_gen, 1, __ATOMIC_RELAXED);
@@ -104,13 +91,12 @@ ET9STATUS XT9KDB(Load_SetProperties)(ET9KDBInfoPtr ctx, void* p) {
 ET9STATUS XT9KDB(Load_AddKey)(ET9KDBInfoPtr ctx, void* k) {
     if (!k) return ET9STATUS_INVALID_MEMORY;
     Xt9ModelSlot* s = slot_for(ctx);
-    if (s->count >= XT9_MAX_KEYS) return ET9STATUS_KDB_TOO_MANY_KEYS;   /* table full: 0x38 like the blob */
+    if (s->count >= XT9_MAX_KEYS) return ET9STATUS_KDB_TOO_MANY_KEYS;   /* table full: engine status 0x38 */
     s->keys[s->count++] = *(ET9KdbKey*)k;
     model_touched(&s->model);
     return ET9STATUS_NONE;
 }
 
-/* ---- tiny scanners -------------------------------------------------------- */
 static const char* find_sub(const char* p, const char* end, const char* needle) {
     size_t n = strlen(needle);
     if ((size_t)(end - p) < n) return 0;
@@ -139,9 +125,8 @@ static int parse_int(const char* s, int len) {
     for (; i < len; i++) { char c = s[i]; if (c < '0' || c > '9') break; v = v * 10 + (c - '0'); }
     return neg ? -v : v;
 }
-/* One hex number out of [*p, end): skips leading blanks, accepts an optional 0x/0X prefix, and
- * leaves *p on the first character it did not consume (the separator, or end). Returns -1 when
- * there was no digit at all, so an empty field ("0x41,,0x42") is skipped rather than read as 0. */
+/* One hex number from [*p, end), optional 0x prefix; leaves *p on the first unconsumed char.
+ * Returns -1 when there is no digit, so an empty field ("0x41,,0x42") is skipped, not read as 0. */
 static int parse_hex_at(const char** p, const char* end) {
     const char* s = *p;
     while (s < end && (*s == ' ' || *s == '\t' || *s == '\n' || *s == '\r')) s++;
@@ -163,14 +148,13 @@ static int streq_n(const char* a, int alen, const char* b) {
     return alen == bl && memcmp(a, b, (size_t)bl) == 0;
 }
 
-/* L13: monotonic count of keys whose symbol list did not fit ET9_KDB_MAX_KEY_CODES. Never reset;
- * non-zero means some layout lost alternates and the capacity needs raising. */
+/* Monotonic count of keys whose symbol list did not fit ET9_KDB_MAX_KEY_CODES; non-zero means
+ * some layout lost alternates and the capacity needs raising. */
 static ET9U32 g_code_truncations = 0;
 ET9U32 xt9kdb_key_code_truncations(void) { return g_code_truncations; }
 
-/* Append one symbol, skipping duplicates (the blob's Load_AddKey rejects a repeated symbol within
- * one key outright, status 0x3c @0xb9a94 — ours drops it instead of failing the whole load).
- * Returns 1 if the list was already full, i.e. the symbol was LOST. */
+/* Append one symbol, dropping duplicates (the engine's Load_AddKey would fail the load with
+ * status 0x3c @0xb9a94). Returns 1 if the list was full and the symbol was lost. */
 static int codes_append(ET9SYMB* out, int* n, int sym, int cap) {
     if (sym <= 0 || sym > 0xffff) return 0;
     for (int i = 0; i < *n; i++) if (out[i] == (ET9SYMB)sym) return 0;
@@ -179,22 +163,15 @@ static int codes_append(ET9SYMB* out, int* n, int sym, int cap) {
     return 0;
 }
 
-/* Map a <key> element [s,e) to its ET9 SYMBOL LIST (0 written = not a recognition/commit key).
- *
- * out[0] is the PRIMARY — the single code this loader has always produced — and out[1..] are the
- * alternates. The blob's Load_AddKey (@0xb95d4) takes exactly this shape: `(ctx, keyId, keyType,
- * left, top, right, bottom, u32 count, const ET9SYMB* symbols)`, memcpy'ing the whole array into
- * the per-key char arena and storing count at key+0x40 and the pointer at key+0x48 (@0xb99a4,
- * 0xb99bc, 0xb9990). The live XT9NKL capture shows char[0] = the key's base letter, so the
- * primary-first ordering is device-confirmed, not inferred.
- *
- * Precedence, unchanged for the primary:
+/* Map a <key> element [s,e) to its symbol list (0 written = not a recognition/commit key).
+ * out[0] is the primary, out[1..] the alternates, the shape the engine's Load_AddKey (@0xb95d4)
+ * takes: (ctx, keyId, keyType, left, top, right, bottom, u32 count, const ET9SYMB* symbols),
+ * count stored at key+0x40, pointer at key+0x48; char[0] is the key's base letter.
  *   keyName   -> one ET9 function code, no alternates (MIC/SYM/SHIFT map to nothing).
- *   keyLabel  -> the letter is the primary, and keyCodes then supplies its alternates. This is
- *                the `keyLabel="A" keyCodes="0x00E4, 0x00E5"` form in the Nordic PKBs: reading
- *                keyCodes[0] as the primary there would leave the A key with no 'a' on it.
- *   keyCodes  -> keyCodes[0] is the primary, the rest are alternates. Greek and Arabic.
- * Duplicates are dropped; entries past `cap` are counted and reported by the caller. */
+ *   keyLabel  -> the letter is the primary, keyCodes supplies alternates (Nordic
+ *                `keyLabel="A" keyCodes="0x00E4, 0x00E5"`: keyCodes[0] must not become primary).
+ *   keyCodes  -> keyCodes[0] is the primary, the rest are alternates (Greek, Arabic).
+ * Entries past `cap` set *overflow for the caller to report. */
 static int key_codes_of(const char* s, const char* e, ET9SYMB* out, int cap, int* overflow) {
     int vl, n = 0, ovf = 0;
     if (overflow) *overflow = 0;
@@ -205,7 +182,7 @@ static int key_codes_of(const char* s, const char* e, ET9SYMB* out, int cap, int
         else if (streq_n(nm, vl, "ET9KEY_RETURN")) code = 13;    /* enter     */
         else if (streq_n(nm, vl, "ET9KEY_ALT"))    code = 4070;  /* fn/shift  */
         else if (streq_n(nm, vl, "ET9KEY_SPACE"))  code = 32;
-        /* MIC/SYM/MULTI/SHIFT etc. — non-letter, excluded from recognition */
+        /* MIC/SYM/MULTI/SHIFT etc.: non-letter, excluded from recognition */
         if (code && cap > 0) out[n++] = (ET9SYMB)code;
         return n;
     }
@@ -220,9 +197,8 @@ static int key_codes_of(const char* s, const char* e, ET9SYMB* out, int cap, int
         const char* p = cd; const char* pe = cd + vl;
         while (p < pe) {
             int v = parse_hex_at(&p, pe);
-            /* Cosmetic function glyphs: only ever a key's own code (▲ shift, ⇦ backspace), and
-             * every layout that uses one also carries the keyName that was matched above — this
-             * stays as the pre-L13 guard for a hypothetical bare one. */
+            /* Cosmetic function glyphs (▲ shift, ⇦ backspace) as a key's own code; layouts
+             * normally also carry a keyName, this guards a bare one. */
             if (n == 0 && (v == 0x25B2 || v == 0x21E6)) return 0;
             if (v > 0) ovf |= codes_append(out, &n, v, cap);
             while (p < pe && *p != ',') p++;   /* skip whatever followed the number */
@@ -233,8 +209,7 @@ static int key_codes_of(const char* s, const char* e, ET9SYMB* out, int cap, int
     return n;
 }
 
-/* Light header scan: pid/sid from <keyboard ...> WITHOUT touching the active model. Used by the
- * variant registry to key raw bytes by (pid,sid) at registration time, before any load. */
+/* Reads pid/sid from <keyboard ...> without touching the active model (variant registry). */
 int xt9kdb_scan_kdb_ids(const ET9U8* xml, ET9U32 len, ET9U32* pid, ET9U32* sid) {
     if (!xml || !len || !pid || !sid) return -1;
     const char* p   = (const char*)xml;
@@ -249,15 +224,9 @@ int xt9kdb_scan_kdb_ids(const ET9U8* xml, ET9U32 len, ET9U32* pid, ET9U32* sid) 
     return 0;
 }
 
-/* Top-level: parse the XML bytes and publish the model.
- *
- * The document is parsed into a private builder and published only once it parsed completely,
- * so a failed load leaves this context's previous model (and the NKL built from it) in place.
- * That is what the caller's rollback assumes: SetKdbNum restores the previous selector on a
- * failed load, exactly as the blob does at 0xba77c, and never reloads that selector because it
- * is still the active source — so emptying the slot here left a context whose selection said
- * "previous layout" with no keys behind it (R2-10). A document is complete only when its root
- * element closes: a truncated one used to load whatever keys preceded the cut. */
+/* Parse the XML into a private builder and publish only a complete document (root element
+ * closed), so a failed load keeps this context's previous model and NKL. SetKdbNum's rollback
+ * (engine @0xba77c) restores the previous selector without reloading it and relies on this. */
 ET9STATUS XT9KDB(Load_XmlKDB)(ET9KDBInfoPtr ctx, const ET9U8* xml, ET9U32 len) {
     if (!ctx || !xml || !len) return ET9STATUS_INVALID_MEMORY;
     const char* p   = (const char*)xml;
@@ -297,9 +266,7 @@ ET9STATUS XT9KDB(Load_XmlKDB)(ET9KDBInfoPtr ctx, const ET9U8* xml, ET9U32 len) {
         a = attr_val(ks, ke, "keyTop", &vl);    if (a) top  = parse_int(a, vl);
         a = attr_val(ks, ke, "keyWidth", &vl);  if (a) w    = parse_int(a, vl);
         a = attr_val(ks, ke, "keyHeight", &vl); if (a) h    = parse_int(a, vl);
-        /* biasX/biasY are read by nothing: the old loader handed them to xt9kdb_attach_bias
-         * while the model's keyCount was still 0, which rejects every index, so no layout has
-         * ever had a bias applied (and none of ours carries one). Kept that way on purpose. */
+        /* biasX/biasY are deliberately ignored: no layout has ever had a bias applied. */
 
         ET9KdbKey key;
         memset(&key, 0, sizeof key);
@@ -312,8 +279,8 @@ ET9STATUS XT9KDB(Load_XmlKDB)(ET9KDBInfoPtr ctx, const ET9U8* xml, ET9U32 len) {
         }
         key.codeCount = (ET9U8)ncodes;
         key.keyCode = (ET9U16)(ncodes ? key.codes[0] : 0);
-        /* NKL type (+0x04): regional=1, nonRegional=2, function=5 (device-confirmed). Drives both the
-         * emitted type field and expanded-region grow-eligibility (function keys are inert). */
+        /* NKL type (+0x04): regional=1, nonRegional=2, function=5. Also drives expanded-region
+         * grow-eligibility (function keys are inert). */
         { int tl; const char* tv = attr_val(ks, ke, "keyType", &tl);
           key.type = (tv && streq_n(tv, tl, "regional"))    ? 1 :
                      (tv && streq_n(tv, tl, "nonRegional")) ? 2 : 5; }
@@ -322,8 +289,7 @@ ET9STATUS XT9KDB(Load_XmlKDB)(ET9KDBInfoPtr ctx, const ET9U8* xml, ET9U32 len) {
         key.cx = (ET9S16)(left + (w - 1) / 2);    key.cy = (ET9S16)(top + (h - 1) / 2);
         key.biasX = 0; key.biasY = 0;
         if (count >= XT9_MAX_KEYS) {
-            /* L12: the overflow used to be discarded and the layout shipped truncated. Fail the
-             * load the way the blob does (status 0x38) so the caller sees it. */
+            /* Fail the load with the engine's status 0x38 rather than ship a truncated layout. */
             XT9KDB_LOGF("Load_XmlKDB: key %u rejected (status 0x%x) — layout has more than %d keys; load FAILED",
                         (unsigned)count, (unsigned)ET9STATUS_KDB_TOO_MANY_KEYS, XT9_MAX_KEYS);
             return ET9STATUS_KDB_TOO_MANY_KEYS;
@@ -344,11 +310,9 @@ ET9STATUS XT9KDB(Load_XmlKDB)(ET9KDBInfoPtr ctx, const ET9U8* xml, ET9U32 len) {
     }
     if (count == 0) return ET9STATUS_KDB_NOT_LOADED;
 
-    /* Match the blob's key ordering: all regional/nonRegional keys FIRST (in document order), then the
-     * function (type 5) keys appended (in document order). VERIFIED on-device — this stable partition
-     * reproduces the blob's exact 30-key getKeys/NKL index sequence for qwerty_pkb (backspace/alt/enter
-     * land at 27/28/29). Key indices are load-bearing: the trace records and the recognizer's candidate
-     * lookup are index-based, so ours MUST line up with the blob's or recognition maps to the wrong keys. */
+    /* Engine key order: regional/nonRegional keys first, then function (type 5) keys, each in
+     * document order (qwerty_pkb: backspace/alt/enter at 27/28/29). Indices are load-bearing:
+     * trace records and the recognizer's candidate lookup are index-based. */
     Xt9ModelSlot* s = slot_for(ctx);
     {
         ET9U16 w = 0;
@@ -360,21 +324,19 @@ ET9STATUS XT9KDB(Load_XmlKDB)(ET9KDBInfoPtr ctx, const ET9U8* xml, ET9U32 len) {
     b.keys = s->keys;
     s->model = b;
     model_touched(&s->model);
-    /* Adopt into the legacy global ONLY when it isn't owned by another live ctx (bring-up
-     * default, or a re-load of the same slot). The gesture path re-publishes its own ctx's
-     * model at every TouchStart, so a foreign context's load can never affect a decode. */
+    /* Adopt into the legacy global only when no other live ctx owns it (bring-up default, or a
+     * reload of the same slot); the gesture path re-publishes its own model at every TouchStart. */
     if (g_kdb_model == &XT9_QWERTY_PKB_EN || g_kdb_model == &s->model)
         xt9kdb_set_model(&s->model);
 #if defined(XT9KDB_CUTOVER)
-    /* CUTOVER: build the owned NKL into the context arena (ctx+0x68) and activate it (ctx+0x60), so the
-     * blob's core — ET9_CP_Trace, GetKeyPositions — reads OUR geometry. In DIFF mode this is skipped (the
-     * blob builds its own NKL; we only compare). */
+    /* Build the owned NKL into the ctx arena (ctx+0x68) and activate it (ctx+0x60) so the
+     * engine core (ET9_CP_Trace, GetKeyPositions) reads our geometry. DIFF mode only compares. */
     xt9kdb_install_nkl(ctx);
 #endif
     return ET9STATUS_NONE;
 }
 
-/* ---- not-yet-owned attachment data (our XML carries none; documented no-ops) -------------- */
+/* Not-yet-owned attachment data: our XML carries none, so these are no-ops. */
 ET9STATUS XT9KDB(Load_AttachShiftedChars)(ET9KDBInfoPtr ctx, void* p)         { (void)ctx;(void)p; return ET9STATUS_NONE; }
 ET9STATUS XT9KDB(Load_AttachMultitapInfo)(ET9KDBInfoPtr ctx, void* p)         { (void)ctx;(void)p; return ET9STATUS_NONE; }
 ET9STATUS XT9KDB(Load_AttachBias)(ET9KDBInfoPtr ctx, void* p)                 { (void)ctx;(void)p; return ET9STATUS_NONE; }

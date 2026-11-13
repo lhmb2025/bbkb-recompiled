@@ -1,4 +1,4 @@
-/* ldb_reader.h — the blob's LDB read callback and index teardown, owned (src/ldb_reader.c). */
+/* ldb_reader.h: the blob's LDB read callback and index teardown, owned (src/ldb_reader.c). */
 #ifndef LDB_READER_H
 #define LDB_READER_H
 #include <stdint.h>

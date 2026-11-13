@@ -16,16 +16,9 @@ import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
 
 /**
- * The wording the two dictionary editors show, in English, read through their specs.
- *
- * Several of these strings appear only after an add, edit or delete, i.e. only after a dialog, and
- * no dialog in this project can be driven from a unit test, so `DictionaryEditorScreensTest` cannot
- * reach them. This file reaches them the other way, through the resources the spec names.
- *
- * Every expected string below is user-visible. Most were read off the two screens as they were
- * before Wave 3 collapsed them; the 2026-11 Learned-words alignment changed the ones it had to (a
- * singular count, sentence case, a placeholder without dots, "Deleted 1 shortcut" with Undo), and
- * the 2026-11 translation pass turned the noun-built English into one resource per sentence.
+ * The user-visible English wording of the two dictionary editors, read through their specs. Many
+ * strings appear only after a dialog, which no unit test can drive, so they are reached here
+ * through the resources each spec names.
  */
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [34])
@@ -39,8 +32,6 @@ class EntryListSpecTest {
 
     private fun entry(word: String, shortcut: String?, locale: String = "en_US") =
         DictionaryEntry(word = word, shortcut = shortcut, locale = locale)
-
-    // ------------------------------------------------------------------ shortcuts
 
     @Test
     fun theShortcutsEditorWordsItselfAsItAlwaysDid() {
@@ -107,8 +98,6 @@ class EntryListSpecTest {
         assertFalse(ShortcutsSpec.matches(e, "zzz"))
     }
 
-    // ----------------------------------------------------------------- dictionary
-
     @Test
     fun theDictionaryEditorWordsItselfAsItAlwaysDid() {
         val spec = UserDictionarySpec
@@ -136,7 +125,7 @@ class EntryListSpecTest {
 
     @Test
     fun theDictionaryEditorNeverRefusesAWord() {
-        // The hand-written screen validated nothing; only the shortcuts editor did.
+        // Only the shortcuts editor validates.
         assertNull(UserDictionarySpec.validate(entry("Landrum", null)))
         assertNull(UserDictionarySpec.validate(entry("two words", null)))
     }
@@ -161,8 +150,6 @@ class EntryListSpecTest {
         assertTrue(UserDictionarySpec.matches(e, "LAND"))
         assertFalse(UserDictionarySpec.matches(e, "zzz"))
     }
-
-    // --------------------------------------------------------------- both editors
 
     @Test
     fun theTwoEditorsPartitionTheStoreBetweenThem() {

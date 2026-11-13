@@ -12,20 +12,16 @@ import dev.bbkb.ime.core.settings.ui.percentPref
 import dev.bbkb.ime.R
 
 /**
- * Advanced Gesture Parameters Screen
- * Detailed configuration for gesture timing, thresholds, and cursor control
- *
- * The four cursor tap-region scales are stored as FRACTIONS, because SettingsValues reads them
- * with getFloat while these sliders work in whole percent; [percentPref] carries that conversion
- * and the tolerance for a legacy int-typed entry that an older version of this screen wrote.
+ * Gesture timing, thresholds and cursor control. The cursor tap-region scales are stored as
+ * fractions (SettingsValues uses getFloat) while the sliders work in percent; [percentPref]
+ * converts and tolerates a legacy int-typed entry.
  */
 @Composable
 fun AdvancedGestureParametersScreen(
     onNavigateBack: () -> Unit
 ) {
     SettingsScreenHost(R.string.settings_advanced_gesture_params_title, onNavigateBack, listOf(
-        // The CKB suppression timeout used to head this category. It is the one timing value a
-        // user reaches for, so it moved to CkbGesturesScreen; this screen keeps the rest.
+        // The CKB suppression timeout lives on CkbGesturesScreen.
         Category(R.string.settings_gesture_category_timing),
         Slide(intPrefRes("pref_VKB_gesture_suppression_timeout", R.integer.config_default_VKB_swipe_gesture_suppression_timeout), R.string.settings_gesture_vkb_suppression_title,
             R.string.settings_gesture_vkb_suppression_summary, 50..500, step = 10, unit = "ms"),

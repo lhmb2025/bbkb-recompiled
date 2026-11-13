@@ -721,7 +721,6 @@
     <string name="device_config_import_unreadable">Fitxategi hori ez da gailuaren konfigurazio bat</string>
     <string name="device_config_import_failed">Ezin izan da fitxategi hori inportatu</string>
 
-    <!-- OTA app updates -->
     <string name="settings_updates_title">Eguneraketak</string>
     <string name="settings_updates_summary">Bilatu BBKBren bertsio berria</string>
     <string name="settings_update_installed_version_title">Instalatutako bertsioa</string>
@@ -755,7 +754,6 @@
     <string name="settings_update_ready_title">Instalatzeko prest</string>
     <string name="settings_update_version_details">Bertsioaren xehetasunak</string>
     <string name="settings_update_unknown_sources_title">BBKBri eguneraketak instalatzen utzi nahi diozu?</string>
-    <!-- Downloadable language packs (core/languagepack) -->
     <string name="language_packs_installed_header">Instalatuta</string>
     <string name="language_packs_available_header">Deskargatzeko eskuragarri</string>
     <string name="language_packs_download">Deskargatu</string>
@@ -877,7 +875,6 @@
     <string name="settings_voice_stop_on_pause_summary_off">Etenaldietan ere entzuten jarraitzen du, mikrofonoa sakatu arte edo minutu erdiko isilunearen ondoren</string>
     <string name="voice_status_listening_tap_to_stop">Entzuten&#8230; Sakatu mikrofonoa gelditzeko</string>
 
-    <!-- Settings text moved out of the code (2026-11) -->
     <string name="settings_common_save">Gorde</string>
     <string name="settings_common_edit">Editatu</string>
     <string name="settings_common_back">Atzera</string>

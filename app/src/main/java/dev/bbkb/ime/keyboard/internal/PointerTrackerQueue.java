@@ -12,15 +12,14 @@ public final class PointerTrackerQueue {
     private static final String TAG = "PointerTrackerQueue";
 
     /**
-     * Live pointers, oldest first; also the lock. A release scan compacts survivors to the front in
-     * place while it fires {@link Element#onPhantomUpEvent} and trims the tail only once the scan is
-     * over, so a phantom-up callback still observes the pre-release size.
+     * Live pointers, oldest first; also the lock. A release scan compacts survivors in place and
+     * trims the tail only after the scan, so a phantom-up callback still sees the pre-release size.
      */
     private final ArrayList<Element> mActivePointers = new ArrayList<>(10);
 
-
-    /** AOSP: one queued pointer tracker. */
+    /** One queued pointer tracker. */
     public interface Element {
+        /** @param j event time */
         void onPhantomUpEvent(long j);
 
         boolean isModifier();
@@ -62,6 +61,7 @@ public final class PointerTrackerQueue {
         }
     }
 
+    /** @param j event time */
     public void releaseAllPointersOlderThan(Element aVar, long j) {
         synchronized (this.mActivePointers) {
             final int size = this.mActivePointers.size();
@@ -90,10 +90,12 @@ public final class PointerTrackerQueue {
         }
     }
 
+    /** @param j event time */
     public void releaseAllPointers(long j) {
         releaseAllPointersExcept(null, j);
     }
 
+    /** @param j event time */
     public void releaseAllPointersExcept(Element aVar, long j) {
         synchronized (this.mActivePointers) {
             final int size = this.mActivePointers.size();

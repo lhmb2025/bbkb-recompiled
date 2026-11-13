@@ -18,12 +18,7 @@ import dev.bbkb.ime.personaldictionary.model.PersonalWord
 import dev.bbkb.ime.personaldictionary.model.WordSubstitution
 import java.util.*
 
-/**
- * Low-level wrapper for Android's UserDictionary ContentProvider.
- *
- * Provides CRUD operations (add, delete, query) and batch operations
- * for synchronizing dictionary words with the system dictionary.
- */
+/** Low-level add, delete, query and batch access to Android's UserDictionary provider. */
 object AudWrapper {
     const val SELECTION_ALL_LOCALE_NO_SHORTCUT = "word=? AND locale is null AND shortcut is null"
     const val SELECTION_ALL_LOCALE_WITH_SHORTCUT = "word=? AND locale is null AND shortcut=?"
@@ -71,6 +66,7 @@ object AudWrapper {
         )
     }
 
+    /** @param i the maximum operations per applyBatch call */
     @VisibleForTesting
     fun addBatchWithMaxBatchSize(context: Context, collection: Collection<DictionaryWord>, i: Int): Boolean {
         return try {
@@ -89,6 +85,7 @@ object AudWrapper {
         )
     }
 
+    /** @param i the maximum operations per applyBatch call */
     @VisibleForTesting
     fun deleteBatchWithMaxBatchSize(context: Context, collection: Collection<DictionaryWord>, i: Int): Boolean {
         return try {
@@ -138,21 +135,10 @@ object AudWrapper {
                 return false
             }
 
-            // Using acquireContentProviderClient is better for batch operations but requires API level handling or careful use
-            // For simplicity and compatibility, we can use applyBatch directly on ContentResolver which is what the original code did indirectly or directly.
-            // The original code used acquireContentProviderClient. Let's try to stick to that if possible, or simpler applyBatch.
-            // applyBatch takes authority.
-
             try {
                 val results = contentResolver.applyBatch(authority, operations)
-                // Audit PD-14: this loop had an empty body carrying only a comment
-                // describing the check it had dropped, so the method returned true
-                // whenever applyBatch did not throw - including when the provider
-                // silently rejected individual operations. The return value is
-                // load-bearing: PersonalDictionaryUtil.add throws AudAddException on
-                // false and AudSyncer logs the failed batch, so a partially-applied
-                // batch reported full success and the BASL-vs-AUD diff sync fought it
-                // on the next pass.
+                // A silently rejected operation must return false: callers rely on it
+                // (PersonalDictionaryUtil.add throws AudAddException).
                 for (result in results) {
                     if (result.count == null && result.uri == null) {
                         LogUtil.w(TAG, "$batchOperation of ${operations.size} rejected by the "
@@ -162,13 +148,8 @@ object AudWrapper {
                 }
                 applied += operations.size
             } catch (e: Exception) {
-                // Audit 2026-09-21: the `else -> throw e` arm used to let a SecurityException
-                // (or anything else the resolver invented) escape into
-                // PersonalDictionaryUtil.load's blanket catch, aborting the rest of the load.
-                // The return value already IS the failure signal, so report and use it - and
-                // say which authority and operation failed, because the failure that actually
-                // happened on the KEY2 was an "Unknown authority" from package-visibility
-                // filtering and nothing on the path said so.
+                // Resolver failures return false rather than escaping and aborting a load; the
+                // log names the authority ("Unknown authority" means package visibility).
                 LogUtil.w(TAG, "$batchOperation of ${operations.size} against authority "
                         + "'$authority' failed: $e")
                 if (e is IllegalArgumentException && e.message?.contains("Unknown authority") == true) {
@@ -252,11 +233,8 @@ object AudWrapper {
     }
 
     /**
-     * Audit PD-39: generate() had no terminal else. A DictionaryWord that is neither
-     * subclass left both fields null, and delete() would then have issued
-     * `contentResolver.delete(CONTENT_URI, null, null)` - wiping the entire system
-     * user dictionary, which is shared with other apps. DictionaryWord is abstract and
-     * public-by-Kotlin-default, so make the match total instead of latent.
+     * The match must stay total: null selection fields would make delete() wipe the entire
+     * shared system user dictionary.
      */
     private class DictionaryWordSelectionArgument(private val target: DictionaryWord) {
         var arguments: Array<String>? = null
@@ -290,13 +268,8 @@ object AudWrapper {
     }
 
     /**
-     * Every AUD row, or `null` when the provider could not be reached at all.
-     *
-     * A null cursor is NOT an empty user dictionary: it is a provider the resolver could not
-     * reach (missing, or filtered out by package visibility on API 30+). The caller diffs
-     * against this list and *deletes* what is missing from it, so conflating the two would wipe
-     * the user's personal dictionary the moment the provider went away - which is exactly the
-     * shape of the KEY2 breakage (2026-09-21).
+     * Every AUD row, or `null` when the provider is unreachable (missing, or hidden by package
+     * visibility). Never empty for unreachable: the caller deletes what is missing from this list.
      */
     fun getAudWordsWithoutSpacedKeys(context: Context): List<DictionaryWord>? {
         val cursor = context.contentResolver.query(UserDictionary.Words.CONTENT_URI, PROJECTION_BASL_WORD, null, null, null)

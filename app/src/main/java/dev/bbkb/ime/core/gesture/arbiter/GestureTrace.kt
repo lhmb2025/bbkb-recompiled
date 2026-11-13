@@ -7,37 +7,22 @@ import kotlin.math.max
 import kotlin.math.min
 
 /**
- * A single sampled point of a gesture trace.
+ * One sampled point. Coordinates are normalized and isotropic (both axes divided by the same
+ * reference dimension) so distances and angles compare across input sources; `y` grows downward.
  *
- * Coordinates are **normalized and isotropic**: both axes are divided by the same
- * reference dimension (the capture surface's reference size) so that distances and
- * angles are comparable regardless of the input source (on-screen Lab canvas vs.
- * the physical capacitive keypad). `y` grows downward, matching Android screen space.
- *
- * @param x normalized x (fraction of the reference dimension)
- * @param y normalized y (fraction of the reference dimension)
  * @param t event time in milliseconds
  */
 data class TracePoint(val x: Float, val y: Float, val t: Long)
 
 /**
- * An immutable recording of one finger contact (DOWN .. UP/CANCEL), plus the
- * whole-trace geometry the [GestureClassifier] decides from.
- *
- * The design deliberately keys off **whole-trace geometry** (displacement, arc length,
- * straightness, dominant angle, duration) rather than instantaneous end-of-gesture
- * velocity, which is noisy on a small capacitive surface.
- *
- * Audit GD-39: the derived-geometry delegates use [LazyThreadSafetyMode.NONE]. A trace is built
- * by [GestureTraceRecorder] and handed straight to its listener on the same (main) thread, and
- * [GestureClassifier] reads essentially all of them per gesture — the default SYNCHRONIZED mode
- * cost six monitor enter/exits per contact for values that are never touched off-thread.
+ * One finger contact (DOWN .. UP/CANCEL) plus the whole-trace geometry [GestureClassifier] decides
+ * from (instantaneous end velocity is too noisy on a small capacitive surface). Lazy values use
+ * [LazyThreadSafetyMode.NONE]: traces are built and read on the main thread only.
  */
 class GestureTrace(
     val points: List<TracePoint>,
     val pointerId: Int = 0,
 ) {
-    /** A trace with fewer than two points carries no movement information. */
     val isDegenerate: Boolean get() = points.size < 2
 
     val start: TracePoint get() = points.first()
@@ -45,12 +30,11 @@ class GestureTrace(
 
     val durationMs: Long get() = if (points.size < 2) 0L else end.t - start.t
 
-    /** Straight-line start→end distance, in normalized units. */
+    /** Straight-line start to end distance. */
     val displacement: Float by lazy(LazyThreadSafetyMode.NONE) {
         if (points.size < 2) 0f else hypot((end.x - start.x).toDouble(), (end.y - start.y).toDouble()).toFloat()
     }
 
-    /** Summed segment length along the path, in normalized units. */
     val arcLength: Float by lazy(LazyThreadSafetyMode.NONE) {
         var sum = 0f
         for (i in 1 until points.size) {
@@ -59,34 +43,25 @@ class GestureTrace(
         sum
     }
 
-    /**
-     * displacement / arcLength in [0,1]. 1.0 is a perfectly straight path; a meandering
-     * multi-key "type-by-swiping" trace scores low. This is the primary signal that
-     * separates a deliberate flick/swipe from a flow-typing trace.
-     */
+    /** displacement / arcLength in [0,1]; the primary swipe vs. flow-trace signal. */
     val straightness: Float by lazy(LazyThreadSafetyMode.NONE) {
         if (arcLength <= EPS) 1f else (displacement / arcLength).coerceIn(0f, 1f)
     }
 
-    /** Dominant direction of travel, degrees in (-180,180]. 0 = right, 90 = down, -90 = up, ±180 = left. */
+    /** Degrees in (-180,180]: 0 right, 90 down, -90 up, ±180 left. */
     val dominantAngleDeg: Float by lazy(LazyThreadSafetyMode.NONE) {
         if (points.size < 2) 0f
         else Math.toDegrees(atan2((end.y - start.y).toDouble(), (end.x - start.x).toDouble())).toFloat()
     }
 
-    /** Straight-line mean speed over the whole gesture, in normalized units per second. */
+    /** Normalized units per second, from displacement. */
     val meanSpeed: Float by lazy(LazyThreadSafetyMode.NONE) {
         if (durationMs <= 0L) 0f else displacement / (durationMs / 1000f)
     }
 
     /**
-     * Speed over the final [windowMs] before lift-off, in normalized units per second.
-     *
-     * This separates a flow-typed word from an action flick/swipe in the ambiguous
-     * short-straight case: a swipe-typed word *arrives at and settles on* the target key
-     * (low terminal speed), whereas an action flick is *ballistic* — the finger is still
-     * moving fast at release (high terminal speed). Shape alone can't tell these apart
-     * because two keys make a straight line; this captures intent instead.
+     * Speed over the final [windowMs]. A flow-typed word settles on its last key (low); an action
+     * flick is still moving at release (high). Shape alone can't tell two-key flows from swipes.
      */
     fun terminalSpeed(windowMs: Long): Float {
         if (points.size < 2) return 0f
@@ -99,7 +74,7 @@ class GestureTrace(
         return distanceBetween(startP, endP) / (dtMs / 1000f)
     }
 
-    /** Largest extent of the trace along either axis (normalized) — used to detect "stayed put" holds/taps. */
+    /** Largest extent along either axis, for "stayed put" taps and holds. */
     val maxExcursion: Float by lazy(LazyThreadSafetyMode.NONE) {
         var minX = start.x; var maxX = start.x; var minY = start.y; var maxY = start.y
         for (p in points) {
@@ -125,10 +100,10 @@ class GestureTrace(
     }
 }
 
-/** The four cardinal swipe directions. Classification snaps to the nearest sector (no dead zone). */
+/** Classification snaps to the nearest sector (no dead zone). */
 enum class GestureDirection { UP, DOWN, LEFT, RIGHT;
     companion object {
-        /** Map a dominant angle (degrees, y-down) to the nearest cardinal direction; boundaries at ±45°. */
+        /** Degrees, y-down; boundaries at ±45°. */
         fun fromAngle(angleDeg: Float): GestureDirection = when {
             angleDeg >= -45f && angleDeg < 45f -> RIGHT
             angleDeg >= 45f && angleDeg < 135f -> DOWN
@@ -136,7 +111,7 @@ enum class GestureDirection { UP, DOWN, LEFT, RIGHT;
             else -> LEFT
         }
 
-        /** Angular distance (degrees) from [angleDeg] to the center of its chosen sector; 0 = dead-on. */
+        /** Degrees from [angleDeg] to its sector's center; 0 is dead-on. */
         fun marginFromSectorCenter(angleDeg: Float): Float {
             val center = when (fromAngle(angleDeg)) {
                 RIGHT -> 0f; DOWN -> 90f; UP -> -90f; LEFT -> 180f

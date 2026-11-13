@@ -11,18 +11,9 @@ import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
 
 /**
- * Executable proof for the "deferred work outlives its context" findings of the Phase 2 audit
- * (docs/2026-07_pipeline-audit-findings_reference.md): `DW-2`, `DW-5` (`DW-8`, the quick-switch cancel, went with the Change language dialog).
- *
- * All three were the same defect — a message that writes text or hides the keyboard, with no
- * `removeMessages` site anywhere, so it landed in whatever field was current when it finally
- * ran. They were fixed by adding a line to `cancelPendingSuggestionUpdates()`, which every
- * suggestion update also runs, so an unrelated update could then drop a queued swipe word or
- * dictation result (2026-11 performance audit). The two text commits now have their own
- * teardown cancel, `cancelPendingTextCommits()`, run where the view finishes and starts.
- *
- * Each test asserts the queue directly, so deleting any single `removeMessages` line fails
- * exactly one test and names the message that regressed.
+ * Pins the teardown cancel sets: text-writing messages are cleared by `cancelPendingTextCommits()`
+ * (view finish/start), never by `cancelPendingSuggestionUpdates()`, which every suggestion update
+ * runs. Each test asserts the queue, so dropping one `removeMessages` line fails one test.
  */
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [34], manifest = Config.NONE, instrumentedPackages = ["com.blackberry.nuanceshim"])
@@ -56,9 +47,8 @@ class DeferredWorkCancellationTest {
 
     @Test
     fun aSuggestionUpdateLeavesQueuedTextCommitsAlone() {
-        // The audit finding: cancelPendingSuggestionUpdates runs at the start of every
-        // MSG_UPDATE_SUGGESTIONS, so a dictation result or a swipe's word queued just before an
-        // unrelated update was dropped and never typed.
+        // cancelPendingSuggestionUpdates runs at the start of every MSG_UPDATE_SUGGESTIONS, so
+        // it must not drop a queued dictation result or swipe word.
         h.queueAllCancelSetMessages()
         h.uiHandler.cancelPendingSuggestionUpdates()
         assertEquals(
@@ -92,9 +82,8 @@ class DeferredWorkCancellationTest {
 
     @Test
     fun showingASuggestionReplyDoesNotCancelTheNextKeystrokesUpdate() {
-        // showAndRefreshForSlideboard re-shows the input menu bar while a reply is being shown,
-        // and that runs cancelPendingSuggestionUpdates. An update queued by then is for text
-        // typed after the reply was requested; dropping it left the strip a word behind.
+        // showAndRefreshForSlideboard runs cancelPendingSuggestionUpdates while a reply is shown;
+        // an update queued by then is for newer text and must survive.
         org.mockito.Mockito.doAnswer {
             h.uiHandler.cancelPendingSuggestionUpdates()
             null
@@ -120,32 +109,23 @@ class DeferredWorkCancellationTest {
 
     @Test
     fun dw2_gestureCommitMessageIsCancellable() {
-        // DW-2: MSG_BATCH_INPUT_SUGGESTIONS is the only message that COMMITS TEXT, and it had
-        // no removeMessages site anywhere — a gesture committed into the field the user had
-        // already left.
+        // MSG_BATCH_INPUT_SUGGESTIONS commits a gesture word; uncancelled, it lands in the next field.
         assertCommitCancelled(PipelineHarness.Msg.BATCH_INPUT_SUGGESTIONS, "MSG_BATCH_INPUT_SUGGESTIONS")
     }
 
     @Test
     fun dw5_voiceCommitMessageIsCancellable() {
-        // DW-5: MSG_COMMIT_TEXT writes text into whatever editor is current at delivery.
+        // MSG_COMMIT_TEXT writes text into whatever editor is current at delivery.
         assertCommitCancelled(PipelineHarness.Msg.COMMIT_TEXT, "MSG_COMMIT_TEXT")
     }
 
-    // ── DW-4: multitap state and its timer surviving session teardown ────────────
-    //
-    // Coverage limit, stated so nobody reads more into these than they prove: they call
-    // resetMultitapState() directly, so they prove the reset does its job — not that
-    // cleanupKeyboard() calls it. That wiring is a private method on a real BlackBerryIME the
-    // harness cannot build, and it stays device-verified only.
+    // Coverage limit: the multitap tests call resetMultitapState() directly; that
+    // cleanupKeyboard() calls it is not provable here (needs a real BlackBerryIME).
 
     @Test
     fun dw4_resetMultitapState_dropsStateAndTimerWithoutCommitting() {
-        // Before the fix, nothing in any lifecycle path reset multitap state or removed
-        // MSG_MULTITAP_TIMEOUT — removeMultitapTimeout's only callers were the two
-        // commitMultitap methods. So both survived teardown, and pressing the same key in the
-        // next field inside the leftover 750ms window hit the stale continuation branch, where
-        // the shift-locked event it produced was dropped outright: the keystroke vanished.
+        // Leftover state plus a live 750ms timeout would send the next field's same-key press
+        // down the stale continuation branch, which drops the keystroke.
         val handler = dev.bbkb.ime.core.keyevent.MultitapEventHandler(h.ime, STUB_LAYOUT)
 
         // Mid-multitap in field A: state armed, timeout queued.
@@ -153,8 +133,7 @@ class DeferredWorkCancellationTest {
         assertTrue("multitap should be in progress", handler.isMultitapInProgress)
         assertTrue("timeout should be queued", h.uiHandler.hasMessages(MSG_MULTITAP_TIMEOUT))
 
-        // Field switch teardown. commitMultitap() is deliberately NOT what runs here: it would
-        // flush the in-progress character into whatever editor is current by then.
+        // Teardown resets rather than commitMultitap(), which would flush into the next editor.
         handler.resetMultitapState()
 
         assertFalse("multitap state survived teardown", handler.isMultitapInProgress)
@@ -167,8 +146,7 @@ class DeferredWorkCancellationTest {
 
     @Test
     fun dw4_afterReset_sameKeyStartsFreshRatherThanContinuing() {
-        // The user-visible half: the first press in the new field must be treated as a NEW
-        // multitap (index -1 = base character), not as a continuation of field A's sequence.
+        // The first press in the new field starts fresh (index -1 = base character).
         val handler = dev.bbkb.ime.core.keyevent.MultitapEventHandler(h.ime, STUB_LAYOUT)
         handler.onInputEvent(modifierPress('e'.code, android.view.KeyEvent.KEYCODE_E))
         handler.resetMultitapState()

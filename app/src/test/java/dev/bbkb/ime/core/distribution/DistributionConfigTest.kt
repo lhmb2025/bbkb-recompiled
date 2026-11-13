@@ -15,13 +15,9 @@ import org.robolectric.annotation.Config
 import java.io.File
 
 /**
- * The two debug-only preferences, and the paths everything else in the package depends on.
- *
- * These tests run on the **debug** variant, so `BuildConfig.DEBUG` is true and the override
- * branches are the live ones. The release behaviour — both keys inert, always the real URL and
- * the real build type — is a `BuildConfig.DEBUG` check placed first in each method so R8 can
- * delete the lookup outright; it cannot be exercised from a debug unit test, which is why the
- * check is a single `if` at the top of each function rather than anything conditional deeper in.
+ * Pins the two debug-only override preferences and the package's file paths. Runs on the debug
+ * variant; the release behaviour (overrides inert) is a leading `BuildConfig.DEBUG` check that R8
+ * strips and that a debug unit test cannot exercise.
  */
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [34], manifest = Config.NONE)
@@ -41,8 +37,6 @@ class DistributionConfigTest {
         prefs.edit().putString(key, value).commit()
     }
 
-    // ── The manifest URL ──────────────────────────────────────────────────────────────────────
-
     @Test
     fun theDefaultUrlIsThePublishedManifest() {
         assertEquals(
@@ -54,8 +48,7 @@ class DistributionConfigTest {
 
     @Test
     fun thePreferenceKeysAreTheAgreedNewOnes() {
-        // Named here so a rename cannot happen quietly: the settings UI the update agent builds
-        // writes these exact strings.
+        // The settings UI writes these exact strings, so a rename must fail here.
         assertEquals("pref_distribution_manifest_url", DistributionConfig.PREF_MANIFEST_URL)
         assertEquals("pref_distribution_channel_override", DistributionConfig.PREF_CHANNEL_OVERRIDE)
     }
@@ -93,8 +86,6 @@ class DistributionConfigTest {
         }
     }
 
-    // ── The channel ───────────────────────────────────────────────────────────────────────────
-
     @Test
     fun theChannelIsTheBuildTypeByDefault() {
         assertEquals(BuildConfig.BUILD_TYPE, DistributionConfig.channel(context))
@@ -103,8 +94,8 @@ class DistributionConfigTest {
 
     @Test
     fun theDebugOverrideSelectsAnotherChannel() {
-        // Why this exists: the published manifest has a `release` channel only, so a debug daily
-        // driver would otherwise never have an update flow to exercise.
+        // The published manifest has a `release` channel only, so a debug build needs this
+        // override to exercise the update flow.
         put(DistributionConfig.PREF_CHANNEL_OVERRIDE, "release")
 
         assertEquals("release", DistributionConfig.channel(context))
@@ -120,8 +111,7 @@ class DistributionConfigTest {
 
     @Test
     fun anOverriddenChannelResolvesAgainstTheManifestLikeAnyOther() {
-        // The whole point: with the override set, a release-only manifest yields an update on a
-        // debug build; without it, it yields nothing at all.
+        // With the override a release-only manifest yields an update on debug; without it, nothing.
         val releaseOnly = DistributionManifestParser.parse(
             """
             {"schema": 1, "app": {"release": {"versionCode": 99999, "versionName": "n",
@@ -137,8 +127,6 @@ class DistributionConfigTest {
         assertTrue(build.isNewerThan(BuildConfig.VERSION_CODE))
     }
 
-    // ── Everything else ───────────────────────────────────────────────────────────────────────
-
     @Test
     fun theUserAgentNamesTheAppAndItsPackage() {
         assertEquals(
@@ -149,8 +137,8 @@ class DistributionConfigTest {
 
     @Test
     fun cachedManifestStateLivesInDurableStorageAndDownloadsInTheCache() {
-        // The split matters: a cache wipe may cost a half-finished download, but it must not
-        // cost the catalogue, which is the only offline answer to "what packs exist".
+        // A cache wipe may cost a half-finished download but not the catalogue, the only offline
+        // answer to "what packs exist".
         assertEquals(File(context.filesDir, "distribution"), DistributionConfig.stateDir(context))
         assertEquals(
             File(context.filesDir, "distribution/manifest.json"),

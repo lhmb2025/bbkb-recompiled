@@ -31,18 +31,10 @@ import java.util.List;
 import java.util.Locale;
 
 /**
- * The three things Phase 1b promised on top of the query API itself, driven through the real
- * {@code PhysicalKeyboardStateTracker} rather than a hand-built snapshot:
- *
- * <ol>
- *   <li><b>One query API.</b> Real Shift/Alt presses produce the right
- *       held / sticky / locked answers from {@link ModifierState}.</li>
- *   <li><b>One feed.</b> Every modifier transition arrives at a single
- *       {@link ModifierStateListener}, and only there. The status bar is one consumer of that
- *       feed, not a second owner of the state.</li>
- *   <li><b>One reset contract.</b> {@link ModifierResetReason} says what each reset clears, and
- *       every reset entry goes through it.</li>
- * </ol>
+ * Pins, through the real {@code PhysicalKeyboardStateTracker}: real Shift/Alt presses give the
+ * right {@link ModifierState} answers; every modifier transition arrives at the single
+ * {@link ModifierStateListener} (the status bar is one consumer); and every reset goes through
+ * {@link ModifierResetReason}.
  */
 @RunWith(RobolectricTestRunner.class)
 @Config(sdk = 34, manifest = Config.NONE)
@@ -120,8 +112,6 @@ public class ModifierStateContractTest {
         up(keyCode);
     }
 
-    // ==================== one query API, over real key presses ====================
-
     @Test
     public void aHeldShiftReadsAsHeld() {
         down(KeyEvent.KEYCODE_SHIFT_LEFT);
@@ -188,7 +178,7 @@ public class ModifierStateContractTest {
         assertFalse(tracker.getModifierState().isSymHeld());
     }
 
-    /** Ctrl is answered by its one owner, through the supplier — the tracker keeps no copy. */
+    /** Ctrl is answered by its one owner, through the supplier; the tracker keeps no copy. */
     @Test
     public void ctrlIsAnsweredByTheSuppliedOwner() {
         assertFalse("no source wired: Ctrl is simply not active",
@@ -214,9 +204,8 @@ public class ModifierStateContractTest {
     }
 
     /**
-     * The chord/character split, through the real tracker: installing the symbol board's Alt page
-     * as the keyboard's meta mask puts Alt in the interpreted state and must leave the chord
-     * state alone. This is the Sym&rarr;emoji regression, asked through the new API.
+     * Installing the symbol board's Alt page as the meta mask puts Alt in the interpreted state
+     * and must leave the chord state alone.
      */
     @Test
     public void theSymbolBoardAltPageDoesNotFakeAChord() {
@@ -231,10 +220,8 @@ public class ModifierStateContractTest {
     }
 
     /**
-     * The symbol-page question, which {@code getSymbolPageOrder()} still answers from the
-     * tracker's own fields because it runs several times per keystroke and a snapshot per call
-     * would be an allocation per call. The API answers the same question, and these pin that the
-     * two agree — so the remaining call sites can be moved when their files are opened.
+     * {@code getSymbolPageOrder()} still reads the tracker's own fields (it runs several times per
+     * keystroke, and a snapshot per call would allocate); these pin that it agrees with the API.
      */
     @Test
     public void theApiAgreesWithGetSymbolPageOrder() {
@@ -267,8 +254,6 @@ public class ModifierStateContractTest {
         assertEquals(tracker.isManualShiftAndShiftPressing(),
                 tracker.getModifierState().isManualShiftPending());
     }
-
-    // ==================== one feed ====================
 
     @Test
     public void everyModifierTransitionReachesTheOneListener() {
@@ -318,8 +303,6 @@ public class ModifierStateContractTest {
     public void theStatusBarUpdaterIsJustAListenerOnTheFeed() {
         assertTrue(ModifierStateListener.class.isAssignableFrom(ModifierStatusBarUpdater.class));
     }
-
-    // ==================== one reset contract ====================
 
     @Test
     public void aFullResetClearsEverythingAndForcesAPost() {

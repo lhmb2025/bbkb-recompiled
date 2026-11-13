@@ -20,10 +20,7 @@ import dev.bbkb.ime.BuildConfig;
 
 
 public class KeyEventConverter {
-
-    // ===== ALT CHORD DEBUG LOGGING HELPER =====
     private static String hex(int v) { return "0x" + Integer.toHexString(v); }
-    // ==========================================
 
     final int mDeviceId;
 
@@ -40,11 +37,7 @@ public class KeyEventConverter {
 
     private boolean mAltMappingsInitAttempted = false;
 
-    /**
-     * Never null: the sole construction site (BlackBerryIME.getOrCreateKeyEventConverter) passes
-     * {@code HardwareKeyBridge.auxCharacterResolver()}, which falls back to
-     * {@code new AuxCharacterResolver.Builder().build()} on any failure.
-     */
+    /** Never null: HardwareKeyBridge.auxCharacterResolver() falls back to a default build. */
     private final AuxCharacterResolver auxCharacterResolver;
 
     /** The resolver for a key no profile speaks for: no Alt table, no layout overrides. */
@@ -52,47 +45,30 @@ public class KeyEventConverter {
             new AuxCharacterResolver.Builder().withCombiningAccentFilter(true).build();
 
     /**
-     * Check if the dictation key setting is enabled.
-     * When enabled: regular press = voice input, alt press = character
-     * When disabled: regular press = character, alt press = voice input
-     *
-     * <p>Audit DK-17: this is read inside {@code convertKeyEvent} on every voice/multifunction key
-     * press. It used to call {@code PreferenceManager.getDefaultSharedPreferences(mContext)},
-     * which re-does the name/mode resolution on each call (and, on the very first call in a
-     * process, blocks on the prefs file load) — on the key path. Routed through
-     * {@link PrefsManager}, the project's single prefs accessor, which holds one instance.
-     *
-     * <p>The flag properly belongs in {@code SettingsValues} alongside
-     * {@code multifunctionKeyAction}, so it participates in settings snapshotting and
-     * {@code DeviceProfile}'s device overrides; that change spans files outside this package.
+     * On: a plain press is voice input, Alt+press the character. Off: swapped. Read on the key
+     * path, so it goes through the cached {@link PrefsManager} instance.
      */
     private boolean isDictationKeyEnabled() {
         if (mContext == null) return true;  // Default to enabled
         return PrefsManager.INSTANCE.getPrefs(mContext).getBoolean("pref_voice_input_key", true);
     }
 
+    /** @param i an EditorInfo input type */
     private boolean isNumericFieldClass(int i) {
         int i2 = i & 15;
         return i2 == 2 || i2 == 4 || i2 == 3;
     }
 
+    /** @param i an EditorInfo input type */
     private boolean isNumberOrDatetimeVariationField(int i) {
         int i2 = i & 15;
         return i2 == 2 || (i2 == 4 && (i & 4080) != 0);
     }
 
     /**
-     * In a numeric field (number, phone, date/time) the mic key is the digit it doubles as, and
-     * it never starts voice input: the event that types {@code altChar}, or null when the field is
-     * not numeric or the key has no alt character, in which case the caller decides as before.
-     *
-     * <p>The original reached the same result by accident. Its number layouts add
-     * {@code META_ALT_ON} to every key's meta state so the letter keys type their digits, and the
-     * mic key read that as "Alt is held" and fell through to its alt character. Ours reads the
-     * same bit, but the "dictation key off" swap turns "Alt is held" into "start voice input", so
-     * with that setting the KEY2's 0 key in a card-number field opened the voice board (beta
-     * report, 2026-10). The mask is also not always there (it belongs to the keyboard state, which
-     * a board or a Sym press can reset), so the field type is the thing to ask, not the mask.
+     * In a numeric field the mic key types its digit and never starts voice input; null when the
+     * field is not numeric or there is no alt char. Ask the field type, not the number layout's
+     * Alt mask: the mask can be reset, and with dictation off "Alt held" means voice input.
      */
     private InputEvent numericFieldDigit(int inputType, char altChar, int keyCode, boolean isRepeat,
             long eventTime) {
@@ -102,7 +78,7 @@ public class KeyEventConverter {
         return InputEvent.createHardwareKeyPressEx((int) altChar, keyCode, null, isRepeat, eventTime, false);
     }
 
-    /** The mapping's alt character, or the resolver's for this event, or 0 when neither has one. */
+    /** The mapping's alt character, else the resolver's, else 0. */
     private char altCharFor(AuxCharacterResolver aux, ScancodeMapping mapping, KeyEvent keyEvent) {
         if (mapping != null && mapping.hasAltChar()) {
             return mapping.altChar;
@@ -111,6 +87,10 @@ public class KeyEventConverter {
         return r.hasCharacter() ? r.character : 0;
     }
 
+    /**
+     * @param i device id
+     * @param interfaceC0922i interprets the event's character under the computed meta state
+     */
     public KeyEventConverter(int i, KeyCharacterInterpreter interfaceC0922i, Context context, AuxCharacterResolver resolver) {
         this.mDeviceId = i;
         this.mKeyCharacterInterpreter = interfaceC0922i;
@@ -118,13 +98,10 @@ public class KeyEventConverter {
         this.auxCharacterResolver = resolver;
     }
 
-    /**
-     * Load Alt mappings table if device requires custom mappings.
-     * Only called once, result is cached.
-     */
+    /** Loads the device's Alt mappings table once. */
     private void initializeAltMappingsIfNeeded() {
         if (mAltMappingsInitAttempted) {
-            return;  // Already attempted
+            return;
         }
         
         mAltMappingsInitAttempted = true;
@@ -135,15 +112,13 @@ public class KeyEventConverter {
         }
         
         try {
-            // First try via DeviceProfile (if initialized)
             DeviceProfile profile = DeviceProfile.current();
             if (BuildConfig.DEBUG) android.util.Log.d("MicKeyDebug", "DeviceProfile: hasCustomAltMappings=" + profile.hasCustomAltMappings());
             
             if (profile.hasCustomAltMappings()) {
                 mAltMappingsTable = profile.getAltMappingsTable(mContext);
             }
-            
-            // If still null, try direct resolution with context
+
             if (mAltMappingsTable == null) {
                 if (BuildConfig.DEBUG) android.util.Log.d("MicKeyDebug", "Trying direct resolution via DeviceInputResolver");
                 mAltMappingsTable = DeviceInputResolver.getAltMappingsTable(mContext, 0);
@@ -151,7 +126,6 @@ public class KeyEventConverter {
             
             if (BuildConfig.DEBUG) android.util.Log.d("MicKeyDebug", "AltMappingsTable loaded: " + (mAltMappingsTable != null));
             if (mAltMappingsTable != null) {
-                // Test if the mic pseudo-keycode is mapped
                 int micKeyCode = mAltMappingsTable.getSpecialFunctionCode(ResolvedKey.PSEUDO_KEYCODE_VOICE);
                 if (BuildConfig.DEBUG) android.util.Log.d("MicKeyDebug",
                         "Keycode " + ResolvedKey.PSEUDO_KEYCODE_VOICE + " -> virtualKeyCode: " + micKeyCode);
@@ -161,6 +135,10 @@ public class KeyEventConverter {
         }
     }
 
+    /**
+     * @param i the computed (interpreted) meta state
+     * @param i2 the editor's input type
+     */
     public InputEvent convertKeyEvent(KeyEvent keyEvent, int i, int i2) {
         initializeAltMappingsIfNeeded();
 
@@ -171,21 +149,12 @@ public class KeyEventConverter {
         final AuxCharacterResolver aux = phoneKey ? auxCharacterResolver : PROFILELESS_AUX;
         final AltMappingsTable altTable = phoneKey ? mAltMappingsTable : null;
 
-        // Audit DK-11: three orphaned debug locals (_keyCode / _sysMeta / _altInMeta) were
-        // assigned here and never read anywhere in the file — three dead JNI-backed getter calls
-        // per hardware key event that R8 cannot elide. The surviving debug logs below re-read
-        // getMetaState() themselves.
-        //
-        // Audit DK-45/DK-20: the physical-keyboard classification is invariant for one event, and
-        // the branches below re-entered the singleton five separate times for it.
         final boolean isPhysical =
                 dev.bbkb.ime.core.device.detection.KeyEventDeviceClassifier
                         .getInstance().isPhysicalKeyboardEvent(keyEvent);
 
-        // Phase 1g: the eight sites below that used to set InputMethodHelper.micKeyPressed /
-        // emojiKeyPressed / multifunctionKeyPressed arm a PendingKeyAction here instead. This
-        // method is only the DOWN half of those keys — KeyEventProcessor.onKeyUpInternal performs
-        // the action on release — and BoardKeyPressTracker is the pairing's one owner.
+        // This is only the DOWN half of board keys: it arms a PendingKeyAction, and
+        // KeyEventProcessor.onKeyUpInternal performs it on release.
         final BoardKeyPressTracker pairing = BoardKeyPressTracker.getInstance();
         CharSequence charSequence = null;
         int unicodeChar = 0;
@@ -213,14 +182,10 @@ public class KeyEventConverter {
             isTextEvent = false;
             z = false;
         } else {
-            // === AuxCharacterResolver path (consolidated P1 + P4) ===
-            // When resolver is available and Alt is active, use it for alt character resolution.
-            // Special function keys are NOT resolved here — they fall through to the special key handler below.
             if (isAltActive(keyEvent, i)) {
                 int keyCode = keyEvent.getKeyCode();
-                // Skip special function keys — they have their own handler below. So does a
-                // BOARD_VOICE key: with the dictation key off, Alt plus it starts voice input
-                // rather than typing its alt character, and that swap lives in the voice branch.
+                // Special function keys and BOARD_VOICE skip this: their own branches below handle
+                // Alt (with dictation off, Alt+voice key starts voice input).
                 ScancodeMapping altMapping = DeviceInputResolver.keyRole(
                         keyEvent.getScanCode(), keyCode, keyEvent.getDeviceId());
                 boolean isSpecialFunctionKey = (altTable != null && altTable.getSpecialFunctionCode(keyCode) != 0)
@@ -277,8 +242,7 @@ public class KeyEventConverter {
         }
         int keyCode2 = keyEvent.getKeyCode();
         boolean z2 = keyEvent.getRepeatCount() != 0;
-        
-        // MIC_DEBUG C-entry: Log state for keyCode=7 (0/mic key) after interpretKeyCharacter
+
         if (keyCode2 == 7) {
             if (BuildConfig.DEBUG) {
             android.util.Log.d("MIC_DEBUG",
@@ -296,32 +260,27 @@ public class KeyEventConverter {
         if (isTextEvent && charSequence != null) {
             return InputEvent.createTextEvent(unicodeChar, charSequence, keyCode2, (InputEvent) null, z2, keyEvent.getEventTime(), false);
         }
-        // === UNIFIED KEY MAPPING (Phase 4): Resolve special keys from XML config ===
+        // Special keys from the device config.
         ScancodeMapping resolvedMapping = DeviceInputResolver.keyRole(
                 keyEvent.getScanCode(), keyCode2, keyEvent.getDeviceId());
         if (resolvedMapping != null && resolvedMapping.role != null) {
             boolean unifiedAltPressed = (KeyEvent.normalizeMetaState(i) & 2) != 0;
 
-            // MULTIFUNCTION keys dispatch a user-configured action. The emoji action
-            // reuses the BOARD_EMOJI branch below so its behavior is identical to a
-            // dedicated key. The ctrl
-            // action never reaches here without Alt: BlackBerryIME.remapKeyEvent()
-            // already rewrote the event to KEYCODE_CTRL_LEFT.
+            // The emoji multifunction action reuses the BOARD_EMOJI branch. The ctrl action
+            // never gets here without Alt: remapKeyEvent() already made it KEYCODE_CTRL_LEFT.
             String multifunctionAction = (resolvedMapping.role == KeyRole.MULTIFUNCTION)
                     ? MultifunctionKeyHandler.getConfiguredAction(resolvedMapping) : null;
 
             if (resolvedMapping.role == KeyRole.BOARD_VOICE) {
-                // Voice/MIC key — resolved from XML config. In a numeric field it is its digit
-                // (held: repeats it), whatever the dictation setting and the Alt state say.
+                // In a numeric field it is its digit (held: repeats), whatever dictation and Alt say.
                 InputEvent digit = numericFieldDigit(i2, altCharFor(aux, resolvedMapping, keyEvent),
                         keyCode2, z2, keyEvent.getEventTime());
                 if (digit != null) {
                     this.mVoiceKeyPending = false;
                     return digit;
                 }
-                // With Shift, the key types the letter the user's letter layout puts on it (the
-                // Thai keypad's ป): a layout that names the key answers a letter only when Shift
-                // is held, since its unshifted entry is the digit.
+                // A letter layout that names this key (Thai ป) answers a letter only with Shift,
+                // since its unshifted entry is the digit.
                 if (!unifiedAltPressed) {
                     int layoutLetter = PhysicalKeyResolver.letter(keyEvent, i);
                     if (layoutLetter != 0 && Character.isLetter(layoutLetter)) {
@@ -337,7 +296,6 @@ public class KeyEventConverter {
                         pairing.arm(keyEvent, PendingKeyAction.VOICE_INPUT);
                         return InputEvent.createGestureEndCopy(InputEvent.createEmptyEvent());
                     } else {
-                        // Output alt character from mapping or fallback
                         char altCh = altCharFor(aux, resolvedMapping, keyEvent);
                         if (altCh != 0) {
                             return InputEvent.createHardwareKeyPressEx((int) altCh, keyCode2, null, z2, keyEvent.getEventTime(), false);
@@ -351,7 +309,6 @@ public class KeyEventConverter {
                 }
             } else if (resolvedMapping.role == KeyRole.BOARD_EMOJI
                     || MultifunctionKeyHandler.ACTION_EMOJI_BOARD.equals(multifunctionAction)) {
-                // Emoji key — resolved from XML config
                 if (keyEvent.getRepeatCount() == 0) {
                     if (!unifiedAltPressed) {
                         pairing.arm(keyEvent, PendingKeyAction.EMOJI_BOARD);
@@ -362,10 +319,8 @@ public class KeyEventConverter {
                     }
                 }
             } else if (multifunctionAction != null) {
-                // Remaining multifunction actions (clipboard, language switch, symbol
-                // keyboard, hide keyboard — and the alt-active leg of ctrl): plain press
-                // arms the key-up dispatch in KeyEventProcessor; Alt+key types the
-                // mapping's alt character.
+                // Other actions (and Alt+ctrl): a plain press arms the key-up dispatch in
+                // KeyEventProcessor; Alt+key types the mapping's alt character.
                 if (keyEvent.getRepeatCount() == 0) {
                     boolean isCtrlAction = MultifunctionKeyHandler.ACTION_CTRL.equals(multifunctionAction);
                     this.mMultifunctionKeyPending = !unifiedAltPressed && !isCtrlAction;
@@ -384,30 +339,21 @@ public class KeyEventConverter {
                         }
                         return InputEvent.createGestureEndCopy(InputEvent.createEmptyEvent());
                     }
-                    // ctrl action without Alt: unreachable (remapped before conversion);
-                    // fall through to normal key processing as a safe default.
+                    // ctrl without Alt is unreachable (remapped earlier); fall through.
                 } else if (this.mMultifunctionKeyPending) {
                     // Held: swallow repeats; the action fires once on key-up.
                     return InputEvent.createGestureEndCopy(InputEvent.createEmptyEvent());
                 }
             } else if (resolvedMapping.role == KeyRole.BOARD_SYM) {
-                // SYM key — resolved from XML config. There used to be a
-                // usesMetaSymHandling() arm here returning an empty event; see the KEYCODE_SYM
-                // site below for why it is gone. -22 reaches
-                // InputLogic.handleFunctionalKeyEvent → BlackBerryIME.updateSymbolShift, which
-                // ignores key repeats, so holding SYM does not flap the board.
+                // -22 reaches BlackBerryIME.updateSymbolShift, which ignores repeats, so holding
+                // SYM does not flap the board.
                 return InputEvent.createHardwareKeyPress(-1, -22, null, z2, keyEvent.getEventTime());
             }
         }
-        
-        // === LEGACY SPECIAL KEY HANDLING (fallback when no XML mapping) ===
-        // Handle keycode 7 (voice key) for BlackBerry OEM devices
-        // Arms PendingKeyAction.VOICE_INPUT, same as the mic pseudo-keycode 667
-        // Alt character for keycode 7 on BlackBerry is "0"
-        //
-        // Only a BlackBerry keypad puts its mic key on KEYCODE_0. On any other hardware keyboard
-        // (a Bluetooth or USB keyboard, a keyboard case) key code 7 is the 0 key and must type
-        // its zero; this branch used to be device-blind and swallowed it everywhere.
+
+        // Fallbacks when the device config has no mapping.
+        // Only a BlackBerry keypad puts its mic key on KEYCODE_0 (alt char "0"); on any other
+        // hardware keyboard key code 7 is the 0 key and must type zero.
         if (7 == keyCode2 && DeviceProfile.current().isBlackBerryDevice()) {
             AuxCharacterResolver.Result legacyAlt = aux.resolve(keyEvent);
             char legacyAltChar = legacyAlt.hasCharacter() ? legacyAlt.character : '0';
@@ -418,11 +364,9 @@ public class KeyEventConverter {
             }
             boolean altPressed = (KeyEvent.normalizeMetaState(i) & 2) != 0;
             boolean dictationEnabled = isDictationKeyEnabled();
-            
-            // Swap logic: when disabled, alt+key triggers voice instead of regular press
+
             boolean shouldTriggerVoice = dictationEnabled ? !altPressed : altPressed;
-            
-            // MIC_DEBUG C: KeyEventConverter reached keyCode=7 handler
+
             if (BuildConfig.DEBUG) {
             android.util.Log.d("MIC_DEBUG",
                 "KEC#keyCode7: scanCode=" + keyEvent.getScanCode() +
@@ -446,7 +390,6 @@ public class KeyEventConverter {
                     this.mVoiceKeyPending = shouldTriggerVoice;
                     if (shouldTriggerVoice) {
                         pairing.arm(keyEvent, PendingKeyAction.VOICE_INPUT);
-                        // MIC_DEBUG C2: Returning gesture-end-empty (hasData=FALSE → will fall through to superOnKeyDown!)
                         if (BuildConfig.DEBUG) {
                         android.util.Log.d("MIC_DEBUG",
                             "KEC#keyCode7: returning createGestureEndCopy(createEmptyEvent())" +
@@ -454,12 +397,10 @@ public class KeyEventConverter {
                         }
                         return InputEvent.createGestureEndCopy(InputEvent.createEmptyEvent());
                     } else {
-                        // Output the alt character via the resolver
                         AuxCharacterResolver.Result result = aux.resolve(keyEvent);
                         if (result.hasCharacter()) {
                             return InputEvent.createHardwareKeyPressEx(result.codePoint, keyCode2, null, z2, keyEvent.getEventTime(), false);
                         }
-                        // No alt character defined, consume silently
                         return InputEvent.createGestureEndCopy(InputEvent.createEmptyEvent());
                     }
                 case 1:
@@ -474,17 +415,14 @@ public class KeyEventConverter {
                     break;
             }
         }
-        // Handle KEYCODE_VOICE_ASSIST (231) - system maps MIC key to this after .kl update
-        // The mic pseudo-scancode confirms this is the Minimal Phone MIC key
-        // This allows the IME to intercept and handle it before system voice assistant launches
+        // KEYCODE_VOICE_ASSIST on the mic pseudo-scancode is the Minimal Phone MIC key; handle it
+        // before the system voice assistant launches.
         if (231 == keyCode2 && isPhysical
                 && keyEvent.getScanCode() == ResolvedKey.PSEUDO_KEYCODE_VOICE) {
             boolean altPressed = (KeyEvent.normalizeMetaState(i) & 2) != 0;
             boolean dictationEnabled = isDictationKeyEnabled();
-            
-            // Apply same swap logic as the mic pseudo-keycode / keycode 7:
-            // When enabled (default): MIC alone = voice, Alt+MIC = period
-            // When disabled: MIC alone = period, Alt+MIC = voice
+
+            // Dictation on: MIC alone = voice, Alt+MIC = period. Off: swapped.
             boolean shouldTriggerVoice = dictationEnabled ? !altPressed : altPressed;
             
             if (BuildConfig.DEBUG) {
@@ -499,7 +437,6 @@ public class KeyEventConverter {
                         pairing.arm(keyEvent, PendingKeyAction.VOICE_INPUT);
                         return InputEvent.createGestureEndCopy(InputEvent.createEmptyEvent());
                     } else {
-                        // Output period character (Alt+MIC behavior)
                         return InputEvent.createHardwareKeyPressEx((int)'.', keyCode2, null, z2, keyEvent.getEventTime(), false);
                     }
                 case 1:
@@ -514,9 +451,8 @@ public class KeyEventConverter {
                     break;
             }
         }
-        // Handle Emoji key when system maps the emoji pseudo-scancode to KEYCODE_UNKNOWN (0)
-        // This happens because "EM" in .kl file is not a valid Android keycode name
-        // Detect by scancode when keycode is 0 or the emoji pseudo-keycode
+        // Emoji key by scancode: "EM" in the .kl file is not a valid keycode name, so the key
+        // code is KEYCODE_UNKNOWN (0) or the pseudo-keycode.
         int scanCode = keyEvent.getScanCode();
         if (isPhysical && scanCode == ResolvedKey.PSEUDO_KEYCODE_EMOJI
                 && (keyCode2 == 0 || keyCode2 == ResolvedKey.PSEUDO_KEYCODE_EMOJI)) {
@@ -530,12 +466,10 @@ public class KeyEventConverter {
                 }
                 
                 if (!altPressed) {
-                    // Emoji alone → toggle emoji board
                     pairing.arm(keyEvent, PendingKeyAction.EMOJI_BOARD);
                     return InputEvent.createGestureEndCopy(InputEvent.createEmptyEvent());
                 } else {
-                    // Alt+Emoji → output alt character via resolver or hardcoded '0'
-                    // Use the hardware keyCode (the emoji pseudo-keycode) for XML lookup
+                    // Alt+Emoji: the resolver's char for the pseudo-keycode, else '0'.
                     AuxCharacterResolver.Result result =
                             aux.resolve(ResolvedKey.PSEUDO_KEYCODE_EMOJI);
                     if (result.hasCharacter()) {
@@ -545,7 +479,7 @@ public class KeyEventConverter {
                 }
             }
         }
-        // Handle custom hardware keys with special function remapping
+        // Special-function keys from the Alt table: 7 = voice, 8888 = emoji.
         if (altTable != null) {
             int virtualKeyCode = altTable.getSpecialFunctionCode(keyCode2);
             
@@ -565,10 +499,7 @@ public class KeyEventConverter {
                             this.mVoiceKeyPending = false;
                             return digit;
                         }
-                        // Voice input key - apply dictation key swap logic
                         boolean dictationEnabled = isDictationKeyEnabled();
-                        // When enabled: regular=voice, alt=character
-                        // When disabled: regular=character, alt=voice
                         boolean shouldTriggerVoice = dictationEnabled ? !altPressed : altPressed;
                         
                         if (BuildConfig.DEBUG) {
@@ -577,12 +508,10 @@ public class KeyEventConverter {
                         }
                         
                         if (shouldTriggerVoice) {
-                            // Trigger voice input
                             this.mVoiceKeyPending = true;
                             pairing.arm(keyEvent, PendingKeyAction.VOICE_INPUT);
                             return InputEvent.createGestureEndCopy(InputEvent.createEmptyEvent());
                         } else {
-                            // Output the alt character via the resolver
                             char altChar = 0;
                             AuxCharacterResolver.Result result = aux.resolve(keyCode2);
                             if (result.hasCharacter()) altChar = result.character;
@@ -590,16 +519,14 @@ public class KeyEventConverter {
                                 if (BuildConfig.DEBUG) android.util.Log.d("MicKeyDebug", "Outputting alt char: '" + altChar + "'");
                                 return InputEvent.createHardwareKeyPressEx((int)altChar, keyCode2, null, z2, keyEvent.getEventTime(), false);
                             }
-                            // No alt character defined, consume silently
                             return InputEvent.createGestureEndCopy(InputEvent.createEmptyEvent());
                         }
                     } else if (8888 == virtualKeyCode) {
-                        // Emoji toggle - no swap logic, only triggers without Alt
+                        // No dictation swap: only a plain press opens the board.
                         if (!altPressed) {
                             pairing.arm(keyEvent, PendingKeyAction.EMOJI_BOARD);
                             return InputEvent.createGestureEndCopy(InputEvent.createEmptyEvent());
                         } else {
-                            // Alt+emoji key - output the alt character via the resolver
                             char altChar = 0;
                             AuxCharacterResolver.Result result2 = aux.resolve(keyCode2);
                             if (result2.hasCharacter()) altChar = result2.character;
@@ -624,16 +551,8 @@ public class KeyEventConverter {
         if (KeyEvent.KEYCODE_DEL == keyCode2) {
             return InputEvent.createHardwareKeyPress(-1, -5, null, z2, keyEvent.getEventTime());
         }
-        // Handle the SYM key - device-aware (audit DK-45: these were bare keycode ints)
+        // Every device family takes this keycode path for SYM; nothing handles it via META_SYM_ON.
         if (KeyEvent.KEYCODE_SYM == keyCode2 && isPhysical) {
-            // The KNOWN GAP recorded here on 2026-09-16 is now closed (beta triage #10, MP01).
-            // For the record: a `usesMetaSymHandling()` arm used to return an empty event on
-            // every third-party PKB device, on the theory that BlackBerryIME's
-            // SymKeyStateTracker would handle SYM via META_SYM_ON. That tracker had zero callers
-            // and was deleted, so on those devices SYM was swallowed here and handled by nobody
-            // — which is half of "Sym key does nothing" on the Minimal Phone MP01. Both device
-            // families now take the same keycode-based path, which is the one that has always
-            // worked on BlackBerry hardware.
             return InputEvent.createHardwareKeyPress(-1, -22, null, z2, keyEvent.getEventTime());
         }
         if ((KeyEvent.KEYCODE_SHIFT_RIGHT == keyCode2 || KeyEvent.KEYCODE_SHIFT_LEFT == keyCode2) && isPhysical) {
@@ -645,10 +564,7 @@ public class KeyEventConverter {
         if (!keyEvent.isPrintingKey() && KeyEvent.KEYCODE_SPACE != keyCode2 && KeyEvent.KEYCODE_ENTER != keyCode2) {
             return InputEvent.createEmptyEvent();
         }
-        // Audit DK-25: Integer.MIN_VALUE / Integer.MAX_VALUE were stand-ins for
-        // KeyCharacterMap.COMBINING_ACCENT (0x80000000) and COMBINING_ACCENT_MASK (0x7FFFFFFF).
-        // AuxCharacterResolver already spells the identical test with the named constants; two
-        // spellings of one bit test meant only one of them read as a dead-accent check.
+        // Dead accent.
         if ((unicodeChar & android.view.KeyCharacterMap.COMBINING_ACCENT) != 0) {
             return InputEvent.createFunctionalKeyEvent(
                     unicodeChar & android.view.KeyCharacterMap.COMBINING_ACCENT_MASK, keyCode2, null);
@@ -663,18 +579,9 @@ public class KeyEventConverter {
     }
 
     /**
-     * Whether this key should produce its Alt character: the event's own Alt, or the computed
-     * (interpreted) meta state's Alt or alt-lock. That is the character-interpretation question,
-     * not "is the user holding Alt" — the symbol board's Alt page counts here and must not count
-     * for a chord. See {@link ModifierState}.
-     *
-     * <p>This used to be spelled {@code keyEvent.isAltPressed() || (i & 2) == 2 || (i & 512) ==
-     * 512}: raw bit literals for {@code META_ALT_ON} and the span tracker's alt-lock, a third way
-     * of asking the same question. {@code ModifierState.ALT_ANY_MASK} additionally covers
-     * {@code META_ALT_LEFT_ON} / {@code META_ALT_RIGHT_ON}, which {@code KeyEvent} never sets
-     * without {@code META_ALT_ON} (its meta state is normalized), so the answer is unchanged.
-     *
-     * @param computedMetaState the interpreted meta state this conversion is running against
+     * Whether the key should produce its Alt character (event Alt, or interpreted Alt/alt-lock).
+     * This is the character question, not "is Alt held": the symbol board's Alt page counts here
+     * but not for a chord. See {@link ModifierState}.
      */
     private boolean isAltActive(KeyEvent keyEvent, int computedMetaState) {
         return ModifierState.builder()

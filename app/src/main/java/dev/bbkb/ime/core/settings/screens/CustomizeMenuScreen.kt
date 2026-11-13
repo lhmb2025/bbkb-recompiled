@@ -54,21 +54,14 @@ import kotlin.math.abs
 import kotlin.math.roundToInt
 
 /**
- * Customize Menu screen: long-press-drag reordering of the Unified Input Menu toggles.
- *
- * Positions (1)-(4) are the four bar slots (the fixed center Keyboard/Settings key is
- * not listed — it cannot move); below the "not shown" marker, items are not shown on the
- * keyboard. All cells (toggles and that marker) share one height so the drag arithmetic
- * can work in whole visual slots.
+ * Long-press-drag reordering of the input menu toggles. Positions 1 to 4 are the bar slots (the
+ * fixed center key is not listed); items below the "not shown" marker are hidden. All cells share
+ * one height so the drag arithmetic works in whole slots.
  */
 
 /**
- * Every cell — a toggle and the "not shown" marker alike — is exactly one of these, which is what
- * lets the drag arithmetic work in whole visual slots.
- *
- * Material 3's one-line list item, so a row here is the height of a row anywhere else in settings.
- * It was 64dp, chosen before [Spacing.oneLineListItemHeight] existed, which made this the only
- * screen whose rows did not line up with the screen it is reached from.
+ * Height of every cell (toggles and marker alike), which the drag arithmetic relies on; Material 3's
+ * one-line list item.
  */
 private val ROW_HEIGHT = Spacing().oneLineListItemHeight
 
@@ -96,8 +89,7 @@ fun CustomizeMenuScreen(
     val order = remember { mutableStateListOf<String>().apply { addAll(UimMenuOrder.getOrder(prefs)) } }
     var draggingId by remember { mutableStateOf<String?>(null) }
     var dragOffset by remember { mutableFloatStateOf(0f) }
-    // One slot is a cell plus the group gap below it: the cells sit groupGap apart, as the rows of
-    // a group do, so that is how far a row moves when it trades places with a neighbour.
+    // One slot is a cell plus the group gap below it.
     val rowHeightPx = with(LocalDensity.current) { (ROW_HEIGHT + spacing.groupGap).toPx() }
 
     fun onDragBy(id: String, dy: Float) {
@@ -141,10 +133,8 @@ fun CustomizeMenuScreen(
                 text = context.getString(R.string.settings_customize_menu_instructions),
                 modifier = Modifier.settingsSearchAnchor("customize_menu"),
             )
-            // The bar slots and the rows under the marker are two groups of cards, laid out in one
-            // column rather than two PreferenceGroups: a dragged row has to stay the same
-            // composition (and keep its gesture) when it crosses the marker, and a group's clip
-            // would cut it off as it lifts past the group's edge.
+            // One column, not two PreferenceGroups: a dragged row must keep its composition (and
+            // gesture) across the marker, and a group's clip would cut it off.
             Column(verticalArrangement = Arrangement.spacedBy(spacing.groupGap)) {
                 val shownCount = minOf(order.size, UimMenuOrder.SHOWN_COUNT)
                 for (i in order.indices) {
@@ -196,8 +186,7 @@ private fun ToggleRow(
     val rowShape = LocalShapes.current.row
     Surface(
         shape = rowShape,
-        // The card colour, not Color.Transparent: a dragged row lifts off the page, and the rows it
-        // passes over have to be opaque or it reads as a ghost sliding behind them.
+        // Opaque card colour, or a dragged row reads as a ghost sliding behind the others.
         color = if (isDragging) {
             MaterialTheme.colorScheme.surfaceVariant
         } else {
@@ -214,8 +203,7 @@ private fun ToggleRow(
                 shadowElevation = if (isDragging) 8f else 0f
                 this.shape = rowShape
             }
-            // The group's outer corners, painted inside the layer so they travel with the row;
-            // a lifted row drops them, since it is passing over other cards.
+            // Painted inside the layer so they travel with the row; a lifted row drops them.
             .groupOuterCorners(if (isDragging) GroupEdge.Middle else edge)
             .pointerInput(id) {
                 detectDragGesturesAfterLongPress(
@@ -266,12 +254,8 @@ private fun ToggleRow(
 }
 
 /**
- * The boundary between the four bar slots and everything else.
- *
- * Still one whole [ROW_HEIGHT] cell, because the drag arithmetic counts it as a slot — but no rule
- * across it. The gap either side of the label is the separation, which is how every other section
- * boundary in settings is drawn. The label keeps its own wording and its own sentence case: it is a
- * statement about the rows under it ("Not shown on keyboard"), not a category name.
+ * The boundary after the four bar slots: one whole [ROW_HEIGHT] cell (the drag arithmetic counts
+ * it), no rule. The label is a sentence-case statement, not a category name.
  */
 @Composable
 private fun HiddenSectionRow() {

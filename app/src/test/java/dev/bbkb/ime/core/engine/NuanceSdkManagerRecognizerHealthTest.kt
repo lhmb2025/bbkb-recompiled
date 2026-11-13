@@ -8,21 +8,10 @@ import org.junit.Before
 import org.junit.Test
 
 /**
- * Audit L10 (docs/2026-09_kdb-touch-abi_audit.md §5): `ET9KDB_TouchEnd` cannot report that
- * recognition was unavailable.
- *
- * It must not: the blob's JNI shim does `cmp w0,#0 ; cset w0,eq`, so any non-zero `ET9STATUS`
- * becomes `false` in Java, and the blob's own dispatcher hardcodes 0 — so the owned module
- * deliberately always answers success. The cost is that "the recognizer could not run at all" had
- * no channel out except logcat, which is how a KEY2 build ran in September 2026 with swipe dead
- * for the life of every process (libkb.so loaded before the blob, the weak `ET9KDB_ProcessTrace`
- * reference resolved to NULL, and nothing noticed).
- *
- * The channel is now a pair of monotonic native counters surfaced through [Xt9KdbVariant], and
- * one consumer: [NuanceSDKManager.noteGestureDeposit] warns once per process. The interesting
- * part is not the warning but **when it must stay silent** — the counters read -1 in any build
- * without the owned library, and treating that as a fault would put a scary line in the log of
- * every stock and DIFF build.
+ * `ET9KDB_TouchEnd` always answers success (the blob's JNI shim maps any non-zero `ET9STATUS` to
+ * false and its dispatcher hardcodes 0), so recognizer health comes from monotonic native counters
+ * via [Xt9KdbVariant]; [NuanceSDKManager.noteGestureDeposit] warns once per process. Counters read
+ * -1 in builds without the owned library, and that must stay silent.
  */
 class NuanceSdkManagerRecognizerHealthTest {
 
@@ -57,17 +46,15 @@ class NuanceSdkManagerRecognizerHealthTest {
             "a positive unavailability count must be reported",
             NuanceSDKManager.warnedRecognizerDead,
         )
-        // The condition is fatal for the whole process, so every later swipe hits it too. One
-        // line is the signal; a line per swipe would bury it under the swipes that follow.
+        // The condition is process-wide, so every later swipe hits it; one line, not one per swipe.
         NuanceSDKManager.noteRecognizerHealth(unavailable = 2, seq = 0)
         NuanceSDKManager.noteRecognizerHealth(unavailable = 3, seq = 0)
         assertTrue(NuanceSDKManager.warnedRecognizerDead)
     }
 
     /**
-     * The end-to-end shape on the JVM, where no native library loads: an accepted gesture must
-     * neither advance the deposit sequence nor cry wolf. This is the path
-     * `GestureEventProcessor.onUpEvent` and `PointerTracker.onUpEvent` take on every real swipe.
+     * On the JVM (no native library) an accepted gesture neither advances the deposit sequence nor
+     * warns. This is the path `GestureEventProcessor.onUpEvent` and `PointerTracker.onUpEvent` take.
      */
     @Test
     fun noteGestureDepositIsInertWithoutTheNativeLibrary() {

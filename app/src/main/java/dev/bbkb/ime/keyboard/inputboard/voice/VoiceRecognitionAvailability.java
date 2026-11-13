@@ -10,15 +10,10 @@ import dev.bbkb.ime.core.shared.Logger;
 /**
  * Whether dictation can start at all, and what to tell the user when a session fails.
  *
- * <p>Verified on the KEY2 (2026-10-06) with the Google app disabled and nothing chosen as the
- * phone's speech service: the mic key opened the board, {@code SpeechRecognizer} logged "no
- * selected voice recognition service" and answered {@code ERROR_CLIENT}, and the user saw nothing.
- * {@link SpeechRecognizer#createSpeechRecognizer(Context)} without a component binds whatever the
- * secure setting {@value #SECURE_VOICE_RECOGNITION_SERVICE} names, so an empty setting means no
- * session can ever start, whatever services are installed.
- *
- * <p>The decisions are pure functions over plain values so they can be tested without Android;
- * {@link #hasRecognitionService(Context)} is the one place that reads the device.
+ * <p>{@link SpeechRecognizer#createSpeechRecognizer(Context)} without a component binds whatever
+ * the secure setting {@value #SECURE_VOICE_RECOGNITION_SERVICE} names, so an empty setting means no
+ * session can start (it fails with {@code ERROR_CLIENT}), whatever is installed. Decisions are pure
+ * functions; {@link #hasRecognitionService(Context)} is the one place that reads the device.
  */
 public final class VoiceRecognitionAvailability {
 
@@ -34,8 +29,6 @@ public final class VoiceRecognitionAvailability {
     }
 
     /**
-     * Whether there is no recogniser to start.
-     *
      * @param recognitionAvailable {@link SpeechRecognizer#isRecognitionAvailable(Context)}
      * @param settingReadable whether the secure setting could be read at all; when it could not,
      *        only {@code recognitionAvailable} decides
@@ -52,11 +45,9 @@ public final class VoiceRecognitionAvailability {
     /**
      * Whether an error that ended a session means the platform found no service to bind.
      *
-     * <p>{@code ERROR_CLIENT} before {@code onReadyForSpeech} is what an absent service produces.
-     * It is also what a stop or cancel produces when the recogniser has no session to stop, so it
-     * only counts when a session of ours was live, we did not cancel it, and no stop of ours issued
-     * before this session started can still be answering (the reason for the "transient" handling
-     * in {@link VoiceRecognitionManager}).
+     * <p>{@code ERROR_CLIENT} before {@code onReadyForSpeech}, but a stop or cancel with no session
+     * also produces it, so it counts only for a live session we did not cancel with no earlier stop
+     * still unanswered (see the "transient" handling in {@link VoiceRecognitionManager}).
      *
      * @param sessionActive a dictation session was running when the error arrived
      * @param readyForSpeech {@code onReadyForSpeech} had arrived for it
@@ -100,8 +91,7 @@ public final class VoiceRecognitionAvailability {
         if (context == null) {
             return false;
         }
-        // A chosen app (or the on-device recogniser) is bound directly, whatever the phone's own
-        // setting says; it only resolves to one while it is still installed or available.
+        // A chosen app or the on-device recogniser is bound directly; it resolves only while available.
         if (InstalledVoiceRecognizers.resolve(context).kind != VoiceRecognizerChoice.Kind.SYSTEM_DEFAULT) {
             return true;
         }

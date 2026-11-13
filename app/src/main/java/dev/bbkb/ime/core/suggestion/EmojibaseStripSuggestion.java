@@ -16,17 +16,11 @@ import dev.bbkb.ime.keyboard.inputboard.emoji.EmojiToneMemory;
 import dev.bbkb.ime.keyboard.inputboard.emoji.EmojibaseDataProvider;
 
 /**
- * The strip's emoji suggestion, from emojibase instead of the XT9 engine.
- *
- * <p>Owner requirement, 2026-11-02: "Replace the XT9 emoji suggestions with the top emojibase
- * result for a given query word." The engine's own emoji entries (kind {@value #KIND_EMOJI}) are
- * dropped from every suggestion list, and, while the Emoji suggestions switch is on and a word of
- * two or more characters is being composed, the best emojibase match for that word is appended
- * with the remembered skin tone applied ({@link EmojiToneMemory}). The strip shows it in its emoji
- * slot and the period key's flick suggestion reads the same entry.
- *
- * <p>Runs on the suggestion thread. The first call pays for the emojibase parse unless
- * {@link EmojibaseDataProvider#preloadAsync} ran first, which the IME does when the switch is on.
+ * The strip's emoji suggestion, from emojibase instead of the engine. The engine's own emoji
+ * entries are dropped; with the Emoji suggestions switch on, the top emojibase match for the
+ * composing word (2+ chars) is appended with the remembered skin tone. The strip's emoji slot and
+ * the period key's flick suggestion both read it. Runs on the suggestion thread; the first call
+ * parses emojibase unless {@link EmojibaseDataProvider#preloadAsync} ran.
  */
 public final class EmojibaseStripSuggestion {
 
@@ -40,8 +34,7 @@ public final class EmojibaseStripSuggestion {
     }
 
     /**
-     * Drops the engine's emoji entries from {@code suggestions} and appends the emojibase hit for
-     * {@code composingText}, when the switch is on and there is one.
+     * Drops the engine's emoji entries and appends the emojibase hit for {@code composingText}.
      *
      * @param locale the suggestion locale; no hit is added for Chinese or Japanese, whose pick path
      *               reads the engine's own word info, which an emojibase entry does not carry
@@ -69,9 +62,8 @@ public final class EmojibaseStripSuggestion {
     }
 
     /**
-     * The emoji the strip offers for {@code composingText}, with the remembered tone applied, or
-     * null when the word is too short, the locale is Chinese or Japanese, or nothing scores an exact
-     * or prefix match on a description or tag ({@link EmojiSearchScoring#STRIP_MIN_RELEVANCE}).
+     * The toned emoji for {@code composingText}, or null for a short word, Chinese/Japanese, or no
+     * match above {@link EmojiSearchScoring#STRIP_MIN_RELEVANCE}.
      */
     public static String topHit(Context context, String composingText, Locale locale) {
         if (composingText == null || composingText.trim().length() < MIN_WORD_LENGTH) {

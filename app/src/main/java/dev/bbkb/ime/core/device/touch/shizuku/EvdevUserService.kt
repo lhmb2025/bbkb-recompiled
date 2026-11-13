@@ -9,22 +9,11 @@ import java.io.File
 import kotlin.system.exitProcess
 
 /**
- * The reader half of the Shizuku touch engine: a Shizuku UserService that opens one input
- * device by name and streams its raw records to the IME over [IEvdevCallback].
- *
- * Shizuku starts it with `Shizuku.bindUserService` (see [RealShizukuFacade]) in a fresh
- * app_process, `<applicationId>:evdev`, running as shell (adb-started Shizuku) or root
- * (root-started Shizuku), which is what lets it open /dev/input/event* and take EVIOCGRAB.
- * That process has none of the IME's state: this class must never reach an IME singleton
- * (settings, DeviceProfile, the engine) and never loads libnative-lib.so; its only native code
- * is libbbkbevdev.so via [EvdevNative]. [Logger] is safe here (static, no state).
- *
- * One stream at a time: [open] replaces whatever was open. The IME's callback binder is
- * linked to death, so if the IME process dies the reader stops, which releases the grab and
- * closes the device even though the service itself may live on.
- *
- * R8 keeps this class's name and both constructors (proguard-rules.pro): Shizuku instantiates
- * it reflectively from this APK.
+ * Shizuku UserService that opens one input device by name and streams its raw records over
+ * [IEvdevCallback]. Runs as shell or root in its own `:evdev` app_process with none of the IME's
+ * state: never touch an IME singleton or load libnative-lib.so (only libbbkbevdev.so). One stream
+ * at a time; if the IME dies the reader stops and releases the grab. R8 keeps the name and both
+ * constructors (proguard-rules.pro): Shizuku instantiates it reflectively.
  */
 class EvdevUserService() : IEvdevService.Stub() {
 
@@ -112,10 +101,8 @@ class EvdevUserService() : IEvdevService.Stub() {
     }
 
     /**
-     * One open device and the thread reading it. The thread owns the native handle: it alone
-     * reads and, when the loop ends for any reason, closes it (which releases the grab), then
-     * tells the IME why with onClosed. [closeLock] keeps [stop]/[setGrab] off a closed handle,
-     * whose slot a later open could already have reused.
+     * One open device and its reader thread, which alone reads and closes the handle (releasing the
+     * grab) and reports onClosed. [closeLock] keeps [stop]/[setGrab] off a closed, reusable handle.
      */
     private class ReaderSession(
         private val handle: Int,

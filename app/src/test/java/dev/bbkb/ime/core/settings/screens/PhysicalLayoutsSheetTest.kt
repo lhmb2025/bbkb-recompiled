@@ -32,13 +32,9 @@ import org.robolectric.annotation.Config
 import java.io.InputStream
 
 /**
- * [PhysicalLayoutsScreen]'s sheet: tapping a row opens it with the layout's name and its keypad
- * drawn, and the actions the layout allows — Save as a file for a built-in; Share, Rename and
- * Delete for one of the user's — with Delete going through its confirmation to the store.
- *
- * The Rename dialog itself is not driven: a Material 3 text field in an `AlertDialog` never idles
- * under this Robolectric/Compose combination (see `CustomMacrosScreenTest`). What it stores is
- * pinned by `PhysicalLayoutsScreenTest` through [renameLayout].
+ * Pins [PhysicalLayoutsScreen]'s sheet: name, keypad, and the actions allowed (Save as a file for a
+ * built-in; Share, Rename, Delete for the user's), Delete via its confirmation. The Rename dialog is
+ * not driven (its text field never idles under Robolectric); `PhysicalLayoutsScreenTest` pins [renameLayout].
  */
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [34], qualifiers = "w411dp-h891dp")

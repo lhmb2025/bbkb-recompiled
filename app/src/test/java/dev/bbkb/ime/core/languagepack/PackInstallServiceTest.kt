@@ -16,12 +16,9 @@ import org.robolectric.annotation.Config
 import java.io.File
 
 /**
- * [PackInstallService] — what actually lands on disk, and in the registry.
- *
- * These are file-system assertions on purpose. "Installed" is not a flag anywhere in this app: it
- * is a directory holding a `.ldb` and a `version.txt`, plus an entry in a JSON registry that makes
- * the locale *supported*. Three separate historical bugs came from one of those three being
- * missing, so the test asserts all three rather than the service's return value.
+ * Pins what [PackInstallService] puts on disk and in the registry. "Installed" means a directory
+ * with a `.ldb` and a `version.txt` plus a JSON registry entry making the locale supported, so the
+ * tests assert all three rather than the service's return value.
  */
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [34])
@@ -52,8 +49,6 @@ class PackInstallServiceTest {
         subtypes: PackInstallService.SubtypeRegistrar = PackFixtures.FakeSubtypes(builtIn = setOf("cy", "es", "zh", "en", "de")),
     ) = PackInstallService(context, subtypes) { action -> posted += action }
 
-    // ── Removing a pack ───────────────────────────────────────────────────────────────────────
-
     private suspend fun installWelsh(subtypes: PackFixtures.FakeSubtypes) =
         service(subtypes).installFromFile(source, "cy", "Welsh", "1902.01", null).getOrThrow()
 
@@ -76,9 +71,7 @@ class PackInstallServiceTest {
 
     @Test
     fun uninstallOfAPackWhoseFilesAreAlreadyGoneStillCleansUpAndIsNotAnError() = runBlocking<Unit> {
-        // The screen's rows are a snapshot: by the time the user confirms, the directory can be
-        // gone already. That used to surface as "Language pack directory not found" over a pack
-        // that was in fact removed.
+        // The screen's rows are a snapshot; the directory can be gone by the time the user confirms.
         val subtypes = PackFixtures.FakeSubtypes(offerable = setOf("cy"))
         installWelsh(subtypes)
         PackFixtures.packDir(context, "cy").deleteRecursively()
@@ -122,8 +115,6 @@ class PackInstallServiceTest {
         assertTrue(result.exceptionOrNull() is PackInstallException)
     }
 
-    // ── An ordinary pack ──────────────────────────────────────────────────────────────────────
-
     @Test
     fun installsABasePackAsFilesPlusVersionPlusRegistryEntry() = runBlocking<Unit> {
         val installed = service().installFromFile(
@@ -150,10 +141,9 @@ class PackInstallServiceTest {
         assertTrue("a language method.xml declares needs no runtime subtype", installed.selectable)
         assertFalse(installed.offeredSubtype)
 
-        // The running IME learns about the new file through this, and only through this.
+        // The running IME learns about the new file only through this.
         assertEquals(listOf(LanguageVariantStore.ACTION_LANGUAGE_PACK_CHANGED), posted)
 
-        // And the screen's own view of the disk agrees.
         val onDisk = InstalledPacks.read(context, listOf("cy"))
         assertTrue("InstalledPacks does not see cy: $onDisk", onDisk.isInstalled("cy"))
         assertEquals(setOf("cy"), onDisk.custom)
@@ -161,9 +151,8 @@ class PackInstallServiceTest {
 
     @Test
     fun installsUnderTheGivenLocaleAndNeverConsultsTheFileName() = runBlocking<Unit> {
-        // The four table-locale packs are the whole reason the locale is a parameter. This file
-        // name parses to "es" (its region, "latam", is lower case and lives in the catalogue
-        // only), so a filename-derived install would land in nuance/es - on top of Spanish.
+        // Why the locale is a parameter: this file name parses to "es" (region "latam" lives only
+        // in the catalogue), so a filename-derived install would land on top of Spanish.
         val named = File(context.cacheDir, "Blackberry_1305_r1-11_ESusUNlatam_xt9_ALM3.ldb")
         named.writeBytes(PackFixtures.ldbBytes(seed = 11))
 
@@ -199,8 +188,7 @@ class PackInstallServiceTest {
 
     @Test
     fun reportsAPackThatInstalledButCannotBeSelected() = runBlocking<Unit> {
-        // Five engine-supported languages have no keyboard layout in the tree. The pack installs
-        // and sits unused, and the screen has to be able to say so.
+        // Five engine languages have no keyboard layout; the pack installs unused and the screen says so.
         val subtypes = PackFixtures.FakeSubtypes(builtIn = emptySet(), offerable = emptySet())
         val installed = service(subtypes)
             .installFromFile(source, "am", "Amharic", "1.0", null).getOrThrow()
@@ -237,8 +225,8 @@ class PackInstallServiceTest {
 
     @Test
     fun reportsALanguageItCouldNotTurnOn() = runBlocking<Unit> {
-        // Before Android 14 a keyboard cannot turn its own languages on; the screen then has to
-        // send the user to the system list, and it can only know to from this flag.
+        // Before Android 14 a keyboard cannot enable its own languages; this flag tells the screen
+        // to send the user to the system list.
         val subtypes = PackFixtures.FakeSubtypes(builtIn = setOf("ar"), canEnable = false)
         val installed = service(subtypes)
             .installFromFile(source, "ar", "Arabic", "1.0", null).getOrThrow()
@@ -246,8 +234,6 @@ class PackInstallServiceTest {
         assertTrue(installed.selectable)
         assertFalse(installed.enabled)
     }
-
-    // ── A regional variant ────────────────────────────────────────────────────────────────────
 
     @Test
     fun installsAVariantParkedUnderItsGroupAndActiveInTheBaseSlot() = runBlocking<Unit> {
@@ -262,8 +248,8 @@ class PackInstallServiceTest {
         // Parked as a member of the German group...
         val parked = PackFixtures.parkedVariant(context, "de", "de_CH")
         assertTrue("variant not parked at $parked", parked.isFile)
-        // ...and copied into the slot the engine reads for German, because that is the only way
-        // a pack with no locale-table entry of its own can ever load.
+        // ...and copied into the engine's German slot, the only way a pack with no locale-table
+        // entry of its own can load.
         val slot = PackFixtures.packDir(context, "de")
         assertTrue("German slot not filled", File(slot, "de.ldb").isFile)
         assertTrue("version.txt missing from the German slot", File(slot, "version.txt").isFile)
@@ -289,8 +275,6 @@ class PackInstallServiceTest {
         assertEquals("de_CH", group?.activeTag)
         assertEquals(setOf("de_CH"), group?.tags)
     }
-
-    // ── Refusals leave nothing behind ─────────────────────────────────────────────────────────
 
     @Test
     fun refusesAFileTooSmallToBeADictionary() = runBlocking<Unit> {
@@ -326,8 +310,8 @@ class PackInstallServiceTest {
 
     @Test
     fun anUnusableVersionFallsBackRatherThanWritingAnInvalidRegistryEntry() = runBlocking<Unit> {
-        // LanguagePackInfo.isValid() rejects version <= 0 and isInstalled() parses version.txt's
-        // trailing digits, so an unparseable version would make the pack read as not installed.
+        // isValid() rejects version <= 0 and isInstalled() parses version.txt's trailing digits,
+        // so an unparseable version would read as not installed.
         service().installFromFile(source, "cy", "Welsh", "not a number", null).getOrThrow()
 
         val written = File(PackFixtures.packDir(context, "cy"), "version.txt").readText()
@@ -340,10 +324,8 @@ class PackInstallServiceTest {
         assertTrue("installed bytes differ from the source", expected.contentEquals(actual))
     }
 
-    // ── Telling the running engine ────────────────────────────────────────────────────────────
-    //
-    // The engine enumerates nuance/ once at start; a pack added later is invisible to it until
-    // registerLdb hands it the directory (KEY2, 2026-09-28). The fake stands in for both engines.
+    // The engine enumerates nuance/ once at start; a later pack is invisible until registerLdb
+    // hands it the directory. The fake stands in for both engines.
 
     class FakeEngine(private val accepts: Boolean = true) : PackInstallService.EngineRegistry {
         val registered = mutableListOf<File>()

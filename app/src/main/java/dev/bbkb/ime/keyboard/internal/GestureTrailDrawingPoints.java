@@ -39,12 +39,17 @@ final class GestureTrailDrawingPoints {
     }
 
     GestureTrailDrawingPoints() {
+        // Fields start at their defaults.
     }
 
     private static int getXCoordValue(int i) {
         return isDownEventXCoord(i) ? (-128) - i : i;
     }
 
+    /**
+     * @param c1053l the stroke to copy new points from
+     * @param j down time of the stroke
+     */
     public void addStroke(GestureStrokeRecognizer c1053l, long j) {
         synchronized (this.mEventTimes) {
             addStrokeInternal(c1053l, j);
@@ -83,6 +88,10 @@ final class GestureTrailDrawingPoints {
         return c1056o.mTrailStartWidth - (((c1056o.mTrailStartWidth - c1056o.mTrailEndWidth) * i) / c1056o.mTrailLingerDuration);
     }
 
+    /**
+     * @param rect receives the drawn bounds
+     * @param c1056o trail drawing params
+     */
     public boolean drawGestureTrail(Canvas canvas, Paint paint, Rect rect, GestureTrailDrawingParams c1056o) {
         boolean zM7396b;
         synchronized (this.mEventTimes) {
@@ -111,8 +120,7 @@ final class GestureTrailDrawingPoints {
         }
         this.mTrailStartIndex = i4;
         if (i4 < iM5570a) {
-            // Pull-at-draw: the trail follows the active palette (the gestureTrailColor
-            // attr is gone; classic/dynamic used to be stuck with the light teal).
+            // Read at draw time so the trail follows the active palette.
             int trailColor = dev.bbkb.ime.keyboard.KeyboardColorManager.INSTANCE.getAccentColor();
             paint.setColor(trailColor);
             paint.setStyle(Paint.Style.FILL);

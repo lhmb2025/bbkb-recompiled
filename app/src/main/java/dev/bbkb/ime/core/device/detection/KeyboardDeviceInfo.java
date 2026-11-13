@@ -4,9 +4,6 @@ import android.view.InputDevice;
 
 import androidx.annotation.Nullable;
 
-/**
- * Immutable information about a connected keyboard device.
- */
 public final class KeyboardDeviceInfo {
 
     private final int deviceId;
@@ -14,7 +11,7 @@ public final class KeyboardDeviceInfo {
     private final int keyboardType;  // InputDevice.KEYBOARD_TYPE_*
     private final int sources;
     private final boolean isVirtual;
-    private final TouchKeypadInfo touchKeypadInfo;  // null if no touch capability
+    private final TouchKeypadInfo touchKeypadInfo;  // null without touch
 
     private KeyboardDeviceInfo(int deviceId, String name, int keyboardType, int sources,
                                boolean isVirtual, TouchKeypadInfo touchKeypadInfo) {
@@ -26,7 +23,6 @@ public final class KeyboardDeviceInfo {
         this.touchKeypadInfo = touchKeypadInfo;
     }
 
-    /** Factory method from InputDevice */
     @Nullable
     public static KeyboardDeviceInfo fromInputDevice(InputDevice device) {
         if (device == null) return null;
@@ -43,7 +39,6 @@ public final class KeyboardDeviceInfo {
         );
     }
 
-    // Derived properties
     public boolean isAlphabetic() {
         return keyboardType == InputDevice.KEYBOARD_TYPE_ALPHABETIC;
     }
@@ -66,7 +61,6 @@ public final class KeyboardDeviceInfo {
         return touchKeypadInfo;
     }
 
-    // Getters
     public int getDeviceId() { return deviceId; }
     public String getName() { return name; }
 

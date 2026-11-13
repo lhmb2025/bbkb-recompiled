@@ -1,42 +1,17 @@
-/* et9dlm.c — the engine's own learned-model export and import, reached from Java.
- *
- * WHAT THIS IS
- *   The blob (libnative-lib.so, XT9 V13.00.05.00) carries the full dynamic-language-model API,
- *   including ET9AWDLMExport / ET9AWDLMImport: a checksummed, pointer-free byte stream of the
- *   whole model — every learned word with its use count, language, category and recency, the
- *   categories, and the next-word pairs — that the engine itself reads back. The blob's JNI layer
- *   binds none of it; this file does, for `com.blackberry.nuanceshim.Et9Dlm`.
- *
- * HOW THE ENGINE IS REACHED
- *   By address, the way et9probe.c calls the engine's setters: the blob's load bias from
- *   dl_iterate_phdr plus the function's virtual address in the pristine binary (the cutover patch
- *   rewrites the dynamic section only, so text addresses are unchanged). Android keeps the blob's
- *   symbols out of RTLD_DEFAULT, so dlsym cannot be used. Two guards keep a wrong build from
- *   being called into: the first instruction words of each function are compared with the ones
- *   recorded here before any call, and the engine validates its 0x1428 ABI magic chain on entry
- *   and answers with a status code rather than touching memory when it does not match.
- *
- * SIGNATURES (recovered from the disassembly at the addresses below)
- *   ET9U32    ET9AWDLMGetExportMaxDataSize(ET9AWLingInfo *ling)           — 0 on a bad context
+/* et9dlm.c: JNI for Et9Dlm, the blob's (XT9 V13.00.05.00) learned-model API, called by address
+ * (load bias + pristine vaddr; the cutover patch leaves text addresses unchanged). Each function's
+ * first instruction words are checked before any call; the engine also checks its 0x1428 magic.
+ *   ET9U32    ET9AWDLMGetExportMaxDataSize(ling)                       0 on a bad context
  *   ET9STATUS ET9AWDLMExport(ling, ET9U8 *buf, ET9U32 size, ET9U32 *written)
- *             status 26 when `size` is below GetExportMaxDataSize; `written` includes the
- *             trailing checksum; the rest of `buf` is zero-filled
+ *             26 if size < max; written includes the checksum; rest of buf zero-filled
  *   ET9STATUS ET9AWDLMImport(ling, const ET9U8 *buf, ET9U32 size)
- *             RESETS THE MODEL FIRST, then verifies the checksum (22 on a mismatch, 91 on a
- *             version above 5, 26 on a buffer of 8 bytes or less); zero padding after the
- *             checksum is accepted
- *   The caller (NuanceSDK, under sMutex) validates the stream and keeps an export of the current
- *   model before importing, so a refused import can be undone.
- *   ET9STATUS ET9AWDisableDBs(ling, ET9U32 mask) / ET9AWEnableDBs(ling, ET9U32 mask)
- *             switch whole word databases off and on for this engine instance only; bit 0x2 is
- *             the learned model. With it off, isSpellingCorrect answers from the language
- *             dictionaries alone (verified on the emulator: learned and added words fail, the
- *             other instance keeps accepting them). Status 0 = done, 62 = busy.
+ *             resets the model first, then checks: 22 bad checksum, 91 version > 5, 26 size <= 8;
+ *             zero padding after the checksum is accepted. The caller keeps an export to restore.
+ *   ET9STATUS ET9AWDisableDBs / ET9AWEnableDBs(ling, ET9U32 mask)
+ *             per engine instance; bit 0x2 = learned model; 0 done, 62 busy
  *   ET9STATUS ET9AWSelLstGetWord(ling, ET9AWWordInfo **word, ET9U8 index)
- *             the built selection list's word at `index`; byte +0x11 of the word is its source:
- *             9 the typed word, 2 a language dictionary (contact names too), 1 the learned model
- *             (learned, typed-once and added words alike). The blob's JNI never passes it on.
- */
+ *             word byte +0x11 = source: 9 typed word, 2 language dictionary (and contacts),
+ *             1 learned model (learned, typed-once and added words) */
 
 #include <jni.h>
 #include <stdint.h>
@@ -46,8 +21,7 @@
 #include "et9probe.h"
 
 #define TAG "ET9DLM"
-/* Informational lines are diagnostics (silent in release unless debug.et9.probe is set); LOGW is
- * kept for the genuine failures: a build mismatch or an engine that cannot be reached. */
+/* LOGI is silent in release unless debug.et9.probe is set; LOGW is for real failures. */
 #define LOGI(...) ET9_DIAG(ANDROID_LOG_INFO, TAG, __VA_ARGS__)
 #define LOGW(...) __android_log_print(ANDROID_LOG_WARN, TAG, __VA_ARGS__)
 
@@ -60,8 +34,7 @@ static const uint32_t FP_GET_EXPORT_MAX_SIZE[4] = {0xaa0003e1u, 0xb4000a40u, 0x7
 static const uint32_t FP_EXPORT[4]              = {0xd10103ffu, 0xa90053f3u, 0xa9015bf5u, 0xa90263f7u};
 static const uint32_t FP_IMPORT[4]              = {0xd11843ffu, 0xd10203ffu, 0x6d05a7e8u, 0x6d06afeau};
 
-/* The two database switches share their first instructions, so each is also told apart by the
- * word at +0x74. */
+/* The two DB switches share their first instructions; the word at +0x74 tells them apart. */
 #define BLOB_DISABLE_DBS 0xd42b8u
 #define BLOB_ENABLE_DBS  0xd3fd8u
 #define DBS_TELL_OFFSET  0x74u
@@ -86,8 +59,7 @@ typedef int (*fn_dlm_import)(void *ling, const uint8_t *buf, uint32_t size);
 typedef int (*fn_dbs)(void *ling, uint32_t mask);
 typedef int (*fn_sellst_get_word)(void *ling, const uint8_t **word, uint32_t index);
 
-/* Negative results of the Java entry points: this side could not reach the engine at all.
- * Non-negative results are the engine's own status codes (0 = success). */
+/* Negative results: the engine could not be reached. Non-negative ones are engine statuses. */
 enum {
     ET9DLM_ERR_CONTEXT = -1,   /* the engine context could not be resolved from the handle */
     ET9DLM_ERR_BLOB = -2,      /* the blob is not loaded, or is not the build these addresses belong to */
@@ -137,8 +109,7 @@ static int resolve_fns(jlong handle, dlm_fns *out) {
     return 0;
 }
 
-/* The export buffer size the engine asks for, or a negative ET9DLM_ERR_* code. A cheap way for
- * Java to learn whether the shim can reach the engine on this phone. */
+/* The export buffer size the engine asks for, or a negative ET9DLM_ERR_* code (a cheap reachability check). */
 JNIEXPORT jint JNICALL
 Java_com_blackberry_nuanceshim_Et9Dlm_nativeExportMaxSize(JNIEnv *env, jclass cls, jlong handle) {
     (void)env; (void)cls;
@@ -181,9 +152,8 @@ Java_com_blackberry_nuanceshim_Et9Dlm_nativeExport(JNIEnv *env, jclass cls, jlon
     return out;
 }
 
-/* Replaces the model with `data`. Returns the engine's status (0 = success, 22 = checksum or
- * structure, 91 = written by a newer engine) or a negative ET9DLM_ERR_* code. The engine resets
- * the model before it checks the data, so a refusal leaves it EMPTY — the caller restores. */
+/* Replaces the model with `data`; engine status or a negative ET9DLM_ERR_* code. A refusal leaves
+ * the model empty (reset happens before the check), so the caller restores. */
 JNIEXPORT jint JNICALL
 Java_com_blackberry_nuanceshim_Et9Dlm_nativeImport(JNIEnv *env, jclass cls, jlong handle, jbyteArray data) {
     (void)cls;
@@ -202,9 +172,8 @@ Java_com_blackberry_nuanceshim_Et9Dlm_nativeImport(JNIEnv *env, jclass cls, jlon
     return status;
 }
 
-/* Switches the learned model off (enabled = false) or back on for this engine instance, so a
- * spelling check can answer from the dictionaries alone. Returns the engine's status (0 =
- * success) or a negative ET9DLM_ERR_* code. */
+/* Switches the learned model off or on for this engine instance (spell checks from the dictionaries
+ * alone). Engine status or a negative ET9DLM_ERR_* code. */
 JNIEXPORT jint JNICALL
 Java_com_blackberry_nuanceshim_Et9Dlm_nativeSetLearnedModelEnabled(JNIEnv *env, jclass cls, jlong handle,
                                                                    jboolean enabled) {

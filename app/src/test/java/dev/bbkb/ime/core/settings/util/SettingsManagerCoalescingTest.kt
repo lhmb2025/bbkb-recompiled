@@ -20,7 +20,7 @@ import org.robolectric.Shadows.shadowOf
 import org.robolectric.annotation.Config
 import java.util.Locale
 
-/** A burst of preference changes costs one SettingsValues rebuild and one notification (P-22). */
+/** A burst of preference changes costs one SettingsValues rebuild and one notification. */
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [34], manifest = Config.NONE)
 class SettingsManagerCoalescingTest {

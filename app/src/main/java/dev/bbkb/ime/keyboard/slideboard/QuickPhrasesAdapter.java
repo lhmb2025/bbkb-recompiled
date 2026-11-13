@@ -57,7 +57,7 @@ public class QuickPhrasesAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         }
     }
 
-    /** Row height in px (tile plus gap), set by QuickPhrasesView to fill its height; 0 = the default height. */
+    /** Row height in px (tile plus gap) that fills the view; 0 = the default height. */
     private int tileHeight;
 
     QuickPhrasesAdapter(List<QuickPhrase> list) {
@@ -77,22 +77,25 @@ public class QuickPhrasesAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         return true;
     }
 
-    @Override // androidx.recyclerview.widget.RecyclerView.Adapter
+    /** @param i the view type (only one) */
+    @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
         LayoutInflater layoutInflaterFrom = LayoutInflater.from(viewGroup.getContext());
         return new ViewHolder(layoutInflaterFrom.inflate(R.layout.quick_phrase_list_item, viewGroup, false));
     }
 
-    @Override // androidx.recyclerview.widget.RecyclerView.Adapter
+    /** @param i the phrase's position */
+    @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int i) {
         bindViewHolder((ViewHolder) holder, i);
     }
 
-    @Override // androidx.recyclerview.widget.RecyclerView.Adapter
+    @Override
     public int getItemCount() {
         return this.phrases.size();
     }
 
+    /** @param i the phrase's position */
     private void bindViewHolder(ViewHolder holder, int i) {
         QuickPhrase phrase = this.phrases.get(i);
         holder.phrase = phrase;
@@ -120,7 +123,7 @@ public class QuickPhrasesAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
     private void setupClickListener(final ViewHolder holder) {
         holder.container.setOnClickListener(new View.OnClickListener() {
-            @Override // android.view.View.OnClickListener
+            @Override
             public void onClick(View view) {
                 QuickPhrasesAdapter.this.listener.onPhraseClicked(holder.phrase);
             }

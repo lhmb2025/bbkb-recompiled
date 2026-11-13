@@ -721,7 +721,6 @@
     <string name="device_config_import_unreadable">Ai skedar nuk është konfigurim pajisjeje</string>
     <string name="device_config_import_failed">Ai skedar nuk u importua dot</string>
 
-    <!-- OTA app updates -->
     <string name="settings_updates_title">Përditësimet</string>
     <string name="settings_updates_summary">Kontrollo për një version të ri të BBKB</string>
     <string name="settings_update_installed_version_title">Versioni i instaluar</string>
@@ -755,7 +754,6 @@
     <string name="settings_update_ready_title">Gati për instalim</string>
     <string name="settings_update_version_details">Detajet e versionit</string>
     <string name="settings_update_unknown_sources_title">Të lejohet BBKB të instalojë përditësime?</string>
-    <!-- Downloadable language packs (core/languagepack) -->
     <string name="language_packs_installed_header">Të instaluara</string>
     <string name="language_packs_available_header">Të disponueshme për shkarkim</string>
     <string name="language_packs_download">Shkarko</string>
@@ -877,7 +875,6 @@
     <string name="settings_voice_stop_on_pause_summary_off">Vazhdon të dëgjojë gjatë pauzave derisa të prekësh mikrofonin ose pas gjysmë minute heshtjeje</string>
     <string name="voice_status_listening_tap_to_stop">Po dëgjon&#8230; Prek mikrofonin për të ndaluar</string>
 
-    <!-- Settings text moved out of the code (2026-11) -->
     <string name="settings_common_save">Ruaj</string>
     <string name="settings_common_edit">Redakto</string>
     <string name="settings_common_back">Prapa</string>

@@ -13,17 +13,12 @@ import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
 
 /**
- * [ResolvedKey] on its own: the value type Phase 1e introduced, with no IME and no singletons in
- * the picture. Everything here is a question about key identity and nothing else — the suite has
- * no way to observe modifier state or the emoji/mic/multifunction pairing flags, which is the
- * boundary this slice was drawn on.
+ * [ResolvedKey] on its own, with no IME and no singletons: key identity only (no modifier state,
+ * no board-key pairing).
  */
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [34], manifest = Config.NONE)
 class ResolvedKeyTest {
-
-    // ===================================================== the raw identity it carries
-
     @Test
     fun `it carries the key code, the scancode and the classification it was built with`() {
         val key = ResolvedKey.forTest(KeyEvent.KEYCODE_R, /* scanCode */ 19, true, null)
@@ -39,8 +34,6 @@ class ResolvedKeyTest {
     fun `a virtual key reports itself as such`() {
         assertFalse(ResolvedKey.forTest(KeyEvent.KEYCODE_R, 19, false, null).isPhysical())
     }
-
-    // ===================================================== the two pseudo-keycodes
 
     @Test
     fun `the pseudo-keycodes are 666 and 667`() {
@@ -80,8 +73,6 @@ class ResolvedKeyTest {
         assertTrue(key.isBoardKey())
     }
 
-    // ===================================================== device-config roles
-
     @Test
     fun `the board roles are board keys`() {
         for (role in listOf(KeyRole.BOARD_EMOJI, KeyRole.BOARD_VOICE, KeyRole.BOARD_SYM)) {
@@ -113,8 +104,6 @@ class ResolvedKeyTest {
         assertFalse(resolved(KeyEvent.KEYCODE_R, mapping(KeyRole.BOARD_VOICE)).isEmojiKey())
     }
 
-    // ===================================================== the Sym key's two names
-
     @Test
     fun `the Sym key is KEYCODE_SYM when the config is silent`() {
         assertTrue(resolved(KeyEvent.KEYCODE_SYM).isSymKey())
@@ -131,8 +120,6 @@ class ResolvedKeyTest {
             resolved(KeyEvent.KEYCODE_SYM, mapping(KeyRole.CHARACTER)).isSymKey()
         )
     }
-
-    // ===================================================== board ids
 
     @Test
     fun `the board id falls back when the config names none`() {
@@ -159,8 +146,6 @@ class ResolvedKeyTest {
         assertEquals(-11, ResolvedKey.DEFAULT_EMOJI_BOARD_ID)
         assertEquals(-27, ResolvedKey.DEFAULT_VOICE_BOARD_ID)
     }
-
-    // ===================================================== the key-code classes
 
     @Test
     fun `it names the key-code classes the processor branches on`() {
@@ -205,15 +190,11 @@ class ResolvedKeyTest {
         }
     }
 
-    // ===================================================== the multifunction action
-
     @Test
     fun `a non-multifunction key has no configured action`() {
         assertNull(resolved(KeyEvent.KEYCODE_R).getMultifunctionAction())
         assertNull(resolved(KeyEvent.KEYCODE_R, mapping(KeyRole.BOARD_EMOJI)).getMultifunctionAction())
     }
-
-    // ===================================================== helpers
 
     private fun resolved(keyCode: Int, mapping: ScancodeMapping? = null): ResolvedKey =
         ResolvedKey.forTest(keyCode, /* scanCode */ 0, /* physical */ true, mapping)

@@ -96,9 +96,8 @@ public final class FlickSuggestionView extends RelativeLayout {
     private Listener mListener;
 
     /**
-     * What the last full render drew from, so an identical update can return before clear()
-     * tears it down. Valid only while nothing has hidden or re-laid-out the predictions since
-     * ({@link #hide}, {@link #updateKeyMetrics} and a flick pick drop it).
+     * What the last full render drew from, so an identical update can return before clear(). Dropped
+     * by {@link #hide}, {@link #updateKeyMetrics} and a flick pick.
      */
     private boolean mShownValid;
     private SuggestedWords mShownWords;
@@ -119,6 +118,10 @@ public final class FlickSuggestionView extends RelativeLayout {
 
     
     public interface Listener {
+        /**
+         * @param suggestedWordInfoVar the picked word
+         * @param enumC0690f where the pick came from
+         */
         void onSuggestionPicked(SuggestedWords.SuggestedWordInfo suggestedWordInfoVar, InputSource enumC0690f);
     }
 
@@ -133,14 +136,13 @@ public final class FlickSuggestionView extends RelativeLayout {
         this.mSuggestedWords = SuggestedWords.EMPTY;
         Context themedContext = getContext();
         Resources resources = themedContext.getResources();
-        
-        // Use KeyboardColorManager iconColor for flick suggestions (lighter than textColor)
+
+        // iconColor, lighter than textColor.
         if (KeyboardColorManager.INSTANCE.isInitialized()) {
             int iconColor = KeyboardColorManager.INSTANCE.getIconColor();
-            this.mSuggestedTextColor = iconColor;  // iconColor for suggested part
-            this.mTypedTextColor = iconColor;  // iconColor for typed part
+            this.mSuggestedTextColor = iconColor;
+            this.mTypedTextColor = iconColor;
         } else {
-            // Fallback to theme colors if color manager not initialized
             TypedValue typedValue = new TypedValue();
             themedContext.getTheme().resolveAttribute(android.R.attr.textColorPrimary, typedValue, true);
             this.mSuggestedTextColor = typedValue.data;
@@ -174,9 +176,8 @@ public final class FlickSuggestionView extends RelativeLayout {
     }
 
     /**
-     * Follows the palette's icon color. These colors used to be read once in the constructor,
-     * which was enough while every theme change re-inflated the input view; a system dark/light
-     * switch no longer does (method.xml declares uiMode), so they are checked per render.
+     * Follows the palette's icon color, checked per render: a dark/light switch does not re-inflate
+     * the input view (method.xml declares uiMode).
      *
      * @return whether the colors changed (what is drawn is then stale)
      */
@@ -192,6 +193,7 @@ public final class FlickSuggestionView extends RelativeLayout {
         return true;
     }
 
+    /** @param interfaceC0825a receives picked suggestions */
     public void init(Listener interfaceC0825a, MainKeyboardView mainKeyboardView) {
         this.mListener = interfaceC0825a;
         this.mKeyboardView = mainKeyboardView;
@@ -237,10 +239,12 @@ public final class FlickSuggestionView extends RelativeLayout {
         return SettingsManager.getInstance().getSettingsValues().isVkbGestureInputEnabledForLocale();
     }
 
+    /** @param str unused */
     public void clearSuggestions(String str) {
         setSuggestions(SuggestedWords.EMPTY, this.mIsRtl);
     }
 
+    /** @param z true to only reset the metrics, false to also lay the current words out again */
     public void updateKeyMetrics(boolean z) {
         Keyboard keyboard;
         this.mHorizontalWordDistance = this.mMinHorizontalWordDistance;
@@ -256,7 +260,6 @@ public final class FlickSuggestionView extends RelativeLayout {
         if (z) {
             return;
         }
-        // The metrics changed: lay the same words out again.
         this.mShownValid = false;
         setSuggestions(this.mSuggestedWords, this.mIsRtl);
     }
@@ -271,10 +274,8 @@ public final class FlickSuggestionView extends RelativeLayout {
         if (this.mKeyboardView == null) {
             return;
         }
-        // INVISIBLE, not GONE: the next update shows them again, and a GONE->VISIBLE flip of
-        // the overlay and its predictions requests a layout of the whole keyboard frame where
-        // INVISIBLE->VISIBLE only redraws. Neither the overlay (match_parent, not clickable)
-        // nor a prediction draws or takes touches while INVISIBLE.
+        // INVISIBLE, not GONE: GONE->VISIBLE requests a layout of the whole keyboard frame,
+        // INVISIBLE->VISIBLE only redraws. Nothing here draws or takes touches while INVISIBLE.
         setVisibility(View.INVISIBLE);
         for (int i = 0; i < this.mVisibleCount; i++) {
             this.mPredictionViews.get(i).setVisibility(View.INVISIBLE);
@@ -286,11 +287,8 @@ public final class FlickSuggestionView extends RelativeLayout {
     }
 
     /**
-     * The suggestion presenter's entry point. It used to clear() a visible overlay and then call
-     * {@link #setSuggestions}, which clears again; that pre-clear flipped the container and every
-     * prediction GONE and set the spacebar word to "" on each update, so an unchanged result
-     * still relaid out the keyboard frame and re-recorded the keyboard. The pre-clear is kept
-     * only where setSuggestions would not clear (the keyboard view slid sideways).
+     * The suggestion presenter's entry point. Clears only where {@link #setSuggestions} would not
+     * (the keyboard view slid sideways); a pre-clear on every update would relayout the frame.
      */
     public void showSuggestions(SuggestedWords words, boolean rtl) {
         MainKeyboardView mainKeyboardView = this.mKeyboardView;
@@ -303,20 +301,22 @@ public final class FlickSuggestionView extends RelativeLayout {
         setSuggestions(words, rtl);
     }
 
+    /**
+     * @param c0666ac the words to show
+     * @param z true for a right-to-left layout
+     */
     public void setSuggestions(SuggestedWords c0666ac, boolean z) {
         MainKeyboardView mainKeyboardView = this.mKeyboardView;
         if (mainKeyboardView != null && mainKeyboardView.getX() == 0.0f) {
             boolean colorsChanged = refreshTextColors();
             if (!colorsChanged && c0666ac != null && c0666ac.size() > 0 && isShowing(c0666ac, z)) {
-                // Same words on the same keyboard: what is drawn is already right. Keep the new
-                // object so a flick picks the newest word info.
+                // Already drawn; keep the new object so a flick picks the newest word info.
                 this.mSuggestedWords = c0666ac;
                 this.mShownWords = c0666ac;
                 return;
             }
-            // hide() would set the spacebar word to "" and the render below set it again in the
-            // same pass, which defeats MainKeyboardView's equality guard and re-records the
-            // keyboard. Set it once, to its final value.
+            // Set the spacebar word once: hide() clearing it then the render setting it again
+            // defeats MainKeyboardView's equality guard and re-records the keyboard.
             this.mSpacebarTextDeferred = true;
             try {
                 clear();
@@ -344,7 +344,6 @@ public final class FlickSuggestionView extends RelativeLayout {
                 }
             } finally {
                 if (this.mSpacebarTextDeferred) {
-                    // Nothing on the render path set it: it ends up empty, as hide() left it.
                     this.mSpacebarTextDeferred = false;
                     this.mKeyboardView.setAutoCorrectionText("");
                 }
@@ -358,11 +357,7 @@ public final class FlickSuggestionView extends RelativeLayout {
         this.mKeyboardView.setAutoCorrectionText(text);
     }
 
-    /**
-     * Whether {@code words} on the current keyboard would draw exactly what the last render left
-     * on screen: the same words and flags, keyboard, view position, direction and every setting
-     * the render reads, and nothing hid or moved the predictions since.
-     */
+    /** Whether {@code words} would draw exactly what the last render left on screen. */
     private boolean isShowing(SuggestedWords words, boolean rtl) {
         if (!this.mShownValid) {
             return false;
@@ -405,6 +400,10 @@ public final class FlickSuggestionView extends RelativeLayout {
         this.mShownValid = true;
     }
 
+    /**
+     * @param c0666ac the words to show
+     * @param c0965e the current keyboard
+     */
     private void showAutoCorrectPrediction(SuggestedWords c0666ac, Keyboard c0965e) {
         if (c0666ac.mAutoCorrectWord != null && c0666ac.mWillAutoCorrect) {
             Key keyM6604b = c0965e.getKeyByCode(32);
@@ -436,15 +435,9 @@ public final class FlickSuggestionView extends RelativeLayout {
     }
 
     /**
-     * Candidate hierarchy for the on-key predictions (all themes), following
-     * UnifiedSuggestionAdapter's emphasis: when an auto-correction is pending, the
-     * word that commits on space (index 1, drawn on the spacebar and on its key if
-     * it has one) keeps full emphasis and every other candidate renders one weight
-     * step lighter and slightly darker. Unlike the strip, mTypedWordValid alone
-     * does NOT de-emphasize here: the typed word usually has no on-key slot, and
-     * dimming everything with the emphasized word nowhere in sight reads as a
-     * rendering bug, not hierarchy. Without a pending auto-correction all
-     * candidates render uniformly at full emphasis.
+     * With an auto-correction pending, every candidate but the one that commits on space (index 1)
+     * is drawn a weight step lighter and dimmer. Unlike the strip, a valid typed word alone does
+     * not de-emphasize: it usually has no on-key slot, so dimming everything would look broken.
      */
     private boolean deEmphasized(int wordIndex) {
         SuggestedWords words = this.mSuggestedWords;
@@ -462,11 +455,9 @@ public final class FlickSuggestionView extends RelativeLayout {
         return android.graphics.Typeface.DEFAULT;
     }
 
+    /** @param str the word, Hangul decoded by the engine (raw text on timeout) */
     private static int[] toCodePoints(String str) {
         if (!TextUtils.isEmpty(str) && ScriptUtils.isLetterPartOfScript(str.charAt(0), 8)) {
-            // Drawn text needs the engine's decode now: a short bounded query (Phase A), the raw
-            // text on a timeout. Follow-up: a Java port of the decode would take the engine out of
-            // drawing altogether.
             final String raw = str;
             String decoded = EngineOps.query("flickDecodeHangul", FLICK_DECODE_TIMEOUT_MS, raw,
                     sdk -> sdk.decodeHangul(raw, true));
@@ -475,6 +466,10 @@ public final class FlickSuggestionView extends RelativeLayout {
         return toCodePointArray(str, 0, str.length());
     }
 
+    /**
+     * @param c0666ac the words to show
+     * @param c0965e the current keyboard
+     */
     private void showOnKeyPredictions(SuggestedWords c0666ac, Keyboard c0965e) {
         String string = "";
         ArrayList<Integer> arrayList = new ArrayList<>();
@@ -506,8 +501,7 @@ public final class FlickSuggestionView extends RelativeLayout {
         
         for (int i13 = 0; i13 < c0666ac.size(); i13++) {
             if (c0666ac.getWordInfo(i13).isKind(11)) {
-                // Found emoji suggestion - store for later display on period key via showEmojiPrediction()
-                // Don't display on letter keys, but track that we found one
+                // Emoji go on the period key (showEmojiPrediction), never on letter keys.
                 hasEmojiSuggestion = true;
                 if (emojiSuggestionIndex < 0) {
                     emojiSuggestionIndex = i13;
@@ -529,8 +523,8 @@ public final class FlickSuggestionView extends RelativeLayout {
                     z2 = true;
                 }
             }
-            
-            // FIX: This check must be SEPARATE, not nested - matches smali line 1218
+
+            // Must stay separate from the check above, not nested in it.
             if (i13 == i) {
                 if (i2 >= 0 && i2 != i) {
                     keyM6604b = c0965e.getKeyByCode(32);
@@ -568,7 +562,6 @@ public final class FlickSuggestionView extends RelativeLayout {
                             
                             if (i18 < length) {
                                 if (iArrM5278b[i18] == i17) {
-                                    // FIX: Removed && i15 > 0 - this was blocking all words without spaces
                                     boolean z5 = i14 == length2 - 1;
                                     int i11;
                                     
@@ -644,7 +637,6 @@ public final class FlickSuggestionView extends RelativeLayout {
         }
         
         if (c0965e.getKeyByCode(46) != null && !arrayList.contains(46)) {
-            // Display emoji on period key if we found one and emoji predictions are enabled
             if (hasEmojiSuggestion) {
                 Logger.debug(TAG, "Emoji suggestion found at index " + emojiSuggestionIndex + ", calling showEmojiPrediction()");
             }
@@ -656,6 +648,11 @@ public final class FlickSuggestionView extends RelativeLayout {
         }
     }
 
+    /**
+     * @param c0666ac the words to search for an emoji
+     * @param c0965e the current keyboard
+     * @param str the typed prefix
+     */
     private void showEmojiPrediction(SuggestedWords c0666ac, Keyboard c0965e, String str) {
         Key keyM6604b;
         String strMo4284a;
@@ -685,6 +682,7 @@ public final class FlickSuggestionView extends RelativeLayout {
         }
     }
 
+    /** @param c0826b the prediction about to be shown */
     private boolean collidesWithVisible(PredictionView c0826b) {
         if (this.mVisibleCount <= 0) {
             return false;
@@ -701,9 +699,8 @@ public final class FlickSuggestionView extends RelativeLayout {
                     float x3 = c0826b2.getX() + (c0826b2.getMeasuredWidth() / 2.0f);
                     float x4 = c0826b.getX() + (c0826b.getMeasuredWidth() / 2.0f);
                     if (Math.abs(c0826b2.getY() - c0826b.getY()) > this.mVerticalWordDistance && Math.abs(x3 - x4) > f) {
-                        // BuildConfig.DEBUG guard, not Logger's own: Logger.debug gates INSIDE
-                        // the callee, so these five-part concatenations were built on every
-                        // iteration of an O(visible^2) loop that runs per keystroke.
+                        // Guarded here: Logger.debug gates inside the callee, after the
+                        // concatenation is built (this loop runs per keystroke).
                         if (BuildConfig.DEBUG) {
                             Logger.debug(TAG, "\"" + ((Object) c0826b.getText()) + "\" and \"" + ((Object) c0826b2.getText()) + "\" are not in the same column.");
                         }
@@ -719,6 +716,11 @@ public final class FlickSuggestionView extends RelativeLayout {
         return false;
     }
 
+    /**
+     * @param f x in keyboard view coordinates
+     * @param f2 y in keyboard view coordinates
+     * @param f3 the largest distance that still matches
+     */
     private int findNearestPrediction(float f, float f2, float f3) {
                 int[] location = new int[2];
         this.mKeyboardView.getLocationInWindow(location);
@@ -739,6 +741,11 @@ public final class FlickSuggestionView extends RelativeLayout {
         return i;
     }
 
+    /**
+     * @param f x in keyboard view coordinates
+     * @param f2 y in keyboard view coordinates
+     * @param f3 the largest distance that still matches
+     */
     public boolean handleFlick(float f, float f2, float f3) {
         int iM5275b;
         int iM5302a;
@@ -757,24 +764,31 @@ public final class FlickSuggestionView extends RelativeLayout {
         this.mLastSelectionTime = jUptimeMillis;
         this.mListener.onSuggestionPicked(this.mSuggestedWords.getWordInfo(iM5302a), InputSource.SOFTWARE);
         this.mPredictionViews.get(iM5275b).setVisibility(View.INVISIBLE);
-        // The picked word is now hidden: the next update must redraw even if its list is equal.
+        // The picked word is hidden: the next update must redraw even if its list is equal.
         this.mShownValid = false;
         this.mAnimationView.animateSelection(this.mPredictionViews.get(iM5275b), this.mTypedTextColor, getParent());
         return true;
     }
 
     /**
-     * Deliberate no-ops. VkbGestureListener dispatches every single-tap-up and show-press here;
-     * the tutorial overlay they used to drive was deleted, and nothing replaced it. Kept only
-     * because the call sites live in another package.
+     * No-op: VkbGestureListener still dispatches single-tap-up here but nothing uses it.
+     *
+     * @param f x
+     * @param f2 y
      */
     public void onSingleTap(float f, float f2) {
     }
 
+    /**
+     * No-op, as {@link #onSingleTap}.
+     *
+     * @param f x
+     * @param f2 y
+     */
     public void onShowPress(float f, float f2) {
     }
 
-    /** Reusable scratch for the keyboard view's window position - see PredictionView. */
+    /** Reusable scratch for the keyboard view's window position. */
     private final int[] keyboardLocation = new int[2];
 
     private int[] keyboardLocationInWindow() {
@@ -800,12 +814,17 @@ public final class FlickSuggestionView extends RelativeLayout {
             return this.mWordIndex;
         }
 
+        /**
+         * @param i the word's index in the suggestions
+         * @param i2 the centre x (key coordinates)
+         * @param i3 the key's top y (key coordinates)
+         * @param z true to colour the typed prefix {@code str2} apart from the rest
+         * @param str the word
+         * @param str2 the typed prefix
+         */
         public void setPrediction(int i, int i2, int i3, boolean z, String str, String str2) {
             this.mWordIndex = i;
-            // Sizing/weight follow the style spec, matching the key-face type; the
-            // candidate hierarchy (see deEmphasized) drops non-default candidates a
-            // weight step and a brightness step. Applied per-show (not in the
-            // constructor) so theme switches take effect.
+            // Applied per show, not in the constructor, so theme switches take effect.
             dev.bbkb.ime.keyboard.StyleSpec spec = KeyboardColorManager.styleSpec();
             boolean deEmphasized = FlickSuggestionView.this.deEmphasized(i);
             setTextSize(0, FlickSuggestionView.this.mLetterSize * spec.getPredictionTextScale());
@@ -828,7 +847,6 @@ public final class FlickSuggestionView extends RelativeLayout {
                 if (FlickSuggestionView.this.getCurrentKeyboardLocale().equals("hi")) {
                     this.mTextBuilder.setSpan(suggestedSpan, 0, str.length(), 17);
                 } else {
-                    // FIX: Use ForegroundColorSpan objects, not raw color ints
                     this.mTextBuilder.setSpan(typedSpan, 0, str2.length(), 17);
                     this.mTextBuilder.setSpan(suggestedSpan, str2.length(), str.length(), 17);
                 }
@@ -847,9 +865,7 @@ public final class FlickSuggestionView extends RelativeLayout {
             } else if (getX() + getMeasuredWidth() > width) {
                 setX(width - getMeasuredWidth());
             }
-            // Drop shadow beneath the word when the spec asks for it (BB10 —
-            // floating text kept legible over the sculpted caps); other styles
-            // keep clean unshadowed rendering.
+            // A drop shadow keeps floating text legible over sculpted caps (BB10 style).
             if (spec.getPredictionDropShadow()) {
                 float density = getResources().getDisplayMetrics().density;
                 setShadowLayer(FlickSuggestionView.this.mShadowRadius, 0.0f,

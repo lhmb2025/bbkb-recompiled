@@ -721,7 +721,6 @@
     <string name="device_config_import_unreadable">Hindi configuration ng device ang file na iyon</string>
     <string name="device_config_import_failed">Hindi ma-import ang file na iyon</string>
 
-    <!-- OTA app updates -->
     <string name="settings_updates_title">Mga update</string>
     <string name="settings_updates_summary">Maghanap ng bagong bersyon ng BBKB</string>
     <string name="settings_update_installed_version_title">Naka-install na bersyon</string>
@@ -755,7 +754,6 @@
     <string name="settings_update_ready_title">Handa nang i-install</string>
     <string name="settings_update_version_details">Mga detalye ng bersyon</string>
     <string name="settings_update_unknown_sources_title">Payagan ang BBKB na mag-install ng mga update?</string>
-    <!-- Downloadable language packs (core/languagepack) -->
     <string name="language_packs_installed_header">Naka-install</string>
     <string name="language_packs_available_header">Available na i-download</string>
     <string name="language_packs_download">I-download</string>
@@ -877,7 +875,6 @@
     <string name="settings_voice_stop_on_pause_summary_off">Patuloy na nakikinig kahit may paghinto hanggang i-tap mo ang mikropono, o pagkatapos ng kalahating minutong katahimikan</string>
     <string name="voice_status_listening_tap_to_stop">Nakikinig&#8230; I-tap ang mic para ihinto</string>
 
-    <!-- Settings text moved out of the code (2026-11) -->
     <string name="settings_common_save">I-save</string>
     <string name="settings_common_edit">I-edit</string>
     <string name="settings_common_back">Bumalik</string>

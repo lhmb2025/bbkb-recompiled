@@ -30,11 +30,9 @@ import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
 
 /**
- * The category tab row as a Material `TabLayout` (it replaced the deprecated TabHost/TabWidget):
- * it inflates in the IME's own context, stays in step with the pager in both directions without a
- * feedback loop, never takes focus, and takes its icon colours from [KeyboardColorManager].
- * Dataset: [EmojiTestEnv.seedStandard] (positions 0 Recents | 1-2 Smileys | 3 Animals | 4 Food;
- * tabs Recents, Smileys, Animals, Food).
+ * The category tab row as a Material `TabLayout`: inflates in the IME's context, stays in step with the pager
+ * both ways without a feedback loop, never takes focus, and takes icon colours from [KeyboardColorManager].
+ * Dataset: [EmojiTestEnv.seedStandard] (0 Recents | 1-2 Smileys | 3 Animals | 4 Food).
  */
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [34], qualifiers = "w411dp-h891dp")
@@ -97,8 +95,6 @@ class EmojiCategoryTabsTest {
         return count
     }
 
-    // ------------------------------------------------------------------ inflation
-
     /** The IME's context has no AppCompat theme: the layout's android:theme is what makes this work. */
     @Test
     fun theTabRowInflatesInTheImeContext() {
@@ -120,7 +116,7 @@ class EmojiCategoryTabsTest {
         assertEquals(TabLayout.GRAVITY_FILL, tabs.tabGravity)
     }
 
-    /** Same geometry as the TabWidget row: equal full-height tabs, no padding, icon at its own size. */
+    /** Equal full-height tabs, no padding, icon at its own size. */
     @Test
     fun tabsShareTheRowEquallyWithTheIconAtItsIntrinsicSize() {
         val v = inflateInImeContext()
@@ -141,8 +137,6 @@ class EmojiCategoryTabsTest {
         }
     }
 
-    // ------------------------------------------------------------------ focus
-
     @Test
     fun neitherTheRowNorAnyTabCanTakeFocus() {
         val v = inflateInImeContext()
@@ -162,8 +156,6 @@ class EmojiCategoryTabsTest {
         assertEquals(2, tabs.selectedTabPosition)
     }
 
-    // ------------------------------------------------------------------ tabs and pager in step
-
     @Test
     fun tappingATabJumpsThePagerToThatCategorysFirstPage() {
         val v = inflateInImeContext()
@@ -176,8 +168,8 @@ class EmojiCategoryTabsTest {
     }
 
     /**
-     * Paging into another category selects its tab exactly once, and that selection does not move
-     * the pager back to the category's first page (the backwards case lands on Smileys' LAST page).
+     * Paging into another category selects its tab exactly once, without moving the pager back to that
+     * category's first page (the backwards case lands on Smileys' last page).
      */
     @Test
     fun pagingAcrossACategoryBoundarySelectsTheTabWithoutAFeedbackLoop() {
@@ -204,8 +196,6 @@ class EmojiCategoryTabsTest {
         assertEquals(2, selections[0])
         assertEquals(1, v.tabs().selectedTabPosition)
     }
-
-    // ------------------------------------------------------------------ colours
 
     @Test
     fun iconTintFollowsSelectionAndTheColourManager() {

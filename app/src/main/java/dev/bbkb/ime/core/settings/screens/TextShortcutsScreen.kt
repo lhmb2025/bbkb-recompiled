@@ -79,13 +79,9 @@ import dev.bbkb.ime.personaldictionary.model.WordSubstitution
 import java.util.Locale
 
 /**
- * Word substitutions, as an [EntryListSpec]. Everything here was previously spelled out inline in
- * a screen that was otherwise identical to `UserDictionaryScreen`. Its title is the string the
- * Learning screen's row uses, so the two agree in every language.
- *
- * The no-spaces rule appears twice on purpose: the form strips spaces from the shortcut as it is
- * typed, and [EntryListSpec.validate] refuses the write as well, so an entry that somehow arrives
- * with a space in its shortcut is still turned away with a snackbar.
+ * Word substitutions as an [EntryListSpec]; the title is the Learning screen row's string. Spaces
+ * are refused twice on purpose: the form strips them as typed and [EntryListSpec.validate] rejects
+ * any that still arrive.
  */
 internal val ShortcutsSpec = EntryListSpec(
     title = R.string.settings_dict_text_shortcuts_title,
@@ -104,7 +100,6 @@ internal val ShortcutsSpec = EntryListSpec(
     loadFailed = R.string.settings_shortcuts_load_failed,
     emptyIcon = R.drawable.ic_settings_m_edit,
     emptyTitle = R.string.settings_shortcuts_empty_title,
-    // Names the button, now that the button says what it does.
     emptyHint = R.string.settings_shortcuts_empty_hint,
     belongsHere = { it.isSubstitution },
     identity = { "${it.shortcut}_${it.locale}" },
@@ -121,9 +116,8 @@ internal val ShortcutsSpec = EntryListSpec(
 )
 
 /**
- * The macros the keyboard fills in itself, by what the form's chips and the help sheet call them,
- * in the order they offer them: the everyday ones first. `DynamicMacroType` is the set the
- * expansion knows; a test keeps the two the same.
+ * The built-in macros by the names the chips and help sheet use, everyday ones first. A test keeps
+ * this in step with `DynamicMacroType`.
  */
 internal val BuiltInMacros = listOf(
     "%D" to R.string.settings_shortcuts_macro_date,
@@ -136,10 +130,7 @@ internal val BuiltInMacros = listOf(
     "%b" to R.string.settings_shortcuts_macro_battery,
 )
 
-/**
- * Text Shortcuts Screen - manages word substitutions with full BASL integration
- * Supports dynamic macros: %D, %T, %d, %t, %n, %w, %y, %b and custom user macros
- */
+/** Text shortcuts, with dynamic macros (%D, %T, %d, %t, %n, %w, %y, %b) and the user's own. */
 @Composable
 fun TextShortcutsScreen(
     onNavigateToCustomMacros: () -> Unit = {},
@@ -148,7 +139,7 @@ fun TextShortcutsScreen(
 ) {
     val context = LocalContext.current
     val store = remember { storeFactory(context) }
-    // Read once per visit: the macros are edited on their own screen, which this one is left for.
+    // Read once per visit: macros are edited on their own screen.
     val customMacros = remember { CustomMacroRepository(context).getAllMacros() }
     val macroTags = remember(customMacros) { BuiltInMacros.map { it.first }.toSet() + customMacros.map { it.fullTag } }
     var showMacroHelp by remember { mutableStateOf(false) }
@@ -166,7 +157,6 @@ fun TextShortcutsScreen(
             }.joinToString(" · ")
         },
         sheetContent = { entry -> ShortcutPreview(entry, macroTags) },
-        // The screen's two rarer places, named. They were a bare </> and a bare ⓘ in the top bar.
         menuItems = { close ->
             DropdownMenuItem(
                 text = { Text(stringResource(R.string.settings_custom_macros_title)) },
@@ -212,13 +202,11 @@ fun TextShortcutsScreen(
     }
 }
 
-/** Whether [phrase] holds a macro the keyboard will fill in. */
 private fun hasMacro(phrase: String, tags: Set<String>) = tags.any { phrase.contains(it) }
 
 /**
- * [text] with each macro in [tags] drawn in [style], so the parts that change stand out from the
- * parts that are typed as written. With [showBreaks], a new line (the `%n` macro, or a real one)
- * shows as ↵, for the one-line rows; a text field passes false, as its characters must not move.
+ * [text] with each macro in [tags] drawn in [style]. With [showBreaks] a new line (`%n` or real)
+ * shows as ↵ for one-line rows; text fields pass false so characters do not move.
  */
 private fun highlightMacros(text: String, tags: Set<String>, style: SpanStyle, showBreaks: Boolean): AnnotatedString =
     buildAnnotatedString {
@@ -246,12 +234,9 @@ private fun highlightMacros(text: String, tags: Set<String>, style: SpanStyle, s
 private fun macroStyle() = SpanStyle(color = MaterialTheme.colorScheme.primary, fontFamily = FontFamily.Monospace)
 
 /**
- * What [phrase] would type right now: the keyboard's own expansion, so the preview cannot drift
- * from what a shortcut really produces. A phrase the expansion cannot take is shown as written.
- *
- * The keyboard expands in the language being typed. A shortcut for one language previews in that
- * language; one for all languages previews in the phone's. (An empty locale must not reach the
- * expansion: it formats in the root locale, which writes the date as "2026 M11 03, Tue".)
+ * What [phrase] would type now, via the keyboard's own expansion (as written if it cannot expand).
+ * Previews in the shortcut's language, or the phone's for all languages: an empty locale must not
+ * reach the expansion, which would format in the root locale ("2026 M11 03, Tue").
  */
 private fun expandNow(context: Context, phrase: String, shortcut: String, locale: String): String =
     try {
@@ -267,12 +252,8 @@ private fun expandNow(context: Context, phrase: String, shortcut: String, locale
     }
 
 /**
- * One shortcut in the list: the shortcut, then what it expands to on one line, with its macros
- * marked. A shortcut whose phrase changes each time, or that keeps its case, carries a small icon
- * after its name, the way Learned words marks an expiring word; the sheet says what each means.
- *
- * The two markers were trailing text labels ("Dynamic", "Fixed case"), which took half the row's
- * width on a narrow phone.
+ * One shortcut row: the shortcut, then its expansion on one line with macros marked. Dynamic and
+ * fixed-case shortcuts carry a small icon after the name; the sheet explains each.
  */
 @Composable
 private fun ShortcutRowContent(entry: DictionaryEntry, macroTags: Set<String>) {
@@ -287,7 +268,6 @@ private fun ShortcutRowContent(entry: DictionaryEntry, macroTags: Set<String>) {
                 Icon(ImageVector.vectorResource(R.drawable.ic_settings_m_text_fields), contentDescription = stringResource(R.string.settings_shortcuts_fixed_case), tint = variant, modifier = Modifier.size(18.dp))
             }
         }
-        // The gap PreferenceItem leaves between a title and its summary.
         Spacer(modifier = Modifier.height(LocalSpacing.current.titleSummaryGap))
         Text(
             text = highlightMacros(entry.word, macroTags, macroStyle(), showBreaks = true),
@@ -299,10 +279,7 @@ private fun ShortcutRowContent(entry: DictionaryEntry, macroTags: Set<String>) {
     }
 }
 
-/**
- * The card in a shortcut's sheet: the whole phrase, which the row cuts to one line, and for a
- * phrase with macros, what it would type right now with the phrase as written under it.
- */
+/** The sheet's card: the full phrase and, with macros, what it would type now. */
 @Composable
 private fun ShortcutPreview(entry: DictionaryEntry, macroTags: Set<String>) {
     val context = LocalContext.current
@@ -336,11 +313,7 @@ private fun ShortcutPreview(entry: DictionaryEntry, macroTags: Set<String>) {
     Spacer(modifier = Modifier.height(8.dp))
 }
 
-/**
- * Every macro, with what it would type right now, and the user's own macros after them. It was a
- * dialog with fixed examples from January; a reference this long reads better as a sheet, and the
- * live examples answer "what will it say" without a test run.
- */
+/** Every macro with a live example, then the user's own macros. */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun DynamicContentSheet(customMacros: List<CustomMacro>, onDismiss: () -> Unit) {
@@ -380,7 +353,6 @@ private fun DynamicContentSheet(customMacros: List<CustomMacro>, onDismiss: () -
     }
 }
 
-/** One macro in the help sheet: the tag in its own column, then its name and an example. */
 @Composable
 private fun MacroLine(tag: String, name: String, example: String) {
     val spacing = LocalSpacing.current
@@ -419,13 +391,8 @@ private class MacroHighlight(private val tags: Set<String>, private val style: S
 }
 
 /**
- * Add/edit form for one text shortcut, as a full-screen dialog: Material's form for a task with
- * several fields, where a basic dialog squeezed them. Saving is in its top bar; deleting is not
- * here at all but in the shortcut's sheet, with Undo.
- *
- * The macro chips put their tag where the cursor is (they used to add it to the end, whatever was
- * selected) and include the user's own macros. The preview under them is the keyboard's own
- * expansion of the phrase as it stands.
+ * Full-screen add/edit form for one shortcut; Save is in the top bar, delete lives in the sheet
+ * (with Undo). Macro chips insert at the cursor; the preview is the keyboard's own expansion.
  */
 @Composable
 private fun ShortcutForm(
@@ -460,8 +427,7 @@ private fun ShortcutForm(
     }
 
     Dialog(onDismissRequest = onDismiss, properties = DialogProperties(usePlatformDefaultWidth = false)) {
-        // A full-screen form is a screen, not a dialog over one: without this the window dims the
-        // settings page's status bar behind it to grey.
+        // A full-screen form is a screen: without this the window dims the status bar behind it.
         val dialogWindow = (LocalView.current.parent as? DialogWindowProvider)?.window
         SideEffect { dialogWindow?.setDimAmount(0f) }
         Surface(modifier = Modifier.fillMaxSize(), color = LocalSettingsColors.current.page) {
@@ -535,8 +501,7 @@ private fun ShortcutForm(
                             Icon(ImageVector.vectorResource(R.drawable.ic_settings_m_info), stringResource(R.string.settings_shortcuts_about_dynamic), tint = MaterialTheme.colorScheme.onSurfaceVariant)
                         }
                     }
-                    // One scrolling row rather than a block of rows: on a short screen the fields
-                    // and the preview matter more than seeing every chip at once.
+                    // One scrolling row: on a short screen the fields and preview matter more than every chip.
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()

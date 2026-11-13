@@ -26,8 +26,7 @@ public class KeyPreviewView extends AppCompatTextView {
 
     private static final String TAG = "KeyPreviewView";
 
-    /** Labels already known to fit without X-scaling. Per view, so it dies with the view
-     *  instead of growing for the process lifetime across locale and theme changes. */
+    /** Labels known to fit without X-scaling; per view so it does not grow for the process lifetime. */
     private final HashSet<String> mNoScaleXTextSet = new HashSet<>();
 
     private static final int[][][] KEY_PREVIEW_BACKGROUND_STATE_SETS = {new int[][]{new int[0], new int[]{R.attr.state_has_morekeys}}, new int[][]{new int[]{R.attr.state_left_edge}, new int[]{R.attr.state_left_edge, R.attr.state_has_morekeys}}, new int[][]{new int[]{R.attr.state_right_edge}, new int[]{R.attr.state_right_edge, R.attr.state_has_morekeys}}};
@@ -37,7 +36,7 @@ public class KeyPreviewView extends AppCompatTextView {
     private int desiredWidth = -1;
     private int desiredHeight = -1;
 
-    /** Cached backgrounds, rebuilt only when the theme actually changes. See applyThemedBackground. */
+    /** Cached backgrounds, rebuilt only when the theme changes. */
     private GradientDrawable mRoundedBackground;
     private int mRoundedBackgroundColor;
     private float mRoundedBackgroundRadiusDp = Float.NaN;
@@ -51,11 +50,8 @@ public class KeyPreviewView extends AppCompatTextView {
     public KeyPreviewView(Context context, AttributeSet attributeSet, int i) {
         super(context, attributeSet, i);
         this.mBackgroundPadding = new Rect();
-        // Position text at top, centered horizontally
         setGravity(Gravity.CENTER_HORIZONTAL | Gravity.TOP);
-        // Remove font padding to properly position text
         setIncludeFontPadding(false);
-        // Add padding - more on top for the letter
         int horizontalPadding = (int) (8 * getResources().getDisplayMetrics().density);
         int topPadding = (int) (12 * getResources().getDisplayMetrics().density);
         int bottomPadding = (int) (4 * getResources().getDisplayMetrics().density);
@@ -63,10 +59,8 @@ public class KeyPreviewView extends AppCompatTextView {
     }
 
     /**
-     * Shows or hides the bubble without touching its visibility: an alpha change is a RenderNode
-     * property, so it damages only this view, where a visibility change makes the placer
-     * re-record. A hidden bubble is also kept out of the accessibility tree, as an INVISIBLE one
-     * was.
+     * Shows or hides the bubble by alpha, not visibility: alpha damages only this view, while a
+     * visibility change makes the placer re-record. A hidden bubble leaves the accessibility tree.
      */
     public void setPreviewShown(boolean shown) {
         setAlpha(shown ? 1.0f : 0.0f);
@@ -82,15 +76,13 @@ public class KeyPreviewView extends AppCompatTextView {
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         if (InputPathDebug.on()) Log.d(TAG, "[KEY_PREVIEW] onMeasure called");
         if (InputPathDebug.on()) Log.d(TAG, "[KEY_PREVIEW] Current text: '" + getText() + "', length: " + (getText() != null ? getText().length() : "null"));
-        
-        // If we have desired dimensions from the key, use them
+
         if (desiredWidth > 0 && desiredHeight > 0) {
             if (InputPathDebug.on()) Log.d(TAG, "[KEY_PREVIEW] Using desired dimensions - width: " + desiredWidth + ", height: " + desiredHeight);
             int widthSpec = MeasureSpec.makeMeasureSpec(desiredWidth, View.MeasureSpec.EXACTLY);
             int heightSpec = MeasureSpec.makeMeasureSpec(desiredHeight, View.MeasureSpec.EXACTLY);
             super.onMeasure(widthSpec, heightSpec);
         } else {
-            // Fallback to default measurement
             super.onMeasure(widthMeasureSpec, heightMeasureSpec);
         }
         
@@ -106,8 +98,7 @@ public class KeyPreviewView extends AppCompatTextView {
     public void setPreviewVisual(Key key, KeyboardIconSet c1024ag, KeyDrawParams c1061t) {
         if (InputPathDebug.on()) Log.d(TAG, "[KEY_PREVIEW] setPreviewVisual called - key code: " + key.getCode());
         if (InputPathDebug.on()) Log.d(TAG, "[KEY_PREVIEW] key.getIconId() (icon code): " + key.getIconId());
-        
-        // Apply themed colors and square background
+
         applyThemedBackground();
         
         if (key.getIconId() != 0) {
@@ -120,10 +111,8 @@ public class KeyPreviewView extends AppCompatTextView {
         }
         
         setBottomDrawableIfChanged(null);
-        // Use themed text color instead of formatter color
         setTextColor(KeyboardColorManager.INSTANCE.getTextColor());
         setTextSize(0, key.getLetterSize(c1061t));
-        // Match the key-face weight so the bubble doesn't look lighter than the key
         setTypeface(KeyboardColorManager.styleSpec().getMediumKeyTypeface()
                 ? dev.bbkb.ime.keyboard.KeyboardView.mediumWeightTypeface(key.getLetterTypeface(c1061t))
                 : key.getLetterTypeface(c1061t));
@@ -132,11 +121,8 @@ public class KeyPreviewView extends AppCompatTextView {
         if (InputPathDebug.on()) Log.d(TAG, "[KEY_PREVIEW] key.getVisibleLabel() (label): '" + keyLabel + "', length: " + (keyLabel != null ? keyLabel.length() : "null"));
         setTextAndScaleX(keyLabel);
     }
-    
-    /**
-     * setCompoundDrawables always requests a layout, which is a whole-window traversal per press;
-     * the common case (letter after letter, no icon) changes nothing.
-     */
+
+    /** setCompoundDrawables always requests a whole-window layout; skip it when nothing changes. */
     private void setBottomDrawableIfChanged(Drawable bottom) {
         Drawable[] current = getCompoundDrawables();
         if (current[0] == null && current[1] == null && current[2] == null && current[3] == bottom) {
@@ -150,12 +136,10 @@ public class KeyPreviewView extends AppCompatTextView {
         dev.bbkb.ime.keyboard.StyleSpec spec = KeyboardColorManager.styleSpec();
         float radiusDp = spec.getPreviewRadiusDp();
         if (radiusDp > 0) {
-            // K3: rounded, elevated preview bubble instead of the flat square fill.
-            // The GradientDrawable's rounded outline also shapes the elevation shadow.
+            // The rounded outline also shapes the elevation shadow.
             float density = getResources().getDisplayMetrics().density;
-            // Reuse the drawable across keystrokes. GradientDrawable.setColor/setCornerRadius
-            // mutate in place, and View.setBackground short-circuits when handed the instance it
-            // already holds, so the repeat case costs no allocation and no relayout.
+            // Reused: setColor/setCornerRadius mutate in place and setBackground short-circuits
+            // on the same instance, so a repeat costs no allocation or relayout.
             GradientDrawable bg = this.mRoundedBackground;
             if (bg == null) {
                 bg = new GradientDrawable();
@@ -198,8 +182,8 @@ public class KeyPreviewView extends AppCompatTextView {
         background.getPadding(this.mBackgroundPadding);
         int intrinsicWidth = (background.getIntrinsicWidth() - this.mBackgroundPadding.left) - this.mBackgroundPadding.right;
         if (InputPathDebug.on()) Log.d(TAG, "[KEY_PREVIEW] Background intrinsic width: " + intrinsicWidth);
-        
-        // FIX: If background has no intrinsic width (returns -1), don't scale
+
+        // No intrinsic width (-1): don't scale.
         if (intrinsicWidth <= 0) {
             if (InputPathDebug.on()) Log.d(TAG, "[KEY_PREVIEW] Background has no intrinsic width, using default scale");
             mNoScaleXTextSet.add(str);
@@ -220,10 +204,13 @@ public class KeyPreviewView extends AppCompatTextView {
     }
 
     private static float getTextWidth(String str, TextPaint textPaint) {
-        // measureText sums the same advances without the per-call float[].
         return TextUtils.isEmpty(str) ? 0.0f : textPaint.measureText(str);
     }
 
+    /**
+     * @param z true if the key has more keys
+     * @param i edge position: 0 none, 1 left edge, 2 right edge
+     */
     public void setPreviewBackground(boolean z, int i) {
         Drawable background = getBackground();
         if (background == null) {

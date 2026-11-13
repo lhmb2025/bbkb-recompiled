@@ -13,41 +13,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Characterisation table for {@link MoreKeysKeyboard.MoreKeysKeyboardParams} — the column/row solver behind the
- * more-keys (long-press alternates) popup.
- *
- * <p>WAVE 2 CONTRACT: this pins what the code does TODAY, bugs included. Wave 3 may restructure
- * {@code setParameters} / {@code getColumnPos} / {@code getX} freely as long as every row below
- * still holds. Nothing here asserts what the geometry "ought" to be.
- *
- * <p>Why it matters: an off-by-one in this solver is invisible until a 9-alternate popup opens on
- * the leftmost key of the keyboard — the popup then hangs off the screen edge or overlaps the
- * parent key. The three parent-key positions in the table (@5 = leftmost key centre, @55 = middle,
- * @95 = rightmost key centre, on a 100px-wide keyboard of 10px keys) are exactly the clamp cases
- * {@code maxLeftKeys}/{@code maxRightKeys} exist for.
- *
- * <h2>The table</h2>
- * One row per input combination, in the form
+ * Characterisation table for {@link MoreKeysKeyboard.MoreKeysKeyboardParams}, the column/row solver
+ * behind the long-press popup: it pins today's geometry, bugs included. Parent keys @5/@55/@95 on a
+ * 100px keyboard of 10px keys are the {@code maxLeftKeys}/{@code maxRightKeys} clamp cases; row
+ * height 20, paddings and gap 0. 7/5 and 10/4 are where {@code getOptimizedColumns} drops a column.
  * <pre>
  *   numKeys/maxColumns @coordXInParent C&lt;isFixedColumn&gt; O&lt;isFixedOrder&gt; d&lt;dividerWidth&gt;
  *     =&gt; r&lt;mNumRows&gt; c&lt;mNumColumns&gt; t&lt;mTopKeys&gt; l&lt;mLeftKeys&gt; R&lt;mRightKeys&gt;
  *        a&lt;mTopRowAdjustment&gt; w&lt;mOccupiedWidth&gt; h&lt;mOccupiedHeight&gt; X&lt;getDefaultKeyCoordX()&gt;
  *        | getX,getY per key index 0..numKeys-1
  * </pre>
- * Every row is the whole geometry of one popup, so a single-cell regression names itself in the
- * failure diff. Key width is 10, row height 20, keyboard width 100 throughout; all paddings and
- * the vertical gap are 0 (their defaults), which makes {@code getY} and {@code getDefaultKeyCoordX}
- * read as pure multiples.
- *
- * <p>Coverage: numKeys ∈ {1,2,3,5,6,7,9} at maxColumns 5, plus 9/3 (three rows) and 10/4 (three
- * rows, two top keys) — 7/5 and 10/4 are the counts where {@code getOptimizedColumns} actually
- * changes strategy and drops a column. Crossed with three parent-key positions, both
- * {@code isMoreKeysFixedColumn} values, both {@code isMoreKeysFixedOrder} values, and divider
- * widths 0 and 2.
- *
- * <p>The expectations were produced by an independent transcription of the algorithm (not by
- * running this class), and the two non-trivial cases {@code 9/5 @55 C1 O1 d0} and
- * {@code 9/5 @55 C1 O0 d0} were additionally derived by hand.
+ * Expectations come from an independent transcription of the algorithm, not from running this class.
  */
 @RunWith(RobolectricTestRunner.class)
 @Config(sdk = 34, manifest = Config.NONE)
@@ -314,10 +290,7 @@ public class MoreKeysKeyboardParamsTest {
         return sb.toString();
     }
 
-    /**
-     * The whole table in one test: every mismatch is collected and reported together, so a
-     * rewrite that shifts one column shows every row it touched rather than the first.
-     */
+    /** Every mismatch is collected and reported together, so a shifted column shows every row it touched. */
     @Test
     public void geometryTable() {
         List<String> mismatches = new ArrayList<>();
@@ -360,10 +333,9 @@ public class MoreKeysKeyboardParamsTest {
     }
 
     /**
-     * The strategy switch: with {@code isMoreKeysFixedColumn} the column count is
-     * {@code min(numKeys, maxColumns)}; without it {@code getOptimizedColumns} drops columns while
-     * the top row would be left with {@code >= mNumRows} empty slots. Seven keys in at most five
-     * columns is the smallest case in the table where the two disagree (5 columns vs 4).
+     * With {@code isMoreKeysFixedColumn} the column count is {@code min(numKeys, maxColumns)}; without
+     * it {@code getOptimizedColumns} drops columns while the top row would have {@code >= mNumRows}
+     * empty slots. Seven keys in five columns is the smallest case where they disagree (5 vs 4).
      */
     @Test
     public void autoColumnDropsAColumnRatherThanLeaveTheTopRowSparse() {
@@ -408,9 +380,7 @@ public class MoreKeysKeyboardParamsTest {
         }
     }
 
-    /**
-     * The boundary of that guard: exactly wide enough is allowed. 50px holds all 5 columns.
-     */
+    /** The boundary of that guard: exactly wide enough is allowed. 50px holds all 5 columns. */
     @Test
     public void keyboardExactlyWideEnoughIsAccepted() {
         MoreKeysKeyboard.MoreKeysKeyboardParams p = new MoreKeysKeyboard.MoreKeysKeyboardParams();

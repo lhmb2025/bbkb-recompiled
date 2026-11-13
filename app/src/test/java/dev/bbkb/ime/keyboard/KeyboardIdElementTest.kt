@@ -14,23 +14,13 @@ import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
 
 /**
- * Characterisation table for [KeyboardId] — element-id naming, the three element predicates, the
- * editor-flag derived properties, and the identity/`toString` contract.
- *
- * Wave 3 (P8 §2) plans to collapse `KeyboardId` and `KeyboardBuilder`. Every number in this file
- * is a raw integer literal in the production source: `KeyboardId` declares NO named element
- * constants, so a rewrite that renumbers or merges elements has nothing to break at compile time.
- * These tables are the whole safety net; they pin behaviour as it is today, bugs included.
- *
- * See also `KeyboardBuilderElementResolutionTest`, which pins how a requested element id becomes
- * the id recorded here.
+ * Pins [KeyboardId]: element-id naming, the three element predicates, the editor-flag derived
+ * properties, and the identity/`toString` contract. Element ids are raw literals in production
+ * (no named constants), so these tables are what catches a renumbering.
  */
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [34], manifest = Config.NONE)
 class KeyboardIdElementTest {
-
-    // ------------------------------------------------------------------ fixtures
-
     private fun subtype(
         locale: String = "en_US",
         layoutSet: String = "qwerty"
@@ -101,8 +91,6 @@ class KeyboardIdElementTest {
         }
     }
 
-    // ------------------------------------------------------------------ element table
-
     /**
      * name = expected [KeyboardId.elementIdToName]; `null` means the id has no reachable name.
      * alphabet/symbols/pkb/typing = the four element predicates the class exposes.
@@ -117,34 +105,32 @@ class KeyboardIdElementTest {
     )
 
     private val elementTable = listOf(
-        // --- VKB alphabet family: the only ids isAlphabetKeyboard() accepts, together with 35..37
+        // VKB alphabet family: with 35..37, the only ids isAlphabetKeyboard() accepts
         ElementRow(0, "alphabet", true, false, false, true),
         ElementRow(1, "alphabetManualShifted", true, false, false, true),
         ElementRow(2, "alphabetAutomaticShifted", true, false, false, true),
         ElementRow(3, "alphabetShiftLocked", true, false, false, true),
         ElementRow(4, "alphabetShiftLockShifted", true, false, false, true),
-        // --- VKB symbols family
+        // VKB symbols family
         ElementRow(5, "symbols0", false, true, false, true),
         ElementRow(6, "symbols1", false, true, false, true),
         ElementRow(7, "symbols2", false, true, false, true),
         ElementRow(8, "symbolsCustom", false, true, false, true),
-        // --- phone / number / emoji: named, but classified by NOTHING
+        // phone / number / emoji: named, but in no family
         ElementRow(9, "phone", false, false, false, true),
         ElementRow(10, "phoneSymbols", false, false, false, true),
         ElementRow(11, "number", false, false, false, true),
         ElementRow(12, "emojiRecents", false, false, false, true),
-        // --- the 13..34 hole
+        // the 13..34 hole
         ElementRow(13, null, false, false, false, true),
         ElementRow(20, null, false, false, false, true),
         ElementRow(34, null, false, false, false, true),
-        // --- 35..37 are alphabet-classified despite being uri/password/postal layouts
+        // 35..37 are alphabet-classified despite being uri/password/postal layouts
         ElementRow(35, "uri", true, false, false, true),
         ElementRow(36, "password", true, false, false, true),
         ElementRow(37, "postal", true, false, false, true),
-        // CHARACTERISED BUG: 38 is the VKB unified input menu. It is special-cased by
-        // isTypingKeyboard(), by KeyboardBuilder.getKeyboardInternal() and by
-        // GestureInputAvailability, yet elementIdToName(38) is null and attrs.xml declares no
-        // `unifiedInputMenu` enum — so no layout set can name it and its toString reads "[null ...".
+        // Known bug: 38 (VKB input menu) is special-cased in several places, yet has no name and no
+        // attrs.xml enum, so no layout set can name it and toString reads "[null ...".
         ElementRow(38, null, false, false, false, false),
         ElementRow(39, "arrows", false, false, false, true),
         ElementRow(40, "passwordKeeper", false, false, false, true),
@@ -153,16 +139,14 @@ class KeyboardIdElementTest {
         ElementRow(43, "unifiedInputMenuPool", false, false, false, true),
         ElementRow(44, null, false, false, false, true),
         ElementRow(99, null, false, false, false, true),
-        // --- PKB alphabet family
+        // PKB alphabet family
         ElementRow(100, "alphabetPkb", false, false, true, true),
         ElementRow(101, "alphabetManualShiftedPkb", false, false, true, true),
         ElementRow(102, "alphabetAutomaticShiftedPkb", false, false, true, true),
         ElementRow(103, "alphabetShiftLockedPkb", false, false, true, true),
         ElementRow(104, "alphabetShiftLockShiftedPkb", false, false, true, true),
-        // CHARACTERISED BUG: the PKB symbols ids are NOT isSymbolsKeyboard() and NOT
-        // isPkbKeyboard(). isSymbolsElement() covers 5..8 only, isPkbElement() covers the
-        // alphabet-ish ids only. On a physical keyboard the symbol pages are therefore
-        // classified as nothing at all — see FlickSuggestionView.shouldShow().
+        // Known bug: PKB symbol ids are neither isSymbolsKeyboard() (5..8 only) nor isPkbKeyboard()
+        // (alphabet-ish ids only); see FlickSuggestionView.shouldShow().
         ElementRow(105, "symbols0Pkb", false, false, false, true),
         ElementRow(106, "symbols1Pkb", false, false, false, true),
         ElementRow(107, "symbols2Pkb", false, false, false, true),
@@ -170,21 +154,19 @@ class KeyboardIdElementTest {
         ElementRow(109, "phonePkb", false, false, false, true),
         ElementRow(110, "phoneSymbolsPkb", false, false, false, true),
         ElementRow(111, "numberPkb", false, false, false, true),
-        // --- the 112..134 hole
+        // the 112..134 hole
         ElementRow(112, null, false, false, false, true),
         ElementRow(134, null, false, false, false, true),
         ElementRow(135, "uriPkb", false, false, true, true),
         ElementRow(136, "passwordPkb", false, false, true, true),
         ElementRow(137, "postalPkb", false, false, true, true),
-        // 138 is the PKB unified input menu: named, but excluded from typing keyboards (so it is
-        // never cached by KeyboardBuilder) and classified by none of the three families.
+        // 138 (PKB input menu): named, not a typing keyboard (never cached), in no family.
         ElementRow(138, "unifiedInputMenuPkb", false, false, false, false),
         ElementRow(139, "arrowsPkb", false, false, false, true),
         ElementRow(140, "passwordKeeperPkb", false, false, false, true),
         ElementRow(141, "numberSubPanelPkb", false, false, false, true),
         ElementRow(142, null, false, false, false, true),
-        // 238 is what getKeyboardInternal computes for getKeyboardForShift(138, true) before its
-        // fallback chain runs (see KeyboardBuilderElementResolutionTest); pinned as an unnamed id.
+        // 238: getKeyboardForShift(138, true) before the fallback chain (KeyboardBuilderElementResolutionTest).
         ElementRow(238, null, false, false, false, true),
         ElementRow(-1, null, false, false, false, true)
     )
@@ -220,12 +202,8 @@ class KeyboardIdElementTest {
     }
 
     /**
-     * The three element families are mutually exclusive AND far from exhaustive: 31 of the 51
-     * probed ids — every phone, number, emoji, arrows, password-keeper and PKB-symbols id — fall
-     * into none of them. There is no element-level "is this a number keyboard" or "is this a
-     * phone keyboard" predicate at all; the `isNumberLayout()`/`isPhoneLayout()` pair below asks
-     * the EditorInfo, not the element id, and the two can disagree (a number field whose element
-     * is 8 in mode 5..8 — see the resolution test).
+     * The three element families are mutually exclusive and far from exhaustive (31 of 51 ids are
+     * in none). `isNumberLayout()` / `isPhoneLayout()` ask the EditorInfo, not the element id.
      */
     @Test
     fun elementFamilies_areDisjointAndLeaveMostIdsUnclassified() {
@@ -245,8 +223,6 @@ class KeyboardIdElementTest {
         assertEquals(31, unclassified)
     }
 
-    // ------------------------------------------------------------------ mode names
-
     @Test
     fun modeName_pinsEveryDeclaredMode() {
         val expected = listOf(
@@ -259,8 +235,6 @@ class KeyboardIdElementTest {
             "modeName($mode)" to { assertEquals(name, KeyboardId.modeName(mode)) }
         })
     }
-
-    // ------------------------------------------------------------------ editor-flag properties
 
     private data class EditorRow(
         val label: String,
@@ -340,11 +314,9 @@ class KeyboardIdElementTest {
             multiLine = false, imeAction = EditorInfo.IME_ACTION_UNSPECIFIED,
             navNext = false, navPrev = false
         ),
-        // CHARACTERISED BUG: isPhoneLayout() is a raw `inputType == TYPE_CLASS_PHONE` equality,
-        // unlike every neighbouring predicate, which masks first. A phone field carrying ANY flag
-        // — here TYPE_TEXT_FLAG_MULTI_LINE, which framework clients do set — is not a phone
-        // layout. KeyboardBuilder.getKeyboardMode() masks properly and still returns mode 4, so
-        // the two disagree for exactly this editor.
+        // Known bug: isPhoneLayout() is a raw `inputType == TYPE_CLASS_PHONE` check without
+        // masking, so a phone field with any flag is not a phone layout, while getKeyboardMode()
+        // still returns mode 4.
         EditorRow(
             "phone + multiline flag", PHONE or MULTILINE_FLAG,
             password = false, number = false, phone = false, dateTime = false,
@@ -412,9 +384,8 @@ class KeyboardIdElementTest {
             multiLine = false, imeAction = EditorInfo.IME_ACTION_UNSPECIFIED,
             navNext = true, navPrev = true
         ),
-        // A supplied actionLabel wins over the imeOptions action: imeAction() reports the
-        // IME_ACTION_CUSTOM_LABEL sentinel (IME_MASK_ACTION + 1 == 256), which is NOT a real
-        // action id, and navigateNext()'s `== IME_ACTION_NEXT` comparison therefore fails.
+        // An actionLabel wins: imeAction() reports the IME_ACTION_CUSTOM_LABEL sentinel
+        // (IME_MASK_ACTION + 1 == 256), so navigateNext()'s `== IME_ACTION_NEXT` fails.
         EditorRow(
             "custom action label", TEXT, imeOptions = EditorInfo.IME_ACTION_NEXT,
             actionLabel = "Zap",
@@ -422,8 +393,8 @@ class KeyboardIdElementTest {
             multiLine = false, imeAction = EditorInfo.IME_MASK_ACTION + 1,
             navNext = false, navPrev = false
         ),
-        // IME_FLAG_NO_ENTER_ACTION on a done/next action drops the action to IME_ACTION_NONE, and
-        // with it navigateNext() — the field still wants "next", but the keyboard forgets.
+        // IME_FLAG_NO_ENTER_ACTION on done/next drops the action to IME_ACTION_NONE, and with it
+        // navigateNext().
         EditorRow(
             "no-enter-action + next", TEXT or MULTILINE_FLAG,
             imeOptions = EditorInfo.IME_ACTION_NEXT or EditorInfo.IME_FLAG_NO_ENTER_ACTION,
@@ -431,12 +402,9 @@ class KeyboardIdElementTest {
             multiLine = true, imeAction = EditorInfo.IME_ACTION_NONE,
             navNext = false, navPrev = false
         ),
-        // CHARACTERISED, environment-dependent: multi-line + a NON-done/next action reaches
-        // getImeOptionsActionIdFromEditorInfo()'s third disjunct, `!isGoogleServicesDisabled()`.
-        // That is true on any device that has Google services (and under Robolectric, where the
-        // system property reads back empty), so IME_FLAG_NO_ENTER_ACTION suppresses the SEARCH
-        // action here too — the first two guards never get to matter. On a de-Googled ROM running
-        // API > 23 the same editor keeps IME_ACTION_SEARCH. Pinned as it behaves on test/stock.
+        // Environment-dependent: multi-line + a non-done/next action hits the
+        // `!isGoogleServicesDisabled()` disjunct (true under Robolectric), so NO_ENTER_ACTION
+        // suppresses SEARCH too. A de-Googled ROM on API > 23 keeps IME_ACTION_SEARCH.
         EditorRow(
             "no-enter-action + search, multiline", TEXT or MULTILINE_FLAG,
             imeOptions = EditorInfo.IME_ACTION_SEARCH or EditorInfo.IME_FLAG_NO_ENTER_ACTION,
@@ -484,8 +452,6 @@ class KeyboardIdElementTest {
         assertEquals("Zap", id(0, editorInfo = editorInfo(TEXT, 0, "Zap")).mCustomActionLabel)
     }
 
-    // ------------------------------------------------------------------ action names
-
     @Test
     fun actionName_pinsEveryImeAction() {
         val expected = listOf(
@@ -511,14 +477,10 @@ class KeyboardIdElementTest {
         })
     }
 
-    // ------------------------------------------------------------------ identity
-
     @Test
     fun equalsAndHashCode_ignoreEditorInfoDetailsThatDoNotChangeTheDerivedProperties() {
-        // Same element/mode/geometry/subtype and the same derived properties -> equal, even
-        // though the two EditorInfos differ (URI variation vs plain text). The static keyboard
-        // cache in KeyboardBuilder is a HashMap keyed on KeyboardId, so these two editors share
-        // one cached Keyboard whenever they also resolve to the same mode.
+        // Same element/mode/geometry/subtype and derived properties -> equal although the
+        // EditorInfos differ, so they share one entry in KeyboardBuilder's keyboard cache.
         val a = id(0, editorInfo = editorInfo(TEXT))
         val b = id(0, editorInfo = editorInfo(TEXT or InputType.TYPE_TEXT_VARIATION_URI))
         assertEquals(a, b)
@@ -566,11 +528,8 @@ class KeyboardIdElementTest {
     }
 
     /**
-     * CHARACTERISED: neither `isNumberLayout()` nor `isPhoneLayout()` nor `isDateTimeLayout()` is
-     * part of equals/hashCode, so two ids that differ only in those derived properties collide in
-     * the keyboard cache. Today `mMode` happens to separate them for every editor the builder
-     * produces — a rewrite that keeps the properties but drops or reorders mode would silently
-     * start serving a phone keyboard to a date field.
+     * `isNumberLayout()` / `isPhoneLayout()` / `isDateTimeLayout()` are not in equals/hashCode;
+     * only `mMode` keeps a date field from getting a cached phone keyboard.
      */
     @Test
     fun equals_ignoresNumberPhoneAndDateTimeLayoutFlags() {
@@ -582,8 +541,6 @@ class KeyboardIdElementTest {
         assertEquals(phone.hashCode(), dateTime.hashCode())
     }
 
-    // ------------------------------------------------------------------ toString golden
-
     @Test
     fun toString_isTheDebugGoldenForANamedElement() {
         assertEquals(
@@ -594,9 +551,8 @@ class KeyboardIdElementTest {
     }
 
     /**
-     * The flag suffixes are individually optional, and two of them are INVERTED: the voice and
-     * input-board-bar suffixes appear when the feature is DISABLED. Element 38 also demonstrates
-     * the unnamed-element hole — it prints the literal "null".
+     * Flag suffixes are individually optional; the voice and input-board-bar suffixes appear when
+     * the feature is disabled. Element 38 prints the literal "null".
      */
     @Test
     fun toString_isTheDebugGoldenForAnUnnamedElementWithEveryFlagSet() {
@@ -620,8 +576,6 @@ class KeyboardIdElementTest {
             ).toString()
         )
     }
-
-    // ------------------------------------------------------------------ editor comparison statics
 
     @Test
     fun equivalentEditorInfo_comparesOnlyInputTypeImeOptionsAndPrivateImeOptions() {
@@ -660,8 +614,8 @@ class KeyboardIdElementTest {
                         )
                     )
                 },
-                // Two DIFFERENT fields with the same shape are "equivalent" — that is the point of
-                // the predicate, and the reason sameEditor() exists alongside it (audit LC-2).
+                // Two different fields with the same shape are "equivalent"; sameEditor() exists
+                // to tell them apart.
                 "different field, same shape" to {
                     assertTrue(
                         KeyboardId.equivalentEditorInfo(

@@ -721,7 +721,6 @@
     <string name="device_config_import_unreadable">File itu bukan konfigurasi perangkat</string>
     <string name="device_config_import_failed">Tidak dapat mengimpor file itu</string>
 
-    <!-- OTA app updates -->
     <string name="settings_updates_title">Pembaruan</string>
     <string name="settings_updates_summary">Periksa versi baru BBKB</string>
     <string name="settings_update_installed_version_title">Versi terpasang</string>
@@ -755,7 +754,6 @@
     <string name="settings_update_ready_title">Siap dipasang</string>
     <string name="settings_update_version_details">Detail versi</string>
     <string name="settings_update_unknown_sources_title">Izinkan BBKB memasang pembaruan?</string>
-    <!-- Downloadable language packs (core/languagepack) -->
     <string name="language_packs_installed_header">Terpasang</string>
     <string name="language_packs_available_header">Tersedia untuk diunduh</string>
     <string name="language_packs_download">Unduh</string>
@@ -877,7 +875,6 @@
     <string name="settings_voice_stop_on_pause_summary_off">Tetap mendengarkan saat jeda hingga Anda mengetuk mikrofon, atau setelah setengah menit tanpa suara</string>
     <string name="voice_status_listening_tap_to_stop">Mendengarkan&#8230; Ketuk mik untuk berhenti</string>
 
-    <!-- Settings text moved out of the code (2026-11) -->
     <string name="settings_common_save">Simpan</string>
     <string name="settings_common_edit">Edit</string>
     <string name="settings_common_back">Kembali</string>

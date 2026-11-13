@@ -6,19 +6,10 @@ import dev.bbkb.ime.core.shared.SystemProps;
 import dev.bbkb.ime.BuildConfig;
 
 /**
- * Debug-only access to the stock ET9 engine's configuration knobs.
- *
- * <p>The blob binds only two of its 49 settings to Java (see
- * {@code docs/et9-ranking-documentation.md}). This class reaches the rest through
- * {@code libxt9trace.so}, which dlsyms the exported {@code ET9AW*} entry points at runtime.
- * Every call validates the engine's ABI fingerprint before touching memory and returns a
- * diagnostic instead of crashing if the layout does not match.
- *
- * <p>Guarded by {@link BuildConfig#DEBUG} at every entry: this is an investigation tool, not
- * a product surface. When a knob graduates to a real setting it should get a proper binding
- * rather than going through here.
- *
- * <p>View output: {@code adb logcat -s ET9PROBE:I Et9Probe:I}
+ * Debug-only access to ET9 engine knobs the blob does not bind to Java (2 of 49 are bound), via
+ * {@code libxt9trace.so} dlsym of the exported {@code ET9AW*} entry points. Native code checks the
+ * engine's ABI fingerprint before touching memory. A knob that becomes a real setting gets a proper
+ * binding instead. View: {@code adb logcat -s ET9PROBE:I Et9Probe:I}
  */
 public final class Et9Probe {
 
@@ -41,16 +32,9 @@ public final class Et9Probe {
     /**
      * Whether {@link #probe} may run. Off unless {@value #PROBE_PROPERTY} is {@code 1}.
      *
-     * <p>Opt-in because the probe reads raw engine memory, and on a cold IME start (the process
-     * killed, then restarted straight into {@code onStartInput}) it SIGSEGVs inside
-     * {@code nativeProbe} while dereferencing the settings block — three times in about eight
-     * cold starts on the KEY2 (2026-09-15), always within ~5 s of process start, never on a warm
-     * session. The likely cause is the context passing the fingerprint checks before the engine
-     * has finished building it; that is not confirmed. A native crash cannot be caught, so running
-     * the probe on every debug session made the debug build itself unstable.
-     *
-     * <p>The {@code setprop debug.et9.fence N} experiment hook lives inside {@code nativeProbe}
-     * ({@code et9probe.c}), so it also needs this property set.
+     * <p>Opt-in because {@code nativeProbe} can SIGSEGV reading the settings block in the first
+     * seconds after a cold IME start, and a native crash cannot be caught. The
+     * {@code debug.et9.fence N} hook lives inside {@code nativeProbe}, so it also needs this set.
      */
     static boolean isProbeEnabled() {
         String v = SystemProps.get(PROBE_PROPERTY);
@@ -58,16 +42,8 @@ public final class Et9Probe {
     }
 
     /**
-     * Read the engine's current ranking/adaptation configuration.
-     *
-     * @param sdk the live engine instance (from {@code NuanceSDKManager.getInstance()})
-     * @return a JSON-ish diagnostic string, or null if unavailable or not opted in
-     */
-    /**
-     * Logs what the DLM enumeration returns (the Learned words screen and the Words backup both
-     * read it): both counts, how many words came back, and the first/last. This is what found
-     * the 65-word cap (see {@link NuanceSDK#getDLMWords}); {@code setprop debug.et9.probe 2}
-     * runs just this dump without the native probe.
+     * Logs what the DLM enumeration returns (read by Learned words and the Words backup): both
+     * counts, the number enumerated, and the first/last word.
      */
     private static void dumpDlm(NuanceSDK sdk) {
         try {
@@ -85,12 +61,8 @@ public final class Et9Probe {
     }
 
     /**
-     * {@code setprop debug.et9.probe 3}: the engine's own export of the learned model
-     * ({@link NuanceSDK#exportDLM}), read back with {@code LearnedModelStream} and logged word by
-     * word with use count, language, category, quality and flags, then saved as
-     * {@code files/dlm-export.bin}. With {@code setprop debug.et9.dlmimport 1} as well, that saved
-     * file is imported again through {@code LearnedModelTransfer} and the model re-read, which
-     * exercises the whole round trip on a device.
+     * Logs the engine's learned-model export word by word and saves it as {@code files/dlm-export.bin}.
+     * With {@code setprop debug.et9.dlmimport 1} the file is imported back, testing the round trip.
      */
     private static void dumpDlmExport(NuanceSDK sdk) {
         try {
@@ -128,6 +100,7 @@ public final class Et9Probe {
         }
     }
 
+    /** Logs the engine's ranking/adaptation configuration; a diagnostic string, or null if off or unavailable. */
     public static String probe(NuanceSDK sdk) {
         if (!BuildConfig.DEBUG || sdk == null || !isProbeEnabled()) return null;
         // Experiment hook: `setprop debug.et9.quarantine A[,B,C]` sets the engine's three DLM
@@ -138,8 +111,7 @@ public final class Et9Probe {
             Log.i(TAG, "setQuarantine(" + q + ") -> " + setQuarantine(sdk, levels[0], levels[1], levels[2]));
         }
         dumpDlm(sdk);
-        // `setprop debug.et9.probe 2`: the DLM dump only, skipping the native probe (which can
-        // SIGSEGV on a cold start, see isProbeEnabled); `3` adds the model export round trip.
+        // Level 2: DLM dump only, skipping the native probe; level 3 adds the export round trip.
         String level = SystemProps.get(PROBE_PROPERTY);
         if ("3".equals(level)) dumpDlmExport(sdk);
         if ("2".equals(level) || "3".equals(level)) return null;
@@ -165,10 +137,9 @@ public final class Et9Probe {
     }
 
     /**
-     * Set the three DLM quarantine levels, each 0-5 (the engine answers status 26 otherwise); a
-     * negative level keeps the engine's current value. Returns the engine status (0 = success).
-     * {@code ET9AWSetDLMQuarantineLevel} takes three bytes, not one; what the second and third
-     * mean is not yet known (the engine's defaults are 1, 1 and 0).
+     * Sets the three DLM quarantine levels, each 0-5 (else status 26); negative keeps the current
+     * value. Returns the engine status. {@code ET9AWSetDLMQuarantineLevel} takes three bytes; the
+     * meaning of the second and third is unknown (defaults 1, 1, 0).
      */
     public static int setQuarantine(NuanceSDK sdk, int level1, int level2, int level3) {
         if (!BuildConfig.DEBUG || sdk == null) return -1;

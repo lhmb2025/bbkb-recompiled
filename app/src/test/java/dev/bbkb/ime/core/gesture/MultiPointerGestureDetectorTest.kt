@@ -19,37 +19,18 @@ import org.robolectric.annotation.Config
 import java.time.Duration
 
 /**
- * Characterisation tests for [MultiPointerGestureDetector] — the multi-pointer fork of AOSP's
- * `GestureDetector` that the IME feeds every touch through.
- *
- * These tests pin **what the detector does today**, not what it ought to do. Several assertions
- * below record behaviour that is plainly wrong (each marked `CHARACTERISED BUG:`); they are here so
- * a rewrite has to reproduce or deliberately change them rather than drift silently.
- *
- * Everything is driven through real [MotionEvent]s built with `PointerProperties` /
- * `PointerCoords` arrays rather than mocks, because pointer-*index* versus pointer-*id* confusion
- * is precisely the class of defect these tests exist to catch — `onTouchEvent` reads
- * `getPointerId(actionIndex)` in one place and indexes `getX(i)` by raw index in another, and a
- * mock cannot tell the two apart.
- *
- * Only observable outputs are asserted: the ordered sequence of listener callbacks, their float
- * arguments, and `onTouchEvent`'s return value. No private field is read.
- *
- * The handler timers ([android.view.ViewConfiguration.getTapTimeout] show-press,
- * `TAP_TIMEOUT + LONGPRESS_TIMEOUT` long-press, `DOUBLE_TAP_TIMEOUT` single-tap-confirm) are
- * scheduled with `sendMessageAtTime` against the *event's* timestamp, so every stream here is built
- * from `SystemClock.uptimeMillis()` and advanced with `ShadowLooper.idleFor`.
+ * Characterisation tests for [MultiPointerGestureDetector]: they pin what it does today, including
+ * the `CHARACTERISED BUG:` cases, so a rewrite must change them deliberately. Streams use real
+ * [MotionEvent]s because a mock cannot tell pointer index from pointer id. Timers are scheduled
+ * against the event's timestamp, so streams start at `SystemClock.uptimeMillis()` and advance with
+ * `ShadowLooper.idleFor`.
  */
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [34], manifest = Config.NONE)
 class MultiPointerGestureDetectorTest {
-
-    // ── recording listeners ──────────────────────────────────────────────────
-
     /**
-     * Records the callback sequence. Every callback extracts what it needs immediately: the
-     * detector recycles some of the events it dispatches (the synthetic ACTION_CANCEL from
-     * `cancelDoubleTapTracking`) as soon as the callback returns, so nothing may be retained.
+     * Records the callback sequence. Callbacks copy what they need at once: the detector recycles
+     * some dispatched events (the synthetic ACTION_CANCEL) as soon as the callback returns.
      */
     private open class GestureRecorder : MultiPointerGestureDetector.OnGestureListener {
         val calls = mutableListOf<String>()
@@ -84,11 +65,7 @@ class MultiPointerGestureDetectorTest {
         }
     }
 
-    /**
-     * The shape the IME actually uses: the constructor auto-registers any listener that also
-     * implements `OnDoubleTapListener`, and `SimpleOnGestureListener` implements both, so in
-     * production `doubleTapListener` is never null.
-     */
+    /** The production shape: `SimpleOnGestureListener` is also an `OnDoubleTapListener`, so it is auto-registered. */
     private class FullRecorder : GestureRecorder(), MultiPointerGestureDetector.OnDoubleTapListener {
         override fun onDoubleTap(e: MotionEvent): Boolean {
             calls += "onDoubleTap"; return handleEverything
@@ -102,8 +79,6 @@ class MultiPointerGestureDetectorTest {
             calls += "onSingleTapConfirmed"; return handleEverything
         }
     }
-
-    // ── fixture ──────────────────────────────────────────────────────────────
 
     private lateinit var context: Context
     private lateinit var recorder: FullRecorder
@@ -135,8 +110,6 @@ class MultiPointerGestureDetectorTest {
 
     private fun newDetector(listener: MultiPointerGestureDetector.OnGestureListener) =
         MultiPointerGestureDetector(context, listener, null, null)
-
-    // ── event construction ───────────────────────────────────────────────────
 
     private data class P(val id: Int, val x: Float, val y: Float)
 
@@ -193,9 +166,6 @@ class MultiPointerGestureDetectorTest {
 
     private fun idle(ms: Long) = shadowOf(Looper.getMainLooper()).idleFor(Duration.ofMillis(ms))
 
-    // ── assertions (every test routes through one of these; see the report's
-    //    "proved each test can fail" note — mutating these four turns the file red) ──
-
     private fun assertCalls(vararg expected: String) = assertCallsOf(recorder, *expected)
 
     private fun assertCallsOf(r: GestureRecorder, vararg expected: String) =
@@ -216,17 +186,13 @@ class MultiPointerGestureDetectorTest {
     private fun assertReturned(expected: Boolean, actual: Boolean) =
         assertEquals(expected, actual)
 
-    // ═══════════════════════════════════════════════════════════════════════
-    // 1. Single pointer — the degenerate case
-    // ═══════════════════════════════════════════════════════════════════════
-
     @Test
     fun singleTap_dispatchesDownThenSingleTapUpThenConfirm() {
         down(t0, 100f, 100f)
         up(t0 + 20, P(0, 100f, 100f))
 
-        // onSingleTapConfirmed is dispatched SYNCHRONOUSLY from the UP, not from the
-        // DOUBLE_TAP_TIMEOUT message (which the UP removes) — a deliberate divergence from AOSP.
+        // onSingleTapConfirmed is dispatched synchronously from the UP, not from the
+        // DOUBLE_TAP_TIMEOUT message (which the UP removes), unlike AOSP.
         assertCalls("onDown", "onSingleTapUp", "onSingleTapConfirmed")
     }
 
@@ -237,8 +203,8 @@ class MultiPointerGestureDetectorTest {
         recorder.calls.clear()
 
         idle(doubleTapTimeout + longPressTimeout + tapTimeout + 50)
-
-        // ACTION_UP calls removeMessages(3). That is also what makes double-tap detection
+        // ACTION_UP calls removeMessages(3), which also makes double taps unreachable (see
+        // noTapPairIsEverReportedAsADoubleTap).
         // unreachable — see noTapPairIsEverReportedAsADoubleTap below.
         assertNotFired("onSingleTapConfirmed")
     }
@@ -271,10 +237,6 @@ class MultiPointerGestureDetectorTest {
         assertReturned(false, detector.onTouchEvent(event(MotionEvent.ACTION_OUTSIDE, t0 + 5, listOf(P(0, 100f, 100f)))))
         assertCalls()
     }
-
-    // ═══════════════════════════════════════════════════════════════════════
-    // 2. Timer thresholds — one case under, one over
-    // ═══════════════════════════════════════════════════════════════════════
 
     @Test
     fun showPressFiresExactlyAtTapTimeout() {
@@ -334,10 +296,6 @@ class MultiPointerGestureDetectorTest {
         assertFired("onShowPress")
     }
 
-    // ═══════════════════════════════════════════════════════════════════════
-    // 3. Long press
-    // ═══════════════════════════════════════════════════════════════════════
-
     @Test
     fun anUpAfterALongPressDispatchesScrollCarryingTheFocalPointNotADelta() {
         down(t0, 100f, 200f)
@@ -364,9 +322,8 @@ class MultiPointerGestureDetectorTest {
         // The re-armed message is scheduled against the UP's own event time.
         idle(upAt + tapTimeout + longPressTimeout - SystemClock.uptimeMillis() + 1)
 
-        // CHARACTERISED BUG: ACTION_UP re-posts the long-press message (and removes only
-        // messages 1 and 3), while keeping the stored DOWN event — so a second onLongPress is
-        // delivered after the finger has already left the screen.
+        // CHARACTERISED BUG: ACTION_UP re-posts the long-press message while keeping the stored
+        // DOWN, so a second onLongPress arrives after the finger has left.
         assertFired("onLongPress")
     }
 
@@ -403,29 +360,16 @@ class MultiPointerGestureDetectorTest {
         up(t0 + 20, P(0, 100f, 100f))
         idle(doubleTapTimeout + longPressTimeout)
 
-        // CHARACTERISED BUG: onSingleTapConfirmed's only dispatch site is gated on
-        // isLongpressEnabled, and the UP removes the confirm timer — so with long press off the
-        // callback can never be delivered at all.
+        // CHARACTERISED BUG: the only onSingleTapConfirmed dispatch is gated on isLongpressEnabled
+        // and the UP removes the confirm timer, so with long press off it never fires.
         assertCalls("onDown", "onSingleTapUp")
     }
 
-    // ═══════════════════════════════════════════════════════════════════════
-    // 4. Double tap
-    // ═══════════════════════════════════════════════════════════════════════
     /**
-     * CHARACTERISED BUG — the headline finding of this file.
-     *
-     * `ACTION_DOWN` decides "was this a double tap?" from `handler.hasMessages(3)`, where message 3
-     * is the DOUBLE_TAP_TIMEOUT message it posts on the *previous* down. But `ACTION_UP` calls
-     * `removeMessages(3)` (it dispatches `onSingleTapConfirmed` synchronously instead of waiting
-     * for that timer). So by the time the second down arrives the gating message is always gone,
-     * the `isConsideredDoubleTap` call is never made, and `onDoubleTap` is unreachable from any
-     * tap-tap stream.
-     *
-     * Everything behind that gate is therefore dead today: `isConsideredDoubleTap`, the double-tap
-     * slop, the 40 ms floor, the DOUBLE_TAP_TIMEOUT ceiling, `doubleTapRegion` / the CkbKeyGrid
-     * keypad rectangle, and `activeDoubleTapPointerId` (which is only ever assigned inside that
-     * same branch — see [noMoveOrUpEverTakesTheDoubleTapTrackingBranch]).
+     * CHARACTERISED BUG: ACTION_DOWN detects a double tap via `handler.hasMessages(3)`, but
+     * ACTION_UP already called `removeMessages(3)`, so `onDoubleTap` is unreachable. Everything
+     * behind that gate (slop, 40 ms floor, timeout ceiling, keypad rectangle,
+     * `activeDoubleTapPointerId`) is dead.
      */
     @Test
     fun twoTapsInTimeAndInPlaceAreStillNotADoubleTap() {
@@ -439,13 +383,9 @@ class MultiPointerGestureDetectorTest {
     }
 
     /**
-     * The same finding as a table: no combination of inter-tap gap and inter-tap distance — either
-     * side of every threshold `isConsideredDoubleTap` would have applied — produces a double tap.
-     *
-     * These rows are what a rewrite has to reproduce. If Wave 3 repairs the gate, this test goes
-     * red and the rows become the boundary table for the repaired behaviour: gaps of 39 ms and
-     * `DOUBLE_TAP_TIMEOUT + 1` and a distance of exactly `doubleTapSlop` would stay rejections,
-     * while 40 ms, `DOUBLE_TAP_TIMEOUT` and `doubleTapSlop - 1` would become double taps.
+     * The same finding as a table across every threshold. If the gate is repaired, these rows become
+     * the boundary table: 39 ms, `DOUBLE_TAP_TIMEOUT + 1` and exactly `doubleTapSlop` stay
+     * rejections; 40 ms, `DOUBLE_TAP_TIMEOUT` and `doubleTapSlop - 1` become double taps.
      */
     @Test
     fun noTapPairIsEverReportedAsADoubleTap() {
@@ -470,9 +410,8 @@ class MultiPointerGestureDetectorTest {
 
     @Test
     fun noMoveOrUpEverTakesTheDoubleTapTrackingBranch() {
-        // activeDoubleTapPointerId is only assigned inside the (unreachable) double-tap branch, so
-        // it is permanently -1: no move has a double tap to cancel and no up ever forwards an
-        // ACTION_UP to the double-tap listener.
+        // activeDoubleTapPointerId is only assigned in the unreachable double-tap branch, so it
+        // stays -1: no move cancels and no up forwards to the double-tap listener.
         down(t0, 100f, 100f)
         up(t0 + 5, P(0, 100f, 100f))
         down(t0 + 55, 100f, 100f)
@@ -492,10 +431,8 @@ class MultiPointerGestureDetectorTest {
 
     @Test
     fun aPlainMoveDispatchesNoSyntheticCancelToTheDoubleTapListener() {
-        // AOSP only forwards moves while a double tap is actually being tracked. This used to fire
-        // cancelDoubleTapTracking() on EVERY ACTION_MOVE of every ordinary drag, so the listener
-        // saw a stream of ACTION_CANCEL events — one obtainNoHistory()/recycle() pair per move,
-        // for a gesture that is not a double tap. With nothing tracked, nothing is cancelled.
+        // Moves are forwarded to the double-tap listener only while a double tap is tracked, so an
+        // ordinary drag produces no ACTION_CANCEL events.
         down(t0, 100f, 100f)
         recorder.calls.clear()
 
@@ -515,10 +452,6 @@ class MultiPointerGestureDetectorTest {
 
         assertCallsOf(plain, "onDown")
     }
-
-    // ═══════════════════════════════════════════════════════════════════════
-    // 5. Fling
-    // ═══════════════════════════════════════════════════════════════════════
 
     @Test
     fun aVelocityOfExactlyTheMinimumIsNotAFling() {
@@ -574,20 +507,10 @@ class MultiPointerGestureDetectorTest {
         assertNotFired("onFling")
     }
 
-    // ═══════════════════════════════════════════════════════════════════════
-    // 6. Multi-pointer streams
-    // ═══════════════════════════════════════════════════════════════════════
-
     /**
-     * CHARACTERISED BUG — the pointer-index / pointer-id defect this file exists for.
-     *
-     * `onTouchEvent` resolves the pointer id it keys all its per-pointer state by from a switch
-     * whose `default` arm (ACTION_DOWN, ACTION_MOVE, ACTION_CANCEL) hardcodes `pointerId = 0`;
-     * only ACTION_UP / ACTION_POINTER_DOWN / ACTION_POINTER_UP read `getPointerId(actionIndex)`.
-     *
-     * So a single-finger stream whose pointer id is not 0 is *stored* under key 0 by its down, and
-     * then *looked up* under its real id by its up — which finds no still-down flag and drops the
-     * whole gesture.
+     * CHARACTERISED BUG: `onTouchEvent` keys per-pointer state by `pointerId = 0` for
+     * ACTION_DOWN/MOVE/CANCEL but by `getPointerId(actionIndex)` for UP and POINTER_DOWN/UP, so a
+     * single-finger stream with a non-zero id is stored under 0 and its up finds nothing.
      */
     @Test
     fun aDownStoresItsStateUnderPointerZeroWhateverTheRealPointerIdIs() {
@@ -612,9 +535,8 @@ class MultiPointerGestureDetectorTest {
 
     @Test
     fun aMoveIsMatchedToItsDownByRealPointerIdSoANonZeroPointerNeverLeavesTheTapRegion() {
-        // The ACTION_MOVE loop looks up downEventByPointer by the event's real pointer id, which
-        // for a non-zero-id stream is never the key the down wrote — so updateTapRegions is never
-        // called and the tap timers survive a drag of any size.
+        // ACTION_MOVE looks up downEventByPointer by the real id, which never matches the 0 key the
+        // down wrote, so the tap timers survive a drag of any size.
         down(t0, 100f, 100f, id = 5)
         move(t0 + 5, P(5, 900f, 900f))
 
@@ -629,9 +551,8 @@ class MultiPointerGestureDetectorTest {
         down(t0, 100f, 100f)
         recorder.calls.clear()
 
-        // CHARACTERISED BUG: ACTION_POINTER_DOWN only updates the (write-only) focal-point fields
-        // and returns false. It never registers a DOWN event, tap region, or still-down flag for
-        // the new pointer, so nothing about the second finger can ever be reported.
+        // CHARACTERISED BUG: ACTION_POINTER_DOWN registers nothing for the new pointer and returns
+        // false, so nothing about the second finger can be reported.
         assertReturned(false, pointerDown(t0 + 5, 1, P(0, 100f, 100f), P(1, 300f, 100f)))
         assertCalls()
     }
@@ -690,12 +611,9 @@ class MultiPointerGestureDetectorTest {
         pointerUp(t0 + 20, 0, P(0, 100f, 100f), P(1, 300f, 100f))
         val handledFinalUp = up(t0 + 40, P(1, 300f, 100f))
 
-        // CHARACTERISED BUG: id 1 was never registered (ACTION_POINTER_DOWN registers nothing, and
-        // the ACTION_DOWN that did register keyed everything under 0), so the terminating
-        // ACTION_UP — which reads getPointerId(0) and gets 1 — finds no still-down flag and drops
-        // the whole gesture: no onSingleTapUp, no onSingleTapConfirmed, no fling check. The
-        // POINTER_UP of finger 0 only produced a double-tap event because confirmSingleTapOnUp was
-        // still set for it.
+        // CHARACTERISED BUG: id 1 was never registered, so the final ACTION_UP (getPointerId(0) == 1)
+        // drops the whole gesture. Finger 0's POINTER_UP produced a double-tap event only because
+        // confirmSingleTapOnUp was still set.
         assertReturned(false, handledFinalUp)
         assertCalls("onDoubleTapEvent:POINTER_UP")
     }
@@ -708,10 +626,6 @@ class MultiPointerGestureDetectorTest {
         assertReturned(false, pointerUp(t0 + 20, 1, P(0, 100f, 100f), P(1, 300f, 100f)))
         assertCalls()
     }
-
-    // ═══════════════════════════════════════════════════════════════════════
-    // 7. Cancellation and non-terminating streams
-    // ═══════════════════════════════════════════════════════════════════════
 
     @Test
     fun actionCancelMidGestureDropsEverythingAndSilencesTheTimers() {

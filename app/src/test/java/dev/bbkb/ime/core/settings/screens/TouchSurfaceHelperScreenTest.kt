@@ -97,8 +97,6 @@ class TouchSurfaceHelperScreenTest {
         PrefsManager.getPrefs(context).edit().clear().commit()
     }
 
-    // ── device shapes ────────────────────────────────────────────────────────
-
     private fun titan2(nativeMinSdk: Int? = null): DeviceInputMapping =
         DeviceInputMappingParser.parseConfigFromXmlResource(context, R.xml.device_config_titan2)
             .mappings[0].apply { if (nativeMinSdk != null) touchKeypad!!.nativeMinSdk = nativeMinSdk }
@@ -149,8 +147,6 @@ class TouchSurfaceHelperScreenTest {
     private fun streaming() = ShizukuTouchStatus(ShizukuTouchState.STREAMING,
         device = TouchDeviceInfo("/dev/input/event6", "touchPad", mtX = AxisRange(0, 1440), mtY = AxisRange(0, 720)))
 
-    // ── the built-in route (Android 16) ──────────────────────────────────────
-
     @Test
     fun nativeWorking_showsTheBuiltInSectionOnly() {
         titan2OnAndroid16(scrollAssistantOn = true)
@@ -176,8 +172,6 @@ class TouchSurfaceHelperScreenTest {
         shown(R.string.touch_surface_open_scroll_assistant)
         categoryAbsent(R.string.touch_surface_shizuku_category)
     }
-
-    // ── the Shizuku route (Android 15) ───────────────────────────────────────
 
     @Test
     fun shizukuNotInstalled() {
@@ -253,8 +247,6 @@ class TouchSurfaceHelperScreenTest {
         render()
         shown(R.string.touch_surface_shizuku_mediatek)
     }
-
-    // ── the two link rows ────────────────────────────────────────────────────
 
     @Test
     fun deviceCompatibility_showsTheHelperRowWithTheLiveStatus_onlyOnADeclaredPad() {

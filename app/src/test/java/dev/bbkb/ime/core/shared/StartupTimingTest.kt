@@ -8,12 +8,8 @@ import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
 
 /**
- * The instrumentation contract the startup work is read through.
- *
- * The occurrence counter is the part that earns a test: "`SettingsManager.initialize` runs twice"
- * is the kind of claim a pair of logcat lines cannot settle — two lines can as easily be two IME
- * starts — so the `(#n)` suffix has to be right for the numbers the KEY2 pass reports to mean
- * anything.
+ * The startup instrumentation contract, mainly the `(#n)` occurrence suffix: two logcat lines alone
+ * cannot tell a repeated call from two IME starts.
  */
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [34], manifest = Config.NONE)

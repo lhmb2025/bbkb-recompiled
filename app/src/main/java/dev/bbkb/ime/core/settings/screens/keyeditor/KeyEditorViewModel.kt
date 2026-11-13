@@ -22,13 +22,9 @@ internal enum class EditorNotice { LAYOUT_RESET, KEY_CLEARED, SYMBOL_DELETED }
 internal data class PendingUndo(val what: EditorNotice, val serial: Int)
 
 /**
- * State for one [KeyEditorSpec]: the layout being edited, the palette, and the tap state machine
- * that connects them.
- *
- * Every edit persists immediately through `spec.save`, which is also what invalidates
- * `KeyboardBuilder`'s keyboard cache — there is no separate "save" action and never was. The
- * three edits that can destroy work (a reset, clearing a key, deleting a custom symbol) keep what
- * they replaced until the next edit, for [undo].
+ * State for one [KeyEditorSpec]: layout, palette and the tap state machine. Every edit persists
+ * immediately through `spec.save`, which also invalidates the keyboard cache. A reset, a cleared
+ * key or a deleted custom symbol keeps what it replaced until the next edit, for [undo].
  */
 internal class KeyEditorViewModel(
     application: Application,
@@ -52,9 +48,8 @@ internal class KeyEditorViewModel(
     val customSymbols = mutableStateListOf<String>()
 
     /**
-     * The palette's categories by tab index, empty until the load lands: the emoji category is
-     * the whole Emojibase parse when the keyboard has not run in this process yet, so all of it is
-     * read off the main thread. The Custom tab's entry stays empty; [customSymbols] supplies it.
+     * Palette categories by tab index, empty until loaded off the main thread (emoji may need the
+     * whole Emojibase parse). The Custom tab stays empty; [customSymbols] supplies it.
      */
     var categories by mutableStateOf<List<List<String>>>(emptyList())
         private set
@@ -85,10 +80,6 @@ internal class KeyEditorViewModel(
         val raw = if (tab == CUSTOM_TAB) customSymbols else categories.getOrNull(tab).orEmpty()
         return raw.filter { it.isNotEmpty() && it != EMPTY_SLOT }
     }
-
-    // ========================================================================
-    // The tap state machine
-    // ========================================================================
 
     fun selectTab(index: Int) {
         currentTabIndex = index
@@ -147,8 +138,8 @@ internal class KeyEditorViewModel(
     }
 
     /**
-     * A preset replaces as much of the layout as it covers and never resizes it — `pkb_page_2` is
-     * shorter than the on-screen page, and a slot it does not reach keeps whatever it held.
+     * A preset replaces as much of the layout as it covers and never resizes it; a slot it does
+     * not reach keeps its value.
      */
     fun applyReset(reset: Reset) {
         val replacement = reset.layout(getApplication(), layout.size)
@@ -160,10 +151,6 @@ internal class KeyEditorViewModel(
         if (spec.clearsSymbolSelectionOnContextChange) selectedSymbol = null
         persist()
     }
-
-    // ========================================================================
-    // Custom symbols
-    // ========================================================================
 
     private fun refreshCustomSymbols() {
         customSymbols.clear()
@@ -195,10 +182,6 @@ internal class KeyEditorViewModel(
         refreshCustomSymbols()
         if (selectedSymbol == symbol) selectedSymbol = null
     }
-
-    // ========================================================================
-    // Undo
-    // ========================================================================
 
     private fun rememberLayout(what: EditorNotice) {
         undoCustomSymbols = null

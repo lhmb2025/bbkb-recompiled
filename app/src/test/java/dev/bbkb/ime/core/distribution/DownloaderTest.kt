@@ -22,12 +22,8 @@ import java.io.File
 import java.nio.charset.StandardCharsets
 
 /**
- * [Downloader] against a real HTTP server on a real socket — see [LocalHttpServer] for why a
- * mock would not be worth writing.
- *
- * The invariant every case here defends: **a file that exists at the destination is a file that
- * was verified.** Nothing partial, nothing unhashed and nothing of the wrong length is ever left
- * where a caller could install it.
+ * [Downloader] against a real loopback HTTP server ([LocalHttpServer]). Pins that a file at the
+ * destination is always a verified file: nothing partial, unhashed or of the wrong length.
  */
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [34], manifest = Config.NONE)
@@ -45,8 +41,7 @@ class DownloaderTest {
     fun setUp() {
         context = ApplicationProvider.getApplicationContext()
         server = LocalHttpServer()
-        // Short timeouts: nothing here should ever wait on the network, and a hang would
-        // otherwise show up as a ten-second pause rather than a failure.
+        // Short timeouts so a hang fails fast instead of pausing ten seconds.
         downloader = Downloader(context, connectTimeoutMs = 4_000, readTimeoutMs = 4_000)
         destination = File(downloader.downloadDir(), "artifact.bin")
         destination.delete()
@@ -60,8 +55,6 @@ class DownloaderTest {
     }
 
     private fun tempOf(file: File) = File(file.parentFile, file.name + ".tmp")
-
-    // ── Success ───────────────────────────────────────────────────────────────────────────────
 
     @Test
     fun downloadsVerifiesAndRenamesIntoPlace() = runBlocking {
@@ -156,8 +149,6 @@ class DownloaderTest {
         assertTrue("got $agent", agent.contains(context.packageName))
     }
 
-    // ── Integrity ─────────────────────────────────────────────────────────────────────────────
-
     @Test
     fun aShaMismatchFailsAndDeletesTheFile() = runBlocking {
         server.respondWith { it.reply(200, payload) }
@@ -207,8 +198,7 @@ class DownloaderTest {
 
     @Test
     fun aTruncatedBodyFailsTheSizeCheck() = runBlocking {
-        // The server promises the full length and sends less. Without the size check this would
-        // land as a short file whose hash simply happened not to match.
+        // The server promises the full length and sends less; the size check must catch it.
         server.respondWith { it.reply(200, payload.copyOf(payload.size / 2)) }
 
         val failure = downloader.download(
@@ -231,12 +221,9 @@ class DownloaderTest {
         assertArrayEquals(payload, destination.readBytes())
     }
 
-    // ── Redirects ─────────────────────────────────────────────────────────────────────────────
-
     @Test
     fun followsARedirectChainAcrossHosts() = runBlocking {
-        // The GitHub release-asset shape: the download URL bounces to another host, which
-        // HttpURLConnection would silently refuse to follow.
+        // GitHub release assets redirect to another host, which HttpURLConnection will not follow.
         server.respondWith { exchange ->
             when (exchange.path) {
                 "/start" -> exchange.redirectTo(302, server.crossHostUrl("/middle"))
@@ -318,9 +305,8 @@ class DownloaderTest {
 
     @Test
     fun redirectPolicyRefusesADowngradeAndAllowsACrossHostHop() {
-        // The policy in isolation, including the https -> http case a loopback server cannot
-        // stage. Integrity here is HTTPS plus the manifest hash, so a silent downgrade would
-        // quietly remove one of the two.
+        // The redirect policy alone, including https -> http, which loopback cannot stage.
+        // Integrity is HTTPS plus the manifest hash, so a downgrade would drop one of them.
         assertFalse(
             "https must never be redirected to cleartext",
             Downloader.isRedirectAllowed("https://a.test/x", "http://a.test/x")
@@ -336,11 +322,9 @@ class DownloaderTest {
         assertFalse(Downloader.isRedirectAllowed("https://a.test/x", "/relative"))
     }
 
-    // ── HTTP errors and retries ───────────────────────────────────────────────────────────────
-
     @Test
     fun anHttpErrorFailsWithItsStatusAndIsNotRetried() = runBlocking {
-        // A 404 is a definite answer. Retrying it would only spend the user's battery.
+        // A 404 is a definite answer and is not retried.
         server.respondWith { it.replyText(404, "nope") }
 
         val failure = downloader.download(
@@ -385,7 +369,7 @@ class DownloaderTest {
 
     @Test
     fun aDefiniteFailureDoesNotWaitOutTheBackoffs() = runBlocking {
-        // Negative control for the test above: if 404 were retried, this would take 2 s too.
+        // If 404 were retried, this would take 2 s like the test above.
         server.respondWith { it.replyText(404, "nope") }
         val started = System.currentTimeMillis()
 
@@ -393,8 +377,6 @@ class DownloaderTest {
 
         assertTrue(System.currentTimeMillis() - started < 2_000)
     }
-
-    // ── Cancellation ──────────────────────────────────────────────────────────────────────────
 
     @Test
     fun cancellingMidStreamDeletesThePartialFileAndLeavesNothingBehind() = runBlocking {
@@ -404,8 +386,7 @@ class DownloaderTest {
             downloader.download(server.url("/big.bin"), payloadSha, 2_000_000L, destination)
         }
 
-        // Wait until bytes are actually landing, so this cancels a transfer in progress rather
-        // than one that has not started.
+        // Wait for bytes to land so this cancels a transfer in progress.
         withTimeout(10_000) {
             while (tempOf(destination).length() <= 0L) delay(10)
         }
@@ -419,8 +400,7 @@ class DownloaderTest {
 
     @Test
     fun cancellationIsNotReportedAsAFailedResult() = runBlocking {
-        // A Result coming out of download() always describes a download that ran to a
-        // conclusion; cancellation propagates as cancellation instead.
+        // Cancellation propagates as cancellation, never as a Result.
         server.respondWith { it.replySlowly(total = 2_000_000, chunkSize = 4_096, pauseMs = 25L) }
         var result: Result<File>? = null
 
@@ -435,8 +415,6 @@ class DownloaderTest {
 
         assertEquals(null, result)
     }
-
-    // ── Download directory housekeeping ───────────────────────────────────────────────────────
 
     @Test
     fun downloadsLandInTheCacheDownloadsDirectory() {

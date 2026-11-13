@@ -13,31 +13,16 @@ import dev.bbkb.ime.core.locale.RichInputMethodManager;
 import dev.bbkb.ime.core.BlackBerryIME;
 
 /**
- * The on-screen (VKB) gesture module. Fed from MainKeyboardView.processMotionEvent and
- * NumericSubpanelKeyboardView.onTouchEvent; gated by isVkbSwipeGesturesEnabled at those
- * call sites.
- *
- * This is the surviving half of the former ImeGestureListener: its CKB (physical touch
- * keypad) handlers — double-tap cursor mode, scroll-driven cursor movement, edge-tap
- * nudge, accent-bar scrolling — were removed when the gesture arbiter
- * (core/gesture/arbiter/) became the sole CKB engine. See docs/legacy-gesture-engine.md
- * for the reconstruction record and docs/vkb-gesture-unification-roadmap.md for the plan
- * to eventually rebuild this module on the arbiter's shared core.
- *
- * VKB behaviors owned here:
- *  - horizontal fling: backward (RTL-aware) → delete word (code -18); forward on the
- *    spacebar → next language; forward elsewhere closes an open slideboard translation
- *  - vertical fling: down → dismiss-or-symbols (code -19), up → prediction selection
- *    (code -17, FlickSuggestionView)
- *  - tap/press forwarding to FlickSuggestionView
- *  - suppression of gestures around recent key events (vkbGestureSuppressionTimeout)
+ * On-screen keyboard fling gestures, fed from MainKeyboardView and NumericSubpanelKeyboardView
+ * (gated by isVkbSwipeGesturesEnabled there). Capacitive-keypad gestures live in core/gesture/arbiter.
+ *  - horizontal: backward (RTL-aware) deletes a word (-18); forward on the spacebar switches
+ *    language; forward elsewhere closes an open slideboard translation
+ *  - vertical: down dismiss-or-symbols (-19), up prediction selection (-17, FlickSuggestionView)
+ *  - suppressed within vkbGestureSuppressionTimeout of a key event
  */
 public final class VkbGestureListener extends MultiPointerGestureDetector.SimpleOnGestureListener {
-
-    // Audit CT-30: the ten Logger.info calls on the onFling path are BuildConfig.DEBUG-guarded at
-    // the CALL SITE. Logger.info tests Log.isLoggable(tag, INFO) — a real system-property lookup —
-    // *before* it consults BuildConfig.DEBUG, so release builds otherwise paid for that lookup on
-    // every fling. Guarding here lets R8 remove the calls outright.
+    // Logger.info calls are DEBUG-guarded at the call site: Logger checks Log.isLoggable (a system
+    // property lookup) before DEBUG, and the guard lets R8 strip them.
 
     private BlackBerryIME ime;
 
@@ -45,11 +30,13 @@ public final class VkbGestureListener extends MultiPointerGestureDetector.Simple
 
     private long lastKeyEventTime;
 
+    /** @param c0804d current settings values */
     public VkbGestureListener(BlackBerryIME blackBerryIME, SettingsValues c0804d) {
         this.ime = blackBerryIME;
         updateSettings(c0804d);
     }
 
+    /** @param f horizontal displacement in px (negative is leftward) */
     private boolean isBackwardSwipe(float f) {
         if (this.ime.isCurrentLanguageRtl()) {
             if (f > 0.0f) {
@@ -61,7 +48,11 @@ public final class VkbGestureListener extends MultiPointerGestureDetector.Simple
         return false;
     }
 
-    @Override // MultiPointerGestureDetector.SimpleOnGestureListener, MultiPointerGestureDetector.OnGestureListener
+    /**
+     * @param f horizontal fling velocity
+     * @param f2 vertical fling velocity
+     */
+    @Override
     public boolean onFling(MotionEvent motionEvent, MotionEvent motionEvent2, float f, float f2) {
         if (motionEvent == null || motionEvent2 == null || this.ime.getLastKeyEventTime() > motionEvent.getEventTime()) {
             if (BuildConfig.DEBUG) Logger.info("VKBGesture", "onFling: ignored (null event or newer physical key event)");
@@ -131,7 +122,7 @@ public final class VkbGestureListener extends MultiPointerGestureDetector.Simple
         return false;
     }
 
-    @Override // MultiPointerGestureDetector.SimpleOnGestureListener, MultiPointerGestureDetector.OnGestureListener
+    @Override
     public boolean onSingleTapUp(MotionEvent motionEvent) {
         if (!this.ime.hasFlickSuggestionView() || !this.ime.getFlickSuggestionView().isShown()) {
             return false;
@@ -140,7 +131,7 @@ public final class VkbGestureListener extends MultiPointerGestureDetector.Simple
         return false;
     }
 
-    @Override // MultiPointerGestureDetector.SimpleOnGestureListener, MultiPointerGestureDetector.OnGestureListener
+    @Override
     public void onShowPress(MotionEvent motionEvent) {
         if (motionEvent == null) {
             return;
@@ -150,10 +141,12 @@ public final class VkbGestureListener extends MultiPointerGestureDetector.Simple
         }
     }
 
+    /** @param c0804d current settings values */
     public void updateSettings(SettingsValues c0804d) {
         this.settings = c0804d;
     }
 
+    /** @param i swipe gesture code (-17 up, -18 delete word, -19 down) */
     private boolean dispatchSwipeGesture(int i, MotionEvent motionEvent, MotionEvent motionEvent2) {
         if (this.settings.vkbGestureSuppressionTimeout <= (this.settings.applySwipeSuppressionToEnd ? motionEvent2.getEventTime() : motionEvent.getEventTime()) - this.lastKeyEventTime) {
             this.ime.handleSwipeGesture(i, motionEvent, motionEvent2);
@@ -167,6 +160,7 @@ public final class VkbGestureListener extends MultiPointerGestureDetector.Simple
         setLastKeyEventTime(0L);
     }
 
+    /** @param j event time of the last key event (uptime ms) */
     public void setLastKeyEventTime(long j) {
         this.lastKeyEventTime = j;
     }

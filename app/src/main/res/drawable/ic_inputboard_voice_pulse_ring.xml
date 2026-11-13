@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Ring-only variant of ic_inputboard_voice_listen_base for the Material theme:
-     the pulsing glow without the base's mic glyph, so the accent disc's knocked-out
-     mic keeps showing the board surface while listening. -->
+<!-- ic_inputboard_voice_listen_base without the mic glyph, so the accent disc's knocked-out mic shows the board surface -->
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
     android:width="100dp"
     android:height="100dp"

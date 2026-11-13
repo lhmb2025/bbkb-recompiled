@@ -8,39 +8,21 @@ import dev.bbkb.ime.core.settings.IntentUtils
 import dev.bbkb.ime.core.shared.Logger
 
 /**
- * Whether a language is turned on as one of this keyboard's languages, and turning it on.
- *
- * Installing a language pack does not make the language typeable: the user also has to tick it
- * under the keyboard's languages in system settings, and beta reports showed nobody knew that.
- *
- * ### What Android allows
- *
- * Android 14 (API 34) added `InputMethodManager.setExplicitlyEnabledInputMethodSubtypes`, which
- * lets a keyboard set its own enabled-language list without a permission or a prompt (the
- * framework only checks that the caller owns the keyboard). Before 14 the only way is writing
- * `Settings.Secure.ENABLED_INPUT_METHODS`, which needs `WRITE_SECURE_SETTINGS` (adb/root only), so
- * there [enable] returns false and the caller sends the user to [openLanguageSettings].
- *
- * The call **replaces** the list, and any explicit list switches off Android's "use system
- * languages" mode. So the list passed is everything currently in effect (explicit or implicit,
- * i.e. what the user types in today) plus the new language: nothing the user had disappears.
- *
- * Multi-language keyboards (subtypes carrying `AdditionalLocales`) never count as "the language
- * is on", and [pickSubtypeFor] never picks one. That is not about layouts any more (Cyrillic,
- * Devanagari and Arabic keyboards can have extras too and type in their own layout): such a
- * keyboard is one the user put together on the Languages screen, and turning it on for a pack
- * would also switch on prediction languages nobody asked for. An old one saved without a layout
- * (`KeyboardLayoutSet=null`) types in a fallback layout, not in the language it names.
+ * Checks and turns on this keyboard's languages (an installed pack is not typeable until enabled).
+ * API 34+ `setExplicitlyEnabledInputMethodSubtypes` needs no permission; earlier needs
+ * WRITE_SECURE_SETTINGS, so [enable] returns false and callers use [openLanguageSettings]. The call
+ * replaces the list and ends "use system languages", so pass everything in effect plus the new one.
+ * Multi-language subtypes never count as "on" and are never picked (they would add extra languages).
  */
 object SubtypeEnabler {
 
     private const val TAG = "SubtypeEnabler"
 
-    /** True when this Android lets the keyboard turn its own languages on (API 34+). */
+    /** API 34+. */
     @JvmStatic
     fun canEnableDirectly(): Boolean = Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE
 
-    /** Is a keyboard for [locale]'s language among the languages the user can switch to? */
+    /** Whether a single-language keyboard for [locale]'s language is enabled. */
     @JvmStatic
     fun isEnabled(context: Context, locale: String): Boolean {
         val enabled = enabledSubtypes(context) ?: return false
@@ -48,7 +30,6 @@ object SubtypeEnabler {
         return enabled.any { isSingleLanguage(it) && languageOf(it.locale) == language }
     }
 
-    /** Does this keyboard have a layout for [locale]'s language at all? */
     @JvmStatic
     fun hasKeyboardFor(context: Context, locale: String): Boolean = try {
         RichInputMethodManager.init(context)
@@ -58,11 +39,7 @@ object SubtypeEnabler {
         false
     }
 
-    /**
-     * Turn [locale]'s language on. Returns whether it is on afterwards — true straight away when
-     * it already was, false before API 34, when this keyboard has no layout for the language, or
-     * when the framework refused.
-     */
+    /** Whether [locale]'s language is on afterwards (false before API 34, with no layout, or refused). */
     @JvmStatic
     fun enable(context: Context, locale: String): Boolean {
         if (isEnabled(context, locale)) return true
@@ -70,8 +47,7 @@ object SubtypeEnabler {
         return try {
             RichInputMethodManager.init(context)
             val rimm = RichInputMethodManager.getInstance()
-            // A pack install may have just registered a runtime subtype for this language; a
-            // cached InputMethodInfo from before that would not list it.
+            // A pack install may just have registered a runtime subtype the cached info lacks.
             rimm.clearSubtypeCaches()
             val info = rimm.inputMethodInfoOfThisIme ?: return false
             val all = (0 until info.subtypeCount).map { info.getSubtypeAt(it) }
@@ -90,11 +66,7 @@ object SubtypeEnabler {
         }
     }
 
-    /**
-     * Make exactly [subtypes] this keyboard's enabled languages (API 34+). An empty list hands the
-     * choice back to Android ("use system languages"). Returns false before API 34 or when the
-     * framework refused.
-     */
+    /** API 34+; an empty list means "use system languages". False before 34 or when refused. */
     @JvmStatic
     fun setEnabledList(context: Context, subtypes: List<InputMethodSubtype>): Boolean {
         if (!canEnableDirectly()) return false
@@ -113,7 +85,6 @@ object SubtypeEnabler {
         }
     }
 
-    /** Open the system screen listing this keyboard's languages, where the user can tick one. */
     @JvmStatic
     fun openLanguageSettings(context: Context) {
         val imeId = try {
@@ -131,9 +102,8 @@ object SubtypeEnabler {
     }
 
     /**
-     * The keyboard to turn on for [locale]: an exact locale match first (`ko`), then a regional
-     * one (`zh_HK` -> `zh_HK_cangjie`), then any keyboard for the language (`bn` -> `bn_IN`).
-     * Multi-language keyboards are never picked.
+     * Exact locale match first (`ko`), then regional (`zh_HK` -> `zh_HK_cangjie`), then any for the
+     * language (`bn` -> `bn_IN`). Never a multi-language keyboard.
      */
     @JvmStatic
     fun pickSubtypeFor(locale: String, subtypes: List<InputMethodSubtype>): InputMethodSubtype? {

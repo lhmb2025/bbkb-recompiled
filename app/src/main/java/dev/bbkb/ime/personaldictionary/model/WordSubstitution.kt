@@ -2,22 +2,13 @@ package dev.bbkb.ime.personaldictionary.model
 
 import androidx.annotation.VisibleForTesting
 
-/**
- * Represents a word substitution (macro/shortcut).
- *
- * When the user types the [key], it expands to the full [word].
- * Supports dynamic content via macro tags (e.g., `%D` for date, `%T` for time).
- *
- * @property key The shortcut text that triggers expansion
- * @property type DEFAULT (built-in) or USER (user-created)
- * @see DictionaryWord
- */
+/** A text shortcut: typing [key] expands to [word], which may contain macro tags such as `%D`. */
 class WordSubstitution : DictionaryWord {
     val key: String
 
     val type: Type
-    
-    // We keep version for compatibility if writing, but we don't strictly need it for logic
+
+    // Written to the on-disk format; never read.
     val version: Long = 16L
 
     enum class Type {

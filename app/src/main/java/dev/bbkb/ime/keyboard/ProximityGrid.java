@@ -9,23 +9,18 @@ import java.util.List;
 
 
 /**
- * The proximity grid behind {@code Keyboard.getNearestKeys} → {@code KeyDetector.detectHitKey}:
- * the keyboard is divided into a {@code mGridWidth} x {@code mGridHeight} grid of cells, and each
- * cell holds the keys within a proximity radius of it. Nothing here animates anything — the class
- * was called {@code KeyboardAnimator} and its grid build {@code cancelAllAnimations()} purely as
- * decompilation residue.
+ * Proximity grid behind {@code Keyboard.getNearestKeys}: the keyboard split into
+ * {@code mGridWidth} x {@code mGridHeight} cells, each holding the keys within a proximity radius.
  */
 public class ProximityGrid {
 
     private static final List<Key> EMPTY_KEY_LIST = Collections.emptyList();
 
-    /** Number of grid columns. */
     private final int mGridWidth;
 
-    /** Number of grid rows. */
     private final int mGridHeight;
 
-    /** {@code mGridWidth * mGridHeight} — the number of cells in {@link #mGridNeighbors}. */
+    /** Number of cells in {@link #mGridNeighbors}. */
     private final int mGridCellCount;
 
     /** Width in pixels of one grid cell. */
@@ -40,24 +35,29 @@ public class ProximityGrid {
     /** Occupied keyboard height in pixels. */
     private final int mKeyboardHeight;
 
-    /** Width in pixels of the most common key — the proximity radius is derived from this. */
+    /** Width in pixels of the most common key; the proximity radius derives from it. */
     private final int mMostCommonKeyWidth;
 
     private final List<Key> mKeys;
 
     private final List<Key>[] mGridNeighbors;
 
+    /**
+     * @param i grid columns
+     * @param i2 grid rows
+     * @param i3 occupied width
+     * @param i4 occupied height
+     * @param i5 most common key width
+     * @param list the keyboard's keys
+     */
     ProximityGrid(int i, int i2, int i3, int i4, int i5, List<Key> list) {
         this.mGridWidth = i;
         this.mGridHeight = i2;
         int i7 = this.mGridWidth;
         int i8 = this.mGridHeight;
         this.mGridCellCount = i7 * i8;
-        // Guard the DIVISORS (grid width/height) as well as the occupied dimensions: a
-        // degenerate keyboard can arrive with a zero grid dimension (a moreKeys keyboard
-        // built against a zero-height parent) and dividing by it throws before the grid
-        // build is ever reached. <= not ==: occupied dimensions can also arrive NEGATIVE
-        // (rows*0 - verticalGap), which makes the derived cell size 0.
+        // Guard the divisors too: a moreKeys keyboard built against a zero-height parent has a
+        // zero grid dimension. <= because occupied dimensions can be negative (rows*0 - verticalGap).
         boolean degenerate = i7 <= 0 || i8 <= 0 || i3 <= 0 || i4 <= 0;
         this.mCellWidth = degenerate ? 0 : ((i3 + i7) - 1) / i7;
         this.mCellHeight = degenerate ? 0 : ((i4 + i8) - 1) / i8;
@@ -141,6 +141,10 @@ public class ProximityGrid {
         }
     }
 
+    /**
+     * @param i x
+     * @param i2 y
+     */
     public List<Key> getKeysInColumns(int i, int i2) {
         int i3;
         List<Key>[] listArr = this.mGridNeighbors;

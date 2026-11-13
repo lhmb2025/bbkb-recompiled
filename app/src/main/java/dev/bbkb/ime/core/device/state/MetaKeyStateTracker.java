@@ -17,15 +17,10 @@ import dev.bbkb.ime.keyboard.internal.KeyRepeatHandler;
 public abstract class MetaKeyStateTracker implements KeyRepeatHandler.Callback {
 
     /*
-     * Locked-modifier bits emitted by {@link #getMetaState}.
-     *
-     * These are this class's own span-state encoding, not KeyEvent.META_* values: 0x100, 0x200,
-     * 0x400 and 0x800 are unassigned in KeyEvent, and the *pressed* bits deliberately reuse
-     * KeyEvent.META_SHIFT_ON / META_ALT_ON / META_SYM_ON so a span state can be OR-ed into a
-     * real event meta state. The CTRL-locked bit used to be spelled
-     * NuanceSDK.MAX_CONTEXT_LENGTH -- a de-obfuscation rename that substituted a named engine
-     * constant for the literal 1024 because the values happened to match, so changing the
-     * engine's buffer size would have silently changed what "Ctrl locked" means.
+     * Locked-modifier bits from {@link #getMetaState}: this class's own encoding (unassigned in
+     * KeyEvent). Pressed bits reuse KeyEvent.META_SHIFT_ON / META_ALT_ON / META_SYM_ON so a span
+     * state can be OR-ed into an event meta state.
+     * Span flags: PRESSED 16777233, STICKY 33554449, USED 50331665, LOCKED 67108881.
      */
     public static final int META_SHIFT_LOCKED = 0x100;
     public static final int META_ALT_LOCKED = 0x200;
@@ -259,10 +254,7 @@ public abstract class MetaKeyStateTracker implements KeyRepeatHandler.Callback {
         this.mDoubleTapKeyCode = keyCode;
     }
 
-    /**
-     * Checks whether double-tap-to-lock is enabled for the given modifier key.
-     * Shift and Alt each have independent settings; defaults to true (enabled).
-     */
+    /** Whether double-tap-to-lock is on for this Shift or Alt key (separate settings; default on). */
     private static boolean isDoubleTapLockEnabled(int keyCode) {
         try {
             SettingsValues settings = SettingsManager.getInstance().getSettingsValues();
@@ -275,22 +267,21 @@ public abstract class MetaKeyStateTracker implements KeyRepeatHandler.Callback {
                 }
             }
         } catch (Exception e) {
-            // If we can't read the preference, default to enabled
+            // Unreadable preference: default to enabled.
         }
         return true;
     }
 
     public static boolean isOverrideDeviceMetaStateEnabled() {
-        // Check if override device meta state setting is enabled
         try {
             SettingsValues settings = SettingsManager.getInstance().getSettingsValues();
             if (settings != null && settings.overrideDeviceMetaState != null) {
                 return settings.overrideDeviceMetaState;
             }
         } catch (Exception e) {
-            // If we can't read the preference, default to enabled for backward compatibility
+            // Unreadable preference: default to enabled.
         }
-        return true; // Default to true (enabled)
+        return true;
     }
 
     public static int getDoubleTapTimeout() {
@@ -309,15 +300,12 @@ public abstract class MetaKeyStateTracker implements KeyRepeatHandler.Callback {
         return this.mIsAltGrPressed;
     }
 
-    /**
-     * Returns true if Alt span is in PRESSED state (physically held down).
-     * PRESSED = 16777233, STICKY = 33554449, LOCKED = 67108881
-     */
+    /** True if the Alt span is PRESSED (physically held). */
     protected static boolean isAltSpanPressed(CharSequence charSequence) {
         if (!(charSequence instanceof Spanned)) {
             return false;
         }
         int spanFlags = ((Spanned) charSequence).getSpanFlags(ALT_SPAN);
-        return spanFlags == 16777233; // PRESSED
+        return spanFlags == 16777233;
     }
 }

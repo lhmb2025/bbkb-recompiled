@@ -55,12 +55,8 @@ private const val SOURCE_URL = "https://github.com/lhmb2025/bbkb-recompiled"
 private const val DISCORD_URL = "https://discord.gg/HavRXQHKj7"
 
 /**
- * About: which app this is and which version, where it stands on updates, where its source and
- * its community are, and what it is built with.
- *
- * The screen leads with the app's own icon and name, so the top bar draws no "About" title over
- * them (the title is still the pane title TalkBack announces); "BBKB" under the icon is the
- * screen's heading.
+ * About: version, updates, source, community and licenses. The top bar draws no title (it is still
+ * the TalkBack pane title); "BBKB" under the icon is the heading.
  */
 @Composable
 fun CreditsScreen(
@@ -87,7 +83,6 @@ fun CreditsScreen(
                 .padding(paddingValues)
                 .verticalScroll(rememberScrollState())
         ) {
-            // ── The app ─────────────────────────────────────────────────────────
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -118,9 +113,6 @@ fun CreditsScreen(
                 )
             }
 
-            // ── Updates ─────────────────────────────────────────────────────────
-            // About is where a user looks for "what version am I on", so it is also where they
-            // look for "is there a newer one"; the row says what the last check found.
             PreferenceGroup {
                 PreferenceScreen(
                     title = context.getString(R.string.settings_updates_title),
@@ -129,7 +121,6 @@ fun CreditsScreen(
                 )
             }
 
-            // ── Links ───────────────────────────────────────────────────────────
             Spacer(modifier = Modifier.height(spacing.large))
             PreferenceGroup {
                 LinkRow(
@@ -154,8 +145,7 @@ fun CreditsScreen(
 }
 
 /**
- * Open-source licenses: the libraries BBKB is built with, alphabetical (ignoring case), each
- * opening its project page.
+ * Open-source licenses, alphabetical ignoring case, each opening its project page.
  */
 @Composable
 fun OpenSourceLicensesScreen(onNavigateBack: () -> Unit) {
@@ -220,8 +210,7 @@ private fun LinkRow(title: String, summary: String, url: String) {
 }
 
 /**
- * The launcher icon as the system draws it (the adaptive icon, in the launcher's mask), which
- * `painterResource` cannot load from an `<adaptive-icon>` mipmap.
+ * The launcher icon as the system draws it; `painterResource` cannot load an `<adaptive-icon>` mipmap.
  */
 @Composable
 private fun AppIcon(size: Int) {

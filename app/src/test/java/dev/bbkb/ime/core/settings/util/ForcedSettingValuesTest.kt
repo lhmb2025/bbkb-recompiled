@@ -21,10 +21,8 @@ import org.robolectric.annotation.Config
 import java.util.Locale
 
 /**
- * A profile's `forced-value` decides what the keyboard does, not only what the Settings switch
- * shows. The stored preference can differ from it (set before the profile applied, or restored
- * from a backup), and the keyboard used to follow the stored one while Settings showed the
- * forced one, locked.
+ * A profile's `forced-value` decides what the keyboard does, not only what Settings shows, even
+ * when the stored preference differs (set before the profile applied, or restored from a backup).
  */
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [34], manifest = Config.NONE)

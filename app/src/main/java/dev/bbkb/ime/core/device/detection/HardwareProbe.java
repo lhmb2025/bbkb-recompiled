@@ -6,34 +6,20 @@ import androidx.annotation.Nullable;
 
 import dev.bbkb.ime.core.shared.SystemProps;
 
-/**
- * Low-level hardware probing utilities.
- * All methods are static - no state.
- */
 public final class HardwareProbe {
+    private HardwareProbe() {}
 
-    private HardwareProbe() {} // No instantiation
-
-    /** Check if running on an emulator */
     public static boolean isEmulator() {
         return "goldfish".equals(Build.HARDWARE) || "ranchu".equals(Build.HARDWARE);
     }
 
-    /** Check if running on Dalvik (vs ART) */
     public static boolean isDalvikVM() {
         return "Dalvik".equals(System.getProperty("java.vm.name"));
     }
 
     /**
-     * The raw firmware keypad-language property, or null when neither key is set.
-     *
-     * <p>Stock KEY2 firmware writes {@code "<index> <name>"} — the owner's athena reports
-     * {@code "1 qwerty"}. It is returned verbatim: interpreting it belongs to
-     * {@link KeypadLayoutDetector}, which treats it as only one of several sources because
-     * several LineageOS builds leave it unset entirely. This used to be
-     * {@code getSystemKeypadLanguage()}, which parsed the value here and returned
-     * {@code "qwerty"} when there was nothing to parse — laundering "the firmware did not say"
-     * into a confident wrong answer that no later source could correct.
+     * Raw keypad-language property ({@code "1 qwerty"} on stock KEY2), or null when unset. Returned
+     * verbatim; {@link KeypadLayoutDetector} interprets it.
      */
     @Nullable
     public static String getKeypadLanguageProp() {
@@ -41,7 +27,7 @@ public final class HardwareProbe {
         return val != null ? val : SystemProps.get("ro.product.keypadlanguage");
     }
 
-    /** Get keypad type from system properties */
+    /** Lowercased {@code ro.*.keypadtype}, or "none". */
     @Nullable
     public static String getSystemKeypadType() {
         String val = SystemProps.get("ro.hwf.keypadtype");
@@ -51,25 +37,18 @@ public final class HardwareProbe {
         return val != null ? val.toLowerCase(java.util.Locale.ROOT) : "none";
     }
 
-    /** Check if device is BlackBerry branded */
     public static boolean isBlackBerryDevice() {
         return "blackberry".equalsIgnoreCase(Build.BRAND);
     }
 
-    /**
-     * Whether this phone runs on a MediaTek chip (every Unihertz Titan does). Shizuku 13.6.0 does
-     * not work fully on MediaTek phones, so the Touch surface helper names the version that does.
-     */
+    /** Every Titan is MediaTek; Shizuku 13.6.0 is not fully usable there, so the helper names a version that is. */
     public static boolean isMediaTek() {
         final boolean hasSoc = Build.VERSION.SDK_INT >= Build.VERSION_CODES.S;
         return isMediaTek(Build.HARDWARE, Build.BOARD,
                 hasSoc ? Build.SOC_MANUFACTURER : null, hasSoc ? Build.SOC_MODEL : null);
     }
 
-    /**
-     * The decision behind {@link #isMediaTek()}: a hardware, board or SoC model named
-     * {@code mt<digits>} ("mt6771", "MT6789"), or a SoC manufacturer that says MediaTek.
-     */
+    /** True for a hardware, board or SoC model named {@code mt<4 digits>}, or a MediaTek SoC manufacturer. */
     public static boolean isMediaTek(@Nullable String hardware, @Nullable String board,
                                      @Nullable String socManufacturer, @Nullable String socModel) {
         return isMediaTekPart(hardware) || isMediaTekPart(board) || isMediaTekPart(socModel)

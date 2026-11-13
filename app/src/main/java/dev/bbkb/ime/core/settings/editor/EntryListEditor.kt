@@ -88,26 +88,15 @@ import dev.bbkb.ime.R
 import kotlinx.coroutines.launch
 
 /**
- * What one dictionary-entry editor is, as data.
- *
- * `TextShortcutsScreen` and `UserDictionaryScreen` were the same three hundred lines twice over:
- * the same load-and-recover sequence, the same add/update/delete trio, the same top bar with its
- * counter and collapsing search field, the same grouped list under the same byte-identical language
- * header, the same loading spinner and empty state. Everything that genuinely differed between them
- * is in this class, and there turns out not to be much of it.
- *
- * The wording is resources, one set per editor. It used to be derived from a noun ("Shortcut" gave
- * "Shortcut added", "Add shortcut", "3 shortcuts"), which only ever worked in English: other
- * languages inflect the noun, agree the participle with it, and count in more than two forms, so
- * each sentence is its own string, and every count a plural. `EntryListSpecTest` pins the English.
+ * What differs between the Text shortcuts and User dictionary editors, as data. Each sentence is
+ * its own string and every count a plural, since other languages inflect and agree with the noun.
  */
 @Immutable
 internal class EntryListSpec(
-    /** Top-app-bar title. */
     @StringRes val title: Int,
     /** "3 words": the line over the list. */
     @PluralsRes val count: Int,
-    /** "2 of 6 words" while searching; the quantity is the total, the first argument the matches. */
+    /** "2 of 6 words": the quantity is the total, the first argument the matches. */
     @PluralsRes val searchCount: Int,
     @StringRes val searchHint: Int,
     /** The add button's label: "Add word". */
@@ -127,32 +116,24 @@ internal class EntryListSpec(
     @DrawableRes val emptyIcon: Int,
     @StringRes val emptyTitle: Int,
     @StringRes val emptyHint: Int,
-    /** Which of the repository's entries this editor owns. The two editors partition the store. */
+    /** Which repository entries this editor owns; the two editors partition the store. */
     val belongsHere: (DictionaryEntry) -> Boolean,
-    /** De-duplication, list and selection key. Two entries with the same identity are one row. */
+    /** De-duplication, list and selection key. */
     val identity: (DictionaryEntry) -> String,
     /** Secondary sort key; entries are always grouped by locale first. */
     val sortKey: (DictionaryEntry) -> Comparable<*>?,
-    /** Search predicate. */
     val matches: (DictionaryEntry, String) -> Boolean,
     /** What an entry is called at the head of its sheet: the word, or the shortcut. */
     val label: (DictionaryEntry) -> String,
-    /** Refused before the store is touched, reported as a snackbar. Null means "no objection". */
-    /** The string resource of the objection, if any. */
+    /** The objection's string resource (shown as a snackbar before the store is touched), or null. */
     val validate: (DictionaryEntry) -> Int? = { null },
     val logTag: String,
 )
 
 /**
- * What [EntryListEditorScreen] hands to its `dialogs` slot: which dialog should be open, the
- * locales an entry can be filed under, and the two writes a dialog makes. Deleting is not among
- * them: it lives in the entry's sheet and in selection, both of which the editor draws itself.
- *
- * The dialogs stay with their screens rather than being unified here. They are genuinely different
- * — the shortcuts one is a full-screen form with a macro row and a preview, the dictionary one has
- * a word and a language — and, decisively, neither can be tested: under this project's
- * Robolectric/Compose combination a Material 3 text field inside a dialog never reaches an idle
- * composition. Merging code that cannot be observed is how a refactor ships a bug.
+ * What [EntryListEditorScreen] hands its `dialogs` slot: the open dialog, the locales, and the two
+ * writes. The dialogs stay with their screens: they differ, and under Robolectric a Material 3 text
+ * field in a dialog never reaches idle, so a merge could not be tested.
  */
 internal class EntryEditorHost(
     val locales: List<String>,
@@ -165,10 +146,8 @@ internal class EntryEditorHost(
 )
 
 /**
- * The body both dictionary editors share, laid out the way Learned words is: a count line, the
- * entries as one grouped list (cut by language only when there is more than one), a tap opening
- * the entry's sheet, a long press starting selection, deletes that offer Undo instead of asking
- * first, and search in the top bar.
+ * The body both dictionary editors share, laid out like Learned words: count line, grouped list,
+ * tap for the sheet, long press to select, deletes with Undo, search in the top bar.
  *
  * @param rowContent what one entry shows inside its row; the two editors show different things.
  * @param sheetSummary the line under the entry's name in its sheet, given the language's name.
@@ -200,10 +179,8 @@ internal fun EntryListEditorScreen(
     var searchQuery by remember { mutableStateOf("") }
     var showAddDialog by remember { mutableStateOf(false) }
     var editingEntry by remember { mutableStateOf<DictionaryEntry?>(null) }
-    // The entry whose sheet is open.
     var sheetEntry by remember { mutableStateOf<DictionaryEntry?>(null) }
     var selecting by remember { mutableStateOf(false) }
-    // Identities of the selected entries.
     var selected by remember { mutableStateOf<Set<String>>(emptySet()) }
     var showMenu by remember { mutableStateOf(false) }
     var error by remember { mutableStateOf<String?>(null) }
@@ -212,7 +189,6 @@ internal fun EntryListEditorScreen(
         scope.launch {
             isLoading = true
             try {
-                // Initialize if needed
                 if (!isInitialized) {
                     when (val initResult = store.initialize()) {
                         is DictionaryRepository.InitResult.Success -> {
@@ -220,10 +196,8 @@ internal fun EntryListEditorScreen(
                         }
                         is DictionaryRepository.InitResult.SuccessAfterRecovery -> {
                             isInitialized = true
-                            // Its own coroutine: showSnackbar suspends until the snackbar is
-                            // dismissed, so awaiting it here held the list empty (and the counter
-                            // at zero) for the whole notice — right when the user is checking
-                            // whether their entries survived.
+                            // Its own coroutine: showSnackbar suspends until dismissed, which
+                            // would hold the list empty for the whole notice.
                             launch {
                                 snackbarHostState.showSnackbar(
                                     message = context.getString(R.string.settings_dict_recovered),
@@ -257,9 +231,7 @@ internal fun EntryListEditorScreen(
         }
     }
 
-    /**
-     * The shape an add or an edit takes: validate, call the store, reload, say what happened.
-     */
+    /** An add or edit: validate, call the store, reload, report. */
     fun mutate(
         entry: DictionaryEntry,
         @StringRes done: Int,
@@ -293,10 +265,7 @@ internal fun EntryListEditorScreen(
         selected = emptySet()
     }
 
-    /**
-     * Deletes without asking, then offers Undo, which adds the entries back as they were (word,
-     * shortcut, language and fixed case are all on the entry). Learned words deletes the same way.
-     */
+    /** Deletes without asking, then offers Undo, which adds the entries back as they were. */
     fun delete(toDelete: List<DictionaryEntry>) {
         endSelection()
         scope.launch {
@@ -366,8 +335,7 @@ internal fun EntryListEditorScreen(
     SettingsScaffold(
         title = if (selecting) pluralStringResource(R.plurals.settings_common_selected_count, selected.size, selected.size)
         else stringResource(spec.title),
-        // Selection is a contextual bar: a close cross cancels it, as on Learned words. Search
-        // keeps the arrow, which leaves the search rather than the screen.
+        // Selection cancels with a close cross; search keeps the arrow, which leaves the search.
         navigationIcon = ImageVector.vectorResource(if (selecting) R.drawable.ic_settings_m_close else R.drawable.ic_settings_m_arrow_back),
         navigationContentDescription = when {
             selecting -> stringResource(R.string.settings_common_cancel_selection)
@@ -411,8 +379,7 @@ internal fun EntryListEditorScreen(
             }
         },
         snackbarHost = { SnackbarHost(snackbarHostState) },
-        // The editor's one creative action, named — "Add shortcut", "Add word". Selection has
-        // nothing to add, so the button steps aside for it.
+        // Hidden while selecting.
         floatingActionButton = {
             if (!selecting) {
                 ExtendedFloatingActionButton(
@@ -440,11 +407,8 @@ internal fun EntryListEditorScreen(
                     EntryListEmptyState(spec, hasSearchQuery = searchQuery.isNotEmpty())
                 }
                 else -> {
-                    // The entries are grouped as Learned words groups its words: the rows paint
-                    // themselves as cards, a language's first and last carry the group's outer
-                    // corners, and the rows take the group inset themselves so the count line and
-                    // the language headers keep their page-level alignment. A language header
-                    // only appears when the entries span more than one language.
+                    // Rows paint themselves as cards and take the group inset, so the count line
+                    // and headers keep page alignment. Headers only when there are several languages.
                     val showHeaders = groupedEntries.size > 1
                     CompositionLocalProvider(LocalInGroup provides true) {
                         LazyColumn(
@@ -510,8 +474,7 @@ internal fun EntryListEditorScreen(
                                 }
                             }
 
-                            // Keeps the last row clear of the extended FAB (56dp + 16dp margin + 16dp
-                            // breathing room), as Language packs does.
+                            // Clears the extended FAB: 56dp + 16dp margin + 16dp breathing room.
                             item {
                                 Spacer(modifier = Modifier.height(88.dp))
                             }
@@ -522,7 +485,6 @@ internal fun EntryListEditorScreen(
         }
     }
 
-    // The tapped entry's sheet.
     sheetEntry?.let { entry ->
         EntrySheet(
             title = spec.label(entry),
@@ -559,11 +521,7 @@ internal fun EntryListEditorScreen(
     )
 }
 
-/**
- * One entry, laid out like Learned words' rows (which are laid out like [PreferenceItem]): the
- * group card, the selected tint, and the round check that slides in from the start edge while
- * selecting. A tap opens the entry's sheet; a long press starts selecting.
- */
+/** One entry row: group card, selected tint, and a round check that slides in while selecting. */
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun EntryRow(
@@ -609,10 +567,7 @@ private fun EntryRow(
     }
 }
 
-/**
- * One entry's sheet, built as Learned words builds a word's: its name, a line about it, anything
- * the screen adds, then what can be done with it.
- */
+/** One entry's sheet: its name, a line about it, the screen's extras, then its actions. */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun EntrySheet(
@@ -681,9 +636,8 @@ private fun EntryListEmptyState(
 }
 
 /**
- * What a refused add or edit says: what is in the way when another entry already has the name
- * (words and shortcuts share names, so the two screens can each be blocked by either kind), and
- * [failed] ("Failed to add word" and the like) for everything else.
+ * A refused add or edit's message: the entry in the way when the name is taken (words and
+ * shortcuts share names), else [failed].
  */
 internal fun failureMessage(context: android.content.Context, error: Throwable?, @StringRes failed: Int): String =
     when (error) {

@@ -35,7 +35,7 @@ public final class SubtypeManager {
 
     private static final SubtypeManager sInstance = new SubtypeManager();
 
-    /** Shared worker for the binder call in {@link #switchToTargetIme} (audit CT-2). */
+    /** One shared daemon worker for the binder call in {@link #switchToTargetIme}. */
     private static final java.util.concurrent.ExecutorService IME_SWITCH_EXECUTOR =
             java.util.concurrent.Executors.newSingleThreadExecutor(r -> {
                 Thread t = new Thread(r, "ImeSwitch");
@@ -49,12 +49,7 @@ public final class SubtypeManager {
 
     private RichInputMethodManager richImm;
 
-    /**
-     * Audit CT-31: this used to cache the {@link Resources} instance captured at first
-     * {@code initialize(context)} and never refresh it, on a process-lifetime singleton. Holding
-     * the {@link Context} and asking it for resources at use time keeps the configuration live
-     * whatever context is passed (the service, a ContextThemeWrapper, the application).
-     */
+    /** Resources are asked of this at use time so the configuration stays live; never cache them. */
     private Context context;
 
     private InputMethodInfo shortcutIme;
@@ -69,7 +64,7 @@ public final class SubtypeManager {
 
     private boolean isNetworkConnected;
 
-    /** Cache generation the shortcut IME was read at; see updateParametersOnStartInputView. */
+    /** Cache generation the shortcut IME was read at. */
     private int shortcutImeGeneration = -1;
 
     private boolean usingSystemLanguages;
@@ -117,15 +112,11 @@ public final class SubtypeManager {
     private void initializeInternal(Context context) {
         this.context = context;
         this.richImm = RichInputMethodManager.getInstance();
-        // Start optimistic: language-pack downloads are local, so nothing this IME does needs the
-        // network. The only readers are the two `requireNetworkConnectivity` branches below, which
-        // gate a *third-party* voice IME that declares it needs connectivity;
-        // onNetworkStateChanged can still flip this false. (Audit CT-28/UT-19: the CONNECTIVITY_CHANGE
-        // broadcast that feeds it is deprecated and unreliable, but replacing it with a
-        // NetworkCallback needs ACCESS_NETWORK_STATE, which this app deliberately does not hold.)
+        // Optimistic: only a third-party voice IME with requireNetworkConnectivity reads this.
+        // Fed by the deprecated CONNECTIVITY_CHANGE broadcast: a NetworkCallback would need
+        // ACCESS_NETWORK_STATE, which this app deliberately does not hold.
         this.isNetworkConnected = true;
-        // onSubtypeChanged already refreshed the shortcut IME (one getShortcutInputMethodsAndSubtypes
-        // binder call); the updateParametersOnStartInputView() that followed repeated it.
+        // Also refreshes the shortcut IME.
         onSubtypeChanged(this.richImm.getCurrentInputMethodSubtype(getNoLanguageSubtype()));
         this.initialized = true;
     }
@@ -134,11 +125,7 @@ public final class SubtypeManager {
         return this.initialized;
     }
 
-    /**
-     * Refreshes the shortcut (voice) IME when the input-method caches were dropped since the last
-     * look: which shortcut IMEs exist only changes with packages and the enabled list, and this
-     * used to be a binder call on every field focus.
-     */
+    /** Refreshes the shortcut (voice) IME only when the input-method caches were dropped since. */
     public void updateParametersOnStartInputView() {
         if (this.shortcutImeGeneration != this.richImm.getCacheGeneration()) {
             updateShortcutIme();
@@ -168,9 +155,7 @@ public final class SubtypeManager {
 
     public void onSubtypeChanged(InputMethodSubtype inputMethodSubtype) {
         this.currentSubtype = inputMethodSubtype;
-        // A subtype change is one of the events that feed the input-method caches (the framework
-        // also moves the keyboard this way when its language was turned off); field focus no
-        // longer clears them.
+        // A subtype change invalidates the input-method caches.
         this.richImm.clearSubtypeCaches();
         updateShortcutIme();
     }
@@ -190,8 +175,7 @@ public final class SubtypeManager {
         if (strM4255d.isEmpty()) {
             return false;
         }
-        // CT-16: the token-free InputMethodService form on API 28+, as in RichInputMethodManager;
-        // the deprecated IBinder-token call below that.
+        // Token-free form on API 28+, deprecated IBinder-token call below that.
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
             inputMethodService.switchInputMethod(strM4255d);
             return true;
@@ -212,9 +196,9 @@ public final class SubtypeManager {
         return "";
     }
 
+    /** @param str id of the IME to switch to */
     private void switchToTargetIme(final String str, final InputMethodSubtype inputMethodSubtype, final InputMethodService inputMethodService) {
-        // CT-16: the token-free InputMethodService form on API 28+, as in RichInputMethodManager;
-        // the deprecated IBinder-token call below that. Both stay off the calling thread.
+        // Token-free form on API 28+, deprecated IBinder-token call below that; both off the calling thread.
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
             IME_SWITCH_EXECUTOR.execute(() -> {
                 try {
@@ -231,10 +215,6 @@ public final class SubtypeManager {
             return;
         }
         final InputMethodManager inputMethodManagerM5887c = this.richImm.getInputMethodManager();
-        // Audit CT-2: this used to construct a NEW single-thread ExecutorService on every call and
-        // never shut it down. Its core thread has no keep-alive, so it parked alive after the task
-        // and reclamation depended on a finalizer — one leaked thread per shortcut-IME key press,
-        // in a process that lives for the whole user session. One shared daemon executor instead.
         IME_SWITCH_EXECUTOR.execute(() -> {
             try {
                 inputMethodManagerM5887c.setInputMethodAndSubtype(iBinder, str, inputMethodSubtype);
@@ -245,14 +225,8 @@ public final class SubtypeManager {
     }
 
     /**
-     * Audit CT-5: this and {@link #isShortcutImeReady()} used to call {@link #updateShortcutIme()}
-     * unconditionally on entry — a synchronous binder IPC
-     * ({@code imm.getShortcutInputMethodsAndSubtypes()}) on the main thread. {@code
-     * KeyboardSwitcher.setKeyboard} calls {@code isShortcutImeReady()} once per keyboard swap
-     * (shift toggle, symbol page, layout rebuild) and {@code SettingsValues} adds a third caller
-     * per settings load. The data — which shortcut IMEs are installed — only changes on package
-     * install/uninstall, and {@link #onSubtypeChanged} and {@link #updateParametersOnStartInputView}
-     * already refresh it.
+     * Does not refresh the shortcut IME (a main-thread binder call, and this runs per keyboard
+     * swap); {@link #onSubtypeChanged} and {@link #updateParametersOnStartInputView} do.
      */
     public boolean isShortcutImeEnabled() {
         InputMethodInfo inputMethodInfo = this.shortcutIme;
@@ -266,7 +240,7 @@ public final class SubtypeManager {
         return this.richImm.checkIfSubtypeBelongsToImeAndEnabled(inputMethodInfo, inputMethodSubtype);
     }
 
-    /** See {@link #isShortcutImeEnabled()} for why the refresh call is gone (audit CT-5). */
+    /** Does not refresh the shortcut IME; see {@link #isShortcutImeEnabled()}. */
     public boolean isShortcutImeReady() {
         if (this.shortcutIme == null) {
             return false;
@@ -316,12 +290,7 @@ public final class SubtypeManager {
         return true;
     }
 
-
-    /**
-     * {@link MultiLanguageUtils#isUsingSystemLanguages}, kept until the input-method caches are
-     * dropped: it reads the enabled list (two binder calls on API 34+), which only changes with
-     * the events that drop them, and it was asked on every field focus.
-     */
+    /** {@link MultiLanguageUtils#isUsingSystemLanguages} (binder calls), memoized per cache generation. */
     private boolean isUsingSystemLanguages(Context context) {
         final int generation = this.richImm.getCacheGeneration();
         if (this.usingSystemLanguagesGeneration != generation) {
@@ -331,11 +300,6 @@ public final class SubtypeManager {
         return this.usingSystemLanguages;
     }
 
-    /**
-     * Audit W1-F: the forcedSubtype override (set only by the zero-caller forceSubtype) used to
-     * be re-read here and in getCurrentSubtype on every keystroke, via
-     * LocaleUtils.isCurrentSubtypeX().
-     */
     public Locale getCurrentSubtypeLocale() {
         return ResourceLocaleUtils.getSubtypeLocale(getCurrentSubtype());
     }

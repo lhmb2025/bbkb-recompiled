@@ -1,19 +1,15 @@
 package dev.bbkb.ime.core.device.touch.shizuku
 
-/**
- * The few linux/input-event-codes.h values the Shizuku touch engine reads. Kernel ABI: these
- * numbers never change, so they are spelled out rather than pulled from a header.
- */
+/** linux/input-event-codes.h values the engine reads (stable kernel ABI). */
 object EvdevCodes {
     const val EV_SYN = 0x00
     const val EV_KEY = 0x01
     const val EV_ABS = 0x03
 
-    /** End of one frame: every axis/key change since the previous SYN_REPORT happened together. */
     const val SYN_REPORT = 0
-    /** Protocol A contact separator. Single-contact decoding ignores it. */
+    /** Protocol A contact separator; single-contact decoding ignores it. */
     const val SYN_MT_REPORT = 2
-    /** The kernel's buffer overflowed and events were lost; resync at the next SYN_REPORT. */
+    /** Events were lost; resync at the next SYN_REPORT. */
     const val SYN_DROPPED = 3
 
     const val BTN_TOUCH = 0x14a
@@ -27,7 +23,7 @@ object EvdevCodes {
     const val ABS_MT_POSITION_Y = 0x36
     const val ABS_MT_TRACKING_ID = 0x39
 
-    /** errno values the native reader returns (negated). Bionic/Linux numbering. */
+    /** errno values the native reader returns (negated). */
     const val ENODEV = 19
     const val ESTALE = 116
 }

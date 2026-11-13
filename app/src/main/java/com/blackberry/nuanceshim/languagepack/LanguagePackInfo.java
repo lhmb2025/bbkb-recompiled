@@ -1,10 +1,6 @@
 package com.blackberry.nuanceshim.languagepack;
 
-/**
- * LanguagePackInfo - Metadata for a single NuanceSDK language pack
- * Contains language/country codes, name, version, SHA-256 hash, file path, and installation status.
- * Used by LanguagePackRegistry to track available and installed language packs.
- */
+/** Metadata for one language pack manifest entry. */
 
 class LanguagePackInfo {
 
@@ -25,6 +21,7 @@ class LanguagePackInfo {
     LanguagePackInfo() {
     }
 
+    /** @param z true if the pack ships in the APK assets */
     void setPreinstalledFlag(boolean z) {
         this.preinstalledFlag = z ? 1 : 0;
     }
@@ -45,10 +42,7 @@ class LanguagePackInfo {
     }
 
     public String toString() {
-        // Reads the field, not isPreinstalled(): that throws when the manifest entry omitted
-        // the key, and ManifestParser populates this object field by field and only validates
-        // at the end -- so logging a mid-parse or rejected entry used to crash. isValid()
-        // already treats the unset flag as a normal "incomplete" value.
+        // Not isPreinstalled(): it throws when unset, and rejected entries get logged.
         final String preinstalled =
                 this.preinstalledFlag == -1 ? "unset" : String.valueOf(this.preinstalledFlag == 1);
         return "language=" + this.language + " country=" + this.country + " name=" + this.name

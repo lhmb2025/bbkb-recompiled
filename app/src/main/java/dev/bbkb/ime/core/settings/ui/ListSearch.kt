@@ -35,12 +35,8 @@ import androidx.compose.ui.unit.dp
 import dev.bbkb.ime.R
 
 /**
- * A long list's search, as the dictionary screens do it: a magnifier in the top bar that turns the
- * bar into a field, and Back (the arrow or the system's) that closes the field before it leaves
- * the screen.
- *
- * [active] is whether the field is open; [query] is what is typed in it. [filtering] is what a
- * list asks before it narrows itself: an open field with nothing typed still shows everything.
+ * Search state for a long list: a magnifier turns the top bar into a field and Back closes the
+ * field first. [filtering] is false for an open field with nothing typed, so the list shows everything.
  */
 @Stable
 class ListSearchState {
@@ -54,7 +50,7 @@ class ListSearchState {
         query = ""
     }
 
-    /** Whether [text] is listed under the current query: always, unless one is typed. */
+    /** Whether any of [text] matches the typed query (always true when not filtering). */
     fun matches(vararg text: String?): Boolean {
         if (!filtering) return true
         val wanted = query.trim()
@@ -65,7 +61,6 @@ class ListSearchState {
 @Composable
 fun rememberListSearchState(): ListSearchState = remember { ListSearchState() }
 
-/** The magnifier a searchable list puts in its top bar. */
 @Composable
 fun ListSearchAction(search: ListSearchState) {
     IconButton(onClick = { search.active = true }) {
@@ -76,10 +71,7 @@ fun ListSearchAction(search: ListSearchState) {
     }
 }
 
-/**
- * [SettingsScaffold] for a screen whose list can be searched: it adds the magnifier, swaps the
- * title for the field while [search] is open, and makes both Backs close the search first.
- */
+/** [SettingsScaffold] with list search: the magnifier, the field in place of the title, Back closes search first. */
 @Composable
 fun SearchableSettingsScaffold(
     title: String,
@@ -87,7 +79,7 @@ fun SearchableSettingsScaffold(
     search: ListSearchState,
     searchHint: String,
     modifier: Modifier = Modifier,
-    /** The screen's other top bar actions, after the magnifier. */
+    /** Other top bar actions, after the magnifier. */
     actions: @Composable RowScope.() -> Unit = {},
     snackbarHost: @Composable () -> Unit = {},
     floatingActionButton: @Composable () -> Unit = {},
@@ -114,10 +106,7 @@ fun SearchableSettingsScaffold(
     )
 }
 
-/**
- * The search field the top bar holds while searching: a pill like the one on the settings home
- * page, focused as it opens, with a cross to empty it once there is something to empty.
- */
+/** The top bar's search pill: focused on open, with a clear button once something is typed. */
 @Composable
 fun RowScope.TopBarSearchField(
     query: String,

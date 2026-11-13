@@ -25,14 +25,8 @@ import java.util.concurrent.ConcurrentHashMap
 /**
  * The menu manager's half of the "Show or hide the input menu" key action:
  * [UnifiedInputBoardManager.showMenuForKey] and the end of the session override in
- * [UnifiedInputBoardManager.hide]. The toggle decision itself is `InputViewCoordinator`'s and is
- * covered in `PkbSuggestionBarTest` and the two key-path suites.
- *
- * Built the way `UnifiedInputBoardManagerBoardStateTest` builds the manager (without its
- * constructor, the board-state collaborators injected), in a file of its own so that contract
- * stays unchanged. `show()` is stubbed to raise the bar and nothing else: raising it is AuxBar
- * mechanics, and what is under test is what happens around it. The bar reads as up or down
- * through the legacy `keyboardView` visibility, as it does there.
+ * [UnifiedInputBoardManager.hide]. Built as in `UnifiedInputBoardManagerBoardStateTest`; `show()` is
+ * stubbed to raise the bar only, which reads as up or down through the legacy `keyboardView`.
  */
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [34], manifest = Config.NONE)
@@ -100,8 +94,6 @@ class UnifiedInputBoardManagerInputMenuKeyTest {
 
     private fun inject(name: String, value: Any?) =
         ReflectionHelpers.setField(UnifiedInputBoardManager::class.java, uim, name, value)
-
-    // ═══════════════════════════════════════════════════════════════════════
 
     @Test
     fun theMenuComesUpWithNothingToAdopt() {

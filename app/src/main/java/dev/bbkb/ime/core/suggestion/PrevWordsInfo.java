@@ -60,12 +60,7 @@ public class PrevWordsInfo {
         this(wordInfo, "");
     }
 
-    /**
-     * UT-33/TI-2: {@code contextBefore} is set once, at construction. It used to be mutable, and
-     * {@code RichInputConnection.getPrevWordsInfo} wrote it into the shared
-     * {@link #EMPTY_PREV_WORDS_INFO} singleton on every call. The companion {@code contextAfter}
-     * field was written from the same place and read by nothing, so it is gone.
-     */
+    /** {@code contextBefore} is immutable so the shared {@link #EMPTY_PREV_WORDS_INFO} cannot be written. */
     public PrevWordsInfo(WordInfo wordInfo, String contextBefore) {
         this.wordInfos[0] = wordInfo;
         this.contextBefore = contextBefore;

@@ -1,14 +1,9 @@
 package dev.bbkb.ime.core.device.touch.shizuku
 
 /**
- * The wire format of [IEvdevCallback.onEvents]: every evdev record as two longs.
- *
- *  - word 0: the event's timestamp in CLOCK_MONOTONIC microseconds (see [TouchStreamDecoder]
- *    for why that clock, and how it becomes an uptimeMillis-based time);
- *  - word 1: `type` in bits 63..48, `code` in bits 47..32, `value` (two's complement) in 31..0.
- *
- * A long[] crosses binder as one flat array with no per-event objects, and both halves of the
- * format are pure Kotlin so they are tested on the JVM rather than in native code.
+ * Wire format of [IEvdevCallback.onEvents], two longs per evdev record (one flat binder array):
+ *  - word 0: timestamp, CLOCK_MONOTONIC microseconds;
+ *  - word 1: `type` in bits 63..48, `code` in 47..32, `value` (two's complement) in 31..0.
  */
 object EvdevPacking {
     const val WORDS_PER_EVENT = 2
@@ -27,13 +22,9 @@ object EvdevPacking {
 }
 
 /**
- * Collects packed records on the reader thread and hands them out a whole frame at a time.
- *
- * [takeCompleteFrames] returns everything up to and including the most recent SYN_REPORT, so
- * a batch never ends mid-frame and the tail of a read that stopped mid-frame waits for the next
- * read. If a device streams more than [maxPendingEvents] records without a SYN_REPORT (broken
- * firmware), the backlog is flushed anyway: [TouchStreamDecoder] is stream-oriented and copes
- * with a frame split across batches, while an unbounded buffer would not be coped with at all.
+ * Collects packed records on the reader thread and hands out whole frames (up to the last
+ * SYN_REPORT). Past [maxPendingEvents] without a SYN_REPORT (broken firmware) it flushes anyway;
+ * [TouchStreamDecoder] copes with split frames, an unbounded buffer would not be.
  */
 class PackedEventBuffer(initialEvents: Int = 64, private val maxPendingEvents: Int = 1024) {
 
@@ -73,21 +64,15 @@ class PackedEventBuffer(initialEvents: Int = 64, private val maxPendingEvents: I
 }
 
 /**
- * Turns the bytes read() returned from an evdev node into packed records.
- *
- * `struct input_event` is `{ struct timeval time; __u16 type; __u16 code; __s32 value; }`: 24
- * bytes on arm64 (two 8-byte longs of time), 16 on a 32-bit ABI. The native reader reports
- * `sizeof` for the ABI it was built for and this parses either layout, little-endian.
+ * Parses evdev read() bytes into packed records. `struct input_event` is
+ * `{ struct timeval time; __u16 type; __u16 code; __s32 value; }`, little-endian: 24 bytes on
+ * arm64, 16 on a 32-bit ABI; the native reader reports which.
  */
 object EvdevRecords {
     const val RECORD_SIZE_LP64 = 24
     const val RECORD_SIZE_ILP32 = 16
 
-    /**
-     * Parses `length` bytes of `raw` into [sink], adding `timeOffsetUs` to every timestamp.
-     * Returns the number of records parsed; a trailing partial record (read() never returns
-     * one) is ignored.
-     */
+    /** Parses into [sink], adding `timeOffsetUs` to each stamp; returns the record count (partial tail ignored). */
     @JvmStatic
     fun parse(raw: ByteArray, length: Int, recordSize: Int, timeOffsetUs: Long, sink: PackedEventBuffer): Int {
         require(recordSize == RECORD_SIZE_LP64 || recordSize == RECORD_SIZE_ILP32) {
@@ -120,9 +105,8 @@ object EvdevRecords {
     }
 
     /**
-     * How far CLOCK_MONOTONIC is ahead of CLOCK_REALTIME, in microseconds, from one reading of
-     * each. Only used when the kernel refused EVIOCSCLOCKID and the node stamps events with
-     * wall-clock time; the result shifts with any wall-clock step, so it is re-sampled per read.
+     * CLOCK_MONOTONIC minus CLOCK_REALTIME in microseconds, for a kernel that refused EVIOCSCLOCKID.
+     * Wall-clock steps shift it, so it is re-sampled per read.
      */
     @JvmStatic
     fun realtimeToMonotonicOffsetUs(monotonicNanos: Long, realtimeMillis: Long): Long =

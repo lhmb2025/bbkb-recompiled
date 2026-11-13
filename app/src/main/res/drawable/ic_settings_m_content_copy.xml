@@ -1,4 +1,4 @@
-<!-- ic_settings_m_content_copy. Material Icons Outlined.ContentCopy, 24-unit grid; the About screen's copy-version chip. Tinted by the composable that draws it, so the fill colour is a placeholder. -->
+<!-- Material Icons Outlined.ContentCopy -->
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
     android:width="24dp"
     android:height="24dp"

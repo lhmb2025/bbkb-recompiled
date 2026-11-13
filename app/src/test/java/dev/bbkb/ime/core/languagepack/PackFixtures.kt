@@ -9,13 +9,9 @@ import org.junit.Assert.assertTrue
 import java.io.File
 
 /**
- * Shared fixtures for the language-pack tests.
- *
- * The important one is [realManifest]: the catalogue these tests merge is the **actual published
- * `dist/manifest.json`**, not a hand-written two-entry stand-in. Every interesting case in this
- * feature comes from the real file — the four `group` variants, and the four packs
- * (`es_419`, `zh_TW`, `zh_HK`, `en_ZH`) whose region exists only in the catalogue — so a fake
- * would test the fake.
+ * Shared language-pack fixtures. [realManifest] is the published `dist/manifest.json`, which holds
+ * the interesting cases: four `group` variants and four catalogue-only regions (`es_419`, `zh_TW`,
+ * `zh_HK`, `en_ZH`).
  */
 object PackFixtures {
 
@@ -25,10 +21,7 @@ object PackFixtures {
     /** The four packs that load in place of a base language, and the language each replaces. */
     val VARIANTS = mapOf("de_CH" to "de", "fr_CH" to "fr", "it_CH" to "it", "nl_BE" to "nl")
 
-    /**
-     * The four packs whose region is in the catalogue and *not* in the file name. Installing any
-     * of them correctly is only possible from the manifest locale.
-     */
+    /** The four packs whose region is in the catalogue, not the file name; install needs the manifest locale. */
     val TABLE_LOCALE_PACKS = listOf("es_419", "zh_TW", "zh_HK", "en_ZH")
 
     /** `dist/manifest.json`, however the test happened to be launched (cwd is usually `app/`). */
@@ -65,11 +58,11 @@ object PackFixtures {
         group = group,
     )
 
-    /** `no_backup/nuance/<locale>/` — where an installed pack's files belong. */
+    /** `no_backup/nuance/<locale>/`, where an installed pack's files belong. */
     fun packDir(context: Context, locale: String): File =
         File(context.noBackupFilesDir, "nuance/$locale")
 
-    /** `no_backup/lang_variants/<group>/<tag>.ldb` — where an inactive variant is parked. */
+    /** `no_backup/lang_variants/<group>/<tag>.ldb`, where an inactive variant is parked. */
     fun parkedVariant(context: Context, group: String, tag: String): File =
         File(context.noBackupFilesDir, "lang_variants/$group/$tag.ldb")
 
@@ -82,12 +75,7 @@ object PackFixtures {
     fun ldbBytes(seed: Int = 7, size: Int = 4_096): ByteArray =
         ByteArray(size) { ((it + seed) % 251).toByte() }
 
-    /**
-     * A [PackInstallService.SubtypeRegistrar] with no input-method framework behind it.
-     *
-     * The real one asks `RichInputMethodManager` what `method.xml` declares, which needs a
-     * registered IME; these tests are about what lands on disk, so the answer is a fixture.
-     */
+    /** A [PackInstallService.SubtypeRegistrar] fixture; the real one needs a registered IME. */
     class FakeSubtypes(
         private val builtIn: Set<String> = emptySet(),
         private val offerable: Set<String> = emptySet(),

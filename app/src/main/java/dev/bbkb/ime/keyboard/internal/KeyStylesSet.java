@@ -23,42 +23,41 @@ public final class KeyStylesSet {
 
     private final KeyStyle mEmptyKeyStyle;
 
+    /** @param c1029al texts used to resolve style values */
     public KeyStylesSet(KeyboardTextsSet c1029al) {
         this.mTextsSet = c1029al;
         this.mEmptyKeyStyle = new EmptyKeyStyle(c1029al);
         this.mStyles.put("<empty>", this.mEmptyKeyStyle);
     }
 
-    
-    /** AOSP: the fallback style that reads attributes straight off the TypedArray. */
+    /** Fallback style that reads attributes straight off the TypedArray. */
     private static final class EmptyKeyStyle extends KeyStyle {
         EmptyKeyStyle(KeyboardTextsSet c1029al) {
             super(c1029al);
         }
 
-        @Override // dev.bbkb.ime.keyboard.internal.KeyStyle
+        @Override
         public String[] getStringArray(TypedArray typedArray, int i, boolean z) {
             return parseStringArrayInternal(typedArray, i, z);
         }
 
-        @Override // dev.bbkb.ime.keyboard.internal.KeyStyle
+        @Override
         public String getString(TypedArray typedArray, int i) {
             return parseString(typedArray, i);
         }
 
-        @Override // dev.bbkb.ime.keyboard.internal.KeyStyle
+        @Override
         public int getInt(TypedArray typedArray, int i, int i2) {
             return typedArray.getInt(i, i2);
         }
 
-        @Override // dev.bbkb.ime.keyboard.internal.KeyStyle
+        @Override
         public int getFlags(TypedArray typedArray, int i) {
             return typedArray.getInt(i, 0);
         }
     }
 
-    
-    /** AOSP: a style declared by a &lt;key-style&gt; element, inheriting from its parent style. */
+    /** A style declared by a &lt;key-style&gt; element, inheriting from its parent style. */
     private static final class DeclaredKeyStyle extends KeyStyle {
 
         private final HashMap<String, KeyStyle> mStyles;
@@ -67,6 +66,10 @@ public final class KeyStylesSet {
 
         private final SparseArray<Object> mStyleAttributes;
 
+        /**
+         * @param str parent style name
+         * @param c1029al texts used to resolve style values
+         */
         public DeclaredKeyStyle(String str, KeyboardTextsSet c1029al, HashMap<String, KeyStyle> map) {
             super(c1029al);
             this.mStyleAttributes = new SparseArray<>();
@@ -74,7 +77,7 @@ public final class KeyStylesSet {
             this.mStyles = map;
         }
 
-        @Override // dev.bbkb.ime.keyboard.internal.KeyStyle
+        @Override
         public String[] getStringArray(TypedArray typedArray, int i, boolean z) {
             if (typedArray.hasValue(i)) {
                 return parseStringArrayInternal(typedArray, i, z);
@@ -87,7 +90,7 @@ public final class KeyStylesSet {
             return this.mStyles.get(this.mParentStyleName).getStringArray(typedArray, i, z);
         }
 
-        @Override // dev.bbkb.ime.keyboard.internal.KeyStyle
+        @Override
         public String getString(TypedArray typedArray, int i) {
             if (typedArray.hasValue(i)) {
                 return parseString(typedArray, i);
@@ -99,7 +102,7 @@ public final class KeyStylesSet {
             return this.mStyles.get(this.mParentStyleName).getString(typedArray, i);
         }
 
-        @Override // dev.bbkb.ime.keyboard.internal.KeyStyle
+        @Override
         public int getInt(TypedArray typedArray, int i, int i2) {
             if (typedArray.hasValue(i)) {
                 return typedArray.getInt(i, i2);
@@ -111,7 +114,7 @@ public final class KeyStylesSet {
             return this.mStyles.get(this.mParentStyleName).getInt(typedArray, i, i2);
         }
 
-        @Override // dev.bbkb.ime.keyboard.internal.KeyStyle
+        @Override
         public int getFlags(TypedArray typedArray, int i) {
             int iMo7101c = this.mStyles.get(this.mParentStyleName).getFlags(typedArray, i);
             Integer num = (Integer) this.mStyleAttributes.get(i);

@@ -14,7 +14,7 @@ package dev.bbkb.ime.keyboard.state;
  *       <td>{@code KeyboardState}</td></tr>
  *   <tr><td>board</td>
  *       <td>{@code activeBoard} keycode</td>
- *       <td>{@code UnifiedBoardCoordinator} (sole owner since July 2026)</td></tr>
+ *       <td>{@code UnifiedBoardCoordinator} </td></tr>
  *   <tr><td>bar</td>
  *       <td>{@code AuxBarState} (suggestions / UIM / arrow / accent / none)</td>
  *       <td>{@code AuxBarManager} + {@code AuxBarView}</td></tr>
@@ -23,16 +23,8 @@ package dev.bbkb.ime.keyboard.state;
  *       <td>{@code BlackBerryIME}</td></tr>
  * </table>
  *
- * <p>Before this type existed, a change on one axis reached the other three through a scattered
- * set of {@code hide*} / {@code reset*} sweeps called from whichever method happened to run first
- * — {@code setKeyboard → hideEmojiKeyboard}, {@code setAlphabetKeyboard →
- * hideKeyboardOnKeyboardStateChange}, {@code showArrowBar → hideUnifiedInputBoard + hideInputBoard},
- * {@code beginBoardTransition → clearPkbSymbolMode}. Each sweep carried its own copy of "what
- * closes what", and every symbol/mic defect of 2026-09-20 was one of those copies disagreeing with
- * another. A transition names the change instead of the sweep, and {@link CrossAxisRules} — the one
- * table — decides what it does to the other three axes.
- *
- * <p>Immutable value type; construct through the factories.
+ * <p>A transition names the change; {@link CrossAxisRules} decides what it does to the other
+ * axes. Immutable; construct through the factories.
  */
 public final class KeyboardTransition {
 
@@ -44,57 +36,34 @@ public final class KeyboardTransition {
          */
         SWITCH_LAYOUT,
         /**
-         * Sweep the open boards closed, with the commit-rebuild exemptions — the board column of a
-         * layout change without the layout change. The transition {@code BlackBerryIME}'s
-         * "the UIM bar is off, so nothing should be sitting in its place" sweep raises.
+         * Sweep the open boards closed with the commit-rebuild exemptions: a layout change's board
+         * column without the layout change (raised when the UIM bar is off).
          */
         SWEEP_BOARDS,
-        /** A board is being opened (exclusively — the host closes whatever else was open). */
+        /** A board is being opened exclusively (the host closes whatever else was open). */
         OPEN_BOARD,
-        /** A board is being closed. */
         CLOSE_BOARD,
         /**
-         * A board is about to be raised <em>by its own mechanism</em>: run {@link #OPEN_BOARD}'s
-         * prologue (the layout column) before the board takes the mode. See
-         * {@link CrossAxisRules} for why this and {@link #BOARD_RAISED} are one rule in two halves.
+         * A board is about to be raised by its own mechanism: run {@link #OPEN_BOARD}'s prologue
+         * (the layout column) before the board takes the mode.
          */
         BOARD_OPENING,
         /** A board has been raised by its own mechanism: {@link #OPEN_BOARD}'s epilogue. */
         BOARD_RAISED,
-        /**
-         * A board has been lowered by its own mechanism. Replaces Phase 1a's {@code LAYOUT_LOADED}:
-         * that row was only ever "the emoji board came down on a keyboard rebuild", written as a
-         * layout event because emoji did not have one board identity yet. It does now, so this is
-         * an ordinary board switch.
-         */
+        /** A board has been lowered by its own mechanism. */
         BOARD_LOWERED,
-        /** Cursor (FCC) mode is being entered. */
         ENTER_CURSOR_MODE,
-        /** Cursor (FCC) mode is being left. */
         EXIT_CURSOR_MODE,
-        /** The UIM bar is being raised. */
         SHOW_BAR,
-        /** The UIM bar is being taken down. */
         HIDE_BAR,
         /** Put back whichever of the UIM bar and the suggestion strip this editor gets. */
         RESTORE_BAR,
     }
 
     /**
-     * The layout axis' values — {@code KeyboardState.KeyboardModeState} seen from outside, split
-     * where the cross-axis rules differ.
-     *
-     * <p>{@link #SYMBOL} is both symbol keyboards, the on-screen one and the PKB one the Sym key
-     * opens. They were two values while the PKB load raised the UIM bar; it no longer does (see
-     * {@link CrossAxisRules}), so nothing tells them apart on any axis.
-     *
-     * <p>{@link #EMOJI} and {@link #MENU} are values no {@link Kind#SWITCH_LAYOUT} carries today:
-     * the emoji board opens as a BOARD and the menu opens through {@code showKeyboardMenu}. They
-     * are listed so the value set is complete.
-     *
-     * <p>Since Phase 1d every one of these values also names a BOARD —
-     * {@link CrossAxisRules#boardKeyCodeFor(Layout)} — because "which keyboard is loaded" and
-     * "which board is up" are the same question.
+     * The layout axis' values ({@code KeyboardState.KeyboardModeState} seen from outside). Each also
+     * names a board ({@link CrossAxisRules#boardKeyCodeFor(Layout)}). No {@link Kind#SWITCH_LAYOUT}
+     * carries {@link #EMOJI} or {@link #MENU} today; they complete the value set.
      */
     public enum Layout {
         ALPHABET,
@@ -103,9 +72,8 @@ public final class KeyboardTransition {
         EMOJI,
         MENU,
         /**
-         * "Whatever is loaded" — every transition that is about a board rather than a layout, and
-         * the Sym page turn, which does not yet know whether it lands on another symbol page or
-         * back on the alphabet.
+         * "Whatever is loaded": board transitions, and the Sym page turn, which does not yet know
+         * whether it lands on another symbol page or back on the alphabet.
          */
         UNCHANGED,
     }
@@ -142,33 +110,26 @@ public final class KeyboardTransition {
     }
 
     /**
-     * The cursor axis' "forced" flag (the third argument of
-     * {@code BlackBerryIME.applyCursorModeState}). A forced entry is FCC reconciling a state the
-     * caller has already arranged on screen: it turns the mode on but deliberately leaves the board
-     * and bar columns alone, and does not arm the 4 s auto-disable. Always false for every other
-     * kind.
+     * A forced cursor-mode entry is FCC reconciling a state already on screen: it turns the mode on
+     * but leaves the board and bar columns alone and does not arm the 4 s auto-disable.
      */
     public boolean forced() {
         return forced;
     }
 
     /**
-     * {@link Kind#EXIT_CURSOR_MODE} only: whether restoring the strip should also re-derive the
-     * shift state — the second argument of {@code BlackBerryIME.applyCursorModeState}, which the
-     * physical-backspace path sets. Always false for every other kind.
+     * {@link Kind#EXIT_CURSOR_MODE} only: whether restoring the strip also re-derives the shift
+     * state (set by the physical-backspace path).
      */
     public boolean requestShiftUpdate() {
         return requestShiftUpdate;
     }
-
-    // ───────────────────────────────────────────────────────────── factories
 
     /** The main keyboard is about to be rebuilt for {@code layout}. */
     public static KeyboardTransition switchLayout(Layout layout) {
         return new KeyboardTransition(Kind.SWITCH_LAYOUT, layout, NO_BOARD, false, false);
     }
 
-    /** Sweep the open boards closed, commit-rebuild exemptions included. */
     public static KeyboardTransition sweepBoards() {
         return new KeyboardTransition(Kind.SWEEP_BOARDS, Layout.UNCHANGED, NO_BOARD, false, false);
     }
@@ -196,7 +157,7 @@ public final class KeyboardTransition {
         return new KeyboardTransition(Kind.BOARD_LOWERED, Layout.UNCHANGED, keyCode, false, false);
     }
 
-    /** @param forced see {@link #forced()} — FCC reconciling a state already on screen. */
+    /** @param forced see {@link #forced()} */
     public static KeyboardTransition enterCursorMode(boolean forced) {
         return new KeyboardTransition(
                 Kind.ENTER_CURSOR_MODE, Layout.UNCHANGED, NO_BOARD, forced, false);
@@ -216,7 +177,6 @@ public final class KeyboardTransition {
         return new KeyboardTransition(Kind.HIDE_BAR, Layout.UNCHANGED, NO_BOARD, false, false);
     }
 
-    /** Put back whichever of the UIM bar and the suggestion strip this editor gets. */
     public static KeyboardTransition restoreBar() {
         return new KeyboardTransition(Kind.RESTORE_BAR, Layout.UNCHANGED, NO_BOARD, false, false);
     }

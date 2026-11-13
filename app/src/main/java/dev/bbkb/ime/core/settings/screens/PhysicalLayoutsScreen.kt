@@ -86,34 +86,14 @@ import java.util.Locale
 private const val TAG = "PhysicalLayouts"
 
 /**
- * Advanced > Device compatibility > Custom keypad layouts: every letter layout on the phone
- * ([LetterLayout]), the user's own and the ones the app ships, listed the same way — name, which
- * keyboards it is for, how many keys it names.
+ * Custom keypad layouts: every [LetterLayout] on the phone. Custom holds the user's layouts (added
+ * from a file, a layout document or a backup per [BackupOperations.readFrom]); a sheet offers
+ * Share, Rename (same id, so languages that chose it keep it) and Delete. Built-in lists the
+ * physical-key documents in `assets/letter_layouts/`, read-only, each savable as a file to start
+ * from. Which layout a keyboard uses is chosen on the Language screen ([LetterLayoutChoice]).
  *
- * **Custom** holds the user's layouts. Add layout reads one from a file the user picks (a letter
- * layout document, or a backup holding some; [BackupOperations.readFrom] tells them apart), the
- * same reading Advanced > Backup and restore > Restore from file does. Which keyboard uses one is
- * chosen per language on the Language screen ([LetterLayoutChoice]); here they are managed. Tapping
- * one opens its sheet ([LayoutSheet]): the keypad drawn with the layout's letters, then Share
- * (hands the stored XML file to the share sheet, the way the device profile builder shares a
- * config), Rename (a new name under the same id, so the languages that chose it keep it) and
- * Delete.
- *
- * **Built-in** holds the documents under `assets/letter_layouts/` that are for the physical keys
- * (the on-screen-only ones, Colemak and Dvorak, are chosen per keyboard on the Language screen).
- * They are read-only and are not picked here: which one a keyboard uses follows its language.
- * Their sheet draws the keypad and offers "Save as a file", which writes the document wherever the
- * user chooses — the way to start a layout of one's own is to save the nearest built-in, edit it,
- * and add it from the file. The current keyboard's language comes first, the document it would use at the top,
- * then the rest by name.
- *
- * Custom comes first because it is the part the user can change; the built-in list has a document
- * per language and would push it off the screen.
- *
- * Both lists are read off the main thread, so on first composition they are briefly empty.
- *
- * @param builtInDocuments where the built-in documents come from; the app's assets when null. The
- *   render test hands in a fixed set, so what it pins does not move with every generated asset.
+ * @param builtInDocuments source of built-in documents, the app's assets when null (render tests
+ *   pass a fixed set)
  */
 @Composable
 fun PhysicalLayoutsScreen(
@@ -133,18 +113,15 @@ fun PhysicalLayoutsScreen(
     var builtInLayouts by remember { mutableStateOf<List<LetterLayout>?>(null) }
     var deleteTarget by remember { mutableStateOf<LetterLayout?>(null) }
     var renameTarget by remember { mutableStateOf<LetterLayout?>(null) }
-    // The layout whose sheet is open.
     var sheetLayout by remember { mutableStateOf<LetterLayout?>(null) }
-    // The built-in being saved, by id. Saveable, because the activity can be recreated while the
-    // file picker is open.
+    // Saveable: the activity can be recreated while the file picker is open.
     var savingId by rememberSaveable { mutableStateOf<String?>(null) }
 
     LaunchedEffect(Unit) {
         customLayouts = withContext(Dispatchers.IO) { registry.list() }
         builtInLayouts = withContext(Dispatchers.IO) {
             orderBuiltInLayouts(
-                // Only the documents for the physical keys: an on-screen-only document (Colemak,
-                // Dvorak) is chosen per keyboard on the Language screen and does nothing here.
+                // Physical-key documents only: on-screen-only ones (Colemak, Dvorak) do nothing here.
                 layouts = registry.builtInIds().mapNotNull { registry.builtIn(it) }
                     .filter { LetterLayout.Target.PKB in it.targets },
                 keyboardLocale = keyboardLocale,
@@ -172,9 +149,7 @@ fun PhysicalLayoutsScreen(
         }
     }
 
-    // The built-in list has a document per language, so the screen can be searched: by a
-    // layout's name or by anything its second line says (a language, a keypad). While a search
-    // is on, only the matching layouts are listed, without the Add row and the notes.
+    // Search by name or second line; while filtering, the Add row and notes are hidden.
     val search = rememberListSearchState()
     fun shown(layouts: List<LetterLayout>?) = layouts.orEmpty().filter {
         search.matches(it.name, layoutSummary(context, it, phoneKeypad, phoneKeypadType))
@@ -188,7 +163,6 @@ fun PhysicalLayoutsScreen(
         Custom(visible = { noMatches }) {
             PreferenceInfo(text = stringResource(R.string.settings_common_no_matches))
         },
-        // ── Custom: the user's layouts, chosen per language on the Language screen ──
         Category(R.string.settings_pkb_layouts_category_custom, visible = { !search.filtering || shownCustom.isNotEmpty() }),
         Custom(inGroup = true, visible = { !search.filtering || shownCustom.isNotEmpty() }) {
             Column(verticalArrangement = Arrangement.spacedBy(LocalSpacing.current.groupGap)) {
@@ -206,9 +180,8 @@ fun PhysicalLayoutsScreen(
         Custom(visible = { customLayouts?.isEmpty() == true && !search.filtering }) {
             PreferenceInfo(text = stringResource(R.string.settings_pkb_layouts_empty))
         },
-        // Where a layout comes from: a file. Pickers filter by type unevenly (a file manager may
-        // call an .xml document text or octet-stream), so every file is offered and the reader
-        // says no to what is not a layout.
+        // Pickers filter by type unevenly (an .xml may be text or octet-stream), so offer every file
+        // and let the reader reject what is not a layout.
         Custom(inGroup = true, visible = { !search.filtering }) {
             PreferenceItem(
                 title = stringResource(R.string.settings_pkb_layouts_add),
@@ -217,8 +190,7 @@ fun PhysicalLayoutsScreen(
             )
         },
 
-        // ── Built-in: read-only, each one a template to save as a file ──
-        // Shown while the list loads; left out only when the build ships no documents at all.
+        // Shown while loading; left out only when the build ships no documents.
         Category(R.string.settings_pkb_layouts_category_builtin, visible = {
             if (search.filtering) shownBuiltIn.isNotEmpty() else builtInLayouts?.isEmpty() != true
         }),
@@ -315,11 +287,7 @@ fun PhysicalLayoutsScreen(
     }
 }
 
-/**
- * One layout, custom or built-in: its name and binding. Tapping it opens its sheet, where what can
- * be done with it lives; the row itself carries nothing else, so built-in and custom rows look
- * alike and line up.
- */
+/** One layout row (name and binding); tapping opens its sheet. */
 @Composable
 private fun LayoutRow(layout: LetterLayout, summary: String, onClick: () -> Unit) {
     PreferenceItem(
@@ -329,7 +297,6 @@ private fun LayoutRow(layout: LetterLayout, summary: String, onClick: () -> Unit
     )
 }
 
-/** One row at the foot of a layout's sheet. */
 private class SheetAction(
     val icon: ImageVector,
     @StringRes val label: Int,
@@ -337,9 +304,8 @@ private class SheetAction(
 )
 
 /**
- * A layout's sheet, built as the User dictionary and Learned words build an entry's: its name, the
- * line the row shows, the keypad drawn with its letters ([KeypadPreview]), then what can be done
- * with it. Scrolls inside the sheet so the actions stay reachable on the KEY2's short screen.
+ * A layout's sheet: name, summary line, [KeypadPreview], then actions. Scrolls inside the sheet so
+ * the actions stay reachable on short screens.
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -382,11 +348,8 @@ private fun LayoutSheet(
 }
 
 /**
- * The keypad as the phone has it, each cap showing what the layout types there ([keyCapLegends]):
- * the letter, and small in the corners a Shift legend that is not its upper case and the Alt
- * character. The rows are
- * [keypadRows]'s; a key the layout does not name is drawn empty, since it types whatever it would
- * without the layout. Always left to right: the keys sit where they sit whatever the language.
+ * The keypad with each cap showing what the layout types there ([keyCapLegends]). Rows come from
+ * [keypadRows]; unnamed keys are drawn empty. Always left to right, whatever the language.
  */
 @Composable
 private fun KeypadPreview(layout: LetterLayout, modifier: Modifier = Modifier) {
@@ -453,13 +416,11 @@ private fun CornerLegend(text: String, modifier: Modifier) {
     )
 }
 
-/** What a key cap in [KeypadPreview] prints; null where it prints nothing. */
 internal class KeyCapLegends(val letter: String?, val shift: String?, val alt: String?)
 
 /**
- * A key's cap: the letter in upper case, as keycaps print it; the Shift legend in a corner only
- * when it is another character than that (Arabic's ط types ى with Shift), so a Latin cap is not
- * printed twice; the Alt character in the other corner.
+ * A key's cap: the letter upper-cased, the Shift legend only when it differs from that (Arabic's
+ * ط types ى with Shift), and the Alt character.
  */
 internal fun keyCapLegends(key: LetterLayout.Key): KeyCapLegends {
     val upper = if (key.keySpec != 0) Character.toUpperCase(key.keySpec) else 0
@@ -470,10 +431,7 @@ internal fun keyCapLegends(key: LetterLayout.Key): KeyCapLegends {
     )
 }
 
-/**
- * The dialog Rename opens: the layout's name in a field, Save while what is typed is a name a
- * layout document can carry ([isValidLayoutName]).
- */
+/** The Rename dialog; Save is enabled while the name passes [isValidLayoutName]. */
 @Composable
 private fun RenameLayoutDialog(currentName: String, onDismiss: () -> Unit, onRename: (String) -> Unit) {
     var name by rememberSaveable(stateSaver = TextFieldValue.Saver) {
@@ -506,14 +464,12 @@ private fun RenameLayoutDialog(currentName: String, onDismiss: () -> Unit, onRen
     )
 }
 
-/** The keypad's widest row: ten keys, Q to P. */
 private const val KEYPAD_COLUMNS = 10
 
 /**
- * The keys [KeypadPreview] draws, row by row, by Android key code. A physical keypad reports each
- * key by its QWERTY position whatever its caps say, so the three letter rows are Q–P, A–L and
- * Z–M; the KEY2's $ key (KEYCODE_4, after M) joins the bottom row when the layout names it, and
- * any other key the layout names (Thai's 0 key) gets a row of its own, in document order.
+ * Rows of Android key codes for [KeypadPreview]. A physical keypad reports keys by QWERTY position,
+ * so rows are Q–P, A–L, Z–M; the $ key (KEYCODE_4) joins the bottom row when named, and any other
+ * named key (Thai's 0 key) gets its own row in document order.
  */
 internal fun keypadRows(layout: LetterLayout): List<List<Int>> {
     val rows = mutableListOf(
@@ -530,17 +486,14 @@ internal fun keypadRows(layout: LetterLayout): List<List<Int>> {
 
 private fun letterKeyCode(letter: Char): Int = KeyEvent.KEYCODE_A + (letter - 'A')
 
-/** Whether [name] (trimmed) is one a layout document can carry: not empty, not too long, no control characters. */
+/** Not empty, not too long, no control characters (after trimming). */
 internal fun isValidLayoutName(name: String): Boolean {
     val trimmed = name.trim()
     return trimmed.isNotEmpty() && trimmed.length <= LetterLayoutXml.MAX_NAME_LENGTH &&
         trimmed.none { Character.isISOControl(it) }
 }
 
-/**
- * Stores user layout [layout] under [newName] (trimmed), keeping its id, so every language that
- * chose it keeps it. False when the name is not one a document can carry or the write fails.
- */
+/** Renames a user layout keeping its id; false for an invalid name or a failed write. */
 internal fun renameLayout(registry: LetterLayoutRegistry, layout: LetterLayout, newName: String): Boolean {
     if (layout.origin != LetterLayout.Origin.USER || !isValidLayoutName(newName)) return false
     return try {
@@ -553,15 +506,11 @@ internal fun renameLayout(registry: LetterLayoutRegistry, layout: LetterLayout, 
 }
 
 /**
- * The built-in list in the order the screen shows it: the documents bound to the current
- * keyboard's language first — [chosenId], the one that keyboard would use, at their head — then
- * every other document by name. A document bound to no language belongs to no
- * language, so it sorts with the rest. Names compare the way the reader's language orders them;
- * equal names fall back to the id, so the order never depends on how the files were listed.
+ * Built-in display order: documents bound to the current keyboard's language first ([chosenId] at
+ * their head), then the rest by locale-aware name, ties broken by id.
  *
- * @param keyboardLocale the current keyboard's locale in the app's spelling (`iw`, `pt_BR`), or
- *   null when there is none; matched as [LetterLayout.Binding.matchesLanguage] matches, so a
- *   document bound to `zh_TW` is not a `zh_CN` keyboard's.
+ * @param keyboardLocale current keyboard locale in app spelling (`iw`, `pt_BR`) or null; matched
+ *   like [LetterLayout.Binding.matchesLanguage], so `zh_TW` is not a `zh_CN` keyboard's
  */
 internal fun orderBuiltInLayouts(
     layouts: List<LetterLayout>,
@@ -578,12 +527,9 @@ internal fun orderBuiltInLayouts(
 }
 
 /**
- * A layout row's second line: "German · QWERTZ keypad · 30 keys" — the languages it is bound to
- * (by name; "All keyboards" when none; left out when it is the layout's own name, so "English"
- * reads "26 keys"), the keypad shape or type it is bound to, and how many keys it names. When it is bound to a keypad this phone does not have, a second line says it does
- * nothing here. A phone whose keypad is unknown gets no such line: unknown is not different.
- *
- * @param languageName a language code's display name; the keyboard's own names by default.
+ * A row's second line, e.g. "German · QWERTZ keypad · 30 keys": languages ("All keyboards" when
+ * none), keypad binding, key count. Adds a "does nothing here" line when bound to a keypad this
+ * phone lacks (not when the phone's keypad is unknown).
  */
 internal fun layoutSummary(
     context: Context,
@@ -609,8 +555,7 @@ internal fun layoutSummary(
             binding.keypadType
         }
     }
-    // A layout named for its one language ("English", bound to English) would say the name twice,
-    // title and second line; there the second line starts with what is left.
+    // Drop the language when it repeats the layout's name ("English" reads "26 keys").
     if (parts.first().equals(layout.name.trim(), ignoreCase = true)) parts.removeAt(0)
     val details = if (parts.isEmpty()) {
         context.getString(R.string.settings_pkb_layouts_keys, layout.keyCount)
@@ -625,7 +570,7 @@ internal fun layoutSummary(
     return if (notThisKeypad) details + "\n" + context.getString(R.string.settings_pkb_layouts_other_keypad) else details
 }
 
-/** "iw" → "Hebrew", in the phone's language, the way the keyboard names its languages elsewhere. */
+/** "iw" → "Hebrew", in the phone's language. */
 private fun languageDisplayName(code: String): String = try {
     ResourceLocaleUtils.getSubtypeLocaleDisplayName(code).takeIf { it.isNotBlank() } ?: code
 } catch (e: RuntimeException) {
@@ -633,9 +578,8 @@ private fun languageDisplayName(code: String): String = try {
 }
 
 /**
- * The current keyboard's locale in the app's spelling. Settings can open before the keyboard has
- * been shown in this process; [SubtypeManager] then answers with the phone's language, a fair
- * guess at the keyboard someone opening this screen types with.
+ * The current keyboard's locale in app spelling. Before the keyboard has been shown in this
+ * process, [SubtypeManager] answers with the phone's language.
  */
 private fun currentKeyboardLocale(): String? = try {
     LocaleUtils.localeString(SubtypeManager.getInstance().currentSubtypeLocale)
@@ -643,17 +587,14 @@ private fun currentKeyboardLocale(): String? = try {
     null
 }
 
-/** The current keyboard's layout set (`translit`, `qwerty`, …): a document bound to one applies only there. */
+/** The current keyboard's layout set (`translit`, `qwerty`, …); a document bound to one applies only there. */
 private fun currentKeyboardLayoutSet(): String? = try {
     SubtypeManager.getInstance()?.currentSubtype?.let { ResourceLocaleUtils.getKeyboardLayoutSetName(it) }
 } catch (e: RuntimeException) {
     null
 }
 
-/**
- * Reads the letter layouts in the file at [uri] (one document, or a backup holding some) into the
- * registry. False when the file holds none or cannot be read; nothing is stored then.
- */
+/** Adds the layouts in [uri] (a document or a backup) to the registry; false and nothing stored when none. */
 private suspend fun addFromFile(context: Context, registry: LetterLayoutRegistry, uri: Uri): Boolean {
     val result = BackupOperations.readFrom(context, uri)
     val layouts = (result as? BackupOperations.ReadResult.Ok)?.bundle?.letterLayouts.orEmpty()
@@ -665,7 +606,6 @@ private suspend fun addFromFile(context: Context, registry: LetterLayoutRegistry
     return true
 }
 
-/** Writes built-in [id]'s document to [uri], the file the picker just created. */
 private suspend fun saveBuiltIn(context: Context, registry: LetterLayoutRegistry, id: String, uri: Uri): Boolean =
     withContext(Dispatchers.IO) {
         val layout = registry.builtIn(id) ?: return@withContext false

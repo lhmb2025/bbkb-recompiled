@@ -721,7 +721,6 @@
     <string name="device_config_import_unreadable">Ní cumraíocht gléis é an comhad sin</string>
     <string name="device_config_import_failed">Níorbh fhéidir an comhad sin a iompórtáil</string>
 
-    <!-- OTA app updates -->
     <string name="settings_updates_title">Nuashonruithe</string>
     <string name="settings_updates_summary">Seiceáil an bhfuil leagan nua de BBKB ann</string>
     <string name="settings_update_installed_version_title">Leagan suiteáilte</string>
@@ -755,7 +754,6 @@
     <string name="settings_update_ready_title">Réidh le suiteáil</string>
     <string name="settings_update_version_details">Sonraí an leagain</string>
     <string name="settings_update_unknown_sources_title">Cead a thabhairt do BBKB nuashonruithe a shuiteáil?</string>
-    <!-- Downloadable language packs (core/languagepack) -->
     <string name="language_packs_installed_header">Suiteáilte</string>
     <string name="language_packs_available_header">Ar fáil le híoslódáil</string>
     <string name="language_packs_download">Íoslódáil</string>
@@ -877,7 +875,6 @@
     <string name="settings_voice_stop_on_pause_summary_off">Leanann sé ag éisteacht le linn sosanna go dtí go dtapálann tú an micreafón, nó tar éis leathnóiméad ciúnais</string>
     <string name="voice_status_listening_tap_to_stop">Ag éisteacht&#8230; Tapáil an micreafón chun stopadh</string>
 
-    <!-- Settings text moved out of the code (2026-11) -->
     <string name="settings_common_save">Sábháil</string>
     <string name="settings_common_edit">Cuir in eagar</string>
     <string name="settings_common_back">Siar</string>

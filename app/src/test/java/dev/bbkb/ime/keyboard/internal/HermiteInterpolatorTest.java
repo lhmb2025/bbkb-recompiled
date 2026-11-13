@@ -5,22 +5,10 @@ import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 
 /**
- * Pins the Hermite tangents used to interpolate the drawn gesture trail
- * ({@code GestureStrokeRecognizer.appendAllBatchPoints}).
- *
- * <p>The decompiled {@code setInterval} substituted the local holding the DELTA {@code P2 - P1}
- * where the endpoint {@code P2} belonged in the "P0 available" branch, and where {@code P1}
- * belonged in the mirrored branch. The two symmetric branches at the bottom of the method were
- * correct, which is what made the substitution visible.
- *
- * <p>The effect was visual only — the recogniser's own point list is unaffected — but a tangent
- * that is a function of ABSOLUTE coordinates makes the drawn trail diverge from the finger the
- * further right / further down the keyboard the stroke runs, i.e. worst exactly where the keyboard
- * is widest.
- *
- * <p>Two properties are pinned. Collinear evenly-spaced control points, for which a correct spline
- * must reproduce the straight line exactly; and translation invariance, which is the property the
- * bug actually broke and which holds in every branch.
+ * Pins the Hermite tangents for the drawn gesture trail
+ * ({@code GestureStrokeRecognizer.appendAllBatchPoints}): collinear evenly spaced points reproduce
+ * the line, and the result is translation invariant (tangents use the endpoints, not the delta
+ * {@code P2 - P1}). The effect is visual only; the recogniser's point list is unaffected.
  */
 public class HermiteInterpolatorTest {
 
@@ -62,11 +50,8 @@ public class HermiteInterpolatorTest {
     }
 
     /**
-     * Translating the whole stroke must translate the interpolated point by the same amount. The
-     * decompiled tangents were a function of absolute coordinates, so this failed for any non-zero
-     * offset — and a real swipe is nowhere near the origin.
-     *
-     * <p>{@code minPos = 0}, so the "P0 available" branch computes the tangent at P1.
+     * Translating the stroke translates the interpolated point by the same amount (a real swipe is far
+     * from the origin). {@code minPos = 0}, so the "P0 available" branch computes the tangent at P1.
      */
     @Test
     public void interpolationIsTranslationInvariantWithP0Available() {
@@ -74,9 +59,8 @@ public class HermiteInterpolatorTest {
     }
 
     /**
-     * Same property in the mirrored branch: no P0, so the tangent at P1 is derived by reflecting
-     * the tangent at P2 about the P1 -> P2 vector. This is the branch whose {@code P1} the
-     * decompiled source replaced with the delta.
+     * Same property in the mirrored branch: no P0, so the tangent at P1 is the tangent at P2 reflected
+     * about the P1 -> P2 vector.
      */
     @Test
     public void interpolationIsTranslationInvariantWithoutP0() {

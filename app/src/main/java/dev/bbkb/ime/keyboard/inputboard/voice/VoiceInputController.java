@@ -41,32 +41,26 @@ public class VoiceInputController extends AbstractBoardController<VoiceInputCont
     private static final String ACTION_VOICE_DIALOG_RESULT = "language.mode.not.available.offline.dialog.result";
 
     private boolean mShowing;
-    
-    /* Voice mode state - used for toggle logic (like isInEmojiMode for emoji) */
+
+    /* Latched voice mode, drives the toggle. */
     private boolean isInVoiceMode = false;
-    
-    /*
-     * Toggle voice input on/off. Uses internal state for reliable toggle,
-     * similar to how emoji uses isInEmojiMode.
-     */
+
     public void toggleVoiceInput() {
         if (BuildConfig.DEBUG) android.util.Log.d("VoiceInput", "toggleVoiceInput: isInVoiceMode=" + isInVoiceMode);
         if (isInVoiceMode) {
-            // Currently in voice mode, close it
             if (BuildConfig.DEBUG) android.util.Log.d("VoiceInput", "toggleVoiceInput: closing voice");
             isInVoiceMode = false;
             cancelVoiceInput();
         } else {
-            // Not in voice mode, open it. show() refuses when there is no recognition service and
-            // puts the mode back (onNoRecognitionService), so a refused open latches nothing.
+            // show() puts the mode back when there is no recognition service, so a refused open
+            // latches nothing.
             if (BuildConfig.DEBUG) android.util.Log.d("VoiceInput", "toggleVoiceInput: opening voice");
             isInVoiceMode = true;
             show();
         }
         if (BuildConfig.DEBUG) android.util.Log.d("VoiceInput", "toggleVoiceInput: after, isInVoiceMode=" + isInVoiceMode);
     }
-    
-    /* Check if currently in voice input mode. */
+
     public boolean isInVoiceMode() {
         return isInVoiceMode;
     }
@@ -78,6 +72,7 @@ public class VoiceInputController extends AbstractBoardController<VoiceInputCont
         void onVoicePanelHidden();
     }
 
+    /** @param aVar receives panel shown/hidden events */
     public VoiceInputController(BlackBerryIME blackBerryIME, Listener aVar) {
         super(KEY_CODE, blackBerryIME, aVar);
         this.mContext = blackBerryIME.getApplicationContext();
@@ -85,20 +80,14 @@ public class VoiceInputController extends AbstractBoardController<VoiceInputCont
     }
 
     public void onInputViewCreated(View view) {
-        // Clear stale reference when input view is recreated (theme/config change).
-        // KeyboardSwitcher.createInputView() nulls its voiceInputView and sets a new
-        // ViewStub, but this controller's mVoiceInputView would still point at the old detached
-        // view. Clearing it here ensures lazy inflation targets the new view hierarchy.
+        // The input view was recreated: drop the old detached view so lazy inflation targets the
+        // new ViewStub.
         if (this.mVoiceInputView != null) {
             this.mVoiceInputView.setListener(null);
             this.mVoiceInputView = null;
         }
     }
-    
-    /**
-     * Sets the VoiceInputView reference and listener.
-     * Called when the view is lazily inflated from ViewStub.
-     */
+
     public void setVoiceInputView(VoiceInputView voiceInputView) {
         this.mVoiceInputView = voiceInputView;
         if (this.mVoiceInputView != null) {
@@ -107,7 +96,6 @@ public class VoiceInputController extends AbstractBoardController<VoiceInputCont
     }
 
     public void showVoiceView() {
-        // Ensure voice view is inflated (lazy inflation from ViewStub)
         if (this.mVoiceInputView == null) {
             if (BuildConfig.DEBUG) android.util.Log.d("VoiceInput", "showVoiceView: inflating voice view");
             VoiceInputView view = dev.bbkb.ime.keyboard.KeyboardSwitcher.getInstance().getVoiceInputView();
@@ -128,10 +116,7 @@ public class VoiceInputController extends AbstractBoardController<VoiceInputCont
         this.listener.onVoicePanelShown();
         this.mVoiceInputView.show();
         this.mShowing = false;
-        
-        // Only auto-start listening if the setting is enabled
-        // Through PrefsManager, like every other site in this package - it exists
-        // precisely to avoid repeated getDefaultSharedPreferences() calls (audit IB-21).
+
         boolean autoStart = SettingsManager.isVoiceInputAutoStart(
             dev.bbkb.ime.core.settings.PrefsManager.INSTANCE.getPrefs(this.mContext));
         if (autoStart) {
@@ -169,9 +154,7 @@ public class VoiceInputController extends AbstractBoardController<VoiceInputCont
             this.mVoiceInputView.setOnClickListener(null);
             this.mVoiceInputView = null;
         }
-        // The dialog listener used to be unsubscribed only from inside its own
-        // handler, so a dialog dismissed without posting left it registered on the
-        // process-wide event bus forever (audit IB-8).
+        // A dialog dismissed without posting would otherwise leave the listener on the bus.
         unsubscribeDialogListener();
         this.mRecognitionManager.destroy();
     }
@@ -203,8 +186,7 @@ public class VoiceInputController extends AbstractBoardController<VoiceInputCont
             return;
         }
         if (!VoiceRecognitionAvailability.hasRecognitionService(this.mContext)) {
-            // The service went away while the board was up: say so instead of starting a
-            // session the platform can only fail.
+            // The service went away while the board was up: say so instead of starting a doomed session.
             noticeNoRecognitionService();
             return;
         }
@@ -229,9 +211,10 @@ public class VoiceInputController extends AbstractBoardController<VoiceInputCont
     }
 
     /**
-     * The on-screen mic while listening: finish and keep what was heard. (The mic key and the
-     * board's close path go through {@link #cancelVoiceInput}, which discards — that is a close,
-     * not a stop.)
+     * The on-screen mic while listening: finish and keep what was heard. The mic key and close
+     * path use {@link #cancelVoiceInput}, which discards.
+     *
+     * @param aVar the recognizer's current mode
      */
     private boolean stopIfListening(VoiceRecognitionManager.Mode aVar) {
         if (aVar == VoiceRecognitionManager.Mode.NONE) {
@@ -241,6 +224,7 @@ public class VoiceInputController extends AbstractBoardController<VoiceInputCont
         return true;
     }
 
+    /** @param str the final transcription */
     @Override
     public void onDictationResult(String str) {
         BlackBerryIME blackBerryIME = this.ime;
@@ -251,6 +235,10 @@ public class VoiceInputController extends AbstractBoardController<VoiceInputCont
         this.ime.uiUpdateHandler.postCommitText(str + strM4483c);
     }
 
+    /**
+     * @param aVar the recognizer's new mode
+     * @param i the status passed through to {@code VoiceInputView.updateState}
+     */
     @Override
     public void onStateChanged(VoiceRecognitionManager.Mode aVar, int i) {
         if (hasView()) {
@@ -261,6 +249,10 @@ public class VoiceInputController extends AbstractBoardController<VoiceInputCont
     @Override
     public void onPermissionNeeded() {
         new PermissionRequestHandler(this.mContext, new PermissionRequestHandler.Callback() {
+            /**
+             * @param str the permission asked for
+             * @param cVar whether it was granted
+             */
             @Override
             public void onPermissionResult(String str, PermissionRequestHandler.Result cVar) {
                 boolean z = cVar == PermissionRequestHandler.Result.PERMISSION_GRANTED;
@@ -286,9 +278,8 @@ public class VoiceInputController extends AbstractBoardController<VoiceInputCont
     }
 
     /**
-     * The app chosen as the speech recognizer has the microphone but would not serve this keyboard
-     * (KEY2, 2026-10-08: Claude's service, with its microphone granted). Only another recognizer
-     * can help, so the board says so.
+     * The app chosen as the speech recognizer has the microphone but would not serve this keyboard.
+     * Only another recognizer can help, so the board says so.
      */
     @Override
     public void onRecognizerRefused(String appLabel) {
@@ -297,7 +288,6 @@ public class VoiceInputController extends AbstractBoardController<VoiceInputCont
         }
     }
 
-    /** Drops the language-pack dialog listener from the process-wide event bus. */
     private void unsubscribeDialogListener() {
         if (this.mEventListener != null) {
             InAppEventBus.getInstance().unsubscribe(ACTION_VOICE_DIALOG_RESULT, this.mEventListener);
@@ -317,10 +307,8 @@ public class VoiceInputController extends AbstractBoardController<VoiceInputCont
                     return;
                 }
                 try {
-                    // VoiceInputDialog posts this event for EVERY outcome, CANCEL and
-                    // onUserLeaveHint included, so branching on the action alone
-                    // launched the Google language-pack installer even when the user
-                    // tapped Cancel (audit IB-8).
+                    // VoiceInputDialog posts this for every outcome (Cancel and onUserLeaveHint
+                    // included); only OK launches the installer.
                     int result = extras == null
                             ? -1
                             : extras.getInt(VoiceInputDialog.EXTRA_RESULT_CODE, -1);
@@ -330,9 +318,8 @@ public class VoiceInputController extends AbstractBoardController<VoiceInputCont
                     Intent intent2 = new Intent(Intent.ACTION_MAIN);
                     intent2.setComponent(VoiceInputController.LANG_PACK_INSTALL_COMPONENT);
                     intent2.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    // The Google installer component is old and may be absent or invisible to
-                    // this app; launching it blind threw, or opened nothing. Fall back to the
-                    // in-board message that names the language instead.
+                    // The Google installer may be absent or invisible to this app: fall back to the
+                    // in-board message naming the language.
                     if (intent2.resolveActivity(VoiceInputController.this.mContext.getPackageManager()) == null) {
                         VoiceInputController.this.onLanguageNotSupported(VoiceInputController.this.mRecognitionManager.getLastLanguageTag());
                         return;
@@ -343,9 +330,7 @@ public class VoiceInputController extends AbstractBoardController<VoiceInputCont
                         VoiceInputController.this.onLanguageNotSupported(VoiceInputController.this.mRecognitionManager.getLastLanguageTag());
                     }
                 } finally {
-                    // Always unsubscribe: this listener is held by the process-wide
-                    // InAppEventBus singleton and retains the controller (and through
-                    // it the IME) for as long as it stays registered.
+                    // The bus singleton would otherwise retain the controller and the IME.
                     VoiceInputController.this.unsubscribeDialogListener();
                 }
             }
@@ -396,10 +381,8 @@ public class VoiceInputController extends AbstractBoardController<VoiceInputCont
     }
 
     /**
-     * No recognition service (KEY2, 2026-10-06: the mic key opened a board the UIM bar then hid,
-     * voice mode stayed latched on, and the user was told nothing). If the board is up it stays up,
-     * idle, and says so; otherwise nothing opens, voice mode goes back off so the next press is a
-     * fresh open rather than a "close" of nothing, and the notice appears on screen instead.
+     * No recognition service. A board that is up stays up, idle, and says so; otherwise voice mode
+     * goes back off (so the next press is a fresh open) and a toast says so.
      *
      * @return whether the board is up (and so still open)
      */
@@ -433,7 +416,6 @@ public class VoiceInputController extends AbstractBoardController<VoiceInputCont
 
     @Override
     public void onRecognitionError(int messageRes) {
-        // Only while the board is up: a session whose board has gone has no one to tell.
         if (isViewShowing()) {
             showNotice(messageRes);
         }
@@ -475,26 +457,20 @@ public class VoiceInputController extends AbstractBoardController<VoiceInputCont
     }
 
     /**
-     * Overrides the {@link AbstractBoardController} guard rather than implementing {@link #onHide()}:
-     * this must run even when the view is not showing. A recognizer session can outlive its view
-     * (§5.6 item 5), and UIM-11 was exactly the case where a lifecycle-path hide skipped the cancel
-     * and left the microphone held.
+     * Overrides the {@link AbstractBoardController} guard: must cancel even when the view is not
+     * showing, since a recognizer session can outlive its view and would keep the microphone.
      */
     @Override
     public void hide() {
-        // Don't reset voice mode if we're in the middle of showing (mShowing flag)
-        // This prevents the show process from accidentally resetting the state
+        // A hide raised by the show itself must not reset voice mode.
         if (this.mShowing) {
             if (BuildConfig.DEBUG) android.util.Log.d("VoiceInput", "hide() called during show - not resetting voice mode");
             return;
         }
-        // UIM-11 fix: Always cancel recognition before hiding.
-        // This guarantees the speech recognizer stops and releases the mic,
-        // even when hide() is called from lifecycle paths (onWindowHidden and related lifecycle paths).
         cancelVoiceInput();
     }
 
-    /** Unused: {@link #hide()} is overridden outright, for the reason documented on it. */
+    /** Unused: {@link #hide()} is overridden outright. */
     @Override
     protected void onHide() {
         cancelVoiceInput();
@@ -514,8 +490,7 @@ public class VoiceInputController extends AbstractBoardController<VoiceInputCont
         boolean voiceEnabled = SettingsManager.getInstance().getSettingsValues().isVoiceInputEnabled;
         if (BuildConfig.DEBUG) android.util.Log.d("VoiceInput", "isVoiceInputEnabled=" + voiceEnabled);
         if (voiceEnabled) {
-            // Every opener comes through here: the mic key's toggle, the on-screen -27/-7 key and
-            // the UIM bar. No service means no board, and the notice instead.
+            // Every opener (mic key, on-screen -27/-7 key, UIM bar) comes through here.
             if (!isViewShowing() && !ensureRecognitionService()) {
                 return;
             }
@@ -527,7 +502,7 @@ public class VoiceInputController extends AbstractBoardController<VoiceInputCont
         }
     }
 
-    /** Unused: {@link #show()} is overridden outright, for the reason documented on it. */
+    /** Unused: {@link #show()} is overridden outright. */
     @Override
     protected void onShow() {
         showVoiceView();
@@ -542,22 +517,16 @@ public class VoiceInputController extends AbstractBoardController<VoiceInputCont
     public boolean isEnabled() {
         return InputMethodHelper.isVoiceInputAvailable();
     }
-    
-    /**
-     * Cancel any active voice recognition and hide the voice input view.
-     * Called when user explicitly closes the voice input (e.g., pressing mic key again).
-     */
+
+    /** Cancel recognition (discarding it) and hide the view: an explicit close. */
     public void cancelVoiceInput() {
         Logger.debug("VoiceInput", "Canceling voice input");
-        
-        // Reset voice mode state
+
         isInVoiceMode = false;
-        
-        // Cancel the speech recognizer
+
         if (this.mRecognitionManager != null) {
-            this.mRecognitionManager.stopListening();  // Stops and cancels recognition
+            this.mRecognitionManager.stopListening();
         }
-        // Hide the view if showing
         if (hasView() && this.mVoiceInputView.isShowing()) {
             this.mVoiceInputView.hide();
             if (this.listener != null) {

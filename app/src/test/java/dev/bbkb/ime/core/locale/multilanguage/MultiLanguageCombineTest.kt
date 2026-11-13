@@ -8,9 +8,8 @@ import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
 
 /**
- * Which keyboard languages may share one keyboard as extra prediction languages: the same script.
- * Until 2026-09-28 only ASCII-capable subtypes were candidates, so Russian could not add
- * Ukrainian and Hindi could not add Marathi although they share a layout.
+ * Which keyboard languages may share one keyboard as extra prediction languages: any of the same
+ * script, not only ASCII-capable ones (Russian with Ukrainian, Hindi with Marathi).
  */
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [34], manifest = Config.NONE)

@@ -21,16 +21,9 @@ import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
 
 /**
- * Executable proof for `EB-6` (docs/2026-07_pipeline-audit-findings_reference.md).
- *
- * `CommitController` documents an invariant at :312-318 — a commit must ALWAYS transition the
- * engine out of the just-typed word, via either `selectionListSelectWord` or `clear()`. With no
- * active learner, `learnWithActiveLearner` returned having done neither, leaving the engine still
- * holding the committed word so the next prediction request could score against it.
- *
- * That state is reachable when the first DLM load fails: the retry check latched
- * "initialised" *before* attempting the load, so activation was never retried for the process
- * lifetime. Both halves are fixed; this pins the invariant half.
+ * A commit must always move the engine out of the just-typed word (`selectionListSelectWord` or
+ * `clear()`), even with no active learner, or the next prediction scores against it. Also pins
+ * that the engine learner and the personal dictionary are separate stores.
  */
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [34], manifest = Config.NONE, instrumentedPackages = ["com.blackberry.nuanceshim"])
@@ -71,8 +64,7 @@ class CommitTransitionInvariantTest {
 
     @Test
     fun noActiveLearner_stillEndsTheWordInTheEngine() {
-        // No learner is registered, so getActiveLearner() returns null. The commit must still
-        // transition the engine out of the word — previously this did nothing at all.
+        // No learner is registered, so getActiveLearner() returns null; the commit must still clear.
         manager.learn(suggestion())
 
         verify(engine).clear()
@@ -80,19 +72,15 @@ class CommitTransitionInvariantTest {
 
     @Test
     fun nullWordInfo_stillEndsTheWordInTheEngine() {
-        // The pre-existing branch, pinned so the new else cannot be "simplified" into breaking it.
+        // Pinned so the no-learner else cannot be "simplified" into breaking this branch.
         manager.learn(null)
 
         verify(engine).clear()
     }
 
-    // ---- §5.5 step 10: the engine learner and the personal dictionary are separate stores ----
-
     /**
-     * The engine learner has no store of its own to flush — everything it learns lives in the
-     * native dynamic model, which NuanceSDK exposes no save entry point for. `save()` existed only
-     * to call `DictionaryManager.save()`, i.e. flushing the engine learner wrote the BASL personal
-     * dictionary. If that method comes back, the cross-store call has come back with it.
+     * The engine learner has no store to flush (the native DLM has no save entry point). A `save()`
+     * here would mean flushing the engine learner writes the BASL personal dictionary again.
      */
     @Test
     fun engineLearnerDeclaresNoSaveOfItsOwn() {
@@ -105,15 +93,10 @@ class CommitTransitionInvariantTest {
         )
     }
 
-    /**
-     * The flush used to sit behind `getActiveLearner() != null`, so a user's word substitutions and
-     * personal words were written only if the engine's DLM happened to have loaded and activated a
-     * learner. That precondition has nothing to do with the personal dictionary; with no learner
-     * active the store must still be flushed.
-     */
+    /** The personal dictionary is flushed whether or not an engine learner is active. */
     @Test
     fun personalDictionaryFlushIsNotGatedOnAnActiveEngineLearner() {
-        // The Unsafe-allocated shell has no learner at all, which is the old early-return case.
+        // The Unsafe-allocated shell has no learner at all.
         assertNull(
             "precondition: no learner is active on the shell",
             DynamicLearningManager::class.java.getDeclaredField("personalLearner")

@@ -14,16 +14,12 @@ import java.util.List;
 import java.util.concurrent.Executor;
 
 /**
- * What to do when a recogniser refuses a language: ask it which languages it has, can use online
- * or can download (Android 13+), and work out whether ours is usable under another tag, is
- * already on its way, or can be downloaded now.
+ * What to do when a recogniser refuses a language: ask what it has, can use online or can
+ * download (Android 13+), and decide whether ours is usable under another tag, on its way, or
+ * downloadable now.
  *
- * <p>The case that started this (KEY2, 2026-11-10): Google's on-device recogniser answered a
- * French dictation with "Failed to get language pack of required locale", and all the board could
- * say was that French is not available.
- *
- * <p>Every use of an Android 13+ class is in here, so nothing in the rest of the voice code loads
- * one on an older phone; {@link VoiceRecognitionManager} only calls in after checking the version.
+ * <p>Every Android 13+ class use is in here so older phones never load one;
+ * {@link VoiceRecognitionManager} calls in only after checking the version.
  */
 @RequiresApi(Build.VERSION_CODES.TIRAMISU)
 final class VoiceLanguageSupport {
@@ -60,10 +56,8 @@ final class VoiceLanguageSupport {
     }
 
     /**
-     * The decision, from the four lists a recogniser reports. Installed and online languages are
-     * usable now; of those, only one under a <em>different</em> tag is an answer, because the
-     * recogniser has just refused the tag we sent. An installed regional variant is used rather
-     * than downloading the exact one.
+     * Of the installed and online languages, only one under a different tag is an answer, since
+     * the recogniser just refused ours. An installed regional variant beats downloading the exact one.
      *
      * @param wanted the tag that was refused
      * @param likelyRegion the region the language is most likely meant in ("FR" for "fr"), or null
@@ -152,9 +146,8 @@ final class VoiceLanguageSupport {
     }
 
     /**
-     * Asks the recogniser to download the language {@code request} names. The recogniser decides
-     * how: straight away, later (on Wi-Fi, say), or after asking the user itself. Android 14+
-     * reports how it goes; Android 13 has no listener, so the request is reported as scheduled.
+     * Asks the recogniser to download the language {@code request} names, now, later or after
+     * asking the user. Android 13 has no listener, so the request is reported as scheduled.
      */
     static void download(SpeechRecognizer recognizer, Intent request, Executor executor,
             DownloadListener listener) {

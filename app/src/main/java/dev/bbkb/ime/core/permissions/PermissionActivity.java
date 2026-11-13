@@ -26,8 +26,7 @@ import dev.bbkb.ime.core.shared.Logger;
  * {@link PermissionRequestHandler} starts this translucent activity, which explains why, asks the
  * system, reports one {@link Result} to the waiting {@link Callback} and finishes.
  *
- * <p>The decisions, unchanged from the old RationaleDialog + PermissionActivity pair
- * ("blocked" = the default-prefs boolean named after the permission; "explains" =
+ * <p>Decisions ("blocked" = the default-prefs boolean named after the permission; "explains" =
  * {@code shouldShowRequestPermissionRationale}):
  * <pre>
  *  permission already granted               -> nothing starts, no callback (PermissionRequestHandler)
@@ -48,12 +47,10 @@ import dev.bbkb.ime.core.shared.Logger;
  * The contacts caller additionally keeps its own "has asked" preference: set before asking,
  * cleared again only on OTHER.
  *
- * <p>Result channel: one request at a time lives in {@link #sPending}, matched by a token in the
- * intent. Exactly one callback per request: a newer request delivers OTHER to the one it
- * replaces (its activity is cleared from the task), and an activity that finishes without an
- * answer delivers OTHER from {@link #onDestroy}. After a configuration change the activity keeps
- * waiting (the result registry redelivers the system answer); after process death the recreated
- * activity finds no matching request and finishes quietly, since nobody is left waiting.
+ * <p>One request at a time lives in {@link #sPending}, matched by an intent token, with exactly one
+ * callback: a newer request delivers OTHER to the one it replaces, and finishing without an answer
+ * delivers OTHER from {@link #onDestroy}. A configuration change keeps waiting (the result registry
+ * redelivers); after process death the recreated activity finds no request and finishes quietly.
  */
 public final class PermissionActivity extends ComponentActivity {
 
@@ -198,7 +195,7 @@ public final class PermissionActivity extends ComponentActivity {
     private void onRequestResult(Boolean granted) {
         Result result = resultOfRequest(granted, !granted && shouldShowRequestPermissionRationale(permission));
         if (result == Result.PERMISSION_BLOCKED) {
-            // apply(), not commit(): main thread, and nothing reads the result of the write.
+            // apply(): main thread, and nothing reads the result.
             PrefsManager.INSTANCE.getPrefs(this).edit().putBoolean(permission, true).apply();
         }
         finishWith(result);

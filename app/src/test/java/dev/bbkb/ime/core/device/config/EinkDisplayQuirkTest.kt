@@ -12,9 +12,8 @@ import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
 
 /**
- * D-3: the e-ink flag (DeviceProfile.isEinkDisplay) comes from the `eink-display` quirk, and only
- * the Minimal Phone's config declares it, so the keyboard keeps its press highlights, fades and
- * gesture trail on every other device.
+ * DeviceProfile.isEinkDisplay comes from the `eink-display` quirk, which only the Minimal Phone
+ * declares, so every other device keeps press highlights, fades and the gesture trail.
  */
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [34], manifest = Config.NONE)

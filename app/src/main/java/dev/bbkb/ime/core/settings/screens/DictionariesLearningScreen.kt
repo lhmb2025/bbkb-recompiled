@@ -12,15 +12,7 @@ import dev.bbkb.ime.core.settings.ui.groupBreak
 import dev.bbkb.ime.core.settings.ui.boolPref
 import dev.bbkb.ime.R
 
-/**
- * Dictionaries & Learning Settings (Subpage 3 of Correction & Learning)
- * User-managed vocabulary and learning controls
- *
- * Provides access to three dictionary management screens:
- * 1. User Dictionary - Personal words (BASL-backed)
- * 2. Text Shortcuts - Word substitutions with macro support
- * 3. Learned Words - Nuance DLM words with promote feature
- */
+/** Links to User dictionary (BASL), Text shortcuts and Learned words (Nuance DLM). */
 @Composable
 fun DictionariesLearningScreen(
     onNavigateToUserDictionary: () -> Unit,
@@ -37,11 +29,8 @@ fun DictionariesLearningScreen(
             modifier = Modifier.settingsSearchAnchor("dynamic_learning"),
         ),
         groupBreak(),
-        // SettingsValues.showUiToAcceptTypedWord: after backspace undoes an auto-correction, the
-        // word you typed is highlighted and a small button beside it adds it to the user
-        // dictionary (RecorrectionController.revertAutoCorrection + TextDecorator). It lived on
-        // the Debug screen as "Typed word accept button", described as a suggestion-bar button,
-        // which it never was.
+        // SettingsValues.showUiToAcceptTypedWord: after backspace undoes an auto-correction, a
+        // button beside the typed word adds it to the user dictionary (TextDecorator).
         Toggle(
             store = boolPref("pref_show_ui_to_accept_typed_word", true),
             title = R.string.settings_dict_add_reverted_words_title,
@@ -49,7 +38,6 @@ fun DictionariesLearningScreen(
             icon = drawableIcon(R.drawable.ic_settings_m_playlist_add),
             modifier = Modifier.settingsSearchAnchor("pref_show_ui_to_accept_typed_word"),
         ),
-        // The three word lists, together in a card of their own.
         groupBreak(),
         Nav(
             title = R.string.settings_dict_user_dictionary_title,

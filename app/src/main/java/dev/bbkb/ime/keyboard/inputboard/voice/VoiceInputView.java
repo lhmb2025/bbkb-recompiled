@@ -78,9 +78,7 @@ public class VoiceInputView extends RelativeLayout {
 
     public void show() {
         setVisibility(View.VISIBLE);
-        // Ensure this view is drawn on top of MainKeyboardView and slideboards
-        // in keyboard_frame. Without this, the keyboard can visually cover the
-        // voice board on PKB devices when the VKB is enabled.
+        // Otherwise MainKeyboardView can cover the board on PKB devices with the VKB enabled.
         bringToFront();
     }
 
@@ -113,31 +111,25 @@ public class VoiceInputView extends RelativeLayout {
             }
         });
         initButtonMaps();
-        
-        // Apply colors from KeyboardColorManager
+
         if (KeyboardColorManager.INSTANCE.isInitialized()) {
             boolean modernBoards = KeyboardColorManager.styleSpec().getModernBoards();
-            // Modern boards share the keyboard's background surface; legacy keyColor.
             setBackgroundColor(modernBoards
                     ? KeyboardColorManager.INSTANCE.getBackgroundColor()
                     : KeyboardColorManager.INSTANCE.getKeyColor());
 
-            // Tint all buttons with iconColorAlt (lighter secondary color)
             int iconColorAlt = KeyboardColorManager.INSTANCE.getIconColorAlt();
-            KeyboardColorManager.INSTANCE.tint(this.mVoiceButton, iconColorAlt); // voice input button
-            KeyboardColorManager.INSTANCE.tint(this.mDeleteButton, iconColorAlt); // delete button
-            KeyboardColorManager.INSTANCE.tint(this.mSettingsButton, iconColorAlt); // settings button
+            KeyboardColorManager.INSTANCE.tint(this.mVoiceButton, iconColorAlt);
+            KeyboardColorManager.INSTANCE.tint(this.mDeleteButton, iconColorAlt);
+            KeyboardColorManager.INSTANCE.tint(this.mSettingsButton, iconColorAlt);
 
             if (modernBoards) {
-                // Accent mic pill: the mic drawable is a filled circle with the glyph
-                // knocked out, so tinting it accent yields an accent circle with a
-                // board-colored glyph. The background gets the same tint so the
-                // listening-animation circle matches.
+                // The mic drawable is a filled circle with the glyph knocked out; the background
+                // gets the same accent tint so the listening-animation circle matches.
                 int accent = KeyboardColorManager.INSTANCE.getAccentColor();
                 KeyboardColorManager.INSTANCE.tint(this.mVoiceButton, accent);
                 this.mVoiceButton.setBackgroundTintList(
                         android.content.res.ColorStateList.valueOf(accent));
-                // Side buttons: 48dp touch targets + rounded state-layer press.
                 applyMaterialSideButton(this.mSettingsButton);
                 applyMaterialSideButton(this.mDeleteButton);
                 setupMaterialWidgets();
@@ -160,9 +152,7 @@ public class VoiceInputView extends RelativeLayout {
         int hintColor = KeyboardColorManager.INSTANCE.getHintColor(KeyboardColorManager.ALPHA_FULL);
         float density = getResources().getDisplayMetrics().density;
 
-        // Shrink the mic from its 100dp asset size so the status/waveform stack fits
-        // every keyboard height (the board matches the alphabet keyboard's height,
-        // which can be as short as extra-compact).
+        // Shrink the 100dp mic so the status/waveform stack fits even an extra-compact keyboard height.
         int micSize = (int) (84 * density);
         android.view.ViewGroup.LayoutParams micParams = this.mVoiceButton.getLayoutParams();
         micParams.width = micSize;
@@ -230,7 +220,7 @@ public class VoiceInputView extends RelativeLayout {
         return showStatusMessage(getContext().getText(messageRes));
     }
 
-    /** {@link #showStatusMessage(int)} for a message with the app's name (or anything else) in it. */
+    /** {@link #showStatusMessage(int)} for a formatted message. */
     public boolean showStatusMessage(CharSequence message) {
         if (this.mStatusText == null) {
             return false;
@@ -242,7 +232,6 @@ public class VoiceInputView extends RelativeLayout {
         return true;
     }
 
-    /** Audio level from the recognizer (Material waveform). */
     public void setAudioLevel(float rmsDb) {
         if (this.mWaveform != null) {
             this.mWaveform.setLevel(rmsDb);
@@ -250,10 +239,8 @@ public class VoiceInputView extends RelativeLayout {
     }
 
     /**
-     * Side margins for the status line: 24dp, or enough to clear the language chip in the
-     * top corner when it is showing. The same on both sides, so the lines stay centred on the
-     * mic. A message that wraps (the "isn't available for French" one) used to run edge to
-     * edge and under the chip.
+     * Status-line side margins: 24dp, or enough to clear the language chip when it shows. Equal
+     * on both sides so wrapped lines stay centred on the mic.
      */
     private void keepStatusClearOfLanguageChip() {
         if (this.mStatusText == null || this.mLanguageChip == null) {
@@ -277,6 +264,10 @@ public class VoiceInputView extends RelativeLayout {
         }
     }
 
+    /**
+     * @param i width measure spec (ignored: the board sizes itself)
+     * @param i2 height measure spec (ignored)
+     */
     @Override // android.widget.RelativeLayout, android.view.View
     protected void onMeasure(int i, int i2) {
         keepStatusClearOfLanguageChip();
@@ -296,17 +287,24 @@ public class VoiceInputView extends RelativeLayout {
         }, 350L);
     }
 
+    /** @param interfaceC1002a the controller receiving button taps, or null to detach */
     public void setListener(Listener interfaceC1002a) {
         this.mListener = interfaceC1002a;
     }
 
+    /**
+     * @param aVar the recognizer's mode
+     * @param i the recognizer state ({@code VoiceRecognitionManager.STATE_*})
+     */
     public void updateState(VoiceRecognitionManager.Mode aVar, int i) {
         updateState(aVar, i, false);
     }
 
     /**
-     * @param continuous the session keeps listening through pauses ("Stop listening when you
-     *                   pause" off), so the status line says the mic is what ends it
+     * @param aVar the recognizer's mode
+     * @param i the recognizer state ({@code VoiceRecognitionManager.STATE_*})
+     * @param continuous the session keeps listening through pauses, so the status line says the
+     *                   mic is what ends it
      */
     public void updateState(VoiceRecognitionManager.Mode aVar, int i, boolean continuous) {
         this.mContinuous = continuous;
@@ -317,8 +315,6 @@ public class VoiceInputView extends RelativeLayout {
             updateMaterialStatus(false);
         } else if (i == VoiceRecognitionManager.STATE_STARTED
                 || i == VoiceRecognitionManager.STATE_STOPPED) {
-            // Was `(i & 1) != 0` - the same test for the only three states ever sent
-            // (audit IB-16).
             ImageButton imageButton = this.mModeButtons.get(aVar);
             deactivateOthers(imageButton);
             updateButtonIcon(imageButton, true);
@@ -336,24 +332,19 @@ public class VoiceInputView extends RelativeLayout {
             this.mWaveform.setActive(listening);
         }
         if (this.mLanguageChip != null) {
-            // Refresh: the keyboard language may have changed since inflate.
+            // The keyboard language may have changed since inflate.
             this.mLanguageChip.setText(formatRecognitionLocale());
         }
     }
 
-    /**
-     * Audit IB-12: this had an empty body, so the mic button carried no accessibility
-     * state at all across every recognizer transition.
-     *
-     * @param idle true when the recognizer is not listening
-     */
+    /** @param idle true when the recognizer is not listening */
     private void setContentDescriptionMicOnOff(boolean idle) {
         if (this.mVoiceButton != null) {
             this.mVoiceButton.setContentDescription(getContext().getString(listeningStatusRes(!idle)));
         }
     }
 
-    /** Whether the running session is continuous; set with each state update. */
+    /** Set with each state update. */
     private boolean mContinuous;
 
     /** The status line (and the mic's description) for a listening or idle board. */
@@ -365,11 +356,9 @@ public class VoiceInputView extends RelativeLayout {
     }
 
     /**
-     * Audit IB-12: the "active" and "inactive" icon maps both held
-     * {@code ic_inputboard_voice_listen}, so the whole active/inactive decision was a
-     * constant-valued dead branch and setImageResource was a no-op. Only the
-     * background animation distinguishes listening from idle; the foreground glyph is
-     * now set unconditionally.
+     * Only the background animation distinguishes listening from idle; the glyph is constant.
+     *
+     * @param z true while listening
      */
     private void updateButtonIcon(ImageButton imageButton, boolean z) {
         {
@@ -378,10 +367,8 @@ public class VoiceInputView extends RelativeLayout {
             }
             imageButton.setImageResource(R.drawable.ic_inputboard_voice_listen);
             if (KeyboardColorManager.styleSpec().getModernBoards() && imageButton == this.mVoiceButton) {
-                // Modern boards: the pulse is a ring-only drawable so the accent disc's
-                // knocked-out mic keeps showing the board surface. The legacy
-                // animation base carries its own mic glyph, which filled the knockout
-                // and washed the icon out.
+                // Ring-only pulse so the accent disc's knocked-out mic keeps showing the board
+                // surface; the legacy animation carries its own glyph and would fill the knockout.
                 if (z) {
                     imageButton.setBackgroundResource(R.drawable.ic_inputboard_voice_pulse_ring_animation);
                     Drawable ringBackground = imageButton.getBackground();
@@ -393,19 +380,15 @@ public class VoiceInputView extends RelativeLayout {
                 }
                 return;
             }
-            // The idle branch used to inflate the animation drawable and immediately
-            // overwrite it, and stopped that brand-new instance rather than whatever
-            // was actually running. Read the current background first (audit IB-12).
+            // Read the running background first so the idle branch stops the real animation.
             Drawable current = imageButton.getBackground();
             if (imageButton == this.mVoiceButton && z) {
                 imageButton.setBackgroundResource(R.drawable.ic_inputboard_voice_listen_animation);
                 Drawable background = imageButton.getBackground();
-                // Start animation for both AnimationDrawable and AnimatedVectorDrawable
                 if (background instanceof Animatable) {
                     ((Animatable) background).start();
                 }
             } else {
-                // Stop whatever animation is currently running
                 if (current instanceof Animatable) {
                     ((Animatable) current).stop();
                 }
@@ -422,6 +405,10 @@ public class VoiceInputView extends RelativeLayout {
         }
     }
 
+    /**
+     * @param imageButton the button to leave unfaded, or null
+     * @param z true to fade the others (listening), false to restore them
+     */
     private void fadeOthers(ImageButton imageButton, boolean z) {
         Iterator<ImageButton> it = this.mModeButtons.values().iterator();
         while (true) {
@@ -438,8 +425,6 @@ public class VoiceInputView extends RelativeLayout {
     }
 
     private void initButtonMaps() {
-        // The map is read-only; the double-brace form here was three anonymous HashMap
-        // subclasses (audit IB-12).
         this.mModeButtons = java.util.Collections.singletonMap(
                 VoiceRecognitionManager.Mode.DICTATION, this.mVoiceButton);
     }

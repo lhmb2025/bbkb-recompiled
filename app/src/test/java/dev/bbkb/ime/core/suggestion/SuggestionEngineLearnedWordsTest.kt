@@ -20,9 +20,9 @@ import java.util.ArrayList
 import java.util.Locale
 
 /**
- * "Suggest learned words" (2026-11-03): off, the candidates the engine took from its learned model
- * are left out of corrections and predictions, except the personal dictionary's words. The source
- * comes with the engine's list (WordInfo.fromLearnedModel), so nothing is read per request.
+ * "Suggest learned words" off: candidates from the engine's learned model are left out of
+ * corrections and predictions, except personal-dictionary words. The source flag comes with the
+ * engine's list (WordInfo.fromLearnedModel), so nothing is read per request.
  */
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [34], manifest = Config.NONE, instrumentedPackages = ["com.blackberry.nuanceshim"])

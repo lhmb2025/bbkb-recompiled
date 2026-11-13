@@ -22,13 +22,9 @@ import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
 
 /**
- * [UpdateChecker] against a real manifest served by [LocalHttpServer], with the clock, the
- * connectivity flag and the channel injected.
- *
- * The one rule worth stating up front: **there is no debug channel**. The published manifest's
- * `app` section carries `release` only, so a debug build has nothing to compare itself against
- * and must say so as a fact — [UpdateStatus.NoChannel] — without spending a network call finding
- * out. Half the cases here are about that and about the debug-only override that gets round it.
+ * [UpdateChecker] against a manifest served by [LocalHttpServer], with clock, connectivity and
+ * channel injected. There is no debug channel (the manifest's `app` has `release` only), so a debug
+ * build answers [UpdateStatus.NoChannel] without a network call unless the debug override is set.
  */
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [34], manifest = Config.NONE)
@@ -87,8 +83,6 @@ class UpdateCheckerTest {
         clock = { now },
     )
 
-    // ── the channel rule ───────────────────────────────────────────────────────
-
     @Test
     fun aDebugBuildWithNoOverrideHasNoChannelAndMakesNoRequest() {
         channel = "debug"
@@ -114,8 +108,6 @@ class UpdateCheckerTest {
         assertEquals(UpdateStatus.NoChannel, status)
         assertEquals("the manifest still had to be read", 1, server.requestCount)
     }
-
-    // ── the comparison ─────────────────────────────────────────────────────────
 
     @Test
     fun aStrictlyNewerVersionIsAvailable() {
@@ -163,8 +155,6 @@ class UpdateCheckerTest {
         assertNull("and nothing on record to offer", strict.lastKnownAvailable())
     }
 
-    // ── failure keeps what the last good check found ───────────────────────────
-
     @Test
     fun aFailedCheckKeepsTheLastKnownUpdate() {
         val checker = checker(installed = 1400)
@@ -189,8 +179,6 @@ class UpdateCheckerTest {
         assertTrue("expected OfflineException, got ${status.error}", status.error is OfflineException)
         assertNull(status.lastKnown)
     }
-
-    // ── persistence: the UI renders without a network call ────────────────────
 
     @Test
     fun theOutcomeIsPersistedAndRebuiltFromPreferences() {
@@ -241,8 +229,6 @@ class UpdateCheckerTest {
         assertEquals(UpdateStatus.NoChannel, checker().lastOutcome())
     }
 
-    // ── seen-version suppression ──────────────────────────────────────────────
-
     @Test
     fun aVersionAlreadySeenIsNotWorthNotifyingAgain() {
         val checker = checker(installed = 1400)
@@ -275,8 +261,6 @@ class UpdateCheckerTest {
         assertFalse(checker.shouldNotify(UpdateStatus.Failed(OfflineException(), null)))
     }
 
-    // ── the channel predicate itself ──────────────────────────────────────────
-
     @Test
     fun onlyTheDebugBuildTypeIsAnUnpublishedChannel() {
         assertTrue(UpdateChecker.channelIsPublished("release"))
@@ -299,7 +283,7 @@ class UpdateCheckerTest {
     }
 
     private companion object {
-        /** Schema 1, `app` with a `release` entry only — the shape that is actually published. */
+        /** Schema 1, `app` with a `release` entry only, the shape that is actually published. */
         val MANIFEST = """
             {
               "schema": 1,

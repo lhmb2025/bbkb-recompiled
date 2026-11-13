@@ -25,13 +25,9 @@ import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
 
 /**
- * Unit tests for [InputLogic]'s hardware key-event tracking (the guard that separates
- * genuine auto-repeats from spurious repeats delivered before the IME had focus) and the
- * NuanceSDK gesture auto-commit callback ([InputLogic.onAutoCommitWord]).
- *
- * [NuanceSDKManager] is static-mocked so construction doesn't touch the native engine;
- * the host IME is a Mockito mock (inline mock-maker handles the final Kotlin class), and
- * the editor is a scripted [InputConnection] like in RichInputConnectionTest.
+ * Pins [InputLogic]'s hardware key-event tracking (genuine auto-repeats vs repeats delivered before
+ * the IME had focus) and the gesture auto-commit callback ([InputLogic.onAutoCommitWord]).
+ * [NuanceSDKManager] is static-mocked so construction does not touch the native engine.
  */
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [34], manifest = Config.NONE, instrumentedPackages = ["com.blackberry.nuanceshim"])
@@ -68,8 +64,6 @@ class InputLogicKeyTrackingTest {
 
     private fun keyEvent(keyCode: Int, repeat: Int = 0, deviceId: Int = 1): KeyEvent =
         KeyEvent(0L, 0L, KeyEvent.ACTION_DOWN, keyCode, repeat, 0, deviceId, 0)
-
-    // ── key-event tracking ───────────────────────────────────────────────────
 
     @Test
     fun trackedKey_isReportedTracked_untilUntracked() {
@@ -120,19 +114,13 @@ class InputLogicKeyTrackingTest {
 
     @Test
     fun deviceIdAndKeyCodeDoNotAlias() {
-        // Audit TI-4: getKeyEventId was `(getDeviceId() << 32) + keyCode`, and getDeviceId()
-        // returns an Int, so `<< 32` shifted by 32 % 32 == 0 and the id was just
-        // deviceId + keyCode. Device 1 / keycode 66 then collided with device 2 / keycode 65 —
-        // a key-up on one device untracked the other device's held key. The pair above does not
-        // expose it because the two ids differ by the device id alone; this pair does.
-        // device 1 + KEYCODE_ENTER (66) == 67 == device 2 + KEYCODE_ENVELOPE (65) under the old id.
+        // The id must be a Long shift: with an Int `<< 32` it collapses to deviceId + keyCode, and
+        // device 1 + KEYCODE_ENTER (66) == 67 == device 2 + KEYCODE_ENVELOPE (65).
         inputLogic.trackKeyEvent(keyEvent(KeyEvent.KEYCODE_ENTER, deviceId = 1))
         assertFalse(inputLogic.isKeyTracked(keyEvent(KeyEvent.KEYCODE_ENVELOPE, deviceId = 2)))
         assertFalse(inputLogic.untrackKeyEvent(keyEvent(KeyEvent.KEYCODE_ENVELOPE, deviceId = 2)))
         assertTrue(inputLogic.isKeyTracked(keyEvent(KeyEvent.KEYCODE_ENTER, deviceId = 1)))
     }
-
-    // ── NuanceSDK gesture auto-commit callback ───────────────────────────────
 
     @Test
     fun gestureAutoCommit_onMainThread_commitsWordToEditor() {

@@ -16,7 +16,7 @@
         android:ellipsize="middle"
         android:maxLines="1" />
 
-    <!-- More suggestions indicator (3-dot icon) - shown on center suggestion when more suggestions available -->
+    <!-- "More suggestions" dots, shown on the center suggestion -->
     <ImageView
         android:id="@+id/more_suggestions_indicator"
         android:layout_width="32dp"

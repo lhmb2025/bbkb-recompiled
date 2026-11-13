@@ -8,21 +8,13 @@ import java.text.Normalizer;
 
 
 public class TextComposer extends AbstractInputProcessor {
-
-    @Override // dev.bbkb.ime.core.inputmethod.AbstractInputProcessor, dev.bbkb.ime.core.inputmethod.InputMethodCallback
+    @Override
     public void reset() {
         super.reset();
         this.historyEnabled = true;
     }
 
-    /**
-     * Audit DK-23: this was an {@code ArrayList<Character>} of 72 entries scanned with
-     * {@code List.contains(Character.valueOf(c))} — an O(n) walk of boxed comparisons, and every
-     * one of these code points is above the {@code Character} cache so each probe boxed too.
-     * {@code processSymbols} runs over the whole composing buffer on every Vietnamese keystroke,
-     * so the cost was O(word-length x 72) boxed comparisons per key. A sorted {@code char[]} plus
-     * {@link java.util.Arrays#binarySearch} removes both the boxing and the linear scan.
-     */
+    /** Vietnamese letters and combining marks fed as explicit symbols; sorted for binarySearch. */
     private static final char[] VIETNAMESE_COMPOSABLE_CHARS = {
         224, 225, 226, 227, 232, 233, 234, 236,
         237, 242, 243, 244, 245, 249, 250, 253,
@@ -35,12 +27,12 @@ public class TextComposer extends AbstractInputProcessor {
         7915, 7917, 7919, 7921, 7923, 7925, 7927, 7929,
     };
 
-    @Override // dev.bbkb.ime.core.inputmethod.AbstractInputProcessor, dev.bbkb.ime.core.inputmethod.InputMethodCallback
+    @Override
     public InputMethodCallback.ConverterType getConverterType() {
         return InputMethodCallback.ConverterType.VIETNAMESE_TELEX;
     }
 
-    @Override // dev.bbkb.ime.core.inputmethod.AbstractInputProcessor
+    @Override
     public String convertText(CharSequence charSequence, NuanceSDK nuanceSDK) {
         String string = charSequence.toString();
         if (string.length() == 0) {
@@ -67,7 +59,8 @@ public class TextComposer extends AbstractInputProcessor {
         return !Normalizer.isNormalized(inlineWord, Normalizer.Form.NFC) ? Normalizer.normalize(inlineWord, Normalizer.Form.NFC) : inlineWord;
     }
 
-    @Override // dev.bbkb.ime.core.inputmethod.AbstractInputProcessor, dev.bbkb.ime.core.inputmethod.InputMethodCallback
+    /** @param c0697m the touch-coordinate tracker, returned unchanged with the reverted text */
+    @Override
     public InputMethodCallback.ConversionResult revertLastConversion(CharSequence charSequence, TouchPointerCoordTracker c0697m, NuanceSDK nuanceSDK) {
         if (!this.historyEnabled) {
             return null;
@@ -91,7 +84,7 @@ public class TextComposer extends AbstractInputProcessor {
         return null;
     }
 
-    @Override // dev.bbkb.ime.core.inputmethod.InputMethodCallback
+    @Override
     public void processSymbols(CharSequence charSequence, NuanceSDK nuanceSDK) {
         for (int i = 0; i < charSequence.length(); i++) {
             char cCharAt = charSequence.charAt(i);

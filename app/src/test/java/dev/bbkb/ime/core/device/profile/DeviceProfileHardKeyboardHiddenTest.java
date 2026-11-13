@@ -25,10 +25,9 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
 /**
- * FIX-C item 1: {@link DeviceProfile#isHardwareKeyboardHidden()} has two writers —
- * {@code initialize(Context, Configuration)} from the IME's onCreate and {@code fromSettings} from
- * every {@code SettingsManager.loadSettings}. Its consumer is the swipe gate
- * ({@code SettingsValues.isGestureInputEnabledForDevice}, through isHardwareKeyboardActive()).
+ * {@link DeviceProfile#isHardwareKeyboardHidden()} has two writers ({@code initialize(Context,
+ * Configuration)} from onCreate and {@code fromSettings} from every {@code loadSettings}) and one
+ * consumer, the swipe gate ({@code SettingsValues.isGestureInputEnabledForDevice}).
  */
 @RunWith(RobolectricTestRunner.class)
 @Config(sdk = 34, manifest = Config.NONE)
@@ -110,19 +109,19 @@ public class DeviceProfileHardKeyboardHiddenTest {
         return (Boolean) m.invoke(sv, (Context) null);
     }
 
-    /** hidden flag as written by the IME's onCreate writer. */
+    /** Hidden flag as written by the IME's onCreate writer. */
     private static boolean hiddenAfterInitializeWriter(Configuration live) {
         DeviceProfile.current().updateConfiguration(live);
         return DeviceProfile.current().isHardwareKeyboardHidden();
     }
 
-    /** hidden flag as written by the SettingsManager.loadSettings writer. */
+    /** Hidden flag as written by the SettingsManager.loadSettings writer. */
     private static boolean hiddenAfterSettingsWriter(Configuration live) throws Exception {
         DeviceProfile.fromSettings(contextWith(live), settingsFor(live, false, false));
         return DeviceProfile.current().isHardwareKeyboardHidden();
     }
 
-    // Both writers now apply one rule (hardKeyboardHidden == YES), for every combination.
+    // Both writers apply one rule (hardKeyboardHidden == YES), for every combination.
     @Test
     public void theTwoWritersAgreeOnEveryConfiguration() throws Exception {
         DeviceProfile.installForTest(pkbShape());
@@ -137,8 +136,7 @@ public class DeviceProfileHardKeyboardHiddenTest {
         }
     }
 
-    // ── the swipe gate on the three real configurations ─────────────────────
-    // What the framework actually produces (PhoneWindowManager forces hardKeyboardHidden=YES
+    // The framework's real configurations (PhoneWindowManager forces hardKeyboardHidden=YES
     // whenever keyboard=NOKEYS), evaluated after each writer.
 
     @Test

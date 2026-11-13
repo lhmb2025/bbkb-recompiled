@@ -9,16 +9,12 @@ import java.io.FileInputStream
 import java.io.FileOutputStream
 
 /**
- * Remembers which emoji the system font can draw, so a re-parse of the emojibase data does not
- * call `Paint.hasGlyph` 1.9k to 3.8k times again (audit P-2).
- *
- * The file is keyed by the caller's key (build fingerprint + dataset identity) and by the exact
- * list of emoji asked about; any mismatch, short read or I/O error means "no cache" and every
- * emoji is checked again. Only positive answers are trusted: the emoji font can be updated
- * without a new build fingerprint (updatable system fonts), and an update only ever adds glyphs,
- * so the emoji the cache marks unsupported are re-checked on every load and a newly drawable one
- * appears at once. That keeps the cache from ever hiding an emoji the font can draw.
+ * Remembers which emoji the system font can draw, sparing thousands of `Paint.hasGlyph` calls per
+ * re-parse. Keyed by the caller's key (build fingerprint + dataset identity) and the exact emoji
+ * list; any mismatch or I/O error means no cache. Only positive answers are trusted: updatable
+ * system fonts can add glyphs without a new fingerprint, so unsupported ones are re-checked.
  */
+
 internal object EmojiGlyphCache {
 
     const val FILE_NAME = "emojibase-glyphs.bin"

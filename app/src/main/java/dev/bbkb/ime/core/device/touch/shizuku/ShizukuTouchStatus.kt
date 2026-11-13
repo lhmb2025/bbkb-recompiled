@@ -1,45 +1,34 @@
 package dev.bbkb.ime.core.device.touch.shizuku
 
-/**
- * Where the Shizuku touch engine stands, in the order a user climbs it. Everything from
- * [READY] up means Shizuku is usable; [BOUND] and [STREAMING] say how far the engine itself got.
- */
+/** The Shizuku touch engine's state, in climbing order; [READY] and above mean Shizuku is usable. */
 enum class ShizukuTouchState {
-    /** A Shizuku server older than v11. Nothing to offer. */
+    /** Shizuku server older than v11. */
     UNSUPPORTED,
     /** The Shizuku manager app is not installed (and no Sui binder arrived either). */
     NOT_INSTALLED,
-    /** Installed, but its server is not running (start it from the Shizuku app, by root or adb). */
+    /** Installed, server not running. */
     NOT_RUNNING,
-    /** Running, but this app has not been granted access in Shizuku. */
+    /** Running, this app not granted access. */
     NOT_GRANTED,
     /** Usable; the reader service is not bound. */
     READY,
-    /** The reader service (EvdevUserService) is bound, no device is streaming. */
+    /** EvdevUserService bound, nothing streaming. */
     BOUND,
-    /** A device is open and its touches are being delivered. */
     STREAMING,
 }
 
 /**
- * A snapshot of the engine's state, for a settings screen or a log line.
- *
- * [error] explains why the engine is lower than asked: a [ShizukuTouchErrors] value, or one of
- * them with ":<errno>" appended. It is cleared once the stream runs (apart from a grab failure,
- * which streams anyway).
+ * Snapshot of the engine's state. [error] is a [ShizukuTouchErrors] value (maybe with ":<errno>"),
+ * cleared once streaming except for a grab failure, which streams anyway.
  */
 data class ShizukuTouchStatus(
     val state: ShizukuTouchState,
     val error: String? = null,
     /** The streaming device (with its ABS ranges and grab state), when [state] is STREAMING. */
     val device: TouchDeviceInfo? = null,
-    /**
-     * NOT_GRANTED only: the user chose "deny and don't ask again" in Shizuku, so a permission
-     * request shows no dialog; access has to be granted from the Shizuku app itself.
-     */
+    /** NOT_GRANTED only: denied forever, so access must be granted in the Shizuku app. */
     val permissionDeniedForever: Boolean = false,
 ) {
-    /** Shizuku is running and this app may use it. */
     val isAvailable: Boolean get() = state >= ShizukuTouchState.READY
 
     fun describe(): String = buildString {

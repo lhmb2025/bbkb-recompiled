@@ -20,14 +20,9 @@ import org.robolectric.annotation.Config
 import java.util.Locale
 
 /**
- * CHARACTERISATION tests for cursor movement — `CursorController`'s four public moves, and
- * `InputLogic.onUpdateSelection`, which is where a cursor move decides whether the composing
- * session survives.
- *
- * The two halves are the same feature seen from both ends: `CursorController` is the IME
- * *asking* for a move, `onUpdateSelection` is the editor *reporting* one (whoever caused it).
- * Both are asserted through the editor — the calls it received, and whether the composing
- * region and tracker survived.
+ * Characterises cursor movement from both ends: `CursorController`'s four moves (the IME asking)
+ * and `InputLogic.onUpdateSelection` (the editor reporting), asserted through editor calls and
+ * whether the composing region and tracker survive.
  *
  * ## `CursorController.moveCursorLeft/Right`
  * ```
@@ -62,8 +57,8 @@ class CursorMovementTest {
         `when`(subtypes.currentSubtypeLocale).thenReturn(Locale.US)
         subtypeStatic.`when`<SubtypeManager> { SubtypeManager.getInstance() }.thenReturn(subtypes)
 
-        // SEAM: resetComposingAndSelect -> updateDynamicLearningState reads the process-wide
-        // SettingsManager singleton rather than the SettingsValues it was passed.
+        // resetComposingAndSelect -> updateDynamicLearningState reads the SettingsManager singleton,
+        // not the SettingsValues it was passed.
         val sm = mock(SettingsManager::class.java)
         `when`(sm.getSettingsValues()).thenReturn(h.settings)
         settingsStatic = mockStatic(SettingsManager::class.java)
@@ -89,7 +84,7 @@ class CursorMovementTest {
         clearLog()
     }
 
-    /** Arm a live composing region in the editor AND the tracker, as typing would. */
+    /** Arm a live composing region in the editor and the tracker, as typing would. */
     private fun armComposing(prefix: String, word: String) {
         h.startSession(prefix, prefix.length)
         h.inputLogic.mRichInputConnection.setComposingText(word, 1)
@@ -97,8 +92,6 @@ class CursorMovementTest {
         h.editor.dropPendingSelectionEvents()
         clearLog()
     }
-
-    // ── CursorController: the batched form ──────────────────────────────────────
 
     @Test
     fun moveCursorRight_batched_isASingleSetSelectionToTheDestination() {
@@ -117,13 +110,10 @@ class CursorMovementTest {
         assertEquals(listOf("setSelection(6,6)"), log())
     }
 
-    // ── CursorController: the stepped form ──────────────────────────────────────
-
     @Test
     fun moveCursorRight_unbatched_stepsOnePositionAtATime() {
-        // The stepping IS the `allowBatchedCursorMove == false` setting; collapsing it to one
-        // setSelection would make the toggle a no-op, which is why every intermediate position
-        // is asserted rather than just the destination.
+        // The stepping is what `allowBatchedCursorMove == false` means, so every intermediate
+        // position is asserted, not just the destination.
         arm("hello world", 0)
         h.inputLogic.moveCursorRight(h.settings, 3, false)
         assertEquals(
@@ -148,8 +138,6 @@ class CursorMovementTest {
         h.inputLogic.moveCursorLeft(h.settings, 5, false)
         assertEquals(listOf("setSelection(0,0)"), log())
     }
-
-    // ── CursorController: the key-event form ────────────────────────────────────
 
     @Test
     fun moveCursorRight_whenAllowedBeyondTheField_sendsOneDpadPairPerStep() {
@@ -194,8 +182,6 @@ class CursorMovementTest {
         )
     }
 
-    // ── CursorController: RTL flips left and right ──────────────────────────────
-
     @Test
     fun inARightToLeftLayout_moveCursorRightWalksBackwards() {
         // `moveCursorRight` passes `!isRightToLeft()` as the "forward" flag, so in RTL the
@@ -215,8 +201,6 @@ class CursorMovementTest {
         h.inputLogic.moveCursorLeft(settings, 2, false)
         assertEquals(listOf("setSelection(2,2)"), log())
     }
-
-    // ── CursorController: composing is cancelled before every move ──────────────
 
     @Test
     fun anyCursorMove_cancelsTheComposingSessionFirst() {
@@ -258,12 +242,10 @@ class CursorMovementTest {
         assertEquals(listOf("setSelection(3,3)"), log())
     }
 
-    // ── CursorController: multi-step moves count graphemes, not chars ───────────
-
     @Test
     fun moveCursorRight_multiStep_countsAnEmojiAsOneStep() {
         // The keypad cursor drag passes counts > 1. Three steps over "a😀b" are a, 😀, b: the
-        // emoji's two chars are one step. This used to land at 3, one short of the end.
+        // emoji's two chars are one step.
         val settings = h.settingsWith("allowBatchedCursorMove" to true)
         arm("a😀b", 0)
         h.inputLogic.moveCursorRight(settings, 3, false)
@@ -272,8 +254,7 @@ class CursorMovementTest {
 
     @Test
     fun moveCursorLeft_multiStep_countsEachCombiningSequenceAsOneStep() {
-        // "e" + COMBINING ACUTE twice: two steps left cross both sequences. The first sequence's
-        // length used to replace the count, so the cursor stopped after one.
+        // "e" + COMBINING ACUTE twice: two steps left cross both sequences.
         val settings = h.settingsWith("allowBatchedCursorMove" to true)
         arm("xe\u0301e\u0301", 5)
         h.inputLogic.moveCursorLeft(settings, 2, false)
@@ -304,12 +285,9 @@ class CursorMovementTest {
         assertEquals(listOf("setSelection(0,0)"), log())
     }
 
-    // ── CursorController: an emoji followed by text is still one step ───────────
-
     @Test
     fun moveCursorRight_singleStepOverAnEmojiFollowedByText_stopsAfterTheEmoji() {
-        // The leading-emoji scan used to accept every longer prefix once the text started with
-        // an emoji, so one step right from 0 over "😀bc" jumped to the end of the field.
+        // One step right from 0 over "😀bc" crosses only the emoji, not every longer prefix.
         val settings = h.settingsWith("allowBatchedCursorMove" to true)
         arm("😀bc", 0)
         h.inputLogic.moveCursorRight(settings, 1, false)
@@ -323,8 +301,6 @@ class CursorMovementTest {
         h.inputLogic.moveCursorRight(settings, 2, false)
         assertEquals(listOf("setSelection(3,3)"), log())
     }
-
-    // ── CursorController: one step is one grapheme cluster ──────────────────────
 
     @Test
     fun moveCursorLeft_singleStepOverANewerEmojiWithASkinTone_crossesTheWholeEmoji() {
@@ -360,8 +336,6 @@ class CursorMovementTest {
         assertEquals(listOf("setSelection(2,2)"), log())
     }
 
-    // ── onUpdateSelection: the no-op case ───────────────────────────────────────
-
     @Test
     fun selectionChangeThatTheConnectionAlreadyKnowsAbout_isIgnored() {
         armComposing("", "hello")
@@ -375,22 +349,18 @@ class CursorMovementTest {
 
     @Test
     fun selectionChangeWithNoCursorMove_butDifferentOldValues_isStillIgnored() {
-        // `isSelectionUnchanged` compares against the RIC's own cursor, not against the "old"
-        // values the framework reported — a redundant report from a stale old position is
-        // still a no-op.
+        // `isSelectionUnchanged` compares against the RIC's own cursor, not the reported "old"
+        // values, so a redundant report from a stale old position is still a no-op.
         armComposing("", "hello")
         assertFalse(h.selectionChanged(oldStart = 3, oldEnd = 3, newStart = 5, newEnd = 5))
         assertTrue(h.inputLogic.mComposingTracker.isComposing)
     }
 
-    // ── Hole: the field-clear after a hardware Enter was ignored (2026-09-20) ────
-
     @Test
     fun enterHandoff_appClearsTheField_isSeenAsAChange() {
         // The post-Enter state: word finished, connection invalidated (cursor unknown), tracker
-        // cleared. The app sends and empties the field, reporting [5,5] -> [0,0]. With the
-        // cursor unknown, isSelectionUnchanged used to call that "unchanged" and the IME kept
-        // believing the editor held "Hello".
+        // cleared. The app sends and empties the field, reporting [5,5] -> [0,0], which with the
+        // cursor unknown must still count as a change.
         h.startSession("Hello", 5)
         h.inputLogic.mRichInputConnection.setComposingText("Hello", 1)
         h.inputLogic.mRichInputConnection.finishComposingText()
@@ -421,14 +391,11 @@ class CursorMovementTest {
         assertEquals(-1, h.inputLogic.mRichInputConnection.cursorStart)
     }
 
-    // ── onUpdateSelection: the app emptied the field under a composing word ─────
-
     @Test
     fun appClearingTheFieldUnderASingleComposingWord_endsTheSession() {
-        // Messages' Send button: the app reads "Correct" (still composing), sends it and sets
-        // the text to "". The selection jump it reports, [7,7] -> [0,0], is the same one a
-        // caret placed at the start of the word would report, and moveCursorByCharCount(-7)
-        // would absorb it; the editor being empty is what tells the two apart.
+        // Messages' Send button: the app sends "Correct" (still composing) and sets the text to "".
+        // [7,7] -> [0,0] is also what a caret placed before the word reports, and
+        // moveCursorByCharCount(-7) would absorb it; the empty editor tells the two apart.
         val settings = h.settingsWith("shouldShowLxxButton" to true)
         armComposing("", "Correct")
         h.editor.appSetText("", 0, 0)
@@ -447,9 +414,8 @@ class CursorMovementTest {
 
     @Test
     fun caretPlacedAtTheStartOfTheComposingWord_keepsTheSession() {
-        // The counterpart the clear must not be confused with: the same [7,7] -> [0,0] report,
-        // but the text is intact — the user put the caret in front of the word, and the next
-        // key belongs in front of it.
+        // The counterpart: the same [7,7] -> [0,0] report with the text intact; the user put the
+        // caret in front of the word.
         val settings = h.settingsWith("shouldShowLxxButton" to true)
         armComposing("", "Correct")
         h.editor.appSetSelection(0, 0)
@@ -464,9 +430,8 @@ class CursorMovementTest {
 
     @Test
     fun appClearingTheFieldUnderALaterComposingWord_alreadyEndedTheSession() {
-        // "Hi there" with "there" composing: the jump [8,8] -> [0,0] never matched the
-        // composing length, so the FAILED-move path reset the session before this change.
-        // Pinned so the new guard is known to be the single-word case's fix, not a rewrite.
+        // "Hi there" with "there" composing: [8,8] -> [0,0] never matched the composing length, so
+        // the failed-move path resets the session; the empty-field guard is only the single-word fix.
         val settings = h.settingsWith("shouldShowLxxButton" to true)
         armComposing("Hi ", "there")
         h.editor.appSetText("", 0, 0)
@@ -480,8 +445,7 @@ class CursorMovementTest {
 
     @Test
     fun anUnreachableEditor_isNotTreatedAsEmpty() {
-        // A dead connection answers null; that is "unknown", never "empty" — the session is
-        // then judged by the cursor arithmetic exactly as before.
+        // A dead connection answers null: "unknown", never "empty", so the cursor arithmetic decides.
         val settings = h.settingsWith("shouldShowLxxButton" to true)
         armComposing("", "Correct")
         h.editor.invalidate()
@@ -490,8 +454,6 @@ class CursorMovementTest {
 
         assertTrue(h.inputLogic.mComposingTracker.isComposing)
     }
-
-    // ── onUpdateSelection: the composing session survives, or does not ──────────
 
     @Test
     fun externalCursorMoveInsideTheComposingWord_keepsTheSessionWhenSuggestionsAreOn() {
@@ -555,13 +517,10 @@ class CursorMovementTest {
 
     @Test
     fun aSelectionBeingDroppedFromAPositionTheConnectionDoesNotShare_isSwallowed() {
-        // CHARACTERISED BUG: `isSelectionUnchanged` runs FIRST and never sees the `z2`
-        // "a selection is involved" test. Its last two clauses accept any report whose motion
-        // points the same way as the connection's own pending motion —
-        // `(newStart - oldStart) * (cachedStart - newStart) >= 0` — so a report of
-        // "the selection 1..3 collapsed to 4" is treated as a stale echo of a move toward the
-        // cached position 5 and the whole update is discarded. The composing session survives a
-        // selection change that plainly happened.
+        // Known bug, characterised: `isSelectionUnchanged` runs before the `z2` (selection involved)
+        // test and accepts any report moving the same way as the pending motion,
+        // `(newStart - oldStart) * (cachedStart - newStart) >= 0`. So "selection 1..3 collapsed to 4"
+        // is read as a stale echo toward cached 5, and composing survives a real selection change.
         val settings = h.settingsWith("shouldShowLxxButton" to true)
         armComposing("", "hello")
 
@@ -601,9 +560,8 @@ class CursorMovementTest {
 
     @Test
     fun theEditorsOwnSelectionEventAfterATypedCharacter_doesNotEndTheSession() {
-        // The round trip the pipeline makes on every keystroke: setComposingText moves the
-        // cursor, the editor reports it back, and the report must be recognised as one the
-        // connection already knows about.
+        // The per-keystroke round trip: setComposingText moves the cursor, the editor reports it,
+        // and the connection must recognise the report as already known.
         val settings = h.settingsWith("shouldShowLxxButton" to true)
         h.startSession("", 0)
         h.inputLogic.mRichInputConnection.setComposingText("hell", 1)

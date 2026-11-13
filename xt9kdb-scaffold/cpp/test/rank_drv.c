@@ -1,13 +1,6 @@
-/* rank_drv.c — offline eval for the owned gesture ranker (kdb_rank.c, §8.7.6).
- *
- * For each labeled trace (collection corpus): build a decoy candidate pool from a wordlist,
- * filtered the way the blob's generator behaves (first letter within ~1.5 keys of the path
- * start, last letter within ~1.5 keys of the path end, length 2..14), capped at POOL_MAX; the
- * intended word is inserted (it is what the generator produced in the option-b test). Rank all
- * candidates with xt9kdb_rank_score and report the intended word's rank.
- *
- * Metric: top-1 / top-3 rate over the corpus. This is the precision stage evaluated with recall
- * held ideal; the on-device generator's real recall is measured separately.
+/* rank_drv.c: offline eval for kdb_rank.c. Per labeled trace, builds a generator-like decoy pool
+ * (first/last letter within ~1.5 keys of the path ends, length 2..14, capped at POOL_MAX) plus the
+ * intended word, ranks with xt9kdb_rank_score and reports top-1 / top-3 with recall held ideal.
  *
  * Usage: rank_drv <collection_corpus.txt> <athena.xml> <wordlist> [--verbose]
  */

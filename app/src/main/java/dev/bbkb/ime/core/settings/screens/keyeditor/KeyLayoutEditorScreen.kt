@@ -80,24 +80,16 @@ import kotlinx.coroutines.withContext
 private const val MAX_KEYBOARD_SHARE = 0.5f
 
 /**
- * The one tap-to-select / tap-to-swap key-layout editor, shared by the VKB symbol page, the PKB
- * symbol page and the slideboard numpad. A [KeyEditorSpec] supplies everything that differs.
- *
- * Layout, top to bottom: a nine-tab symbol palette, a line saying how to use it, and the board
- * being edited, drawn by the keyboard's own code ([KeyEditorPreviewView]) in the keyboard's
- * theme. Tap a palette symbol then a key to assign it, tap two keys to swap them, use the app
- * bar's trash to blank the selected key (or delete the selected custom symbol), or the overflow
- * to apply one of `spec.resets`. Every edit persists immediately; a reset, a clear and a delete
- * can be undone from the snackbar.
- *
- * This is *not* the drag-reorder editor: `CustomizeMenuScreen` is a different interaction and
- * shares nothing useful with this one.
+ * Tap-to-select / tap-to-swap key-layout editor for any [KeyEditorSpec]: a symbol palette over
+ * the board, drawn by the keyboard's own code ([KeyEditorPreviewView]). Tap a symbol then a key
+ * to assign, two keys to swap; the trash blanks a key or deletes a custom symbol, the overflow
+ * applies a reset. Edits persist immediately; reset, clear and delete can be undone.
  */
 @Composable
 internal fun KeyLayoutEditorScreen(spec: KeyEditorSpec, onBack: () -> Unit) {
     val context = LocalContext.current
-    // Settings can open before the keyboard has started in this process (after an update, say):
-    // its colours and its current language are then not set up yet, and the board needs both.
+    // Settings can open before the keyboard has started in this process; the board needs its
+    // colours and current language set up.
     remember {
         KeyboardColorManager.ensureInitialized(context)
         SubtypeManager.ensureInitialized(context.applicationContext)
@@ -197,8 +189,7 @@ private fun RowScope.EditorTopBarActions(spec: KeyEditorSpec, viewModel: KeyEdit
             Icon(ImageVector.vectorResource(R.drawable.ic_settings_m_delete), stringResource(R.string.clipboard_menu_delete))
         }
     }
-    // Boxed with its button so the menu opens at the overflow icon rather than at the start of
-    // the whole toolbar row.
+    // Boxed with its button so the menu anchors at the overflow icon.
     Box {
         IconButton(onClick = { showMenu = true }) {
             Icon(ImageVector.vectorResource(R.drawable.ic_settings_m_more_vert), stringResource(R.string.settings_keyeditor_menu))
@@ -340,14 +331,9 @@ private fun AddSymbolDialog(onDismiss: () -> Unit, onAdd: (String) -> Boolean) {
     )
 }
 
-// ============================================================================
-// The board being edited
-// ============================================================================
-
 /**
- * The board under the palette: the keyboard's own view drawing the keyboard's own layout, with
- * the ViewModel's layout on its editable keys. The number pad takes its half of the strip, on the
- * side the user has it; the other half is the keyboard's background.
+ * The keyboard's own view and layout with the ViewModel's layout on its editable keys. The
+ * number pad takes its half of the strip, on the user's side.
  */
 @Composable
 private fun KeyboardPreview(spec: KeyEditorSpec, viewModel: KeyEditorViewModel, maxHeight: Dp) {
@@ -361,8 +347,7 @@ private fun KeyboardPreview(spec: KeyEditorSpec, viewModel: KeyEditorViewModel, 
     val selectionColor = MaterialTheme.colorScheme.primary.toArgb()
     val emptyKey = stringResource(R.string.settings_keyeditor_empty_key)
 
-    // The preview may have drawn a layout nothing has saved (a fresh page shows the defaults) on
-    // a keyboard the keyboard's own cache also holds; drop the cache on the way out.
+    // The preview may have drawn an unsaved layout on a cached keyboard; drop the cache on exit.
     DisposableEffect(Unit) {
         onDispose { KeyboardBuilder.onKeyboardThemeChanged() }
     }
@@ -374,11 +359,10 @@ private fun KeyboardPreview(spec: KeyEditorSpec, viewModel: KeyEditorViewModel, 
             .background(Color(KeyboardColorManager.backgroundColor))
     ) {
         val widthPx = constraints.maxWidth
-        // Parsing the layout XML is the slow part; it runs off the main thread, as the palette does.
+        // Layout XML parsing is slow, so it runs off the main thread.
         val board by produceState<EditorKeyboard?>(null, widthPx, heightPx) {
             value = withContext(Dispatchers.Default) {
-                // A keyboard that cannot be built (no layout for this language, say) leaves the
-                // strip empty; it must not take Settings down.
+                // A board that cannot be built leaves the strip empty rather than crashing Settings.
                 runCatching { EditorKeyboard.build(themed, spec.board, widthPx, heightPx) }
                     .onFailure { Logger.error("KeyLayoutEditor", "Could not build the ${spec.board} board: $it") }
                     .getOrNull()

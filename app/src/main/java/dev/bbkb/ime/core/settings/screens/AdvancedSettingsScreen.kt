@@ -37,13 +37,6 @@ object ManageDataAnchors {
     const val RESET = "settings_reset"
 }
 
-/**
- * Advanced Settings Screen (per docs/archived/2026-01_compose-settings-and-dictionaries/2026-01_settings-compose_history.md)
- * Contains:
- * - Device compatibility
- * - Debug settings (hidden by default)
- * - Manage data: Backup and restore (its own screen), Reset
- */
 @Composable
 fun AdvancedSettingsScreen(
     onNavigateBack: () -> Unit,
@@ -57,14 +50,13 @@ fun AdvancedSettingsScreen(
 
     SettingsScreenHost(R.string.settings_advanced_title, onNavigateBack, listOf(
         Category(R.string.settings_category_device),
-        // Device Compatibility (config loader, meta state override, keyboard helper)
         Nav(
             title = R.string.settings_device_compatibility_title,
             summary = R.string.settings_device_compatibility_summary,
             icon = drawableIcon(R.drawable.ic_settings_m_phone_android),
             onClick = { onNavigateToDeviceCompatibility() },
         ),
-        // Debug builds only (2026-10-20): advanced tuning and developer switches.
+        // Debug builds only
         Nav(
             title = R.string.settings_debug_title,
             summary = R.string.settings_debug_summary,
@@ -73,8 +65,6 @@ fun AdvancedSettingsScreen(
             onClick = { onNavigateToDebug() },
         ),
 
-        // The user's data as a whole: one screen that saves and restores it (file or phone
-        // backup), and one action that puts any of it back to defaults.
         Category(R.string.settings_category_manage_data),
         Nav(
             title = R.string.settings_backup_restore_title,
@@ -109,8 +99,8 @@ fun AdvancedSettingsScreen(
 }
 
 /**
- * Which of the three kinds of data to put back to defaults. Mirrors the Back up checkboxes, so
- * "Words" here is what "Words" is there: the dictionary, the shortcuts and the learned words.
+ * Which kinds of data to reset. Mirrors the Back up checkboxes: "Words" is the dictionary,
+ * shortcuts and learned words.
  */
 @Composable
 private fun ResetDialog(

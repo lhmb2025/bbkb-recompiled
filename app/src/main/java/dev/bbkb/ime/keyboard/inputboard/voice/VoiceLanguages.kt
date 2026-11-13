@@ -18,13 +18,10 @@ import dev.bbkb.ime.core.shared.Logger
 import org.xmlpull.v1.XmlPullParser
 
 /**
- * What the phone's speech recogniser has for each language, outside a dictation: the answer the
- * Language packs screen draws its Voice chips from, the download a newly added keyboard asks
- * for, and the way into the recogniser's own settings.
- *
- * The voice languages belong to the recogniser (on most phones, Google's speech service), not to
- * this keyboard. It can be asked what it has and asked to fetch one (Android 13+); it cannot be
- * made to, and nothing here can remove one.
+ * What the phone's speech recogniser has for each language, outside a dictation: the Language
+ * packs screen's Voice chips, the download a newly added keyboard asks for, and the way into the
+ * recogniser's settings. The recogniser owns its languages: it can be asked what it has and asked
+ * to fetch one (Android 13+), never made to, and nothing here removes one.
  */
 object VoiceLanguages {
 
@@ -34,13 +31,11 @@ object VoiceLanguages {
     const val PREF_AUTO_DOWNLOAD = "voice_input_download_languages"
 
     /**
-     * Where the last answer is kept, per recogniser, so the chips are there the moment the screen
-     * opens. Under the voice picker's cache prefix, which backups leave out: the answer describes
-     * this phone.
+     * The last answer, per recogniser, so chips show at once. Under the voice picker's cache
+     * prefix, which backups leave out: the answer describes this phone.
      */
     private const val SUPPORT_CACHE_KEY = "voice_input_language_cache_support"
 
-    /** How long the recogniser is given to say what it has. */
     private const val ANSWER_MILLIS = 5_000L
 
     /** How long a recogniser is kept for a download it has not reported on. */
@@ -54,10 +49,8 @@ object VoiceLanguages {
         val supported: List<String>,
     ) {
         /**
-         * Whether the recogniser has the voice language for a keyboard or pack locale on the phone,
-         * so dictation in it works offline. Takes the locale in any of the app's spellings (`fr`,
-         * `pt_BR`, `zh_TW_stroke`); an installed regional variant counts, as it does in a dictation.
-         * False for a language that is on its way, only works online or is not offered at all.
+         * Whether the voice language for [locale] (any app spelling: `fr`, `zh_TW_stroke`) is on the
+         * phone, so dictation works offline. An installed regional variant counts.
          */
         fun isDownloaded(locale: String?): Boolean {
             val tag = VoiceLanguageTags.normalise(locale) ?: return false

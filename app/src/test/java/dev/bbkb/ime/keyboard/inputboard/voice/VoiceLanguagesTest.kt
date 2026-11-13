@@ -66,8 +66,6 @@ class VoiceLanguagesTest {
         idle()
     }
 
-    // ── what a row shows ─────────────────────────────────────────────────────
-
     private val google = Snapshot(
         installed = listOf("en-US", "fr-FR", "cmn-Hant-TW"),
         online = listOf("it-IT"),
@@ -132,8 +130,6 @@ class VoiceLanguagesTest {
         assertNull(Snapshot.decode("not an answer"))
     }
 
-    // ── asking the recogniser ────────────────────────────────────────────────
-
     @Test
     fun `refresh reports the recogniser's answer and keeps it`() {
         assertNull(VoiceLanguages.snapshot(context))
@@ -177,8 +173,6 @@ class VoiceLanguagesTest {
         assertNull(reported)
         assertNull("no recogniser was built", ShadowSpeechRecognizer.getLatestSpeechRecognizer())
     }
-
-    // ── a keyboard was added ─────────────────────────────────────────────────
 
     @Test
     @Config(sdk = [33])

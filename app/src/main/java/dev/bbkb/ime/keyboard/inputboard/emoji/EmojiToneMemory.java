@@ -14,17 +14,10 @@ import java.util.Iterator;
 import java.util.Map;
 
 /**
- * The skin tone the user last chose for each emoji ({@code emoji_tone_memory}).
- *
- * <p>Written by both skin-tone popups (the strip's and the board's) and read wherever a base emoji
- * is offered: the strip's emoji slot and the board's keys show and insert the remembered variant,
- * while a long-press still offers every tone. Picking the plain emoji again forgets the base.
- *
- * <p>Keys are the {@linkplain #normalize(String) base form} of the emoji: skin-tone modifiers and
- * variation selectors removed, so a toned variant and the dataset's fully-qualified base meet.
- * The value is a compact JSON object from base to variant (until 2026-11 a default-configured Gson
- * wrote it; such a value reads the same). There is no global
- * default-tone setting; this is per emoji, and it is not written in incognito fields (callers check).
+ * The skin tone last chosen per emoji ({@code emoji_tone_memory}): a JSON object from the
+ * {@linkplain #normalize(String) base form} to the variant. Written by the strip's and the board's
+ * popups; the strip slot and board keys show the remembered variant. Picking the plain emoji
+ * forgets it. Callers must not write in incognito fields.
  */
 public final class EmojiToneMemory {
 
@@ -35,6 +28,7 @@ public final class EmojiToneMemory {
     private static Map<String, String> cachedMap = Collections.emptyMap();
 
     private EmojiToneMemory() {
+        // Static helpers only.
     }
 
     /** The remembered variant of {@code baseEmoji}, or null when none was chosen. */
@@ -74,10 +68,10 @@ public final class EmojiToneMemory {
     }
 
     /**
-     * The stored value as-is, for telling whether the memory changed since an earlier call: the
-     * emoji board keeps its built pages until this changes. Every writer (both popups, the strip,
-     * a backup restore or reset) goes through the preference, so comparing it catches them all.
+     * The stored value as-is: the board keeps its built pages until this changes. Every writer
+     * (popups, restore, reset) goes through the preference, so comparing it catches them all.
      */
+
     static String snapshot(SharedPreferences prefs) {
         return prefs.getString(PREF_KEY, null);
     }

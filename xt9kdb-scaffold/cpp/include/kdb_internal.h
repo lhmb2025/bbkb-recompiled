@@ -1,12 +1,11 @@
-/* kdb_internal.h — non-exported helpers shared between the owned KDB sources. */
+/* kdb_internal.h: non-exported helpers shared between the owned KDB sources. */
 #ifndef XT9_KDB_INTERNAL_H
 #define XT9_KDB_INTERNAL_H
 
 #include "et9_context.h"
 
-/* Shared loud-failure channel. Used for conditions that are otherwise SILENT — a status the engine
- * swallows, or an invariant the blob enforces without reporting. Both of the 2026-07 cutover bugs
- * (unwired commit sink, mismatched selector) were invisible for exactly that reason. */
+/* Loud-failure channel for conditions that are otherwise silent (a status the engine swallows,
+ * or an invariant the blob enforces without reporting). */
 #ifdef __ANDROID__
 #include <android/log.h>
 #define XT9KDB_LOGE(msg) __android_log_print(ANDROID_LOG_ERROR, "XT9KDB", "%s", msg)
@@ -21,23 +20,18 @@ int xt9kdb_trace_dump_enabled(void);
 #define XT9KDB_LOGI(fmt, ...) fprintf(stderr, "XT9KDB: " fmt "\n", __VA_ARGS__)
 #endif
 
-/* Diagnostics that fire per tap, per swipe or per layout sync (P-27): about 8 lines and 2 KB of
- * logd traffic per swipe, the pool line alone up to 1.5 KB of snprintf. On in debug builds and on
- * the host; in a release build (NDEBUG, which AGP's RelWithDebInfo passes) only while
- * log.tag.XT9Trace is set, the same switch as the TRACEPT dump. Read once per process. Use
- * xt9kdb_diag_enabled() to skip BUILDING a long line, not just printing it. */
+/* Per-tap / per-swipe diagnostics (about 2 KB of logd traffic per swipe). On in debug builds and
+ * on the host; in release (NDEBUG) only while log.tag.XT9Trace is set. Read once per process.
+ * Check xt9kdb_diag_enabled() before building a long line, not just before printing it. */
 int xt9kdb_diag_enabled(void);
 #define XT9KDB_LOGD(fmt, ...) do { if (xt9kdb_diag_enabled()) XT9KDB_LOGI(fmt, __VA_ARGS__); } while (0)
 
-/* Debug-property sense (L11): a set property is ON unless its first byte is this marker, so
- * `setprop <flag> 0` is OFF and `setprop <flag> 1` is ON for every flag. Host-testable. */
+/* A set debug property is ON unless its first byte is this marker (`setprop <flag> 0` is OFF). */
 #define XT9_PROP_OFF_CHAR '0'
 int xt9kdb_prop_flag_parse(const char* value, char off_char);
 
-/* ---- Active-KDB selection state (ctx+0x04/+0x08) ---------------------------------------------
- * CUTOVER-only: in DIFF builds the context belongs to the blob and we must never write it, so
- * these degrade to no-ops exactly like xt9kdb_install_nkl. See et9_context.h for the field map and
- * docs/libnative-documentation.md §5 for the blob's own SetKdbNum trace. */
+/* Active-KDB selection state (ctx+0x04/+0x08), see et9_context.h. CUTOVER only: in DIFF builds
+ * the blob owns the context, so these are no-ops there (like xt9kdb_install_nkl). */
 #if defined(XT9KDB_CUTOVER)
 static inline ET9U32 xt9kdb_ctx_get_selector(const void* ctx) {
     return *(const ET9U32*)((const char*)ctx + ET9_OFF_KDB_SELECTOR);
@@ -49,41 +43,28 @@ static inline void xt9kdb_ctx_set_selection(void* ctx, ET9U32 selector, ET9U16 f
     *(ET9U32*)((char*)ctx + ET9_OFF_KDB_SELECTOR) = selector;
     *(ET9U16*)((char*)ctx + ET9_OFF_KDB_FLAGS)    = flags;
 }
-/* ctx+0x00 recognition-mode bitfield — see ET9_OFF_KDB_MODE. Set/clear one bit, leaving the
- * others alone, exactly as the blob's own setters do. */
+/* Set or clear one bit of the ctx+0x00 mode bitfield (ET9_OFF_KDB_MODE), leaving the others. */
 static inline void xt9kdb_ctx_set_mode_bit(void* ctx, ET9U32 mask, int on) {
     ET9U32* p = (ET9U32*)((char*)ctx + ET9_OFF_KDB_MODE);
     *p = on ? (*p | mask) : (*p & ~mask);
 }
 
-/* ---- L2/L3: the view->authored SCALE lives with the CONTEXT ----------------------------------
- * The blob stores SetKeyboardSize's two numerators at ctx+0xfc34/36, and both its tap resolver and
- * its getKeys writer read them back from there. Ours used to keep them in a process-global only,
- * which is wrong twice over: two engine contexts exist (primary IME + spellchecker) and each syncs
- * its own keyboard size, and our own GetKeyPositions was already READING the context — so after a
- * VKB setKeyboardSize the recognition path scaled correctly while getKeys kept handing out
- * unprojected authored rects.
- *
- * CUTOVER is the only mode that may write: there we own SetKeyboardSize, so the context field is
- * ours to maintain and nothing else writes it. Under DIFF the blob owns the context AND its own
- * SetKeyboardSize, so it writes the field itself and we must not — the reader below is then still
- * correct, it is just reading the blob's value instead of ours. Same discipline (and the same
- * reason) as xt9kdb_ctx_set_selection above. */
+/* The view->authored scale lives in the context (ctx+0xfc34/36): the blob's tap resolver and
+ * getKeys writer read it there, and each engine context (IME, spellchecker) has its own size.
+ * Only CUTOVER writes it; under DIFF the blob's own SetKeyboardSize does. */
 static inline void xt9kdb_ctx_set_scale(void* ctx, ET9U16 w, ET9U16 h) {
     if (!ctx) return;
     *(ET9U16*)((char*)ctx + ET9_OFF_KDB_SCALE_W) = w;
     *(ET9U16*)((char*)ctx + ET9_OFF_KDB_SCALE_H) = h;
 }
 
-/* The one invariant the blob's internal loader (0xba264) enforces on every keystroke:
+/* The blob's internal loader (0xba264) checks on every keystroke that
  *     *(u32*)(NKL+0x04) == *(u32*)(ctx+0x04)
- * When it holds, the loader early-outs and keeps our NKL. When it does not, the loader reloads
- * from the blob's own flat asset index — which cannot see assets/kdb/<variant>/ — and the typed
- * symbol is never committed to the word engine. Failure is otherwise completely silent, so this
- * reports rather than merely aborting. */
+ * If not, it reloads from its own flat asset index (blind to assets/kdb/<variant>/) and the typed
+ * symbol is never committed. That failure is silent, so this logs it. */
 static inline void xt9kdb_check_selection_invariant(const void* ctx) {
     const void* nkl = *(const void* const*)((const char*)ctx + ET9_OFF_NKL);
-    if (!nkl) return;                       /* nothing installed yet — not a violation */
+    if (!nkl) return;                       /* nothing installed yet, not a violation */
     ET9U32 in_nkl = *(const ET9U32*)((const char*)nkl + 0x04u);
     ET9U32 in_ctx = xt9kdb_ctx_get_selector(ctx);
     if (in_nkl != in_ctx) {
@@ -107,39 +88,26 @@ static inline void   xt9kdb_ctx_set_scale(void* ctx, ET9U16 w, ET9U16 h) {
 #define XT9KDB_ASSERT_SELECTION_MATCHES_NKL(ctx) ((void)(ctx))
 #endif
 
-/* Currently-loaded key model (set by Load_XmlKDB / SetKdbNum). Defaults to the
- * verified English qwerty_pkb fixture during bring-up.
- *
- * OWNERSHIP (2026-08-16): models are stored PER ENGINE CONTEXT (the primary IME and the
- * spellchecker's secondary engine both load KDBs through this module — a single global
- * let whichever loaded last clobber the other's geometry). ctx-aware code must resolve
- * via xt9kdb_model_for_ctx(); the legacy global remains for ctx-less debug/JNI readers
- * and is re-published from the owning ctx at every gesture TouchStart / ProcessTap. */
+/* Loaded key models are stored per engine context (IME and spellchecker both load KDBs here).
+ * ctx-aware code resolves via xt9kdb_model_for_ctx(); the global is for ctx-less debug/JNI
+ * readers and is re-published from the owning ctx at every TouchStart / ProcessTap. */
 extern const ET9KdbLoaded* g_kdb_model;
 void xt9kdb_set_model(const ET9KdbLoaded* m);
 const ET9KdbLoaded* xt9kdb_model_for_ctx(ET9KDBInfoPtr ctx);   /* NULL if ctx has no loaded model */
-/* The model a ctx-aware QUERY should answer with: the context's own, else the legacy global.
- * Never NULL unless nothing is loaded anywhere. Does not re-publish (see GetKeyPositions). */
+/* The context's own model, else the global; NULL only if nothing is loaded. Does not re-publish. */
 const ET9KdbLoaded* xt9kdb_model_for_ctx_or_global(ET9KDBInfoPtr ctx);
 
-/* Active loaded-KDB content stamp = NKL+0x0c. RE-confirmed the engine does NOT validate it: SetKdbNum
- * only copies NKL+0x0c -> ctx+0x44, and it flows into each trace record's +0x28. So the exact blob hash
- * is unnecessary — a deterministic per-KDB value suffices. emit_nkl sets this to what it wrote at
- * NKL+0x0c; the trace-record writer stamps it into +0x28. Defaults to the uneven KDB's value so the
- * offline trace selftest (which never calls emit_nkl) still sees a fixed tag. */
+/* Loaded-KDB content stamp written at NKL+0x0c. The engine does not validate it (SetKdbNum copies it
+ * to ctx+0x44; trace records carry it at +0x28), so any deterministic per-KDB value works. Defaults
+ * to the uneven KDB's value so the offline trace selftest (no emit_nkl) sees a fixed tag. */
 extern ET9U32 g_kdb_checksum;
 
-/* ---- Device-variant KDBs (kdb_state.c) -------------------------------------------------------
- * XMLs in assets/kdb/<variant>/ override the same-named root assets/kdb/ ones per (pid,sid). The shim registers
- * each variant file's raw bytes (copied) and then requests the variant; SetKdbNum prefers a
- * registered (variant,pid,sid) node and falls back to the blob-built index (the root layouts).
- * Setting a different variant (or "" / NULL for default) invalidates the active KDB so the next
- * SetKdbNum reloads. register returns 0 on success, -1 on bad args / unparsable header / OOM /
- * a name of XT9KDB_VARIANT_NAME_MAX bytes or more.
- *
- * Besides the device variants, the shim registers the KDBs it generates for a letter layout
- * (LetterLayoutKdb) as "layout:<id>", with ids of up to 64 characters — hence the length. A name
- * is refused rather than cut short, so two long names can never select each other's layouts. */
+/* Device-variant KDBs (kdb_state.c). XMLs in assets/kdb/<variant>/ override same-named root ones
+ * per (pid,sid). SetKdbNum prefers a registered (variant,pid,sid) node, else the blob-built index.
+ * Changing the requested variant ("" / NULL = default) invalidates the active KDB. Register
+ * copies the bytes; returns 0, or -1 on bad args, unparsable header, OOM, or a name too long.
+ * Generated letter layouts register as "layout:<id>" (ids up to 64 chars), hence the max; long
+ * names are refused rather than cut so two names can never collide. */
 #define XT9KDB_VARIANT_NAME_MAX 80
 int  xt9kdb_register_variant_kdb(const char* variant, const ET9U8* xml, ET9U32 len);
 void xt9kdb_set_requested_variant(const char* v);
@@ -147,109 +115,78 @@ void xt9kdb_set_requested_variant(const char* v);
 /* Light scan of a KDB XML header for primaryId/secondaryId (kdb_load_xml.c); 0 on success. */
 int xt9kdb_scan_kdb_ids(const ET9U8* xml, ET9U32 len, ET9U32* pid, ET9U32* sid);
 
-/* Resolve a touch point (AUTHORED space) to a key index (-1 if model empty). Point-in-rect
- * first, then nearest key center. (Smart-touch bias is a later refinement.) */
+/* Authored-space point to key index (-1 if model empty): point-in-rect, then nearest center. */
 int xt9kdb_point_to_key(const ET9KdbLoaded* m, float x, float y);
 
-/* Map a raw SENSOR coordinate (the physical capacitive space) to AUTHORED space via pure
- * translation (no scaling). Tap and trace MUST call this before xt9kdb_point_to_key. The
- * translation is the per-device touch offset (SetKeyboardOffset) and applies ONLY to the
- * physical keyboard (PKB); for a VKB the offset is forced to zero. */
+/* Raw SENSOR coordinate to AUTHORED space by pure translation; call before xt9kdb_point_to_key.
+ * The offset (SetKeyboardOffset) applies only to the physical keyboard; zero for a VKB. */
 void xt9kdb_sensor_to_authored(float sx, float sy, float* ax, float* ay);
-/* L4: the same mapping for a ONE-SHOT QUERY on a handle — model and scale both from `ctx` rather
- * than from the globals the gesture path re-publishes at TouchStart. Used by
- * GetKeyPositionByTap / ByStoredTouch, which otherwise answered a query on the spellchecker's
- * handle with the IME's keyboard. NULL ctx falls back to the globals. */
+/* Same mapping for a one-shot query, with model and scale from `ctx` rather than the globals the
+ * gesture path re-publishes (GetKeyPositionByTap / ByStoredTouch). NULL ctx uses the globals. */
 void xt9kdb_sensor_to_authored_ctx(ET9KDBInfoPtr ctx, float sx, float sy, float* ax, float* ay);
 
-/* Tell geometry whether the active KDB is a physical keyboard (PKB). The sensor->authored
- * offset is applied only when this is true; set false for VKB so the calibration never leaks
- * onto the on-screen keyboard. Set by SetKdbNum from the selected layout's secondaryId. */
+/* Whether the active KDB is a physical keyboard; the sensor offset applies only when true.
+ * Set by SetKdbNum from the selected layout's secondaryId. */
 void xt9kdb_set_active_pkb(int isPkb);
 int  xt9kdb_active_pkb(void);   /* 1 = physical keyboard active; 0 = on-screen VKB */
 
-/* Set the view->authored scale numerators (SetKeyboardSize; 0,0 = no scaling). RE-confirmed: the blob
- * stores these at ctx+0xfc34/0xfc36 and scales authored = (view-offset)*authoredDim/scale. */
+/* View->authored scale numerators (SetKeyboardSize; 0,0 = none). The blob stores them at
+ * ctx+0xfc34/0xfc36 and maps authored = (view-offset)*authoredDim/scale. */
 void xt9kdb_set_scale(int sw, int sh);
-/* L2: copy `ctx`'s scale (ctx+0xfc34/36 — the authoritative per-context copy) into the process
- * global that the ctx-less xt9kdb_sensor_to_authored reads. Called at gesture start, exactly like
- * the model re-publish, so a layout sync on ANOTHER engine context (the spellchecker's) can never
- * leave the gesturing context's touches scaled by someone else's keyboard. CUTOVER only: under
- * DIFF the blob owns SetKeyboardSize and the global is the only scale we ever set, so this is a
- * no-op there rather than a clobber. */
+/* Copy `ctx`'s scale into the global the ctx-less xt9kdb_sensor_to_authored reads. Called at
+ * gesture start so another context's layout sync can't rescale this gesture. No-op under DIFF. */
 void xt9kdb_publish_ctx_scale(ET9KDBInfoPtr ctx);
 
-/* Read the idx-th RAW sensor sample of the current gesture (owned by kdb_trace.c). Returns 1 and
- * fills the x and y out-params if idx is in range, else 0. Used by GetKeyPositionByStoredTouch. */
+/* idx-th RAW sensor sample of the current gesture (kdb_trace.c); 1 if in range, else 0. */
 int xt9kdb_stored_sample(ET9U32 idx, float* x, float* y);
-/* Read-only view of the same buffer, timestamps included: returns the base pointer and writes the
- * sample count through `count` (may be NULL). Owned by kdb_trace.c. */
+/* Read-only view of the same buffer with timestamps; count may be NULL. */
 const ET9KdbSample* xt9kdb_stored_path(ET9U32* count);
-/* L1 (audit docs/2026-09_kdb-touch-abi_audit.md): monotonic count of touch events that did NOT
- * belong to the contact owning the live path — a TouchMove/TouchEnd/TouchCancel from another
- * pointer, or a TouchStart that abandoned an in-flight one. Diagnostic: the shipped path has no
- * in-band channel for it (L10), so this is what a TRACEPT dump or a test correlates against.
- * Never reset; it counts for the life of the process. */
+/* Monotonic, never-reset count of touch events from a contact other than the one owning the live
+ * path (or a TouchStart that abandoned one). Diagnostic only; nothing in-band reports it. */
 ET9U32 xt9kdb_foreign_contact_drops(void);
-/* L10: TouchEnd always reports success (shim parity, §1.3), so a recognizer that could not run is
- * otherwise visible only in logcat — which is how a KEY2 build shipped with swipe dead for the
- * life of every process. Both counters are monotonic and never reset.
- *   unavailable: process_trace_impl reached no recognizer at all (NULL ctx, or the blob symbol
- *                did not bind). Non-zero means swipe is DEAD, not merely inaccurate.
- *   failures:    a recognizer ran and returned a non-NONE status that TouchEnd then swallowed.
+/* TouchEnd always reports success, so these monotonic counters are the only non-logcat signal:
+ *   unavailable: no recognizer reached (NULL ctx, or blob symbol unbound). Non-zero = swipe is dead.
+ *   failures:    a recognizer returned a non-NONE status that TouchEnd swallowed.
  * Surfaced to Java by Xt9KdbVariant.recognizerUnavailable() / recognizerFailures(). */
 ET9U32 xt9kdb_recognizer_unavailable(void);
 ET9U32 xt9kdb_recognizer_failures(void);
-/* L13: monotonic count of <key> elements whose keyCodes list did not fit ET9_KDB_MAX_KEY_CODES,
- * i.e. alternates were dropped. Every truncation also logs to XT9KDB. Never reset. A shipped
- * layout should never reach this (the widest is 10 codes against a capacity of 16); a non-zero
- * value means a new KDB needs the capacity raised, not that recognition has failed. */
+/* Monotonic count of <key> elements whose keyCodes overflowed ET9_KDB_MAX_KEY_CODES (each also
+ * logs). Shipped layouts max out at 10 of 16; non-zero means a new KDB needs the capacity raised. */
 ET9U32 xt9kdb_key_code_truncations(void);
-/* Resolve a RAW SENSOR coordinate to its key CODE (-1 if none), also returning the authored-space
- * mapping through axo/ayo (either may be NULL). sensor->authored + point_to_key in one step. */
+/* RAW SENSOR coordinate to key CODE (-1 if none); authored point via axo/ayo (either may be NULL). */
 int xt9kdb_key_code_at(float sx, float sy, float* axo, float* ayo);
-/* deposit-time snapshot of the gesture path, stable while the bridge holds the gesture lock
- * through ranking (kdb_trace.c §8.7.10) — the ONLY path source the owned ranker may use */
+/* Deposit-time snapshot of the gesture path, stable while the bridge holds the gesture lock through
+ * ranking. The only path source the owned ranker may use. */
 void xt9kdb_rank_snapshot_store(void);
 int  xt9kdb_rank_sample(ET9U32 idx, float* x, float* y);
 ET9U32 xt9kdb_rank_seq(void);   /* deposit sequence number; bridge consumes each seq once */
-/* W1 (§8.7.14): take the deposit-ranked gesture word for `seq` (consume-once). Returns length
- * written (0 if none for this seq / not enabled). Filled synchronously in owned_pst_v2. */
+/* Take (consume-once) the deposit-ranked gesture word for `seq`; returns length, 0 if none.
+ * Filled synchronously in owned_pst_v2. */
 int  xt9kdb_take_gesture_word(ET9U32 seq, char* out, int outsz);
-/* zipf*10 of a LOWERCASE ASCII word from the generated English LDB table (kdb_freq_en.h);
- * 0 = absent (rare, non-word, or never enumerated). The Java typed-word guard weighs an
- * apostrophe insertion with it (well->we'll stays "well", cant->can't goes through). */
+/* zipf*10 of a lowercase ASCII word from kdb_freq_en.h; 0 = absent. The Java typed-word guard uses
+ * it to weigh apostrophe insertion (well->we'll stays "well", cant->can't goes through). */
 int  xt9kdb_word_zipf10(const char* w);
 
-/* Decode the accumulated gesture path + feed AW via the commit hooks (no result-block write).
- * xt9kdb_decode_scratch() runs it on a NULL context — the W3a scratch/DIFF path: TouchStart/TouchMove
- * accumulate points, then this commits the per-position candidate sets to the installed sinks.
- *
- * These are the SUPERSEDED first-cut decoder (kdb_decode_legacy.c) and are NOT LINKED INTO THE
- * SHIPPED libkb.so — only into the DIFF build and the host test suite. The shipped decode path is
- * owned_pst_v2 in kdb_trace.c. Do not call these from anything that compiles under XT9KDB_CUTOVER. */
+/* Superseded first-cut decoder (kdb_decode_legacy.c): decodes the accumulated path and feeds AW via
+ * the commit hooks. Linked only into the DIFF build and host tests, NOT the shipped libkb.so (which
+ * uses owned_pst_v2); never call from XT9KDB_CUTOVER code. decode_scratch runs on a NULL context. */
 ET9STATUS xt9kdb_decode_and_commit(ET9KDBInfoPtr ctx);
 ET9STATUS xt9kdb_decode_scratch(void);
 
-/* Attach a smart-touch per-key center bias (clamped to +/- half key size), reversed from
- * Load_AttachBias. Called by the XML loader for keys that carry bias data. */
+/* Attach a smart-touch per-key center bias (clamped to +/- half key size). Used by the XML loader. */
 void xt9kdb_attach_bias(ET9KdbLoaded* m, ET9U16 keyIdx, ET9S16 biasX, ET9S16 biasY);
 
-/* ---- AW interop boundary (the symbol hand-off to ET9AW) -------------------------------------
- * Recognized symbols are committed to AW's ET9WordSymbInfo (at ctx+0x52) via the blob export
- * ET9AddExplicitSymb(ctx+0x52, symb) — verified: that function takes the WordSymbInfo pointer
- * directly (magic u16 at offset 0), not the KDB context. ET9AWSelLstBuild then reads that buffer to
- * build candidates. The buffer is AW's (the blob's), so the owned KDB does NOT reimplement it — it
- * decodes and calls this commit hook. Integration sets the hook to a thunk over ET9AddExplicitSymb
- * (passing ctx+0x52); standalone leaves it NULL (inert) or installs a mock (see owned_selftest). */
+/* AW hand-off. Recognized symbols go to AW's ET9WordSymbInfo at ctx+0x52 via the blob export
+ * ET9AddExplicitSymb(ctx+0x52, symb), which takes the WordSymbInfo pointer (magic u16 at +0), not
+ * the KDB context; ET9AWSelLstBuild reads that buffer. Integration installs a thunk; standalone
+ * leaves it NULL (inert) or installs a mock (owned_selftest). */
 typedef ET9STATUS (*xt9kdb_commit_fn)(void* ctx, ET9SYMB symb);
 extern xt9kdb_commit_fn g_aw_commit;
 void      xt9kdb_set_aw_commit(xt9kdb_commit_fn fn);
 ET9STATUS xt9kdb_commit_symbol(void* ctx, ET9SYMB symb);
 
-/* AMBIGUOUS commit: the owned KDB computes a per-position candidate set (xt9kdb_point_to_candidates)
- * and commits it; integration wires this hook to ET9AddCustomSymbolSet(ctx+0x52, symbs, freqs, n).
- * If unset, xt9kdb_commit_candidates falls back to the exact commit of the top candidate. */
+/* Ambiguous commit of a per-position candidate set; integration wires it to
+ * ET9AddCustomSymbolSet(ctx+0x52, symbs, freqs, n). Unset: exact commit of the top candidate. */
 typedef ET9STATUS (*xt9kdb_commit_ambig_fn)(void* ctx, const ET9SYMB* symbs, const ET9U8* freqs, int count);
 extern xt9kdb_commit_ambig_fn g_aw_commit_ambig;
 void      xt9kdb_set_aw_commit_ambig(xt9kdb_commit_ambig_fn fn);
@@ -259,11 +196,11 @@ ET9STATUS xt9kdb_commit_candidates(void* ctx, float ax, float ay);
 int xt9kdb_point_to_candidates(const ET9KdbLoaded* m, float x, float y,
                                ET9SYMB* symbs, ET9U8* freqs, int max);
 
-/* The on-device-verified English qwerty_pkb layout (30 keys, 1080x324). Ground
- * truth for the differential harness and the bring-up default model. */
+/* Verified English qwerty_pkb layout (30 keys, 1080x324): differential-harness ground truth and
+ * default model. */
 extern const ET9KdbLoaded XT9_QWERTY_PKB_EN;
 
-/* ---- owned gesture decoder (kdb_decode.c) — see TRACE_RESULT_REGION.md + remediation §8.7 ---- */
+/* Owned gesture decoder (kdb_decode.c). */
 typedef struct { float x, y; ET9U32 t; } Xt9DecPt;
 typedef struct {
     float   cx, cy;            /* cluster centroid (model space) */
@@ -274,28 +211,20 @@ typedef struct {
 } Xt9DecPos;
 typedef struct {
     float radx;                /* NKL RADX (max key width) */
-    float rady;                /* global RADY (blob parity mode) */
+    float rady;                /* global RADY */
     int   per_row;             /* 1 = vertical thresholds from the row band, not global RADY */
-    int   dwell_min;           /* min samples in a tight kept cluster = dwell (double letter);
-                                  0 disables; default = XT9_DEC_DWELL_MIN (0 — A/B lever) */
-    int   feed_minimal;        /* 1 = emit ONLY inflection positions (start/turns/dwells/end),
-                                  no interpolated crossings. The blob-parity default is 0; the
-                                  owned feed uses 1 — positions serve the candidate GENERATOR
-                                  now (the ranker reads the raw path), and generator recall
-                                  degrades with junk positions (§8.7.7: done absent, hello
-                                  pools polluted on over-segmented traces). W4 re-test (2026-08-16,
-                                  180 long-word live pools): dense feed 53.0%% recall vs minimal
-                                  67.9%% — holds under the W3 ranker too. */
+    int   dwell_min;           /* min samples in a tight cluster to count as a dwell (double
+                                  letter); 0 disables (default XT9_DEC_DWELL_MIN = 0) */
+    int   feed_minimal;        /* 1 = emit only inflection positions (start/turns/dwells/end), no
+                                  interpolated crossings. The owned feed uses 1: positions feed the
+                                  candidate generator, whose recall drops with junk positions
+                                  (measured 53.0%% dense vs 67.9%% minimal on long words). */
     float wp_dev;              /* waypoint-emission deviation threshold, key units; default
-                                  XT9_DEC_WAYPOINT_DEV (0.65). W4 live-sweep lever
-                                  (debug.et9.ownwpdev, centi). */
-    int   cross_min;           /* KEY-CROSSING recovery (W6 sitting-1 decode robustness): in a
-                                  minimal-feed gap, emit a waypoint for each distinct key cell the
-                                  path dwells in for >= cross_min samples (key != flanking
-                                  positions). Recovers COLLINEAR pass-through letters (coffee's f,
-                                  o-f-e straight -> ~0 chord deviation, missed by wp_dev) without the
-                                  dense feed's fixed-distance over-segmentation. 0 = DISABLED
-                                  (debug.et9.owncross, A/B lever). */
+                                  XT9_DEC_WAYPOINT_DEV (0.65); debug.et9.ownwpdev (centi) */
+    int   cross_min;           /* key-crossing recovery: in a minimal-feed gap, emit a waypoint for
+                                  each distinct key the path dwells in for >= cross_min samples.
+                                  Recovers collinear pass-through letters (coffee's f) that wp_dev
+                                  misses. 0 = disabled (debug.et9.owncross) */
     int   nrows;
     float row_top[8], row_h[8];/* ascending row bands from the model */
 } Xt9DecParams;
@@ -303,17 +232,15 @@ void xt9kdb_decode_params_from_model(const ET9KdbLoaded* m, Xt9DecParams* p, int
 int  xt9kdb_decode_gesture(const Xt9DecPt* pts, ET9U32 n, const ET9KdbLoaded* m,
                            const Xt9DecParams* p, Xt9DecPos* out, int max_out);
 
-/* ---- owned gesture ranker (kdb_rank.c) — §8.7.6: score a candidate word's ideal key-path
- * against the raw swipe (key-unit distances, per-row y normalization). Lower = better. */
+/* Owned gesture ranker (kdb_rank.c): scores a word's ideal key path against the raw swipe
+ * (key-unit distances, per-row y normalization). Lower = better. */
 float xt9kdb_rank_score(const ET9KdbLoaded* m, const Xt9DecParams* p,
                         const Xt9DecPt* path, ET9U32 pathN,
                         const char* word, int listIndex);
 
-/* The word-independent half of a score, computed once per gesture and then shared by every
- * candidate of that gesture (xt9kdb_rank_score is prepare + score_prepared). Lives on the
- * caller's stack for one gesture; it points at `m` and `p`, which must outlive it, and is never
- * cached across gestures — the path buffer it was built from is reused. Scores are bit-identical
- * to the one-shot form. */
+/* Word-independent half of a score, built once per gesture and shared by its candidates
+ * (rank_score = prepare + score_prepared, bit-identical). Stack-only for one gesture: it points at
+ * `m` and `p`, and the path buffer it came from is reused, so never cache it across gestures. */
 #define XT9_RANK_N 32
 #define XT9_RANK_PREPARED 1
 typedef struct { float x, y; } Xt9RankPt;
@@ -330,10 +257,9 @@ void  xt9kdb_rank_prepare(Xt9RankPath* rp, const ET9KdbLoaded* m, const Xt9DecPa
                           const Xt9DecPt* path, ET9U32 pathN);
 float xt9kdb_rank_score_prepared(const Xt9RankPath* rp, const char* word, int listIndex);
 
-/* ---- owned recall index selfcheck (kdb_trace.c): the live O(N) (first,last)-letter bucket
- * builder must reproduce the reference O(26*26*N) builder byte for byte. corrupt != 0 flips one
- * reference entry (negative control). Returns 0 on match; 1 count, 2 offsets, 3 list; -1 oom.
- * Host tests + debug builds only in practice; costs two 128 KB heap scratch buffers. */
+/* Recall-index selfcheck (kdb_trace.c): the live O(N) (first,last)-letter bucket builder must match
+ * the reference O(26*26*N) builder byte for byte. corrupt != 0 flips one reference entry (negative
+ * control). Returns 0 on match; 1 count, 2 offsets, 3 list; -1 oom. Uses two 128 KB heap buffers. */
 int xt9kdb_recall_index_selfcheck(int corrupt, unsigned* out_words);
 
 /* Owned recall alone (kdb_trace.c): up to 8 word indices into the frequency table and their
@@ -343,7 +269,7 @@ int xt9kdb_recall_top(const ET9KdbLoaded* m, const Xt9DecParams* p, const Xt9Dec
 /* Word `i` of the frequency table (kdb_freq_en.h), NULL out of range. */
 const char* xt9kdb_freq_word(int i);
 
-/* W6 locale gate (kdb_trace.c): 1 when the English-lexicon refinements (owned recall, echo and
+/* Locale gate (kdb_trace.c): 1 when the English-lexicon refinements (owned recall, echo and
  * double heuristics) apply to a gesture in language `langid` (-1 = engine could not say). */
 int xt9kdb_lang_is_english(int langgate, int langid);
 

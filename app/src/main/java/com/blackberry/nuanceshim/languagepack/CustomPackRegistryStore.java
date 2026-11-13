@@ -20,36 +20,16 @@ import java.util.List;
 import java.util.Objects;
 
 /**
- * The writable half of the language-pack registry: packs the user side-loaded with the "+" button.
- *
- * <p><b>Why this exists.</b> {@code assets/ldb/manifest.json} is the shipped catalogue of packs,
- * and it is an APK asset - read-only for the life of the install. Everything downstream decides
- * what a locale <em>is</em> by looking it up there: {@link LanguagePackInstaller#isSupported()} is
- * simply "the registry knows this language", and {@code LanguagePackManager}'s hourly cleanup
- * deletes the directory of any installed locale that is not supported. So before this class, a
- * side-loaded pack for a locale the app does not ship was deleted by the next cleanup pass - the
- * "+" button could only ever "install" a language the APK already contained.
- *
- * <p>The fix is not to write to the shipped manifest (impossible) but to keep a second, writable
- * catalogue in {@code filesDir} with the same entry shape, which {@link ManifestParser} merges on
- * top of the shipped one. A side-loaded pack then has a real registry entry - name, language,
- * country, version - and behaves like any other: it is supported, it survives cleanup, it can be
- * uninstalled, and it is never {@code preinstalled}, so {@link LanguagePackInstaller#uninstall()}
- * will actually remove it.
- *
- * <p>Entries here are USER DATA describing files the user chose, not a trust boundary: the locale
- * identifier is validated before it becomes a directory name (see
- * {@link #isValidLocaleIdentifier}), because it is what the pack directory is named after.
+ * Writable catalogue of side-loaded packs, same entry shape as the read-only
+ * {@code assets/ldb/manifest.json}, merged on top of it by {@link ManifestParser} so the locale
+ * is supported. Entries are never preinstalled, so {@link LanguagePackInstaller#uninstall()} can
+ * remove them. Locale identifiers are validated because they become directory names.
  */
 public final class CustomPackRegistryStore {
 
     private static final String TAG = "LPM";
 
-    /**
-     * Not in {@code noBackupFilesDir} alongside the packs themselves: this is a small record of
-     * the user's own choices and is worth restoring with their settings, whereas the multi-megabyte
-     * .ldb files are not. A restored entry whose directory is missing simply reads as not installed.
-     */
+    /** In filesDir (backed up), unlike the .ldb files; a restored entry without its directory reads as not installed. */
     private static final String FILE_NAME = "nuance_custom_packs.json";
 
     private CustomPackRegistryStore() {
@@ -60,12 +40,8 @@ public final class CustomPackRegistryStore {
     }
 
     /**
-     * A language or language_COUNTRY identifier that is safe to use as a directory name.
-     *
-     * <p>Deliberately not {@code Locale}-based: the shipped manifest itself carries {@code es-419},
-     * whose "country" is a UN M.49 region code, so a 2-letter ISO test would reject a pack the app
-     * already ships. Letters and digits only, 2-3 of them per part - which excludes {@code ..},
-     * separators, and everything else that could escape the nuance directory.
+     * A language or language_COUNTRY id safe as a directory name: 2 or 3 letters or digits per part.
+     * Not {@code Locale}-based because the manifest ships {@code es-419} (a UN M.49 region).
      */
     public static boolean isValidLocaleIdentifier(String id) {
         if (id == null) {
@@ -123,19 +99,14 @@ public final class CustomPackRegistryStore {
             }
             reader.endObject();
         } catch (IOException | IllegalStateException | NumberFormatException e) {
-            // A truncated or hand-edited file reads as "no custom packs" rather than taking the
-            // whole registry down with it - the shipped manifest still loads.
+            // A corrupt file reads as "no custom packs"; the shipped manifest still loads.
             Logger.errorWithException(TAG, e, "Unreadable custom pack registry; ignoring it");
             return new ArrayList<>();
         }
         return out;
     }
 
-    /**
-     * Record a side-loaded pack, replacing any existing entry for the same language+country.
-     *
-     * @return {@code true} when the registry was written
-     */
+    /** Records a side-loaded pack, replacing any entry for the same language+country. */
     public static synchronized boolean add(Context context, String language, String country,
             String name, String path, double version) {
         if (!isCodePart(language, 2, 3) || (country != null && !isCodePart(country, 2, 3))) {
@@ -160,7 +131,7 @@ public final class CustomPackRegistryStore {
         return write(context, packs);
     }
 
-    /** Forget a side-loaded pack. Safe to call when no entry exists. */
+    /** Safe to call when no entry exists. */
     public static synchronized boolean remove(Context context, String language, String country) {
         final List<LanguagePackInfo> packs = read(context);
         if (!removeMatching(packs, language, country)) {
@@ -183,12 +154,7 @@ public final class CustomPackRegistryStore {
         return removed;
     }
 
-    /**
-     * Replaces the registry through {@link AtomicFile}: the JSON goes to
-     * {@code nuance_custom_packs.json.new}, is synced to disk and is then renamed over the live
-     * file, so a crash or a power cut mid-write cannot leave a half-written registry - losing the
-     * record of a pack would let the cleanup delete the pack itself.
-     */
+    /** Atomic replace, so a crash mid-write cannot leave a half-written registry. */
     private static boolean write(Context context, List<LanguagePackInfo> packs) {
         final File f = file(context);
         final AtomicFile atomic = new AtomicFile(f);

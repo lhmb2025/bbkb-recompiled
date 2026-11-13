@@ -54,20 +54,12 @@ import dev.bbkb.ime.core.settings.ui.SettingsScaffold
 import java.io.File
 
 /**
- * The debug flag that reveals the device profile builder.
- *
- * The builder is unfinished, so the row that opens it — and the "THIS DEVICE" subhead above it —
- * is off by default and only appears once this is switched on from the debug screen. Nothing else
- * is gated: the `device_profile_builder` route still resolves, so a deep link (and the builder's
- * own tests) reach the screen either way.
+ * Debug flag that shows the (unfinished) device profile builder row and its subhead. Only the row
+ * is gated: the `device_profile_builder` route still resolves for deep links and tests.
  */
 internal const val PREF_SHOW_DEVICE_PROFILE_BUILDER = "pref_show_device_profile_builder"
 
-/**
- * Device Configuration Screen
- * Allows users to select, import, and manage device input configurations.
- * Accessible from Physical Keyboard settings.
- */
+/** Select, import and manage device input configurations. */
 @Composable
 fun DeviceConfigurationScreen(
     onNavigateToProfileBuilder: () -> Unit,
@@ -76,7 +68,6 @@ fun DeviceConfigurationScreen(
     val context = LocalContext.current
     val manager = remember { CustomDeviceConfigManager.getInstance(context) }
 
-    // Read once when the screen first composes, as every other screen here reads its preferences.
     val showProfileBuilder = remember {
         PrefsManager.getPrefs(context).getBoolean(PREF_SHOW_DEVICE_PROFILE_BUILDER, false)
     }
@@ -85,10 +76,8 @@ fun DeviceConfigurationScreen(
     var activeId by remember { mutableStateOf(manager.activeConfigId) }
     var deleteTarget by remember { mutableStateOf<CustomDeviceConfigManager.ConfigInfo?>(null) }
 
-    // An imported config is not activated on import. It is read back out of the file it was just
-    // copied to and its <match> block is shown first: a config built for another handset parses
-    // perfectly and then does nothing at all, and until now the only feedback was "Configuration
-    // imported".
+    // An imported config is not activated: its <match> block is shown first, since a config for
+    // another handset parses fine and then does nothing.
     var pendingImport by remember { mutableStateOf<PendingImport?>(null) }
 
     val importFailed = stringResource(R.string.device_config_import_failed)
@@ -115,8 +104,6 @@ fun DeviceConfigurationScreen(
     SettingsScaffold(
         title = context.getString(R.string.settings_device_configuration_title),
         onNavigateBack = onNavigateBack,
-        // The screen's one creative action, named. It was a bare + in the app bar, which gave no
-        // hint that it opened a file picker for an XML device config.
         floatingActionButton = {
             ExtendedFloatingActionButton(
                 onClick = { filePickerLauncher.launch(arrayOf("text/xml", "application/xml")) },
@@ -131,9 +118,8 @@ fun DeviceConfigurationScreen(
         val customConfigs = configs.filter { it.type == CustomDeviceConfigManager.ConfigType.CUSTOM }
         val spacing = LocalSpacing.current
 
-        // Each section is a group laid out by the list itself: the rows paint themselves as cards,
-        // each section's first and last row carry the group's outer corners, and the rows take the
-        // group inset themselves so the section labels between them keep their page-level alignment.
+        // Each section is one group; rows paint themselves as cards with the group inset so the labels
+        // keep page-level alignment.
         CompositionLocalProvider(LocalInGroup provides true) {
             LazyColumn(
                 modifier = Modifier
@@ -141,8 +127,7 @@ fun DeviceConfigurationScreen(
                     .padding(paddingValues),
                 verticalArrangement = Arrangement.spacedBy(spacing.groupGap)
             ) {
-                // This device — the builder, before the list of configs someone else made. Unfinished,
-                // so it is behind the debug flag; see [PREF_SHOW_DEVICE_PROFILE_BUILDER].
+                // The builder, behind [PREF_SHOW_DEVICE_PROFILE_BUILDER] while unfinished.
                 if (showProfileBuilder) {
                     item { PreferenceCategory(title = stringResource(R.string.device_profile_category_this_device)) }
                     item {
@@ -164,7 +149,6 @@ fun DeviceConfigurationScreen(
                     }
                 }
 
-                // Standard section
                 item { PreferenceCategory(title = context.getString(R.string.settings_device_config_category_standard)) }
                 itemsIndexed(standardConfigs) { index, config ->
                     ConfigItem(
@@ -176,7 +160,6 @@ fun DeviceConfigurationScreen(
                     )
                 }
 
-                // Preloaded section
                 if (preloadedConfigs.isNotEmpty()) {
                     item { PreferenceCategory(title = context.getString(R.string.settings_device_config_category_preloaded)) }
                     itemsIndexed(preloadedConfigs) { index, config ->
@@ -190,7 +173,6 @@ fun DeviceConfigurationScreen(
                     }
                 }
 
-                // Custom section
                 if (customConfigs.isNotEmpty()) {
                     item { PreferenceCategory(title = context.getString(R.string.settings_device_config_category_custom)) }
                     itemsIndexed(customConfigs) { index, config ->
@@ -204,8 +186,7 @@ fun DeviceConfigurationScreen(
                     }
                 }
 
-                // Keeps the last row clear of the extended FAB (56dp + 16dp margin + 16dp breathing
-                // room), as Language packs does.
+                // Keeps the last row clear of the extended FAB (56dp + 16dp margin + 16dp).
                 item { Spacer(modifier = Modifier.height(88.dp)) }
             }
         }
@@ -228,7 +209,6 @@ fun DeviceConfigurationScreen(
         )
     }
 
-    // Delete confirmation dialog
     deleteTarget?.let { config ->
         AlertDialog(
             onDismissRequest = { deleteTarget = null },
@@ -254,17 +234,8 @@ fun DeviceConfigurationScreen(
 }
 
 /**
- * One configuration, on [PreferenceItem] rather than a hand-rolled Row with its own 12dp vertical
- * padding and its own 12dp gap.
- *
- * The radio goes in the leading slot — the same 24dp column an icon would take — so the names line
- * up with the rows of the screen this was reached from, and a selected row is no longer a
- * semibold-vs-normal weight change, which was the only thing distinguishing it besides the radio
- * itself and which made the list look like it had two type ramps.
- *
- * `selectable` with [Role.RadioButton] rather than a plain click: a screen reader announces "radio
- * button, selected", and the radio itself takes no click of its own, so the whole row is one
- * target rather than two overlapping ones.
+ * One configuration on [PreferenceItem] with the radio in the leading slot. `selectable` with
+ * [Role.RadioButton] so screen readers announce it and the whole row is one target.
  */
 @Composable
 private fun ConfigItem(
@@ -276,9 +247,7 @@ private fun ConfigItem(
 ) {
     Box(modifier = Modifier.padding(horizontal = LocalSpacing.current.groupInset)) {
         PreferenceItem(
-            // No summary on any row. The first row's name, "Detect automatically", says what its
-            // old "System auto-detection" line said, and the profile detection picks is the row
-            // shown selected, so there is nothing further to report here.
+            // No summary: the row detection picks is the one shown selected.
             title = config.name,
             leading = {
                 RadioButton(selected = isSelected, onClick = null)
@@ -297,17 +266,14 @@ private fun ConfigItem(
 }
 
 /**
- * Makes [id] the active configuration and returns the one now in effect, which is what the list
- * shows selected. They differ for "Detect automatically": the selection lands on the profile
- * detection picked, at once. The list used to show the tapped row and only move the selection the
- * next time the screen was opened.
+ * Activates [id] and returns the config now in effect, which the list shows selected. For "Detect
+ * automatically" that is the profile detection picked.
  */
 private fun select(manager: CustomDeviceConfigManager, id: String): String {
     manager.activeConfigId = id
     return manager.activeConfigId
 }
 
-/** An imported config waiting for the user to look at its `<match>` block. */
 private data class PendingImport(val id: String, val summary: DeviceConfigSummary)
 
 /** The file [CustomDeviceConfigManager.importCustomConfig] just wrote, from the id it returned. */
@@ -319,13 +285,9 @@ private fun importedFile(context: Context, configId: String): File? {
 }
 
 /**
- * What an imported configuration matches on, and whether that is this phone.
- *
- * The decision offered is deliberately not "import / cancel" — the file is already copied by the
- * time it can be read — but "use it now, or keep it for later". A config for another handset is a
- * perfectly good thing to be carrying around; it just must not be switched on silently. Activate
- * applies it to this phone whatever it matches on (a profile picked by hand always applies), so
- * the mismatch line is a warning about what Activate will do, not a note that nothing will happen.
+ * What an imported config matches on and whether that is this phone. The file is already copied,
+ * so the choice is "use it now or keep it". Activate applies it whatever it matches (a hand-picked
+ * profile always applies), so a mismatch line warns about what Activate will do.
  */
 @VisibleForTesting
 @Composable

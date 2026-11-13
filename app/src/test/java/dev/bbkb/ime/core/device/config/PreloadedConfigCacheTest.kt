@@ -14,14 +14,9 @@ import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
 
 /**
- * The preloaded-config listing costs an `R.xml` reflection sweep (431 fields in this app) plus
- * one XML pull-parse per `device_config_*` match just to read its `name` attribute, and it used
- * to be re-run on every `getAvailableConfigs()` and every auto-select search — on
- * `DeviceProfile.initialize`, which is the IME's cold-start path and every cold Settings launch.
- *
- * Nothing about that listing can change while the process lives: `R.xml`'s fields are
- * compile-time constants and the XMLs are in the APK. These pin both halves — that it is
- * computed once, and that memoising it did not change what it says.
+ * The preloaded-config listing (an `R.xml` reflection sweep plus one parse per config, on the
+ * cold-start path) cannot change while the process lives, so it is computed once. Pins that, and
+ * that memoising did not change its contents.
  */
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [34], manifest = Config.NONE)
@@ -40,8 +35,7 @@ class PreloadedConfigCacheTest {
 
     @Test
     fun theShippedConfigsAreStillListed() {
-        // Guards the rest of the class: memoising an empty list would make every identity
-        // assertion below vacuously true.
+        // Memoising an empty list would make every identity assertion below vacuously true.
         val preloaded = preloadedOf(CustomDeviceConfigManager.getInstance(context))
         assertTrue("no preloaded device configs found at all", preloaded.isNotEmpty())
         assertTrue(preloaded.all { it.id.startsWith("preloaded:device_config_") })
@@ -70,8 +64,7 @@ class PreloadedConfigCacheTest {
         val manager = CustomDeviceConfigManager.getInstance(context)
         val all = manager.availableConfigs
 
-        // Default first, then preloaded, then custom — and preloaded sorted by display name,
-        // case-insensitively.
+        // Default first, then preloaded (sorted by display name, case-insensitively), then custom.
         assertEquals(CustomDeviceConfigManager.ID_DEFAULT, all.first().id)
         assertEquals(CustomDeviceConfigManager.ConfigType.DEFAULT, all.first().type)
 
@@ -83,10 +76,8 @@ class PreloadedConfigCacheTest {
     }
 
     /**
-     * The auto-select search now enumerates the connected keyboards *before* paying for the
-     * preloaded scan, because with none attached the answer is null whatever the configs say.
-     * Robolectric reports no input devices, which is the phone-with-no-physical-keyboard case:
-     * the stored id must come back untouched.
+     * Auto-select enumerates connected keyboards before the preloaded scan, since with none the
+     * answer is null. Robolectric reports no input devices, so the stored id comes back untouched.
      */
     @Test
     fun withNoPhysicalKeyboardAttachedTheStoredIdStands() {

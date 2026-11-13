@@ -100,24 +100,12 @@ import java.util.Locale
 import androidx.compose.runtime.Immutable
 
 /**
- * Language packs: what is installed, and everything published that is not.
+ * Language packs: installed (shipped, side-loaded, regional variants) and available to download
+ * ([PackCatalog] minus what is installed).
  *
- * Two sections. **Installed** is the older half of the screen — the packs in the APK, the ones
- * the user side-loaded with the "+" button, and the regional variant radio lists. **Available to
- * download** is the published catalogue ([PackCatalog]) minus what is installed, one row per
- * downloadable pack with a size and a Download button.
- *
- * Three things about it are deliberate:
- *
- *  - **The catalogue is a hint, the disk is the truth.** Installed state is re-read off disk
- *    ([InstalledPacks.read]) whenever a download finishes, so a row never claims a pack is
- *    installed on the strength of a download having *appeared* to succeed.
- *  - **Downloads are not owned by this screen.** [PackDownloadManager] is process-wide; rotating
- *    the phone or leaving the screen mid-download changes nothing, and coming back re-attaches to
- *    the progress that has been running all along.
- *  - **Both lists are flat and alphabetical.** [PackListing] decides the order for both halves,
- *    and a regional dictionary that loads in place of another language is an ordinary row that
- *    says so in its summary rather than an indented child of the language it replaces.
+ * Installed state is re-read from disk ([InstalledPacks.read]) after every download, never inferred.
+ * [PackDownloadManager] is process-wide, so leaving the screen mid-download changes nothing.
+ * Both lists are flat and ordered by [PackListing]; a regional dictionary is an ordinary row.
  */
 @Composable
 fun LanguagePacksScreen(
@@ -126,11 +114,8 @@ fun LanguagePacksScreen(
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
 
-    // State for language packs
     var languagePacks by remember { mutableStateOf<List<InstalledLanguagePack>>(emptyList()) }
-    // Which languages the phone's speech recogniser has downloaded: the Voice chip after a row's
-    // name. The last answer shows at once; a fresh one replaces it when the recogniser replies.
-    // None while built-in voice input is off.
+    // Languages the speech recogniser has offline (the Voice chip). None while voice input is off.
     val voiceInputOn = remember { PrefsManager.getPrefs(context).getBoolean("voice_input_enabled", true) }
     var voiceLanguages by remember {
         mutableStateOf(if (voiceInputOn) VoiceLanguages.snapshot(context) else null)
@@ -140,35 +125,27 @@ fun LanguagePacksScreen(
     }
     var isLoading by remember { mutableStateOf(true) }
     var showDeleteDialog by remember { mutableStateOf<InstalledLanguagePack?>(null) }
-    // Deleting a variant is confirmed separately: the thing being removed is a member of a group,
-    // not the language row, and the message has to say which.
+    // Variant deletes get their own dialog: the message must name the group member.
     var showVariantDeleteDialog by remember {
         mutableStateOf<Pair<String, LanguageVariantStore.Member>?>(null)
     }
-    // Regional variants sharing a base language's engine slot, keyed by that base locale.
     var variantGroups by remember {
         mutableStateOf<Map<String, LanguageVariantStore.Group>>(emptyMap())
     }
 
-    // ── The downloadable catalogue ────────────────────────────────────────────────────────────
-    // The manifest, what is on disk, and what the (process-wide) download queue is doing are
-    // three separate facts; PackCatalog is the only thing that merges them, and it does it
-    // purely, so this screen holds inputs rather than a derived list it has to keep in step.
+    // Manifest, disk state and download queue are separate inputs; PackCatalog merges them purely.
     val downloads = remember { PackDownloadManager.getInstance(context) }
     val downloadStates by downloads.states.collectAsStateWithLifecycle()
     var manifest by remember { mutableStateOf<DistributionManifest?>(null) }
     var installedPacks by remember { mutableStateOf(InstalledPacks()) }
     var catalogError by remember { mutableStateOf<Throwable?>(null) }
     var catalogLoading by remember { mutableStateOf(true) }
-    // Incremented by the refresh action. 0 is the first, cache-friendly load; anything above it
-    // is the user asking to go to the server.
+    // 0 is the first, cache-friendly load; above it the user asked to go to the server.
     var refreshCount by remember { mutableIntStateOf(0) }
 
     val catalog = remember(manifest, installedPacks, downloadStates) {
         manifest?.let { PackCatalog.from(it, installedPacks, downloadStates) }
     }
-    // One flat alphabetical list, variants included: the section is a list of things to download,
-    // not a map of the catalogue's group structure.
     val availablePacks = remember(catalog) {
         catalog?.let { PackListing.available(it.rows) }.orEmpty()
     }
@@ -176,19 +153,15 @@ fun LanguagePacksScreen(
     LaunchedEffect(refreshCount) {
         catalogLoading = true
         val loaded = loadCatalogue(context, force = refreshCount > 0)
-        // Keep the catalogue we already had on a failed refresh: a server error is no reason to
-        // throw away a perfectly good list the user was reading.
+        // Keep the catalogue we had on a failed refresh.
         manifest = loaded.getOrNull() ?: manifest
         catalogError = if (manifest == null) loaded.exceptionOrNull() else null
         installedPacks = readInstalledPacks(context, manifest)
         catalogLoading = false
     }
 
-    // A download that finished has written to disk, so re-read both halves of the screen. This
-    // also covers the picker, which posts through the same manager-independent path below.
-    // Keyed on the finished (installed or failed) entries only: keyed on every state, a progress
-    // tick restarted it, and each restart re-read every pack and queried the input method
-    // manager again while the superseded reads kept running on the IO pool (P-23).
+    // A finished download wrote to disk, so re-read both halves. Keyed on finished entries only:
+    // keying on every state restarted the re-read on each progress tick.
     val finishedDownloads = remember(downloadStates) {
         downloadStates.filterValues { it is PackState.Installed || it is PackState.Failed }
     }
@@ -198,7 +171,6 @@ fun LanguagePacksScreen(
         variantGroups = withContext(Dispatchers.IO) { LanguageVariantStore.read(context) }
     }
 
-    // File picker for LDB files
     val filePickerLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetContent()
     ) { uri ->
@@ -207,14 +179,12 @@ fun LanguagePacksScreen(
                 installLanguagePack(context, it) { success, message ->
                     Toast.makeText(context, message, Toast.LENGTH_LONG).show()
                     if (success) {
-                        // Refresh the list
                         scope.launch {
                             loadLanguagePacks(context) { packs ->
                                 languagePacks = packs
                             }
                             variantGroups = LanguageVariantStore.read(context)
-                            // And the catalogue's view of the disk, or the pack the user just
-                            // side-loaded would still be sitting in "Available to download".
+                            // Or the side-loaded pack would still show under "Available to download".
                             installedPacks = readInstalledPacks(context, manifest)
                         }
                     }
@@ -222,14 +192,12 @@ fun LanguagePacksScreen(
             }
         }
     }
-    
-    // Back from the system language list (or anywhere else a language may have been turned on or
-    // off): the "not on yet" rows are only as fresh as the last read.
+
+    // A language may have been turned on or off elsewhere (e.g. the system language list).
     LifecycleEventEffect(Lifecycle.Event.ON_RESUME) {
         scope.launch { loadLanguagePacks(context) { packs -> languagePacks = packs } }
     }
 
-    // Load language packs on first composition
     LaunchedEffect(Unit) {
         scope.launch {
             variantGroups = LanguageVariantStore.read(context)
@@ -239,9 +207,8 @@ fun LanguagePacksScreen(
             }
         }
     }
-    
-    // Search narrows both halves by language name or code; the two headers stay, so a result
-    // still says whether it is installed or waiting to be downloaded.
+
+    // Search filters both halves; the headers stay so a result still shows which half it is in.
     val search = rememberListSearchState()
     val shownInstalled = languagePacks.filter { search.matches(it.displayName, it.languageCode) }
     val shownAvailable = availablePacks.filter { search.matches(it.item.displayName, it.locale) }
@@ -252,8 +219,7 @@ fun LanguagePacksScreen(
         search = search,
         searchHint = stringResource(R.string.languages_hub_search),
         actions = {
-            // Force a manifest fetch. Disabled while one is in flight so a double tap
-            // does not queue a second request behind the first.
+            // Disabled while a fetch is in flight so a double tap does not queue a second request.
             IconButton(
                 onClick = { refreshCount++ },
                 enabled = !catalogLoading,
@@ -264,8 +230,6 @@ fun LanguagePacksScreen(
                 )
             }
         },
-        // The screen's one creative action, named. It used to be a bare + in the app bar, which
-        // is where Material 3 puts secondary actions and which never said what it added.
         floatingActionButton = {
             ExtendedFloatingActionButton(
                 onClick = { filePickerLauncher.launch("*/*") }, // any file; validated as LDB after
@@ -275,22 +239,14 @@ fun LanguagePacksScreen(
         }
     ) { paddingValues ->
         val spacing = LocalSpacing.current
-        // No info banner: what it said ("preinstalled packs cannot be deleted") is now shown by
-        // the rows themselves - only removable dictionaries carry a delete button.
-        //
-        // The two section headers are always in the list, even while either half is still
-        // loading, so the screen never re-flows from "spinner" to "list" and the user can see
-        // that a downloadable half exists before it has finished arriving.
-        //
-        // Each half is one group: the list carries the group inset and gap, and the first and
-        // last row of each half take the group's outer corners (groupEdge).
+        // Both section headers are always present, even while loading, so the screen never re-flows.
+        // Each half is one group; its first and last rows take the group corners (groupEdge).
         CompositionLocalProvider(LocalInGroup provides true) {
             LazyColumn(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(paddingValues),
-                // The group inset on both sides; the bottom inset keeps the last row clear of the
-                // extended FAB (56dp + 16dp margin + 16dp breathing room).
+                // Bottom inset keeps the last row clear of the extended FAB (56dp + 16dp margin + 16dp).
                 contentPadding = PaddingValues(
                     start = spacing.groupInset,
                     end = spacing.groupInset,
@@ -330,8 +286,7 @@ fun LanguagePacksScreen(
                                     .post(LanguageVariantStore.ACTION_LANGUAGE_PACK_CHANGED, null)
                                 variantGroups = LanguageVariantStore.read(context)
                                 installedPacks = readInstalledPacks(context, manifest)
-                                // The swap moved files in and out of the base language's slot, so
-                                // the rows' paths and "preinstalled" flags are stale until re-read.
+                                // The swap moved files in and out of the base slot, so paths and "preinstalled" are stale.
                                 loadLanguagePacks(context) { packs -> languagePacks = packs }
                             }
                         },
@@ -352,8 +307,7 @@ fun LanguagePacksScreen(
                                     ).show()
                                     loadLanguagePacks(context) { packs -> languagePacks = packs }
                                 } else {
-                                    // Before Android 14 only the user can turn it on; the list is
-                                    // re-read when they come back (ON_RESUME below).
+                                    // Before Android 14 only the user can turn it on; ON_RESUME re-reads the list.
                                     Toast.makeText(
                                         context,
                                         context.getString(R.string.language_packs_turn_on_in_settings, pack.displayName),
@@ -398,9 +352,7 @@ fun LanguagePacksScreen(
                         PackActionRow(
                             item = available.item,
                             edge = groupEdge(index, shownAvailable.size),
-                            // Named, not implied: installing one of these REPLACES the dictionary the
-                            // language loads today, which is not what "German (Switzerland)" on its
-                            // own suggests — and the row no longer sits under the language it names.
+                            // Installing one of these replaces the dictionary the language loads today, so say so.
                             summary = available.replaces?.let {
                                 context.getString(R.string.language_packs_variant_summary, it)
                             },
@@ -419,7 +371,6 @@ fun LanguagePacksScreen(
         }
     }
 
-    // Variant delete confirmation
     showVariantDeleteDialog?.let { (locale, member) ->
         AlertDialog(
             onDismissRequest = { showVariantDeleteDialog = null },
@@ -461,7 +412,6 @@ fun LanguagePacksScreen(
         )
     }
 
-    // Delete confirmation dialog
     showDeleteDialog?.let { pack ->
         AlertDialog(
             onDismissRequest = { showDeleteDialog = null },
@@ -472,16 +422,14 @@ fun LanguagePacksScreen(
             confirmButton = {
                 TextButton(
                     onClick = {
-                        // The row goes at once, not when the I/O is done: a row that lingers
-                        // invites a second delete of a pack that is already gone.
+                        // Remove the row at once so it cannot invite a second delete.
                         languagePacks = languagePacks.filterNot {
                             it.languageCode == pack.languageCode && it.countryCode == pack.countryCode
                         }
                         scope.launch {
                             deleteLanguagePack(context, pack) { _, message ->
                                 Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
-                                // Re-read both halves either way: on success so the pack goes
-                                // back to being downloadable, on failure so the row comes back.
+                                // Re-read either way: on success the pack is downloadable again, on failure the row returns.
                                 scope.launch {
                                     loadLanguagePacks(context) { packs ->
                                         languagePacks = packs
@@ -506,13 +454,8 @@ fun LanguagePacksScreen(
 }
 
 /**
- * One language, built on the app's own [PreferenceItem] rather than a hand-rolled card, so this
- * screen reads like every other settings list: bodyLarge titles, 16dp padding, 48dp minimum rows.
- *
- * The icon column carries the language code, so titles still line up with the icon-bearing category
- * screens the user navigates through to get here. The right edge carries "Preinstalled" or a delete
- * button: the version was noise (these dictionaries are never updated) and "Custom" was redundant
- * with the delete button, which is how a removable pack identifies itself.
+ * One installed language on [PreferenceItem]: the language code in the icon column, and
+ * "Preinstalled" or a delete button at the right edge.
  */
 @Composable
 private fun LanguagePackItem(
@@ -533,16 +476,13 @@ private fun LanguagePackItem(
     if (!grouped) {
         PreferenceItem(
             title = pack.displayName,
-            // An installed language the user cannot switch to reads as broken ("it says it is
-            // available but I can't type in it"), so the row says so and tapping it fixes it.
+            // An installed language the user cannot switch to reads as broken, so say so; tapping fixes it.
             summary = if (pack.needsTurningOn) {
                 stringResource(R.string.language_packs_not_on_summary, pack.displayName)
             } else null,
             onClick = if (pack.needsTurningOn) onTurnOn else null,
             groupEdge = edge,
             leading = { LanguageCodeBadge(pack.languageCode) },
-            // The trailing slot holds either the Preinstalled tag or the delete button - the same
-            // one-slot, two-meanings rule the dictionary rows use, at the same right edge.
             titleAccessory = if (voiceOffline) {
                 { OfflineVoiceChip() }
             } else null,
@@ -559,25 +499,19 @@ private fun LanguagePackItem(
         return
     }
 
-    // A language with regional dictionaries sits on a light rounded surface, so the language and
-    // its choices read as one object. The surface is inset by [inset] on each side and every inner
-    // horizontal padding is reduced by the same amount, which keeps the code column, the title and
-    // the trailing controls at exactly the x positions of the plain rows around it. The list
-    // already insets every item by the group inset, so the card adds none of its own: its edges
-    // meet the group rows' edges.
+    // A language with regional dictionaries sits on a rounded surface. Inner paddings shrink by
+    // [inset] so the code column, title and trailing controls line up with the plain rows.
     val inset = spacing.none
     Column(
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = inset, vertical = spacing.extraSmall)
             .clip(LocalShapes.current.group)
-            // surfaceVariant at half strength: the theme defines no surfaceContainer tokens, and
-            // Material's defaults for those would bring in the baseline purple.
+            // The theme defines no surfaceContainer tokens; Material's defaults would bring in purple.
             .background(MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f))
             .padding(bottom = spacing.small)
     ) {
-        // Header: PreferenceItem's metrics without its bottom padding, so the choices sit right
-        // under the name they belong to. No "Preinstalled" - the shipped member row says it.
+        // PreferenceItem's metrics without bottom padding. No "Preinstalled": the shipped member row says it.
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -613,15 +547,14 @@ private fun LanguagePackItem(
             }
         }
 
-        // Regional variants that can only load in THIS language's slot, e.g. Swiss German under
-        // German. The engine holds one dictionary per locale, so this is a single choice.
+        // Variants that can only load in this language's slot (e.g. Swiss German under German).
+        // The engine holds one dictionary per locale, so this is a single choice.
         variantGroup!!.members.forEach { member ->
             val selected = member.tag == variantGroup.activeTag
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    // Exactly the 48dp touch target and no more: no vertical padding, so the
-                    // delete button (itself 48dp) no longer makes its row taller than its sibling.
+                    // Exactly the 48dp touch target, so the 48dp delete button does not make the row taller.
                     .heightIn(min = spacing.touchTarget)
                     .selectable(
                         selected = selected,
@@ -629,7 +562,6 @@ private fun LanguagePackItem(
                         role = Role.RadioButton
                     )
                     .padding(
-                        // Indented to the title column.
                         start = spacing.listItemPadding + spacing.iconSize + spacing.iconTextGap - inset,
                         end = spacing.listItemPadding - inset
                     ),
@@ -643,9 +575,7 @@ private fun LanguagePackItem(
                     color = MaterialTheme.colorScheme.onSurface,
                     modifier = Modifier.weight(1f)
                 )
-                // One trailing slot, two meanings, never both: the shipped dictionary is in the
-                // APK and cannot be removed, so it gets the label; every other member is a file
-                // the user added, so it gets the way to remove it.
+                // Shipped dictionaries cannot be removed and get the label; user-added ones get delete.
                 if (member.isShipped) {
                     PreinstalledTag()
                 } else {
@@ -659,11 +589,7 @@ private fun LanguagePackItem(
     }
 }
 
-/**
- * Lays an item out [inset] wider on each side than the list gives it, so a category label inside
- * a list that carries the group inset sits where a label does on every other screen rather than a
- * second inset further in.
- */
+/** Lays an item out [inset] wider on each side, undoing the list's group inset for a category label. */
 private fun Modifier.outsideGroupInset(inset: Dp): Modifier = layout { measurable, constraints ->
     val extra = inset.roundToPx() * 2
     val wider = if (constraints.hasBoundedWidth) {
@@ -691,10 +617,7 @@ private fun PackLoadingRow() {
     }
 }
 
-/**
- * A sentence about the section rather than about a pack: why the catalogue is not there, with the
- * one action that might change that.
- */
+/** Why the catalogue is missing, with the one action that might change that. */
 @Composable
 private fun PackMessageRow(
     message: String,
@@ -721,19 +644,12 @@ private fun PackMessageRow(
 }
 
 /**
- * One downloadable pack: its name, its size or its progress, and the single action its state
- * allows. Available offers Download, downloading offers Cancel, a failure offers Try again —
- * never two at once, which is what keeps a 48dp row readable on a 1440x1440 KEY2 screen.
- *
- * Every row is drawn the same way, at the same x positions, whether it is a language's own
- * dictionary or one of the four regional ones that load in place of another language: those used
- * to be indented under their base language, which said nothing an ordinary reader could act on
- * that [summary] does not say in words.
+ * One downloadable pack: name, size or progress, and the single action its state allows
+ * (Download, Cancel or Try again), never two at once.
  */
 @Composable
 private fun PackActionRow(
     item: PackCatalog.Item,
-    /** The row's place in its group. */
     edge: GroupEdge,
     summary: String?,
     onDownload: (PackCatalog.Item) -> Unit,
@@ -757,8 +673,7 @@ private fun PackActionRow(
         trailing = {
             when (state) {
                 is PackState.Downloading -> Row(verticalAlignment = Alignment.CenterVertically) {
-                    // Determinate whenever the manifest gave a size, which it always does - the
-                    // denominator is the catalogue's, not the server's Content-Length.
+                    // The denominator is the catalogue's size, not the server's Content-Length.
                     LinearProgressIndicator(
                         progress = { state.progress },
                         modifier = Modifier.width(64.dp),
@@ -784,14 +699,8 @@ private fun PackActionRow(
 }
 
 /**
- * The language's code, heavy, in the row's icon column: a glanceable identifier that also tells two
- * similarly named languages apart.
- *
- * The badge itself is [PreferenceLeadingBadge] now — other screens want the same thing in the same
- * slot (a macro tag, a config initial), and three private copies of one 24dp-unbounded text is how
- * the leading columns drift apart. What stays here is the only part that is about languages: the
- * code is upper-cased in the app's locale-independent form, so a Turkish device does not render
- * "tr" as "TR" with a dotted I.
+ * The language code in the row's icon column. Upper-cased locale-independently so a Turkish
+ * device does not render "tr" with a dotted I.
  */
 @Composable
 private fun LanguageCodeBadge(code: String) {
@@ -799,12 +708,8 @@ private fun LanguageCodeBadge(code: String) {
 }
 
 /**
- * "Voice", with the offline mark: the phone's speech recogniser has this language downloaded, so
- * dictation in it works without a connection. Drawn right after the language's name, and only
- * then - a language that is still downloading, works online only or has no voice input at all
- * shows nothing.
- *
- * Shorter than the title's line, so a row with the chip is the same height as one without.
+ * "Voice" with the offline mark: the speech recogniser has this language downloaded. Shorter than
+ * the title's line, so a row with the chip is the same height as one without.
  */
 @Composable
 internal fun OfflineVoiceChip() {
@@ -835,19 +740,10 @@ internal fun OfflineVoiceChip() {
     }
 }
 
-/** "Preinstalled", right-aligned with the delete buttons. */
 @Composable
 private fun PreinstalledTag() = PreferenceTrailingLabel(stringResource(R.string.language_packs_preinstalled))
 
-/**
- * One installed language pack, as this screen displays it.
- *
- * Deliberately NOT com.blackberry.nuanceshim.languagepack.LanguagePackInfo, which is the shim's
- * manifest-parsed record: this is the screen's own row model, with the display name and the
- * deletable flag the list needs. It used to share that simple name (§5.11).
- *
- * @Immutable reduces unnecessary recompositions when used in lists
- */
+/** One installed language pack as this screen displays it (not the shim's LanguagePackInfo). */
 @Immutable
 data class InstalledLanguagePack(
     val languageCode: String,
@@ -858,22 +754,17 @@ data class InstalledLanguagePack(
     val isPreinstalled: Boolean,
     val isDeletable: Boolean = !isPreinstalled,
     /**
-     * The directory / registry identifier (`ko`, `pt_BR`, `iw`): what [SubtypeEnabler] matches on
-     * and what a delete removes. Not rebuilt from [languageCode]: from Android 15 [Locale] spells
-     * `iw` and `in` as `he` and `id`, which names a directory that does not exist.
+     * Directory / registry identifier (`ko`, `pt_BR`, `iw`). Not rebuilt from [languageCode]: from
+     * Android 15 [Locale] spells `iw` and `in` as `he` and `id`, a directory that does not exist.
      */
     val localeId: String,
     /**
-     * Installed, has a keyboard layout, but is not on in the keyboard's language list, so the
-     * user cannot switch to it yet. Only ever true for packs the user added: the shipped ones
-     * are languages the user may simply not want.
+     * Installed with a layout but not on in the keyboard's language list. Only true for user-added
+     * packs: the shipped ones are languages the user may simply not want.
      */
     val needsTurningOn: Boolean = false,
 )
 
-/**
- * Load all installed language packs
- */
 private suspend fun loadLanguagePacks(
     context: Context,
     onResult: (List<InstalledLanguagePack>) -> Unit
@@ -882,10 +773,8 @@ private suspend fun loadLanguagePacks(
         val packs = mutableListOf<InstalledLanguagePack>()
         
         try {
-            // Get language pack manager
             val languagePackManager = LanguagePackManager.getInstance(context)
-            
-            // Get installed language pack directories from filesystem
+
             val installedLocales = getInstalledLanguagePackLocales(context)
             
             for (localeString in installedLocales) {
@@ -903,7 +792,6 @@ private suspend fun loadLanguagePacks(
                         val isSupported = languagePack.isSupported()
                         
                         if (isInstalled || isSupported) {
-                            // Determine if it's preinstalled by checking if LDB exists in assets
                             val isPreinstalled = isPreinstalledPack(context, localeString)
                             val needsTurningOn = !isPreinstalled &&
                                 SubtypeEnabler.hasKeyboardFor(context, localeString) &&
@@ -924,18 +812,15 @@ private suspend fun loadLanguagePacks(
                         }
                     }
                 } catch (e: Exception) {
-                    // Skip invalid locale entries
                     continue
                 }
             }
             
             
         } catch (e: Exception) {
-            // Handle errors gracefully
+            // A failed scan shows whatever packs were collected so far.
         }
-        
-        // Alphabetical by the name on the row, in the user's own alphabet - the same ordering
-        // the downloadable half uses, decided in the same place.
+
         val sorted = PackListing.byDisplayName(packs) { it.displayName }
 
         withContext(Dispatchers.Main) {
@@ -944,9 +829,6 @@ private suspend fun loadLanguagePacks(
     }
 }
 
-/**
- * Check if a language pack is preinstalled
- */
 private fun isPreinstalledPack(context: Context, localeString: String): Boolean {
     return try {
         val assetManager = context.assets
@@ -957,9 +839,6 @@ private fun isPreinstalledPack(context: Context, localeString: String): Boolean 
     }
 }
 
-/**
- * Get the file path for a language pack
- */
 private fun getLanguagePackPath(context: Context, localeString: String): String {
     val customPath = File(context.noBackupFilesDir, "nuance/$localeString")
     return if (customPath.exists()) {
@@ -970,18 +849,9 @@ private fun getLanguagePackPath(context: Context, localeString: String): String 
 }
 
 /**
- * Install a dictionary the user picked with the "+" button.
- *
- * The only thing this does that the download path does not is **work out the locale**: a picked
- * file comes with nothing but a name, so the BlackBerry catalogue's naming convention is parsed
- * out of it ([extractLanguageFromFileName] / [extractCountryFromFileName]) and the result is
- * checked against the engine's own registry to see whether that locale exists or whether the pack
- * can only load as a variant of its base language.
- *
- * Everything after that — writing the files, the registry entry, the runtime subtype, the change
- * event — is [PackInstallService], shared with [PackDownloadManager]. A downloaded pack skips
- * this function entirely and installs under the locale the manifest states; see
- * [PackInstallService] for why the file name must never decide that.
+ * Installs a dictionary picked with the "+" button. The locale is parsed from the file name and
+ * checked against the engine registry (own locale, or only a variant of its base language).
+ * The install itself is [PackInstallService]; downloads use the manifest's locale instead.
  */
 private suspend fun installLanguagePack(
     context: Context,
@@ -1001,7 +871,6 @@ private suspend fun installLanguagePack(
                 }
             }
 
-            // Basic validation - check file size and extension
             if (tempFile.length() < PackInstallService.MIN_LDB_BYTES) {
                 throw Exception(context.getString(R.string.language_packs_file_too_small))
             }
@@ -1011,11 +880,8 @@ private suspend fun installLanguagePack(
                 throw Exception(context.getString(R.string.language_packs_file_needs_ldb))
             }
 
-            // Extract language AND country from the filename. The country half used to be
-            // thrown away, so a pack from *_ENubUNUS_* landed in nuance/en - which is the
-            // directory the language-only "English" pack owns - while the installer for en_US
-            // looked in nuance/en_US and never found it. LanguagePackInstaller.getLocaleIdentifier
-            // is the naming authority: language, or language_COUNTRY when a country is known.
+            // Keep the country too: an en_US pack must land in nuance/en_US, not the language-only nuance/en.
+            // LanguagePackInstaller.getLocaleIdentifier is the naming authority.
             val languageCode = extractLanguageFromFileName(fileName)
             if (languageCode.isEmpty()) {
                 throw Exception(context.getString(R.string.language_packs_language_unknown))
@@ -1024,15 +890,9 @@ private suspend fun installLanguagePack(
             val localeId = if (countryCode != null) "${languageCode}_$countryCode" else languageCode
             val locale = locale(languageCode, countryCode)
 
-            // Does this locale exist in the ENGINE's table, or does it resolve to something else?
-            // LanguagePackRegistry falls back to the base language's default entry for a country it
-            // does not know, so asking for the resolved identifier answers "which slot can this
-            // dictionary actually occupy". de_CH resolves to "de"; en_US resolves to "en_US".
-            //
-            // A regional variant with no engine entry of its own can only load AS `slot`, in the
-            // place the base language's pack occupies - so it is grouped there rather than
-            // inventing a locale nothing can select. This is the same `group` the catalogue
-            // states for these four packs; the picker just has to work it out for itself.
+            // LanguagePackRegistry falls back to the base language's entry for an unknown country, so the
+            // resolved identifier is the slot this dictionary can occupy (de_CH -> "de", en_US -> "en_US").
+            // A variant with no entry of its own loads as `slot`, grouped under the base language.
             val slot = resolvedLocaleSlot(context, languageCode, countryCode)
             val group = slot?.takeIf { countryCode != null && it != localeId }
 
@@ -1063,20 +923,15 @@ private suspend fun installLanguagePack(
                 onResult(false, context.getString(R.string.language_packs_install_failed, e.message))
             }
         } finally {
-            // The service copies what it installs, so the staging file is ours to remove however
-            // this went.
+            // The service copies what it installs, so the staging file is ours to remove.
             tempFile.delete()
         }
     }
 }
 
 /**
- * Delete a downloaded or side-loaded language pack.
- *
- * The work is [PackInstallService.uninstall], which is idempotent: a pack whose files are already
- * gone still gets its registry entry and runtime subtype cleaned up and is reported as removed,
- * because from the user's side it is. Variants never reach here; their rows delete through
- * [LanguageVariantStore].
+ * Deletes a downloaded or side-loaded pack via the idempotent [PackInstallService.uninstall].
+ * Variants delete through [LanguageVariantStore] instead.
  */
 private suspend fun deleteLanguagePack(
     context: Context,
@@ -1106,9 +961,6 @@ private suspend fun deleteLanguagePack(
     }
 }
 
-/**
- * Get filename from URI
- */
 private fun getFileName(context: Context, uri: Uri): String? {
     return try {
         context.contentResolver.query(uri, null, null, null, null)?.use { cursor ->
@@ -1123,42 +975,22 @@ private fun getFileName(context: Context, uri: Uri): String? {
 }
 
 /**
- * Extract language code from LDB filename
- */
-/**
- * The catalogue's language block: the UPPER-CASE run that opens the locale group, e.g. `EN` in
- * `_ENubUNUS_` and `SAT` in `_SATlsUNdevanagari_`.
- *
- * Verified to match all 116 shipped catalogue filenames, 111 with a two-letter block and 5 with a
- * three-letter one (`BRX`, `DOI`, `MAI`, `MNI`, `SAT`). Its length is therefore an exact test of
- * which code space the file uses, where the old lower-cased heuristic could only ever see two
- * letters and silently truncated the rest.
+ * The upper-case language block that opens the locale group (`EN` in `_ENubUNUS_`, `SAT` in
+ * `_SATlsUNdevanagari_`). Matches all 116 shipped catalogue names: 111 two-letter, 5 three-letter.
  */
 private val LANGUAGE_BLOCK = Regex("_([A-Z]{2,3})[a-z]{2}UN")
 
 /**
- * ISO 639-2/3 codes the ET9 engine has no entry for, mapped to nothing.
- *
- * The engine resolves a locale through a fixed 105-entry table in the shipped blob
- * (`libnative-lib.so:0x217c50`), of which `assets/ldb/manifest.json` is a byte-for-byte mirror.
- * None of `brx`/`doi`/`mai`/`mni`/`sat` is in it, so these packs cannot load on this build however
- * they are named: they belong to a different ET9 release.
- *
- * They are rejected EXPLICITLY rather than left to the allowlist, because truncation made the
- * outcome a coin flip — `MNI` became `mn` (Mongolian) and `SAT` became `sa` (Sanskrit), both real
- * languages with their own packs in the same catalogue, so a user installing Manipuri silently
- * overwrote Mongolian. A refusal the user can see beats a corruption they cannot.
+ * Three-letter codes (`brx`/`doi`/`mai`/`mni`/`sat`) missing from the engine's 105-entry locale
+ * table (`libnative-lib.so:0x217c50`, mirrored by `assets/ldb/manifest.json`). Rejected explicitly:
+ * truncated they become real languages (`mni` -> `mn`) and would overwrite those packs.
  */
 private fun hasUnsupportedThreeLetterCode(fileName: String): Boolean =
     LANGUAGE_BLOCK.find(fileName)?.groupValues?.get(1)?.length == 3
 
 /**
- * Filename spelling → the spelling the rest of the stack uses.
- *
- * The LDB filenames carry codes ISO has since retired (or, for Filipino and Norwegian, a
- * less-specific one). The engine's locale table, `assets/ldb/manifest.json` and `res/xml/method.xml`
- * all agree on the other spelling — so this is purely a filename concern, and these five packs
- * install, resolve and get a working subtype the moment the name is translated.
+ * File-name spellings (retired or less specific ISO codes) mapped to the spelling the engine,
+ * `assets/ldb/manifest.json` and `res/xml/method.xml` use.
  */
 private val LANGUAGE_CODE_ALIASES = mapOf(
     "jw" to "jv",    // Javanese: `jw` retired 1989
@@ -1169,18 +1001,8 @@ private val LANGUAGE_CODE_ALIASES = mapOf(
 )
 
 internal fun extractLanguageFromFileName(fileName: String): String {
-    // Heuristics to extract language from BlackBerry LDB filename patterns.
-    //
-    // Patterns 1-3 are ordered most to least specific and every one of them is now validated
-    // against isValidLanguageCode, which previously guarded only the fallback - so patterns 1-3
-    // could return a junk two-letter code that ended up as a directory name under
-    // noBackupFilesDir/nuance/.
-    //
-    // The "Chinese/Japanese special cases" that used to follow (blackberry_([a-z]{2})[a-z]*_ and
-    // three _zh…_ variants) were unreachable: pattern 1 matches every input they targeted and
-    // returns first. For "..._zhsbunps_gb2312_..." pattern 1 matches "_zhsbunps_" and yields
-    // "zh"; for "blackberry_jalsunkana_..." it matches "_jalsunkana_" and yields "ja".
-    // Reject a three-letter code before the two-letter patterns get a chance to truncate it.
+    // Patterns run most to least specific, each validated by isValidLanguageCode.
+    // Reject a three-letter code before the two-letter patterns can truncate it.
     if (hasUnsupportedThreeLetterCode(fileName)) return ""
 
     val name = fileName.lowercase()
@@ -1209,20 +1031,13 @@ internal fun extractLanguageFromFileName(fileName: String): String {
         if (isValidLanguageCode(code)) return LANGUAGE_CODE_ALIASES[code] ?: code
     }
 
-    // If no pattern matches, return empty string
     return ""
 }
 
 
 /**
- * The catalogue, from the network or from the on-disk copy.
- *
- * [ManifestSource] already owns all of the policy: a fetch with `force = false` serves a cache
- * younger than six hours without a request at all, and serves a cache of any age when there is no
- * network. The one thing added here is the last fallback — when a *forced* fetch fails,
- * `ManifestSource` deliberately does not substitute the cache (the caller asked to go to the
- * server and deserves to hear that it did not work), but this screen would rather show the
- * catalogue it has and label it than show an error where a list used to be.
+ * The catalogue from network or cache ([ManifestSource] owns the policy). When a forced fetch
+ * fails, falls back to the cache: this screen would rather show a labelled stale list than an error.
  */
 private suspend fun loadCatalogue(context: Context, force: Boolean): Result<DistributionManifest> {
     val source = ManifestSource(context)
@@ -1232,12 +1047,7 @@ private suspend fun loadCatalogue(context: Context, force: Boolean): Result<Dist
     return if (cached != null) Result.success(cached) else fetched
 }
 
-/**
- * What is on disk, asked only about the locales the catalogue actually offers.
- *
- * Blocking disk I/O, hence the dispatcher. With no catalogue there is nothing to ask about, so
- * this is empty rather than a walk of every locale the engine knows.
- */
+/** On-disk state for the locales the catalogue offers; empty with no catalogue. */
 private suspend fun readInstalledPacks(
     context: Context,
     manifest: DistributionManifest?,
@@ -1247,11 +1057,8 @@ private suspend fun readInstalledPacks(
 }
 
 /**
- * The locale slot a pack for [language]/[country] would actually occupy.
- *
- * `LanguagePackRegistry` resolves an unknown country to the base language's default entry, so this
- * returns `"en_US"` for a pack that has its own engine entry and `"de"` for one that does not
- * (`de_CH`). `null` means the registry does not know the language at all.
+ * The locale slot a pack for [language]/[country] would occupy: `"en_US"` when it has its own
+ * engine entry, `"de"` for `de_CH`, null when the registry does not know the language.
  */
 private fun resolvedLocaleSlot(context: Context, language: String, country: String?): String? {
     val status = LanguagePackManager.getInstance(context)
@@ -1263,58 +1070,38 @@ private fun locale(language: String, country: String?): Locale =
     if (country.isNullOrEmpty()) Locale(language) else Locale(language, country)
 
 /**
- * The version written into a side-loaded pack's `version.txt`, and recorded for it in
- * [CustomPackRegistryStore].
- *
- * We cannot know a user-supplied .ldb's real version - it is not in the filename and we do not
- * parse the container - and nothing in the app compares it against the shipped manifest's
- * versions anyway (`LanguagePackInstaller.installedVersion` is only ever tested against the -1
- * "not yet read" sentinel). It must simply be present and parse as a positive number:
- * `getInstalledLocales()` requires a `version.txt` beside the .ldb, and `LanguagePackInfo.isValid`
- * rejects `version <= 0`.
+ * Version written to a side-loaded pack's `version.txt`. The real version is unknowable and never
+ * compared; it must exist (`getInstalledLocales()`) and be positive (`LanguagePackInfo.isValid`).
  */
 private const val SIDELOADED_PACK_VERSION = 1.0
 
 /**
- * The country half of a BlackBerry LDB filename, or null when it carries none.
- *
- * Derived from the ten names actually shipped in `app/src/main/assets/ldb/`, which all follow
- * `<LANG><codec><UN>[<REGION>]`:
+ * The country half of a BlackBerry LDB file name, or null. Names follow `<LANG><codec><UN>[<REGION>]`:
  *
  * ```
- *   _ENubUN_      en          (language-only; UN is the shared vendor marker, not a region)
+ *   _ENubUN_      en          (UN is the shared vendor marker, not a region)
  *   _ENubUNUS_    en-US
  *   _ENubUNUK_    en-UK
  *   _ESusUNES_    es-ES
- *   _ZHsbUNps_    zh          (trailing "ps" is lower-case: codec noise, not a region)
- *   _UKlsUN_      uk          (Ukrainian - the language code itself looks like a region)
+ *   _ZHsbUNps_    zh          (lower-case "ps" is codec noise, not a region)
+ *   _UKlsUN_      uk          (Ukrainian: the language code itself looks like a region)
  * ```
  *
- * So the region is an UPPER-CASE run immediately after the `UN` marker; anything lower-case there
- * is vendor noise. Matching on the original case is what separates the two, which is why this does
- * not lower-case the name first as [extractLanguageFromFileName] does.
- *
- * Two deliberate non-goals. `_ESusUNlatam_` (es-419) is not matched: its region is lower-case and
- * lives in the asset's `es_419/` path prefix, not the filename. And zh-TW/zh-HK likewise carry
- * their region only in the path. A side-loaded file with no region in its name installs as
- * language-only, which is honest - guessing would put the pack in a directory nothing looks in.
+ * The region is the upper-case run after `UN`, so this matches on original case. es-419 and
+ * zh-TW/zh-HK carry their region only in the asset path; such files install as language-only.
  */
 internal fun extractCountryFromFileName(fileName: String, languageCode: String): String? {
     if (languageCode.isEmpty()) return null
-    // Matched against the filename's OWN language block, not the (possibly aliased) code the
-    // caller resolved: `_JWlsUN_` must still parse after jw -> jv, and searching for `_JV...`
-    // would find nothing.
+    // Match the file's own language block, not the aliased code (`_JWlsUN_` after jw -> jv).
     val suffix = Regex("_[A-Z]{2,3}[a-z]{2}UN([A-Z0-9]{2,3})_")
         .find(fileName)?.groupValues?.get(1) ?: return null
-    // Allowlist, not "any two capitals": an unrecognised suffix would become a directory name
-    // under noBackupFilesDir/nuance/ that no installer ever looks for.
+    // Allowlist: an unknown suffix would become a directory no installer looks for.
     return if (suffix in KNOWN_REGION_CODES) suffix else null
 }
 
 /**
- * Regions the app is prepared to name a pack directory after. Taken from the `country` values in
- * `assets/ldb/manifest.json` plus the ones its LOCALE_FALLBACKS table refers to, so a side-loaded
- * pack can land on exactly the identifiers the rest of the registry already understands.
+ * Regions a pack directory may be named after: the `country` values in `assets/ldb/manifest.json`
+ * plus those its LOCALE_FALLBACKS table refers to.
  */
 internal val KNOWN_REGION_CODES = setOf(
     "US", "UK", "GB", "CA", "AU", "NZ", "IE", "ZA", "SG", "IN",
@@ -1322,11 +1109,7 @@ internal val KNOWN_REGION_CODES = setOf(
     "CH", "AT", "TW", "HK", "CN", "JP", "KR", "RU",
 )
 
-/**
- * Check if a 2-letter code could be a valid language code
- */
 private fun isValidLanguageCode(code: String): Boolean {
-    // List of common ISO 639-1 language codes that might appear in BlackBerry LDB files
     val validCodes = setOf(
         "af", "am", "ar", "as", "az", "be", "bg", "bn", "bo", "bs", "ca", "cs", "cy", "da", 
         "de", "el", "en", "es", "et", "eu", "fa", "fi", "fr", "ga", "gl", "gu", "ha", "he", 
@@ -1339,14 +1122,10 @@ private fun isValidLanguageCode(code: String): Boolean {
     return code in validCodes
 }
 
-/**
- * Get installed language pack locales from filesystem
- */
 private fun getInstalledLanguagePackLocales(context: Context): Set<String> {
     val locales = mutableSetOf<String>()
     
     try {
-        // Check custom language packs directory
         val nuanceDir = File(context.noBackupFilesDir, "nuance")
         if (nuanceDir.exists() && nuanceDir.isDirectory) {
             nuanceDir.listFiles()?.forEach { dir ->
@@ -1359,13 +1138,11 @@ private fun getInstalledLanguagePackLocales(context: Context): Set<String> {
                 }
             }
         }
-        
-        // Check preinstalled language packs in assets
+
         val assetManager = context.assets
         val ldbFiles = assetManager.list("ldb") ?: emptyArray()
         ldbFiles.forEach { fileName ->
             if (fileName.endsWith(".ldb")) {
-                // Extract language from filename
                 val langCode = extractLanguageFromFileName(fileName)
                 if (langCode.isNotEmpty()) {
                     locales.add(langCode)
@@ -1374,15 +1151,12 @@ private fun getInstalledLanguagePackLocales(context: Context): Set<String> {
         }
         
     } catch (e: Exception) {
-        // Handle errors gracefully
+        // An unreadable directory contributes no locales.
     }
     
     return locales
 }
 
-/**
- * Get language pack version from version file
- */
 private fun getLanguagePackVersion(context: Context, localeString: String): String {
     return try {
         val versionFile = File(context.noBackupFilesDir, "nuance/$localeString/version.txt")

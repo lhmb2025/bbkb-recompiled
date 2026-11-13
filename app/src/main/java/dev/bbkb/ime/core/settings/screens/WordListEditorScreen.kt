@@ -107,14 +107,12 @@ import java.util.Locale
 /** How many uses "Use more often" adds to a word's count, and "Use less often" takes away. */
 private const val BOOST_USES = 10
 
-/** What the engine's export says about one word: its use count, its status (quality) and its language. */
+/** One word in the engine's export: use count, status (quality) and language. */
 internal class WordDetail(val count: Int, val quality: Int, val language: Int) {
     /**
-     * Whether the keyboard will forget the word unless it is typed again. A word typed once gets
-     * a negative quality and stays out of the engine's own word list; each time it is offered and
-     * passed over the engine lowers the quality, and at −11 drops the word. Typing it again raises
-     * the quality to 0, which keeps it. (A word the user deleted is kept at −15 so it stays
-     * suppressed; that is not expiring, and it is not listed.)
+     * The keyboard will forget the word unless it is typed again. A word typed once has negative
+     * quality; each pass-over lowers it and at −11 the engine drops the word; retyping raises it to 0.
+     * Deleted words sit at −15 (suppressed, not expiring, not listed).
      */
     val expiring: Boolean get() = quality in EXPIRING_RANGE
 }
@@ -122,10 +120,8 @@ internal class WordDetail(val count: Int, val quality: Int, val language: Int) {
 /** The qualities of a word the engine has not kept yet: see [WordDetail.expiring]. */
 private val EXPIRING_RANGE = -11..-1
 
-/** The inline-content key of the auto-delete icon after the word count's "N expiring". */
 private const val EXPIRING_ICON_ID = "expiringIcon"
 
-/** The orders the sort menu offers, in menu order. */
 private enum class WordSort(@StringRes val label: Int) {
     ALPHABETICAL(R.string.settings_learned_sort_az),
     MOST_USED(R.string.settings_learned_sort_most_used),
@@ -136,9 +132,8 @@ private enum class WordSort(@StringRes val label: Int) {
 internal class WordSection(val title: String?, val words: List<String>)
 
 /**
- * [words] in list order, cut into one section per language when the words span more than one.
- * A word that belongs to no language (added on purpose) joins the largest language's section, so
- * a phone with one language never sees headers; the languages come largest first.
+ * [words] cut into one section per language when they span more than one. Words with no language
+ * join the largest section, so a one-language phone sees no headers; largest language first.
  */
 internal fun sectionsOf(words: List<String>, details: Map<String, WordDetail>?, other: String): List<WordSection> {
     if (details == null) return listOf(WordSection(null, words))
@@ -150,8 +145,7 @@ internal fun sectionsOf(words: List<String>, details: Map<String, WordDetail>?, 
         .sortedWith(compareByDescending<Int> { byLanguage.getValue(it).size }.thenBy { EngineLanguages.displayName(it) ?: "" })
         .map { language ->
             val own = byLanguage.getValue(language)
-            // One pass on each word's language: a membership test against [own] (a List) made
-            // this N x L String.equals on the main thread (P-19).
+            // One pass per word: a membership test against the list was N x L on the main thread.
             val list = if (language == largest) {
                 words.filter { val l = details[it]?.language ?: EngineLanguages.ANY; l == largest || l == EngineLanguages.ANY }
             } else own
@@ -175,10 +169,9 @@ private fun readLimited(input: InputStream, limit: Int): ByteArray {
 }
 
 /**
- * One learned word, laid out like [PreferenceItem] (same height, padding, card and corners) with
- * what that row cannot hold: the use count on the right as plain text in the accent colour, the
- * way Android's own Settings lists put a size or a percentage, and, for a word the keyboard will
- * forget unless it is typed again, the error container with the auto-delete icon. A tap opens the word's sheet; a long press starts selecting.
+ * One learned word, sized like [PreferenceItem], with the use count on the right in the accent
+ * colour and, for an expiring word, the error container with the auto-delete icon.
+ * Tap opens the word's sheet; long press starts selecting.
  */
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -197,7 +190,7 @@ private fun LearnedWordRow(
     val settingsColors = LocalSettingsColors.current
     val colors = MaterialTheme.colorScheme
     val expiring = detail?.expiring == true
-    // A expiring word keeps its error container while selected; the round check says it is selected.
+    // An expiring word keeps its error container while selected; the check marks selection.
     val container = when {
         expiring -> colors.errorContainer
         selected -> colors.secondaryContainer
@@ -224,8 +217,7 @@ private fun LearnedWordRow(
                 .fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            // The check column exists only while selecting: it slides in from the start edge and
-            // the words move over, so the plain list keeps even margins.
+            // The check column slides in only while selecting, so the plain list keeps even margins.
             AnimatedVisibility(
                 visible = selectionMode,
                 enter = expandHorizontally(expandFrom = Alignment.Start) + fadeIn(),
@@ -264,16 +256,7 @@ private fun LearnedWordRow(
     }
 }
 
-/**
- * Word List Editor Screen
- * Displays and manages learned words with multi-select, delete, clear all, and promote to dictionary
- * Includes undo functionality for deletions
- */
-/**
- * One learned word's sheet: what the keyboard knows about it, then what can be done with it. A
- * sheet rather than a menu because it has room to say why a word is expiring, and because it is how
- * this app's other lists open an item (the Language screen's keyboards).
- */
+/** One learned word's sheet: what the keyboard knows about it (including why it is expiring), then actions. */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun LearnedWordSheet(
@@ -340,41 +323,30 @@ fun WordListEditorScreen(
     var showClearAllDialog by remember { mutableStateOf(false) }
     var showPromoteDialog by remember { mutableStateOf(false) }
     var recentlyDeletedWords by remember { mutableStateOf<List<String>>(emptyList()) }
-    // The word whose sheet is open.
     var sheetWord by remember { mutableStateOf<String?>(null) }
-    // Each word's use count and quality, read from the engine's own export of the model; null
-    // when the export cannot be reached on this phone (the rows then show no counts and the model
-    // rows are hidden).
+    // Use count and quality per word from the engine's export; null when unreachable (no counts,
+    // model rows hidden).
     var details by remember { mutableStateOf<Map<String, WordDetail>?>(null) }
     var sortOrder by remember { mutableStateOf(WordSort.ALPHABETICAL) }
     var showSortMenu by remember { mutableStateOf(false) }
     var showOverflow by remember { mutableStateOf(false) }
-    // A model read from a file, waiting for the user to confirm that it replaces this phone's.
+    // A model read from a file, awaiting confirmation that it replaces this phone's.
     var pendingImport by remember { mutableStateOf<LearnedModelStream.Model?>(null) }
-    
-    // No engine handle here: composition runs on the main thread, which never resolves or calls
-    // the engine. The add, delete and reset below each run as one op on the engine's loader
-    // thread and look the engine up there; the list reloads after the op has finished.
+
+    // No engine handle here: composition is on the main thread, which never calls the engine. Each
+    // add, delete and reset runs as one op on the engine's loader thread; the list reloads after.
     val dictionaryRepository = remember { DictionaryRepository(context) }
-    
-    // Load words
+
     fun loadWords() {
         scope.launch {
             isLoading = true
             val loadedWords = withContext(Dispatchers.IO) {
                 try {
-                    // Only the keyboard initialises DictionaryManager (BlackBerryIME, on its
-                    // locale setup), so this screen opened in a fresh process, before any field
-                    // has been focused, found it unloaded and showed "No learned words" for a
-                    // full model (KEY2, 2026-10-17). The add/undo paths below already initialise
-                    // through the repository and wait for the load; do the same before reading.
+                    // Only the keyboard initialises DictionaryManager, so in a fresh process this screen would find
+                    // it unloaded and show "No learned words" for a full model. Initialise before reading.
                     dictionaryRepository.initialize()
-                    // The callback is delivered on whichever thread the dictionary finishes on.
-                    // Sleeping 100 ms and reading a plain MutableList had no happens-before edge
-                    // and no guarantee the callback had fired at all - on a slow first DLM load
-                    // the editor showed "No learned words" for a full model, and the user's next
-                    // move is Clear All. Suspend until the callback arrives instead, with a
-                    // bound in case the dictionary never calls back.
+                    // The callback arrives on whichever thread the dictionary finishes on: suspend until it does,
+                    // bounded in case it never calls back.
                     withTimeoutOrNull(5_000) {
                         suspendCancellableCoroutine<List<String>> { continuation ->
                             DictionaryManager.getInstance().getLearnedWords(
@@ -393,13 +365,9 @@ fun WordListEditorScreen(
                     emptyList()
                 }
             }
-            // The engine's own list leaves out the words it has not kept yet: a word typed once
-            // sits in the model with a negative quality until it is typed again, and would be
-            // forgotten without a trace. The export has them, so they are listed too, marked as
-            // expiring, for the languages the engine's list covers (the model holds every
-            // language's words; the list only the active ones). The export also carries words
-            // the screen does not list: dictionary words the model boosts, deleted words it keeps
-            // suppressed.
+            // The engine's list omits words typed once (negative quality); the export has them, so they are
+            // listed as expiring for the languages the engine's list covers. Boosted dictionary words and
+            // suppressed deleted words in the export are not listed.
             val model = if (isWorkProfile) null else withContext(Dispatchers.IO) {
                 try {
                     LearnedModelTransfer.current()
@@ -408,9 +376,7 @@ fun WordListEditorScreen(
                     null
                 }
             }
-            // A full model is about 13k records: the passes, the sort and the map below took
-            // tens of ms on the main thread after every delete, undo and import (P-19), so they
-            // run off it and only the result comes back.
+            // A full model is about 13k records; join and sort off the main thread.
             val (loaded, loadedDetails) = withContext(Dispatchers.Default) {
                 val expiringWords = if (model == null) emptyList() else {
                     val listed = loadedWords.toHashSet()
@@ -437,10 +403,8 @@ fun WordListEditorScreen(
         }
     }
 
-    // Moves a word's use count so the engine offers it sooner or later, or with a [delta] of 0
-    // only keeps a expiring word: the model is exported, the record rewritten in the stream, and the
-    // stream imported again (LearnedModelTransfer keeps the previous model to put back if the
-    // engine refuses).
+    // Moves a word's use count by [delta] (0 only keeps an expiring word): export, rewrite the record,
+    // re-import. LearnedModelTransfer restores the previous model if the engine refuses.
     fun changeUses(word: String, delta: Int) {
         val wasExpiring = details?.get(word)?.expiring == true
         scope.launch {
@@ -449,8 +413,7 @@ fun WordListEditorScreen(
                     val model = LearnedModelTransfer.current() ?: return@withContext null
                     val records = model.words.withIndex().filter { it.value.text == word }
                     val counts = if (delta == 0) emptyMap() else records.associate { it.index to (it.value.count + delta).coerceIn(1, 0xffff) }
-                    // Keeping a expiring word, or asking for it more often, sets quality 0: what the
-                    // word would reach when typed again. The count is left alone by a plain keep.
+                    // Keeping or boosting an expiring word sets quality 0 (as if retyped); a plain keep leaves the count.
                     val qualities = if (delta >= 0) records.filter { it.value.quality in EXPIRING_RANGE }.associate { it.index to 0 } else emptyMap()
                     if (counts.isEmpty() && qualities.isEmpty()) null
                     else LearnedModelTransfer.importParsed(LearnedModelStream.parse(LearnedModelStream.withChanges(model, counts, qualities)))
@@ -472,7 +435,6 @@ fun WordListEditorScreen(
         }
     }
 
-    // Replaces this phone's model with one read from a file, after the user confirmed.
     fun importModel(model: LearnedModelStream.Model) {
         scope.launch {
             isLoading = true
@@ -546,15 +508,13 @@ fun WordListEditorScreen(
                 .onFailure { snackbarHostState.showSnackbar(it.message ?: context.getString(R.string.settings_learned_read_failed)) }
         }
     }
-    
-    // Undo deletion by re-learning words
+
     fun undoDelete(wordsToRestore: List<String>) {
         scope.launch {
             withContext(engineLoaderDispatcher) {
                 try {
                     val nuanceSDK = NuanceSDKManager.getInstance()
                     wordsToRestore.forEach { word ->
-                        // Re-learn the word via Nuance addWord
                         nuanceSDK?.addWord(word)
                     }
                 } catch (e: Exception) {
@@ -568,11 +528,9 @@ fun WordListEditorScreen(
             )
         }
     }
-    
-    // Delete words with undo support
+
     fun deleteWords(wordsToDelete: List<String>, showUndo: Boolean = true) {
         scope.launch {
-            // Store for potential undo
             recentlyDeletedWords = wordsToDelete
             
             withContext(engineLoaderDispatcher) {
@@ -605,21 +563,17 @@ fun WordListEditorScreen(
                 )
                 
                 if (result == SnackbarResult.ActionPerformed) {
-                    // Undo: re-learn the deleted words
                     undoDelete(recentlyDeletedWords)
                 }
             }
         }
     }
-    
-    // Promote word to user dictionary
+
     fun promoteToUserDictionary(word: String) {
         scope.launch {
             try {
-                // Initialize repository if needed
                 dictionaryRepository.initialize()
-                
-                // Add to user dictionary via BASL (ensures Nuance integration)
+
                 val entry = DictionaryEntry(
                     word = word,
                     shortcut = null,
@@ -639,8 +593,7 @@ fun WordListEditorScreen(
             }
         }
     }
-    
-    // Promote selected words to user dictionary
+
     fun promoteSelectedToUserDictionary() {
         scope.launch {
             try {
@@ -669,8 +622,7 @@ fun WordListEditorScreen(
             }
         }
     }
-    
-    // Load words on first composition
+
     LaunchedEffect(Unit) {
         loadWords()
     }
@@ -680,12 +632,11 @@ fun WordListEditorScreen(
         isSelectionMode = false
         selectedWords = emptySet()
     }
-    
-    // The same string the Learning screen's row uses, so the two agree in every language.
+
+    // The Learning screen row's string, so the two agree in every language.
     val title = stringResource(if (isWorkProfile) R.string.settings_learned_work_title else R.string.settings_dict_learned_words_title)
     
     SettingsScaffold(
-        // Selection mode is a contextual bar: a close cross cancels it, as Android's own apps do.
         navigationIcon = ImageVector.vectorResource(if (isSelectionMode) R.drawable.ic_settings_m_close else R.drawable.ic_settings_m_arrow_back),
         navigationContentDescription = stringResource(
             if (isSelectionMode) R.string.settings_common_cancel_selection else R.string.settings_common_back
@@ -706,7 +657,7 @@ fun WordListEditorScreen(
         },
         actions = {
             if (isSelectionMode && selectedWords.isNotEmpty()) {
-                // No confirmation: the snackbar's Undo puts the words back, as it does for one.
+                // No confirmation: the snackbar's Undo puts the words back.
                 IconButton(onClick = { deleteWords(selectedWords.toList()) }) {
                     Icon(ImageVector.vectorResource(R.drawable.ic_settings_m_delete_outline), stringResource(R.string.settings_common_delete_selected))
                 }
@@ -714,9 +665,7 @@ fun WordListEditorScreen(
                     Icon(painterResource(R.drawable.ic_settings_add_to_dictionary), stringResource(R.string.add_word_dialog_title))
                 }
             }
-            // The screen's rarer actions: the learned model as a whole (moving it in and out as a
-            // file, which needs the engine's export; the work profile's model has no path to it
-            // yet) and clearing the list.
+            // Model export/import needs the engine's export; the work profile's model has no path to it.
             val modelActions = !isWorkProfile && details != null
             if (!isSelectionMode && (modelActions || words.isNotEmpty())) {
                 Box {
@@ -792,10 +741,8 @@ fun WordListEditorScreen(
                 }
                 else -> {
                     val spacing = LocalSpacing.current
-                    // The words are one group laid out by the list itself: the rows paint
-                    // themselves as cards, the first and last carry the group's outer corners, and
-                    // the rows take the group inset themselves so the header and the count above
-                    // them keep their page-level alignment.
+                    // One group: rows paint themselves as cards with the group inset, so the header and count
+                    // above keep page-level alignment.
                     val expiringCount = remember(words, details) { words.count { details?.get(it)?.expiring == true } }
                     val otherLanguage = stringResource(R.string.settings_learned_language_other)
                     val sections = remember(words, details, sortOrder, otherLanguage) {
@@ -803,8 +750,7 @@ fun WordListEditorScreen(
                         val ordered = when {
                             d == null -> words
                             sortOrder == WordSort.MOST_USED -> words.sortedWith(compareByDescending<String> { d[it]?.count ?: 0 }.thenBy { it })
-                            // Expiring words first, the lowest quality (the nearest to the engine
-                            // dropping the word) first; the kept words follow A to Z
+                            // Expiring words first, lowest quality (nearest to being dropped) first; then the rest A to Z.
                             sortOrder == WordSort.EXPIRING -> words.sortedWith(
                                 compareBy<String> { d[it]?.takeIf { w -> w.expiring }?.quality ?: Int.MAX_VALUE }.thenBy { it }
                             )
@@ -817,7 +763,6 @@ fun WordListEditorScreen(
                             modifier = Modifier.fillMaxSize(),
                             verticalArrangement = Arrangement.spacedBy(spacing.groupGap)
                         ) {
-                            // Word count, and the order when the engine's use counts are available
                             item {
                                 Row(
                                     modifier = Modifier
@@ -874,9 +819,7 @@ fun WordListEditorScreen(
                                     }
                                 }
                             }
-                        
-                            // Word list: one group per section, each under its language's header
-                            // when there is more than one
+
                             sections.forEach { section ->
                                 if (section.title != null) {
                                     item(key = "header:${section.title}") { PreferenceCategory(title = section.title) }
@@ -909,8 +852,7 @@ fun WordListEditorScreen(
                                     }
                                 }
                             }
-                        
-                            // Bottom spacing
+
                             item {
                                 Spacer(modifier = Modifier.height(16.dp))
                             }
@@ -920,8 +862,7 @@ fun WordListEditorScreen(
             }
         }
     }
-    
-    // The tapped word's sheet.
+
     sheetWord?.let { word ->
         LearnedWordSheet(
             word = word,
@@ -935,7 +876,6 @@ fun WordListEditorScreen(
         )
     }
 
-    // A model read from a file: say what it replaces before it does.
     pendingImport?.let { model ->
         AlertDialog(
             onDismissRequest = { pendingImport = null },
@@ -954,7 +894,6 @@ fun WordListEditorScreen(
         )
     }
 
-    // Clear all dialog
     if (showClearAllDialog) {
         AlertDialog(
             onDismissRequest = { showClearAllDialog = false },
@@ -978,8 +917,7 @@ fun WordListEditorScreen(
                                 snackbarHostState.showSnackbar(context.getString(R.string.settings_learned_cleared))
                             }
                         } else {
-                            // Full model reset: per-word deletion only prunes the
-                            // enumerable unigrams; bigrams and usage boosts survive it.
+                            // Full reset: per-word deletion prunes only enumerable unigrams; bigrams and boosts survive it.
                             scope.launch {
                                 val ok = withContext(engineLoaderDispatcher) {
                                     try {
@@ -1007,8 +945,7 @@ fun WordListEditorScreen(
             }
         )
     }
-    
-    // Promote to dictionary dialog
+
     if (showPromoteDialog) {
         AlertDialog(
             onDismissRequest = { showPromoteDialog = false },

@@ -1,12 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <!-- ====================================================================== -->
-    <!-- Subtype names — RESOLVED BY NAME AT RUNTIME, DO NOT DELETE AS UNUSED -->
-    <!-- ====================================================================== -->
-    <!-- NOTE: SubtypeLocaleUtils/ResourceLocaleUtils build these with getIdentifier() from
-         5 prefixes (subtype_, subtype_generic_, subtype_with_layout_,
-         subtype_no_language_, subtype_in_root_locale_). No static reference exists. -->
+    <!-- Subtype names: looked up by getIdentifier() from five prefixes, do not delete as unused -->
     <string name="subtype_bulgarian_bds">%s (BDS)</string>
     <string name="subtype_emoji">Emoji</string>
     <string name="subtype_en_GB">English (UK)</string>
@@ -37,10 +32,7 @@
     <string name="subtype_zh_CN_pinyin">Chinese Simplified (Pinyin)</string>
     <string name="subtype_zh_HK_cangjie">Chinese Traditional (Cangjie)</string>
 
-    <!-- ========================================================================= -->
-    <!-- Enter-key labels — RESOLVED BY NAME AT RUNTIME, DO NOT DELETE AS UNUSED -->
-    <!-- ========================================================================= -->
-    <!-- NOTE: KeyboardTextsSet.RESOURCE_NAMES looks these up with getIdentifier(). -->
+    <!-- Enter-key labels: looked up by name via KeyboardTextsSet.RESOURCE_NAMES, do not delete as unused -->
     <string name="label_done_key">Done</string>
     <string name="label_go_key">Go</string>
     <string name="label_next_key">Next</string>
@@ -50,9 +42,6 @@
     <string name="label_send_key">Send</string>
     <string name="label_wait_key">Wait</string>
 
-    <!-- ========================================== -->
-    <!-- IME identity, services and notifications -->
-    <!-- ========================================== -->
     <string name="android_spell_checker_settings">BBKB Spell Checker Settings</string>
     <string name="english_ime_input_options">Input options</string>
     <string name="english_ime_name">BBKB</string>
@@ -66,16 +55,10 @@
     <string name="notification_strip_no_network">Can\'t download suggestions for %1$s</string>
     <string name="spell_checker_service_name">BBKB Spell Checker</string>
 
-    <!-- ================================= -->
-    <!-- Permissions and consent dialogs -->
-    <!-- ================================= -->
     <string name="ask_for_permission">Ask for permission</string>
     <string name="contact_permission_rationale">The keyboard can suggest names from your contact list as you type. If you want your contacts included as suggestions, tap “Ask for permission.”</string>
     <string name="deny">Deny</string>
 
-    <!-- =========================================== -->
-    <!-- Settings — category headers and hierarchy -->
-    <!-- =========================================== -->
     <string name="settings_category_slideboard">Slideboard</string>
     <string name="settings_category_feedback">Feedback</string>
     <string name="settings_category_appearance">Appearance</string>
@@ -108,9 +91,6 @@
     <string name="settings_category_sound">Sound</string>
     <string name="settings_category_vibrate">Vibration</string>
 
-    <!-- ===================== -->
-    <!-- Settings — gestures -->
-    <!-- ===================== -->
     <string name="ckb_action_cursor_mode">Cursor mode</string>
     <string name="ckb_action_cycle_symbols">Cycle symbols</string>
     <string name="ckb_action_delete_word">Delete word</string>
@@ -202,9 +182,6 @@
     <string name="settings_gesture_vkb_suppression_summary">Timeout for virtual keyboard gesture suppression</string>
     <string name="settings_gesture_vkb_suppression_title">VKB gesture suppression timeout</string>
 
-    <!-- =============================================== -->
-    <!-- Settings — typing, correction and suggestions -->
-    <!-- =============================================== -->
     <string name="settings_auto_correction_title">Correction</string>
     <string name="settings_autocorrect_auto_cap_summary">Automatically capitalize first letter of sentences</string>
     <string name="settings_autocorrect_auto_cap_title">Auto-capitalization</string>
@@ -223,9 +200,6 @@
     <string name="settings_suggestion_summary">Suggestion display and sources</string>
     <string name="settings_suggestion_title">Suggestions</string>
 
-    <!-- ====================================== -->
-    <!-- Settings — dictionaries and learning -->
-    <!-- ====================================== -->
     <string name="settings_dict_dynamic_learning_summary">Learn new words from your typing</string>
     <string name="settings_dict_dynamic_learning_title">Enable learning</string>
     <string name="settings_dict_learned_words_summary">Words the keyboard has learned</string>
@@ -242,10 +216,6 @@
     <string name="user_dict_settings_add_dialog_confirm">OK</string>
     <string name="user_dict_settings_all_languages">For all languages</string>
 
-    <!-- ================================ -->
-    <!-- Settings — languages and input -->
-    <!-- ================================ -->
-    <!-- Label of the extended FAB that starts the multi-language keyboard wizard. -->
     <string name="settings_language_packs_summary">Install and manage language packs</string>
     <string name="settings_language_packs_title">Language packs</string>
     <string name="settings_language_switching_summary">Configure language switching behavior</string>
@@ -253,9 +223,6 @@
     <string name="settings_languages_summary">Keyboard languages, language switching, and language packs</string>
     <string name="settings_languages_title">Language</string>
 
-    <!-- ============================== -->
-    <!-- Settings — physical keyboard -->
-    <!-- ============================== -->
     <string name="control_key_setting_left_shift">Left shift key</string>
     <string name="control_key_setting_off">None</string>
     <string name="control_key_setting_right_shift">Right shift key</string>
@@ -310,7 +277,7 @@
     <string name="settings_pkb_keypad_layout_title">Keypad layout</string>
     <string name="settings_pkb_keypad_layout_automatic">Automatic (%1$s)</string>
     <string name="languages_hub_layout_keypad_letters">Keypad letters (%1$s)</string>
-    <!-- A layout row's name: the arrangement, then the letters it carries: "QWERTY (English)". -->
+    <!-- A layout row name: "QWERTY (English)" -->
     <string name="layout_choice_name" translatable="false">%1$s (%2$s)</string>
     <string name="languages_hub_always_on_screen_title">Always show the on-screen keyboard</string>
     <string name="settings_pkb_layouts_three_row">three-row keypad</string>
@@ -326,15 +293,11 @@
     <string name="settings_pkb_multifunction_action_symbol">Symbol keyboard</string>
     <string name="settings_pkb_multifunction_key_title">Multifunction key</string>
 
-    <!-- ============================================== -->
-    <!-- Settings — on-screen keyboard and appearance -->
-    <!-- ============================================== -->
     <string name="settings_appearance_auto">Auto (system theme)</string>
     <string name="settings_appearance_classic">Classic</string>
     <string name="settings_appearance_dark">Dark</string>
     <string name="settings_appearance_material">Material</string>
     <string name="settings_appearance_bb10">BB10</string>
-    <!-- Material FCC / voice board redesign -->
     <string name="fcc_trackpad_hint">Drag to move the cursor</string>
     <string name="fcc_chip_select">Select</string>
     <string name="fcc_chip_select_all">All</string>
@@ -402,9 +365,6 @@
     <string name="vkb_control_key_summary">Press and hold ?123 to enable Ctrl mode</string>
     <string name="vkb_control_key_title">Ctrl key</string>
 
-    <!-- =============================== -->
-    <!-- Settings — key press feedback -->
-    <!-- =============================== -->
     <string name="key_preview_popup_dismiss_default_delay">Default</string>
     <string name="key_preview_popup_dismiss_delay">Pop-up dismiss delay</string>
     <string name="key_preview_popup_dismiss_no_delay">No delay</string>
@@ -415,18 +375,12 @@
     <string name="vibrate_on_keypress">Vibrate</string>
     <string name="vibrate_on_keypress_summary">Vibrate the device when a key is pressed</string>
 
-    <!-- ========================================= -->
-    <!-- Settings — slideboard and quick phrases -->
-    <!-- ========================================= -->
     <string name="customize_slideboard_clear_keypad">Reset to blank layout</string>
     <string name="customize_slideboard_reset_to_default">Reset to default layout</string>
     <string name="settings_slideboard_hub_summary">Number pad, swap sides, and quick phrases</string>
     <string name="settings_vkb_quick_phrases_summary">%1$s, %2$s, %3$s…</string>
     <string name="settings_slideboard_settings_title">Slideboard settings</string>
 
-    <!-- ===================================== -->
-    <!-- Settings — symbols and custom pages -->
-    <!-- ===================================== -->
     <string name="customized_symbol_page_add_button_description">Add Unicode symbol</string>
     <string name="customized_symbols_page_reset_to_blank">Reset to blank layout</string>
     <string name="customized_symbols_page_reset_to_page_1">Reset to default layout 1</string>
@@ -460,9 +414,6 @@
     <string name="symbols_word_connectors">\'-</string>
     <string name="symbols_word_separators">\t \n {}&lt;&gt;|\"</string>
 
-    <!-- ====================== -->
-    <!-- Settings — clipboard -->
-    <!-- ====================== -->
     <string name="clip_data_image_description">Clipboard image</string>
     <string name="clip_password_keeper_add">bb.pk</string>
     <string name="clip_password_keeper_clear">bb.pk.clear</string>
@@ -489,9 +440,6 @@
     <string name="clipboard_section_pinned">Pinned</string>
     <string name="clipboard_section_recent">Recent</string>
 
-    <!-- ======================== -->
-    <!-- Settings — voice input -->
-    <!-- ======================== -->
     <string name="settings_voice_auto_start_summary_off">Tap the microphone to start listening</string>
     <string name="settings_voice_auto_start_summary_on">Voice input starts automatically when opened</string>
     <string name="settings_voice_auto_start_title">Auto-start listening</string>
@@ -519,9 +467,6 @@
     <string name="voice_input_permission_rationale">If you want to enable voice input, tap “Ask for permission.”</string>
     <string name="voice_mode_main">0</string>
 
-    <!-- =========================================== -->
-    <!-- Settings — device compatibility and debug -->
-    <!-- =========================================== -->
     <string name="settings_advanced_gesture_params_title">Advanced gesture parameters</string>
     <string name="settings_advanced_summary">Device compatibility, backup, and reset</string>
     <string name="settings_advanced_title">Advanced</string>
@@ -534,8 +479,7 @@
     <string name="settings_device_config_category_standard">Standard</string>
     <string name="settings_device_configuration_summary">Select or import your phone\'s matching profile</string>
     <string name="settings_device_configuration_title">Device configuration</string>
-    <!-- Touch surface helper (Unihertz Titans). "Shizuku", "Scroll assistant" and "Cursor
-         assistant" are product and OEM page names: left as they are. -->
+    <!-- "Shizuku", "Scroll assistant" and "Cursor assistant" are product and OEM page names: keep them as is -->
     <string name="touch_surface_builtin_category">Built-in</string>
     <string name="touch_surface_builtin_intro">The phone delivers the keyboard\'s touch surface to BBKB while its Scroll assistant is on</string>
     <string name="touch_surface_cursor_assistant_summary">Cursor assistant claims double-tap on the keys, so BBKB never receives it</string>
@@ -577,9 +521,6 @@
     <string name="touch_surface_status_shizuku_working">Working, using Shizuku</string>
     <string name="touch_surface_status_unavailable">Not available on this phone</string>
 
-    <!-- ======================================== -->
-    <!-- Settings — predictions and flow typing -->
-    <!-- ======================================== -->
     <string name="pref_show_pkb_modifier_status_icon">Show modifier status icon</string>
     <string name="pref_show_pkb_modifier_status_icon_key" translatable="false">pref_show_pkb_modifier_status_icon</string>
     <string name="pref_show_pkb_modifier_status_icon_summary">Show active Shift, Alt, or Ctrl keys in the status bar</string>
@@ -606,9 +547,6 @@
     <string name="settings_pred_show_predictions_summary">Display word suggestions while typing</string>
     <string name="settings_pred_show_predictions_title">Enable suggestions</string>
 
-    <!-- ================================= -->
-    <!-- Settings — animation parameters -->
-    <!-- ================================= -->
     <string name="settings_anim_category_scale">Scale parameters</string>
     <string name="settings_anim_category_timing">Timing parameters</string>
     <string name="settings_anim_custom_preview_summary">Enable custom key preview animation parameters</string>
@@ -627,17 +565,11 @@
     <string name="settings_anim_show_start_y_title">Show up start Y scale</string>
     <string name="settings_animation_params_title">Animation parameters</string>
 
-    <!-- ========================== -->
-    <!-- Settings — spell checker -->
-    <!-- ========================== -->
     <string name="settings_spellcheck_use_contacts_summary_enabled">Recognize contact names as valid words</string>
     <string name="settings_spellcheck_use_contacts_title">Accept contact names</string>
     <string name="settings_spellcheck_accept_learned_title">Accept learned words</string>
     <string name="settings_spellcheck_accept_learned_summary">Recognize words learned from your typing</string>
 
-    <!-- ========================== -->
-    <!-- Settings — modifier keys -->
-    <!-- ========================== -->
     <string name="pref_alt_double_tap_lock">Alt lock</string>
     <string name="pref_alt_double_tap_lock_key" translatable="false">pref_alt_double_tap_lock</string>
     <string name="pref_ctrl_double_tap_lock">Ctrl lock</string>
@@ -657,15 +589,9 @@
     <string name="prefs_keypress_sound_volume_settings">Sound volume</string>
     <string name="prefs_keypress_vibration_duration_settings">Vibration duration</string>
 
-    <!-- ===================== -->
-    <!-- Settings — autofill -->
-    <!-- ===================== -->
     <string name="prefs_autofill_debug_logging_summary">Log autofill events to Logcat (tag: InlineAutofillManager)</string>
     <string name="prefs_autofill_debug_logging_title">Autofill debug logging</string>
 
-    <!-- ===================================================== -->
-    <!-- Settings — remaining screens and preference entries -->
-    <!-- ===================================================== -->
     <string name="pref_accessibility_service_disabled">Accessibility service disabled</string>
     <string name="pref_accessibility_service_enabled">Accessibility service enabled</string>
     <string name="pref_emoji_search_pkb_summary">When the emoji board is open, use the keyboard to search</string>
@@ -702,10 +628,10 @@
     <string name="prefs_on_axis_trigger_count_title">On-axis trigger count</string>
     <string name="prefs_reset_time_summary">Time before shake count resets to zero</string>
     <string name="prefs_reset_time_title">Reset time</string>
-    <!-- Debug-only, and deliberately untranslated: the rows it reveals are decoder instrumentation. -->
+    <!-- Debug only, untranslated -->
     <string name="prefs_show_ckb_developer_settings_summary" translatable="false">Adds the Developer category (sensor map capture and export) to the capacitive gestures screen</string>
     <string name="prefs_show_ckb_developer_settings_title" translatable="false">Show CKB developer settings</string>
-    <!-- Debug-only, and deliberately untranslated: the builder it reveals is unfinished. -->
+    <!-- Debug only, untranslated -->
     <string name="prefs_show_device_profile_builder_summary" translatable="false">Adds the THIS DEVICE section and its profile builder row to the Device configuration screen</string>
     <string name="prefs_show_device_profile_builder_title" translatable="false">Show unfinished device configuration builder</string>
     <string name="prefs_slop_time_summary">Grace period between shakes in a sequence</string>
@@ -812,9 +738,6 @@
     <string name="settings_uim_toggle_numpad">Number pad</string>
     <string name="settings_uim_toggle_voice">Voice input</string>
 
-    <!-- ============================================== -->
-    <!-- Keyboard runtime strings and config defaults -->
-    <!-- ============================================== -->
     <string name="config_default_numeric_location">1</string>
     <string name="config_default_quick_phrases_location">0</string>
     <string name="config_default_shake_action_fallback">0</string>
@@ -824,9 +747,6 @@
     <string name="config_default_show_on_keypress_mode">2</string>
     <string name="keyboard_helper_title">BBKB helper</string>
 
-    <!-- ============================== -->
-    <!-- Common UI actions and labels -->
-    <!-- ============================== -->
     <string name="add">Add</string>
     <string name="add_word_dialog_title">Add to dictionary</string>
     <string name="cancel">Cancel</string>
@@ -839,9 +759,6 @@
     <string name="sticky_control_mode_notification_message">Ctrl is on. Tap here to turn off.</string>
     <string name="suggested_punctuations">!,?,:,;,\",(,),\',-,/,@,_</string>
 
-    <!-- ============================================== -->
-    <!-- Device profile builder (Device configuration) -->
-    <!-- ============================================== -->
     <string name="device_profile_builder_title">Build a device profile</string>
     <string name="device_profile_builder_entry_title">Build a profile for this device</string>
     <string name="device_profile_builder_entry_summary">Press your keyboard\'s keys to make a configuration you can share</string>
@@ -923,8 +840,6 @@
     <string name="device_config_import_unreadable">That file is not a device configuration</string>
     <string name="device_config_import_failed">Could not import that file</string>
 
-
-    <!-- OTA app updates (Settings > About > Updates). -->
     <string name="settings_updates_title">Updates</string>
     <string name="settings_updates_summary">Check for a new version of BBKB</string>
     <string name="settings_update_installed_version_title">Installed version</string>
@@ -958,7 +873,6 @@
     <string name="settings_update_ready_title">Ready to install</string>
     <string name="settings_update_version_details">Version details</string>
     <string name="settings_update_unknown_sources_title">Allow BBKB to install updates?</string>
-    <!-- Downloadable language packs (core/languagepack) -->
     <string name="language_packs_installed_header">Installed</string>
     <string name="language_packs_available_header">Available to download</string>
     <string name="language_packs_download">Download</string>
@@ -977,8 +891,6 @@
     <string name="language_packs_error_verification">The file did not match the catalogue, so nothing was installed</string>
     <string name="language_packs_error_app_too_old">This app is too old to read the catalogue</string>
 
-
-    <!-- Settings text moved out of the code (2026-11) -->
     <string name="settings_common_save">Save</string>
     <string name="settings_common_edit">Edit</string>
     <string name="settings_common_back">Back</string>

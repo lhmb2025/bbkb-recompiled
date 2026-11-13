@@ -21,18 +21,10 @@ import org.xmlpull.v1.XmlPullParserFactory
 import java.io.InputStream
 
 /**
- * Every letter layout the app ships (`assets/letter_layouts/<id>.xml`) reads with the reader the
- * registry itself uses, [LetterLayoutXml], as a built-in: the generated files open with a comment
- * and carry no XML declaration, and a format change on either side (generator or reader) that
- * left them unreadable would otherwise only show on a phone, as keys quietly typing their old
- * letters. The documents are opened from the APK's assets through the application context, as
- * the registry opens them.
- *
- * It also holds the documents' `layoutSet` bindings to the keyboards that exist: a document bound
- * to a layout set must be for a language that has a keyboard with that layout set (in
- * `res/xml/method.xml`, or one of the built-in translit keyboards the app adds from
- * `predefined_builtin_keyboard_subtypes`), or it could never be selected. And it asks the
- * registry, over the shipped documents, which one each keyboard gets.
+ * Every shipped letter layout reads through [LetterLayoutXml] as a built-in, opened from assets as
+ * the registry opens them (generated files start with a comment and have no XML declaration). Each
+ * `layoutSet` binding must match a keyboard in `method.xml` or the built-in translit subtypes, and
+ * the registry's pick per keyboard is pinned.
  */
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [34])
@@ -68,10 +60,7 @@ class LetterLayoutAssetsParseTest {
         }
     }
 
-    /**
-     * method.xml's keyboard subtypes, with the layout set the app gives each (the extra value, or
-     * the locale-and-extra map), then the translit keyboards the app adds itself.
-     */
+    /** method.xml's subtypes with their layout set (extra value or locale map), then the built-in translit keyboards. */
     private fun keyboards(): List<Keyboard> {
         val out = ArrayList<Keyboard>()
         val method = LetterLayoutsMatchEngineTest.moduleFile(

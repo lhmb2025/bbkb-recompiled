@@ -1,11 +1,8 @@
 package dev.bbkb.ime.core.gesture.arbiter
 
 /**
- * The catalog of actions a CKB gesture can be assigned to. Each has a stable [key] for
- * persistence (the value stored under the `ckb_gesture_<slot>` prefs) and a [consumes] flag —
- * true means performing it should suppress the legacy gesture/key handling for that contact.
- *
- * [NONE] is "recognized but do nothing" (still consumes, so the gesture isn't double-handled).
+ * Actions a CKB gesture can be assigned. [key] is the stored `ckb_gesture_<slot>` value; [consumes]
+ * suppresses key handling for the contact. ([GesturePolicy] yields instead of acting on [NONE].)
  */
 enum class GestureAction(val key: String, val consumes: Boolean, val assignable: Boolean) {
     NONE("none", true, true),
@@ -20,10 +17,10 @@ enum class GestureAction(val key: String, val consumes: Boolean, val assignable:
     EMOJI("emoji", true, true);
 
     companion object {
-        /** Action for a stored key, or [NONE] if unknown/null. */
+        /** [NONE] if unknown or null. */
         fun fromKey(key: String?): GestureAction = entries.firstOrNull { it.key == key } ?: NONE
 
-        /** Actions the user may assign to a gesture slot (excludes reserved ones like commit). */
+        /** Excludes reserved ones like commit. */
         val assignableActions: List<GestureAction> get() = entries.filter { it.assignable }
     }
 }

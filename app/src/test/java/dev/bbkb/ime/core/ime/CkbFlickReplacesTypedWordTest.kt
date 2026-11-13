@@ -20,11 +20,9 @@ import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
 
 /**
- * A keypad flick-up picks a suggestion, and the pick replaces the word being typed. The flick's
- * own DOWN/MOVE samples feed the swipe-typing path too; a long enough stroke starts a swipe there,
- * and the swipe's start commits the typed word as it stands. The flick is recognised only at UP,
- * so without taking that word back the pick landed next to it ("helo" + "hello" -> "helohello"):
- * the owner's "sometimes inserts the chosen word at the cursor" (2026-11-06).
+ * Pins that a keypad flick-up pick replaces the typed word. The flick's samples also feed swipe
+ * typing, whose start commits the typed word before the flick is recognised at UP; the pick must
+ * take that commit back, or "helo" + "hello" gives "helohello".
  */
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [34], manifest = Config.NONE)

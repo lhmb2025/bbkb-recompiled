@@ -31,7 +31,7 @@ import org.robolectric.shadows.ShadowLooper
 /**
  * [NativeTouchSource]: attaches to the IME window's decor view only when the selector gives it the
  * pad, undoes everything on detach, dedupes the two delivery routes, and does nothing at all on a
- * device without such a profile — the KEY2, the MP01, the emulators.
+ * device without such a profile (KEY2, MP01, emulators).
  */
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [34], manifest = Config.NONE)
@@ -65,8 +65,6 @@ class NativeTouchSourceTest {
         }
 
     private fun decorView() = FrameLayout(ApplicationProvider.getApplicationContext())
-
-    // ── no profile, no change ────────────────────────────────────────────────
 
     @Test
     fun withoutADeclaredPad_theWindowIsNeverTouched() {
@@ -112,8 +110,6 @@ class NativeTouchSourceTest {
         assertEquals(0, host.decorAsked)
         assertEquals(TouchSourceStatus.Reason.PROFILE_PINS_SHIZUKU, source.status().reason)
     }
-
-    // ── attach / detach ──────────────────────────────────────────────────────
 
     @Test
     fun attach_focusesTheDecorAndForwardsGenericMotion_detachUndoesIt() {
@@ -195,8 +191,6 @@ class NativeTouchSourceTest {
         assertTrue(source.isAttached)
     }
 
-    // ── dedupe ───────────────────────────────────────────────────────────────
-
     @Test
     fun attached_theSecondArrivalOfAnEventGetsTheFirstAnswer() {
         val source = NativeTouchSource(FakeHost(decorView(), native()))
@@ -221,8 +215,6 @@ class NativeTouchSourceTest {
         source.detach()
         assertNull("forgotten on detach", source.duplicateResult(down))
     }
-
-    // ── focus stays with the editor ──────────────────────────────────────────
 
     /**
      * The decor view is focused inside the IME's own window; the editor's window keeps its

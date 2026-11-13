@@ -12,9 +12,8 @@ oneway interface IEvdevCallback {
     void onEvents(in long[] packed);
 
     /**
-     * The stream ended and nothing more will be sent. `reason` is one of the EvdevUserService
-     * REASON_* values: "device_gone" (the node vanished, e.g. firmware re-enumeration),
-     * "closed" (close(), a newer open() or destroy()), "read_error:<errno>".
+     * The stream ended; nothing more will be sent. `reason` is an EvdevUserService REASON_* value:
+     * "device_gone" (node vanished), "closed" (close(), a newer open() or destroy()), "read_error:<errno>".
      */
     void onClosed(String reason);
 }

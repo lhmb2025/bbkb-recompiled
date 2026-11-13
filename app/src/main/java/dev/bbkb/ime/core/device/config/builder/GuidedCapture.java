@@ -12,25 +12,12 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * The guided-capture state machine: walks {@link CaptureStep} in order, and for each one records
- * the raw {@code (scanCode, keyCode, deviceId)} of the key the user pressed plus the auto-repeat
- * cadence if they held it.
+ * Guided-capture state machine: walks {@link CaptureStep} in order, recording each pressed key's
+ * {@code (scanCode, keyCode, deviceId)} and auto-repeat cadence. Pure Java so tests can drive it.
  *
- * <p>It is a plain object with no Android dependencies beyond {@link KeyEvent}'s constants, so the
- * whole capture sequence can be driven from a unit test with synthetic events — which is the only
- * way to test it at all, since the real inputs are a physical keyboard nobody has in CI.
- *
- * <p><b>Why a step does not end at the first key-down.</b> The cadence has to be measured while
- * the key is still held, so a step stays open from the first down until the matching up. If the up
- * never arrives — an accessibility service that consumed the down can easily swallow it, and on
- * the MP01 the Sym key's release is exactly such an event — then a <em>different</em> key's down
- * closes the open step and opens the next one, so the sequence walks forward on downs alone. A
- * repeated down of the same key is the auto-repeat and never advances anything.
- *
- * <p><b>Navigation keys are not capturable.</b> Back, Home, the app switcher, the volume rocker
- * and Power are refused outright: the user has to be able to leave the screen, and on every
- * handset with a physical keyboard at least one of those is a real hardware key that would
- * otherwise be recorded as "this is your Sym key".
+ * <p>A step stays open from down to matching up so the cadence can be measured. An up can be
+ * swallowed (e.g. by an accessibility service), so a different key's down also closes the open
+ * step. Navigation and system keys are refused so the user can always leave the screen.
  */
 public final class GuidedCapture {
 
@@ -42,7 +29,7 @@ public final class GuidedCapture {
 
     private int index;
 
-    // The step currently open: a key is down and its cadence is being measured.
+    // The open step: a key is down and its cadence is being measured.
     private boolean pending;
     private int pendingScanCode;
     private int pendingKeyCode;
@@ -60,7 +47,6 @@ public final class GuidedCapture {
         this.steps = Collections.unmodifiableList(new ArrayList<>(steps));
     }
 
-    /** Every step, in the order they are asked for. */
     @NonNull
     public List<CaptureStep> steps() {
         return steps;
@@ -81,7 +67,7 @@ public final class GuidedCapture {
         return pending;
     }
 
-    /** How many steps have an answer (a capture or a skip). */
+    /** Steps with an answer (a capture or a skip). */
     public int answered() {
         return results.size();
     }
@@ -103,10 +89,8 @@ public final class GuidedCapture {
     }
 
     /**
-     * The captures that can be written as {@code <key>} elements: skipped and unusable steps
-     * dropped, and a step naming a key an earlier step already claimed dropped too. A duplicate is
-     * the user pressing the same key twice — most often because the firmware gave two bezel keys
-     * the same scancode, and emitting both would produce two contradictory roles for one key.
+     * Captures writable as {@code <key>} elements: skipped, unusable and duplicate keys dropped
+     * (firmware can give two bezel keys one scancode; two roles for one key would contradict).
      */
     @NonNull
     public List<CapturedKey> usableResults() {
@@ -138,11 +122,7 @@ public final class GuidedCapture {
         return dupes;
     }
 
-    // ── event intake ─────────────────────────────────────────────────────────
-
     /**
-     * Feeds one hardware key-down.
-     *
      * @param repeatCount the event's own repeat count; 0 is the initial press
      * @param eventTime   the event's timestamp in ms, used only for the cadence
      * @return true when the capture used the event, i.e. the caller should consume it
@@ -159,8 +139,7 @@ public final class GuidedCapture {
             return true;
         }
         if (repeatCount > 0) {
-            // An auto-repeat of a key we are not tracking: the tail of a press that closed the
-            // previous step. Swallow it rather than letting it open a step of its own.
+            // Repeat tail of a press that closed the previous step: swallow, do not open a step.
             return true;
         }
         if (pending) {
@@ -181,11 +160,7 @@ public final class GuidedCapture {
         return true;
     }
 
-    /**
-     * Feeds one hardware key-up. The matching up closes the open step; anything else is ignored.
-     *
-     * @return true when the capture used the event
-     */
+    /** The matching up closes the open step. Returns true when the capture used the event. */
     public boolean onKeyUp(int scanCode, int keyCode, int deviceId) {
         if (isComplete() || !isCapturable(keyCode)) {
             return false;
@@ -194,9 +169,8 @@ public final class GuidedCapture {
             commit();
             return true;
         }
-        // The up of a key whose down this capture already swallowed. Swallow the up too: the
-        // system must not see the release of a press it never saw, which for a modifier is
-        // exactly how its meta state gets stuck on.
+        // Swallow the up of a down already swallowed: an unseen press's release leaves a modifier's
+        // meta state stuck.
         for (CapturedKey captured : results.values()) {
             if (!captured.skipped && captured.scanCode == scanCode
                     && captured.keyCode == keyCode) {
@@ -206,7 +180,6 @@ public final class GuidedCapture {
         return false;
     }
 
-    /** Records the current step as skipped and moves on. */
     public void skip() {
         final CaptureStep step = current();
         if (step == null) return;
@@ -230,16 +203,11 @@ public final class GuidedCapture {
         results.clear();
     }
 
-    // ── internals ────────────────────────────────────────────────────────────
-
     private boolean matchesPending(int scanCode, int keyCode) {
         return scanCode == pendingScanCode && keyCode == pendingKeyCode;
     }
 
-    /**
-     * The gap between the press and the <em>first</em> repeat is the ROM's initial repeat delay,
-     * a different number from the cadence, so only gaps between consecutive repeats are averaged.
-     */
+    /** Averages gaps between consecutive repeats only; press to first repeat is the initial delay. */
     private void recordRepeat(long eventTime) {
         repeatEvents++;
         if (lastRepeatTime > 0) {
@@ -264,10 +232,7 @@ public final class GuidedCapture {
         index++;
     }
 
-    /**
-     * Keys the capture refuses to record. Back is the escape hatch off the screen; the rest are
-     * system keys whose presses during capture are accidents.
-     */
+    /** False for Back (the way off the screen) and system keys whose presses are accidents. */
     private static boolean isCapturable(int keyCode) {
         switch (keyCode) {
             case KeyEvent.KEYCODE_BACK:

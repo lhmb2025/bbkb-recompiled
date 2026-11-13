@@ -8,12 +8,11 @@ import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
 import kotlin.random.Random
 
-/** The single-pass sectioning (P-19) gives the same sections as the List-membership version. */
+/** The single-pass sectioning gives the same sections as the List-membership version. */
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [34], manifest = Config.NONE)
 class WordListSectionsTest {
-
-    /** The implementation before P-19, kept verbatim as the reference. */
+    /** The earlier List-membership implementation, kept verbatim as the reference. */
     private fun reference(words: List<String>, details: Map<String, WordDetail>?, other: String): List<Pair<String?, List<String>>> {
         if (details == null) return listOf(null to words)
         val byLanguage = words.groupBy { details[it]?.language ?: EngineLanguages.ANY }

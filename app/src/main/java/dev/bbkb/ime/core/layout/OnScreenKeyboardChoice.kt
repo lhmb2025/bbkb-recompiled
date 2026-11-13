@@ -7,14 +7,10 @@ import dev.bbkb.ime.core.locale.SubtypeManager
 import dev.bbkb.ime.core.settings.PrefsManager
 
 /**
- * "Always show the on-screen keyboard", chosen per keyboard language on the Language screen: on a
- * phone with physical keys, the on-screen keyboard is shown for that language's keyboards as if
- * the phone had none, the way the debug "force touchscreen-only mode" shows it for every language.
- * One preference per language, [PREF_PREFIX]`<language>` (the language as
- * [LocaleUtils.languageCode] spells it); absent means off.
- *
- * The IME keeps `DeviceProfile`'s language flag in step with the current keyboard
- * ([isOnForCurrentKeyboard]) when the keyboard changes and when a choice changes.
+ * Per-language "Always show the on-screen keyboard": on a phone with physical keys, that language's
+ * keyboards show the on-screen keyboard as if the phone had none. One preference per language,
+ * [PREF_PREFIX]`<language>` ([LocaleUtils.languageCode]); absent means off. The IME syncs
+ * `DeviceProfile`'s language flag from [isOnForCurrentKeyboard] on keyboard and choice changes.
  */
 object OnScreenKeyboardChoice {
 

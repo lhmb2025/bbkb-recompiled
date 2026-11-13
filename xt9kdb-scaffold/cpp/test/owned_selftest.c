@@ -1,14 +1,8 @@
-/* owned_selftest.c — standalone self-tests for the owned ET9KDB module (DIFF mode, xt9kdb_*).
- *
- * Runs WITHOUT the blob (pure owned code), so it executes anywhere the owned sources compile —
- * including this CI/sandbox. It validates the confidently-RE'd, data-driven pieces end to end:
- *   1. XML round-trip      : Load_XmlKDB(athena qwerty_pkb) == the verified 30-key fixture
- *   2. Selection lifecycle : SetKdbNum variant override + root fallback, GetKdbNum, Invalidate
- *   3. Geometry resolution : every key center resolves to itself; ByTap (sensor+offset) -> code
- *
+/* owned_selftest.c: self-tests for the owned ET9KDB module without the blob (DIFF names): XML
+ * round-trip vs the 30-key fixture, SetKdbNum variant/root selection, key geometry, commit sinks,
+ * multi-code keys.
  * Build:  gcc -std=c11 -Iinclude src/[a-z]*.c test/owned_selftest.c -lm -o owned_selftest
- * Run:    ./owned_selftest path/to/kdb/keypad_pkb_athena_test.xml
- */
+ * Run:    ./owned_selftest path/to/kdb/keypad_pkb_athena_test.xml */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -18,8 +12,7 @@
 #include "et9_nkl.h"
 #include <stdint.h>
 
-/* Touch* take arrays (count-based) since the 2026-08-03 signature correction; these keep the
- * old scalar call shape readable in the tests. */
+/* Scalar wrappers for the array-taking Touch* calls. */
 static void tt_start(void* c, float x, float y, ET9U32 t) {
     float xs[1] = {x}, ys[1] = {y}; ET9U32 ts[1] = {t};
     xt9kdb_TouchStart(c, 0, xs, ys, ts, 1, 0);
@@ -66,8 +59,7 @@ static void test_roundtrip(const unsigned char* xml, long n) {
 }
 
 /* 2. Selection lifecycle: root from a synthetic blob index, variant from the owned registry.
- * The variant layout has a distinct height (450) + keyCount (2) so a variant load is
- * distinguishable from the root fixture (384, 30 keys). */
+ * The variant (height 450, 2 keys) is distinguishable from the root fixture (384, 30 keys). */
 static const char VARIANT_XML[] =
     "<keyboard primaryId=\"9\" secondaryId=\"6\""
     " defaultLayoutWidth=\"1080\" defaultLayoutHeight=\"450\" addAltChars=\"true\">"
@@ -87,9 +79,8 @@ static void test_selection(unsigned char* xml, long n) {
     xt9kdb_Init(c);
     CHECK(xt9kdb_GetKdbNum(c) == 0, "GetKdbNum after Init = 0x%x", xt9kdb_GetKdbNum(c));
 
-    /* Read the model through the per-ctx slot, not the legacy global: since the per-ctx
-     * model slots landed, Load_XmlKDB only republishes into g_kdb_model for the ctx that
-     * owns the current global, and this test runs on a different ctx than test_roundtrip. */
+    /* read through the per-ctx slot: Load_XmlKDB republishes into g_kdb_model only for the ctx
+     * that owns the global, and this test uses a different ctx */
 #define MODEL xt9kdb_model_for_ctx(c)
 
     /* default (no variant requested) -> root node from the blob index */
@@ -127,10 +118,8 @@ static void test_selection(unsigned char* xml, long n) {
     CHECK(st == ET9STATUS_NONE && MODEL->authoredHeight == 384,
           "variant->default did not reload root (h=%u)", MODEL->authoredHeight);
 
-    /* A letter layout's generated KDBs ("layout:<id>", LetterLayoutKdb). Two names that agree on
-     * their first 27 bytes must still select their own nodes — the old 24-byte field cut both to
-     * the same prefix — and re-registering the selected variant's bytes (the layout was edited)
-     * must reload on the next SetKdbNum without a change of variant. */
+    /* Letter-layout variants ("layout:<id>"): names sharing their first 27 bytes select their own
+     * nodes, and re-registering the selected variant's bytes reloads on the next SetKdbNum. */
     {
         static const char LAYOUT_A[] = "layout:layout-0123456789ab-a";
         static const char LAYOUT_B[] = "layout:layout-0123456789ab-b";
@@ -224,7 +213,7 @@ static void test_aw_commit(unsigned char* xml, long n) {
           "trace q..e committed (n=%d first=%c last=%c)", g_capn, g_capn ? g_cap[0] : '?', g_capn ? g_cap[g_capn - 1] : '?');
     free(trace);
 
-    /* hook cleared -> inert (the gameplan's default) */
+    /* hook cleared -> inert */
     xt9kdb_set_aw_commit(0);
     g_capn = 0; xt9kdb_ProcessKeyBySymbol((ET9KDBInfoPtr)&dummy, 'z', 0, 0, &dummy, 0);
     CHECK(g_capn == 0, "hook cleared -> inert (n=%d)", g_capn);
@@ -267,15 +256,9 @@ static void test_ambiguous(unsigned char* xml, long n) {
     xt9kdb_set_aw_commit_ambig(0);
 }
 
-/* 6. L13 — every code of a multi-code `keyCodes` survives the load.
- *
- * The blob's Load_AddKey (@0xb95d4) takes `(ctx, keyId, keyType, l, t, r, b, u32 count,
- * const ET9SYMB* symbols)` and memcpy's the whole array into the per-key char arena, writing the
- * count at key+0x40 and the pointer at key+0x48. `key_code_of` used to stop at the first comma,
- * so a Greek `keyCodes="0x037E, 0x003A, 0x003B"` reached the NKL as a ONE-symbol key.
- *
- * The NKL assertions below are the ones that fail against the parent commit (they read chars=1
- * where the layout states 3); the model assertions exercise ET9KdbKey.codes[], which is new. */
+/* 6. Every code of a multi-code keyCodes survives the load. The blob's Load_AddKey (0xb95d4,
+ * (ctx, keyId, keyType, l, t, r, b, u32 count, const ET9SYMB* symbols)) copies the whole array into
+ * the char arena: count at key+0x40, pointer at key+0x48. */
 static const char MULTICODE_XML[] =
     "<keyboard primaryId=\"8\" secondaryId=\"6\""
     " defaultLayoutWidth=\"216\" defaultLayoutHeight=\"108\" addAltChars=\"true\"><area>"
@@ -309,8 +292,7 @@ static void test_multicode(void) {
     xt9kdb_Init((ET9KDBInfoPtr)&dummy);
     CHECK(xt9kdb_Load_XmlKDB((ET9KDBInfoPtr)&dummy, (const ET9U8*)MULTICODE_XML,
                              (ET9U32)(sizeof MULTICODE_XML - 1)) == ET9STATUS_NONE, "multicode load");
-    /* read through the per-ctx slot: Load_XmlKDB only republishes into the legacy global for the
-     * ctx that owns it, and the earlier sections ran on their own contexts. */
+    /* read through the per-ctx slot (earlier sections ran on their own contexts) */
     const ET9KdbLoaded* m = xt9kdb_model_for_ctx((ET9KDBInfoPtr)&dummy);
     CHECK(m && m->keyCount == 2, "keyCount = %u", m ? m->keyCount : 0);
     if (!m || m->keyCount != 2) return;
@@ -334,14 +316,13 @@ static void test_multicode(void) {
     CHECK(n0 == 3 && cl[0] == 0x037E && cl[1] == 0x003A && cl[2] == 0x003B,
           "NKL key0 arena = %04x %04x %04x", cl[0], n0 > 1 ? cl[1] : 0, n0 > 2 ? cl[2] : 0);
     ET9U32 n1 = nkl_chars(nkl, 1, cl, 40);
-    /* a's accent group is 11 long and already contains ä and å, so the layout's two explicit
-     * alternates are promoted to the front and the total stays 11 — no duplicate, which the
-     * blob's Load_AddKey would have rejected outright (status 0x3c). */
+    /* a's accent group (11) already holds ä and å: they move to the front and the total stays 11,
+     * since Load_AddKey rejects duplicates (status 0x3c) */
     CHECK(n1 == 11, "NKL key1 +0x40 = %u (want 11)", n1);
     CHECK(n1 >= 3 && cl[0] == 'a' && cl[1] == 0x00E4 && cl[2] == 0x00E5,
           "NKL key1 arena head = %04x %04x %04x", cl[0], n1 > 1 ? cl[1] : 0, n1 > 2 ? cl[2] : 0);
 
-    /* overflow is truncated and COUNTED, never silently dropped */
+    /* overflow is truncated and counted */
     ET9U32 before = xt9kdb_key_code_truncations();
     xt9kdb_Init((ET9KDBInfoPtr)&dummy);
     CHECK(xt9kdb_Load_XmlKDB((ET9KDBInfoPtr)&dummy, (const ET9U8*)OVERFLOW_XML,

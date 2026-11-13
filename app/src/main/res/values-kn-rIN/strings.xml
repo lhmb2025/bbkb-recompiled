@@ -721,7 +721,6 @@
     <string name="device_config_import_unreadable">ಆ ಫೈಲ್ ಸಾಧನ ಕಾನ್ಫಿಗರೇಶನ್ ಅಲ್ಲ</string>
     <string name="device_config_import_failed">ಆ ಫೈಲ್ ಆಮದು ಮಾಡಲಾಗಲಿಲ್ಲ</string>
 
-    <!-- OTA app updates -->
     <string name="settings_updates_title">ನವೀಕರಣಗಳು</string>
     <string name="settings_updates_summary">BBKB ಯ ಹೊಸ ಆವೃತ್ತಿಯನ್ನು ಪರಿಶೀಲಿಸಿ</string>
     <string name="settings_update_installed_version_title">ಸ್ಥಾಪಿತ ಆವೃತ್ತಿ</string>
@@ -755,7 +754,6 @@
     <string name="settings_update_ready_title">ಸ್ಥಾಪಿಸಲು ಸಿದ್ಧವಾಗಿದೆ</string>
     <string name="settings_update_version_details">ಆವೃತ್ತಿಯ ವಿವರಗಳು</string>
     <string name="settings_update_unknown_sources_title">ನವೀಕರಣಗಳನ್ನು ಸ್ಥಾಪಿಸಲು BBKB ಗೆ ಅನುಮತಿಸಬೇಕೇ?</string>
-    <!-- Downloadable language packs (core/languagepack) -->
     <string name="language_packs_installed_header">ಸ್ಥಾಪಿಸಲಾಗಿದೆ</string>
     <string name="language_packs_available_header">ಡೌನ್‌ಲೋಡ್‌ಗೆ ಲಭ್ಯ</string>
     <string name="language_packs_download">ಡೌನ್‌ಲೋಡ್</string>
@@ -877,7 +875,6 @@
     <string name="settings_voice_stop_on_pause_summary_off">ನೀವು ಮೈಕ್ರೊಫೋನ್ ಅನ್ನು ಟ್ಯಾಪ್ ಮಾಡುವವರೆಗೆ ಅಥವಾ ಅರ್ಧ ನಿಮಿಷ ಮೌನವಾಗುವವರೆಗೆ ವಿರಾಮಗಳಲ್ಲೂ ಆಲಿಸುತ್ತಲೇ ಇರುತ್ತದೆ</string>
     <string name="voice_status_listening_tap_to_stop">ಆಲಿಸಲಾಗುತ್ತಿದೆ&#8230; ನಿಲ್ಲಿಸಲು ಮೈಕ್ ಅನ್ನು ಟ್ಯಾಪ್ ಮಾಡಿ</string>
 
-    <!-- Settings text moved out of the code (2026-11) -->
     <string name="settings_common_save">ಉಳಿಸಿ</string>
     <string name="settings_common_edit">ಸಂಪಾದಿಸಿ</string>
     <string name="settings_common_back">ಹಿಂದಕ್ಕೆ</string>

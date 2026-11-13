@@ -18,9 +18,7 @@ public final class GestureStrokeAnalyzer {
 
     private final IntArrayList mYCoordinates = new IntArrayList(128);
 
-    /** AOSP's hard cap on stroke points -- the growth bound on the three IntArrayLists that hold
-     *  the live swipe. Was a bare 800 compared with ==, so any path that overshot it would have
-     *  disabled the cap entirely. */
+    /** Hard cap on stroke points held for the live swipe; compared with >= so it cannot be overshot. */
     private static final int MAX_EVENT_COUNT = 800;
 
     private final GestureRecognitionParams mParams;
@@ -53,9 +51,7 @@ public final class GestureStrokeAnalyzer {
 
     private int mLastMajorEventY;
 
-    /** AOSP's mGestureRecognitionSpeedThreshold: assigned from mParams.mRecognitionSpeedThreshold
-     *  and used as a SPEED in updateIncrementalRecognitionSize. It is not a time threshold --
-     *  getGestureDynamicTimeThreshold() reads mParams.mDynamicTimeThreshold* instead. */
+    /** A speed (px per second), used in updateIncrementalRecognitionSize; not a time threshold. */
     private int mGestureRecognitionSpeedThreshold;
 
     private int mIncrementalRecognitionSize;
@@ -66,11 +62,19 @@ public final class GestureStrokeAnalyzer {
         void addGestureStrokeTime(int i);
     }
 
+    /**
+     * @param i pointer id
+     * @param c1054m recognition thresholds
+     */
     public GestureStrokeAnalyzer(int i, GestureRecognitionParams c1054m) {
         this.mPointerId = i;
         this.mParams = c1054m;
     }
 
+    /**
+     * @param i most common key width
+     * @param i2 keyboard height
+     */
     public void setKeyboardGeometry(int i, int i2) {
         this.mKeyWidth = i;
         this.mMinYCoordinate = -((int) (i2 * 0.25f));
@@ -87,6 +91,12 @@ public final class GestureStrokeAnalyzer {
         return this.mEventTimes.getLength();
     }
 
+    /**
+     * @param i x
+     * @param i2 y
+     * @param i3 elapsed gesture time
+     * @param i4 time since the last letter was typed
+     */
     public void addDownEventPoint(int i, int i2, int i3, int i4) {
         reset();
         if (i4 < this.mParams.mStaticTimeThresholdAfterFastTyping) {
@@ -122,6 +132,7 @@ public final class GestureStrokeAnalyzer {
         return iM5571a >= getGestureDynamicTimeThreshold(iM5571a) && getDistance(this.mXCoordinates.get(i), this.mYCoordinates.get(i), this.mDetectFastMoveX, this.mDetectFastMoveY) >= getGestureDynamicDistanceThreshold(iM5571a);
     }
 
+    /** @param i elapsed gesture time for the copied point */
     public void duplicateLastPoint(int i) {
         int iM7383a = getLength() - 1;
         if (iM7383a >= 0) {
@@ -181,6 +192,14 @@ public final class GestureStrokeAnalyzer {
         return iM7376b;
     }
 
+    /**
+     * Returns whether the point is within the keyboard's vertical gesture bounds.
+     * @param i x
+     * @param i2 y
+     * @param i3 elapsed gesture time
+     * @param z true for a major event (not a historical sample)
+     * @param aVar receives the distance moved, or null
+     */
     public boolean addEventPoint(int i, int i2, int i3, boolean z, GestureStrokeTimeListener aVar) {
         if (getLength() <= 0) {
             appendPoint(i, i2, i3);
@@ -208,19 +227,12 @@ public final class GestureStrokeAnalyzer {
         }
     }
 
-    /**
-     * NOTE: the two callers in GesturePathTracker store this into mLastRecognitionPointSize,
-     * which nothing reads -- the incremental-recognition sizing path is currently inert. This
-     * used to return a separate field assigned only to 0 in reset(), i.e. a constant zero;
-     * returning the value the class actually computes is behaviour-neutral today and is what
-     * the path needs if it is ever wired up.
-     */
+    /** Callers store this in mLastRecognitionPointSize, which nothing reads yet. */
     public int getIncrementalRecognitionSize() {
         return this.mIncrementalRecognitionSize;
     }
 
-    /** Not Math.hypot: its overflow/underflow correctness is irrelevant for on-screen integer
-     *  deltas and costs roughly an order of magnitude, on a per-stroke-point path. */
+    /** Not Math.hypot: far slower, and its overflow safety is useless for pixel deltas. */
     private static int getDistance(int i, int i2, int i3, int i4) {
         final int dx = i - i3;
         final int dy = i2 - i4;

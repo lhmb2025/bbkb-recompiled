@@ -56,7 +56,6 @@ public final class AudioAndHapticFeedbackManager {
 
     private void initInternal(Context context) {
         this.audioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
-        // Audit CT-14: VIBRATOR_SERVICE is deprecated from API 31 in favour of VibratorManager.
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             VibratorManager vibratorManager =
                     (VibratorManager) context.getSystemService(Context.VIBRATOR_MANAGER_SERVICE);
@@ -69,10 +68,7 @@ public final class AudioAndHapticFeedbackManager {
 
     private void loadSounds(Context context) {
         if (this.soundPool == null) {
-            // Audit CT-14: the 3-arg SoundPool constructor is deprecated (API 21) and its stream
-            // type was written as a bare `1` (STREAM_SYSTEM). Without an explicit
-            // USAGE_ASSISTANCE_SONIFICATION attribute set, keypress clicks route to the wrong
-            // stream on modern Android and duck the user's media.
+            // Without USAGE_ASSISTANCE_SONIFICATION, clicks route to the wrong stream and duck media.
             this.soundPool = new SoundPool.Builder()
                     .setMaxStreams(MAX_SOUND_STREAMS)
                     .setAudioAttributes(new AudioAttributes.Builder()
@@ -115,6 +111,7 @@ public final class AudioAndHapticFeedbackManager {
         }
     }
 
+    /** @param i key code of the pressed key */
     public void performAudioAndHapticFeedback(int i, View view) {
         performHapticFeedback(view);
         performAudioFeedback(i);
@@ -139,14 +136,14 @@ public final class AudioAndHapticFeedbackManager {
         return c0804d != null && c0804d.isSoundEnabled && (audioManager = this.audioManager) != null && audioManager.getRingerMode() == 2;
     }
 
+    /** @param i key code of the pressed key; picks the sound */
     public void performAudioFeedback(int i) {
         if (!this.soundEnabled || this.soundPool == null) {
             return;
         }
         
         int soundId;
-        
-        // Handle specific key codes first
+
         if (i == -29 || i == -27 || i == -23) {
             soundId = 0;
         } else if (i == -15 || i == -3) {
@@ -158,7 +155,6 @@ public final class AudioAndHapticFeedbackManager {
         } else if (i == 32) {
             soundId = this.soundIds.get(R.raw.input_space);
         } else {
-            // Handle packed-switch cases
             switch (i) {
                 case -21:
                     soundId = 0;
@@ -191,7 +187,6 @@ public final class AudioAndHapticFeedbackManager {
             if (this.settings.keypressVibrationDuration >= 0) {
                 vibrate(this.settings.keypressVibrationDuration);
             } else if (view != null) {
-                // Audit CT-14: 3 == KEYBOARD_TAP, 2 == FLAG_IGNORE_GLOBAL_SETTING.
                 view.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP,
                         HapticFeedbackConstants.FLAG_IGNORE_GLOBAL_SETTING);
             }

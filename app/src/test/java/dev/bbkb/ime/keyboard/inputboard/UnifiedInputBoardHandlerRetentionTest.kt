@@ -25,21 +25,10 @@ import java.lang.ref.WeakReference
 import java.time.Duration
 
 /**
- * The input-board bar's typing-delay handler: every soft key press disables the bar's keys at once
- * and restores them `config_typing_delay_inputboard_bar` ms later, so a tap that lands on the bar
- * while typing does nothing.
- *
- * Two contracts, both against a manager built by its **real constructor** (the callback under test
- * is the anonymous one that constructor creates):
- *  1. the delayed disable/restore still fires and brings the keys back after the delay;
- *  2. a pending restore message does not keep the manager reachable. `UnifiedInputBoardHandler`
- *     extends `WeakOwnerHandler`, but used to also keep the callback in a strong field — and the
- *     callback is an inner class of the manager, so a queued message pinned manager → key view →
- *     IME for the length of the delay.
- *
- * Every mock is `stubOnly()`: a recording mock keeps its invocation arguments (the manager passes
- * itself to `setOnKeyEventListener`) in Mockito's mock registry, which would hold the manager for
- * reasons that have nothing to do with the handler.
+ * The bar's typing-delay handler, on a manager built by its real constructor: each soft key press
+ * disables the bar's keys and restores them `config_typing_delay_inputboard_bar` ms later, and a
+ * pending restore must not keep the manager reachable. Mocks are `stubOnly()` because a recording
+ * mock's registry would hold the manager (passed to `setOnKeyEventListener`) on its own.
  */
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [34], manifest = Config.NONE)
@@ -75,8 +64,6 @@ class UnifiedInputBoardHandlerRetentionTest {
     private val delayMs: Long
         get() = ApplicationProvider.getApplicationContext<android.content.Context>()
             .resources.getInteger(R.integer.config_typing_delay_inputboard_bar).toLong()
-
-    // ═══════════════════════════════════════════════════════════════════════
 
     @Test
     fun theBarKeysAreDisabledAtOnceAndRestoredAfterTheTypingDelay() {

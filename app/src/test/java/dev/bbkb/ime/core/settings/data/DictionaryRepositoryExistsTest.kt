@@ -25,10 +25,9 @@ import org.robolectric.annotation.Config
 import java.util.TreeMap
 
 /**
- * An add or an edit onto a name another entry already has is refused, as before, but says what
- * is in the way. It used to say "Failed to add word" / "Failed to add shortcut", which read as a
- * broken dictionary (emulator, 2026-11-05: "ZORBIX" next to "zorbix", "Zoë" already there).
- * Words and shortcuts share names: a word is stored as a shortcut for itself.
+ * An add or edit onto a name another entry already has is refused with a message naming what is
+ * in the way, not a generic failure. Words and shortcuts share names: a word is stored as a
+ * shortcut for itself.
  */
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [34], manifest = Config.NONE)

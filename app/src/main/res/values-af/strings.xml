@@ -721,7 +721,6 @@
     <string name="device_config_import_unreadable">Daardie lêer is nie \'n toestelkonfigurasie nie</string>
     <string name="device_config_import_failed">Kon nie daardie lêer invoer nie</string>
 
-    <!-- OTA app updates -->
     <string name="settings_updates_title">Opdaterings</string>
     <string name="settings_updates_summary">Kyk vir \'n nuwe weergawe van BBKB</string>
     <string name="settings_update_installed_version_title">Geïnstalleerde weergawe</string>
@@ -755,7 +754,6 @@
     <string name="settings_update_ready_title">Gereed om te installeer</string>
     <string name="settings_update_version_details">Weergawebesonderhede</string>
     <string name="settings_update_unknown_sources_title">Laat BBKB toe om opdaterings te installeer?</string>
-    <!-- Downloadable language packs (core/languagepack) -->
     <string name="language_packs_installed_header">Geïnstalleer</string>
     <string name="language_packs_available_header">Beskikbaar om af te laai</string>
     <string name="language_packs_download">Laai af</string>
@@ -877,7 +875,6 @@
     <string name="settings_voice_stop_on_pause_summary_off">Luister deur pouses heen totdat jy die mikrofoon tik, of ná \'n halwe minuut se stilte</string>
     <string name="voice_status_listening_tap_to_stop">Luister tans&#8230; Tik die mikrofoon om te stop</string>
 
-    <!-- Settings text moved out of the code (2026-11) -->
     <string name="settings_common_save">Stoor</string>
     <string name="settings_common_edit">Wysig</string>
     <string name="settings_common_back">Terug</string>

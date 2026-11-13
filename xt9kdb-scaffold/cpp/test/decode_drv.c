@@ -1,5 +1,5 @@
-/* decode_drv.c — offline driver: feed synthetic SENSOR swipe paths through the owned gesture
- * decoder and print the resulting "owned spell", to validate the windowed-curvature corner fix. */
+/* decode_drv.c: feeds synthetic sensor swipes through the legacy owned decoder and checks the
+ * spell, covering gradual corners the windowed-curvature test must catch. */
 #include "et9kdb.h"
 #include "et9_context.h"
 #include "kdb_internal.h"
@@ -7,8 +7,7 @@
 #include <math.h>
 #include <string.h>
 
-/* Touch* take arrays (count-based) since the 2026-08-03 signature correction; these keep the
- * old scalar call shape readable in the tests. */
+/* Scalar wrappers for the array-taking Touch* calls. */
 static void tt_start(void* c, float x, float y, ET9U32 t) {
     float xs[1] = {x}, ys[1] = {y}; ET9U32 ts[1] = {t};
     xt9kdb_TouchStart(c, 0, xs, ys, ts, 1, 0);
@@ -42,7 +41,7 @@ static void swipe(const char* name, const char* expect, const float* wp, int nwp
     }
     tt_move(ctx, px,py,t+16);  /* push final point (no real traceObj -> avoid ProcessTrace) */
     g_sp=0; memset(g_spell,0,sizeof(g_spell));
-    xt9kdb_decode_scratch();             /* W3a scratch path: decode -> commit via sinks */
+    xt9kdb_decode_scratch();             /* scratch path: decode -> commit via sinks */
     int ok = (strcmp(g_spell, expect)==0);
     if(!ok) g_fail++;
     printf("  %-7s -> owned spell='%s' (%d pos)  expect='%s'  %s\n",
@@ -65,7 +64,7 @@ int main(void){
     float time_[] ={485,113, 809,113, 809,369, 269,113};            /* t i m e                       */
     swipe("we",    "we",    we,    2, 14);
     swipe("one",   "one",   one,   3, 14);
-    swipe("one~",  "one",   one_sh,5, 14);   /* shallow corner: old 3-sample test missed the 'n' */
+    swipe("one~",  "one",   one_sh,5, 14);   /* shallow corner: a 3-sample angle test misses the 'n' */
     swipe("where", "where", where, 5, 14);
     swipe("time",  "time",  time_, 4, 14);
     printf(g_fail ? "==== decode driver: %d FAILED ====\n" : "==== decode driver: all passed ====\n", g_fail);

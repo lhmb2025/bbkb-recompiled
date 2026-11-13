@@ -14,14 +14,9 @@ import dev.bbkb.ime.keyboard.inputboard.AbstractBoardController;
 import dev.bbkb.ime.keyboard.inputboard.BoardKeyboardFactory;
 
 /**
- * Controller for the Number Pad input board: builds the 7x4 math/numeric keyboard
- * (element numberPad, keyboard_layout_set_number_pad.xml) and shows it over the main
- * keyboard, toggled from the UIM bar. Registered in UnifiedInputBoardManager's
- * componentMap, it is dispatched entirely through the generic board branch.
- *
- * <p>The reference {@link AbstractBoardController} subclass (§5.6 item 1): everything left here is
- * number-pad-specific — the keyboard build and its locale-keyed cache — and the board skeleton is
- * in the base class.
+ * The Number Pad board: builds the 7x4 math/numeric keyboard (element numberPad,
+ * keyboard_layout_set_number_pad.xml), cached per locale, and shows it over the main keyboard.
+ * The reference {@link AbstractBoardController} subclass.
  */
 public class NumberPadController extends AbstractBoardController<NumberPadController.Listener> {
 
@@ -45,11 +40,7 @@ public class NumberPadController extends AbstractBoardController<NumberPadContro
         super(KEY_CODE, blackBerryIME, listener);
     }
 
-    /**
-     * Always fetched through KeyboardSwitcher (which lazily inflates the ViewStub and
-     * nulls its reference on input-view recreation) so this controller never holds a
-     * stale view across forceRecreateInputView().
-     */
+    /** Always fetched through KeyboardSwitcher, so no stale view is held across input-view recreation. */
     private NumberPadView getView() {
         return KeyboardSwitcher.getInstance().getNumberPadView();
     }
@@ -89,9 +80,7 @@ public class NumberPadController extends AbstractBoardController<NumberPadContro
             Logger.error(TAG, "Failed to build number pad keyboard: " + e.getMessage());
             return;
         }
-        // Listener BEFORE show, like ClipboardController: onNumberPadShown() runs the
-        // requestShiftOff keyboard-state chain, whose board sweep would hide a view that
-        // is already visible.
+        // Listener before show: onNumberPadShown() runs a board sweep that would hide a visible view.
         this.listener.onNumberPadShown();
         view.show();
     }

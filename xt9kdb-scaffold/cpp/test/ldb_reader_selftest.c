@@ -1,17 +1,7 @@
-/* ldb_reader_selftest.c — the owned LDB read callback (src/ldb_reader.c) against the blob's
- * behaviour, with a host stand-in for the APK asset API.
- *
- * The index is built the way the blob builds it (calloc'd 255-bucket table, calloc(1, 0x30)
- * nodes, strdup'd names), the "APK" is a temp file holding the asset bytes at an unaligned
- * offset (as a stored asset sits inside a zip), and a compressed asset has no descriptor and
- * only a buffer. Checks: a stored asset is mapped (copy-on-write: a write reaches neither the
- * file nor a second mapping), a compressed asset and a file pack are heap copies, every path
- * returns the file's exact bytes and the same pointer on the next call, the misses return the
- * blob's status 10, delete unlinks head and middle nodes, and terminate releases everything
- * (run under ASan/LSan by run_tests.sh's sanitized pass, which also catches a munmap/free mix-up).
- *
- * Usage (from cpp/): ldb_reader_selftest          — run by run_tests.sh
- */
+/* ldb_reader_selftest.c: src/ldb_reader.c with a host stand-in for the asset API. The "APK" is a
+ * temp file with the asset at an unaligned offset; a compressed asset has only a buffer. Pins:
+ * stored assets mapped copy-on-write, compressed assets and file packs heap-copied, exact bytes and
+ * a stable pointer, status 10 on misses, delete/terminate. Run (also under ASan/LSan) by run_tests.sh. */
 #define _POSIX_C_SOURCE 200809L   /* mmap, sysconf, strdup under -std=c11 */
 #include <stdarg.h>
 #include <stdio.h>
@@ -25,7 +15,6 @@
 static int g_fail = 0, g_logs = 0;
 #define CHECK(cond, ...) do { if (!(cond)) { g_fail++; printf("  FAIL: " __VA_ARGS__); printf("\n"); } } while (0)
 
-/* ---- host platform layer ------------------------------------------------------------------- */
 #define ASSET_OFF 4099                  /* deliberately not page aligned */
 static char g_apk[256], g_pack[256];
 static uint8_t g_bytes[3][20000];       /* [0] stored asset, [1] compressed asset, [2] file pack */
@@ -50,7 +39,7 @@ const void* ldb_asset_buffer(LdbAsset* a) { return g_bytes[a->which]; }
 void ldb_asset_close(LdbAsset* a) { free(a); }
 void ldb_log(const char* fmt, ...) { (void)fmt; g_logs++; }
 
-/* ---- an index the way the blob builds it -------------------------------------------------- */
+/* An index built as the blob builds it (255-bucket table, calloc(1, 0x30) nodes, strdup'd names). */
 typedef struct Node {
     uint8_t lang0, lang1, pad0[6]; char* name; uint8_t format, pad1[3]; uint32_t size;
     uint8_t* data; uint8_t isAsset, mapped, pad2[6]; struct Node* next;

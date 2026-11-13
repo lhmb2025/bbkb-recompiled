@@ -21,6 +21,10 @@ public final class IntArrayList {
         throw new ArrayIndexOutOfBoundsException("length=" + this.length + "; index=" + i);
     }
 
+    /**
+     * @param i index; past the end, the list grows to it
+     * @param i2 value
+     */
     public void addAt(int i, int i2) {
         if (i < this.length) {
             this.array[i] = i2;
@@ -72,11 +76,7 @@ public final class IntArrayList {
         return this.array;
     }
 
-    /**
-     * Adopts {@code other}'s backing array <b>by reference</b>: after this call both lists share
-     * storage, so an {@link #add} on either one can be observed through the other. Use
-     * {@link #copy(IntArrayList)} whenever the two lists must stay independent.
-     */
+    /** Adopts {@code other}'s backing array by reference, so the lists share storage; see {@link #copy(IntArrayList)}. */
     public void setSharingBackingArray(IntArrayList c0865af) {
         this.array = c0865af.array;
         this.length = c0865af.length;

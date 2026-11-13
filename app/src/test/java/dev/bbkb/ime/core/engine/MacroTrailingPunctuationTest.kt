@@ -14,30 +14,10 @@ import org.robolectric.annotation.Config
 import java.util.Locale
 
 /**
- * FIX-MACRO — the trailing-punctuation retry in the macro lookup.
- *
- * The original retries the substitution lookup with one trailing ASCII-punctuation character
- * stripped and re-appends it to the expansion, so typing `bb.` or `alot,` still expands:
- *
- * ```
- * // sources/dev/bbkb/ime/core/r.java:40-55
- * String strA = aVarB.a(str, bVar, locale);
- * if (str.length() <= 0 || !Pattern.matches("\\p{Punct}", str.substring(str.length() - 1))) return strA;
- * String strSubstring = str.substring(0, str.length() - 1);
- * if (strSubstring.length() <= 0) return strA;
- * String strA2 = aVarB.a(strSubstring, bVar, locale);
- * if (strSubstring.equals(strA)) return strA;
- * return strA2 + str.substring(str.length() - 1);
- * ```
- *
- * We DO have this, at `NuanceSDKDictionaryBridge.getWordSubstitution` — a faithful port, GD-8
- * having replaced the per-keystroke `Pattern.matches("\\p{Punct}", ...)` with the equivalent
- * four-range ASCII test in `isPosixPunct`. These tests pin it, including the original's odd
- * `strSubstring.equals(strA)` bail-out (it compares the STRIPPED input against the FULL input's
- * result, not against `strA2`) so a future tidy-up cannot quietly "fix" it away.
- *
- * The method reads no instance state, only the `DictionaryManager` singleton, so it is driven on
- * a Mockito mock of the bridge: private methods are not intercepted, so the real body runs.
+ * The trailing-punctuation retry in `NuanceSDKDictionaryBridge.getWordSubstitution`: with one
+ * trailing ASCII punctuation char stripped, the lookup retries and re-appends it, so `bb.` expands.
+ * Also pins the bail-out that compares the stripped input with the full input's result. Driven on a
+ * Mockito mock of the bridge (private methods are not intercepted, so the real body runs).
  */
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [34], manifest = Config.NONE, instrumentedPackages = ["com.blackberry.nuanceshim"])
@@ -103,10 +83,8 @@ class MacroTrailingPunctuationTest {
 
     @Test
     fun theOriginalsOddBailOut_isPreserved() {
-        // r.java:54 compares the STRIPPED INPUT against the FULL input's substitution result, not
-        // against the retry's. So a macro that maps `x.` to `x` (the stripped form) short-circuits
-        // and returns that, discarding the retry — a quirk, faithfully ported. Without the
-        // bail-out this would be "X." instead.
+        // The bail-out compares the stripped input with the full input's result, not the retry's,
+        // so a macro mapping `x.` to `x` returns that; without it this would be "X." instead.
         assertEquals("x", substitute("x.", mapOf("x." to "x", "x" to "X")))
     }
 

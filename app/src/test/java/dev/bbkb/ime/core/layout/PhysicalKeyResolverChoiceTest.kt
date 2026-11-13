@@ -23,13 +23,10 @@ import org.robolectric.annotation.Config
 import java.util.Locale
 
 /**
- * [PhysicalKeyResolver]'s precedence between the two ways a user picks a letter layout for the
- * physical keys: the layout chosen for a keyboard language on the Language screen
- * ([LetterLayoutChoice]) and the one switched on in Physical layouts. The choice wins outright for
- * its language while it is for the physical keys and fits the keyboard; everywhere else the
- * Physical layouts selection applies as it always has. The shipped documents come from the app's
- * assets; Colemak and Dvorak among them are for the on-screen keyboard only, so a copy of Colemak
- * marked for the physical keys stands for a chosen built-in that drives them.
+ * [PhysicalKeyResolver] precedence between a language's chosen layout ([LetterLayoutChoice]) and
+ * the Physical layouts selection: the choice wins for its language while it is for the physical keys
+ * and fits the keyboard; elsewhere the selection applies. Shipped Colemak is on-screen only, so a
+ * copy marked for the physical keys stands in for a chosen built-in.
  */
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [34])
@@ -96,10 +93,7 @@ class PhysicalKeyResolverChoiceTest {
     private val swap get() = layout("swap", """<key code="KEYCODE_Q" keySpec="w"/><key code="KEYCODE_W" keySpec="q"/>""")
     private val colemak get() = registry.builtIn("colemak")!!
 
-    /**
-     * The shipped Colemak marked for the physical keys: what a chosen built-in that drives them
-     * would be. The shipped one is for the on-screen keyboard only.
-     */
+    /** The shipped Colemak (on-screen only) marked for the physical keys. */
     private val colemakForKeypad
         get() = colemak.let { LetterLayout(it.id, it.name, it.origin, setOf(LetterLayout.Target.PKB), it.binding, it.rowsTemplate, it.keys) }
 

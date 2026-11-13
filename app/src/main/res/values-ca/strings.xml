@@ -721,7 +721,6 @@
     <string name="device_config_import_unreadable">Aquest fitxer no és una configuració de dispositiu</string>
     <string name="device_config_import_failed">No s\'ha pogut importar aquest fitxer</string>
 
-    <!-- OTA app updates -->
     <string name="settings_updates_title">Actualitzacions</string>
     <string name="settings_updates_summary">Comprova si hi ha una versió nova de BBKB</string>
     <string name="settings_update_installed_version_title">Versió instal·lada</string>
@@ -755,7 +754,6 @@
     <string name="settings_update_ready_title">A punt per instal·lar</string>
     <string name="settings_update_version_details">Detalls de la versió</string>
     <string name="settings_update_unknown_sources_title">Vols permetre que BBKB instal·li actualitzacions?</string>
-    <!-- Downloadable language packs (core/languagepack) -->
     <string name="language_packs_installed_header">Instal·lats</string>
     <string name="language_packs_available_header">Disponibles per baixar</string>
     <string name="language_packs_download">Baixa</string>
@@ -877,7 +875,6 @@
     <string name="settings_voice_stop_on_pause_summary_off">Continua escoltant durant les pauses fins que toqueu el micròfon o després de mig minut de silenci</string>
     <string name="voice_status_listening_tap_to_stop">S\'està escoltant&#8230; Toqueu el micròfon per aturar</string>
 
-    <!-- Settings text moved out of the code (2026-11) -->
     <string name="settings_common_save">Desa</string>
     <string name="settings_common_edit">Edita</string>
     <string name="settings_common_back">Enrere</string>

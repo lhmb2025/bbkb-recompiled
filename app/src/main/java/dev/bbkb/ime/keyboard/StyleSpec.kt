@@ -6,89 +6,55 @@ enum class KeyCap {
     FLAT,
     /** Inset rounded caps with flat fills and a translucent pressed state layer. */
     ROUNDED,
-    /**
-     * Inset rounded caps with a sculpted finish — top-lit vertical gradient, dark
-     * grounding border, thin top inner highlight — and an opaque re-sculpted
-     * pressed fill (the BB10 blue press). See KeyboardView.drawSculptedKeyBackground.
-     */
+    /** Inset caps with a top-lit gradient, dark border and top highlight; opaque blue press fill. */
     SCULPTED,
 }
 
 /**
- * Everything a theme style controls besides colors (colors are
- * [KeyboardColorManager.Palette]). One immutable instance per
- * [KeyboardColorManager.Style]: renderers read fields off
- * [KeyboardColorManager.styleSpec] instead of branching on the style, so adding a
- * styled theme means writing a new spec — not another branch in every view.
- *
- * Like the palette, the spec is pull-at-draw: a theme switch recreates the input
- * view, so draw/inflate-path reads always see the active style.
+ * Everything a theme style controls besides colors ([KeyboardColorManager.Palette]).
+ * Renderers read [KeyboardColorManager.styleSpec] instead of branching on the style.
+ * Read at draw time: a theme switch recreates the input view.
  */
 data class StyleSpec(
-    /** Key-surface painter family. */
     val keyCap: KeyCap,
-    /**
-     * Visible cap inset from the key cell bounds, in dp; the gap between neighboring
-     * caps is twice this. 0 = full bleed ([KeyCap.FLAT]).
-     */
+    /** Cap inset from the key cell, in dp (the gap between caps is twice this); 0 = full bleed. */
     val keyInsetHDp: Float,
     val keyInsetVDp: Float,
     /** Cap corner radius, in dp. Unused for [KeyCap.FLAT]. */
     val keyRadiusDp: Float,
     /** Key label size, as a fraction of the legacy label ratio. */
     val labelSizeScale: Float,
-    /**
-     * Medium-weight (500) key labels, matched by the preview bubble and the on-key
-     * flick predictions. See [KeyboardView.mediumWeightTypeface].
-     */
+    /** Medium-weight (500) labels, also used by the preview bubble and on-key flick predictions. */
     val mediumKeyTypeface: Boolean,
     /** On-key flick prediction text size, as a fraction of the keyboard letter size. */
     val predictionTextScale: Float,
-    /**
-     * On-key flick predictions cast a drop shadow beneath the text (the BB10 look
-     * — floating words kept legible over the sculpted caps). Other styles render
-     * clean unshadowed text.
-     */
+    /** On-key flick predictions get a drop shadow, for legibility over sculpted caps. */
     val predictionDropShadow: Boolean,
     /**
-     * Height, in dp, of the horizontal "fret" bars drawn across the full board
-     * width in the gaps between key rows (and hugging the top edge) — the BB10
-     * signature. 0 disables frets. Drawn only by views that opt in via
-     * KeyboardView.drawsFrets (the main board, not popups/aux bars/emoji pages).
+     * Height in dp of the full-width "fret" bars between key rows and at the top edge; 0 disables.
+     * Drawn only by views that opt in via KeyboardView.drawsFrets (the main board).
      */
     val fretHeightDp: Float,
-    /**
-     * The autocorrect word drawn on the spacebar uses the palette accent instead of
-     * the static autoCorrectionOnSpacebarTextColor theme attr (BB10's blue
-     * spacebar word).
-     */
+    /** Spacebar autocorrect word uses the palette accent instead of autoCorrectionOnSpacebarTextColor. */
     val accentSpacebarPrediction: Boolean,
     /** Enter/action key drawn as an accent-filled pill with a background-tinted icon. */
     val accentEnterKey: Boolean,
     /** The legacy bar icon on the spacebar. */
     val drawSpacebarIcon: Boolean,
-    /**
-     * Emoji-page keys draw their own key caps (each emoji floats on a cap).
-     * Consulted only by the cap painters — the legacy flat painter never gives
-     * "empty" keys a surface. False = bare glyphs on the board.
-     */
+    /** Emoji-page keys get caps. Read only by the cap painters; the flat painter never draws them. */
     val emojiCaps: Boolean,
-    /** Key-preview bubble corner radius, in dp. 0 = the legacy flat square bubble. */
+    /** Key-preview bubble corner radius, in dp; 0 = square bubble. */
     val previewRadiusDp: Float,
     /** Key-preview bubble elevation, in dp. */
     val previewElevationDp: Float,
     /**
-     * The redesigned board/aux treatment introduced with the Material theme (2026-08
-     * UI audit): boards sit on the background surface instead of a keyColor panel,
-     * press feedback is a rounded translucent state layer, clipboard rows become
-     * cards with the single-sided reveal, the FCC gets the trackpad layout, the
-     * suggestion strip gets candidate emphasis and 48dp touch targets, and the aux
-     * bars render as one flat surface.
+     * Modern board treatment: boards on the background surface, rounded translucent press layer,
+     * clipboard cards, trackpad FCC, emphasized 48dp suggestion strip, flat aux bars.
      */
     val modernBoards: Boolean,
 ) {
     companion object {
-        /** Classic/Modern: the original full-bleed rendering everywhere. */
+        /** Classic/Modern: full-bleed rendering everywhere. */
         val LEGACY = StyleSpec(
             keyCap = KeyCap.FLAT,
             keyInsetHDp = 0f,
@@ -108,12 +74,7 @@ data class StyleSpec(
             modernBoards = false,
         )
 
-        /**
-         * Material (K1-K4 of the 2026-08 UI audit): Gboard-like floating caps with
-         * vertical gaps wider than horizontal, smaller medium-weight labels, the
-         * accent enter pill, a rounded elevated preview bubble, and the redesigned
-         * boards.
-         */
+        /** Material: floating caps, smaller medium-weight labels, accent enter pill, elevated preview. */
         val MATERIAL = StyleSpec(
             keyCap = KeyCap.ROUNDED,
             keyInsetHDp = 3f,
@@ -134,17 +95,9 @@ data class StyleSpec(
         )
 
         /**
-         * BB10: the BlackBerry 10 virtual keyboard. Sculpted dark caps with tight
-         * horizontal gaps, silver fret bars between the rows, full-size
-         * medium-weight labels, drop-shadowed on-key predictions, the accent
-         * (electric blue) autocorrect word on the spacebar, and the modern board
-         * treatment carrying the BB10 palette.
+         * BB10: sculpted caps, fret bars, shadowed predictions, accent spacebar word.
+         * Geometry: row gap (~2dp) + 2x insetV = fret + two ~2dp seams; 2x insetH matches the seam.
          */
-        // BB10 geometry, measured off BB10 screenshots and tuned on-screen: the fret
-        // (~8.5% of the row pitch) sits in the vertical band with ~2dp dark seams
-        // against the caps (structural ~2dp row gap + 2x insetV = fret + 2 seams),
-        // and the horizontal key gap (2x insetH) matches that seam visually.
-        // No cap border: key separation is the background showing through.
         val BB10 = StyleSpec(
             keyCap = KeyCap.SCULPTED,
             keyInsetHDp = 1f,

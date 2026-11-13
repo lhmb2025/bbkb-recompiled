@@ -37,7 +37,6 @@ R_AARCH64_JUMP_SLOT = 1026
 R_AARCH64_RELATIVE = 1027
 
 
-# ---- minimal ELF64 (little-endian) reader ------------------------------------------------
 class Elf:
     def __init__(self, data):
         if data[:4] != b"\x7fELF" or data[4] != 2 or data[5] != 1:
@@ -91,7 +90,7 @@ def _load(path, prefix="ET9KDB_"):
     return data, elf, syms, sym_at_index, (dynstr_off, dynstr_off + dynstr_sz)
 
 
-# ---- AArch64: the four instructions this tool needs --------------------------------------
+# AArch64: the four instructions this tool needs.
 def _branch_target(word, addr):
     """bl/b -> (target, mnemonic); anything else -> (None, None). b.cond is a different opcode."""
     top = word >> 26
@@ -286,8 +285,7 @@ def main():
         sys.exit("ERROR: no defined ET9KDB_* symbols in this file.")
 
     if args.check:
-        # tools/__pycache__ is (unhelpfully) tracked, so importing must not rewrite a .pyc there
-        # and leave the tree dirty after a test run.
+        # tools/__pycache__ is tracked; importing must not rewrite a .pyc there.
         sys.dont_write_bytecode = True
         sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
         import elf_cutover
@@ -308,7 +306,7 @@ def main():
                   f"addrTaken={len(e['addr_taken'])} dataRel={len(e['data_rel'])} "
                   f"strRef={len(e['str_refs'])}")
         # the contract's own members must still be reachable through the PLT, or redirecting
-        # THEM was inert too; report (do not fail) so the table stays honest as the blob changes.
+        # them was inert too; report, do not fail.
         inert_contract = [n for n in elf_cutover.CONTRACT
                           if not info.get("ET9KDB_" + n, {}).get("plt")]
         if inert_contract:

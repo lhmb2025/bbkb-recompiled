@@ -64,6 +64,7 @@ public final class GestureEventProcessor extends AbstractDrawingHandler {
 
     @Override
     public void dispatchShiftKeyTap() {
+        // Capacitive strokes have no shift key.
     }
 
     @Override
@@ -81,6 +82,10 @@ public final class GestureEventProcessor extends AbstractDrawingHandler {
         }
     }
 
+    /**
+     * @param interfaceC1046e the batch-input update timer
+     * @param aVar tells whether the current keyboard takes gestures
+     */
     public static void init(TypedArray typedArray, TimerCallback interfaceC1046e, GestureKeyboardChecker aVar) {
         sGestureRecognitionParams = new GestureRecognitionParams(typedArray);
         sParams = new Params(typedArray);
@@ -94,10 +99,8 @@ public final class GestureEventProcessor extends AbstractDrawingHandler {
     }
 
     /**
-     * Drops the checker if it is still {@code checker}. The checker is the MainKeyboardView, so
-     * keeping it in this static after the view detaches kept the destroyed IME service, its
-     * window and its view tree reachable until the next service inflated a keyboard view. A newer
-     * view that has already installed itself is left alone.
+     * Drops the checker if it is still {@code checker}. It is the MainKeyboardView, so keeping it
+     * would leak the destroyed service and its views; a newer view's checker is left alone.
      */
     public static void releaseGestureKeyboardChecker(GestureKeyboardChecker checker) {
         if (sGestureKeyboardChecker == checker) {
@@ -111,11 +114,13 @@ public final class GestureEventProcessor extends AbstractDrawingHandler {
         return checker != null && checker.isGestureKeyboard();
     }
 
+    /** @param j the event time */
     @Override // dev.bbkb.ime.keyboard.AbstractDrawingHandler
     public void updateBatchInputTimer(long j) {
         this.gesturePathTracker.onUpdateBatchInputTimer(j, this);
     }
 
+    /** @param j the event time */
     @Override // dev.bbkb.ime.keyboard.AbstractDrawingHandler
     protected void onCancelEventInternal(long j) {
         cancelBatchInput();
@@ -141,6 +146,7 @@ public final class GestureEventProcessor extends AbstractDrawingHandler {
         sPointerTrackerQueue.cancelAllPointerTrackers();
     }
 
+    /** @param interfaceC0976f receives the batch-input callbacks */
     public static void setKeyboardActionListener(KeyboardActionListenerInterface interfaceC0976f) {
         sKeyboardActionListener = interfaceC0976f;
     }
@@ -149,6 +155,7 @@ public final class GestureEventProcessor extends AbstractDrawingHandler {
         return sPointerTrackerQueue.size();
     }
 
+    /** @param i the pointer id; processors are created on first use */
     public static GestureEventProcessor getGestureEventProcessor(int i) {
         ArrayList<GestureEventProcessor> arrayList = sTrackers;
         for (int size = arrayList.size(); size <= i; size++) {
@@ -158,32 +165,22 @@ public final class GestureEventProcessor extends AbstractDrawingHandler {
     }
 
     /**
-     * CKB (capacitive physical keypad) stroke geometry, in the engine's own sensor coordinate
-     * frame — NOT screen pixels and NOT the VKB frame. Every CKB stroke threshold is derived
-     * from these two numbers in {@link GestureStrokeAnalyzer#setKeyboardGeometry}: the fast-move
-     * speed threshold, both dynamic distance thresholds, the sampling minimum distance, the
-     * recognition speed threshold, and the min/max Y band that decides whether a batch is
-     * cancelled. The original app baked them in as bare literals (144 / 610) for the KEY2's pad;
-     * they now come from {@link TouchKeypadGeometry#strokeKeyWidth()} /
-     * {@link TouchKeypadGeometry#strokeBoardHeight()}, which are exactly those literals on the
-     * KEY2's frame and scale with any other pad's. They do NOT track the per-device
-     * {@code <ckb-y-warp>} table used by {@link #warpY}, so a device whose warp table changes
-     * needs these revisited too. Pushed by {@code DeviceProfile} on the same lifecycle as the warp.
+     * Capacitive keypad stroke geometry in the engine's sensor frame (not screen or VKB pixels):
+     * every stroke threshold in {@link GestureStrokeAnalyzer#setKeyboardGeometry} derives from it.
+     * 144 / 610 on the KEY2's pad. Independent of the {@code <ckb-y-warp>} table, so a changed warp
+     * needs these revisited. Set by {@code DeviceProfile}.
      */
     private static volatile int sStrokeKeyWidth = TouchKeypadGeometry.KEY2_STROKE_KEY_WIDTH;
     private static volatile int sStrokeBoardHeight = TouchKeypadGeometry.KEY2_STROKE_BOARD_HEIGHT;
 
+    /** @param i the pointer id */
     private GestureEventProcessor(int i) {
         super(i);
         this.gesturePathTracker = new GesturePathTracker(i, sGestureRecognitionParams);
         this.gesturePathTracker.setKeyboardGeometry(sStrokeKeyWidth, sStrokeBoardHeight);
     }
 
-    /**
-     * Adopt the touch keypad's frame: new processors use it, and the existing ones (one per
-     * pointer id, created on first use) are re-pointed. A no-op when the numbers are unchanged,
-     * which on the KEY2 they always are (144 / 610).
-     */
+    /** Adopts the touch keypad's frame for new and existing processors; no-op when unchanged. */
     public static void setKeypadGeometry(TouchKeypadGeometry geometry) {
         if (geometry == null) return;
         final int keyWidth = geometry.strokeKeyWidth();
@@ -267,19 +264,16 @@ public final class GestureEventProcessor extends AbstractDrawingHandler {
     }
 
     /**
-     * debug.et9.ckbyscale (per-mille): scales the Y fed to the ENGINE only (stroke detector
-     * stays raw). 0/unset = off. Cached at first use — set the prop, then force-stop.
-     * Stock KEY2 evidently delivered capacitive Y in the flat KDB's 324-space; this ROM
-     * delivers 0..450, so 720 (=324/450) + debug.et9.kdbvariant=default reproduces the
-     * original shipping stack for A/B. See remediation log §8.
+     * Debug builds: debug.et9.ckbyscale (per-mille) scales the Y fed to the engine only; 0 or unset
+     * is off. Cached at first use (set the prop, then force-stop). This ROM delivers Y in 0..450
+     * while the flat KDB is 324 tall, so 720 with debug.et9.kdbvariant=default maps one to the other.
      */
     private static int sCkbYScalePerMille = -1;
 
-    /* RETAIL piecewise sensor->engine Y warp (§8.7.12): breakpoints from the device config's
-     * <ckb-y-warp> ("s0:a0,s1:a1,..." ascending). Each measured sensor band maps exactly onto
-     * one authored row of the flat KDB, reproducing the stock stack the blob's swipe decoder is
-     * tuned for (S5 evidence, log §8.6). Identity when unset. Applies to the ENGINE feed only —
-     * the stroke detector stays in raw sensor space. */
+    /* Piecewise sensor-to-engine Y warp from the device config's <ckb-y-warp> ("s0:a0,s1:a1,..."
+     * ascending sensor values). Each sensor band maps onto one authored row of the flat KDB, the
+     * space the blob's swipe decoder is tuned for. Identity when unset; engine feed only, the
+     * stroke detector stays in raw sensor space. */
     private static volatile int[] sWarpSensor;   // ascending sensor breakpoints
     private static volatile int[] sWarpEngine;   // matching engine-space values
 
@@ -318,29 +312,24 @@ public final class GestureEventProcessor extends AbstractDrawingHandler {
     }
 
     private static int scaleEngineY(int y) {
-        // Debug override first (experiments; per-mille linear; cached; debug builds only) …
+        // The debug override wins over the device warp.
         if (BuildConfig.DEBUG) {
             if (sCkbYScalePerMille < 0) {
                 int v = 0;
                 try {
-                    // UNVERIFIED ON DEVICE: android.os.SystemProperties is greylist-max-o, so on
-                    // targetSdk 36 the reflective lookup inside SystemProps is blocked outright on
-                    // many builds. SystemProps then returns the default and the scale silently
-                    // stays at 0, which makes the A/B knob report "off" even when the prop is set.
-                    // If debug.et9.ckbyscale stops taking effect on the KEY2, this is why -- move
-                    // it to a debug SharedPreferences key via SettingsManager rather than
-                    // debugging the prop.
+                    // SystemProperties is greylist-max-o: on targetSdk 36 the reflective read may be
+                    // blocked and silently return the default, leaving the scale off.
                     String s = SystemProps.get("debug.et9.ckbyscale");
                     if (s != null && !s.isEmpty()) v = Integer.parseInt(s.trim());
-                } catch (Throwable ignored) { }
+                } catch (Throwable ignored) { /* Unreadable prop: scale stays off. */ }
                 sCkbYScalePerMille = v;
             }
             if (sCkbYScalePerMille > 0) return (y * sCkbYScalePerMille) / 1000;
         }
-        // … else the RETAIL piecewise warp from the device config (all build types).
         return warpY(y);
     }
 
+    /** @param z false ends gesture handling; true resumes it only while a gesture is live */
     public static void updateGestureHandlingState(boolean z) {
         if (!z) {
             setGestureHandlingActive(false);
@@ -356,17 +345,20 @@ public final class GestureEventProcessor extends AbstractDrawingHandler {
     }
 
     /**
-     * Updates the timestamp of the last key event.
-     * This MUST be called after dispatching motion events from the capacitive keyboard
-     * so that noise filtering in onDownEvent does not incorrectly reject legitimate
-     * gesture input based on stale hardware key timestamps.
+     * Must be called after dispatching capacitive motion events, or onDownEvent's noise filter
+     * rejects real gestures against a stale key timestamp.
      *
-     * Corresponds to original app: invoke-static {}, Ldev/bbkb/ime/keyboard/a;->q()V
+     * @param j the event time
      */
     public static void updateLastKeyTime(long j) {
         sLastKeyEventTime = j;
     }
 
+    /**
+     * @param i x in sensor space
+     * @param i2 y in sensor space
+     * @param j the event time
+     */
     private void onDownEvent(int i, int i2, long j) {
         if (Logger.isLoggable(TAG, Log.DEBUG)) {
             printTouchEvent("onDownEvent:", i, i2, j);
@@ -391,11 +383,9 @@ public final class GestureEventProcessor extends AbstractDrawingHandler {
                 resetGestureStrokeTime();
                 this.gesturePathTracker.addDownEventPoint(i, i2, j, sLastKeyEventTime, getActivePointerTrackerCount());
                 if (InputPathDebug.on()) Logger.info("CKB_SWIPE_TYPE_DEBUG", "KeyDetector.onDownEvent: CALLING NuanceSDK.touchStart pointer=" + this.mPointerId + " x=" + i + " y=" + i2 + " time=" + j + " mIsDetectingGesture=" + this.mIsDetectingGesture + " mInGesture=" + this.mInGesture);
-                // FIX-L8: null when the engine failed to load. The keyboard must still type.
                 EngineTouch.start("GestureEventProcessor.onDownEvent", this.mPointerId, i, scaleEngineY(i2), j);
             } else {
-                // The field takes no swipes, so this contact can never become one: the engine
-                // is given nothing for it (no start, and so no moves and no cancel either).
+                // The field takes no swipes: the engine gets nothing for this contact.
                 if (InputPathDebug.on()) Logger.info("CKB_SWIPE_TYPE_DEBUG", "KeyDetector.onDownEvent: mIsDetectingGesture=FALSE → BatchInputTracker NOT initialized, no NuanceSDK.touchStart (no gesture word will be produced)");
             }
         } else {
@@ -403,6 +393,10 @@ public final class GestureEventProcessor extends AbstractDrawingHandler {
         }
     }
 
+    /**
+     * @param i x, {@code i2} y, {@code j} event time
+     * @param z true for the event's current sample, false for a historical one
+     */
     private void onGestureMoveEvent(int i, int i2, long j, boolean z) {
         if (this.mIsDetectingGesture) {
             if (!this.gesturePathTracker.addMoveEventPoint(this.mInGesture, i, i2, j, z, this, this)) {
@@ -420,6 +414,7 @@ public final class GestureEventProcessor extends AbstractDrawingHandler {
         }
     }
 
+    /** @param i x, {@code i2} y, {@code j} event time */
     private void onMoveEvent(int i, int i2, long j, MotionEvent motionEvent) {
         if (Logger.isLoggable(TAG, Log.DEBUG)) {
             printTouchEvent("onMoveEvent:", i, i2, j);
@@ -429,9 +424,8 @@ public final class GestureEventProcessor extends AbstractDrawingHandler {
             return;
         }
         if (!isGestureKeyboard() || motionEvent == null) {
-            // Non-gesture keyboard (symbol pages, number pad, UIM): onDownEvent dispatched no
-            // touchStart, so a touchMove here is a stray sample with no stroke behind it. That is
-            // the same engine-buffer pollution route already closed for touchEnd in onUpEvent.
+            // Non-gesture keyboard: no touchStart was sent, so a touchMove would pollute the
+            // engine buffer with a stroke-less sample.
             return;
         }
         if (InputPathDebug.on()) Logger.info("CKB_SWIPE_TYPE_DEBUG", "KeyDetector.onMoveEvent (onMoveEvent): pointer=" + this.mPointerId + " x=" + i + " y=" + i2 + " time=" + j + " calling NuanceSDK.touchMove");
@@ -444,6 +438,7 @@ public final class GestureEventProcessor extends AbstractDrawingHandler {
         onGestureMoveEvent(i, i2, j, true);
     }
 
+    /** @param i x, {@code i2} y, {@code j} event time */
     private void onUpEvent(int i, int i2, long j) {
         if (Logger.isLoggable(TAG, Log.DEBUG)) {
             printTouchEvent("onUpEvent  :", i, i2, j);
@@ -451,24 +446,22 @@ public final class GestureEventProcessor extends AbstractDrawingHandler {
         if (InputPathDebug.on()) Logger.info("CKB_SWIPE_TYPE_DEBUG", "KeyDetector.onUpEvent: pointer=" + this.mPointerId + " x=" + i + " y=" + i2 + " mIsDetectingGesture=" + this.mIsDetectingGesture + " gestureActive(sInGesture)=" + sInGesture + " inBatchInput=" + isInGesture());
         sTimerCallback.cancelUpdateBatchInputTimer(this);
         if (!sInGesture) {
-            // Not an active gesture (tap or stray capacitive edge-touch): cancel and do
-            // NOT send touchEnd. Sending touchEnd here registered a 1-point "gesture"
-            // that polluted the engine buffer (the m48=1 records at x=0/1080, y>grid).
-            // Tap characters are handled via the normal key path, not the gesture path.
+            // A tap or stray edge touch: cancel, never touchEnd, which would register a 1-point
+            // gesture in the engine buffer. Taps type through the key path.
             if (InputPathDebug.on()) Logger.info("CKB_SWIPE_TYPE_DEBUG", "KeyDetector.onUpEvent: sInGesture=false → touchCancel only (skip touchEnd)");
             sPointerTrackerQueue.releaseAllPointersOlderThan(this, j);
             EngineTouch.cancel("GestureEventProcessor.onUpEvent/cancel", this.mPointerId);
         } else {
             if (InputPathDebug.on()) Logger.info("CKB_SWIPE_TYPE_DEBUG", "KeyDetector.onUpEvent: calling NuanceSDK.touchEnd");
-            // Deposit the gesture's native state and raise the pending seq, in one op on the
-            // engine thread. It is posted before finishBatchInput posts the prediction request,
-            // so the request's guarded clear() runs after the deposit by FIFO order.
+            // Deposits the gesture state on the engine thread before finishBatchInput posts the
+            // prediction request, so FIFO order runs the request's guarded clear() after it.
             EngineTouch.end("GestureEventProcessor.onUpEvent/end", this.mPointerId, i, scaleEngineY(i2), j);
         }
         finishBatchInput(j);
         sPointerTrackerQueue.remove(this);
     }
 
+    /** @param j the event time */
     private void finishBatchInput(long j) {
         this.mIsDetectingGesture = false;
         boolean inBatch = isInGesture();
@@ -488,6 +481,7 @@ public final class GestureEventProcessor extends AbstractDrawingHandler {
         sKeyboardActionListener.onStartBatchInput();
     }
 
+    /** @param j the event time */
     @Override
     public void onUpdateBatchInput(long j) {
         if (Logger.isLoggable(TAG, Log.DEBUG)) {
@@ -501,6 +495,7 @@ public final class GestureEventProcessor extends AbstractDrawingHandler {
         sTimerCallback.startUpdateBatchInputTimer(this);
     }
 
+    /** @param j the event time */
     @Override
     public void onEndBatchInput(long j) {
         if (InputPathDebug.on()) Logger.info("CKB_SWIPE_TYPE_DEBUG", "KeyDetector.onEndBatchInput: pointer=" + this.mPointerId + " cancelled(mIsTrackingCanceled)=" + this.mIsTrackingCanceled);
@@ -516,6 +511,7 @@ public final class GestureEventProcessor extends AbstractDrawingHandler {
         sKeyboardActionListener.onEndBatchInput(InputSource.HARDWARE);
     }
 
+    /** @param j the event time */
     @Override
     public void onPhantomUpEvent(long j) {
         sTimerCallback.cancelUpdateBatchInputTimer(this);
@@ -528,6 +524,7 @@ public final class GestureEventProcessor extends AbstractDrawingHandler {
         this.mIsTrackingCanceled = true;
     }
 
+    /** @param z whether a gesture is in progress */
     private static void setInGesture(boolean z) {
         sInGesture = z;
     }
@@ -536,6 +533,7 @@ public final class GestureEventProcessor extends AbstractDrawingHandler {
         return sGestureHandlingActive;
     }
 
+    /** @param z whether gesture handling is active */
     public static void setGestureHandlingActive(boolean z) {
         sGestureHandlingActive = z;
     }

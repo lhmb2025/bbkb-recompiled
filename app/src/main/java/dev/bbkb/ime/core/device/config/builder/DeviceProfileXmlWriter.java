@@ -8,28 +8,16 @@ import dev.bbkb.ime.core.device.config.model.KeyRole;
 import java.util.Locale;
 
 /**
- * Serialises a {@link DeviceProfileDraft} to schema-v2.3 device-config XML.
- *
- * <p>A pure string function, deliberately: it is the half of export that a unit test can pin
- * exactly, and {@link DeviceProfileExporter} refuses to write anything this produces until
- * {@code DeviceInputMappingParser} has read it back. Nothing here is allowed to assume the parser
- * is lenient.
- *
- * <p>The header comment is the part a human reads when the file arrives on someone else's phone.
- * It carries the app version, the date and the ROM build id, plus the detected facts the config
- * itself cannot express — vendor/product ids, whether the keychar map had an Alt layer, the
- * auto-repeat cadence measured while a key was held. On a device whose Sym keycode changed
- * between two ROMs (the MP01), the ROM id in that header is the difference between a file that is
- * still true and one that is not.
+ * Serialises a {@link DeviceProfileDraft} to schema-v2.3 device-config XML (pure, never assume a
+ * lenient parser). The header comment records app version, date, ROM build id and facts the
+ * config cannot express; the ROM id matters because keycodes change between ROMs.
  */
 public final class DeviceProfileXmlWriter {
-
-    /** The schema level this writer emits. */
     public static final String SCHEMA_VERSION = "2.3";
 
     private static final String NL = "\n";
 
-    private DeviceProfileXmlWriter() {} // No instantiation
+    private DeviceProfileXmlWriter() {}
 
     @NonNull
     public static String toXml(@NonNull DeviceProfileDraft draft) {
@@ -58,8 +46,6 @@ public final class DeviceProfileXmlWriter {
         sb.append("</device-input-config>").append(NL);
         return sb.toString();
     }
-
-    // ── header ───────────────────────────────────────────────────────────────
 
     private static void appendHeaderComment(StringBuilder sb, DeviceProfileDraft draft) {
         final DeviceFacts facts = draft.facts;
@@ -119,13 +105,9 @@ public final class DeviceProfileXmlWriter {
         sb.append("-->").append(NL);
     }
 
-    // ── <match> ──────────────────────────────────────────────────────────────
-
     /**
-     * Both criteria are ANDed by {@code DeviceMatchCriteria}, which is what is wanted here: the
-     * keypad's {@code InputDevice} name is the precise identifier (it is what selects the vendor
-     * {@code .idc}/{@code .kl} in the first place), and {@code Build.DEVICE} keeps the config from
-     * claiming some unrelated handset whose vendor happened to use the same keypad part.
+     * Criteria are ANDed: the keypad's {@code InputDevice} name is the precise identifier, and
+     * {@code Build.DEVICE} stops a match on another handset with the same keypad part.
      */
     private static void appendMatch(StringBuilder sb, DeviceFacts facts) {
         sb.append("        <match>").append(NL);
@@ -143,8 +125,6 @@ public final class DeviceProfileXmlWriter {
         }
         sb.append("        </match>").append(NL);
     }
-
-    // ── <keypad-layout> ──────────────────────────────────────────────────────
 
     private static void appendKeypadLayout(StringBuilder sb, DeviceFacts facts) {
         sb.append(NL);
@@ -165,8 +145,6 @@ public final class DeviceProfileXmlWriter {
         }
     }
 
-    // ── <scancode-mappings> ──────────────────────────────────────────────────
-
     private static void appendScancodeMappings(StringBuilder sb, DeviceProfileDraft draft) {
         sb.append(NL);
         sb.append("        <input-mappings>").append(NL);
@@ -182,13 +160,8 @@ public final class DeviceProfileXmlWriter {
     }
 
     /**
-     * One {@code <key>} element.
-     *
-     * <p>Both {@code rawScanCode} and {@code rawKeyCode} are written whenever both were observed,
-     * which makes the match an AND of the two — the precise identity of the key on this ROM. A
-     * device that reports one of them as 0 (a scancode of 0 is common on a virtual or remapped
-     * device) gets only the half that is real, because a literal {@code 0} would be matched
-     * against every event whose other half was unset.
+     * One {@code <key>}: writes both raw codes when observed (an AND match), but omits a 0 half,
+     * which would match every event lacking it.
      */
     private static void appendKey(StringBuilder sb, CapturedKey key) {
         final CaptureStep step = key.step;
@@ -227,13 +200,7 @@ public final class DeviceProfileXmlWriter {
         return notes.toString();
     }
 
-    // ── escaping ─────────────────────────────────────────────────────────────
-
-    /**
-     * Escapes an attribute value. A device name is not a safe string: it comes from the kernel and
-     * is whatever the vendor put in the driver, which on shipping hardware has included ampersands
-     * and quotes.
-     */
+    /** Escapes an attribute value; kernel device names can contain ampersands and quotes. */
     @NonNull
     public static String attr(@Nullable String value) {
         if (value == null) return "";
@@ -247,7 +214,7 @@ public final class DeviceProfileXmlWriter {
                 case '"': out.append("&quot;"); break;
                 case '\'': out.append("&apos;"); break;
                 default:
-                    // Control characters are not representable in XML 1.0 at all, escaped or not.
+                    // Control characters are not representable in XML 1.0, escaped or not.
                     if (c < 0x20 && c != '\t') {
                         out.append(' ');
                     } else {
@@ -258,10 +225,7 @@ public final class DeviceProfileXmlWriter {
         return out.toString();
     }
 
-    /**
-     * Makes a value safe to drop inside an XML comment. Entities do not apply there, so the only
-     * hazards are a literal {@code --} (illegal in a comment) and a trailing {@code -}.
-     */
+    /** Makes a value safe inside an XML comment: breaks up {@code --} and a trailing {@code -}. */
     @NonNull
     public static String comment(@Nullable String value) {
         if (value == null || value.isEmpty()) return "";

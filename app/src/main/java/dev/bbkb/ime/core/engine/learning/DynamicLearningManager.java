@@ -23,56 +23,39 @@ public class DynamicLearningManager implements NuanceSDK.ManagedModeCallback {
 
     private boolean dynamicLearningEnabled = true;
 
-    /**
-     * The user's global {@code dynamic_learning} preference, without the per-field gates that
-     * {@link #dynamicLearningEnabled} folds in. Contacts import reads this one: it learns names
-     * from the address book, not text typed into the focused field.
-     */
+    /** The global {@code dynamic_learning} preference without the per-field gates; read by contacts import. */
     private boolean learningPreferenceEnabled = true;
 
     /**
-     * The focused field set {@code IME_FLAG_NO_PERSONALIZED_LEARNING} (incognito). Already folded
-     * into {@link #dynamicLearningEnabled}; kept on its own for the boards that capture personal
-     * data without learning from typing (emoji recents, clipboard history, add-to-dictionary).
+     * The field set {@code IME_FLAG_NO_PERSONALIZED_LEARNING}. Already folded into
+     * {@link #dynamicLearningEnabled}; kept for boards that store personal data (emoji recents, clipboard).
      */
     private boolean noPersonalizedLearning = false;
 
-    /**
-     * The executor deferred learning work runs on. Held in a field rather than looked up per call
-     * so a test can substitute a direct executor; production always gets the process-wide
-     * single-thread executor, so ordering against the init task is unchanged.
-     */
+    /** A field so tests can substitute a direct executor; production uses the shared single-thread one. */
     Executor backgroundExecutor = ThreadUtils.getBackgroundExecutor("dynamic_learning_executor");
 
     /**
-     * FIX-D2: NuanceSDKManager answers null when the engine failed to load (it swallows the load
-     * error). Every engine call here goes through this, so a failed load degrades to "no learning"
-     * instead of an NPE in IME onCreate / on every commit. With an engine present nothing changes.
-     *
-     * <p>Wave 3: called only inside ops on the engine or loader thread ({@link EngineThreads}),
-     * where it may join the engine's start; the main thread never resolves the engine here.
+     * Null when the engine failed to load, so a failed load degrades to no learning instead of an
+     * NPE. Call only on the engine or loader thread ({@link EngineThreads}): it may join the engine's start.
      */
     private static NuanceSDK engineOrNull() {
         return NuanceSDKManager.getInstance();
     }
 
     public DynamicLearningManager(Context context) {
-        // No engine, no managed-mode callback: the learner is then never activated, so every
-        // commit takes the clear-only path (itself a no-op without an engine).
         // The learner first: setCallbackHandler answers at once when the learned model is already
-        // attached (the Learned words screen opened before the keyboard bound in this process),
-        // and onManagedModeChanged activates the learner. Registering first crashed the keyboard
-        // on start with a null learner.
+        // attached, and onManagedModeChanged then needs a non-null learner.
         this.personalLearner = new PersonalLearner(context);
-        // Posted: the constructor runs on the main thread in onCreate, possibly before the engine
-        // has started, and only the engine thread may wait for that start. The registration is
-        // lock-free and replays the managed-mode state when the model is already attached.
+        // Posted: this runs on main, possibly before the engine has started, and only the engine
+        // thread may wait for that start.
         EngineThreads.post(() -> {
             NuanceSDK engine = engineOrNull();
             if (engine != null) engine.setCallbackHandler(this);
         });
     }
 
+    /** @param z true if this session may learn (preference, field type and incognito folded in) */
     public void setDynamicLearningEnabled(boolean z) {
         this.dynamicLearningEnabled = z;
         EngineThreads.post(() -> {
@@ -87,10 +70,12 @@ public class DynamicLearningManager implements NuanceSDK.ManagedModeCallback {
         return this.dynamicLearningEnabled;
     }
 
+    /** @param z the global learning preference */
     public void setLearningPreferenceEnabled(boolean z) {
         this.learningPreferenceEnabled = z;
     }
 
+    /** @param z true if the focused field asked for no personalized learning */
     public void setNoPersonalizedLearning(boolean z) {
         this.noPersonalizedLearning = z;
     }
@@ -117,28 +102,8 @@ public class DynamicLearningManager implements NuanceSDK.ManagedModeCallback {
     }
 
     /**
-     * Flushes the personal dictionary (the BASL store) to disk. Called by
-     * {@code LearningModelSaveReceiver} and by {@link #destroy()}.
-     *
-     * <p>History, because the name and the gate were both wrong. UT-1: this was
-     * {@code saveWorkLearner()} and guarded on {@code workProfileState == 2 && workLearner != null}.
-     * Work-profile learning was removed — {@code workLearner} was never assigned and
-     * {@code workProfileState} never left 0 — so the body was unreachable and the broadcast that
-     * logs "Writing learning model to disk" wrote nothing at all. UT-1's fix made it reachable by
-     * saving whichever learner is active, which is the personal one.
-     *
-     * <p>§5.5 finishes the job. What that reached was {@code BaseLearningModel.save()} →
-     * {@code DictionaryManager.save()} — flushing the *engine* learner wrote the *BASL personal
-     * dictionary*, two unrelated stores. The engine learner has nothing to flush (its state is in
-     * the native dynamic model, which NuanceSDK exposes no save entry point for), so the indirection
-     * was pure misdirection: the only thing this ever did was save the personal dictionary.
-     *
-     * <p>It now says so, and the engine-learner gate is gone with it. That gate meant a user's
-     * word substitutions and personal words were written only if the engine's DLM happened to have
-     * loaded and activated a learner — an unrelated precondition that could silently drop edits.
-     * The call is safe to make unconditionally: {@code DictionaryManager.save()} no-ops when the
-     * store is not loaded, and {@code PersonalDictionaryUtil} skips each file whose dirty flag is
-     * clear, so a redundant flush costs a log line.
+     * Flushes the personal dictionary (the BASL store) to disk; the engine learner has no save entry
+     * point. Safe unconditionally: an unloaded store no-ops and clean files are skipped.
      */
     public void savePersonalDictionary() {
         this.backgroundExecutor.execute(this::flushPersonalDictionary);
@@ -151,8 +116,7 @@ public class DynamicLearningManager implements NuanceSDK.ManagedModeCallback {
 
     /** Unregisters, queues the personal-dictionary flush, then deactivates the learner (pinned by DynamicLearningManagerTest). */
     public void destroy() {
-        // Posted after the constructor's registration (FIFO), and against the engine as it is:
-        // a teardown must not start one.
+        // Posted after the constructor's registration (FIFO); peek, because a teardown must not start the engine.
         EngineThreads.post(() -> {
             NuanceSDK engine = NuanceSDKManager.peekInstance();
             if (engine != null) engine.setCallbackHandler(null);
@@ -162,12 +126,9 @@ public class DynamicLearningManager implements NuanceSDK.ManagedModeCallback {
     }
 
     /**
-     * @param z "force": the CJK prediction commit passes {@code true} for a Japanese pick or a
-     *          partial Chinese pick, where the engine's selection IS the transition that keeps the
-     *          rest of the composition alive (Romaji, stroke and Cangjie buffers are never replayed
-     *          from the tracker). So force still selects by index when the session may not learn,
-     *          as it always has with the preference off (the engine is in explicit-learning mode
-     *          then), but it no longer learns by content: no {@code addWord} fallback.
+     * @param z force: true for a Japanese or partial Chinese pick, where the engine's selection is
+     *          the transition that keeps the composition alive. Selects by index even when the
+     *          session may not learn, but never learns by content.
      */
     public void learn(SuggestedWords.SuggestedWordInfo suggestedWordInfoVar, boolean z) {
         if (suggestedWordInfoVar == null || (!this.dynamicLearningEnabled && !z)) {
@@ -182,9 +143,8 @@ public class DynamicLearningManager implements NuanceSDK.ManagedModeCallback {
     }
 
     /**
-     * A typed word committed with no candidate behind it: with "Show suggestions" and
-     * auto-correction both off nothing looks the word up, so there is no list to select from.
-     * Learned by content when learning is allowed; either way the word is ended in the engine.
+     * A typed word committed with no candidate list (suggestions and auto-correction both off).
+     * Learned by content when allowed; either way the word is ended in the engine.
      */
     public void learnTypedWord(String word) {
         BaseLearningModel learner = this.dynamicLearningEnabled ? getActiveLearner() : null;
@@ -195,9 +155,12 @@ public class DynamicLearningManager implements NuanceSDK.ManagedModeCallback {
         clearEngine();
     }
 
+    /**
+     * @param strArr contact name words
+     * @param bVar which contacts (all, personal or work)
+     */
     public void addContactsWords(final String[] strArr, final ContactsDataProvider.ContactsType bVar) {
-        // The global preference only: this imports the address book, not what was typed, so the
-        // focused field (password, incognito) has no say in it.
+        // The global preference only: the focused field (password, incognito) has no say in an address book import.
         if (this.learningPreferenceEnabled) {
             if (strArr.length <= 500) {
                 addContactsWordsOnLoader(strArr, bVar);
@@ -208,10 +171,11 @@ public class DynamicLearningManager implements NuanceSDK.ManagedModeCallback {
     }
 
     /**
-     * The contacts batch is a long hold, so it runs on the engine's loader thread. The calling
-     * thread (Sync Contacts, or this class's executor for a large batch) waits for it as it waited
-     * for the direct call, so the caller's bookkeeping still follows the add; the main thread
-     * never waits.
+     * Runs the batch (a long hold) on the loader thread. A background caller waits so its
+     * bookkeeping follows the add; the main thread never waits.
+     *
+     * @param strArr contact name words
+     * @param bVar which contacts
      */
     private void addContactsWordsOnLoader(String[] strArr, ContactsDataProvider.ContactsType bVar) {
         java.util.concurrent.Future<?> done = EngineThreads.load(() -> addContactsWordsInternal(strArr, bVar));
@@ -230,10 +194,8 @@ public class DynamicLearningManager implements NuanceSDK.ManagedModeCallback {
     private void learnWithActiveLearner(SuggestedWords.SuggestedWordInfo suggestedWordInfoVar) {
         BaseLearningModel abstractC0928aM6055e = getActiveLearner();
         if (BuildConfig.DEBUG) {
-            // Open question (2026-08): personalLearner.active is set ONLY from
-            // onManagedModeChanged(false), which fires from loadDLMFromFile(). If the DLM loads
-            // before DynamicLearningManager registers its callback handler, no learner is ever
-            // active and every commit silently skips the engine's SelLstSelWord transition.
+            // active is set only from onManagedModeChanged(false); if that never fires, every commit
+            // skips the engine's SelLstSelWord transition.
             android.util.Log.d("PIPELINE", "IME:learn:activeLearner="
                 + (abstractC0928aM6055e == null ? "NONE (commit does not reach the engine)"
                                                 : abstractC0928aM6055e.getClass().getSimpleName()));
@@ -242,20 +204,20 @@ public class DynamicLearningManager implements NuanceSDK.ManagedModeCallback {
             abstractC0928aM6055e.learnWord(suggestedWordInfoVar, this.dynamicLearningEnabled);
             return;
         }
-        // Audit EB-6: with no active learner this returned having done NOTHING — neither
-        // selectionListSelectWord nor clear() — silently violating the commit-transition
-        // invariant that CommitController documents at :312-318 ("always transition the engine
-        // out of the just-typed word"). The engine then still holds the committed word, so the
-        // next prediction request can score against it. Mirror the null-info branch of learn()
-        // above and end the word explicitly.
+        // No learner: still end the word, or the next prediction scores against the committed word.
         clearEngine();
     }
 
-    /** Loader thread (see {@link #addContactsWordsOnLoader}). */
+    /**
+     * Loader thread (see {@link #addContactsWordsOnLoader}).
+     *
+     * @param strArr contact name words
+     * @param bVar which contacts
+     */
     void addContactsWordsInternal(String[] strArr, ContactsDataProvider.ContactsType bVar) {
         NuanceSDK engine = engineOrNull();
         if (engine == null) {
-            return; // FIX-D2: no engine to learn contacts into.
+            return; // No engine to learn contacts into.
         }
         if (bVar == ContactsDataProvider.ContactsType.ALL) {
             engine.addContactsWords(strArr);
@@ -265,11 +227,8 @@ public class DynamicLearningManager implements NuanceSDK.ManagedModeCallback {
     }
 
     @Override // com.blackberry.nuanceshim.NuanceSDK.ManagedModeCallback
+    /** @param z true for managed (work profile) mode, which activates no learner */
     public void onManagedModeChanged(boolean z) {
-        // UT-1/UT-12: the managed-mode branch used to activate a work-profile learner and record
-        // its DLM path in a write-only static set. Work profile learning was removed, the learner
-        // was never constructed, so that branch could not run and the set was never read. Managed
-        // mode simply does not activate a learner; unmanaged mode activates the personal one.
         if (z) {
             return;
         }

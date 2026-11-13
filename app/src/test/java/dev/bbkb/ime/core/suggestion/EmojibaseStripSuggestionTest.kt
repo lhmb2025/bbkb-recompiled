@@ -16,11 +16,10 @@ import org.robolectric.annotation.Config
 import java.util.Locale
 
 /**
- * The strip's emoji comes from emojibase (owner requirement 2026-11-02): the engine's kind-11
- * entries go, and the top emojibase hit for the composing word is appended under the Emoji
- * suggestions switch, with the remembered skin tone applied. Runs against
- * [EmojiTestEnv.seedStandard]: smileys s0..s40 described "smile N", animals a0..a2 "cat N",
- * food f0..f1 "food N".
+ * The strip's emoji comes from emojibase: the engine's kind-11 entries go, and the top emojibase
+ * hit for the composing word is appended under the Emoji suggestions switch, with the remembered
+ * skin tone. Seed ([EmojiTestEnv.seedStandard]): smileys s0..s40 "smile N", animals a0..a2
+ * "cat N", food f0..f1 "food N".
  */
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [34], qualifiers = "w411dp-h891dp")

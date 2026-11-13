@@ -8,26 +8,9 @@ import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
 
 /**
- * Pins the icon-id wiring in `Key.LongPressKeyData`.
- *
- * `Key`'s constructor parsed `keyIconDisabled` and `keyIconActive` into two locals and then passed
- * them to `create(..., activeIconId, disabledIconId, ...)` in the WRONG ORDER, so `activeIconId`
- * held the disabled icon and `disabledIconId` held the active one. `getIcon()` draws
- * `disabledIconId` when a key is inactive — so a DISABLED key rendered its ACTIVE icon. It looked
- * normal, or brighter than normal, while being untappable.
- *
- * Device symptom that produced this: in a browser URL bar the emoji and voice keys are disabled by
- * design (`isTextOrImMode` / `isMicrophoneAllowed`), but rendered as though enabled, so taps looked
- * ignored rather than refused. Months of "taps don't register" were partly this.
- *
- * COVERAGE LIMIT, stated because it is easy to over-read these two tests: they pin `create()`'s
- * CONTRACT, not the call site. Re-introducing the swap in `Key`'s constructor leaves both tests
- * green — verified by mutation. Building a `Key` needs a parsed XML attribute set, which this
- * suite cannot construct. The actual protection against a repeat is that the constructor's locals
- * are now NAMED `activeIconId`/`disabledIconId` instead of `iM7456d`/`iM7456d2`, so a swapped
- * argument is visible at the call site rather than invisible.
- *
- * `LongPressKeyData` is private, so everything here is reflective.
+ * Pins that `Key.LongPressKeyData.create()` stores the active and disabled icon ids in their own
+ * fields (`getIcon()` draws `disabledIconId` for an inactive key). This covers `create()` only,
+ * not `Key`'s call site, which needs a parsed XML attribute set. Reflective: the class is private.
  */
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [34], manifest = Config.NONE)
@@ -58,8 +41,7 @@ class KeyDisabledIconTest {
 
     @Test
     fun theTwoIconIdsAreNotInterchangeable() {
-        // Guards the test above: if create() ever coerced both to one value, the swap this test
-        // exists to catch would become invisible.
+        // If create() coerced both to one value, a swap would be invisible to the test above.
         val d = create(ACTIVE, DISABLED)
         assertNotEquals(field(d, "activeIconId"), field(d, "disabledIconId"))
     }

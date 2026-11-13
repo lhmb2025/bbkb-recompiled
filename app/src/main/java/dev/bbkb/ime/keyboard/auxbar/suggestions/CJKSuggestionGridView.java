@@ -35,20 +35,20 @@ public final class CJKSuggestionGridView extends RelativeLayout {
 
     
     public interface Listener {
+        /** @param suggestedWordInfoVar the tapped candidate */
         void onCjkSuggestionSelected(SuggestedWords.SuggestedWordInfo suggestedWordInfoVar);
     }
 
     
     private class GridAdapter extends CJKSuggestionsAdapter {
+        /** @param c0666ac the initial words */
         GridAdapter(SuggestedWords c0666ac) {
             super(c0666ac);
         }
 
-        // One listener for every word view, reading the list and the position at click time:
-        // a listener per bind allocated one object for each of the 20 to 30 words bound on
-        // every keystroke.
+        // One listener for every word view (reads the position at click time), not one per bind.
         private final View.OnClickListener mWordClick = new View.OnClickListener() {
-            @Override // android.view.View.OnClickListener
+            @Override
             public void onClick(View view2) {
                 SuggestedWords words = getSuggestedWords();
                 Object tag = view2.getTag();
@@ -64,6 +64,10 @@ public final class CJKSuggestionGridView extends RelativeLayout {
             }
         };
 
+        /**
+         * @param bVar the holder to bind
+         * @param i the word's position
+         */
         @Override
         public void onBindViewHolder(CJKSuggestionsAdapter.ViewHolder bVar, int i) {
             final SuggestedWords c0666acD = getSuggestedWords();
@@ -75,15 +79,12 @@ public final class CJKSuggestionGridView extends RelativeLayout {
             }
             textView.setTag(Integer.valueOf(i));
             textView.setOnClickListener(mWordClick);
-            // Sizes are applied to each view's OWN params (they used to share one freshly
-            // allocated LinearLayout.LayoutParams instance, which also replaced the item's
-            // RecyclerView.LayoutParams) and only when they actually differ.
+            // Each view's own params, changed only when they differ.
             applySize(view, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
             applySize(textView, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
             textView.setTextColor(CJKSuggestionGridView.this.getResources().getColor(R.color.suggested_word_dark));
             String strMo4284a = (c0666acD == null || c0666acD.isEmpty()) ? null : c0666acD.getWord(i);
-            // Always reset to the holder's base size first: the shrink below used to multiply
-            // into the RECYCLED view's current size, so one long word shrank the grid for good.
+            // Reset to the base size first, or the shrink below compounds on a recycled view.
             textView.setTextSize(TypedValue.COMPLEX_UNIT_PX, bVar.mBaseTextSizePx);
             if (strMo4284a != null && strMo4284a.length() > 18) {
                 TextPaint paint = textView.getPaint();
@@ -105,6 +106,7 @@ public final class CJKSuggestionGridView extends RelativeLayout {
             target.setLayoutParams(params);
         }
 
+        /** @param i the word's position */
         public int getSpanSize(int i) {
             SuggestedWords c0666acD = getSuggestedWords();
             if (c0666acD.isEmpty()) {
@@ -128,11 +130,12 @@ public final class CJKSuggestionGridView extends RelativeLayout {
 
         private final int mSpacing;
 
+        /** @param i the vertical spacing in px */
         public SpacingItemDecoration(int i) {
             this.mSpacing = i;
         }
 
-        @Override // androidx.recyclerview.widget.RecyclerView.ItemDecoration
+        @Override
         public void getItemOffsets(Rect rect, View view, RecyclerView recyclerView, RecyclerView.State state) {
             int i = this.mSpacing;
             rect.top = i;
@@ -144,6 +147,7 @@ public final class CJKSuggestionGridView extends RelativeLayout {
         this(context, attributeSet, 0);
     }
 
+    /** @param i the default style attribute */
     public CJKSuggestionGridView(Context context, AttributeSet attributeSet, int i) throws Resources.NotFoundException {
         super(context, attributeSet, i);
         this.mMinHeight = (int) getResources().getDimension(R.dimen.config_cjk_suggestions_grid_min_height);
@@ -153,13 +157,14 @@ public final class CJKSuggestionGridView extends RelativeLayout {
         final GridAdapter c0816a = new GridAdapter(SuggestedWords.EMPTY);
         this.mRecyclerView.addItemDecoration(new SpacingItemDecoration(getResources().getDimensionPixelSize(R.dimen.config_cjk_grid_vertical_margin)));
         this.mRecyclerView.setAdapter(c0816a);
-        // A page of the 5-column grid binds 20 to 30 words; the default pool of 5 meant 15 to 25
-        // inflations per keystroke. No animator: ranged updates would otherwise cross-fade.
+        // A page binds 20 to 30 words; the default pool of 5 inflates per keystroke. No animator:
+        // ranged updates would otherwise cross-fade.
         this.mRecyclerView.getRecycledViewPool().setMaxRecycledViews(0, 32);
         this.mRecyclerView.setItemAnimator(null);
         GridLayoutManager gridLayoutManager = new GridLayoutManager(context, 5);
         gridLayoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
-            @Override // androidx.recyclerview.widget.GridLayoutManager.SpanSizeLookup
+            @Override
+            /** @param i2 the word's position */
             public int getSpanSize(int i2) {
                 return c0816a.getSpanSize(i2);
             }
@@ -168,6 +173,7 @@ public final class CJKSuggestionGridView extends RelativeLayout {
         setVisible(false);
     }
 
+    /** @param z true to show the grid */
     public void setVisible(boolean z) {
         setVisibility(z ? View.VISIBLE : View.GONE);
     }
@@ -176,13 +182,13 @@ public final class CJKSuggestionGridView extends RelativeLayout {
         return getVisibility() == View.VISIBLE;
     }
 
+    /** @param c0666ac the words to show */
     public void setSuggestions(SuggestedWords c0666ac) {
         GridAdapter c0816a = (GridAdapter) this.mRecyclerView.getAdapter();
         int oldCount = c0816a.getItemCount();
         c0816a.setSuggestedWords(c0666ac);
         int newCount = c0816a.getItemCount();
-        // Ranged notifications rebind the views in place; notifyDataSetChanged detached and
-        // re-attached every one of them.
+        // Ranged notifications rebind in place; notifyDataSetChanged re-attaches every view.
         int common = Math.min(oldCount, newCount);
         if (common > 0) {
             c0816a.notifyItemRangeChanged(0, common);
@@ -195,17 +201,22 @@ public final class CJKSuggestionGridView extends RelativeLayout {
         this.mRecyclerView.scrollToPosition(0);
     }
 
+    /** @param interfaceC0817b receives tapped candidates */
     public void setListener(Listener interfaceC0817b) {
         this.mListener = interfaceC0817b;
     }
 
+    /** @param i the height in px (at least the minimum) */
     public void setVisibleHeight(int i) {
         this.mVisibleHeight = Math.max(i, this.mMinHeight);
     }
 
-    @Override // android.widget.RelativeLayout, android.view.View
+    /**
+     * @param i the width measure spec
+     * @param i2 the height measure spec (ignored)
+     */
+    @Override
     public void onMeasure(int i, int i2) {
-        // getSize(i): `i` is the width MeasureSpec (a packed mode+size int), not a width.
         setMeasuredDimension(View.MeasureSpec.getSize(i), this.mVisibleHeight);
         super.onMeasure(View.MeasureSpec.makeMeasureSpec(getMeasuredWidth(), View.MeasureSpec.EXACTLY), View.MeasureSpec.makeMeasureSpec(getMeasuredHeight(), View.MeasureSpec.EXACTLY));
     }

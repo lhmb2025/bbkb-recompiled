@@ -20,10 +20,7 @@ import org.robolectric.Shadows.shadowOf
 import org.robolectric.annotation.Config
 import java.util.Locale
 
-/**
- * Executable proof for the engine-boundary and lifecycle findings closed in this pass
- * (docs/2026-07_pipeline-audit-findings_reference.md): `EB-1`, `EB-5`, `LC-8`.
- */
+/** Engine-boundary and lifecycle invariants: gesture-pending consume, per-engine shift reset, cursor monitoring. */
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [34], manifest = Config.NONE, instrumentedPackages = ["com.blackberry.nuanceshim"])
 class EngineBoundaryFixesTest {
@@ -33,16 +30,10 @@ class EngineBoundaryFixesTest {
     @Before fun setUp() { h = PipelineHarness() }
     @After fun tearDown() { h.close() }
 
-    // ── EB-1: the gesturePending flag must not leak ──────────────────────────────
-
     @Test
     fun eb1_emptyBatchResult_stillConsumesGesturePending() {
-        // THE defect. gesturePending is set on every accepted touchEnd and used to be consumed
-        // only on the words.size() > 0 branch. A swipe that produced nothing — a garbage swipe, or
-        // one in a field where predictions got disabled — therefore left the flag set forever, and
-        // every later empty-composing request then skipped BOTH setContextBuffer and the bridge's
-        // defensive clear(), silently dropping sentence context from next-word predictions until a
-        // successful gesture or a process restart.
+        // A swipe with no words must still consume gesturePending; a stuck flag makes every
+        // empty-composing request skip setContextBuffer and the bridge's clear(), dropping context.
         h.enableStatefulGesturePending()
         NuanceSDKManager.noteGestureDeposit()
 
@@ -55,19 +46,13 @@ class EngineBoundaryFixesTest {
         )
     }
 
-    // Coverage limit: the words.size() > 0 branch is NOT covered here. It calls
-    // commitGestureSuggestion, which needs a real SettingsManager and KeyboardSwitcher, neither
-    // of which this harness builds. The hoist is above the size check so both branches share the
-    // consume, but only the empty branch is executable-tested.
-
-    // ── EB-5: clearAll must reset ITS OWN engine, not the process singleton ──────
+    // Coverage limit: the words.size() > 0 branch needs a real SettingsManager and
+    // KeyboardSwitcher; the consume sits above the size check so both branches share it.
 
     @Test
     fun eb5_clearAll_resetsShiftOnTheInjectedEngineOnly() {
-        // The spell-checker runs in this process on a tracker wrapping the SECONDARY engine.
-        // clearAll() used to write shift state through NuanceSDKManager.getInstance() — the
-        // PRIMARY engine — so every spell-check zeroed the IME's shift state from an IPC thread
-        // while leaving the secondary's untouched.
+        // The spell checker's tracker wraps the secondary engine; clearAll() must reset shift
+        // there, not on the IME's primary engine (from an IPC thread).
         val secondary = mock(NuanceSDK::class.java)
         `when`(secondary.primaryLanguage).thenReturn(Locale.US)
         val primary = NuanceSDKManager.getInstance()!!   // the harness always stubs this
@@ -79,17 +64,10 @@ class EngineBoundaryFixesTest {
         verify(primary, never()).setShiftState(0)
     }
 
-    // ── LC-8: cursor-anchor monitoring must be requested per editor ──────────────
-
     @Test
     fun lc8_cursorUpdatesAreRequestedAgainstTheLiveConnection() {
-        // NOTE ON WHAT THIS DOES AND DOES NOT PROVE. requestCursorUpdates was always issued
-        // here, in resetInputState — the LC-8 defect is that the PKB start-input branch SKIPS
-        // resetInputState entirely, so on a KEY2 no editor reached through that path ever got
-        // cursor-anchor monitoring. The fix adds the call to that branch in
-        // InputSessionCoordinator, which needs a real IME this harness cannot build. So this test
-        // pins the invariant (a reset connection gets monitoring requested) and would catch its
-        // removal, but it does NOT cover the PKB branch. That half stays device-verified only.
+        // Pins only that resetInputState requests cursor updates. The PKB start-input branch skips
+        // resetInputState and makes its own call in InputSessionCoordinator, not testable here.
         h.startSession("hello", 5)
         h.editor.callLog.clear()
 

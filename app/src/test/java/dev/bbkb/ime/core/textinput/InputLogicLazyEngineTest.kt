@@ -21,10 +21,8 @@ import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
 
 /**
- * Audit P-6: [InputLogic] is built by BlackBerryIME's field initialiser, before onCreate, and its
- * constructor used to call [NuanceSDKManager.getInstance], which loads the native library and runs
- * the engine's init on the main thread. Constructing it must not reach the engine at all; the
- * engine is resolved at its first real use.
+ * [InputLogic] is built by BlackBerryIME's field initialiser, before onCreate, so constructing it
+ * must not reach [NuanceSDKManager] (native load + engine init on main); the engine resolves at first use.
  */
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [34], manifest = Config.NONE, instrumentedPackages = ["com.blackberry.nuanceshim"])
@@ -38,8 +36,8 @@ class InputLogicLazyEngineTest {
         engine = mock(NuanceSDK::class.java)
         sdkStatic = mockStatic(NuanceSDKManager::class.java)
         sdkStatic.`when`<NuanceSDK> { NuanceSDKManager.getInstance() }.thenReturn(engine)
-        // The tracker's engine calls are posted ops (Wave 3 Phase A) that resolve the engine
-        // inside the op; run them inline so the resolution is observable here.
+        // The tracker's engine calls are posted ops that resolve the engine inside the op; run them
+        // inline so the resolution is observable here.
         EngineThreads.setInlineForTests(true)
     }
 

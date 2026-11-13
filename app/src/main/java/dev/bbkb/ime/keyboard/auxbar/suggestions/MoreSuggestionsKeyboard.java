@@ -36,11 +36,7 @@ public final class MoreSuggestionsKeyboard extends Keyboard {
 
         public int mDividerWidth;
 
-        /**
-         * Column divider for the more-suggestions popup, themed. The sized fill()
-         * overload is required: mDividerWidth reads getIntrinsicWidth() and feeds the
-         * column layout maths.
-         */
+        /** The sized fill() overload is required: mDividerWidth reads getIntrinsicWidth() for the layout maths. */
         private static Drawable makeDivider(Resources resources) {
             final int widthPx = Math.max(1,
                     Math.round(resources.getDisplayMetrics().density));
@@ -60,6 +56,14 @@ public final class MoreSuggestionsKeyboard extends Keyboard {
 
         private int mNumRows;
 
+        /**
+         * @param c0666ac the words
+         * @param i the first word index
+         * @param i2 the maximum width
+         * @param i3 the minimum width
+         * @param i4 the maximum number of rows
+         * @return how many words were laid out
+         */
         public int layout(SuggestedWords c0666ac, int i, int i2, int i3, int i4, Paint paint, Resources resources) throws Resources.NotFoundException {
             String strMo4286b;
             clearKeys();
@@ -104,6 +108,11 @@ public final class MoreSuggestionsKeyboard extends Keyboard {
             return i5 - i;
         }
 
+        /**
+         * @param i the first word index
+         * @param i2 the end word index (exclusive)
+         * @param i3 the column width
+         */
         private boolean fitInWidth(int i, int i2, int i3) {
             while (i < i2) {
                 if (this.mWidths[i] > i3) {
@@ -114,6 +123,10 @@ public final class MoreSuggestionsKeyboard extends Keyboard {
             return true;
         }
 
+        /**
+         * @param i the first word index
+         * @param i2 the end word index (exclusive)
+         */
         private int calculateMaxColumnWidth(int i, int i2) {
             int i3 = i;
             int iMax = 0;
@@ -129,6 +142,7 @@ public final class MoreSuggestionsKeyboard extends Keyboard {
             return iMax;
         }
 
+        /** @param i the word index (also for the getters below) */
         public int getNumColumnInRow(int i) {
             return this.mNumColumnsInRow[this.mRowNumbers[i]];
         }
@@ -150,6 +164,7 @@ public final class MoreSuggestionsKeyboard extends Keyboard {
             return (this.mOccupiedWidth - (this.mDividerWidth * (iM5342a - 1))) / iM5342a;
         }
 
+        /** @param i the word index */
         public void markAsEdgeKey(Key key, int i) {
             int i2 = this.mRowNumbers[i];
             if (i2 == 0) {
@@ -169,6 +184,10 @@ public final class MoreSuggestionsKeyboard extends Keyboard {
         }
     }
 
+    /**
+     * @param c0666ac the words
+     * @param i the word index
+     */
     static boolean isAutoCorrectionIndex(SuggestedWords c0666ac, int i) {
         return c0666ac.mWillAutoCorrect && i == 1;
     }
@@ -189,6 +208,14 @@ public final class MoreSuggestionsKeyboard extends Keyboard {
             this.mPaneView = moreSuggestionsView;
         }
 
+        /**
+         * @param c0666ac the words
+         * @param i the first word index
+         * @param i2 the maximum width
+         * @param i3 the minimum width
+         * @param i4 the maximum number of rows
+         * @param c0965e the keyboard the pane opens over
+         */
         public Builder layout(SuggestedWords c0666ac, int i, int i2, int i3, int i4, Keyboard c0965e) throws Resources.NotFoundException {
             load(R.xml.kbd_suggestions_pane_template, c0965e.mId);
             MoreSuggestionsParam dVar = (MoreSuggestionsParam) this.mParams;
@@ -204,7 +231,7 @@ public final class MoreSuggestionsKeyboard extends Keyboard {
             return this;
         }
 
-        @Override // dev.bbkb.ime.keyboard.internal.KeyboardXMLParser
+        @Override
         public MoreSuggestionsKeyboard build() {
             String strMo4286b;
             MoreSuggestionsParam dVar = (MoreSuggestionsParam) this.mParams;
@@ -212,9 +239,7 @@ public final class MoreSuggestionsKeyboard extends Keyboard {
                 int iM5346c = dVar.getX(i);
                 int iM5347d = dVar.getY(i);
                 int iM5348e = dVar.getWidth(i);
-                // UT-18: the auto-correction index shows the word at 0, not at i. The second
-                // MoreSuggestionKey argument used to be SuggestedWords.getAutoCorrectWord(),
-                // which was a constant null on both branches; it is gone with the method.
+                // The auto-correction index shows the word at 0, not at i.
                 strMo4286b = MoreSuggestionsKeyboard.isAutoCorrectionIndex(this.mSuggestedWords, i)
                         ? this.mSuggestedWords.getWordForDisplay(0)
                         : this.mSuggestedWords.getWordForDisplay(i);
@@ -234,6 +259,11 @@ public final class MoreSuggestionsKeyboard extends Keyboard {
 
         public final int mSuggestedWordIndex;
 
+        /**
+         * @param str the word shown
+         * @param i the word index
+         * @param dVar the pane's layout params
+         */
         public MoreSuggestionKey(String str, int i, MoreSuggestionsParam dVar) {
             super(new MoreKeySpec(str, 0, -4, str), MoreKeySpec.getEmpty(), KeyHintPosition.HIDDEN, null, 0, 1, dVar.getX(i), dVar.getY(i), dVar.getWidth(i), dVar.mDefaultRowHeight, dVar.mHorizontalGap, dVar.mVerticalGap, null, null, null, 0, 2, -1);
             this.mSuggestedWordIndex = i;
@@ -245,12 +275,23 @@ public final class MoreSuggestionsKeyboard extends Keyboard {
 
         private final Drawable mDivider;
 
+        /**
+         * @param c1025ah the pane's layout params
+         * @param i x
+         * @param i2 y
+         * @param i3 width
+         * @param i4 height
+         */
         public MoreSuggestionDivider(KeyboardParams c1025ah, Drawable drawable, int i, int i2, int i3, int i4) {
             super(c1025ah, i, i2, i3, i4);
             this.mDivider = drawable;
         }
 
-        @Override // dev.bbkb.ime.keyboard.Key
+        /**
+         * @param c1024ag unused
+         * @param i unused
+         */
+        @Override
         public Drawable getIcon(KeyboardIconSet c1024ag, int i) {
             this.mDivider.setAlpha(128);
             return this.mDivider;

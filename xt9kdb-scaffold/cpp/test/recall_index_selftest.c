@@ -1,12 +1,6 @@
-/* recall_index_selftest.c — the owned-recall (first,last)-letter index: the live O(N) counting-sort
- * builder must reproduce the original O(26*26*N) reference builder byte for byte, and the
- * comparison must be able to fail (negative control flips one reference entry).
- *
- * Why this exists: the reference build ran on the main thread inside the FIRST gesture of every
- * IME process (touchEnd -> ProcessTrace(OWNED) -> rc_recall), ~160 ms on the emulator and 1-2 s
- * on the KEY2 — the "first swipe takes seconds to commit" bug. The recall loop depends on the
- * per-bucket order (survivor cap + equal-score tie-break), so equality here is the whole safety
- * argument for the rewrite.
+/* recall_index_selftest.c: the O(N) counting-sort (first,last)-letter recall index must match the
+ * O(26*26*N) reference builder byte for byte, since recall depends on per-bucket order (survivor
+ * cap, equal-score tie-break). Negative control flips one reference entry.
  *
  * Build:  cc -std=c11 -Iinclude src/kdb_*.c test/recall_index_selftest.c -lm -o recall_index_selftest
  * Run:    ./recall_index_selftest          (no KDB needed; pure table work)

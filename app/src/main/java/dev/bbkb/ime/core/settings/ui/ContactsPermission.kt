@@ -28,13 +28,8 @@ import dev.bbkb.ime.R
 private const val INSTANT_DENIAL_MS = 400L
 
 /**
- * The contacts permission as a switch asks for it, the way Google's own apps do: there is no
- * separate permission row. Turning a contacts switch on calls [request]; Android's own dialog
- * answers, and [granted] follows (it is also re-read when the screen resumes, so a grant made in
- * Android's app settings shows up on return).
- *
- * Once Android has stopped asking (the user said no twice, or "Don't ask again"), [request]
- * shows a short dialog instead that explains it and opens BBKB's page in Android's settings.
+ * Contacts permission requested from a switch, no separate permission row. [granted] is re-read
+ * on resume. Once Android stops asking, [request] shows a dialog that opens the app's settings page.
  */
 class ContactsPermissionState internal constructor(
     granted: Boolean,
@@ -54,9 +49,7 @@ fun rememberContactsPermission(onResult: (Boolean) -> Unit): ContactsPermissionS
     lateinit var state: ContactsPermissionState
     val launcher = rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) { ok ->
         state.granted = ok
-        // Android answers "no" at once, without showing its dialog, only once it has stopped
-        // asking. A "no" the user gave in the dialog takes longer than this, and so does backing
-        // out of it, so neither is mistaken for that.
+        // An instant "no" means Android no longer shows its dialog; a real answer or backing out takes longer.
         val instant = SystemClock.elapsedRealtime() - askedAt[0] < INSTANT_DENIAL_MS
         if (!ok && instant) showBlocked = true
         onResult(ok)

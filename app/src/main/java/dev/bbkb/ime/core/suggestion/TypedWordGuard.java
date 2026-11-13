@@ -6,27 +6,11 @@ import java.text.Normalizer;
 import java.util.Locale;
 
 /**
- * The rule that a word the dictionary knows is never replaced on space ("autocorrect should not
- * correct if the typed word matches an XT9 result" — owner, 2026-10-12).
- *
- * <p>The engine's ranking can put a correction above an exact, valid typed word once the learned
- * model has boosted that correction: about → bout and this → his on the owner's KEY2, doing →
- * Doping and dnt over don't before that (four poisoning events, see the DLM-poisoning notes). The
- * commit decision in {@link SuggestionEngine} follows the ranking, so it needs a validity check of
- * its own. This class answers one question for it: given that the typed word IS valid, may the
- * proposed correction still replace it?
- *
- * <p>Only when the correction is the same word in different dress:
- * <ul>
- *   <li>case or diacritics only (cafe → café, paris → Paris);</li>
- *   <li>apostrophes inserted (cant → can't, wont → won't) — and then only when the contracted
- *       form is the more common one. "well" and "were" outrank "we'll" and "we're" in the LDB,
- *       so they stay as typed; "cant" and "wont" are not dictionary words at all, so the table
- *       knows only the contraction and the correction goes through. A tie protects the typed
- *       word (its → it's). Frequencies come from the owned decoder's English LDB table; for
- *       other languages, or when either spelling is missing from the table, an apostrophe-only
- *       correction is allowed and the engine's pick stands.</li>
- * </ul>
+ * A word the dictionary knows is never replaced on space, even when the learned model ranks a
+ * correction above it. {@link SuggestionEngine} asks: the typed word is valid, may this correction
+ * still replace it? Only for case or diacritics (paris to Paris), or inserted apostrophes when the
+ * contraction is more common in the English LDB table (cant to can't, but not well to we'll; a tie
+ * keeps the typed word). Other languages, or a spelling the table lacks, let the engine's pick stand.
  */
 public final class TypedWordGuard {
 

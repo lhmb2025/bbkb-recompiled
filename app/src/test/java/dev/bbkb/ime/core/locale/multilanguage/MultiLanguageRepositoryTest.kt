@@ -67,7 +67,8 @@ class MultiLanguageRepositoryTest {
 
     @Test
     fun configAppendedBehindTheRepositorysBackIsSeen() {
-        // The subtype switcher used to append to the pref directly; a cached repository must not drop it.
+        // A write straight to the pref (the subtype switcher can make one) must survive a cached
+        // repository's next save.
         val repository = freshRepository()
         repository.getConfigs()
         MultiLanguageUtils.appendConfigToPrefs(prefs, config("es_ES", "pt_BR"))

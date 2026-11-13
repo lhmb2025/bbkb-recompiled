@@ -62,7 +62,6 @@ class CatalogueDecisionTest(unittest.TestCase):
         self.assertEqual("English (United Kingdom)", decision.name)
         self.assertIsNone(decision.group)
 
-    # -- the skips ---------------------------------------------------------
 
     def test_the_seven_unsupported_languages_are_refused_with_a_reason(self):
         refused = [d for d in self.decisions if d.status == catalogue.REFUSED]
@@ -77,7 +76,6 @@ class CatalogueDecisionTest(unittest.TestCase):
         self.assertEqual([], [d.file_name for d in self.decisions
                               if d.status == catalogue.DUPLICATE])
 
-    # -- the table-locale overrides ----------------------------------------
 
     def test_the_four_override_files_are_published_under_the_tables_locale(self):
         expected = {
@@ -104,7 +102,7 @@ class CatalogueDecisionTest(unittest.TestCase):
             self.assertIn("not the filename", decision.reason)
 
     def test_the_base_language_packs_keep_their_own_locales(self):
-        # The point of the overrides: the four no longer collide with these.
+        # The overrides keep the four from colliding with these.
         for file_name, locale in (
                 ("Blackberry_1305_r1-76_ENubUN_xt9_ALM3.ldb", "en"),
                 ("Blackberry_1305_r1-28_ESusUN_xt9_ALM3.ldb", "es"),
@@ -115,10 +113,9 @@ class CatalogueDecisionTest(unittest.TestCase):
             self.assertFalse(decision.overridden, file_name)
 
     def test_an_override_the_engine_table_lacks_is_ignored(self):
-        # The guard that keeps the map honest: with es_419 gone from the table,
-        # the latam pack falls back to its parsed locale and loses to plain
-        # Spanish again, rather than being published under a locale that
-        # cannot load.
+        # With es_419 gone from the table, the latam pack falls back to its
+        # parsed locale and loses to plain Spanish instead of publishing under
+        # a locale that cannot load.
         trimmed = EngineTable([e for e in self.table.entries
                                if not (e["language"] == "es" and e.get("country") == "419")])
         decisions = catalogue.classify_names(
@@ -130,8 +127,8 @@ class CatalogueDecisionTest(unittest.TestCase):
         self.assertEqual(catalogue.DUPLICATE, latam.status)
 
     def test_two_files_claiming_one_locale_are_still_settled_by_rank(self):
-        # No such pair remains in the real catalogue, but `resolve` must keep
-        # working: a second Afrikaans pack loses to the one the table names.
+        # Not in the real catalogue: a second Afrikaans pack loses to the one
+        # the table names.
         names = ["Blackberry_1305_r1-2_AFlsUN_xt9_ALM3.ldb",
                  "Blackberry_1305_r9-9_AFlsUN_xt9_ALM3.ldb"]
         decisions = dict((d.file_name, d) for d in catalogue.classify_names(names, self.table))
@@ -142,15 +139,13 @@ class CatalogueDecisionTest(unittest.TestCase):
         self.assertIn("Blackberry_1305_r1-2_AFlsUN_xt9_ALM3.ldb", loser.reason)
 
     def test_a_locale_absent_from_the_engine_table_is_unsupported(self):
-        # Exercised with a trimmed table rather than a fabricated filename: the
-        # catalogue happens to contain no file whose language parses cleanly but
-        # is missing from the table, and that must stay a handled case.
+        # A trimmed table, since no real file parses cleanly but is missing
+        # from the table.
         trimmed = EngineTable([e for e in self.table.entries if e["language"] != "af"])
         decisions = catalogue.classify_names(["Blackberry_1305_r1-2_AFlsUN_xt9_ALM3.ldb"], trimmed)
         self.assertEqual(catalogue.UNSUPPORTED, decisions[0].status)
         self.assertIn("'af' is not in the engine's 104-entry locale table", decisions[0].reason)
 
-    # -- the manifest item -------------------------------------------------
 
     def test_a_published_item_has_exactly_the_contracted_fields(self):
         decision = self.by_name["Blackberry_1305_r1-2_AFlsUN_xt9_ALM3.ldb"]

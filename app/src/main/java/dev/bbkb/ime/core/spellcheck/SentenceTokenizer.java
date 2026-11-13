@@ -19,7 +19,6 @@ public class SentenceTokenizer {
 
     private static final SuggestionsInfo EMPTY_SUGGESTIONS_INFO = new SuggestionsInfo(0, null);
 
-    /** The session's language: words are split by its rules. */
     private final Locale mLocale;
 
     private static class EmptyResultHolder {
@@ -35,19 +34,15 @@ public class SentenceTokenizer {
         this.mLocale = locale;
     }
 
-    /**
-     * Splits by the session's language. The engine's first language used to decide, and the
-     * engine can hold several sessions' languages, with another session's first.
-     */
+    /** Splits by the session's language: the engine may hold another session's language first. */
     public SentenceTextInfoParams tokenize(TextInfo textInfo) {
         Locale locale = this.mLocale != null ? this.mLocale : enginePrimaryLanguage();
         return new BlackBerryTokenizer(locale).split(textInfo);
     }
 
     /**
-     * The spell checker engine's first language, from its published facts (no engine call). Only
-     * when there is no engine yet is one created, on the engine loader thread, with this binder
-     * thread waiting for it, bounded; English, as the engine's own fallback, if that fails.
+     * The engine's first language from its facts (no engine call); with no engine yet, creates one
+     * on the loader thread with a bounded wait. English (the engine's own fallback) if that fails.
      */
     private static Locale enginePrimaryLanguage() {
         final com.blackberry.nuanceshim.NuanceSDK engine = NuanceSDKManager.peekSecondary();

@@ -19,14 +19,9 @@ import dev.bbkb.ime.core.settings.ui.EditTextPreference
 import dev.bbkb.ime.core.settings.ui.SettingsScreenHost
 
 /**
- * One slideboard quick phrase.
- *
- * [prefKey] is formed here and nowhere else, so the row that reads a phrase is by construction the
- * row that writes it. These keys are persisted user state — `SettingsValues` reads them back by
- * name to fill the slideboard — so they move verbatim or not at all.
- *
- * [defaultRes] is what this screen shows for an unset key: the same `R.string.pref_quick_phrase_N_default`
- * that `SettingsValues` falls back to, so the phrase shown here is the phrase the slideboard inserts.
+ * One slideboard quick phrase. [prefKey] is formed only here; the keys are persisted user state
+ * that `SettingsValues` reads by name, so never rename them. [defaultRes] is the same fallback
+ * `SettingsValues` uses.
  */
 private class QuickPhrase(
     index: Int,
@@ -46,24 +41,18 @@ private val QUICK_PHRASES = listOf(
 )
 
 /**
- * The five phrase keys in the order this screen lists them — what a layouts export and import
- * (`LayoutsBundle`) read and write, so the keys are still formed only here.
+ * The phrase keys in screen order, used by `LayoutsBundle` export and import.
  */
 internal val QUICK_PHRASE_KEYS: List<String> get() = QUICK_PHRASES.map { it.prefKey }
 
 /**
- * The five phrases as the slideboard will insert them: the stored value, or the default
- * `SettingsValues` falls back to. Read here so every screen that names a phrase agrees.
+ * The phrases as the slideboard inserts them: stored value, or the `SettingsValues` default.
  */
 internal fun readQuickPhrases(context: Context, prefs: SharedPreferences): List<String> =
     QUICK_PHRASES.map { phrase ->
         context.getString(phrase.defaultRes).let { prefs.getString(phrase.prefKey, it) ?: it }
     }
 
-/**
- * Quick Phrases Screen
- * Configure the 5 customizable quick phrases for slideboard
- */
 @Composable
 fun QuickPhrasesScreen(
     onNavigateBack: () -> Unit
@@ -84,8 +73,7 @@ private fun QuickPhraseRow(prefs: SharedPreferences, phrase: QuickPhrase) {
         mutableStateOf(prefs.getString(phrase.prefKey, default) ?: default)
     }
 
-    // The phrase is what the user is looking for, so it is the row's title; the slot's name is
-    // the smaller line and the dialog's heading.
+    // The phrase is the row's title; the slot name is the summary and dialog heading.
     EditTextPreference(
         title = stringResource(phrase.titleRes),
         rowTitle = value,

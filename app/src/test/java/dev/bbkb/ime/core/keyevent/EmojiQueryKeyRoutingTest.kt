@@ -11,10 +11,9 @@ import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
 
 /**
- * Which hardware keys the open emoji board takes for its search query (owner decisions,
- * 2026-11-02): letters, digits, punctuation, Space and Backspace feed the query; Enter, the
- * modifiers, Sym, Back, function and board keys pass through. The processor supplies the resolved
- * key and the converted event; these are the pure rules.
+ * Which hardware keys the open emoji board takes for its search query: letters, digits,
+ * punctuation, Space and Backspace feed it; Enter, modifiers, Sym, Back, function and board keys
+ * pass through. Pure rules over the resolved key and converted event.
  */
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [34], manifest = Config.NONE)

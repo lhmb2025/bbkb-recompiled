@@ -5,97 +5,67 @@ import dev.bbkb.ime.BuildConfig
 import dev.bbkb.ime.core.Constants
 
 /**
- * The Ctrl-shortcut / "control mode" state machine, for both surfaces:
- *
- * - **VKB control mode** (soft keys, behind the "Use the ?123 key as the Ctrl key" setting):
- *   holding ?123 (-3) and pressing a letter, Enter or Delete sends the key as a Ctrl chord.
- *   Holding ?123 until its long-press fires (-34, `key_control`) and letting go latches Ctrl for
- *   the next key; the ?123 key reads CTRL while it is armed ([Host.setVkbCtrlLabel]).
- * - **PKB Ctrl** (hardware keys): a physical Ctrl — or anything remapped onto one: a Shift via
- *   the control_mode setting ([remapModifierKeyEvent]), the multifunction key, a profile's Fn
- *   key, or the Alt+Sym shortcut ([tapCtrlFromShortcut]) — works like Shift and Alt: hold it and
- *   press a key for a chord, tap it to turn it on for the next key, double-tap it to lock it on
- *   (when "Double-tap Ctrl to lock" is on), tap it again to turn it off.
- *
- * Both surfaces add Shift to the chord when it is on for the next key or held (Ctrl+Shift+Z);
- * a locked Shift / caps lock does not, so caps lock never turns Ctrl+C into Ctrl+Shift+C.
- *
- * This class owns the state and the decisions only. Everything that touches the editor or the
- * UI goes through [Host], which keeps the machine unit-testable on the plain JVM.
+ * Ctrl state machine for both surfaces. VKB: hold ?123 (-3) and press a letter, Enter or Delete
+ * for a Ctrl chord; hold until the long-press (-34) fires and release to latch Ctrl for one key.
+ * PKB: a physical or remapped Ctrl works like Shift/Alt (hold to chord, tap for next key,
+ * double-tap to lock, tap again to clear). A held or one-shot Shift joins the chord; caps lock does not.
+ * The only Ctrl state owner (`ModifierState` reads [isCtrlActive]); all side effects go through [Host].
  */
 class ControlModeController(private val host: Host) {
 
     interface Host {
-        /** Whether the on-screen ?123-as-Ctrl control mode is enabled in settings. */
         val isVkbControlModeEnabled: Boolean
         /** The control_mode setting: 0 = right Shift acts as Ctrl, 1 = left Shift acts as Ctrl, 2 = off. */
         val controlModeSetting: Int
-        /**
-         * Whether Alt counts as active for character interpretation right now —
-         * `ModifierState.isAltActiveForCharacter`. Read only by [remapMultifunctionCtrlKey], and only
-         * after that method's three early returns, so building a snapshot to answer it costs nothing
-         * on the ordinary key path.
-         */
+        /** `ModifierState.isAltActiveForCharacter`; read only after [remapMultifunctionCtrlKey]'s early returns, to keep the key path cheap. */
         val isAltActiveForCharacter: Boolean
         /**
-         * The device's Ctrl key sends no key-up and auto-repeats while held (the profile's
-         * `fn-no-key-up` quirk; the Titan 2 Elite's Fn). Ctrl is then a one-shot modifier for the
-         * next key, and it can be neither tapped nor double-tapped. False everywhere else.
+         * The Ctrl key sends no key-up and auto-repeats while held (profile quirk `fn-no-key-up`).
+         * Ctrl is then one-shot for the next key, with no tap or double tap.
          */
         val ctrlKeySendsNoKeyUp: Boolean get() = false
-        /** The "Double-tap Ctrl to lock" setting. On by default, like Shift's and Alt's. */
         val isCtrlDoubleTapLockEnabled: Boolean get() = true
-        /** How soon a second Ctrl press must follow the first to be a double tap; Shift's and Alt's window. */
         val ctrlDoubleTapTimeoutMs: Long get() = 600L
-        /**
-         * A physical Alt is on and not yet spent: held, tapped or locked, from the modifier keys'
-         * own state. An Alt already spent on a key (the Alt of an Alt+Sym) does not count.
-         */
+        /** A physical Alt is held, tapped or locked and not yet spent (the Alt of an Alt+Sym is spent). */
         val isPkbAltActiveForChord: Boolean get() = false
-        /** A physical Shift is held or tapped for the next key. A locked Shift (caps lock) is not. */
+        /** A physical Shift is held or tapped for the next key; caps lock does not count. */
         val isPkbShiftActiveForChord: Boolean get() = false
-        /** The on-screen keyboard is shifted by hand for the next key, or Shift is held; not auto-caps or caps lock. */
+        /** The on-screen keyboard is shifted by hand or Shift is held; not auto-caps or caps lock. */
         val isVkbShiftActiveForChord: Boolean get() = false
         fun sendKeyDownWithMeta(keyCode: Int, metaState: Int)
         fun sendKeyUpWithMeta(keyCode: Int, metaState: Int)
-        /** Ctrl was latched on (VKB long-press, or a PKB tap / double tap). */
         fun showControlModeUi()
-        /** Ctrl's latch was dropped. */
         fun hideControlModeUi()
-        /** The PKB Ctrl state ([isCtrlActive] / [isCtrlLocked]) changed; the status icon follows it. */
+        /** [isCtrlActive] or [isCtrlLocked] changed; the status icon follows it. */
         fun onPkbCtrlStateChanged() {}
         /** The on-screen ?123 key should read CTRL ([active]) or its own label again. */
         fun setVkbCtrlLabel(active: Boolean) {}
-        /** A PKB chord was sent for [keyCode]: spend a tapped Shift the way a typed key would. */
+        /** A PKB chord was sent: spend a tapped Shift as a typed key would. */
         fun consumePkbModifiersAfterChord(keyCode: Int) {}
-        /** A VKB chord used the hand-set Shift: return the board to unshifted, as a typed letter would. */
+        /** A VKB chord used the hand-set Shift: unshift the board as a typed letter would. */
         fun consumeVkbShiftAfterChord() {}
     }
 
     companion object {
-        /** META_CTRL_ON | META_CTRL_LEFT_ON */
         const val META_CTRL_LEFT = KeyEvent.META_CTRL_ON or KeyEvent.META_CTRL_LEFT_ON
-        /** META_CTRL_ON | META_CTRL_RIGHT_ON */
         const val META_CTRL_RIGHT = KeyEvent.META_CTRL_ON or KeyEvent.META_CTRL_RIGHT_ON
-        /** META_SHIFT_ON | META_SHIFT_LEFT_ON, added to a chord when Shift is on. */
         private const val META_SHIFT_LEFT = KeyEvent.META_SHIFT_ON or KeyEvent.META_SHIFT_LEFT_ON
         /** Ctrl+Y is delivered as Ctrl+Shift+Z (redo). */
         private const val META_CTRL_SHIFT = META_CTRL_LEFT or KeyEvent.META_SHIFT_ON
 
         /** The ?123 key (`key_switch_alpha_symbol`); held, it is the on-screen Ctrl key. */
         private const val SOFT_TO_SYMBOL = -3
-        /** ?123's long-press code (`key_control`): latches Ctrl for the next key. */
+        /** ?123's long-press code (`key_control`). */
         private const val SOFT_CTRL = -34
         private const val SOFT_SHIFT = -1
         private const val SOFT_DELETE = -5
         private const val SOFT_ENTER = 10
 
-        /** Copy of [keyEvent] with a different key code and meta state; everything else preserved. */
         fun withKeyAndMeta(keyEvent: KeyEvent, keyCode: Int, metaState: Int): KeyEvent =
             KeyEvent(keyEvent.downTime, keyEvent.eventTime, keyEvent.action, keyCode, keyEvent.repeatCount,
                 metaState, keyEvent.deviceId, keyEvent.scanCode, keyEvent.flags, keyEvent.source)
 
-        /** The hardware key code for a printable code point: KEYCODE_A..Z for ASCII letters, otherwise KeyEvent.keyCodeFromString (digits resolve, symbols become KEYCODE_UNKNOWN), exactly as the original charToKeyCode did. */
+        /** KEYCODE_A..Z for ASCII letters, else KeyEvent.keyCodeFromString (digits resolve, symbols give KEYCODE_UNKNOWN). */
         fun keyCodeForChar(codePoint: Int): Int {
             val lower = Character.toLowerCase(codePoint)
             if (lower in 'a'.code..'z'.code) return KeyEvent.KEYCODE_A + (lower - 'a'.code)
@@ -115,30 +85,19 @@ class ControlModeController(private val host: Host) {
         }
     }
 
-    // ---- VKB (soft key) state
-    /** ?123 is held down. */
     private var toSymbolHeld = false
-    /** ?123's long-press fired during this hold; letting go of ?123 latches Ctrl. */
+    /** ?123's long-press fired during this hold; releasing ?123 latches Ctrl. */
     private var ctrlLongPressFired = false
-    /** Ctrl is latched for the next on-screen key. */
     private var vkbLatched = false
     /** A chord was typed while ?123 was held, so its release must not latch. */
     private var chordedWhileToSymbolHeld = false
-    /**
-     * This press of ?123 (reading CTRL) only turned the latch off: the key's code input and its
-     * release are swallowed too, so the tap does not also switch to the symbols.
-     */
+    /** This ?123 press only cleared the latch: its code input and release are swallowed so it does not open symbols. */
     private var cancelTapInProgress = false
-    /** An on-screen chord that went down and whose release is still owed. */
     private class SoftChord(val sendCode: Int, val meta: Int, val usedShift: Boolean)
-    /**
-     * Owed on-screen chords by Android key code — not by the key's code point, because Shift can
-     * change the case of the key between its press and its release.
-     */
+    /** Owed chord releases, keyed by Android key code (Shift may change the code point between press and release). */
     private val softChords = HashMap<Int, SoftChord>()
     private var vkbLabelShown = false
 
-    // ---- PKB (hardware Ctrl) state
     private enum class Latch { OFF, ONE_SHOT, LOCKED }
     private var latch = Latch.OFF
     private var ctrlKeyDown = false
@@ -148,61 +107,39 @@ class ControlModeController(private val host: Host) {
     private var latchAtPress = Latch.OFF
     /** This press is the second of a double tap; its release locks (or, lock off, clears). */
     private var doubleTapPending = false
-    /** When the first press of a possible double tap went down. */
     private var firstTapDownTime = Long.MIN_VALUE
-    /** Hardware chords that went down and whose key-up is still owed, by key code. */
+    /** Hardware chords whose key-up is still owed, by key code. */
     private val hardChords = HashMap<Int, Pair<Int, Int>>()
-    /** Keys whose down this class swallowed (Space with Ctrl on); their key-up is swallowed too. */
+    /** Keys whose down was swallowed (Space with Ctrl on); their key-up is swallowed too. */
     private val swallowedKeys = HashSet<Int>()
 
-    /**
-     * True while the device's MULTIFUNCTION key is held down remapped as Ctrl, so its key-up is
-     * remapped consistently even if the Alt state changed mid-hold.
-     *
-     * <p>Phase 1f moved this here from `BlackBerryIME`, which was the last piece of Ctrl state
-     * outside this class. It was never anything but Ctrl state — the flag that says "this key is
-     * currently a Ctrl key" — and keeping it next to the machine that answers [isCtrlActive] is what
-     * makes this class the single Ctrl owner that `ModifierState.isCtrlActive()` reads from.
-     */
+    /** The MULTIFUNCTION key is held as Ctrl, so its key-up is remapped too even if Alt changed mid-hold. */
     private var multifunctionCtrlDown = false
 
     /**
-     * `fn-no-key-up` devices only: the one-shot Ctrl of the current Fn hold has been spent on a
-     * chord, so the hold's remaining repeats must not arm it again. Cleared by a fresh Ctrl press
-     * (repeat 0) or by a plain key typed without Ctrl, which means the hold is over.
+     * `fn-no-key-up` only: this Fn hold's one-shot Ctrl was spent, so its remaining repeats must not
+     * re-arm it. Cleared by a fresh press (repeat 0) or a plain key typed without Ctrl.
      */
     private var oneShotCtrlSpent = false
 
-    /** True while ?123 is held as the on-screen Ctrl key (not the latched mode). */
+    /** ?123 is held as the on-screen Ctrl key (not latched). */
     val isVkbShiftChordActive: Boolean get() = toSymbolHeld && !vkbLatched
 
-    /** On-screen Ctrl is on: ?123 held, or latched for the next key. */
     private val isVkbCtrlActive: Boolean get() = toSymbolHeld || vkbLatched
 
     /** PKB Ctrl is latched (on for the next key, or locked). */
     val isInCtrlMode: Boolean get() = latch != Latch.OFF
 
     /**
-     * **The one Ctrl question.** True while a physical Ctrl key is held or Ctrl is latched (on for
-     * the next key, or locked) — this class owns both, and nothing else in the app keeps Ctrl state
-     * of its own: the span tracker's "CTRL_SPAN" is really the Sym key (key code 63,
-     * `META_SYM_ON`), and [multifunctionCtrlDown] lives here too.
-     * `dev.bbkb.ime.core.keyevent.ModifierState` reads Ctrl from here through
-     * `PhysicalKeyboardStateTracker.setCtrlStateSource`.
-     *
-     * Deliberately not widened to include [multifunctionCtrlDown]: a multifunction key held as Ctrl
-     * arrives at [handleHardKeyDown] as a real `KEYCODE_CTRL_LEFT` (that is what the remap is for)
-     * and sets [ctrlKeyDown] on the way through, so it is already counted.
+     * Physical Ctrl held or latched; `ModifierState` reads it via `PhysicalKeyboardStateTracker.setCtrlStateSource`.
+     * A multifunction key held as Ctrl arrives remapped to `KEYCODE_CTRL_LEFT` and sets [ctrlKeyDown],
+     * so [multifunctionCtrlDown] need not be included. The span tracker's "CTRL_SPAN" is the Sym key.
      */
     val isCtrlActive: Boolean get() = ctrlKeyDown || latch != Latch.OFF
 
-    /** PKB Ctrl is locked on (double tap). */
     val isCtrlLocked: Boolean get() = latch == Latch.LOCKED
 
-    /**
-     * Drop all mode state without the control-mode UI (configuration change). The ?123 label and
-     * the status icon still follow, since they show state that no longer exists.
-     */
+    /** Drop all state without the control-mode UI (configuration change); the ?123 label and status icon still follow. */
     fun resetAll() = notifyingPkb {
         ctrlKeyDown = false
         ctrlUsedWithKey = false
@@ -231,10 +168,7 @@ class ControlModeController(private val host: Host) {
         updateVkbLabel()
     }
 
-    /**
-     * Everything that changes PKB Ctrl goes through here, so the status icon hears about every
-     * change and only about real ones.
-     */
+    /** Every PKB Ctrl change goes through here, so the status icon hears each real change once. */
     private inline fun <T> notifyingPkb(block: () -> T): T {
         val activeBefore = isCtrlActive
         val lockedBefore = isCtrlLocked
@@ -251,13 +185,9 @@ class ControlModeController(private val host: Host) {
         }
     }
 
-    // ------------------------------------------------------------------ VKB (soft keys)
-
     /**
-     * Whether the IME must NOT type [code] for an on-screen key: on-screen Ctrl is on, so the
-     * letter, Enter or Delete already went to the app as a Ctrl chord on press. The original
-     * BlackBerry keyboard made exactly this test before typing; without it Ctrl+A selected
-     * everything and the "a" then replaced it.
+     * True when the IME must not type [code]: it already went out as a Ctrl chord on press
+     * (otherwise Ctrl+A selects all and the "a" then replaces it).
      */
     fun suppressesSoftCodeInput(code: Int): Boolean =
         host.isVkbControlModeEnabled &&
@@ -367,8 +297,6 @@ class ControlModeController(private val host: Host) {
         else -> null
     }
 
-    // ------------------------------------------------------------------ PKB (hardware Ctrl)
-
     fun handleHardKeyDown(keyCode: Int, event: KeyEvent): Boolean =
         handleHardKeyDown(keyCode, event.repeatCount, event.isPrintingKey, event.eventTime)
 
@@ -379,9 +307,8 @@ class ControlModeController(private val host: Host) {
     fun handleHardKeyDown(keyCode: Int, repeatCount: Int, isPrintingKey: Boolean, eventTime: Long = 0L): Boolean = notifyingPkb {
         if (isCtrlKey(keyCode)) {
             if (host.ctrlKeySendsNoKeyUp) {
-                // One-shot Ctrl: armed by the press — or, should the press itself never arrive, by
-                // the first repeat. No tap, no double tap: on this device a repeating Ctrl is just
-                // the Fn key being held.
+                // One-shot Ctrl, armed by the press or (if the press never arrives) the first repeat.
+                // No tap or double tap: a repeating Ctrl here is just Fn being held.
                 if (repeatCount == 0) {
                     oneShotCtrlSpent = false
                     ctrlKeyDown = true
@@ -422,12 +349,10 @@ class ControlModeController(private val host: Host) {
             hardChords[keyCode] = chord
             host.sendKeyDownWithMeta(chord.first, chord.second)
             host.consumePkbModifiersAfterChord(keyCode)
-            // On for the next key: this was it.
             if (latch == Latch.ONE_SHOT) dropLatch()
             return@notifyingPkb true
         }
-        // Any other key (arrows, Tab, Escape...) goes through as it is. It spends a Ctrl that was
-        // on for the next key; a locked Ctrl stays locked.
+        // Other keys (arrows, Tab, Escape) pass through unchanged but spend a one-shot Ctrl.
         if (latch == Latch.ONE_SHOT) dropLatch()
         false
     }
@@ -454,10 +379,7 @@ class ControlModeController(private val host: Host) {
         swallowedKeys.remove(keyCode)
     }
 
-    /**
-     * The Alt+Sym shortcut set to Ctrl: one Alt+Sym is one tap of a Ctrl key, so a second one in
-     * the double-tap window locks Ctrl and one more turns it off — exactly what a Ctrl key does.
-     */
+    /** Alt+Sym set to Ctrl: each one is a Ctrl tap, so double-tap lock and tap-to-clear work the same. */
     fun tapCtrlFromShortcut(eventTime: Long) = notifyingPkb {
         if (ctrlKeyDown) return@notifyingPkb
         onCtrlPress(eventTime)
@@ -471,10 +393,9 @@ class ControlModeController(private val host: Host) {
         val window = host.ctrlDoubleTapTimeoutMs
         doubleTapPending = latch == Latch.ONE_SHOT && firstTapDownTime != Long.MIN_VALUE &&
             eventTime - firstTapDownTime in 0..window
-        // A press that is not the second half of a double tap may be the first half of one —
-        // unless it is the tap that turns a locked Ctrl off.
+        // Any other press may start a double tap, except the tap that clears a locked Ctrl.
         firstTapDownTime = if (doubleTapPending || latch == Latch.LOCKED) Long.MIN_VALUE else eventTime
-        // Pressing Ctrl takes it off any latch: while held it is simply held, and the release decides.
+        // While held Ctrl is simply held; the release decides the latch.
         latch = Latch.OFF
     }
 
@@ -500,10 +421,7 @@ class ControlModeController(private val host: Host) {
         host.hideControlModeUi()
     }
 
-    /**
-     * `fn-no-key-up` devices: the chord that used the one-shot Ctrl has ended and no Ctrl
-     * release will ever come, so disarm here instead. A no-op everywhere else.
-     */
+    /** `fn-no-key-up` only: no Ctrl release will come, so disarm when the chord ends. */
     private fun spendOneShotCtrl() {
         if (!host.ctrlKeySendsNoKeyUp || !ctrlKeyDown) return
         ctrlKeyDown = false
@@ -513,30 +431,16 @@ class ControlModeController(private val host: Host) {
 
     private fun isCtrlKey(keyCode: Int) = keyCode == KeyEvent.KEYCODE_CTRL_RIGHT || keyCode == KeyEvent.KEYCODE_CTRL_LEFT
 
-    /** The key and meta a Ctrl+[keyCode] chord goes out as: Ctrl+Y is Ctrl+Shift+Z (redo). */
+    /** Ctrl+Y goes out as Ctrl+Shift+Z (redo). */
     private fun chordFor(keyCode: Int, shift: Boolean): Pair<Int, Int> {
         val shiftMeta = if (shift) META_SHIFT_LEFT else 0
         return if (keyCode == KeyEvent.KEYCODE_Y) Pair(KeyEvent.KEYCODE_Z, META_CTRL_SHIFT or shiftMeta)
         else Pair(keyCode, META_CTRL_LEFT or shiftMeta)
     }
 
-    // ------------------------------------------------------------------ control_mode remap
-
     /**
-     * When the device's MULTIFUNCTION key is configured to act as Ctrl, rewrite its events to
-     * `KEYCODE_CTRL_LEFT` so the physical-Ctrl machinery (chording, Ctrl+C/V/X shortcuts) treats it
-     * as a real Ctrl key — the same trick [remapModifierKeyEvent] uses for Shift. Skipped while Alt
-     * is active at press time so Alt+key can still type the mapping's alt character (e.g. '0' on the
-     * Key2 mic key).
-     *
-     * Phase 1f moved this out of `BlackBerryIME` together with its [multifunctionCtrlDown] latch: it
-     * is a Ctrl decision over Ctrl state, and this class is the Ctrl owner. The Alt question comes
-     * from [Host.isAltActiveForCharacter] — asked only here, and only after the three early returns
-     * below, so the ordinary key path pays nothing for it.
-     *
-     * The Alt check is `ModifierState.isAltActiveForCharacter` rather than the bit test it replaced,
-     * which counts a LOCKED Alt that the old spelling missed; `ModifierReadSiteEquivalenceTest`
-     * records that narrow change and why it is the answer the comment above always described.
+     * A MULTIFUNCTION key set to Ctrl is rewritten to `KEYCODE_CTRL_LEFT`. Skipped when Alt (locked
+     * included) is active at press time, so Alt+key still types its alt character ('0' on the mic key).
      */
     fun remapMultifunctionCtrlKey(event: KeyEvent): KeyEvent {
         val mapping = dev.bbkb.ime.core.device.config.resolver.DeviceInputResolver
@@ -554,11 +458,8 @@ class ControlModeController(private val host: Host) {
     }
 
     /**
-     * A key the device config declares as a Ctrl-like modifier — role `MODIFIER` with
-     * `treatAs="KEYCODE_CTRL_LEFT"` (or `_RIGHT`), the Titan 2's Fn key on scancode 251 — is
-     * rewritten to that Ctrl key code, so the physical-Ctrl machinery treats it as Ctrl whatever key
-     * code the ROM attached to it. Keys already arriving as that Ctrl are left alone, and so is
-     * every key on a device whose config declares no such modifier (the KEY2, the MP01).
+     * A config key with role `MODIFIER` and `treatAs="KEYCODE_CTRL_LEFT"` (or `_RIGHT`), such as the
+     * Titan 2's Fn on scancode 251, is rewritten to that Ctrl key code whatever key code the ROM sends.
      */
     fun remapProfileCtrlKey(event: KeyEvent): KeyEvent {
         val mapping = dev.bbkb.ime.core.device.config.resolver.DeviceInputResolver
@@ -580,10 +481,7 @@ class ControlModeController(private val host: Host) {
         else -> KeyEvent.KEYCODE_CTRL_LEFT
     }
 
-    /**
-     * Rewrite a Shift key (or a Shift-modified key) as the configured Ctrl so the physical-Ctrl
-     * machinery treats it as a real Ctrl key. Returns [keyEvent] unchanged when the setting is off.
-     */
+    /** Rewrite a Shift key (or Shift-modified key) as the configured Ctrl; unchanged when the setting is off. */
     fun remapModifierKeyEvent(keyCode: Int, keyEvent: KeyEvent): KeyEvent {
         val ctrl = controlModifierKey()
         if (keyCode == KeyEvent.KEYCODE_SHIFT_RIGHT && ctrl == KeyEvent.KEYCODE_CTRL_RIGHT) return withKeyAndMeta(keyEvent, KeyEvent.KEYCODE_CTRL_RIGHT, META_CTRL_RIGHT)

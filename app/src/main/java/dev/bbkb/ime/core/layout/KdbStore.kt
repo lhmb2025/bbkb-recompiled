@@ -10,19 +10,11 @@ import java.io.IOException
 import java.security.MessageDigest
 
 /**
- * The engine KDBs the app has built, kept on storage so a keyboard is built once per install, not
- * once per process: the keypad's for a device and a letter layout, the on-screen ones for a drawn
- * keyboard. Each entry is the set of files one engine variant registers.
- *
- * Entries live under `noBackupFilesDir/kdb/<install>/`, where `<install>` names the app's version
- * and install time: everything an entry was built from that ships with the app (geometry files,
- * built-in letter layouts, the build code) can only change with an install, so a new install starts
- * a new folder and the old ones are removed. What can change in between (an imported layout, the
- * drawn letters) is part of each entry's key. At most [MAX_ENTRIES] are kept, the least recently
- * used dropped first.
- *
- * Safe from several threads: an entry is written to a temporary file and renamed into place, so a
- * reader sees a whole entry or none.
+ * Built engine KDBs cached on storage so each is built once per install; an entry is the file set one
+ * engine variant registers. Lives in `noBackupFilesDir/kdb/<version>-<install time>/`: shipped inputs
+ * change only with an install, so older folders are deleted; inputs that change in between (imported
+ * layouts, drawn letters) go into the entry key. LRU-capped at [MAX_ENTRIES]. Thread-safe: entries
+ * are written to a temp file and renamed into place.
  */
 class KdbStore @androidx.annotation.VisibleForTesting internal constructor(private val dir: File) {
 
@@ -65,7 +57,6 @@ class KdbStore @androidx.annotation.VisibleForTesting internal constructor(priva
         }
     }
 
-    /** Whether entry [key] is stored. */
     fun has(key: String): Boolean = File(dir, "$key$SUFFIX").isFile
 
     private fun trim() {

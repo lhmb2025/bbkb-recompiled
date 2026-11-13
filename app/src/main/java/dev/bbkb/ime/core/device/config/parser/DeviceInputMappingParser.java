@@ -25,21 +25,12 @@ import java.util.Locale;
 import java.util.Map;
 
 /**
- * Parser for device input mapping XML configuration.
- *
- * <p>Audit W3-D: the eight hand-written {@code while (ev != END_TAG || !"x".equals(getName()))}
- * loops are now one {@link #children} helper. It keeps the original cursor discipline exactly —
- * advance, dispatch on START_TAG, advance again, terminate on the named END_TAG — so a handler
- * that consumes through its own END_TAG ({@code nextText()}, a nested {@code children}) leaves the
- * parser where the old loops left it. A truncated document throws out to the document-level catch,
- * keeping whatever devices were already parsed, as before -- see {@link #children} for why that
- * throw is explicit rather than left to the parser.
+ * Parser for device input mapping XML. Every element loop goes through {@link #children}; a
+ * truncated document throws out to the document-level catch, keeping devices already parsed.
  */
 public class DeviceInputMappingParser {
 
     private static final String TAG = "DeviceInputMappingParser";
-
-    // ── pull-parser scaffolding ──────────────────────────────────────────────
 
     /** Handler for one START_TAG; {@code name} is the element name. */
     private interface Tag {
@@ -47,19 +38,10 @@ public class DeviceInputMappingParser {
     }
 
     /**
-     * Runs {@code body} for every START_TAG inside the currently-open element named {@code end}.
-     *
-     * <p>The END_DOCUMENT check is load-bearing, not defensive. This loop terminates only on its
-     * own END_TAG, and a document that ends with the element still open never produces one. Whether
-     * that is an exception or an infinite loop then depends on the pull parser: Android's
-     * {@code KXmlParser} keeps returning END_DOCUMENT from {@code next()} rather than throwing, so
-     * without this the loop spins at 100% CPU forever. That is reachable from a user-supplied file
-     * -- {@code CustomDeviceConfigManager.importCustomConfig} accepts any URI, and the imported
-     * config is parsed on IME startup via {@code DeviceProfile.initialize} -- which turns a
-     * truncated XML file into a keyboard that never starts and a flat battery.
-     *
-     * <p>Throwing (rather than returning quietly) is what the callers already expect: each entry
-     * point catches and keeps whatever devices were parsed before the malformed tail.
+     * Runs {@code body} for every START_TAG inside the open element named {@code end}, leaving the
+     * parser on that END_TAG. The END_DOCUMENT check is load-bearing: KXmlParser keeps returning
+     * END_DOCUMENT instead of throwing, so a truncated user-imported config would spin forever at
+     * IME startup. Callers catch the throw and keep what was parsed.
      */
     private static void children(XmlPullParser parser, String end, Tag body)
             throws XmlPullParserException, IOException {
@@ -99,25 +81,12 @@ public class DeviceInputMappingParser {
         try { return Float.parseFloat(v.trim()); } catch (NumberFormatException e) { return def; }
     }
 
-    // ── document entry points ────────────────────────────────────────────────
-
-    /**
-     * Parse the device input mapping configuration from XML.
-     * @param context Application context
-     * @return DeviceInputConfig containing parsed mappings
-     */
     public static DeviceInputConfig parseConfig(Context context) {
         return fromResource(context, dev.bbkb.ime.R.xml.device_input_config,
                 "device KCM mappings");
     }
 
-    /**
-     * Parse device input configuration from an XML resource.
-     * Used for loading preloaded configuration files from res/xml/.
-     * @param context Application context
-     * @param resId Resource ID of the XML file
-     * @return DeviceInputConfig containing parsed mappings
-     */
+    /** Parses a preloaded config from res/xml/. */
     public static DeviceInputConfig parseConfigFromXmlResource(Context context, int resId) {
         return fromResource(context, resId, "device config from XML resource");
     }
@@ -138,30 +107,17 @@ public class DeviceInputMappingParser {
         return config;
     }
 
-    /**
-     * Parse device input configuration from an InputStream.
-     * Used for loading custom configuration files.
-     * @param is InputStream containing XML configuration
-     * @return DeviceInputConfig containing parsed mappings
-     */
+    /** Parses a custom config file. */
     public static DeviceInputConfig parseConfigFromStream(InputStream is) {
         return parseConfigFromStream(is, null);
     }
 
-    /**
-     * Where a {@code <device extends="...">} finds the profile it builds on: a fresh, parsed copy
-     * of the named built-in profile (the caller may change it), or null when there is none by
-     * that name.
-     */
+    /** Resolves {@code <device extends="...">}: a fresh parsed copy of that built-in profile, or null. */
     public interface BaseProfiles {
         DeviceInputMapping load(String name);
     }
 
-    /**
-     * As {@link #parseConfigFromStream(InputStream)}, for a configuration that may build on a
-     * built-in profile ({@code <device extends="device_config_athena">}). With {@code bases}
-     * null, or a name it does not know, such a device is read as a profile of its own.
-     */
+    /** As above, resolving {@code extends} through {@code bases}; unresolved names read as standalone profiles. */
     public static DeviceInputConfig parseConfigFromStream(InputStream is, BaseProfiles bases) {
         final DeviceInputConfig config = new DeviceInputConfig();
         try {
@@ -190,12 +146,7 @@ public class DeviceInputMappingParser {
         }
     }
 
-    /**
-     * Parse the display name from a configuration file.
-     * Looks for a "name" attribute in the root element or a <name> tag.
-     * @param is InputStream containing XML configuration
-     * @return Display name, or null if not found
-     */
+    /** The display name: the root element's "name" attribute or a {@code <name>} tag; null if none. */
     public static String parseDisplayName(InputStream is) {
         try {
             final XmlPullParser parser = Xml.newPullParser();
@@ -223,14 +174,9 @@ public class DeviceInputMappingParser {
         return null;
     }
 
-    // ── <device> ─────────────────────────────────────────────────────────────
-
     /**
-     * Parse a device entry in v2.0 format.
-     *
-     * <p>Schema v2.6: {@code <device extends="device_config_athena">} starts from the named
-     * built-in profile instead of from nothing, and every element the device then writes replaces
-     * or adds to what it inherited:
+     * Parses one {@code <device>}. {@code <device extends="device_config_athena">} starts from that
+     * built-in profile, and what the device writes then replaces or adds to it:
      * <ul>
      *   <li>a single-valued element ({@code <device-type>}, {@code <kdb-variant>},
      *       {@code <keypad-layout>}, {@code <keypad-layouts>}, {@code <touch-keypad>},
@@ -242,8 +188,6 @@ public class DeviceInputMappingParser {
      *   <li>layout overrides, quirks and Alt {@code <mapping>} entries are added, an entry for the
      *       same thing replacing the inherited one.</li>
      * </ul>
-     * A profile that changes one key used to have to restate the whole of the shipped profile,
-     * and then missed every later fix to it.
      */
     private static DeviceInputMapping parseDeviceV2(XmlPullParser parser, BaseProfiles bases)
             throws XmlPullParserException, IOException {
@@ -320,9 +264,8 @@ public class DeviceInputMappingParser {
                     break;
                 }
                 case "accessibility-helper": {
-                    // Schema v2.5: whether this phone needs the BBKB helper at all. "off" removes
-                    // it from the system's Accessibility list on this phone (see
-                    // KeyInterceptorComponent); "available", or no element, offers it as usual.
+                    // "off" removes the BBKB helper from this phone's Accessibility list (see
+                    // KeyInterceptorComponent); "available", or no element, offers it.
                     final String value = trimmedText(p);
                     if ("off".equalsIgnoreCase(value)) {
                         mapping.accessibilityHelperOff = true;
@@ -353,9 +296,8 @@ public class DeviceInputMappingParser {
                     break;
                 }
                 case "keypad-layout": {
-                    // Schema v2.3: the one override for the detected physical keypad layout.
-                    // Validated here so a typo is rejected at parse time rather than becoming a
-                    // layout no `<case physicalKeypadVariant=...>` will ever match.
+                    // The detected physical keypad layout override, validated so a typo is rejected
+                    // here rather than becoming a layout no `<case physicalKeypadVariant=...>` matches.
                     final String declared = trimmedText(p);
                     final String layout = KeypadLayoutDetector.normalize(declared);
                     if (layout != null) {
@@ -374,7 +316,6 @@ public class DeviceInputMappingParser {
         moveTailToFront(mapping.scancodeMappings, inheritedRoles);
         moveTailToFront(mapping.settingsOverrides, inheritedSettings);
 
-        // Validate: must have at least device name or match criteria
         final boolean named = mapping.deviceName != null && !mapping.deviceName.isEmpty();
         final boolean matched = mapping.matchCriteria != null && mapping.matchCriteria.hasAnyCriteria();
         return (named || matched) ? mapping : null;
@@ -392,8 +333,8 @@ public class DeviceInputMappingParser {
     }
 
     /**
-     * Parse match criteria section. Every element name, one rule shape: {@code exact} wins over
-     * {@code regex}, and {@code device-name} additionally records a display string for logging.
+     * Parses {@code <match>}: {@code exact} wins over {@code regex}; {@code device-name} also
+     * records a display string for logging.
      */
     private static void parseMatchCriteria(XmlPullParser parser, DeviceInputMapping mapping)
             throws XmlPullParserException, IOException {
@@ -424,8 +365,6 @@ public class DeviceInputMappingParser {
         if (regex != null) return DeviceMatchCriteria.regex(regex);
         return null;
     }
-
-    // ── <touch-keypad> ───────────────────────────────────────────────────────
 
     /**
      * Parse a {@code <touch-keypad>} block (see {@link TouchKeypadConfig} for the schema). An
@@ -469,8 +408,6 @@ public class DeviceInputMappingParser {
         });
         return pad;
     }
-
-    // ── <input-mappings> ─────────────────────────────────────────────────────
 
     private static void parseInputMappings(XmlPullParser parser, DeviceInputMapping mapping)
             throws XmlPullParserException, IOException {
@@ -547,10 +484,7 @@ public class DeviceInputMappingParser {
         return mapping.inlineAltMappings;
     }
 
-    /**
-     * Parse scancode-mappings section.
-     * Each <key> element maps a raw scancode/keycode to a role and optional attributes.
-     */
+    /** Each {@code <key>} maps a raw scancode/keycode to a role and optional attributes. */
     private static void parseScancodeMappings(XmlPullParser parser, DeviceInputMapping mapping)
             throws XmlPullParserException, IOException {
         children(parser, "scancode-mappings", (p, tag) -> {
@@ -568,17 +502,15 @@ public class DeviceInputMappingParser {
     }
 
     /**
-     * Parse a single <key> element within <scancode-mappings>.
-     *
-     * Attributes:
-     *   rawScanCode  — int, optional
-     *   rawKeyCode   — int, optional
-     *   treatAs      — string (KEYCODE_* name), optional
-     *   role         — string (KeyRole name), required
-     *   altChar      — single character, optional
-     *   board        — int (board ID), optional
-     *   default-action — string (MULTIFUNCTION action id, e.g. "emoji_board"), optional
-     *   notes        — string, optional
+     * One {@code <key>} within {@code <scancode-mappings>}. Attributes:
+     *   rawScanCode: int, optional
+     *   rawKeyCode: int, optional
+     *   treatAs: string (KEYCODE_* name), optional
+     *   role: string (KeyRole name), required
+     *   altChar: single character, optional
+     *   board: int (board ID), optional
+     *   default-action: string (MULTIFUNCTION action id, e.g. "emoji_board"), optional
+     *   notes: string, optional
      */
     private static ScancodeMapping parseSingleScancodeMapping(XmlPullParser parser) {
         final String roleStr = attr(parser, "role");
@@ -592,7 +524,6 @@ public class DeviceInputMappingParser {
             return null;
         }
 
-        // At least one of rawScanCode or rawKeyCode must be specified
         final String rawScanStr = attr(parser, "rawScanCode");
         final String rawKeyStr = attr(parser, "rawKeyCode");
         if (rawScanStr == null && rawKeyStr == null) {
@@ -631,16 +562,11 @@ public class DeviceInputMappingParser {
         return mapping;
     }
 
-    // ── <settings-overrides> and <ckb-key-grid> ──────────────────────────────
-
-    /**
-     * Parse a single setting override.
-     */
     private static DeviceSettingOverride parseSettingOverride(XmlPullParser parser) {
         final String key = attr(parser, "key");
         final String typeStr = attr(parser, "type");
         if (key == null || typeStr == null) {
-            return null;  // Invalid setting
+            return null;
         }
         final String forcedValueStr = attr(parser, "forced-value");
 
@@ -677,9 +603,8 @@ public class DeviceInputMappingParser {
                 return null;
         }
 
-        // default-value: what the setting reads as on this device until the user picks one. Kept
-        // apart from forced-value, which locks the setting; a default does not. Only the string
-        // forms carry one today (the gesture-slot assignments are string preferences).
+        // default-value: what the setting reads as until the user picks one; unlike forced-value it
+        // does not lock it. Only string forms carry one (gesture-slot assignments).
         final String defaultValueStr = attr(parser, "default-value");
         if (defaultValueStr != null) {
             if (override.type == DeviceSettingOverride.SettingType.STRING

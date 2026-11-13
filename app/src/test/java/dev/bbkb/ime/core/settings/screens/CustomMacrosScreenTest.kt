@@ -28,22 +28,9 @@ import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
 
 /**
- * CHARACTERISATION TEST — [CustomMacrosScreen] with macros actually in the store.
- *
- * `SettingsScreenRenderTest` renders this screen on a fresh install, so it pins the empty state and
- * nothing else. What it never sees is a populated list, which is the state the screen exists for.
- * These cases seed the real `custom_macros` preferences file, render, and then drive the one
- * destructive path the screen offers — the per-row overflow menu, its confirmation dialog, and the
- * write that follows — asserting against the store on the far side.
- *
- * **What is deliberately absent, and why.** The add and edit dialogs are not driven here and cannot
- * be: under this Robolectric/Compose combination, a Material 3 text field inside an `AlertDialog`
- * never reaches an idle composition — `waitForIdle` spins until the heap is exhausted. That
- * reproduces with stock `MaterialTheme`, a stock `AlertDialog` and a stock `OutlinedTextField` and
- * nothing of this app's, so it is a limitation of the toolchain rather than of the screen. The
- * consequence is recorded rather than worked around: the add/edit dialog and its tag validator are
- * untested at the UI level, and the rules underneath them are pinned instead in
- * `CustomMacroStoreTest`. That is why this screen's dialog was left hand-written in Wave 3.
+ * Pins [CustomMacrosScreen] with seeded `custom_macros` prefs: the populated list and the per-row
+ * delete path (menu, confirmation, store write). The add/edit dialog is not driven: a Material 3
+ * text field in an `AlertDialog` never idles under Robolectric; `CustomMacroStoreTest` pins its rules.
  */
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [34], qualifiers = "w411dp-h891dp")
@@ -63,10 +50,8 @@ class CustomMacrosScreenTest {
     }
 
     /**
-     * Robolectric shares one sandbox — and therefore one set of statics and one preferences store —
-     * between test classes with the same `@Config`. `SettingsScreenRenderTest` renders this screen
-     * in the fresh-install state, so a macro left behind here would show up as a row it did not
-     * expect.
+     * Robolectric shares statics and prefs between test classes with the same `@Config`, and
+     * `SettingsScreenRenderTest` expects this screen empty.
      */
     @After
     fun tearDown() {
@@ -108,8 +93,6 @@ class CustomMacrosScreenTest {
         }
         composeRule.waitForIdle()
     }
-
-    // ---------------------------------------------------------------- the list
 
     @Test
     fun everyStoredMacroIsListedWithItsTagNameAndValue() {
@@ -168,8 +151,6 @@ class CustomMacrosScreenTest {
             .assertIsDisplayed()
         composeRule.onNodeWithText("Reserved tags: %D %T %d %t %n %w %y %b").assertIsDisplayed()
     }
-
-    // ------------------------------------------------------------ deleting a macro
 
     @Test
     fun deletingAMacroAsksFirstAndThenRemovesOnlyThatOneFromTheStore() {

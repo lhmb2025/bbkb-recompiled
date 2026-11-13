@@ -24,19 +24,11 @@ import org.robolectric.util.ReflectionHelpers
 import java.util.Locale
 
 /**
- * CHARACTERISATION scenarios for `BackspaceController.handleBackspace` — Wave 2 of the
- * feature-simplification plan, written because Wave 4 rewrites the backspace scans and there
- * was no test of this path at all.
+ * Characterises `BackspaceController.handleBackspace`: the real controller, InputLogic,
+ * RichInputConnection and tracker over a [dev.bbkb.ime.harness.FakeEditor], asserting what reached
+ * the editor (text, cursor, composing region).
  *
- * Each scenario drives the REAL controller against the REAL `InputLogic` /
- * `RichInputConnection` / `ComposingTextTracker` over a
- * [dev.bbkb.ime.harness.FakeEditor], and asserts what reached the EDITOR — the
- * resulting text, cursor, composing region — rather than the controller's private counters.
- * A rewrite that produces the same editor states passes; one that deletes a different number
- * of characters does not.
- *
- * ## Branch map of handleBackspace, in the order the source takes it
- *
+ * Branch order of handleBackspace:
  * ```
  * composing && (password || all-digits)      -> cancel composing outright
  * source not INTERNAL/UNKNOWN                -> ++mDeleteRepeatCount
@@ -54,8 +46,7 @@ import java.util.Locale
  *   no cursor / empty field                  -> raw KEYCODE_DEL
  *   else                                     -> delete one grapheme cluster before the cursor
  * ```
- *
- * The revert branch has its own file: [RevertAutoCorrectionTest].
+ * The revert branch is covered by [RevertAutoCorrectionTest].
  */
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [34], manifest = Config.NONE, instrumentedPackages = ["com.blackberry.nuanceshim"])
@@ -75,10 +66,8 @@ class BackspaceScenariosTest {
         `when`(subtypes.currentSubtypeLocale).thenReturn(Locale.US)
         subtypeStatic.`when`<SubtypeManager> { SubtypeManager.getInstance() }.thenReturn(subtypes)
 
-        // SEAM: InputLogic.resetComposingAndSelect -> updateDynamicLearningState reads the
-        // process-wide SettingsManager singleton rather than the SettingsValues it was handed,
-        // so the composing-reset branches are unreachable without stubbing it. Same pattern as
-        // SuggestionBridgeRaceTest.
+        // resetComposingAndSelect -> updateDynamicLearningState reads the SettingsManager singleton,
+        // so the composing-reset branches need it stubbed.
         val sm = mock(SettingsManager::class.java)
         `when`(sm.getSettingsValues()).thenReturn(h.settings)
         settingsStatic = mockStatic(SettingsManager::class.java)
@@ -92,21 +81,13 @@ class BackspaceScenariosTest {
         h.close()
     }
 
-    // ── driving the controller ──────────────────────────────────────────────────
-
-    /**
-     * The coordinate a hardware/gesture-capable backspace carries. `hasNoCoordinates()` tests
-     * for exactly this value and it selects which of the two accelerated-delete gates applies.
-     */
+    /** Hardware/gesture backspace coordinate: `hasNoCoordinates()` tests for it and it picks the accelerated-delete gate. */
     private val noCoords = -4
 
     private fun backspaceEvent(repeat: Boolean = false, x: Int = noCoords): InputEvent =
         InputEvent.createKeyPress(-1, -5, x, x, 1000L, repeat)
 
-    /**
-     * Send one backspace through the controller and hand back the context, whose
-     * `shouldUpdateSuggestions` / `getUiUpdateMode` are part of the decision.
-     */
+    /** Sends one backspace and returns the context, whose update flags are part of the decision. */
     private fun backspace(
         settings: SettingsValues = h.settings,
         repeat: Boolean = false,
@@ -141,8 +122,6 @@ class BackspaceScenariosTest {
         h.editor.dropPendingSelectionEvents()
     }
 
-    // ── plain characters ────────────────────────────────────────────────────────
-
     @Test
     fun backspace_overAPlainCharacter_deletesExactlyOne() {
         h.startSession("hello", 5)
@@ -165,11 +144,8 @@ class BackspaceScenariosTest {
     }
 
     /**
-     * The editor quirk the start-of-field forward delete must not trip on: with the cursor tapped
-     * into a word, some editors answer getTextBeforeCursor() with "" while a composing span is
-     * active, so the cached before-cursor text is empty although the cursor is at 3. The original
-     * app read that as "start of the field" and deleted the character to the RIGHT. The gate is
-     * the tracked cursor position, so this still deletes to the left.
+     * Some editors return "" from getTextBeforeCursor() while a composing span is active. The gate is
+     * the tracked cursor position, so this still deletes to the left, not the right.
      */
     @Test
     fun backspace_midText_withAnEmptyBeforeCursorRead_stillDeletesBeforeTheCursor() {
@@ -191,13 +167,10 @@ class BackspaceScenariosTest {
         backspace(); assertEquals("|", editorState())
     }
 
-    // ── the empty / start-of-field edges ────────────────────────────────────────
-
     @Test
     fun backspace_atStartOfANonEmptyField_deletesTheCharacterAfterTheCursor() {
-        // Cursor at 0 with text after it: `getCursorEnd() == 0` but `getCodePointAfterCursor()`
-        // is not -1, so the raw-key branch is NOT taken. Nothing can be deleted to the left, so
-        // DEL deletes to the right, as the original app did (beta report, 2026-10-25).
+        // Cursor at 0 with text after it: not the raw-key branch. Nothing can go to the left, so DEL
+        // deletes to the right.
         h.startSession("hello", 0)
         backspace()
         assertEquals("|ello", editorState())
@@ -225,8 +198,6 @@ class BackspaceScenariosTest {
         )
     }
 
-    // ── selections ──────────────────────────────────────────────────────────────
-
     @Test
     fun backspace_withASelection_deletesTheWholeSelection() {
         h.startSession("hello world", 11)
@@ -244,8 +215,6 @@ class BackspaceScenariosTest {
         backspace()
         assertEquals("a|c", editorState())
     }
-
-    // ── composing text ──────────────────────────────────────────────────────────
 
     @Test
     fun backspace_whileComposing_shrinksTheComposingWordByOne() {
@@ -271,8 +240,7 @@ class BackspaceScenariosTest {
 
     @Test
     fun backspace_deletingAWholeComposingWord_takesOneKeystrokePerCharacter() {
-        // The "delete a whole composing word" case: there is no single-keystroke word delete on
-        // the ordinary backspace path — that lives on the swipe gesture — so the word comes off
+        // No single-keystroke word delete on this path (that is the swipe gesture): the word comes off
         // one character at a time and the region shrinks with it.
         startComposing("say ", "hello")
         val seen = ArrayList<String>()
@@ -308,9 +276,7 @@ class BackspaceScenariosTest {
 
     @Test
     fun backspace_withTheTrackerCursorMovedInsideTheWord_stillDeletesACharacter() {
-        // The regression the source comments on: this branch used to truncate the composing
-        // buffer and RETURN, making the first backspace a visible no-op. It now resets
-        // composing and falls through, so a character really goes.
+        // This branch resets composing and falls through, so the first backspace really deletes.
         startComposing("", "hello")
         h.inputLogic.mRichInputConnection.setSelection(3, 3)
         h.editor.dropPendingSelectionEvents()
@@ -323,8 +289,6 @@ class BackspaceScenariosTest {
         assertFalse(h.inputLogic.mComposingTracker.isComposing)
     }
 
-    // ── shift + backspace = forward delete ──────────────────────────────────────
-
     @Test
     fun shiftBackspace_deletesForward() {
         h.startSession("abcdef", 3)
@@ -335,7 +299,7 @@ class BackspaceScenariosTest {
     @Test
     fun shiftBackspace_withNothingAfterTheCursor_deletesBackwardInstead() {
         // `cpAfter != -1 && shiftHeld` fails on the first clause, so the ordinary backward
-        // delete runs — shift is not a hard forward-only mode.
+        // delete runs: shift is not a hard forward-only mode.
         h.startSession("abc", 3)
         backspace(shiftPressed = true)
         assertEquals("ab|", editorState())
@@ -343,20 +307,15 @@ class BackspaceScenariosTest {
 
     @Test
     fun shiftBackspace_overAnEmojiFollowedByText_deletesOnlyTheEmoji() {
-        // Forward delete runs the same leading-emoji scan as a cursor step right. It used to
-        // take the text after the emoji as well (up to 20 chars).
+        // Forward delete uses the same leading-emoji scan as a cursor step right.
         h.startSession("😀bc", 0)
         backspace(shiftPressed = true)
         assertEquals("|bc", editorState())
     }
 
-    // ── surrogate pairs / emoji ─────────────────────────────────────────────────
-
     @Test
     fun backspace_overAnEmoji_deletesTheWholeCodePointNotHalfOfIt() {
-        // U+1F600, two chars in the editor's buffer. A scan that counts CHARS rather than code
-        // points leaves a lone high surrogate behind — this is exactly the case Wave 4's rewrite
-        // has to keep getting right. Today the grapheme scan handles it.
+        // U+1F600 is two chars; a scan counting chars rather than code points leaves a lone high surrogate.
         val grin = "😀"
         h.startSession("hi $grin", 5)
         backspace()
@@ -376,8 +335,7 @@ class BackspaceScenariosTest {
 
     @Test
     fun backspace_overANewerEmojiWithASkinTone_deletesTheWholeEmoji() {
-        // U+1FAF6 + medium skin tone. The old scan did not know the U+1FAxx blocks and took
-        // only the tone.
+        // U+1FAF6 + medium skin tone: the scan must know the U+1FAxx blocks.
         val hands = "🫶🏽"
         h.startSession("hi $hands", 3 + hands.length)
         backspace()
@@ -419,12 +377,10 @@ class BackspaceScenariosTest {
         assertEquals("a", h.inputLogic.mComposingTracker.composingText)
     }
 
-    // ── the "undo the last commit" branch ───────────────────────────────────────
-
     @Test
     fun backspace_afterACommittedSuggestion_removesTheWholeCommittedWord() {
         // mLastCommittedText is set when a suggestion is committed. While that exact text still
-        // sits before the cursor, ONE backspace removes all of it — not one character.
+        // sits before the cursor, one backspace removes all of it, not one character.
         h.startSession("say hello", 9)
         h.inputLogic.mLastCommittedText = "hello"
         backspace()
@@ -461,12 +417,7 @@ class BackspaceScenariosTest {
         assertEquals("hi |", editorState())
     }
 
-    // ── accelerated / key-repeat delete ─────────────────────────────────────────
-
-    /**
-     * The accelerated path is gated on the IME advertising gesture input, so it only exists on
-     * a gesture-capable device. Both gates are asserted here rather than assumed.
-     */
+    /** Arms the accelerated path, which is gated on the IME advertising gesture input. */
     private fun armAcceleratedDelete() {
         `when`(h.ime.isGestureInputReady()).thenReturn(true)
     }
@@ -481,12 +432,7 @@ class BackspaceScenariosTest {
 
     @Test
     fun acceleratedDelete_firstRepeat_deletesOneCharacter() {
-        // DEFECT 4, now fixed. The first accelerated repeat used to fall into the
-        // `mDeleteWordCount == 0 && mDeleteAccelThreshold == 0` arm, set the threshold to 2 and
-        // return having deleted NOTHING — so holding backspace on a gesture-capable device
-        // swallowed a repeat and then jumped straight to word deletes without ever removing a
-        // single character. It now arms the word-delete threshold AND deletes a character, the
-        // same as the ordinary (non-gesture) repeat path does.
+        // The first accelerated repeat arms the word-delete threshold and also deletes a character.
         armAcceleratedDelete()
         h.startSession("abcdef", 6)
         backspace(repeat = true)
@@ -495,10 +441,8 @@ class BackspaceScenariosTest {
 
     @Test
     fun acceleratedDelete_takesOneCharacterPerRepeat_thenEscalatesToWords() {
-        // DEFECT 4: the acceleration curve. It used to be "nothing, one word, then eight dead
-        // repeats, then one word" — the threshold started at 2 and jumped by (10 - wordCount).
-        // Hold-to-delete now removes one character per repeat and only escalates to whole-word
-        // deletes at repeat 40, the same count the non-accelerated path escalates at.
+        // One character per repeat, escalating to whole-word deletes at repeat 40 (the same count as
+        // the non-accelerated path).
         armAcceleratedDelete()
         val text = "alpha bravo charlie delta echo foxtrot golf hotel india juliett kilo lima"
         h.startSession(text, text.length)
@@ -538,12 +482,8 @@ class BackspaceScenariosTest {
 
     @Test
     fun acceleratedDelete_withPredictionsOn_clearsWasAutoCorrectedAndRecorrects() {
-        // DEFECT 4 changed which repeats reach here: it used to be the repeats that deleted
-        // NOTHING, and it is now the character repeats — a character delete followed by
-        // recorrection, the same pairing the non-accelerated path uses. Only a word-delete
-        // repeat suppresses it. Recorrection also stamps wasAutoCorrected back to false; with
-        // shouldShowLxxButton off, performRecorrection bails out to a neutral strip, and that
-        // call is the observable trace.
+        // Character repeats pair a delete with recorrection; only a word-delete repeat suppresses it.
+        // With shouldShowLxxButton off, performRecorrection bails to a neutral strip: the observable trace.
         armAcceleratedDelete()
         val settings = h.settingsWith("isPredictionsEnabled" to true)
         h.startSession("hello world there", 17)
@@ -565,16 +505,10 @@ class BackspaceScenariosTest {
         org.mockito.Mockito.verifyNoInteractions(h.suggestionStripListener)
     }
 
-    // ── accelerated delete over a LIVE composing word ───────────────────────────
-
     @Test
     fun acceleratedDelete_whileComposing_shrinksTheComposingWordInsteadOfDeletingAroundIt() {
-        // FIX-BKSP. Holding backspace on a KEY2 routes every repeat to handleAcceleratedDelete,
-        // which used to call deleteSurroundingText(1, 0) with a LIVE composing region. That call
-        // is defined to leave the composing text alone and delete the text AROUND it, so on a
-        // real editor each repeat ate a character of the already-committed sentence while the
-        // half-typed word sat there unchanged — the user-visible "letters jam together".
-        // The repeat must shrink the composing word, exactly as a non-repeat backspace does.
+        // deleteSurroundingText(1, 0) with a live composing region deletes around the region, not in it,
+        // so each repeat must shrink the composing word like a non-repeat backspace.
         armAcceleratedDelete()
         startComposing("say ", "union")
 
@@ -592,9 +526,8 @@ class BackspaceScenariosTest {
 
     @Test
     fun acceleratedDelete_whileComposing_leavesTheCommittedTextBeforeItUntouched() {
-        // The reported symptom, three repeats deep: the committed prefix must be byte-identical
-        // and the tracker must stay in step with the editor (a tracker that still said "union"
-        // would rewrite the whole word back over the region on the next keystroke).
+        // The committed prefix must be untouched and the tracker in step with the editor (a stale
+        // tracker would rewrite the old word over the region on the next keystroke).
         armAcceleratedDelete()
         startComposing("Hello there ", "union")
 
@@ -635,8 +568,7 @@ class BackspaceScenariosTest {
 
     @Test
     fun backspace_whileComposing_behavesTheSameOnBothPaths() {
-        // (b) The non-repeat path is the reference implementation and must not have moved:
-        // drive the identical scenario through it and compare against the accelerated run in
+        // (b) The non-repeat path is the reference: the same scenario as
         // acceleratedDelete_whileComposing_shrinksTheComposingWordInsteadOfDeletingAroundIt.
         startComposing("say ", "union")
 
@@ -649,11 +581,8 @@ class BackspaceScenariosTest {
 
     @Test
     fun acceleratedWordDelete_overAComposingWord_clearsThatWordAndStopsThere() {
-        // (c) Escalation still lands on the same repeat: seed the count so the next repeat is
-        // the fortieth. "Delete a word" while a word is composing means THAT word — the
-        // uncommitted one the cursor sits in — not the committed word to its left. deleteWord
-        // -> handleSwipeDelete -> deleteByWordSwipe already sizes the delete from the composing
-        // tracker for exactly this reason.
+        // (c) Seed the count so the next repeat is the fortieth. A word delete while composing takes the
+        // composing word (deleteByWordSwipe sizes it from the tracker), not the committed word before it.
         armAcceleratedDelete()
         startComposing("say hello ", "union")
         h.inputLogic.mBackspaceController.mDeleteRepeatCount = 39
@@ -681,9 +610,8 @@ class BackspaceScenariosTest {
 
     @Test
     fun acceleratedDelete_withNoComposingRegion_isUnchangedByTheComposingBranch() {
-        // (d) The non-composing repeat path, end to end over the escalation boundary, asserted
-        // here as well as in acceleratedDelete_takesOneCharacterPerRepeat_thenEscalatesToWords
-        // so that a regression in the composing branch cannot pass unnoticed.
+        // (d) The non-composing repeat path across the escalation boundary, so a composing-branch
+        // change cannot break it unnoticed.
         armAcceleratedDelete()
         h.startSession("alpha bravo", 11)
         repeat(3) { backspace(repeat = true) }
@@ -693,13 +621,8 @@ class BackspaceScenariosTest {
 
     @Test
     fun acceleratedDelete_overAnAutoCorrectedComposingWord_commitsItBeforeDeletingAroundIt() {
-        // The second entrance to the same hole. `wasAutoCorrected` sends the keystroke past the
-        // composing branch, and the character delete below it used to run with the region still
-        // live — "say hello" came back as "sayhello", the space eaten and the word untouched.
-        // The ordinary path opens its else-arm by committing the auto-corrected word first, so
-        // this path does too: the region is finished, then one character goes off the end.
-        // Reachable after a swiped word, whose first backspace recorrects and stamps
-        // wasAutoCorrected while a region is open; the repeats that follow land here.
+        // wasAutoCorrected skips the composing branch, so this path commits the word first (else
+        // "say hello" becomes "sayhello"), then deletes one character. Reachable after a swiped word.
         armAcceleratedDelete()
         startComposing("say ", "hello")
         h.inputLogic.mComposingTracker.setWasAutoCorrected(true)
@@ -710,8 +633,6 @@ class BackspaceScenariosTest {
         assertFalse("the composing region must be finished, not deleted around",
             h.editor.hasComposingRegion())
     }
-
-    // ── double-space-period revert (commitType 1) ───────────────────────────────
 
     @Test
     fun backspace_afterADoubleSpacePeriod_putsASingleSpaceBack() {

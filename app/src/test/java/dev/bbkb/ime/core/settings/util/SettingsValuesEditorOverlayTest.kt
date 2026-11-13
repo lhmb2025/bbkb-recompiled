@@ -23,9 +23,9 @@ import java.lang.reflect.Modifier
 import java.util.Locale
 
 /**
- * A field focus costs the per-editor overlay only (P-12): `SettingsValues.forEditor` copies the
- * stored and resource-derived fields and reads no preference, and `SettingsManager.loadSettings`
- * takes that path until a preference, the keyboard locale or the configuration changes.
+ * A field focus costs the per-editor overlay only: `SettingsValues.forEditor` copies stored and
+ * resource-derived fields and reads no preference, and `loadSettings` takes that path until a
+ * preference, the keyboard locale or the configuration changes.
  */
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [34], manifest = Config.NONE)
@@ -212,8 +212,8 @@ class SettingsValuesEditorOverlayTest {
         println(String.format(Locale.ROOT, "SettingsValues per field focus: full build = %.1f us, overlay = %.1f us", fullUs, overlayUs))
         assertTrue(overlayUs < fullUs)
 
-        // The whole SettingsManager.loadSettings, as a field focus runs it, for a keyboard
-        // language other than the system's (the RunInLocale configuration context included).
+        // The whole loadSettings as a field focus runs it, for a keyboard language other than the
+        // system's (RunInLocale configuration context included).
         val pending = SettingsManager::class.java.getDeclaredField("rebuildPending").apply { isAccessible = true }
         manager.loadSettings(context, Locale.GERMANY, textField)
         t = System.nanoTime()

@@ -14,16 +14,7 @@ import dev.bbkb.ime.R;
 import dev.bbkb.ime.core.locale.LocaleUtils;
 import dev.bbkb.ime.core.locale.ResourceLocaleUtils;
 
-/**
- * Tells the user, once per language per process, that a keyboard is being used without its
- * dictionary.
- *
- * <p>Before this, a keyboard whose pack had not been downloaded was silent: the engine was asked
- * for the language anyway, refused it, and the refusal was discarded (KEY2, 2026-09-28). The strip
- * then showed only the typed word, and for Korean, Japanese and Chinese nothing was typed at all,
- * because their composition runs inside the engine. The Language screen already offers the
- * download; this is the pointer to it from where the user actually notices the problem.
- */
+/** Tells the user, once per language per process, that a keyboard is used without its language pack. */
 public final class DictionaryAvailabilityNotice {
 
     private static final Set<String> sShown = Collections.synchronizedSet(new HashSet<>());
@@ -31,7 +22,7 @@ public final class DictionaryAvailabilityNotice {
     private DictionaryAvailabilityNotice() {
     }
 
-    /** Called from the dictionary bridge, on whatever thread loads the dictionary. */
+    /** Any thread; the toast is posted to main. */
     public static void packMissing(Context context, Locale locale) {
         if (locale == null) {
             return;

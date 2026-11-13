@@ -26,10 +26,6 @@ import dev.bbkb.ime.core.settings.ui.SettingsScaffold
 import dev.bbkb.ime.core.settings.ui.SwitchPreference
 import dev.bbkb.ime.core.settings.ui.rememberContactsPermission
 
-/**
- * Predictions & Suggestions Settings (Subpage 2 of Correction & Learning)
- * What gets predicted and suggested
- */
 @Composable
 fun PredictionsSuggestionsScreen(
     onNavigateBack: () -> Unit
@@ -46,8 +42,7 @@ fun PredictionsSuggestionsScreen(
         mutableStateOf(prefs.getBoolean("on_key_predictions", true))
     }
     var emojiPredictions by remember {
-        // Same resource default SettingsValues.loadEmojiPredictionsSetting reads (false); a literal
-        // `true` here showed the toggle on while the keyboard had the feature off.
+        // Same resource default SettingsValues.loadEmojiPredictionsSetting reads.
         mutableStateOf(
             prefs.getBoolean("emoji_predictions", context.resources.getBoolean(R.bool.config_default_emoji_predictions))
         )
@@ -90,7 +85,7 @@ fun PredictionsSuggestionsScreen(
                 .verticalScroll(rememberScrollState())
         ) {
             PreferenceGroup {
-                // Show predictions (master toggle)
+                // Master toggle
                 SwitchPreference(
                     title = context.getString(R.string.settings_pred_show_predictions_title),
                     icon = ImageVector.vectorResource(R.drawable.ic_settings_prediction),
@@ -107,7 +102,6 @@ fun PredictionsSuggestionsScreen(
             
             PreferenceCategory(title = context.getString(R.string.settings_category_display))
             PreferenceGroup {
-                // On-key predictions (dependent)
                 SwitchPreference(
                     title = context.getString(R.string.settings_pred_on_key_title),
                     icon = ImageVector.vectorResource(R.drawable.ic_settings_on_key_suggestions),
@@ -121,9 +115,7 @@ fun PredictionsSuggestionsScreen(
                     }
                 )
             
-            
-                // Force suggestions: override an app's "no suggestions" declaration and show the
-                // suggestion strip anyway (e.g. for apps like Google Keep that suppress it).
+                // Overrides an app's "no suggestions" declaration (e.g. Google Keep).
                 SwitchPreference(
                     title = context.getString(R.string.settings_pred_force_suggestions_title),
                     icon = ImageVector.vectorResource(R.drawable.ic_settings_force_suggestions),
@@ -140,7 +132,6 @@ fun PredictionsSuggestionsScreen(
 
             PreferenceCategory(title = context.getString(R.string.settings_category_sources))
             PreferenceGroup {
-                // Next word prediction
                 SwitchPreference(
                     title = context.getString(R.string.settings_pred_next_word_title),
                     icon = ImageVector.vectorResource(R.drawable.ic_settings_next_word),
@@ -154,8 +145,6 @@ fun PredictionsSuggestionsScreen(
                     }
                 )
 
-
-                // Emoji predictions (dependent)
                 SwitchPreference(
                     title = context.getString(R.string.settings_pred_emoji_title),
                     icon = ImageVector.vectorResource(R.drawable.ic_settings_emoji_suggestions),
@@ -169,8 +158,6 @@ fun PredictionsSuggestionsScreen(
                     }
                 )
             
-            
-                // Personalized suggestions
                 SwitchPreference(
                     title = context.getString(R.string.settings_pred_personalized_title),
                     icon = ImageVector.vectorResource(R.drawable.ic_settings_learned_words),
@@ -184,9 +171,7 @@ fun PredictionsSuggestionsScreen(
                     }
                 )
 
-
-                // Inline autofill chips (Android 11+). The manager re-reads this at the start of
-                // every input session, so the change applies without an IME restart.
+                // Re-read at the start of every input session; no IME restart needed.
                 if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.R) {
                     SwitchPreference(
                         title = context.getString(R.string.settings_pred_inline_autofill_title),
@@ -201,8 +186,6 @@ fun PredictionsSuggestionsScreen(
                     )
                 }
 
-                // Contacts are a suggestion source like the rest, so they end the Sources group.
-                // Suggest from contacts (requires READ_CONTACTS permission)
                 SwitchPreference(
                     title = context.getString(R.string.settings_pred_contacts_title),
                     icon = ImageVector.vectorResource(R.drawable.ic_settings_m_contacts),

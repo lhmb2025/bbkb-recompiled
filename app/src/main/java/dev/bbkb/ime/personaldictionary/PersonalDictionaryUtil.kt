@@ -49,15 +49,11 @@ class PersonalDictionaryUtil private constructor(
     private val mContext: Context = context.applicationContext
     private var mAudSyncer: AudSyncer = AudSyncer.getInstance()
     private var mPduDir: File? = null
-    
-    // Using CoroutineScope instead of ExecutorService
+
     private val scope = CoroutineScope(Dispatchers.IO + SupervisorJob())
     private val mEnabledWordSubstitutions = TreeMap<String, WordSubstitution>(String.CASE_INSENSITIVE_ORDER)
     private var mCachedEnabledWordSubstitutions: Map<String, WordSubstitution> = TreeMap(String.CASE_INSENSITIVE_ORDER)
-    // Filenames come from LoadConfig, which is the single source for the on-disk
-    // persistence contract: these were hard-coded literals duplicating both
-    // PersonalDictionaryConstants and LoadConfig, so a one-sided edit would silently
-    // orphan the user's stored substitutions (audit PD-28).
+    // Filenames come only from LoadConfig, the single source for the on-disk file names.
     private val mAllUserWordSubstitutions =
         LocaleWordSubstitutionMap(LoadConfig.WORD_SUBSTITUTIONS.filename)
     private val mDeletedDefaultWordSubstitutions =
@@ -88,11 +84,8 @@ class PersonalDictionaryUtil private constructor(
         const val PERSONAL_DICTIONARY_UTIL_DIR = "/dev.bbkb.ime.basl.pdu"
 
         /**
-         * What this directory was called while the class root was still BlackBerry's. The name
-         * is only a name — nothing reads it back out — but it is the *user's* personal
-         * dictionary sitting in it, so a build that moved the class root without moving the
-         * words would have looked exactly like the dictionary had been wiped. Spelled in halves
-         * so PackageIdentityTest's class-root guard does not read it as a live reference.
+         * The directory name under the old class root, migrated so existing words survive.
+         * Spelled in halves so PackageIdentityTest's class-root guard does not flag it.
          */
         private const val LEGACY_PERSONAL_DICTIONARY_UTIL_DIR = "/com.blackberry." + "inputmethod.basl.pdu"
 
@@ -119,19 +112,14 @@ class PersonalDictionaryUtil private constructor(
             }
         }
 
-        // ── The on-disk format ────────────────────────────────────────────────────────────────
-        //
-        // The three files (and so the backup format) are what Gson's reflective binding wrote
-        // until 2026-11: a JSON array of objects, a WordSubstitution as
-        // {"key","type","version","autoCapsEnabled","locale","word"} and a PersonalWord as
-        // {"version","autoCapsEnabled","locale","word"}, type as the enum name. That is the order
-        // Gson used on the device (subclass fields first, each class's fields by name), kept so
-        // a new file reads like an old one; no reader depends on it.
+        // On-disk (and backup) format, Gson-compatible: a JSON array of objects, a WordSubstitution
+        // as {"key","type","version","autoCapsEnabled","locale","word"} and a PersonalWord as
+        // {"version","autoCapsEnabled","locale","word"}, type as the enum name. Field order is
+        // cosmetic; no reader depends on it.
 
         /**
-         * One WordSubstitution entry. Built through [WordSubstitution.createWithoutPreconditions],
-         * whose only checks (non-empty word and locale) every constructor has always made, so
-         * nothing the app ever wrote is refused. Gson skipped the constructors altogether.
+         * One WordSubstitution entry, built through [WordSubstitution.createWithoutPreconditions]
+         * so nothing the app ever wrote is refused.
          *
          * @throws JSONException when [entry] is not an object or misses key, word, locale or a
          *   known type
@@ -184,7 +172,10 @@ class PersonalDictionaryUtil private constructor(
             return out.toString()
         }
 
-        /** A string field, or a number or boolean as its text, as Gson's String binding read it. */
+        /**
+         * A string field, or a number or boolean as its text (as Gson read it).
+         * @param obj the JSON entry
+         */
         private fun requiredText(obj: JSONObject, name: String): String =
             when (val value = obj.opt(name)) {
                 is String -> value
@@ -192,7 +183,10 @@ class PersonalDictionaryUtil private constructor(
                 else -> throw JSONException("no $name")
             }
 
-        /** Gson read a missing or null boolean as false, and a string through parseBoolean. */
+        /**
+         * A missing or null boolean reads as false, a string through parseBoolean (as Gson did).
+         * @param obj the JSON entry
+         */
         private fun flag(obj: JSONObject, name: String): Boolean = when (val value = obj.opt(name)) {
             is Boolean -> value
             is String -> value.toBoolean()
@@ -212,10 +206,8 @@ class PersonalDictionaryUtil private constructor(
     }
 
     /**
-     * One-shot rename of the pre-move directory. Only ever runs on a device that was carrying an
-     * install from before the class root moved; if the new directory already exists the legacy
-     * one is left alone rather than merged, because a half-merge of two word stores is worse than
-     * an orphan the user can no longer see.
+     * One-shot rename of the legacy directory. If the new directory already exists the legacy one
+     * is left alone: a half-merge of two word stores is worse than an orphan.
      */
     private fun migrateLegacyPduDir(baseDir: String, target: File) {
         if (target.exists()) return
@@ -259,7 +251,6 @@ class PersonalDictionaryUtil private constructor(
                     }
                 }
 
-                // Load defaults
                 val defaults = DefaultWSLoader.load(mContext, mResourceDir, activeLocales, deletedDefaultWsKeys, true)
                 for (ws in defaults.values) {
                     val locale = ws.locale
@@ -319,13 +310,8 @@ class PersonalDictionaryUtil private constructor(
     }
 
     /**
-     * The load path: the on-disk `personal_words` entries are put into the map WITHOUT the
-     * loaded-check. `mLoadComplete` is deliberately set last in [doLoad] (audit PD-42), so while
-     * this runs the object is not yet "loaded" — and with the check in place the very first word
-     * threw [InitialisationIncompleteException], `loadJsonForConfig` logged it as
-     * "Error parsing JSON with Gson: null" (the message before org.json) and NOT ONE personal word
-     * was ever loaded from disk (KEY2, 2026-09-21; masked afterwards by the AUD sync re-adding
-     * them because AUD is master).
+     * The load path into the personal words map, without the loaded-check: `mLoadComplete` is set
+     * last in [doLoad], so the check would refuse every stored word.
      */
     @Throws(TermAlreadyDefinedException::class)
     private fun addToBaslNotSdk(personalWord: PersonalWord) {
@@ -356,9 +342,8 @@ class PersonalDictionaryUtil private constructor(
     }
 
     /**
-     * The engine's `addWord`, posted to the engine thread (Wave 3): these adds come from the main
-     * thread (one-tap add, the add-word dialog) and from Dispatchers.IO (the AUD sync), neither of
-     * which may call the engine. Fire-and-forget, as before: the result was never used.
+     * The engine's `addWord`, posted to the engine thread: callers are on the main thread or
+     * Dispatchers.IO, neither of which may call the engine. Fire-and-forget.
      */
     private fun learnInEngine(word: String) {
         val sdk = mNuanceSDK
@@ -366,11 +351,8 @@ class PersonalDictionaryUtil private constructor(
     }
 
     /**
-     * The engine's `deleteDLMWord`, the call the Learned words screen's delete makes, posted to
-     * the engine thread like [learnInEngine] (the two stay in order there, so an edit's forget
-     * of the old word runs before its learn of the new one). The engine keeps a deleted word
-     * suppressed rather than forgetting it outright, so it is no longer listed or offered; a
-     * later [learnInEngine] of the same word brings it back, which is what Undo relies on.
+     * The engine's `deleteDLMWord`, posted like [learnInEngine] so an edit's forget runs before its
+     * learn. The engine suppresses a deleted word; a later [learnInEngine] brings it back (Undo).
      */
     private fun forgetInEngine(word: String) {
         val sdk = mNuanceSDK
@@ -385,10 +367,8 @@ class PersonalDictionaryUtil private constructor(
     fun add(ws: WordSubstitution) {
         AudSyncer.AUD_SYNC_LOCK.lock()
         try {
-            // Refuse before anything is written. The duplicate check used to come only in
-            // addToBasl, after the row had gone into the shared system user dictionary, so a
-            // refused "ZORBIX" next to our "zorbix" stayed there and the AUD sync then swapped the
-            // two on every pass (emulator, 2026-11-05).
+            // Refuse before anything is written: a refused row left in the system user dictionary
+            // makes the AUD sync swap it with ours on every pass.
             verifyLoadingComplete()
             if (mEnabledWordSubstitutions.containsKey(ws.key)) {
                 throw KeyAlreadyDefinedException("${ws.key} already defined")
@@ -424,12 +404,7 @@ class PersonalDictionaryUtil private constructor(
         }
     }
 
-    /**
-     * The load path's only way into the deleted-defaults map, so no loaded-check: `mLoadComplete`
-     * is set last in [doLoad], and with the check every entry of `deleted_substitutions` was
-     * skipped with [InitialisationIncompleteException], so a deleted built-in shortcut (`bb`)
-     * came back on every start. The same trap as [addToBaslNotSdk].
-     */
+    /** The load path into the deleted-defaults map, without the loaded-check (see [addToBaslNotSdk]). */
     @Throws(KeyAlreadyDefinedException::class)
     private fun addToDeletedMap(ws: WordSubstitution) {
         AudSyncer.AUD_SYNC_LOCK.lock()
@@ -453,9 +428,7 @@ class PersonalDictionaryUtil private constructor(
             if (!mEnabledWordSubstitutions.containsKey(oldKey)) {
                 throw KeyNotFoundException("$oldKey not found")
             }
-            // Before anything changes: this check used to come after the old entry had been
-            // deleted from AUD and from the stored map, so an edit onto another entry's name was
-            // refused but the entry being edited was gone after the next restart.
+            // Before anything changes, or a refused edit would still lose the entry being edited.
             if (!oldKey.equals(newKey, ignoreCase = true) && mEnabledWordSubstitutions.containsKey(newKey)) {
                 throw KeyAlreadyDefinedException("$newKey already defined")
             }
@@ -481,9 +454,7 @@ class PersonalDictionaryUtil private constructor(
             mEnabledWordSubstitutions[newKey] = newWs
             addWsToAllUserMap(newWs)
             updateCachedEnabledWordSubstitutionMap()
-            // The engine, as a delete of the old entry and an add of the new one would leave it:
-            // an edit used to reach neither, so after quixotal -> quixotally the engine still had
-            // only "quixotal" and corrected the new spelling back to the old one.
+            // Update the engine too, or it keeps the old spelling and corrects the new one back.
             if (isDictionaryWord(oldWs) && oldWs.word != newWs.word) {
                 forgetInEngine(oldWs.word)
             }
@@ -510,10 +481,8 @@ class PersonalDictionaryUtil private constructor(
     }
 
     /**
-     * The user's own delete (the User dictionary and Text shortcuts screens). A dictionary word
-     * also leaves the engine's learned words, as the Learned words screen's delete does: adding
-     * it taught it to the engine, and it used to stay listed there and offered after the delete.
-     * A shortcut's phrase is left alone: the user may well type those words on their own.
+     * The user's own delete. A dictionary word also leaves the engine's learned words; a
+     * shortcut's phrase is left alone, since the user may type those words on their own.
      */
     fun remove(ws: WordSubstitution) {
         try {
@@ -561,7 +530,6 @@ class PersonalDictionaryUtil private constructor(
     }
 
     fun switchInputLanguages(locales: List<Locale>, listener: CompletionListener) {
-        // Modern approach: Launch coroutine
         scope.launch {
             LogUtil.d(TAG, "Switching input languages to: $locales")
             var sameLocales = false
@@ -574,9 +542,8 @@ class PersonalDictionaryUtil private constructor(
                     val mutableLocales = ArrayList(locales)
                     DataUtil.moveObjectToFrontOfList(Locale.getDefault(), mutableLocales)
                     previousLocales = immutableLastActiveLocales
-                    // Compared after the reorder, as stored: with a multi-language keyboard whose
-                    // extra is the phone's language, the raw list never equalled the stored one, so
-                    // every switch reloaded and re-synced the defaults with AUD.
+                    // Compared after the reorder, as stored, or the phone's language as an extra
+                    // locale makes every switch reload and re-sync.
                     if (previousLocales == mutableLocales) {
                         LogUtil.d(TAG, "Switching to same locales - ignoring")
                         sameLocales = true
@@ -660,9 +627,7 @@ class PersonalDictionaryUtil private constructor(
             if (mLoadComplete) {
                 LogUtil.d(TAG, "Attempted to load multiple times")
                 listener.complete(true)
-                // registerAudContentObserver() is idempotent, and skipping it here used to mean
-                // that a second load - a settings screen initialising the manager the IME had
-                // already initialised - reported success with no observer attached.
+                // Idempotent; a second load (a settings screen) must still attach the observer.
                 if (registerObserver) registerAudContentObserver()
                 return@launch
             }
@@ -683,11 +648,7 @@ class PersonalDictionaryUtil private constructor(
                         syncAudDifferencesToBasl()
                     }
                 } catch (e: Exception) {
-                    // Audit PD-42: this used to swallow everything doLoad can throw -
-                    // including the TermAlreadyDefined/KeyAlreadyDefined signals of a
-                    // corrupt persisted JSON, and any failure of the observer
-                    // registration or the AUD sync - so a silent partial load presented
-                    // as "my text shortcuts vanished" with nothing in logcat.
+                    // Logged loudly: a silent partial load looks like vanished shortcuts.
                     LogUtil.e(TAG, "Personal dictionary load failed: " + e)
                     if (!reported) {
                         listener.complete(false)
@@ -761,9 +722,8 @@ class PersonalDictionaryUtil private constructor(
             try {
                 observer.register()
             } catch (e: Exception) {
-                // SecurityException is the documented one (READ_USER_DICTIONARY revoked), but
-                // anything thrown here leaves the bridge permanently one-way and used to be
-                // reported only through DictionaryManager's Logger.debug (audit 2026-09-21).
+                // Usually SecurityException (READ_USER_DICTIONARY revoked); anything thrown here
+                // leaves the bridge one-way, so it is logged.
                 LogUtil.w(TAG, "Could not register the AUD content observer: $e")
                 throw e
             }
@@ -771,9 +731,8 @@ class PersonalDictionaryUtil private constructor(
             LogUtil.i(TAG, "AUD content observer registered on "
                     + android.provider.UserDictionary.Words.CONTENT_URI)
         }
-        // The user's own words only ever reached AUD one at a time, at add time, so any add
-        // made while the provider was unreachable stayed stranded in BASL - and the AUD-is-
-        // master diff sync deletes exactly those. Publish them once before the first sync.
+        // Words added while AUD was unreachable exist only in BASL, and the AUD-is-master sync
+        // would delete them. Publish them once before the first sync.
         pushUserWordsToAudOnce()
     }
 
@@ -792,17 +751,9 @@ class PersonalDictionaryUtil private constructor(
         get() = synchronized(mObserverLock) { mAudContentObserver != null }
 
     /**
-     * One-shot reconciliation in the BASL -> AUD direction.
-     *
-     * [syncDifferencesToBasl][AudSyncer.syncDifferencesToBasl] treats AUD as the master and
-     * deletes anything BASL holds that AUD does not. That is correct only while every user add
-     * also reaches AUD, which is precisely what was broken on the KEY2: the provider was
-     * invisible to us (no `<queries>` declaration under targetSdk 36), `AudWrapper.addBatch`
-     * returned false for months, and the device ended up with words in
-     * `files/…basl.pdu` and an empty `content://user_dictionary/words`. Repairing the
-     * visibility without this push would make the first working sync delete them.
-     *
-     * Runs at most once per install; the flag is per-device state, not a user setting.
+     * One-shot BASL -> AUD reconciliation. [AudSyncer.syncDifferencesToBasl] treats AUD as master
+     * and deletes BASL words AUD lacks, so words that never reached AUD must be pushed first.
+     * Runs at most once per install (per-device flag).
      */
     private fun pushUserWordsToAudOnce() {
         val prefs = mContext.getSharedPreferences(SYNC_STATE_PREFS, Context.MODE_PRIVATE)
@@ -810,8 +761,7 @@ class PersonalDictionaryUtil private constructor(
         try {
             val pushed = pushUserWordsToAud()
             if (pushed < 0) {
-                // AUD is still refusing writes: do NOT latch, or the words stay stranded for
-                // good and the next working sync deletes them.
+                // AUD still refuses writes: do not latch, or the next working sync deletes them.
                 LogUtil.w(TAG, "One-shot personal dictionary -> AUD backfill refused; will retry")
                 return
             }
@@ -845,8 +795,7 @@ class PersonalDictionaryUtil private constructor(
             AudSyncer.AUD_SYNC_LOCK.unlock()
         }
         if (toPush.isEmpty()) return 0
-        // Delete first: AUD has no uniqueness constraint, so a re-run would otherwise
-        // duplicate every row (the same reason AudSyncer.duplicateDefaultWsWorkaround exists).
+        // Delete first: AUD has no uniqueness constraint, so a re-run would duplicate every row.
         AudWrapper.deleteBatch(mContext, toPush)
         if (!AudWrapper.addBatch(mContext, toPush)) {
             LogUtil.w(TAG, "Personal dictionary -> AUD backfill of ${toPush.size} entries was refused")
@@ -869,8 +818,7 @@ class PersonalDictionaryUtil private constructor(
             loadJsonForConfig(LoadConfig.PERSONAL_WORDS)
             setDataNotDirty()
             updateCachedEnabledWordSubstitutionMap()
-            // Set last, not first: a mid-load throw used to leave the object marked
-            // loaded with a half-populated map (audit PD-42).
+            // Set last, so a mid-load throw never leaves a half-populated map marked loaded.
             mLoadComplete = true
         } finally {
             AudSyncer.AUD_SYNC_LOCK.unlock()
@@ -961,8 +909,7 @@ class PersonalDictionaryUtil private constructor(
     }
 
     fun getWordSubstitutionForInput(input: String, capsMode: CapsMode, locale: Locale): String {
-        // Audit PD-9: macro expansion used to run *inside* this lock, so it serialised
-        // against the cache writer on the commit path. Only the map lookup needs it.
+        // Only the lookup holds the lock; macro expansion runs outside it (commit path).
         val ws = synchronized(CACHED_ENABLED_WS_LOCK) {
             mCachedEnabledWordSubstitutions[input]
         } ?: return input
@@ -971,11 +918,8 @@ class PersonalDictionaryUtil private constructor(
     }
 
     fun updateCachedEnabledWordSubstitutionMap() {
-        // Audit PD-8: the only site in this file that took AUD_SYNC_LOCK outside a
-        // try/finally. AUD_SYNC_LOCK is a process-global fair ReentrantLock held by
-        // AudSyncer, the AUD content observer and every add/remove/update - a single
-        // leak (a ConcurrentModificationException out of the TreeMap copy, say) wedges
-        // the whole personal-dictionary subsystem for the process lifetime.
+        // try/finally: AUD_SYNC_LOCK is process-global, so one leaked hold wedges the whole
+        // personal-dictionary subsystem.
         AudSyncer.AUD_SYNC_LOCK.lock()
         try {
             val immutableMap = Collections.unmodifiableSortedMap(TreeMap(mEnabledWordSubstitutions))

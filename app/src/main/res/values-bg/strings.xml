@@ -721,7 +721,6 @@
     <string name="device_config_import_unreadable">Този файл не е конфигурация на устройство</string>
     <string name="device_config_import_failed">Този файл не можа да бъде импортиран</string>
 
-    <!-- OTA app updates -->
     <string name="settings_updates_title">Актуализации</string>
     <string name="settings_updates_summary">Проверка за нова версия на BBKB</string>
     <string name="settings_update_installed_version_title">Инсталирана версия</string>
@@ -755,7 +754,6 @@
     <string name="settings_update_ready_title">Готово за инсталиране</string>
     <string name="settings_update_version_details">Подробности за версията</string>
     <string name="settings_update_unknown_sources_title">Да се разреши ли на BBKB да инсталира актуализации?</string>
-    <!-- Downloadable language packs (core/languagepack) -->
     <string name="language_packs_installed_header">Инсталирани</string>
     <string name="language_packs_available_header">Достъпни за изтегляне</string>
     <string name="language_packs_download">Изтегляне</string>
@@ -877,7 +875,6 @@
     <string name="settings_voice_stop_on_pause_summary_off">Продължава да слуша и при паузи, докато не докоснете микрофона или не настъпи половин минута тишина</string>
     <string name="voice_status_listening_tap_to_stop">Слушане&#8230; Докоснете микрофона, за да спрете</string>
 
-    <!-- Settings text moved out of the code (2026-11) -->
     <string name="settings_common_save">Запазване</string>
     <string name="settings_common_edit">Редактиране</string>
     <string name="settings_common_back">Назад</string>

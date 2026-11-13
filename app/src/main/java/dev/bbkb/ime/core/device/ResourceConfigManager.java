@@ -20,23 +20,25 @@ public final class ResourceConfigManager {
 
     private static final String TAG = "ResourceConfigManager";
 
-    // Performance: Cache frequently accessed dimension values
-    // These are called many times during keyboard initialization and layout
+    // Read many times during keyboard initialization and layout.
     private static volatile int sCachedScreenWidth = -1;
     private static volatile int sCachedKeyboardHeight = -1;
     private static volatile int sCachedOrientation = -1;
     private static volatile int sCachedDensityDpi = -1;
     private static volatile int sCachedScreenWidthDp = -1;
 
+    /** @param f a fraction read with an invalid default of -1 */
     public static boolean isValidFraction(float f) {
         return f >= 0.0f;
     }
 
+    /** @param i a pixel size read with an invalid default of -1 */
     public static boolean isValidPixelSize(int i) {
         return i > 0;
     }
 
     private ResourceConfigManager() {
+        // Static utility.
     }
 
     public static int getScreenWidthPixels(Resources resources) {
@@ -58,12 +60,8 @@ public final class ResourceConfigManager {
     }
     
     /**
-     * Height of the aux bar / suggestion strip, scaled by the keyboard height setting.
-     *
-     * The dimension resource is a single 40dp base for every screen and orientation; the
-     * per-device sw411dp/sw411dp-land overrides it used to carry are gone. Callers must use
-     * this rather than reading the dimension directly, or the strip stays full height while
-     * the keyboard around it shrinks.
+     * Height of the aux bar / suggestion strip, scaled by the keyboard height setting. Use this,
+     * not the dimension directly, or the strip stays full height while the keyboard shrinks.
      */
     public static int getSuggestionsStripHeight(Resources resources) {
         int base = resources.getDimensionPixelSize(R.dimen.config_suggestions_strip_height);
@@ -74,10 +72,7 @@ public final class ResourceConfigManager {
         return Math.max(1, Math.round(base * scale));
     }
 
-    /**
-     * Invalidate cached dimension values.
-     * Call this when configuration changes (e.g., orientation, density).
-     */
+    /** Call on a configuration change (orientation, density). */
     public static void invalidateDimensionCache() {
         sCachedScreenWidth = -1;
         sCachedKeyboardHeight = -1;
@@ -100,7 +95,7 @@ public final class ResourceConfigManager {
         }
         int baseHeight = (int) Math.max(Math.min(dimension, fraction), fraction2);
 
-        // Apply keyboard height scaling after clamping (expanded=1.15, regular=1.0, compact=0.85, extra_compact=0.75)
+        // Scale after clamping (expanded 1.15, regular 1.0, compact 0.85, extra_compact 0.75).
         float scale = SettingsManager.getEffectiveKeyboardHeightScale(resources);
         if (scale != 1.0f) {
             baseHeight = (int)(baseHeight * scale);
@@ -117,19 +112,26 @@ public final class ResourceConfigManager {
         return (((((((iM5592b - fraction2) - fraction3) + fraction) / 4) * 4) + fraction3) + fraction2) - fraction;
     }
 
+    /** @param i fraction resource id */
     public static float getFractionValue(Resources resources, int i) {
         return resources.getFraction(i, 1, 1);
     }
 
+    /**
+     * @param i attribute index
+     * @param f default when the attribute is missing or not a fraction
+     */
     public static float getFractionOrDefault(TypedArray typedArray, int i, float f) {
         TypedValue typedValuePeekValue = typedArray.peekValue(i);
         return (typedValuePeekValue == null || !isFractionType(typedValuePeekValue)) ? f : typedArray.getFraction(i, 1, 1, f);
     }
 
+    /** @param i attribute index; -1 when missing or not a fraction */
     public static float getFractionOrInvalid(TypedArray typedArray, int i) {
         return getFractionOrDefault(typedArray, i, -1.0f);
     }
 
+    /** @param i attribute index; -1 when missing or not a dimension */
     public static int getDimensionPixelSizeOrInvalid(TypedArray typedArray, int i) {
         TypedValue typedValuePeekValue = typedArray.peekValue(i);
         if (typedValuePeekValue == null || !isDimensionType(typedValuePeekValue)) {
@@ -138,6 +140,11 @@ public final class ResourceConfigManager {
         return typedArray.getDimensionPixelSize(i, -1);
     }
 
+    /**
+     * @param i attribute index
+     * @param i2 base a fraction is taken of
+     * @param f default when the attribute is missing or neither type
+     */
     public static float getFractionOrDimensionOrDefault(TypedArray typedArray, int i, int i2, float f) {
         TypedValue typedValuePeekValue = typedArray.peekValue(i);
         if (typedValuePeekValue == null) {
@@ -146,12 +153,14 @@ public final class ResourceConfigManager {
         if (isFractionType(typedValuePeekValue)) {
             return typedArray.getFraction(i, i2, i2, f);
         }
-        // FIX: Use getDimensionPixelSize() instead of getDimension() to match SuggestionStripView's rounding behavior
-        // getDimension() returns float which gets truncated when cast to int (52.5 -> 52)
-        // getDimensionPixelSize() rounds to nearest int (52.5 -> 53)
+        // getDimensionPixelSize rounds (52.5 -> 53) as SuggestionStripView does; getDimension would truncate.
         return isDimensionType(typedValuePeekValue) ? typedArray.getDimensionPixelSize(i, (int) f) : f;
     }
 
+    /**
+     * @param i attribute index
+     * @param i2 default when the attribute is missing or not an integer
+     */
     public static int getIntOrDefault(TypedArray typedArray, int i, int i2) {
         TypedValue typedValuePeekValue = typedArray.peekValue(i);
         return (typedValuePeekValue != null && isIntegerType(typedValuePeekValue)) ? typedArray.getInt(i, i2) : i2;

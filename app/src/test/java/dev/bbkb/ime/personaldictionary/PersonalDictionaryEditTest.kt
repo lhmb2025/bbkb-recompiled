@@ -29,16 +29,9 @@ import java.util.concurrent.CountDownLatch
 import java.util.concurrent.TimeUnit
 
 /**
- * What adds that are refused, edits and deletes leave behind: in the system user dictionary
- * (AUD, shared with every other app), in the stored dictionary, and in the prediction engine
- * (emulator, 2026-11-05):
- *
- * - a refused duplicate ("ZORBIX" beside "zorbix") was written to AUD anyway, and the AUD sync
- *   then swapped the two entries on every pass;
- * - an edit onto another entry's name was refused only after the edited entry had been deleted
- *   from AUD and from the stored map, so it was gone after a restart;
- * - an edit did not reach the engine, which kept correcting "quixotally" back to "quixotal";
- * - a deleted dictionary word stayed in the engine's learned words.
+ * What refused adds, edits and deletes leave behind in the system user dictionary (AUD, shared
+ * with every app), the stored dictionary and the engine: a refused add or edit writes nothing,
+ * edits reach the engine, and a deleted word leaves the engine's learned words.
  */
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [34], instrumentedPackages = ["com.blackberry.nuanceshim"])
@@ -87,8 +80,6 @@ class PersonalDictionaryEditTest {
         }
     }
 
-    // ---- fault 2: a refused add writes nothing ----------------------------------------------
-
     @Test
     fun aRefusedDuplicateAdd_writesNothingToAud() {
         pdu.add(word("zorbix"))
@@ -98,10 +89,7 @@ class PersonalDictionaryEditTest {
         assertEquals("zorbix", pdu.getWordSubstitutions()["zorbix"]?.word)
     }
 
-    /**
-     * A row beside one of ours that differs only in case, as a refused add used to leave: the
-     * sync leaves our entry as it is, pass after pass, and leaves the row (AUD is shared).
-     */
+    /** An AUD row differing from ours only in case: the sync keeps both, pass after pass (AUD is shared). */
     @Test
     fun anAudRowBesideOurEntryInAnotherCase_doesNotReplaceItOnSync() {
         pdu.add(word("zorbix"))
@@ -119,8 +107,7 @@ class PersonalDictionaryEditTest {
     @Test
     fun anEntryChangedInAud_stillComesIn() {
         pdu.add(shortcut("zqk", "old phrase"))
-        // Edited elsewhere (another app, or Android's own user dictionary settings): our row goes,
-        // a row under the same name in another case with a new phrase arrives.
+        // Edited elsewhere: our row goes, one with the name in another case and a new phrase arrives.
         context.contentResolver.delete(
             android.provider.UserDictionary.Words.CONTENT_URI,
             FakeUserDictionaryProvider.AudWrapperSelections.ALL_LOCALE_WITH_SHORTCUT, arrayOf("old phrase", "zqk")
@@ -133,8 +120,6 @@ class PersonalDictionaryEditTest {
         assertEquals("new phrase", pdu.getWordSubstitutions()["zqk"]?.word)
     }
 
-    // ---- fault 1 (edit half): a refused edit changes nothing -------------------------------
-
     @Test
     fun anEditOntoAnotherEntrysName_isRefusedAndTheEditedEntrySurvives() {
         pdu.add(word("alphaqo"))
@@ -146,8 +131,6 @@ class PersonalDictionaryEditTest {
         assertTrue("still stored", pdu.allUserAndEnabledDefaultWs.values.any { it.containsKey("alphaqo") })
         assertEquals("betaqo", pdu.getWordSubstitutions()["betaqo"]?.word)
     }
-
-    // ---- fault 3: an edit reaches the engine ------------------------------------------------
 
     @Test
     fun editingAWord_forgetsTheOldWordAndLearnsTheNewOneInTheEngine() {
@@ -175,8 +158,6 @@ class PersonalDictionaryEditTest {
         Thread.sleep(200)
         verify(sdk, never()).deleteDLMWord(anyString())
     }
-
-    // ---- fault 4: a deleted dictionary word leaves the engine's learned words ---------------
 
     @Test
     fun deletingADictionaryWord_deletesItFromTheEngine() {

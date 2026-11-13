@@ -33,29 +33,9 @@ import org.robolectric.util.ReflectionHelpers
 import java.util.Locale
 
 /**
- * Characterisation tests for [FccController] — the cursor-mode ("fine cursor control") board's
- * controller.
- *
- * The FCC board had **no test coverage at all** (1,046 code lines across three files). These cases
- * pin **what the controller does today**, not what it ought to do, so a rewrite has to reproduce it
- * or deliberately change it rather than drift silently. Assertions recording behaviour that is
- * plainly wrong are marked `CHARACTERISED BUG:`.
- *
- * What is covered: the direction→cursor-move mapping, the synthetic held-shift that *is* select
- * mode (and which of the two shift keycodes `controlMode` chooses), the RTL-aware
- * collapse-the-selection arithmetic on copy/cut/paste, the open gate that refuses to open the board
- * while a physical key is held, the close sequence and its device-specific closing-flag quirk, and
- * the flag the suggestion strip consumes.
- *
- * What is not covered, and why: [FccView] itself is a 621-line `RelativeLayout` with two complete
- * alternative UIs selected at inflate time from the theme, driven by raw `MotionEvent`s against
- * laid-out arrow/nub geometry. It is mocked here — so the *view's* own arithmetic
- * ([FccCursorTouchListener]'s nub travel, thresholds and accelerating repeat delay) is a reported
- * gap, not something these tests pin.
- *
- * The controller reaches four singletons ([SettingsManager], [SubtypeManager], [InputMethodHelper],
- * [DeviceProfile]) which are static-mocked, and the view it drives is injected into `mFccView`
- * exactly as `bindView` would leave it (one case drives `bindView` itself).
+ * Characterisation tests for [FccController]: cursor moves, the synthetic held shift of select mode,
+ * the RTL-aware selection collapse, the open gate, the close sequence and the conditional closes.
+ * Pins current behaviour, not intended behaviour. [FccView] is mocked, so its touch arithmetic is not pinned.
  */
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [34], manifest = Config.NONE)
@@ -91,7 +71,7 @@ class FccControllerTest {
         view = mock(FccView::class.java)
         listener = mock(FccController.Listener::class.java)
 
-        // mRichInputConnection is a public FINAL field, so it is injected rather than assigned.
+        // mRichInputConnection is a public final field, so it is injected rather than assigned.
         ReflectionHelpers.setField(InputLogic::class.java, inputLogic, "mRichInputConnection", connection)
         `when`(ime.getInputLogic()).thenReturn(inputLogic)
         `when`(ime.getPhysicalKeyboardStateTracker()).thenReturn(keysDown)
@@ -133,22 +113,18 @@ class FccControllerTest {
         settingsStatic.close()
     }
 
-    /**
-     * `ArgumentMatchers.any()` and `ArgumentCaptor.capture()` both hand back `null`, which Kotlin
-     * refuses to pass to a non-nullable parameter. The matcher is still registered by the call, so
-     * casting the null through an unbounded type parameter is the standard way to use them here.
-     */
+    /** Kotlin-safe `any()`/`capture()`: the matcher registers, the null is cast through a type parameter. */
     @Suppress("UNCHECKED_CAST")
     private fun <T> anyArg(): T = Mockito.any<T>() as T
 
     @Suppress("UNCHECKED_CAST")
     private fun <T> ArgumentCaptor<T>.captured(): T = capture() as T
 
-    /** `controlMode` is a public FINAL field, so it is injected rather than assigned. */
+    /** `controlMode` is a public final field, so it is injected rather than assigned. */
     private fun controlMode(mode: Int) =
         ReflectionHelpers.setField(SettingsValues::class.java, settings, "controlMode", mode)
 
-    /** Leave the controller holding [view], exactly as `bindView` would. */
+    /** Leave the controller holding [view], as `bindView` would. */
     private fun attachView() =
         ReflectionHelpers.setField(FccController::class.java, controller, "mFccView", view)
 
@@ -167,12 +143,8 @@ class FccControllerTest {
         subtypeStatic.`when`<SubtypeManager> { SubtypeManager.getInstance() }.thenReturn(subtypes)
     }
 
-    /** Assert the selection was collapsed to exactly [offset] — both ends, once. */
+    /** Assert the selection was collapsed to exactly [offset], both ends, once. */
     private fun assertCollapsedTo(offset: Int) = verify(connection).setSelection(offset, offset)
-
-    // ═══════════════════════════════════════════════════════════════════════
-    // 1. Cursor movement
-    // ═══════════════════════════════════════════════════════════════════════
 
     @Test
     fun eachDirectionMovesTheCaretOneStepThatWay() {
@@ -189,17 +161,12 @@ class FccControllerTest {
 
     @Test
     fun aMoveIsAlwaysExactlyOneStepHoweverFarTheNubTravelled() {
-        // The repeat pump calls onMove once per tick; distance changes the tick RATE, never the
-        // step size. Nothing in the controller can emit a multi-character jump.
+        // The repeat pump calls onMove once per tick; distance changes the tick rate, never the step size.
         repeat(5) { controller.onMove(FccView.Direction.RIGHT) }
 
         verify(ime, Mockito.times(5)).moveRight(1)
         verify(ime, never()).moveRight(5)
     }
-
-    // ═══════════════════════════════════════════════════════════════════════
-    // 2. The action keys — every one carries the shift-held meta state
-    // ═══════════════════════════════════════════════════════════════════════
 
     @Test
     fun everyActionKeyIsSentWithTheShiftHeldMetaState() {
@@ -220,14 +187,9 @@ class FccControllerTest {
         verify(cursorTracker, never()).hide()
     }
 
-    // ═══════════════════════════════════════════════════════════════════════
-    // 3. Select mode is a synthetic held shift
-    // ═══════════════════════════════════════════════════════════════════════
-
     @Test
     fun engagingSelectModeHoldsTheShiftKeyDown() {
-        // The view flips its own mSelectMode BEFORE calling back, so "the view is in select mode"
-        // is the controller's signal that the mode was just entered.
+        // The view flips mSelectMode before calling back, so select mode on the view means it was just entered.
         `when`(view.isSelectMode).thenReturn(true)
 
         controller.onToggleSelect(1)
@@ -264,10 +226,6 @@ class FccControllerTest {
         assertFalse(controller.isSelectModeActive)
     }
 
-    // ═══════════════════════════════════════════════════════════════════════
-    // 4. Collapsing the selection — the RTL-aware arithmetic
-    // ═══════════════════════════════════════════════════════════════════════
-
     @Test
     fun collapsingRightInAnLtrLocaleGoesToTheFarEnd() {
         `when`(view.isSelectMode).thenReturn(false)
@@ -301,8 +259,7 @@ class FccControllerTest {
 
     @Test
     fun aBackwardsSelectionIsNormalisedByMinAndMax() {
-        // The connection can report the anchor after the head; the collapse is defined on the
-        // ORDER of the two offsets, not on which one is the anchor.
+        // The collapse is defined on the order of the two offsets, not on which one is the anchor.
         `when`(view.isSelectMode).thenReturn(false)
         selectionIs(9, 3)
 
@@ -313,8 +270,7 @@ class FccControllerTest {
 
     @Test
     fun collapseDirectionMinusOneLeavesTheSelectionAlone() {
-        // -1 is what show() and hide() pass when they toggle the mode themselves: leave the
-        // selection exactly where it is, just release the shift.
+        // -1 is what show() and hide() pass: leave the selection where it is, just release the shift.
         `when`(view.isSelectMode).thenReturn(false)
         selectionIs(3, 9)
 
@@ -326,9 +282,7 @@ class FccControllerTest {
 
     @Test
     fun collapsingWithNoSelectionIsStillAWriteOfTheSameOffset() {
-        // CHARACTERISED: there is no "is there a selection" test — a collapse with the caret
-        // already collapsed re-writes the same offset, which is a real setSelection call on the
-        // editor rather than a no-op.
+        // No "is there a selection" check: collapsing an already-collapsed caret still calls setSelection.
         `when`(view.isSelectMode).thenReturn(false)
         selectionIs(5, 5)
 
@@ -336,10 +290,6 @@ class FccControllerTest {
 
         assertCollapsedTo(5)
     }
-
-    // ═══════════════════════════════════════════════════════════════════════
-    // 5. Opening the board
-    // ═══════════════════════════════════════════════════════════════════════
 
     @Test
     fun openingRaisesTheViewAndAnnouncesItInOrder() {
@@ -357,8 +307,7 @@ class FccControllerTest {
 
     @Test
     fun theBoardRefusesToOpenWhileAPhysicalKeyIsHeld() {
-        // Opening mid-chord used to strand the modifier state; this gate is the fix and it is the
-        // one precondition FCC has that no other board has.
+        // Opening mid-chord would strand the modifier state; FCC is the only board with this precondition.
         `when`(keysDown.numberOfKeysDown).thenReturn(1)
 
         controller.showFcc()
@@ -395,10 +344,6 @@ class FccControllerTest {
         verify(view).show()
     }
 
-    // ═══════════════════════════════════════════════════════════════════════
-    // 6. Closing the board
-    // ═══════════════════════════════════════════════════════════════════════
-
     @Test
     fun closingLowersTheViewAnnouncesItAndLeavesCursorModeOff() {
         boardIsUp()
@@ -420,18 +365,8 @@ class FccControllerTest {
     }
 
     /**
-     * The close report that keeps the board coordinator truthful.
-     *
-     * `UnifiedBoardCoordinator.activeBoard()` is the ONLY copy of "which board is open", and it
-     * moves only on a report. `UnifiedInputBoardManager.closeBoard(-42)` reports — but FCC closes
-     * itself from a dozen places that never touch the UIM (`hideIfDisabled` on a settings reload,
-     * `hideUnlessToggling`, `onSelectionUpdate`, the configuration-change and dismiss paths, the
-     * UIM's own not-enabled force-close), and `onFccPanelHidden` does not report either
-     * (`closeActiveComponent` only runs the keyboard-state chain, as its own javadoc says). Each
-     * of those left the coordinator claiming `-42` with the board gone, so the user's next tap on
-     * the FCC icon took `requestBoard`'s CLOSE branch and did nothing — the owner-reported "FCC
-     * sometimes does not open when tapping on its icon". Reporting from `hideFcc()` closes the
-     * hole for every one of those paths at once.
+     * `hideFcc()` reports the close to the board coordinator. FCC closes itself from many paths that never
+     * touch the UIM; without the report the coordinator still claims -42 and the next FCC icon tap does nothing.
      */
     @Test
     fun closingReportsTheCloseToTheBoardCoordinator() {
@@ -444,8 +379,7 @@ class FccControllerTest {
 
     @Test
     fun aCloseThatDidNotHappenReportsNothing() {
-        // Negative control: the "is the board up" guard is what decides, and a no-op close must
-        // not clear coordinator state for a board some other press legitimately owns.
+        // Negative control: a no-op close must not clear coordinator state for a board another press owns.
         controller.hideFcc()
 
         verify(uim, never()).reportBoardClosed(Mockito.anyInt())
@@ -470,13 +404,6 @@ class FccControllerTest {
 
         verify(view).hide()
     }
-
-    // 7. (The closing flag the suggestion strip consumed is gone: new suggestions no longer
-    //    take the menu down, so there was nothing left for it to protect. 2026-11-05.)
-
-    // ═══════════════════════════════════════════════════════════════════════
-    // 8. The conditional closes
-    // ═══════════════════════════════════════════════════════════════════════
 
     @Test
     fun hideUnlessTogglingSpareTheBoardWhileTheSelectChipIsMidToggle() {
@@ -520,10 +447,6 @@ class FccControllerTest {
         assertFalse(controller.isEnabled)
     }
 
-    // ═══════════════════════════════════════════════════════════════════════
-    // 9. Selection updates from the editor
-    // ═══════════════════════════════════════════════════════════════════════
-
     @Test
     fun anEditorSelectionCommitsAndClosesTheBoardWhenNoMetaKeyIsHeld() {
         boardIsUp()
@@ -555,10 +478,6 @@ class FccControllerTest {
         verify(view, never()).hide()
         verify(view).updateButtons()
     }
-
-    // ═══════════════════════════════════════════════════════════════════════
-    // 10. Identity, view lifetime and teardown
-    // ═══════════════════════════════════════════════════════════════════════
 
     @Test
     fun theBoardAnswersToKeycodeMinusFortyTwo() {

@@ -12,41 +12,26 @@ import dev.bbkb.ime.core.shared.Logger;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
- * The keypad touch source for firmware that hands the pad to the IME itself: on the Titan 2 and
- * Titan 2 Elite with Android 16 and the OEM Scroll assistant on, the pad's events reach a
- * <em>focused</em> IME window decor view that has an {@link View.OnGenericMotionListener}, while
- * {@code InputMethodService.onGenericMotionEvent} alone does not reliably see them.
- *
- * <p>When {@link TouchSourceSelector} picks {@link TouchSourceSelector.Choice#NATIVE} for the
- * active profile, {@link #attach()} (on {@code onStartInputView} and {@code onWindowShown}) makes
- * the IME window's decor view focusable in touch mode, focuses it, and installs a generic-motion
- * listener that forwards into the IME's own {@code onGenericMotionEvent} pipeline;
- * {@link #detach()} (on {@code onWindowHidden}) undoes all three. The IME keeps its own
- * {@code onGenericMotionEvent} entry as well, so the same event can arrive by both routes:
- * {@link #duplicateResult} / {@link #recordResult} drop the second arrival (same device id,
- * action and event time). On every other device — no {@code <touch-keypad>}, or one the selector
- * does not give to this source — none of this runs: the decor view is never touched and the dedupe
- * is a no-op, so the KEY2, the MP01 and the emulators are unchanged.
- *
- * <p>Focus: the decor view is focused inside the IME's own window. Window focus — which window
- * receives key events, and so which editor the IME's InputConnection is bound to — is the app's and
- * is not changed by a view focusing itself inside another window. That needs confirming on a Titan
- * 2 (typing into the editor while the source is attached).
+ * Keypad touch source for firmware that hands the pad to the IME (Titan 2 on Android 16 with Scroll
+ * assistant on): events reach only a focused IME decor view with an {@link View.OnGenericMotionListener},
+ * not {@code onGenericMotionEvent} alone. {@link #attach()} makes the decor view focusable, focuses it
+ * and forwards into the IME's pipeline; {@link #detach()} undoes it. Both routes can deliver the same
+ * event, so {@link #duplicateResult} / {@link #recordResult} drop the second. Focusing a view inside
+ * the IME window does not move window focus, so the app's editor binding is unchanged.
  */
 public final class NativeTouchSource implements KeypadTouchSource {
 
     private static final String TAG = "NativeTouchSource";
 
-    /** What the source needs from the IME. */
     public interface Host {
-        /** The IME window's decor view, or null while the window does not exist. */
+        /** Null while the window does not exist. */
         @Nullable
         View decorView();
 
-        /** The IME's generic-motion entry ({@code BlackBerryIME.onGenericMotionEvent}). */
+        /** {@code BlackBerryIME.onGenericMotionEvent}. */
         boolean onGenericMotionEvent(@NonNull MotionEvent event);
 
-        /** {@link TouchSourceSelector}'s answer for the active profile, asked on each attach. */
+        /** Asked on each attach. */
         @NonNull
         TouchSourceSelector.Selection selection();
     }
@@ -68,8 +53,6 @@ public final class NativeTouchSource implements KeypadTouchSource {
         this.listener = (v, event) -> host.onGenericMotionEvent(event);
     }
 
-    // ── lifecycle ────────────────────────────────────────────────────────────
-
     @Override
     public void start() {
         started = true;
@@ -83,10 +66,7 @@ public final class NativeTouchSource implements KeypadTouchSource {
         publish(TouchSourceStatus.of(TouchSourceStatus.State.IDLE, TouchSourceStatus.Reason.STOPPED));
     }
 
-    /**
-     * Input view started or window shown: attach if the selector gives the pad to this source.
-     * Does nothing at all to the window when it does not.
-     */
+    /** On input view start / window shown: attach if the selector picks this source, else leave the window alone. */
     public void attach() {
         if (!started) return;
         final TouchSourceSelector.Selection selection = host.selection();
@@ -110,14 +90,14 @@ public final class NativeTouchSource implements KeypadTouchSource {
         decor.setFocusableInTouchMode(true);
         decor.setOnGenericMotionListener(listener);
         decor.requestFocus();
-        // Attached either way, so a pad that is enumerated mid-session is heard at once; but it
-        // is only ACTIVE once the OS has the pad (on the Titan 2, once Scroll assistant is on).
+        // Attached either way so a pad enumerated mid-session is heard at once; ACTIVE only once
+        // the OS has the pad.
         publish(selection.padEnumerated
                 ? TouchSourceStatus.of(TouchSourceStatus.State.ACTIVE, TouchSourceStatus.Reason.OK)
                 : selection.nativeStatus());
     }
 
-    /** Window hidden: remove the listener and give the decor view back as it was. */
+    /** On window hidden: remove the listener and restore the decor view's focusability. */
     public void detach() {
         final boolean wasAttached = attachedView != null;
         detachView();
@@ -141,25 +121,18 @@ public final class NativeTouchSource implements KeypadTouchSource {
         return attachedView != null;
     }
 
-    // ── dedupe (both routes call the IME's one entry) ────────────────────────
-
-    /**
-     * If {@code event} already went through the pipeline by the other route, the answer it got
-     * then; otherwise null. Always null while not attached, so it costs nothing elsewhere.
-     */
+    /** The earlier answer if {@code event} already came by the other route, else null (always null unattached). */
     @Nullable
     public Boolean duplicateResult(@NonNull MotionEvent event) {
         if (attachedView == null) return null;
         return deduper.seen(event);
     }
 
-    /** Remember that {@code event} has been handled, with its answer. No-op while not attached. */
+    /** No-op while not attached. */
     public void recordResult(@NonNull MotionEvent event, boolean handled) {
         if (attachedView == null) return;
         deduper.record(event, handled);
     }
-
-    // ── status ───────────────────────────────────────────────────────────────
 
     @NonNull
     @Override
@@ -196,10 +169,8 @@ public final class NativeTouchSource implements KeypadTouchSource {
     }
 
     /**
-     * The last few events through the pipeline, keyed by (device id, action, event time): the
-     * same physical event delivered by the decor-view listener and by the IME's own entry.
-     * A small ring rather than "the last event", because the two routes need not interleave
-     * one-for-one.
+     * Ring of recent events keyed by (device id, action, event time). A ring, not just the last
+     * event, because the two routes need not interleave one-for-one.
      */
     static final class MotionEventDeduper {
         private static final int SIZE = 32;

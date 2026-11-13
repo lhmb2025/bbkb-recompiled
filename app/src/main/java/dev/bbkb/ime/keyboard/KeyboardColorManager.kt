@@ -20,34 +20,11 @@ import dev.bbkb.ime.R
 import dev.bbkb.ime.core.shared.Logger
 
 /**
- * Keyboard color management: one immutable [Palette] per theme, swapped atomically.
- *
- * Consumers fall into three tiers, all valid:
- *  - observers (KeyboardView, AuxBarView, ...) repaint when the palette changes
- *  - pull-at-show views (FccView, VoiceInputView, ...) re-read on every inflate/show
- *  - pull-at-draw (drawKeyBackground, KeyDrawParams) read inside the draw path
- *
- * The palette is backed by Compose snapshot state, so composables that read a color
- * recompose automatically on theme change.
- *
- * The theme is two axes plus a color-source toggle:
- *  - [Style]: CLASSIC keeps the original BlackBerry aesthetic (square keys, opaque
- *    press, hairline dividers); MODERN uses the M3 palettes with the original
- *    geometry; MATERIAL adds the M3 styling (rounded state layers, candidate
- *    emphasis, no hairlines); BB10 recreates the BlackBerry 10 virtual keyboard
- *    (sculpted dark caps, electric-blue accent).
- *  - [Scheme]: light/dark/auto. Not applicable to fixed-palette styles
- *    (CLASSIC, BB10).
- *  - useSystemColors: Material You wallpaper colors (Android 12+), available under
- *    MODERN and MATERIAL.
- *
- * Usage:
- * ```
- * KeyboardColorManager.init(context, style, scheme, useSystemColors)  // in IME onCreate()
- * KeyboardColorManager.tint(imageView)        // icon tint
- * view.setBackground(KeyboardColorManager.fill(KeyboardColorManager.keyColor))
- * KeyboardColorManager.setTheme(Style.MATERIAL, Scheme.DARK, false)   // runtime switch
- * ```
+ * Keyboard colors: one immutable [Palette] per theme, swapped atomically and backed by Compose
+ * snapshot state. Consumers either observe changes, re-read on show, or read in the draw path.
+ * Theme = [Style] (CLASSIC and BB10 have fixed palettes; MODERN = M3 palettes with BlackBerry
+ * geometry; MATERIAL adds M3 styling) x [Scheme] (light/dark/auto, ignored by fixed palettes)
+ * + system (wallpaper) colors, Android 12+, MODERN and MATERIAL only.
  */
 object KeyboardColorManager {
 
@@ -57,10 +34,10 @@ object KeyboardColorManager {
         /** One fixed palette: no scheme axis, no system (wallpaper) colors. */
         @JvmField val fixedPalette: Boolean,
     ) {
-        CLASSIC(true),      // Classic BlackBerry look
-        MODERN(false),      // M3 palettes, original geometry
-        MATERIAL(false),    // M3 palettes + M3 styling
-        BB10(true);         // The BlackBerry 10 virtual keyboard look
+        CLASSIC(true),
+        MODERN(false),
+        MATERIAL(false),
+        BB10(true);
 
         companion object {
             @JvmStatic
@@ -74,8 +51,8 @@ object KeyboardColorManager {
     }
 
     enum class Scheme {
-        LIGHT,      // Force light
-        DARK,       // Force dark
+        LIGHT,
+        DARK,
         AUTO;       // Follow system theme
 
         companion object {
@@ -88,10 +65,7 @@ object KeyboardColorManager {
         }
     }
 
-    /**
-     * One theme's colors, as an immutable snapshot. Reads can never observe a
-     * half-updated theme, and a reference to a Palette stays internally consistent.
-     */
+    /** One theme's colors as an immutable snapshot, so a reader never sees a half-updated theme. */
     data class Palette(
         val icon: Int,
         val iconAlt: Int,
@@ -101,24 +75,13 @@ object KeyboardColorManager {
         val key: Int,
         val keyAlt: Int,
         val keyPressed: Int,
-        /**
-         * The theme's accent: gesture trail and sliding-key preview (the latter at
-         * [ALPHA_SLIDING_PREVIEW]). Formerly the gestureTrailColor /
-         * slidingKeyInputPreviewColor theme attrs, which only the light/dark styles set --
-         * classic and dynamic were stuck with the light teal.
-         */
+        /** Gesture trail and sliding-key preview (the latter at [ALPHA_SLIDING_PREVIEW]). */
         val accent: Int,
-        /**
-         * Base tone of the fret bars (KeyboardView.drawFrets derives the metal
-         * finish from it). Defaults to the key color; BB10 pins it explicitly so
-         * the frets stay bright when the key surface darkens.
-         */
+        /** Base tone of the fret bars; BB10 pins it so the frets stay bright on dark keys. */
         val fret: Int = key,
         /**
-         * The slideboard panels (number pad, quick phrases). The original painted them
-         * BlackBerry blue against grey keys, so they read as a layer under the keyboard; the
-         * M3 palettes keep that with primary container. Ground, separator and pressed tones
-         * are derived from this pair (see [slideGroundColor] and its siblings).
+         * Slideboard panels (number pad, quick phrases), a contrasting layer under the keyboard.
+         * Ground, separator and pressed tones derive from this pair (see [slideGroundColor]).
          */
         val slide: Int = key,
         val onSlide: Int = text,
@@ -128,12 +91,10 @@ object KeyboardColorManager {
         }
     }
 
-    // Alpha values for states
     const val ALPHA_FULL = 1.0f
     const val ALPHA_SECONDARY = 0.6f
     const val ALPHA_DISABLED = 0.38f
 
-    /** The old sliding_key_input_preview_* resources were the trail color at 0xB3 alpha. */
     const val ALPHA_SLIDING_PREVIEW = 0.7f
 
     /** M3 pressed state layer: content color over the surface at low opacity. */
@@ -143,28 +104,19 @@ object KeyboardColorManager {
     private const val STATE_LAYER_RADIUS_DP = 8f
     private const val STATE_LAYER_INSET_DP = 4f
 
-    // ============================================================================
-    // STATE
-    // ============================================================================
-
     private lateinit var appContext: Context
     private var currentStyle: Style = Style.MODERN
     private var currentScheme: Scheme = Scheme.AUTO
     private var useSystemColors: Boolean = false
     private val observers = mutableListOf<() -> Unit>()
 
-    /**
-     * The active palette. Compose snapshot state: composables reading it (directly or
-     * through the delegating getters below) recompose when it changes.
-     */
+    /** Compose snapshot state: composables reading it (or the getters below) recompose on change. */
     var palette: Palette by mutableStateOf(Palette.EMPTY)
         private set
 
     val isInitialized: Boolean
         get() = ::appContext.isInitialized
 
-    // Delegating getters — keep the pre-Palette call sites (Java and Kotlin) compiling
-    // unchanged: KeyboardColorManager.INSTANCE.getKeyColor() etc.
     val iconColor: Int get() = palette.icon
     val iconColorAlt: Int get() = palette.iconAlt
     val hintColor: Int get() = palette.hint
@@ -179,12 +131,7 @@ object KeyboardColorManager {
     /** Translucent press feedback for the Material theme: text color at state-layer alpha. */
     val pressedStateLayer: Int get() = applyAlpha(palette.text, ALPHA_STATE_LAYER)
 
-    /**
-     * The active style's non-color rendering spec ([StyleSpec]). Renderers read
-     * fields off this instead of branching on the style, so it carries everything
-     * that used to hang off isMaterialTheme(): key-cap geometry, label styling, the
-     * preview bubble, and the modern-boards treatment.
-     */
+    /** The active style's non-color rendering spec; renderers read it instead of branching on style. */
     @JvmStatic
     fun styleSpec(): StyleSpec = when (currentStyle) {
         Style.MATERIAL -> StyleSpec.MATERIAL
@@ -192,7 +139,6 @@ object KeyboardColorManager {
         else -> StyleSpec.LEGACY
     }
 
-    // Slideboard panel tones, all derived from the palette's slide / onSlide pair.
     val slideKeyColor: Int get() = palette.slide
     val slideTextColor: Int get() = palette.onSlide
     /** The panel behind the slide keys and phrase tiles: 10% on-color over the container. */
@@ -205,8 +151,8 @@ object KeyboardColorManager {
     val slidePressedStateLayer: Int get() = applyAlpha(palette.onSlide, ALPHA_STATE_LAYER)
 
     /**
-     * Start color of the soft shadow the keyboard casts on an open panel (fading to clear).
-     * On a light container a tint of its on-color reads as shade; on a dark one only black does.
+     * Start color of the shadow the keyboard casts on an open panel. On a light container a tint
+     * of its on-color reads as shade; on a dark one only black does.
      */
     val slideEdgeShadowColor: Int
         get() = if (ColorUtils.calculateLuminance(palette.slide) > 0.5) {
@@ -215,12 +161,7 @@ object KeyboardColorManager {
             applyAlpha(Color.BLACK, 0.45f)
         }
 
-    /** Sliding-key input preview: the accent, translucent. */
     val slidingPreviewColor: Int get() = applyAlpha(palette.accent, ALPHA_SLIDING_PREVIEW)
-
-    // ============================================================================
-    // INITIALIZATION / THEME
-    // ============================================================================
 
     fun init(
         context: Context,
@@ -237,10 +178,8 @@ object KeyboardColorManager {
     }
 
     /**
-     * For screens outside the IME (Settings) that draw with the keyboard palette. Until the
-     * IME's onCreate has run in this process the palette is [Palette.EMPTY], all transparent,
-     * so such a screen would draw nothing. Reads the same theme prefs the IME does, and
-     * re-applies them when already initialised so a theme picked in Settings shows up.
+     * For screens outside the IME (Settings): before the IME's onCreate the palette is
+     * [Palette.EMPTY] (all transparent). Reads the theme prefs and re-applies them if already set.
      */
     fun ensureInitialized(context: Context) {
         val prefs = dev.bbkb.ime.core.settings.PrefsManager.getPrefs(context)
@@ -274,16 +213,11 @@ object KeyboardColorManager {
 
     fun isSystemColorsEnabled(): Boolean = useSystemColors
 
-    /**
-     * Handle configuration changes (e.g., dark mode toggle, wallpaper change).
-     * Call this from the IME's onConfigurationChanged().
-     */
+    /** Call from the IME's onConfigurationChanged (dark mode, wallpaper). */
     fun onConfigurationChanged() {
         if (!isInitialized) return
-        // AUTO tracks system dark mode; system colors track the wallpaper palette
         if (currentScheme == Scheme.AUTO || systemColorsActive()) {
-            // Most configuration changes (rotation, keyboard, locale) leave the palette as it
-            // was; repainting every observer for them was wasted work.
+            // Most configuration changes leave the palette unchanged; skip the repaint then.
             val next = currentPalette()
             if (next == palette) return
             palette = next
@@ -292,18 +226,13 @@ object KeyboardColorManager {
         }
     }
 
-    // ============================================================================
-    // PALETTE CONSTRUCTION
-    // ============================================================================
-
     private fun reload() {
         palette = currentPalette()
         notifyObservers()
     }
 
     private fun notifyObservers() {
-        // Snapshot: an observer is allowed to detach its view (and therefore call
-        // removeObserver) from inside its own callback.
+        // Snapshot: an observer may call removeObserver from inside its own callback.
         observers.toList().forEach { it() }
     }
 
@@ -363,18 +292,13 @@ object KeyboardColorManager {
         key = appContext.getColor(R.color.bb_color_key),
         keyAlt = appContext.getColor(R.color.bb_color_key_alt),
         keyPressed = appContext.getColor(R.color.bb_color_key_pressed),
-        // The classic BB blue; also the pressed color, which is what classic used for emphasis.
+        // Classic uses the pressed blue for emphasis.
         accent = appContext.getColor(R.color.bb_color_key_pressed),
-        // The original slide keys' own blue (slide_key_background nine-patches).
         slide = appContext.getColor(R.color.bb_color_slide_key),
         onSlide = appContext.getColor(R.color.bb_color_slide_text),
     )
 
-    /**
-     * The BlackBerry 10 virtual keyboard: near-black board, dark sculpted caps, and
-     * the BB10 electric-blue accent (which also colors pressed keys, like the
-     * original's press feedback).
-     */
+    /** BlackBerry 10 look: near-black board, dark sculpted caps, electric-blue accent. */
     private fun bb10Palette() = Palette(
         icon = appContext.getColor(R.color.bb10_color_icon),
         iconAlt = appContext.getColor(R.color.bb10_color_icon_alt),
@@ -391,31 +315,13 @@ object KeyboardColorManager {
     )
 
     /**
-     * Material You (system/wallpaper colors), read straight off the framework palette.
-     *
-     * This used to ask MaterialColors.getColor() for colorSurface / colorPrimary / ... against
-     * `appContext.createConfigurationContext(config)`. Neither context carries an app theme --
-     * the `<application>` tag declares none, and createConfigurationContext() does not inherit
-     * one -- so every lookup missed and returned its fallback argument, making this function
-     * byte-identical to [lightPalette] / [darkPalette]. The whole "use system colors" toggle was
-     * inert; what wallpaper tint dark-mode users did see came from values-night-v31 aliasing the
-     * static m3_* tokens, and `highlight_*` has no such alias, which is why the Material style's
-     * accent-pill enter key stayed teal on an otherwise wallpaper-tinted board (beta, 2026-09-15).
-     *
-     * `@android:color/system_*` has no theme dependency, so it cannot fail the same way. It is
-     * also why this does not go through DynamicColors.wrapContextIfAvailable(): below API 33 that
-     * gates on exact-match Build.MANUFACTURER / Build.BRAND allowlists, and a KEY2 reports
-     * "TCL Technology" / "BlackBerry", neither of which is a key (the list has a bare "tcl").
-     * It would have fallen back just as silently, and on the one device this keyboard is for.
-     *
-     * Tones follow the M3 role mapping in the framework palette's shade numbering
-     * (shade = (100 - tone) * 10, so _0 is white and _1000 is black). The dark column repeats the
-     * choices values-night-v31 already made, so turning the toggle on does not shift the board
-     * for a dark-mode user who was seeing those aliases.
+     * Material You colors read straight off `@android:color/system_*`, which needs no theme. Do not
+     * use MaterialColors (the app context has no theme, so lookups return the fallback) or
+     * DynamicColors (below API 33 it allowlists manufacturers and rejects a BlackBerry KEY2).
+     * Shade = (100 - tone) * 10; the dark column matches the values-night-v31 aliases.
      */
     @RequiresApi(Build.VERSION_CODES.S)
     private fun dynamicPalette(dark: Boolean): Palette {
-        /** Pick the [dark] or light member of one framework tonal pair. */
         fun sys(darkShade: Int, lightShade: Int): Int =
             appContext.getColor(if (dark) darkShade else lightShade)
 
@@ -430,48 +336,36 @@ object KeyboardColorManager {
             background = sys(android.R.color.system_neutral1_900, android.R.color.system_neutral1_10),
             // surfaceContainer
             key = sys(android.R.color.system_neutral1_800, android.R.color.system_neutral1_50),
-            // surfaceContainerHighest -- the functional keys (enter, delete, ?123, shift)
+            // surfaceContainerHighest: the functional keys
             keyAlt = sys(android.R.color.system_neutral1_600, android.R.color.system_neutral1_100),
-            // secondaryContainer, matching what the static palettes use for press feedback
+            // secondaryContainer
             keyPressed = sys(android.R.color.system_accent2_700, android.R.color.system_accent2_100),
-            // primary -- the Material style's enter pill, the gesture trail, the sliding preview
+            // primary
             accent = sys(android.R.color.system_accent1_200, android.R.color.system_accent1_600),
-            // primaryContainer / onPrimaryContainer -- the slideboard panels
+            // primaryContainer / onPrimaryContainer
             slide = sys(android.R.color.system_accent1_700, android.R.color.system_accent1_100),
             onSlide = sys(android.R.color.system_accent1_100, android.R.color.system_accent1_900),
         )
     }
 
-    // ============================================================================
-    // COLOR APPLICATION
-    // ============================================================================
-
-    /** Tint a drawable with the primary icon color. */
+    /** Tint with the primary icon color. */
     fun tint(drawable: Drawable) = tint(drawable, palette.icon)
 
-    /** Tint a drawable with a specific color. */
     fun tint(drawable: Drawable, color: Int) {
         drawable.setTint(color)
         drawable.setTintMode(PorterDuff.Mode.SRC_IN)
     }
 
-    /** Tint an ImageView's image with the primary icon color. */
     fun tint(view: ImageView) = tint(view, palette.icon)
 
-    /** Tint an ImageView's image with a specific color. */
     fun tint(view: ImageView, color: Int) {
         view.imageTintList = ColorStateList.valueOf(color)
         view.imageTintMode = PorterDuff.Mode.SRC_IN
     }
 
-    // ============================================================================
-    // DRAWABLE FACTORIES
-    // ============================================================================
-
     /**
-     * Flat rectangular fill. Use for view backgrounds where the view determines the
-     * size. A GradientDrawable (rather than setBackgroundColor) avoids overlay issues
-     * on keyboard surfaces.
+     * Flat fill for backgrounds sized by the view. A GradientDrawable (not setBackgroundColor)
+     * avoids overlay issues on keyboard surfaces.
      */
     @JvmStatic
     fun fill(color: Int): Drawable = GradientDrawable().apply {
@@ -480,12 +374,8 @@ object KeyboardColorManager {
     }
 
     /**
-     * Flat rectangular fill with an explicit intrinsic size, in pixels.
-     *
-     * Required whenever the consumer measures the drawable — wrap_content ImageViews,
-     * anything calling getIntrinsicWidth() — because a GradientDrawable reports -1
-     * for both dimensions unless setSize() is called, which silently collapses the
-     * consumer to zero width.
+     * Fill with an intrinsic size in px. Needed when the consumer measures it (wrap_content):
+     * without setSize() a GradientDrawable reports -1 and the consumer collapses to zero.
      */
     @JvmStatic
     fun fill(color: Int, widthPx: Int, heightPx: Int): Drawable = GradientDrawable().apply {
@@ -495,21 +385,14 @@ object KeyboardColorManager {
     }
 
     /**
-     * Pressed-state overlay: transparent at rest, press feedback while pressed.
-     * Use as a foreground on tappable items (suggestion words, list rows).
-     *
-     * Classic/Modern: the original edge-to-edge opaque keyPressed fill. Material:
-     * an inset, rounded translucent state layer (M3). Build a fresh instance per view
-     * — StateListDrawables must not be shared across views.
+     * Pressed-state foreground for tappable items: an opaque keyPressed fill, or a rounded inset
+     * state layer under modern boards. Build one per view (StateListDrawables must not be shared).
      */
     @JvmStatic
     fun pressedHighlight(): Drawable =
         pressedHighlight(STATE_LAYER_RADIUS_DP, STATE_LAYER_INSET_DP)
 
-    /**
-     * Variant with explicit geometry, for shaped surfaces whose state layer must
-     * match their own outline (e.g. pill chips: radius = height/2, inset 0).
-     */
+    /** Explicit geometry for shaped surfaces (e.g. pill chips: radius = height/2, inset 0). */
     @JvmStatic
     fun pressedHighlight(cornerRadiusDp: Float, insetDp: Float): Drawable =
         StateListDrawable().apply {
@@ -528,18 +411,11 @@ object KeyboardColorManager {
         return InsetDrawable(rounded, (insetDp * density).toInt())
     }
 
-    // ============================================================================
-    // UTILITIES
-    // ============================================================================
-
-    /** Apply an alpha fraction to a color. */
     fun applyAlpha(color: Int, alpha: Float): Int =
         ColorUtils.setAlphaComponent(color, (alpha * 255).toInt())
 
-    /** Icon color with alpha applied. */
     fun getIconColor(alpha: Float = ALPHA_FULL): Int = applyAlpha(palette.icon, alpha)
 
-    /** Hint color with alpha applied. */
     fun getHintColor(alpha: Float = ALPHA_FULL): Int = applyAlpha(palette.hint, alpha)
 
     private fun isSystemInDarkMode(): Boolean {
@@ -547,17 +423,9 @@ object KeyboardColorManager {
         return (uiMode and Configuration.UI_MODE_NIGHT_MASK) == Configuration.UI_MODE_NIGHT_YES
     }
 
-    // ============================================================================
-    // OBSERVERS
-    // ============================================================================
-
     /**
-     * Register for palette-change notifications.
-     *
-     * Pair with [removeObserver] on detach, passing **the same instance**: the registry is keyed
-     * by identity, so registering a lambda literal and removing another literal with the same
-     * body removes nothing and leaks whatever the first one captured (typically a View, i.e. a
-     * whole view tree). Hold the lambda in a field — see `KeyboardView.colorObserver`.
+     * Pair with [removeObserver] passing the same instance (identity-keyed): a second lambda
+     * literal removes nothing and leaks the captured view. Hold it in a field.
      */
     fun addObserver(observer: () -> Unit) {
         observers.add(observer)

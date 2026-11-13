@@ -30,37 +30,28 @@ import java.util.function.Consumer;
 import dev.bbkb.ime.BuildConfig;
 
 /**
- * Unified adapter for all suggestion types: Latin, CJK, and Autofill.
+ * Adapter for every suggestion mode (Latin, CJK, autofill, language chips).
  *
- * <p>Word updates ({@link #setSuggestions}) notify item ranges, so the bound holders are rebound
- * in place instead of being detached, recycled (and, past the pool size, re-inflated) and
- * re-added on every keystroke. Mode, palette and width changes still rebind wholesale. The
- * RecyclerView runs no item animator (see UnifiedSuggestionView), so ranged notifications do not
- * animate.
+ * <p>Word updates ({@link #setSuggestions}) notify item ranges so bound holders rebind in place
+ * on every keystroke; mode, palette and width changes rebind wholesale. The RecyclerView runs no
+ * item animator, so ranged notifications do not animate.
  */
 public class UnifiedSuggestionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private static final String DIAG = "INLINE_AUTOFILL_DEBUG";
     static final int VIEW_TYPE_WORD = 0;
     private static final int VIEW_TYPE_AUTOFILL = 1;
-    
-    // Latin mode shows only 3 suggestions with equal width
+
     private static final int LATIN_MAX_SUGGESTIONS = 3;
-    
-    // Minimum text scale before ellipsizing (matches old SuggestionStripLayoutHelper)
+
+    // Minimum text scale before ellipsizing.
     private static final float MIN_TEXT_SCALE = 0.7f;
-    
-    // Available width for calculating equal-width items in Latin mode
+
     private int availableWidth = 0;
 
-    /**
-     * Bumped by {@link #onPaletteChanged()}. Per-holder drawables built from the palette are
-     * rebuilt on the next bind when their generation is stale, instead of a fresh
-     * StateListDrawable + GradientDrawable + InsetDrawable per bound word per keystroke.
-     */
+    /** Bumped by {@link #onPaletteChanged()}; holders rebuild palette drawables when stale. */
     private int paletteGeneration = 0;
 
-    /** R.dimen.config_suggestion_min_width_material, resolved once. */
     private final int minWidthMaterialPx;
 
     private SuggestionMode currentMode = SuggestionMode.LATIN;
@@ -90,10 +81,7 @@ public class UnifiedSuggestionAdapter extends RecyclerView.Adapter<RecyclerView.
         }
     }
 
-    /**
-     * The chip a holder shows: read off the holder, not its adapter position, which is
-     * NO_POSITION while an adapter update is pending (the strip's width change rebinds).
-     */
+    /** Read off the holder, not its adapter position, which is NO_POSITION while an update is pending. */
     private LanguageChip boundChip(WordViewHolder holder) {
         return currentMode == SuggestionMode.LANGUAGES ? holder.chip : null;
     }
@@ -140,18 +128,12 @@ public class UnifiedSuggestionAdapter extends RecyclerView.Adapter<RecyclerView.
         }
     }
 
-    /**
-     * Takes a result that draws exactly like the bound one (UnifiedSuggestionView checked), so
-     * clicks report the newest word objects without rebinding a single holder.
-     */
+    /** For a result that draws exactly like the bound one: clicks report the newest words, no rebind. */
     void replaceSuggestionsWithoutRebind(SuggestedWords words) {
         this.suggestedWords = words;
     }
 
-    /**
-     * Invalidate palette-derived per-holder state (the pressed highlight). Called from
-     * {@code UnifiedSuggestionView}'s KeyboardColorManager observer.
-     */
+    /** Invalidates palette-derived per-holder state (the pressed highlight). */
     public void onPaletteChanged() {
         this.paletteGeneration++;
         notifyDataSetChanged();
@@ -197,14 +179,13 @@ public class UnifiedSuggestionAdapter extends RecyclerView.Adapter<RecyclerView.
     @NonNull
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        // Use parent's context which has the keyboard theme applied
-        // This ensures theme attributes like ?attr/suggestionWordStyle are resolved correctly
+        // The parent's context carries the keyboard theme (?attr/suggestionWordStyle).
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
         
         if (viewType == VIEW_TYPE_AUTOFILL) {
             View view = inflater.inflate(R.layout.autofill_suggestion_item, parent, false);
             final AutofillViewHolder holder = new AutofillViewHolder(view);
-            // Once per holder, like the word holders: the position is read at click time.
+            // Position is read at click time.
             view.setOnClickListener(v -> {
                 int position = holder.getBindingAdapterPosition();
                 if (BuildConfig.DEBUG) {
@@ -218,8 +199,7 @@ public class UnifiedSuggestionAdapter extends RecyclerView.Adapter<RecyclerView.
         }
         View view = inflater.inflate(R.layout.suggestion_word_item, parent, false);
         final WordViewHolder holder = new WordViewHolder(view);
-        // Installed here rather than per bind: onCreateViewHolder runs a handful of times, the
-        // binds run on every keystroke. The position is read at click time instead of captured.
+        // Installed per holder, not per bind; the position is read at click time.
         view.setOnClickListener(v -> {
             if (listener == null) return;
             LanguageChip chip = boundChip(holder);
@@ -254,11 +234,7 @@ public class UnifiedSuggestionAdapter extends RecyclerView.Adapter<RecyclerView.
         }
     }
 
-    /**
-     * A language chip: the language's name in the strip's text, the current language bold and in
-     * the text colour, the others in the hint colour the strip gives its other candidates; sized
-     * to its name, so the row scrolls when there are more than fit.
-     */
+    /** Current language bold in the text colour, others in the hint colour; sized to the name so the row scrolls. */
     private void bindLanguageChip(WordViewHolder holder, int position) {
         if (holder.highlightGeneration != this.paletteGeneration) {
             holder.itemView.setForeground(KeyboardColorManager.pressedHighlight());
@@ -269,8 +245,7 @@ public class UnifiedSuggestionAdapter extends RecyclerView.Adapter<RecyclerView.
             params.width = ViewGroup.LayoutParams.WRAP_CONTENT;
             holder.itemView.setLayoutParams(params);
         }
-        // As wide as the name plus an even padding, no minimum: a minimum would pad "Thai" out
-        // to the width of a word slot and make the gaps between chips uneven.
+        // No minimum width: it would pad short names to a word slot and make the gaps uneven.
         holder.itemView.setMinimumWidth(0);
         int chipPadding = context.getResources().getDimensionPixelSize(R.dimen.config_language_chip_horizontal_padding);
         holder.textView.setPadding(chipPadding, holder.textView.getPaddingTop(), chipPadding, holder.textView.getPaddingBottom());
@@ -314,12 +289,10 @@ public class UnifiedSuggestionAdapter extends RecyclerView.Adapter<RecyclerView.
             holder.textView.setTextScaleX(1.0f);
             return;
         }
-        
-        // Candidate hierarchy (modern boards only): the word that commits on space is
-        // bold in the text color, the other candidates drop to the hint color. Index
-        // semantics match MoreSuggestionsKeyboard: index 1 is the auto-correction,
-        // index 0 the typed word. When neither flag is set (e.g. next-word predictions)
-        // all candidates render uniformly. Legacy styles keep the uniform styling.
+
+        // Modern boards: the word that commits on space is bold, the others use the hint color.
+        // Index 1 is the auto-correction, index 0 the typed word; with neither flag set (e.g.
+        // next-word predictions) all render uniformly.
         boolean modernBoards = KeyboardColorManager.styleSpec().getModernBoards();
         boolean isDefaultCandidate = suggestedWords.mWillAutoCorrect
                 ? position == 1
@@ -332,22 +305,16 @@ public class UnifiedSuggestionAdapter extends RecyclerView.Adapter<RecyclerView.
         holder.textView.setTypeface(
                 modernBoards && isDefaultCandidate ? Typeface.DEFAULT_BOLD : Typeface.DEFAULT);
 
-        // Modern boards get 48dp minimum touch-target width; legacy styles keep the
-        // original unconstrained width (Latin slots are sized explicitly below anyway).
+        // 48dp minimum touch target on modern boards only.
         holder.itemView.setMinimumWidth(modernBoards ? this.minWidthMaterialPx : 0);
 
-        // Pressed highlight, themed rather than a fixed drawable. The layout used to
-        // hardcode the dark-theme selector, so light themes got the wrong highlight.
-        // pressedHighlight() is a FACTORY (three Drawable allocations plus a displayMetrics
-        // read), so it runs once per holder rather than once per bound word per keystroke; a
-        // StateListDrawable must not be shared across views, hence per-holder and not cached
-        // on the adapter.
+        // pressedHighlight() allocates, so build once per holder per palette; a StateListDrawable
+        // must not be shared across views, so it cannot be cached on the adapter.
         if (holder.highlightGeneration != this.paletteGeneration) {
             holder.itemView.setForeground(KeyboardColorManager.pressedHighlight());
             holder.highlightGeneration = this.paletteGeneration;
         }
 
-        // Set item width for Latin mode (equal 1/3 width for each suggestion)
         if (currentMode == SuggestionMode.LATIN && availableWidth > 0) {
             int itemWidth = getLatinItemWidth();
             if (BuildConfig.DEBUG) {
@@ -364,7 +331,6 @@ public class UnifiedSuggestionAdapter extends RecyclerView.Adapter<RecyclerView.
             android.util.Log.d("SUGGESTION_STRIP_DEBUG", "bindWordViewHolder pos=" + position
                     + " WRAP_CONTENT availableWidth=" + availableWidth + " mode=" + currentMode);
             }
-            // CJK/Autofill mode: wrap content (scrollable)
             ViewGroup.LayoutParams params = holder.itemView.getLayoutParams();
             if (params != null && params.width != ViewGroup.LayoutParams.WRAP_CONTENT) {
                 params.width = ViewGroup.LayoutParams.WRAP_CONTENT;
@@ -376,31 +342,25 @@ public class UnifiedSuggestionAdapter extends RecyclerView.Adapter<RecyclerView.
         if (wordInfo != null) {
             CharSequence text = wordInfo.word;
             holder.textView.setText(text);
-            
-            // Auto-shrink text for Latin mode to fit within the fixed width
+
             if (currentMode == SuggestionMode.LATIN && availableWidth > 0) {
                 int itemWidth = getLatinItemWidth();
-                // Account for padding
                 int paddingHorizontal = holder.textView.getPaddingStart() + holder.textView.getPaddingEnd();
                 int textAvailableWidth = itemWidth - paddingHorizontal;
-                
-                // Calculate text scale and apply ellipsize if needed
+
                 applyTextAutoShrink(holder.textView, text, textAvailableWidth);
             } else {
-                // Reset text scale for non-Latin modes
                 holder.textView.setTextScaleX(1.0f);
             }
-            
-            // Show more suggestions indicator on center suggestion (position 1) 
-            // when there are more than 3 suggestions available
+
+            // The center slot shows the more-suggestions indicator when there are more than 3.
             if (holder.moreSuggestionsIndicator != null) {
                 boolean showIndicator = currentMode == SuggestionMode.LATIN 
                         && position == 1 
                         && suggestedWords != null 
                         && suggestedWords.size() > LATIN_MAX_SUGGESTIONS;
                 holder.moreSuggestionsIndicator.setVisibility(showIndicator ? View.VISIBLE : View.GONE);
-                
-                // Apply icon color from KeyboardColorManager
+
                 if (showIndicator) {
                     int iconColor = KeyboardColorManager.INSTANCE.getIconColor(KeyboardColorManager.ALPHA_FULL);
                     holder.moreSuggestionsIndicator.setColorFilter(iconColor);
@@ -408,11 +368,8 @@ public class UnifiedSuggestionAdapter extends RecyclerView.Adapter<RecyclerView.
             }
         }
     }
-    
-    /**
-     * Apply auto-shrink logic to text: scale text to fit, then ellipsize if still too long.
-     * Based on SuggestionStripLayoutHelper approach.
-     */
+
+    /** Scales text down to fit, then ellipsizes (via XML) below MIN_TEXT_SCALE. */
     private void applyTextAutoShrink(TextView textView, CharSequence text, int availableWidth) {
         if (TextUtils.isEmpty(text) || availableWidth <= 0) {
             textView.setTextScaleX(1.0f);
@@ -425,21 +382,17 @@ public class UnifiedSuggestionAdapter extends RecyclerView.Adapter<RecyclerView.
         float textWidth = paint.measureText(text, 0, text.length());
         
         if (textWidth <= availableWidth) {
-            // Text fits at full scale
             textView.setTextScaleX(1.0f);
             return;
         }
-        
-        // Calculate scale needed to fit
+
         float scale = availableWidth / textWidth;
         
         if (scale >= MIN_TEXT_SCALE) {
-            // Scale is acceptable (70% or more), just apply it
             textView.setTextScaleX(scale);
         } else {
-            // Scale would be too small, use minimum scale and ellipsize
             textView.setTextScaleX(MIN_TEXT_SCALE);
-            // Ellipsize is handled by XML (ellipsize="middle")
+            // Ellipsized by the layout (ellipsize="middle").
         }
     }
 
@@ -456,8 +409,7 @@ public class UnifiedSuggestionAdapter extends RecyclerView.Adapter<RecyclerView.
         }
         
         Object suggestion = autofillSuggestions.get(position);
-        
-        // Handle InlineSuggestion inflation
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             try {
                 android.view.inputmethod.InlineSuggestion inlineSuggestion = 
@@ -495,19 +447,14 @@ public class UnifiedSuggestionAdapter extends RecyclerView.Adapter<RecyclerView.
         if (currentMode == SuggestionMode.AUTOFILL) {
             return autofillSuggestions.size();
         } else if (currentMode == SuggestionMode.LATIN) {
-            // Latin mode: limit to 3 suggestions
             int count = suggestedWords != null ? suggestedWords.size() : 0;
             return Math.min(count, LATIN_MAX_SUGGESTIONS);
         } else {
-            // CJK mode: show all suggestions (scrollable)
             return suggestedWords != null ? suggestedWords.size() : 0;
         }
     }
-    
-    /**
-     * Set the available width for calculating equal-width items in Latin mode.
-     * This should be the RecyclerView's actual width (already excludes hamburger and margins).
-     */
+
+    /** The RecyclerView's own width (already excludes the hamburger and margins), for Latin slots. */
     public void setAvailableWidth(int width) {
         int old = this.availableWidth;
         this.availableWidth = width;
@@ -519,11 +466,8 @@ public class UnifiedSuggestionAdapter extends RecyclerView.Adapter<RecyclerView.
             notifyDataSetChanged();
         }
     }
-    
-    /**
-     * Get the width for a single suggestion item in Latin mode.
-     * Items should each take 1/3 of the available width.
-     */
+
+    /** One third of the available width in Latin mode, else WRAP_CONTENT. */
     public int getLatinItemWidth() {
         if (availableWidth <= 0 || currentMode != SuggestionMode.LATIN) {
             return ViewGroup.LayoutParams.WRAP_CONTENT;

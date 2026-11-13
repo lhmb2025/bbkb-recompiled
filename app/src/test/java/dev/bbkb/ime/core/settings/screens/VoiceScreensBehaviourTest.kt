@@ -53,18 +53,10 @@ import org.robolectric.annotation.Config
 import org.robolectric.shadows.ShadowSpeechRecognizer
 
 /**
- * CHARACTERISATION TEST — [VoiceInputSettingsScreen] and [VoiceLanguageSelectionScreen].
- *
- * `SettingsScreenRenderTest` renders both in the state a fresh install produces, which for the
- * language picker means the "Loading available languages…" spinner and nothing else. So neither
- * the list it eventually shows nor anything either screen writes was covered.
- *
- * The picker discovers languages three ways and lists them one way: the chosen language and the
- * user's keyboard languages first, then every language by name, with the Voice chip on the ones
- * the recogniser has on the phone when it can say which those are. Both discovery shapes are
- * pinned here: the pre-API-33 ordered-broadcast path with no receiver to answer it, which falls
- * back to the built-in language list and knows nothing about offline, and API 33's
- * `checkRecognitionSupport`, answered through Robolectric's shadow.
+ * Pins what [VoiceInputSettingsScreen] and [VoiceLanguageSelectionScreen] list and write. The
+ * picker lists the chosen and keyboard languages first, then all by name, with a Voice chip on the
+ * installed ones; both discovery paths are covered: pre-API-33 ordered broadcast with no receiver
+ * (built-in list, offline unknown) and API 33 `checkRecognitionSupport` via Robolectric's shadow.
  */
 @RunWith(RobolectricTestRunner::class)
 @Config(qualifiers = "w411dp-h891dp")
@@ -118,9 +110,7 @@ class VoiceScreensBehaviourTest {
         useUnmergedTree = true,
     ).fetchSemanticsNodes()
 
-    // ========================================================================
     // The language picker, legacy discovery path (pre-API 33)
-    // ========================================================================
 
     private val voiceChip = "Voice input works offline"
     private val german = "Deutsch (Deutschland)"
@@ -201,9 +191,7 @@ class VoiceScreensBehaviourTest {
         )
     }
 
-    // ========================================================================
     // The language picker, API 33 discovery path
-    // ========================================================================
 
     /**
      * `checkRecognitionSupport` reports which languages are installed on the device and which are
@@ -252,9 +240,8 @@ class VoiceScreensBehaviourTest {
     }
 
     /**
-     * The languages the service recognises over the network are listed too. They used to be left
-     * out, so a recogniser with few on-device models offered only those. Not installed, so they
-     * carry no chip, and a language reported twice is listed once.
+     * Languages the service recognises over the network are listed too, without the chip, and a
+     * language reported twice is listed once.
      */
     @Test
     @Config(sdk = [34])
@@ -288,9 +275,7 @@ class VoiceScreensBehaviourTest {
         scrollTo(french)
     }
 
-    // ========================================================================
     // The language picker: search
-    // ========================================================================
 
     /**
      * The magnifier turns the top bar into a field. A language is found by its own name or by its
@@ -363,9 +348,7 @@ class VoiceScreensBehaviourTest {
         }
     }
 
-    // ========================================================================
     // Voice input settings
-    // ========================================================================
 
     @Test
     @Config(sdk = [34])
@@ -381,7 +364,7 @@ class VoiceScreensBehaviourTest {
             "Show words as you speak" to "voice_input_show_partial_results",
         )
         for ((title, key) in rows) {
-            // The screen is five groups long now, so a row may be below the fold.
+            // The screen is five groups long, so a row may be below the fold.
             composeRule.onNodeWithText(title).assertExists("$title is not on screen")
         }
         // Turn the dependent rows off first: switching the master off disables them.
@@ -475,9 +458,7 @@ class VoiceScreensBehaviourTest {
         assertEquals(0, navigations)
     }
 
-    // ========================================================================
     // Speech recognizer
-    // ========================================================================
 
     private val googleApp = ComponentName(
         "com.google.android.googlequicksearchbox",
@@ -511,9 +492,8 @@ class VoiceScreensBehaviourTest {
     }
 
     /**
-     * The KEY2's shape: the Google app as the phone's default and Claude installed besides. The row
-     * says which app the default is, the dialog lists the default, then each app by its label, and
-     * picking one stores its component.
+     * The Google app as the phone's default and Claude installed besides: the row names the
+     * default's app, the dialog lists the default then each app by label, and a pick stores its component.
      */
     @Test
     @Config(sdk = [34])

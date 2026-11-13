@@ -6,13 +6,6 @@ import dev.bbkb.ime.core.settings.ui.SettingsScreenHost
 import dev.bbkb.ime.core.settings.ui.drawableIcon
 import dev.bbkb.ime.R
 
-/**
- * Typing and Input hub screen (primary settings category)
- * Links to: On-screen keyboard, Physical keyboard (conditional), Voice input, Auxiliary input.
- * Voice input is back on this hub (2026-11-11): it spent a month as a one-row group inside
- * Auxiliary input and outgrew it, with four groups and ten settings of its own. Shake gestures
- * went the other way the same day: its four rows are a section of Auxiliary input now.
- */
 @Composable
 fun CustomizationScreen(
     onNavigateToTouchScreenKeyboard: () -> Unit,
@@ -28,7 +21,7 @@ fun CustomizationScreen(
             icon = drawableIcon(R.drawable.ic_settings_keyboard_virtual),
             onClick = { onNavigateToTouchScreenKeyboard() },
         ),
-        // Physical Keyboard — only shown on PKB devices
+        // Only on devices with a physical keyboard
         Nav(
             title = R.string.settings_physical_keyboard_title,
             summary = R.string.settings_physical_keyboard_summary,

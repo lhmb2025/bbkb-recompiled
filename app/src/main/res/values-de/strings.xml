@@ -721,7 +721,6 @@
     <string name="device_config_import_unreadable">Diese Datei ist keine Gerätekonfiguration</string>
     <string name="device_config_import_failed">Diese Datei konnte nicht importiert werden</string>
 
-    <!-- OTA app updates -->
     <string name="settings_updates_title">Updates</string>
     <string name="settings_updates_summary">Nach einer neuen BBKB-Version suchen</string>
     <string name="settings_update_installed_version_title">Installierte Version</string>
@@ -755,7 +754,6 @@
     <string name="settings_update_ready_title">Bereit zur Installation</string>
     <string name="settings_update_version_details">Versionsdetails</string>
     <string name="settings_update_unknown_sources_title">BBKB erlauben, Updates zu installieren?</string>
-    <!-- Downloadable language packs (core/languagepack) -->
     <string name="language_packs_installed_header">Installiert</string>
     <string name="language_packs_available_header">Zum Herunterladen verfügbar</string>
     <string name="language_packs_download">Herunterladen</string>
@@ -877,7 +875,6 @@
     <string name="settings_voice_stop_on_pause_summary_off">Hört auch bei Pausen weiter zu, bis zum Tippen auf das Mikrofon oder nach einer halben Minute Stille</string>
     <string name="voice_status_listening_tap_to_stop">Höre zu&#8230; Zum Beenden auf das Mikrofon tippen</string>
 
-    <!-- Settings text moved out of the code (2026-11) -->
     <string name="settings_common_save">Speichern</string>
     <string name="settings_common_edit">Bearbeiten</string>
     <string name="settings_common_back">Zurück</string>

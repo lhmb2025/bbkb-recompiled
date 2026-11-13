@@ -2,12 +2,7 @@ package dev.bbkb.ime.personaldictionary.storage
 
 import dev.bbkb.ime.personaldictionary.model.DictionaryWord
 
-/**
- * Abstract base class for observable dictionary word collections.
- *
- * Tracks dirty state for persistence and provides collection access.
- * Extended by [LocaleWordSubstitutionMap] and [PersonalWordsMap].
- */
+/** A persisted word collection with its file name and dirty flag. */
 abstract class DictionaryWordObservable {
     var filename: String = ""
         protected set

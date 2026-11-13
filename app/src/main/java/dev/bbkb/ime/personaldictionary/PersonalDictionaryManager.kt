@@ -10,16 +10,8 @@ import java.io.File
 import java.io.IOException
 
 /**
- * Entry point and singleton factory for the Personal Dictionary subsystem.
- *
- * Manages initialization, lifecycle, and access to dictionary utilities including
- * [PersonalDictionaryUtil] for word substitutions and [LearnedWordsUtil] for NuanceSDK learned words.
- *
- * **Renamed from:** `BASL.kt` (original `com.blackberry.basl` package)
- *
- * @see PersonalDictionaryUtil
- * @see LearnedWordsUtil
- * @see AudSyncer
+ * Singleton entry point for the personal dictionary: owns [PersonalDictionaryUtil] (word
+ * substitutions), [LearnedWordsUtil] (engine learned words) and the [AudSyncer].
  */
 class PersonalDictionaryManager private constructor(
     private val nuanceSDK: NuanceSDK,
@@ -33,18 +25,21 @@ class PersonalDictionaryManager private constructor(
 
     init {
         LogUtil.d(TAG, "Creating PersonalDictionaryManager instance")
-        // (The requireNotNull(file) that stood here was a decompiled null check on a
-        // non-null Kotlin File parameter - the type system already guarantees it.)
         setInternalStorageDirectory(file)
         audSyncer = AudSyncer.getInstance()
     }
 
     @Throws(IOException::class)
+    /**
+     * @param str the resource directory for the built-in shortcuts
+     * @param str2 unused (model name)
+     */
     fun getPersonalDictionaryUtil(str: String, @Suppress("UNUSED_PARAMETER") str2: String): PersonalDictionaryUtil {
         pdu = PersonalDictionaryUtil.getInstance(context!!, internalStorageDir!!.absolutePath, str, nuanceSDK)
         return pdu!!
     }
 
+    /** @param str the model name (unused) */
     fun getLearnedWordsUtil(str: String): LearnedWordsUtil {
         return LearnedWordsUtil.getInstance(nuanceSDK, context!!, str)
     }
@@ -54,12 +49,7 @@ class PersonalDictionaryManager private constructor(
         if (file.exists()) {
             require(file.isDirectory) { "Provided directory must be a folder" }
         }
-        // Audit PD-35: this used to be
-        // `require(!path.startsWith(Environment.getExternalStorageDirectory()...))`.
-        // getExternalStorageDirectory() is deprecated since API 29 and, under scoped
-        // storage, no longer describes where an app may write - so the check was both
-        // deprecated and no longer meaningful. The intent ("this must be app-internal")
-        // is expressible exactly with the Context this class already holds.
+        // Must be app-internal storage.
         val filesDir = context?.filesDir
         require(filesDir == null || file.canonicalPath.startsWith(filesDir.canonicalPath)) {
             "Provided directory must be on internal storage"
@@ -83,7 +73,7 @@ class PersonalDictionaryManager private constructor(
         audSyncer = null
         pdu?.shutDown(clearData)
         pdu = null
-        // Otherwise LearnedWordsUtil keeps the now-disposed NuanceSDK (audit PD-21).
+        // Otherwise LearnedWordsUtil keeps the now-disposed NuanceSDK.
         LearnedWordsUtil.reset()
         context = null
         sInstance = null

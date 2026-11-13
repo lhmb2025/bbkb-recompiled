@@ -22,11 +22,9 @@ import org.robolectric.annotation.Config
 import org.robolectric.util.ReflectionHelpers
 
 /**
- * The schema additions for the Titans: `<touch-keypad>`, `<quirk>`, the board / display / model /
- * manufacturer match rules, vendor-id / product-id rules that can now actually match, and the
- * non-forcing `default-value` on a setting override.
- *
- * Runs under Robolectric for android.util.Xml (a real XmlPullParser on the JVM).
+ * The Titan schema: `<touch-keypad>`, `<quirk>`, board / display / model / manufacturer and
+ * vendor-id / product-id match rules, and the non-forcing `default-value` on a setting override.
+ * Robolectric for android.util.Xml.
  */
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [34], manifest = Config.NONE)
@@ -56,8 +54,6 @@ class DeviceInputMappingParserTouchKeypadTest {
     }
 
     private fun named(body: String) = parseSingle("""<match><device-name exact="d"/></match>$body""")
-
-    // ── <touch-keypad> ───────────────────────────────────────────────────────
 
     @Test
     fun touchKeypad_parsesEveryAttributeAndTheDeviceName() {
@@ -142,8 +138,6 @@ class DeviceInputMappingParserTouchKeypadTest {
         assertTrue(m.hasQuirk(DeviceQuirk.FN_NO_KEY_UP))
     }
 
-    // ── <quirk> ──────────────────────────────────────────────────────────────
-
     @Test
     fun quirk_known_isRecorded_unknown_isIgnored() {
         val m = named("""<quirk name="fn-no-key-up"/><quirk name="no-such-quirk"/>""")
@@ -151,8 +145,6 @@ class DeviceInputMappingParserTouchKeypadTest {
         assertEquals(1, m.quirks.size)
         assertFalse(named("").hasQuirk(DeviceQuirk.FN_NO_KEY_UP))
     }
-
-    // ── board / display / model / manufacturer ───────────────────────────────
 
     @Test
     fun boardRule_readsBuildBoard() {
@@ -187,8 +179,6 @@ class DeviceInputMappingParserTouchKeypadTest {
         setBuild("MODEL", "Titan Pocket")
         assertFalse(m.matchCriteria.matches("aw9523-key", null, null))
     }
-
-    // ── vendor-id / product-id, matched against the keyboard InputDevice ─────
 
     private fun keyboard(name: String, vendor: Int, product: Int): InputDevice {
         val device = mock(InputDevice::class.java)
@@ -229,8 +219,6 @@ class DeviceInputMappingParserTouchKeypadTest {
         val mapping = config.findMappingForInputDevice(keyboard("aw9523b-key", 0, 0))
         assertSame(config.mappings[0], mapping)
     }
-
-    // ── default-value ────────────────────────────────────────────────────────
 
     @Test
     fun defaultValue_onAStringSetting_isADefaultNotALock() {

@@ -12,14 +12,9 @@ import dev.bbkb.ime.core.device.profile.DeviceProfile;
 import dev.bbkb.ime.core.device.touch.shizuku.ShizukuTouchEngine;
 
 /**
- * The plain read-only API over the keypad touch sources, for whatever needs to show or decide on
- * their state outside the IME (the Touch surface helper screen and its two link rows, a
- * diagnostics dump): which source the active profile selects, the profile's pin, and each
- * source's live status.
- *
- * <p>Process-wide: the IME's {@link NativeTouchSource} publishes whether it is attached right now,
- * and the Shizuku reader's status is the engine's own, which the IME and the settings activity
- * share because they share the process.
+ * Read-only, process-wide view of the keypad touch sources for code outside the IME (Touch surface
+ * screen, diagnostics). The IME's {@link NativeTouchSource} publishes its attach state; the Shizuku
+ * status is the engine's own, shared because IME and settings share the process.
  */
 public final class KeypadTouchSources {
 
@@ -28,27 +23,24 @@ public final class KeypadTouchSources {
 
     private KeypadTouchSources() {}
 
-    /** What {@link TouchSourceSelector} picks for the active device profile. */
     @NonNull
     public static TouchSourceSelector.Selection selection() {
         return DeviceProfile.current().getTouchSourceSelection();
     }
 
-    /** The active profile's {@code <touch-keypad source>} pin, or null when it declares no pad. */
+    /** Null when the profile declares no pad. */
     @Nullable
     public static TouchKeypadConfig.SourcePreference sourcePreference() {
         return selection().preference;
     }
 
-    /** Whether the active profile describes a touch surface over its keys. */
     public static boolean declaresTouchKeypad() {
         return DeviceProfile.current().declaresTouchKeypad();
     }
 
     /**
-     * The native source's status. The selection says whether it is chosen and whether the OS has
-     * the pad; the IME adds only whether it is attached to a shown window right now (ACTIVE), so
-     * a pad enumerated since the IME last published is seen at once.
+     * The selection decides chosen / pad enumerated; the IME's published status adds only ACTIVE,
+     * so a pad enumerated since the last publish is seen at once.
      */
     @NonNull
     public static TouchSourceStatus nativeStatus() {
@@ -61,13 +53,12 @@ public final class KeypadTouchSources {
         return fromSelection;
     }
 
-    /** The Shizuku reader's status: its live state when it is the choice, else why it is not. */
     @NonNull
     public static TouchSourceStatus shizukuStatus() {
         return selection().shizukuStatus(ShizukuTouchSource.statusOf(sShizukuEngine.status()));
     }
 
-    /** The status of whichever source is chosen; the selection's own reason when none is. */
+    /** The chosen source's status, or the selection's reason when none is. */
     @NonNull
     public static TouchSourceStatus activeStatus() {
         final TouchSourceSelector.Selection selection = selection();
@@ -79,10 +70,8 @@ public final class KeypadTouchSources {
     }
 
     /**
-     * Bring the live state up to date for a screen that is about to show it: re-scan for the pad
-     * when the native route applies (returning from the Scroll assistant settings), and re-read
-     * Shizuku's state when the reader is the choice (an install or a start sends no event).
-     * Touches nothing on a device whose profile declares no pad.
+     * Before a screen shows the state: re-scan for the pad when the native route applies, and re-read
+     * Shizuku's state when it is chosen (an install or a start sends no event). No-op with no pad.
      */
     public static void refresh(@NonNull Context context) {
         final TouchSourceSelector.Selection selection = selection();
@@ -95,13 +84,11 @@ public final class KeypadTouchSources {
         }
     }
 
-    /** The engine the Shizuku source runs on and the settings act through. */
     @NonNull
     public static ShizukuTouchEngineFacade shizukuEngine() {
         return sShizukuEngine;
     }
 
-    /** Hear the Shizuku reader's status changes (the settings, while a screen shows them). */
     public static void addShizukuListener(@NonNull Context context,
                                           @NonNull ShizukuTouchEngine.StatusListener listener) {
         sShizukuEngine.addStatusListener(context, listener);
@@ -115,7 +102,7 @@ public final class KeypadTouchSources {
         sNativeStatus = status;
     }
 
-    /** Run everything on {@code engine} instead of the real one; null puts the real one back. */
+    /** Null restores the real engine. */
     @VisibleForTesting
     public static void useShizukuEngineForTest(@Nullable ShizukuTouchEngineFacade engine) {
         sShizukuEngine = engine != null ? engine : ShizukuTouchEngineFacade.REAL;

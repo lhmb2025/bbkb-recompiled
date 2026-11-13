@@ -26,19 +26,10 @@ import org.robolectric.annotation.Config
 import java.util.Locale
 
 /**
- * Scenarios for `InputLogic.handleSwipeDelete`, the path every "delete a word" gesture must
- * take — the VKB swipe, voice input's delete, and (since the fix these tests were written for)
- * the CKB flick/swipe-left slot in `CkbGestureBridge`.
- *
- * The bridge used to delete the word itself with `deleteSurroundingText(wordLength)`. That is
- * the one thing a word delete must never do while a composing region is live: the editor keeps
- * the composing text and deletes AROUND it, so after a suggestion was flicked in and the space
- * behind it backspaced away (which re-opens the word as composing), each gesture removed five
- * characters BEFORE "swipe" while "swipe" stayed put. The first scenario replays exactly that.
- *
- * Like [BackspaceScenariosTest], everything here runs the real controllers over a
- * [dev.bbkb.ime.harness.FakeEditor] that reproduces the editor's composing-region contract, and
- * asserts what reached the editor.
+ * Pins `InputLogic.handleSwipeDelete`, the path every word-delete gesture takes (VKB swipe, voice
+ * delete, the CKB flick/swipe-left slot in `CkbGestureBridge`). With a live composing region,
+ * `deleteSurroundingText` deletes around the region, so the path must close it first. Runs the real
+ * controllers over a [dev.bbkb.ime.harness.FakeEditor] and asserts what reached the editor.
  */
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [34], manifest = Config.NONE, instrumentedPackages = ["com.blackberry.nuanceshim"])
@@ -73,8 +64,6 @@ class SwipeDeleteScenariosTest {
         subtypeStatic.close()
         h.close()
     }
-
-    // ── fixtures ────────────────────────────────────────────────────────────────
 
     /** "text|cursor" rendering of the editor, so a failure message shows the whole state. */
     private fun editorState(): String {
@@ -121,9 +110,8 @@ class SwipeDeleteScenariosTest {
     }
 
     /**
-     * Re-open the word ending at the cursor as a composing region, in the editor AND the
-     * tracker — what `RecorrectionController.performRecorrection` does after a backspace lands
-     * the cursor on the end of a committed word (setComposingFromCodePoints + setComposingRegion).
+     * Re-open the word ending at the cursor as composing in the editor and the tracker, as
+     * `RecorrectionController.performRecorrection` does after a backspace lands on a word's end.
      */
     private fun reopenWordBeforeCursor(word: String) {
         val end = h.editor.selStart
@@ -135,8 +123,6 @@ class SwipeDeleteScenariosTest {
     }
 
     private fun swipeDelete(): Boolean = h.inputLogic.handleSwipeDelete(h.settings)
-
-    // ── the reported bug ─────────────────────────────────────────────────────────
 
     @Test
     fun swipeDelete_afterAPickedWordIsReopenedByBackspace_deletesThatWordNotTheOneBeforeIt() {
@@ -164,8 +150,8 @@ class SwipeDeleteScenariosTest {
 
     @Test
     fun swipeDelete_overAComposingWord_neverTouchesTheTextBeforeTheRegion() {
-        // The editor contract that made the bug: deleteSurroundingText leaves a live composing
-        // region alone and deletes around it. The path must close the region before deleting.
+        // deleteSurroundingText leaves a live composing region alone and deletes around it, so the
+        // path must close the region before deleting.
         armComposing("swipe", at = "a word from ")
 
         assertTrue(swipeDelete())
@@ -174,8 +160,6 @@ class SwipeDeleteScenariosTest {
         assertFalse(h.editor.hasComposingRegion())
         assertFalse(h.inputLogic.mComposingTracker.isComposing)
     }
-
-    // ── the ordinary cases the gesture inherits ──────────────────────────────────
 
     @Test
     fun swipeDelete_withNothingComposing_deletesThePreviousWordAndTheWhitespaceAfterIt() {

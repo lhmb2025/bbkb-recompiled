@@ -31,12 +31,8 @@ import org.robolectric.shadows.ShadowSpeechRecognizer
 import java.util.Locale
 
 /**
- * A recogniser that refuses the dictation language is asked what it has (Android 13+): the
- * language under another tag is used, a downloadable one is downloaded, and only a language it
- * has nothing for is reported as unavailable.
- *
- * The case that started this (KEY2, 2026-11-10): the keyboard language French goes out as `fr`,
- * and Google's on-device recogniser answered "Failed to get language pack of required locale".
+ * A recogniser that refuses the dictation language is asked what it has (Android 13+): the language under
+ * another tag is used, a downloadable one is downloaded, and only a language with nothing is reported unavailable.
  */
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [34], manifest = Config.NONE)
@@ -134,8 +130,6 @@ class VoiceLanguageDownloadTest {
     private fun downloadListener() =
         manager.languageDownloadListenerForTest() as VoiceLanguageSupport.DownloadListener
 
-    // ── a bare language ──────────────────────────────────────────────────────
-
     @Test
     @Config(sdk = [32])
     fun `a bare language refused as unknown is sent again with its likely region`() {
@@ -171,8 +165,6 @@ class VoiceLanguageDownloadTest {
         verify(callback).onLanguageNotSupported("fr")
     }
 
-    // ── the recogniser has it under another tag ──────────────────────────────
-
     @Test
     fun `a language the recogniser knows under another tag is dictated with that tag`() {
         startRefused()
@@ -197,8 +189,6 @@ class VoiceLanguageDownloadTest {
 
         verify(callback).onLanguageNotSupported("fr")
     }
-
-    // ── it can be downloaded ─────────────────────────────────────────────────
 
     @Test
     @Config(sdk = [33])
@@ -264,8 +254,6 @@ class VoiceLanguageDownloadTest {
 
         verify(callback).onLanguageNotSupported("fr")
     }
-
-    // ── nothing to be done ───────────────────────────────────────────────────
 
     @Test
     fun `a language the recogniser has nothing for is reported as before`() {
@@ -339,8 +327,6 @@ class VoiceLanguageDownloadTest {
         assertEquals("fr-FR", sentLanguage())
         verify(callback, never()).onLanguageNotSupported(anyString())
     }
-
-    // ── the decision ─────────────────────────────────────────────────────────
 
     private fun decide(
         wanted: String,

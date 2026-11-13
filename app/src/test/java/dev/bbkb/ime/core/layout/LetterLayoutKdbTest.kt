@@ -15,19 +15,13 @@ import java.io.File
 import java.text.Normalizer
 
 /**
- * The engine's KDB rewritten from a letter layout ([LetterLayoutKdb]), on the KDB files the app
- * ships, read straight off disk: which keys change and how (the `keyLabel` and `keyCodes` forms,
- * alternates, Hangul, the extra key, `keyType`), and that nothing else does — no geometry, no other
- * key, no other byte.
- *
- * Robolectric for the layout documents' pull parser; nothing here touches the engine.
+ * Pins [LetterLayoutKdb]'s rewrite of the shipped KDB files read off disk: which keys change and
+ * how (`keyLabel` and `keyCodes` forms, alternates, Hangul, the extra key, `keyType`), and that no
+ * other byte does. Robolectric only for the documents' pull parser; the engine is not touched.
  */
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [34], manifest = Config.NONE)
 class LetterLayoutKdbTest {
-
-    // ── fixtures ─────────────────────────────────────────────────────────────
-
     private fun kdbDir(): File {
         val dir = sequenceOf("src/main/assets/kdb", "app/src/main/assets/kdb", "../app/src/main/assets/kdb")
             .map { File(it).canonicalFile }
@@ -36,7 +30,7 @@ class LetterLayoutKdbTest {
         return dir!!
     }
 
-    /** The keypad KDBs the app used to ship per language, kept for comparison. */
+    /** Per-language keypad KDBs kept as reference copies; the app no longer ships them. */
     private fun referenceDir(): File =
         sequenceOf("../xt9kdb-scaffold/reference/kdb_pkb", "xt9kdb-scaffold/reference/kdb_pkb")
             .map { File(it).canonicalFile }
@@ -85,8 +79,6 @@ class LetterLayoutKdbTest {
     }
 
     private val geometry = Regex("""\b(keyLeft|keyTop|keyWidth|keyHeight|biasX|biasY)="[^"]*"""")
-
-    // ── which keys, and nothing else ─────────────────────────────────────────
 
     @Test
     fun aSwapChangesOnlyTheTwoKeysAndOnlyTheirLabels() {
@@ -162,8 +154,6 @@ class LetterLayoutKdbTest {
         else -> String(Character.toChars(codePoint))
     }
 
-    // ── the two forms ────────────────────────────────────────────────────────
-
     @Test
     fun aLatinLetterIsWrittenAsKeyLabelWithAlternatesInKeyCodes() {
         val after = LetterLayoutKdb.rewrite(kdb("qwerty"), layout(key('A', "a", """multitapKeys="å,æ"""")))
@@ -223,8 +213,6 @@ class LetterLayoutKdbTest {
         assertTrue(after.contains("""keyLabel="W" keyWidth="108dp" keyHeight="108dp" keyTop="0dp" keyLeft="0dp""""))
     }
 
-    // ── alternates ───────────────────────────────────────────────────────────
-
     @Test
     fun aShiftLegendThatIsNotTheUpperCaseBecomesTheFirstAlternate() {
         val arabic = kdb("arabic")
@@ -260,8 +248,6 @@ class LetterLayoutKdbTest {
         // Alt characters are the typing path's business; the engine never sees them.
         assertSame(qwerty, LetterLayoutKdb.rewrite(qwerty, layout(key('Q', "q", """alt="ж""""))))
     }
-
-    // ── Hangul ───────────────────────────────────────────────────────────────
 
     @Test
     fun hangulIsWrittenInConjoiningJamo() {
@@ -304,8 +290,6 @@ class LetterLayoutKdbTest {
         assertEquals('a'.code, LetterLayoutKdb.toConjoining('a'.code))
     }
 
-    // ── the extra key and keyType ────────────────────────────────────────────
-
     @Test
     fun aLetterOnTheDollarKeyMakesItRegional() {
         val qwerty = kdb("qwerty")
@@ -328,8 +312,6 @@ class LetterLayoutKdbTest {
         assertTrue(mark.contains("""<key keyType="regional" keyCodes="0x093E""""))
     }
 
-    // ── the KEY2's uneven test rows ──────────────────────────────────────────
-
     @Test
     fun theUnevenGeometryMapsByTheSameColumnsWhateverItsRowHeights() {
         val athena = File(kdbDir(), "keypad_pkb_athena_test.xml").readText(Charsets.UTF_8)
@@ -339,8 +321,6 @@ class LetterLayoutKdbTest {
         assertTrue(after.contains("""<key keyType="regional" keyCodes="0x044E" keyWidth="108dp" keyHeight="180dp" keyTop="270dp" keyLeft="864dp" />"""))
         assertEquals(3, changedLines(athena, after).size)
     }
-
-    // ── reading ──────────────────────────────────────────────────────────────
 
     @Test
     fun theFilesLettersReadAsTheTypingPathReadsThem() {
@@ -390,13 +370,11 @@ class LetterLayoutKdbTest {
         assertTrue(after.contains("""<!-- <area><key keyType="regional" keyLabel="Q""""))
     }
 
-    // ── names and kinds ──────────────────────────────────────────────────────
-
     @Test
     fun theVariantIsNamedAfterTheLayout() {
         assertEquals("layout:test", LetterLayoutKdb.variantName(layout(key('Q', "w"))))
         assertEquals("_pkb.xml", LetterLayoutKdb.Template.PKB.fileSuffix)
     }
 
-    // The on-screen KDBs are rewritten too now: LetterLayoutKdbOnScreenTest.
+    // On-screen KDB rewrites are pinned by LetterLayoutKdbOnScreenTest.
 }

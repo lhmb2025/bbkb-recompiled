@@ -25,9 +25,8 @@ class SensorVizOverlay(private val ime: BlackBerryIME) {
     }
 
     /**
-     * When active, forward every raw keypad sample (including batched history) to the overlay
-     * and return true so the caller swallows the event (typing is suppressed while mapping the
-     * capacitive strips). Returns false, doing nothing, when the visualizer is off.
+     * When active, plots every raw keypad sample (history included) and returns true so the caller
+     * swallows the event; false, doing nothing, when off.
      */
     fun forwardIfActive(event: MotionEvent): Boolean {
         if (!SensorViz.active) return false

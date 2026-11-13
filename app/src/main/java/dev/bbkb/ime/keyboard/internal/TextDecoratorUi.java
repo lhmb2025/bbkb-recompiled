@@ -51,15 +51,14 @@ public final class TextDecoratorUi implements TextDecoratorUiOperator {
             viewGroupM7503a.addView(this.mContentView);
         }
         this.mPopupWindow = new PopupWindow(context);
-        // PopupWindow.setBackgroundDrawable is NOT deprecated (unlike View.setBackgroundDrawable)
-        // and the null is deliberate: a null background is what suppresses this window's
-        // outside-touch dismissal on some ROMs, which the panel relies on. Do not "modernise".
+        // Deliberately null (and not deprecated for PopupWindow): it suppresses outside-touch
+        // dismissal on some ROMs, which the panel relies on.
         this.mPopupWindow.setBackgroundDrawable(null);
         this.mParentView = new View(context);
         this.mPopupWindow.setContentView(this.mParentView);
     }
 
-    @Override // dev.bbkb.ime.keyboard.internal.TextDecoratorUiOperator
+    @Override
     public void cancel() {
         RelativeLayout relativeLayout = this.mContentView;
         if (relativeLayout != null) {
@@ -75,7 +74,7 @@ public final class TextDecoratorUi implements TextDecoratorUiOperator {
         }
     }
 
-    @Override // dev.bbkb.ime.keyboard.internal.TextDecoratorUiOperator
+    @Override
     public void hide() {
         this.mDrawingView.setVisibility(View.GONE);
         this.mPopupWindow.dismiss();
@@ -93,7 +92,8 @@ public final class TextDecoratorUi implements TextDecoratorUiOperator {
         return rectF2;
     }
 
-    @Override // dev.bbkb.ime.keyboard.internal.TextDecoratorUiOperator
+    @Override
+    /** @param z true to place the indicator left of the word, false for right */
     public void showIndicator(Matrix matrix, RectF rectF, boolean z) {
         RectF rectFM7504b = transformRect(matrix, rectF, z);
         if (rectFM7504b.left < this.mBounds.left || this.mBounds.right < rectFM7504b.right) {
@@ -121,10 +121,10 @@ public final class TextDecoratorUi implements TextDecoratorUiOperator {
         this.mPopupWindow.showAtLocation(this.mContentView, 0, ((int) rectF2.left) - i, ((int) rectF2.top) - i2);
     }
 
-    @Override // dev.bbkb.ime.keyboard.internal.TextDecoratorUiOperator
+    @Override
     public void setOnClickHandler(final Runnable runnable) {
         this.mParentView.setOnClickListener(new View.OnClickListener() {
-            @Override // android.view.View.OnClickListener
+            @Override
             public void onClick(View view) {
                 runnable.run();
             }
@@ -148,6 +148,12 @@ public final class TextDecoratorUi implements TextDecoratorUiOperator {
 
         private final RectF bounds;
 
+        /**
+         * @param i int-array resource of the indicator path's x,y pairs
+         * @param i2 integer resource the path coordinates are divided by
+         * @param i3 background color resource
+         * @param i4 indicator color resource
+         */
         public IndicatorView(Context context, int i, int i2, int i3, int i4) {
             super(context);
             this.mHighlightPath2 = new Path();
@@ -164,7 +170,7 @@ public final class TextDecoratorUi implements TextDecoratorUiOperator {
             this.bounds.set(rectF);
         }
 
-        @Override // android.view.View
+        @Override
         protected void onDraw(Canvas canvas) {
             this.mPaint.setColor(this.backgroundColor);
             this.mPaint.setStyle(Paint.Style.FILL);

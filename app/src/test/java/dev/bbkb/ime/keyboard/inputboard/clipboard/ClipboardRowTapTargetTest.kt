@@ -18,14 +18,9 @@ import org.robolectric.Shadows.shadowOf
 import org.robolectric.annotation.Config
 
 /**
- * A clipboard row must paste wherever you tap it, and only the overflow button may take a touch
- * for itself.
- *
- * `View.onTouchEvent` consumes a gesture when the view is clickable **or** long-clickable.
- * `clip_data_header.xml` once declared `android:longClickable="true"` on the text container, so it
- * swallowed every touch over the text; only the thumbnail let the touch reach the card, and pasting
- * worked only there (found on the KEY2, 2026-09-15). The card is now the row's root and owns both
- * the paste tap and the menu long-press; the overflow button beside it opens the same menu.
+ * A clipboard row pastes wherever it is tapped; only the overflow button takes a touch for itself.
+ * `View.onTouchEvent` consumes a gesture when the view is clickable or long-clickable, so the text container
+ * must be neither: the card (the row's root) owns the paste tap and the menu long-press.
  */
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [34], qualifiers = "w411dp-h891dp")
@@ -112,8 +107,9 @@ class ClipboardRowTapTargetTest {
 
     @Test
     fun theLayoutItselfDeclaresNoTouchConsumingFlagsOnTheTextContainer() {
-        // The holder clears these defensively, so this case guards the other layer: the XML must
-        // not re-introduce android:longClickable (or clickable/focusable) on the text container.
+        // The holder clears these flags too; this guards the XML: no android:longClickable (or
+        // clickable/focusable)
+         // on the text container.
         val raw = inflate()
         assertFalse("layout sets longClickable on the text container", raw.clipboardTextContainer.isLongClickable)
         assertFalse("layout sets clickable on the text container", raw.clipboardTextContainer.isClickable)

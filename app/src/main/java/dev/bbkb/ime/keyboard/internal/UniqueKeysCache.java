@@ -7,23 +7,12 @@ import java.util.Map;
 
 
 /**
- * Interns {@link Key} instances so identical keys are shared between keyboards.
- *
- * <p>The single instance is a {@code static final} field on {@code KeyboardBuilder}, so every Key
- * ever built — across every locale, theme change, rotation, layout variant and more-keys popup —
- * lands here. {@link #clear()} has no caller anywhere in the tree, so the map was growing for the
- * process lifetime while holding label strings and icon {@code Drawable} references.
- *
- * <p>Bounded with an LRU instead. Eviction is semantically free: {@link #intern} returns the
- * argument when there is no cached equal Key, so an evicted entry only costs the sharing, never
- * correctness.
+ * Interns {@link Key} instances so identical keys are shared between keyboards. The process-wide
+ * instance sees every Key ever built, so it is a bounded LRU; eviction only costs sharing, since
+ * {@link #intern} returns its argument when nothing equal is cached.
  */
 public final class UniqueKeysCache {
-
-    /**
-     * Enough for several full keyboards (an emoji page alone runs to a few hundred keys) while
-     * still bounding the retained set.
-     */
+    /** Enough for several full keyboards (an emoji page alone is a few hundred keys). */
     private static final int MAX_ENTRIES = 2048;
 
     private final LinkedHashMap<Key, Key> cache =

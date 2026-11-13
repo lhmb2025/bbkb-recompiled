@@ -12,23 +12,16 @@ import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
 
 /**
- * Exhaustive golden for layout-set element selection, written before the P8 §2 table rewrite of
- * `KeyboardBuilder.getKeyboardInternal` and `KeyboardId`'s name/classification switches.
- *
- * `KeyboardBuilderElementResolutionTest` and `KeyboardIdElementTest` pin hand-picked rows. A
- * table rewrite can break a row nobody picked (a symbol page that stops being exempt in ONE alias
- * mode, an id rewritten only when the fallback hits, a stray name on an id in a hole), so this
- * file pins the whole cross-product. Every expected value below was RECORDED from the
- * pre-rewrite implementation (commit 20ce43c8) — it is not derived, so it is not an oracle that
- * could share a bug with the code under test.
+ * Exhaustive golden for layout-set element selection (`KeyboardBuilder.getKeyboardInternal`) and
+ * `KeyboardId` naming. Expected values were recorded from the implementation, not derived.
  *
  * Matrix rows are `SCENARIO mode pkb = resolved-id-per-element`, over [ELEMENTS] in order.
  * `X` = no `<Element>` found (threw before parsing). Scenarios are the declared `<Element>` sets:
  *  - ALL: every id -1..400, so only the arithmetic is exercised (every computed id hits directly);
  *  - NONE: nothing declared;
- *  - ZERO: only `alphabet` — for a pkb request, fallback 2 rewrites the id to the un-offset element
- *    EVEN THOUGH that element also misses, and fallback 3 then supplies element 0;
- *  - PKB100: only `alphabetPkb` — fallback 1;
+ *  - ZERO: only `alphabet`; for a pkb request, fallback 2 rewrites the id to the un-offset element
+ *    even though that element also misses, and fallback 3 then supplies element 0;
+ *  - PKB100: only `alphabetPkb` (fallback 1);
  *  - ZERO_PKB100: both.
  */
 @RunWith(RobolectricTestRunner::class)
@@ -91,8 +84,6 @@ class KeyboardElementSelectionMatrixTest {
         }
     }
 
-    // ------------------------------------------------------------------ KeyboardId sweep
-
     private fun sweep(range: IntRange, predicate: (Int) -> Boolean) = range.filter(predicate)
 
     private fun keyboardId(element: Int): KeyboardId {
@@ -102,7 +93,7 @@ class KeyboardElementSelectionMatrixTest {
         return KeyboardId(element, p)
     }
 
-    /** Only these ids have a name — nothing in any hole, nothing negative, nothing past 141. */
+    /** Only these ids have a name: nothing in any hole, nothing negative, nothing past 141. */
     @Test
     fun elementIdToName_isNonNullForExactlyTheRecordedIds() {
         assertEquals(

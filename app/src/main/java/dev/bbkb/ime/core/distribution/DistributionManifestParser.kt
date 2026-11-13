@@ -6,49 +6,13 @@ import org.json.JSONObject
 import org.json.JSONTokener
 
 /**
- * Turns the raw bytes of `dist/manifest.json` into a [DistributionManifest].
- *
- * The parser walks the `org.json` tree and checks every field by hand rather than binding the
- * JSON to the model reflectively. A reflective binder would silently accept a missing required
- * field as `null` (Gson, which this parser used before, constructs objects through `Unsafe`,
- * bypassing Kotlin's null checks), which is exactly the failure mode a manifest fetched over the
- * network must not have.
- *
- * ### What is strict and what is forgiving
- *
- * Forgiving, because the manifest is a file a future release tool writes and this app may be
- * months old by the time it reads one:
- *
- *  - **Unknown fields are ignored**, at every level. Adding a key to schema 1 is not a breaking
- *    change.
- *  - **A malformed entry is dropped, not fatal.** An `app` channel or a `packs` item that is not
- *    an object, or that is missing a required field, is skipped; the rest of the manifest still
- *    parses. A broken `release` entry must not take the `debug` channel down with it.
- *  - **Duplicate pack locales**: the first wins, later ones are dropped.
- *
- * Strict, because these are contract violations that would make everything downstream
- * meaningless:
- *
- *  - Not valid JSON, or not a JSON object at the top level → [ManifestFormatException].
- *  - `schema` missing or not an integer → [ManifestFormatException].
- *  - `schema` anything other than [DistributionManifest.SCHEMA] → [UnsupportedSchemaException].
- *    A *newer* schema is a real state the app must handle (the app is too old); a schema below
- *    1 never existed.
- *  - `app` or `packs` present but not a JSON object → [ManifestFormatException]. That is a
- *    structural error, not a single bad entry.
- *
- * The result always carries `fromCache = false, fetchedAt = 0L`; [ManifestSource] stamps real
- * provenance on it.
- *
- * Thread-safe and stateless: this is a pure function on a string.
+ * Parses `dist/manifest.json` by hand so a missing required field can never slip through as `null`.
+ * Forgiving: unknown fields ignored, a malformed `app` channel or pack item is dropped, duplicate
+ * locales keep the first. Strict: invalid JSON, non-object root, missing/non-integer `schema`, or
+ * `app`/`packs` not an object is [ManifestFormatException]; a schema other than
+ * [DistributionManifest.SCHEMA] is [UnsupportedSchemaException] (the app is too old). Stateless.
  */
 object DistributionManifestParser {
-
-    /**
-     * @throws ManifestFormatException on malformed JSON or a structurally invalid manifest.
-     * @throws UnsupportedSchemaException when the manifest announces a schema this build cannot
-     *   read.
-     */
     @Throws(DistributionException::class)
     fun parse(json: String): DistributionManifest {
         val root = try {
@@ -79,7 +43,6 @@ object DistributionManifestParser {
         )
     }
 
-    /** [parse], with every [DistributionException] turned into a `Result.failure`. */
     fun tryParse(json: String): Result<DistributionManifest> = try {
         Result.success(parse(json))
     } catch (failure: DistributionException) {
@@ -96,7 +59,6 @@ object DistributionManifestParser {
         return out
     }
 
-    /** `null` when the entry is unusable — the channel is then simply absent. */
     private fun parseAppBuild(element: Any?): AppBuild? {
         val obj = element as? JSONObject ?: return null
         val versionCode = obj.intOrNull("versionCode") ?: return null
@@ -104,8 +66,7 @@ object DistributionManifestParser {
         val url = obj.stringOrNull("url") ?: return null
         val sha256 = obj.stringOrNull("sha256") ?: return null
         val size = obj.longOrNull("size") ?: return null
-        // minSdk is the one optional-with-a-default field: a manifest that omits it is read as
-        // "installable anywhere this app runs", which is what the app's own minSdk already says.
+            // Optional: absent means installable anywhere this app runs.
         val minSdk = obj.intOrNull("minSdk") ?: 0
         return AppBuild(
             versionCode = versionCode,
@@ -138,7 +99,6 @@ object DistributionManifestParser {
         return Packs(version = version, baseUrl = baseUrl, items = items)
     }
 
-    /** `null` when the item is unusable — it is then simply not in the catalogue. */
     private fun parsePackEntry(element: Any?): PackEntry? {
         val obj = element as? JSONObject ?: return null
         val locale = obj.stringOrNull("locale") ?: return null
@@ -147,8 +107,7 @@ object DistributionManifestParser {
         val size = obj.longOrNull("size") ?: return null
         return PackEntry(
             locale = locale,
-            // A pack with no display name falls back to its own locale rather than dropping out
-            // of the catalogue: the name is cosmetic, everything else is load-bearing.
+            // The name is cosmetic; fall back to the locale rather than dropping the pack.
             name = obj.stringOrNull("name") ?: locale,
             file = file,
             sha256 = sha256.lowercase(),
@@ -157,16 +116,9 @@ object DistributionManifestParser {
         )
     }
 
-    // ── Tree accessors ────────────────────────────────────────────────────────────────────────
-    //
-    // Each returns null for "absent, JSON null, not a primitive, or the wrong primitive type",
-    // so a caller can spell a required field as `?: return null` and an optional one as `?:
-    // default`. These deliberately do not use JSONObject's own optString/optInt, which coerce
-    // (a number to a string, "5" or 5.9 to 5). org.json hands back an Integer or a Long for a
-    // number written without a fraction or an exponent and a Double otherwise, so a float where
-    // an int belongs (1430.0) is rejected rather than truncated.
+    // Accessors return null for absent, JSON null or the wrong type, unlike optString/optInt which
+    // coerce. org.json yields Integer/Long only for whole numbers, so 1430.0 is rejected, not truncated.
 
-    /** The value under [name], with JSON null read as absent. */
     private fun JSONObject.valueOrNull(name: String): Any? =
         opt(name)?.takeIf { it != JSONObject.NULL }
 

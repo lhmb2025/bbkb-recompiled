@@ -21,15 +21,9 @@ import java.util.Locale;
 
 
 /**
- * Controller for the cursor-mode arrow bar — the transient cursor-key strip shown
- * in the aux/suggestion row (AuxBarState.ARROW_BAR), toggled by the double-tap /
- * cursor gesture, and
- * auto-dismissed after a timeout (BlackBerryIME.scheduleCursorModeDisable).
- *
- * Naming: "cursor mode" (isCursorModeEnabled / toggleCursorMode) is the
- * gesture-and-arrow-bar surface; the separate Fine Cursor Control BOARD keeps the
- * Fcc family ({@link dev.bbkb.ime.keyboard.inputboard.fcc.FccController}),
- * which opens as a full input board like the voice board.
+ * The cursor-mode arrow bar: a transient cursor-key strip in the suggestion row
+ * (AuxBarState.ARROW_BAR), toggled by the cursor gesture and auto-dismissed after a timeout.
+ * Not the Fine Cursor Control board ({@link dev.bbkb.ime.keyboard.inputboard.fcc.FccController}).
  */
 public class ArrowBarController implements SimplifiedKeyboardView.onKeyEventListener {
 
@@ -52,10 +46,7 @@ public class ArrowBarController implements SimplifiedKeyboardView.onKeyEventList
     /** The key currently auto-repeating, read by {@link #keyRepeatRunnable} at fire time. */
     private Key repeatingKey;
 
-    /**
-     * Auto-repeat driver. Allocated once: this used to be a fresh anonymous Runnable capturing
-     * the key on every arrow-bar key-down, i.e. per press on the cursor-movement path.
-     */
+    /** Auto-repeat driver, allocated once to keep key-down allocation-free. */
     private final Runnable keyRepeatRunnable = new Runnable() {
         @Override
         public void run() {
@@ -68,12 +59,12 @@ public class ArrowBarController implements SimplifiedKeyboardView.onKeyEventList
         }
     };
 
-    @Override // dev.bbkb.ime.keyboard.SimplifiedKeyboardView.onKeyEventListener
+    @Override
     public void onKeyLongPress(Key key) {
+        // Arrow keys auto-repeat instead.
     }
 
     public ArrowBarController(Context context, CursorMovementListener cursorMovementListener, View view) {
-        // Legacy view lookup removed - now uses AuxBarManager
         this.themedContext = new ContextThemeWrapper(context, dev.bbkb.ime.R.style.KeyboardTheme_LXX);
         Resources resources = context.getResources();
         this.keyRepeatStartTimeout = resources.getInteger(R.integer.config_key_repeat_start_timeout);
@@ -81,18 +72,12 @@ public class ArrowBarController implements SimplifiedKeyboardView.onKeyEventList
         this.keyboardBuilder = createArrowKeyboardBuilder();
         this.cursorMovementListener = cursorMovementListener;
     }
-    
-    /**
-     * Set the AuxBarManager for arrow bar display.
-     */
+
     public void setAuxBarManager(AuxBarManager manager) {
         this.auxBarManager = manager;
     }
 
-    /**
-     * Build the arrow bar keyboard using the correct 'arrows' subtype builder.
-     * Called by AuxBarManager.showArrowBar() so it uses this builder, not its own.
-     */
+    /** Builds the bar from the 'arrows' subtype builder; AuxBarManager.showArrowBar must use this one. */
     public dev.bbkb.ime.keyboard.Keyboard buildArrowKeyboard() {
         return this.keyboardBuilder.getKeyboardForShift(39, true);
     }
@@ -141,7 +126,7 @@ public class ArrowBarController implements SimplifiedKeyboardView.onKeyEventList
         }
     }
 
-    @Override // dev.bbkb.ime.keyboard.SimplifiedKeyboardView.onKeyEventListener
+    @Override
     public void onKeyDown(final Key key) {
         this.repeatHandler.removeCallbacks(this.keyRepeatRunnable);
         this.repeatingKey = key;
@@ -151,11 +136,11 @@ public class ArrowBarController implements SimplifiedKeyboardView.onKeyEventList
         this.repeatHandler.postDelayed(this.keyRepeatRunnable, this.keyRepeatStartTimeout);
     }
 
-    @Override // dev.bbkb.ime.keyboard.SimplifiedKeyboardView.onKeyEventListener
+    /** @param z true if the finger lifted on the key it pressed (a tap, not a cancel) */
+    @Override
     public void onKeyUp(Key key, boolean z) {
         stopKeyRepeat();
-        // The shared key view can deliver a null key; AuxBarManager guards its own delegation
-        // the same way (handleArrowKey dereferences key.getCode()).
+        // The shared key view can deliver a null key.
         if (z && key != null) {
             handleArrowKey(key);
         }

@@ -6,9 +6,9 @@ import org.junit.Assert.assertTrue
 import org.junit.Test
 
 /**
- * Wave 3 Phase B: the main-thread mirror of the engine's one swipe session. The engine's own
- * cancel clears the path whatever pointer id it is given, so these rules are what keeps a
- * cancel meant for one contact from ending another contact's swipe.
+ * The main-thread mirror of the engine's one swipe session. The engine's cancel clears the path
+ * whatever pointer id it is given, so these rules keep a cancel meant for one contact from ending
+ * another contact's swipe.
  */
 class TouchSessionGateTest {
 
@@ -74,8 +74,8 @@ class TouchSessionGateTest {
         gate.start(0)
         gate.move(0)
         assertTrue(gate.end(0))
-        // No session, but the decoded path is still in the engine's buffer: a cancel has always
-        // cleared it, whoever asks.
+        // No session, but the decoded path is still in the engine's buffer: a cancel clears it, whoever
+        // asks.
         assertTrue(gate.cancel(5))
         assertFalse(gate.cancel(5))
     }

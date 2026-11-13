@@ -7,13 +7,8 @@ import org.json.JSONArray
 import org.json.JSONObject
 
 /**
- * Repository for storing and retrieving user-defined custom macros.
- * Uses SharedPreferences with JSON serialization.
- *
- * The parsed list is memoised process-wide (the backing store is a single
- * `MODE_PRIVATE` prefs file, so every instance sees the same data) and dropped on
- * write. Without it `getAllMacros()` re-parsed the whole JSON array on every macro
- * expansion, i.e. once per candidate word on the commit path.
+ * User-defined macros, stored as JSON in SharedPreferences. The parsed list is memoised
+ * process-wide (one prefs file) because macro expansion runs on the commit path.
  */
 class CustomMacroRepository(context: Context) {
     
@@ -21,10 +16,7 @@ class CustomMacroRepository(context: Context) {
         PREFS_NAME, 
         Context.MODE_PRIVATE
     )
-    
-    /**
-     * Returns all custom macros defined by the user.
-     */
+
     fun getAllMacros(): List<CustomMacro> {
         cached?.let { return it }
         val parsed = parseMacros()
@@ -50,17 +42,12 @@ class CustomMacroRepository(context: Context) {
             emptyList()
         }
     }
-    
-    /**
-     * Returns a specific macro by its tag, or null if not found.
-     */
+
     fun getMacro(tag: String): CustomMacro? {
         return getAllMacros().find { it.tag == tag }
     }
-    
-    /**
-     * Saves a macro. If a macro with the same tag exists, it will be updated.
-     */
+
+    /** Adds the macro, or replaces the one with the same tag. */
     fun saveMacro(macro: CustomMacro) {
         val macros = getAllMacros().toMutableList()
         val existingIndex = macros.indexOfFirst { it.tag == macro.tag }
@@ -71,35 +58,25 @@ class CustomMacroRepository(context: Context) {
         }
         saveMacros(macros)
     }
-    
-    /**
-     * Deletes a macro by its tag.
-     */
+
     fun deleteMacro(tag: String) {
         val macros = getAllMacros().filterNot { it.tag == tag }
         saveMacros(macros)
     }
-    
-    /**
-     * Checks if a tag is available (not reserved and not already in use).
-     */
+
+    /** Whether the tag is valid, not reserved and not already in use. */
     fun isTagAvailable(tag: String): Boolean {
         if (!CustomMacro.isTagValid(tag)) return false
         return getAllMacros().none { it.tag == tag }
     }
-    
-    /**
-     * Checks if a tag is available for editing (not reserved and not used by another macro).
-     */
+
+    /** As [isTagAvailable], but [currentTag] (the macro being edited) does not count as in use. */
     fun isTagAvailableForEdit(tag: String, currentTag: String): Boolean {
         if (!CustomMacro.isTagValid(tag)) return false
         return getAllMacros().none { it.tag == tag && it.tag != currentTag }
     }
-    
-    /**
-     * Replaces the whole macro set — a backup restore, or a reset with an empty list. Goes through
-     * [saveMacros] so the process-wide memo is published like any other write.
-     */
+
+    /** Replaces the whole set (backup restore, or reset with an empty list); updates the memo. */
     fun replaceAll(macros: List<CustomMacro>) {
         saveMacros(macros)
     }
@@ -124,11 +101,7 @@ class CustomMacroRepository(context: Context) {
         private const val PREFS_NAME = "custom_macros"
         private const val KEY_MACROS = "macros"
 
-        /**
-         * Process-wide memo of the parsed macro list. Written only through
-         * [saveMacros], so any repository instance that persists a change publishes
-         * the new list to every other reader.
-         */
+        /** Process-wide memo of the parsed list, written only through [saveMacros]. */
         @Volatile
         private var cached: List<CustomMacro>? = null
 

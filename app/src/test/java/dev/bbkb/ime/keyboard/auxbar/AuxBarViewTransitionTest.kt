@@ -21,17 +21,10 @@ import org.robolectric.annotation.Config
 import org.robolectric.util.ReflectionHelpers
 
 /**
- * Characterisation of the aux bar's container state machine, [AuxBarView].
- *
- * The bar has two children, the suggestion list and one shared key view, and every public mutator
- * sets the container's visibility, both children's visibility, `currentState` and the listener
- * notification. These tests pin, per entry point, what each of those ends up as and in what order
- * the observable parts happen, because the order is observable in two places:
- *
- *  - [SimplifiedKeyboardView.onVisibilityChanged] releases a held key and fires `onKeyUp(key, false)`
- *    as the key view goes GONE. `AuxBarManager` routes that call by `getCurrentState()`, so a key held
- *    across a transition is delivered to the handler of the state being LEFT, not the state entered.
- *  - The state-change listener runs after both children and the content are already in place.
+ * Characterisation of [AuxBarView]'s container state machine: per entry point, the container and child
+ * visibility, `currentState`, and the order observable parts happen. [SimplifiedKeyboardView.onVisibilityChanged]
+ * releases a held key as the key view goes GONE and `AuxBarManager` routes it by `getCurrentState()`, so it
+ * reaches the state being left. The state listener runs after both children and the content are in place.
  */
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [34], manifest = Config.NONE)
@@ -91,8 +84,6 @@ class AuxBarViewTransitionTest {
         return seen
     }
 
-    // ── initial ─────────────────────────────────────────────────────────────
-
     @Test
     fun startsInNoneWithTheSuggestionChildVisibleAndTheKeyChildInvisibleNotGone() {
         assertEquals(AuxBarState.NONE, bar.currentState)
@@ -100,8 +91,6 @@ class AuxBarViewTransitionTest {
         assertEquals(false, bar.isShowing)
         assertTrue(bar.isClickable)
     }
-
-    // ── showSuggestions ─────────────────────────────────────────────────────
 
     @Test
     fun showSuggestionsLatinShowsTheSuggestionChildAndNotifies() {
@@ -157,8 +146,6 @@ class AuxBarViewTransitionTest {
         )
     }
 
-    // ── showAutofill ────────────────────────────────────────────────────────
-
     @Test
     fun showAutofillEntersAutofillWithAutofillMode() {
         bar.showAutofill(emptyList(), 100, 40)
@@ -168,8 +155,6 @@ class AuxBarViewTransitionTest {
         assertVisibility(View.VISIBLE, View.VISIBLE, View.GONE)
         assertEquals(listOf(AuxBarState.NONE to AuxBarState.AUTOFILL), transitions)
     }
-
-    // ── showKeys ────────────────────────────────────────────────────────────
 
     @Test
     fun showKeysSetsTheKeyboardShowsTheKeyChildAndNotifies() {
@@ -222,7 +207,7 @@ class AuxBarViewTransitionTest {
         )
     }
 
-    // ── setSuggestionsBehindKeys (owner decision 2026-11-05: the hidden strip stays current) ──
+    // setSuggestionsBehindKeys: the hidden strip stays current.
 
     @Test
     fun wordsSetBehindTheMenuChangeNeitherTheStateNorTheChildren() {
@@ -274,8 +259,6 @@ class AuxBarViewTransitionTest {
         assertSame(shown, currentWords())
     }
 
-    // ── dismissKeyViewAndRestoreSuggestions ─────────────────────────────────
-
     @Test
     fun dismissRestoresLatinKeepingTheSuggestionContent() {
         val w = words()
@@ -315,7 +298,7 @@ class AuxBarViewTransitionTest {
 
     @Test
     fun dismissFromNoneShowsTheContainerAndEntersLatinUnconditionally() {
-        // CHARACTERISED: dismiss has no state guard of its own — its callers provide it.
+        // Dismiss has no state guard of its own; its callers provide it.
         bar.hide()
         transitions.clear()
 
@@ -325,8 +308,6 @@ class AuxBarViewTransitionTest {
         assertVisibility(View.VISIBLE, View.VISIBLE, View.GONE)
         assertEquals(listOf(AuxBarState.NONE to AuxBarState.LATIN_SUGGESTIONS), transitions)
     }
-
-    // ── hide ────────────────────────────────────────────────────────────────
 
     @Test
     fun hideTakesEverythingDownClearsContentAndNotifies() {
@@ -347,8 +328,6 @@ class AuxBarViewTransitionTest {
         assertVisibility(View.GONE, View.GONE, View.GONE)
         assertTrue(transitions.isEmpty())
     }
-
-    // ── ordering: a held key is released to the state being LEFT ────────────
 
     @Test
     fun aKeyHeldAcrossHideIsReleasedWhileTheOldStateIsStillCurrent() {
@@ -411,8 +390,6 @@ class AuxBarViewTransitionTest {
 
         assertTrue(seen.isEmpty())
     }
-
-    // ── colours ─────────────────────────────────────────────────────────────
 
     @Test
     fun updateColorsPaintsTheContainerWithThePaletteBackground() {

@@ -22,37 +22,23 @@ import java.util.zip.ZipInputStream
 import java.util.zip.ZipOutputStream
 
 /**
- * One backup file: a zip holding up to three kinds of data, each in the document format it
- * already had — so the parts stay readable on their own, and the file is the one thing the user
- * saves, restores, and the phone's own backup carries.
+ * One backup file: a zip whose parts keep their own document formats.
  *
  * ```
- * bbkb-backup-2026-10-09.zip
- * ├── manifest.json          format, version, app, created, source phone, every part + checksum
- * ├── settings.json          Settings  — the preferences (SettingsBackup), minus the layout keys
- * ├── macros.json            Settings  — custom macros (MacrosBundle)
- * ├── device-configs/<name>.xml   Settings  — custom device profiles, as imported
- * ├── layouts.json           Layouts   — symbol pages, palette, slideboard, phrases, currency
- * │                                      (LayoutsBundle)
- * ├── letter_layouts/<id>.xml     Layouts   — the user's letter layouts (LetterLayoutXml)
- * └── words.json             Words     — personal dictionary, shortcuts, learned words (WordsBundle)
+ * bbkb-backup-<date>.zip
+ * ├── manifest.json               format, version, app, created, source phone, parts + SHA-256
+ * ├── settings.json               Settings: preferences (SettingsBackup) minus the layout keys
+ * ├── macros.json                 Settings: custom macros (MacrosBundle)
+ * ├── device-configs/<name>.xml   Settings: imported device profiles
+ * ├── layouts.json                Layouts: editor sections (LayoutsBundle)
+ * ├── letter_layouts/<id>.xml     Layouts: letter layouts (LetterLayoutXml), added in version 2
+ * └── words.json                  Words: dictionary, shortcuts, learned words (WordsBundle)
  * ```
  *
- * The three user-facing parts ([Part]) are what the Back up and Restore checkboxes select. They
- * do not overlap: the layout preferences are kept out of `settings.json` ([LayoutsBundle.PREF_KEYS])
- * so that restoring or resetting Settings leaves the layouts alone and vice versa.
- *
- * ## Reading
- *
- * [read] takes either a bundle or one of the single documents the app used to write
- * (`bbkb-settings`, `bbkb-layouts`, `bbkb-words`), or one `letter-layout` XML document, so a
- * backup saved by an earlier build still restores and a layout someone shared imports the same
- * way. Everything is validated before anything is applied: the manifest must list every entry and
- * each entry's size and SHA-256 must match it, entry names must be the known ones (no paths, so a
- * crafted zip cannot write outside its parts), and every part must parse. A file that fails any
- * of this changes nothing.
- *
- * Version 2 added the `letter_layouts/` entries; a version 1 bundle has none and reads as before.
+ * The [Part]s do not overlap, so each restores or resets alone. [read] also accepts a single
+ * `bbkb-settings`/`bbkb-layouts`/`bbkb-words` document or one `letter-layout` XML. Everything is
+ * validated before anything is applied: every entry listed with matching size and SHA-256, only
+ * known entry names (no paths), every part parses.
  */
 object BackupBundle {
 
@@ -77,13 +63,11 @@ object BackupBundle {
 
     private val DEVICE_CONFIG_NAME = Regex("[A-Za-z0-9][A-Za-z0-9._-]{0,99}\\.xml")
 
-    /** A layout's id (`LetterLayout.isValidId`) and `.xml`: the file name the registry gives it. */
+    /** A valid `LetterLayout` id plus `.xml`, as the registry names its files. */
     private val LETTER_LAYOUT_NAME = Regex("[a-z0-9][a-z0-9._-]{0,63}\\.xml")
 
-    /** The three things a backup can hold, as the user sees them. */
     enum class Part { SETTINGS, LAYOUTS, WORDS }
 
-    /** Which parts to write, restore or reset. */
     data class Selection(
         val settings: Boolean = true,
         val layouts: Boolean = true,
@@ -103,7 +87,6 @@ object BackupBundle {
             Part.WORDS -> copy(words = on)
         }
 
-        /** This selection narrowed to the parts [bundle] carries. */
         fun limitedTo(bundle: Bundle): Selection = Selection(
             settings = settings && bundle.hasSettings,
             layouts = layouts && bundle.hasLayouts,
@@ -116,19 +99,13 @@ object BackupBundle {
         }
     }
 
-    /** One custom device profile, as the file the user imported. */
     class DeviceConfigFile(val name: String, val xml: ByteArray)
 
-    /** One of the user's letter layouts, as the document `<id>.xml` the registry keeps it in. */
     class LetterLayoutFile(val name: String, val xml: ByteArray)
 
-    /** The phone a bundle was written on, for the restore summary. */
     class DeviceInfo(val manufacturer: String?, val model: String?)
 
-    /**
-     * What goes into a bundle, already serialised: the caller gathers each document through the
-     * part's own object, so this writer needs nothing from Android.
-     */
+    /** Already-serialized parts, so this writer needs nothing from Android. */
     class Contents(
         val settingsJson: String? = null,
         val macrosJson: String? = null,
@@ -138,13 +115,12 @@ object BackupBundle {
         val letterLayouts: List<LetterLayoutFile> = emptyList(),
     )
 
-    /** The header of a bundle or single document: where it came from. */
     class Origin(
         val app: String?,
         val versionCode: Int,
         val created: String?,
         val device: DeviceInfo?,
-        /** False for one of the single-document formats an earlier build wrote. */
+        /** False for a single-document file. */
         val isBundle: Boolean,
     )
 
@@ -156,7 +132,7 @@ object BackupBundle {
         val deviceConfigs: List<DeviceConfigFile> = emptyList(),
         val layouts: LayoutsBundle.Layouts? = null,
         val words: WordsBundle.Words? = null,
-        /** The user's letter layouts, each parsed; part of [Part.LAYOUTS]. */
+        /** Part of [Part.LAYOUTS]. */
         val letterLayouts: List<LetterLayout> = emptyList(),
     ) {
         val hasSettings: Boolean get() = settings != null || macros != null || deviceConfigs.isNotEmpty()
@@ -170,23 +146,14 @@ object BackupBundle {
         }
     }
 
-    /**
-     * The file is not a BBKB backup, or is one this build cannot read; [message] says why. The
-     * caller keeps "could not read the file" for the `IOException` the storage layer may throw
-     * before the bytes get here.
-     */
+    /** Not a BBKB backup, or one this build cannot read; distinct from a storage `IOException`. */
     class NotABackupException(message: String) : Exception(message)
 
-    // ── writing ──────────────────────────────────────────────────────────────
-
-    /** `bbkb-backup-2026-10-09.zip` — what the save dialog opens pre-filled. */
+    /** `bbkb-backup-<yyyy-MM-dd>.zip`, the save dialog's suggested name. */
     fun defaultFileName(nowMillis: Long = System.currentTimeMillis()): String =
         "bbkb-backup-" + SimpleDateFormat("yyyy-MM-dd", Locale.US).format(Date(nowMillis)) + ".zip"
 
-    /**
-     * Writes [contents] to [out] as a bundle. Closes [out]. Parts that are null are simply not
-     * written; the manifest lists exactly the parts present.
-     */
+    /** Writes [contents] to [out] as a bundle and closes [out]; null parts are left out. */
     @Throws(IOException::class)
     fun write(
         out: OutputStream,
@@ -247,13 +214,7 @@ object BackupBundle {
         zip.closeEntry()
     }
 
-    // ── reading ──────────────────────────────────────────────────────────────
-
-    /**
-     * Reads a bundle, or one of the single documents an earlier build wrote, from [input].
-     * Failures that mean "not a backup" are [NotABackupException]s; an `IOException` from the
-     * stream itself propagates.
-     */
+    /** Reads a bundle or single document; "not a backup" is a failure, stream `IOException`s propagate. */
     @Throws(IOException::class)
     fun read(input: InputStream): Result<Bundle> = try {
         Result.success(readOrThrow(input))
@@ -302,9 +263,8 @@ object BackupBundle {
         val version = manifest.opt("version") as? Int ?: 0
         if (version < 1 || version > VERSION) fail("version ${manifest.opt("version")}, this build reads up to $VERSION")
 
-        // Every entry must be in the manifest with the right size and hash, and every manifest
-        // part must be present: a zip edited by hand, truncated or rebuilt by another tool is
-        // refused as a whole rather than half-applied.
+        // Entries and manifest must match exactly, so a hand-edited or truncated zip is refused
+        // whole rather than half-applied.
         val listed = manifest.opt("parts") as? JSONArray ?: fail("$MANIFEST lists no parts")
         val listedPaths = HashSet<String>()
         for (i in 0 until listed.length()) {
@@ -352,10 +312,7 @@ object BackupBundle {
         return bundle
     }
 
-    /**
-     * One `letter_layouts/<id>.xml` entry. The entry name is the layout's id, as the file name is
-     * in the registry, so a layout restores under the name the backup listed it by.
-     */
+    /** The entry name is the layout id, so it restores under the name the backup listed. */
     private fun parseLetterLayout(path: String, bytes: ByteArray): LetterLayout {
         val id = path.removePrefix(LETTER_LAYOUT_DIR).removeSuffix(LetterLayoutXml.FILE_SUFFIX)
         val layout = try {
@@ -366,10 +323,7 @@ object BackupBundle {
         return if (layout.id == id) layout else layout.withId(id)
     }
 
-    /**
-     * A single document: the settings backup or layouts file an earlier build wrote, or a words
-     * document, dispatched on its `format` header; or one letter layout, which is XML.
-     */
+    /** A single JSON document dispatched on its `format`, or one letter layout XML. */
     private fun readSingleDocument(input: InputStream): Bundle {
         val bytes = readCapped(input, MAX_SETTINGS_BYTES.coerceAtLeast(WordsBundle.MAX_BYTES))
             ?: fail("the file is larger than ${WordsBundle.MAX_BYTES / (1024 * 1024)} MB")
@@ -406,7 +360,7 @@ object BackupBundle {
     private fun parseSettings(json: String): SettingsBackup.Backup =
         SettingsBackup.parse(json).getOrElse { fail("$SETTINGS: ${it.message}") }
 
-    /** `layouts.json`, which is always the JSON bundle: a letter layout travels as its own entry. */
+    /** `layouts.json` is always the JSON form; letter layouts are their own entries. */
     private fun parseLayouts(json: String, where: String): LayoutsBundle.Layouts =
         when (val parsed = LayoutsBundle.parse(json).getOrElse { fail("$where: ${it.message}") }) {
             is LayoutsBundle.Import.Bundle -> parsed.layouts
@@ -430,7 +384,7 @@ object BackupBundle {
         else -> MAX_DEVICE_CONFIG_BYTES
     }
 
-    /** At most [cap] bytes of [input], or null if the stream holds more than that. */
+    /** At most [cap] bytes of [input], or null if it holds more. */
     private fun readCapped(input: InputStream, cap: Int): ByteArray? {
         val out = ByteArrayOutputStream()
         val buffer = ByteArray(16 * 1024)

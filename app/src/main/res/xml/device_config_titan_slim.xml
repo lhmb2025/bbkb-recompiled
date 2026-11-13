@@ -1,16 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!--
-    Device Configuration: Unihertz Titan Slim (2022)
-    Schema v2.4
-
-    Helio P70, Android 11, fingerprint reader in the keyboard. Same key tables, layout and mtk-pad
-    idc as the Titan Pocket (device_config_titan_pocket.xml); indistinguishable from it in
-    userspace except by model name. A separate config so the model matches and any later
-    difference has a home. Its OEM Scroll assistant is off by default.
-
-    Facts come from the stock key layout and device trees, NOT from a unit in hand. Verify on a
-    Slim.
--->
+<!-- Titan Slim: same tables as the Pocket, own config so the model name matches; unverified on a unit -->
 
 <device-input-config version="2.1" name="Unihertz Titan Slim">
 
@@ -24,15 +13,13 @@
 
         <keypad-layout>qwerty</keypad-layout>
 
-        <!-- UNVERIFIED: as the Pocket's, about 720 by 360. No <kdb-variant>: swipe typing stays
-             off until a captured variant exists. -->
+        <!-- Unverified range (as the Pocket). No kdb-variant: swipe off -->
         <touch-keypad range-x="720" range-y="360" contacts="single" source="auto">
             <input-device exact="mtk-pad"/>
         </touch-keypad>
 
         <input-mappings>
             <alt-mappings>
-                <!-- Shared with the Pocket: same key character map. -->
                 <source>device_alt_mappings_titan_pocket</source>
                 <enabled>true</enabled>
             </alt-mappings>

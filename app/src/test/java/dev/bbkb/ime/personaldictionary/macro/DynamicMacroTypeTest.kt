@@ -14,18 +14,9 @@ import org.robolectric.shadows.ShadowSettings
 import java.util.Locale
 
 /**
- * Regression tests for the two macro literals a past global identifier rename
- * corrupted (audit findings PD-4 and PD-11).
- *
- * Before the fix:
- *  * `%T` resolved to the pattern `"hh:mm:ss SuggestedWordInfo"` in any 12-hour
- *    locale, and `SimpleDateFormat` throws `IllegalArgumentException` on the
- *    illegal pattern letter `e` — so the macro blew up uncaught on the
- *    word-substitution commit path, invisibly on a 24-hour test device.
- *  * the battery macro's tag was the identifier `%TextChangeType`, which
- *    `DynamicMacroType.TIME` (`%T`) consumed as a prefix before `BATTERY` was ever
- *    reached, and which `CustomMacro.isTagValid`'s `length == 1` check could never
- *    reserve.
+ * The built-in macro tags and patterns: `%T` is a valid pattern in 12- and 24-hour locales,
+ * `%D` is resolved from a skeleton, and every tag is a single reserved letter, so no tag is
+ * consumed as a prefix of another.
  */
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [34], manifest = Config.NONE)
@@ -41,8 +32,6 @@ class DynamicMacroTypeTest {
         DynamicContentHandler.handleDynamicContent(context, ws(word), locale)
 
     private fun set24Hour(on: Boolean) = ShadowSettings.set24HourTimeFormat(on)
-
-    // ---- PD-4: the %T pattern ------------------------------------------------
 
     @Test
     fun timeMacro_12HourPatternIsAValidAmPmPattern() {
@@ -75,8 +64,6 @@ class DynamicMacroTypeTest {
         assertTrue("expanded to '$out'", Regex("""^at \d{2}:\d{2}:\d{2} sharp$""").matches(out))
     }
 
-    // ---- PD-10: %D is a skeleton, not a literal pattern ----------------------
-
     @Test
     fun dateMacro_isResolvedThroughGetBestDateTimePattern() {
         val out = expand("%D")
@@ -92,8 +79,6 @@ class DynamicMacroTypeTest {
         assertTrue(Regex("""^\d{4}$""").matches(expand("%y")))
         assertTrue(Regex("""^\d{2}:\d{2}$""").matches(expand("%t")))
     }
-
-    // ---- PD-11: the battery macro tag ---------------------------------------
 
     @Test
     fun batteryMacro_tagIsASingleCharacter() {
@@ -125,12 +110,10 @@ class DynamicMacroTypeTest {
     @Test
     fun batteryMacro_isNotSwallowedByTheTimeMacro() {
         set24Hour(true)
-        // The old "%TextChangeType" tag started with "%T", so TIME consumed it first.
+        // A tag starting with "%T" would be consumed by TIME first.
         val out = expand("%b")
         assertFalse("battery tag was consumed by %T: '$out'", out.contains(":"))
     }
-
-    // ---- macro tags do not collide -----------------------------------------
 
     @Test
     fun builtInTagsAreUniqueAndSingleLetter() {

@@ -28,11 +28,8 @@ import java.util.Locale
 
 /**
  * `InputLogic.updateDynamicLearningState()` and the incognito flag
- * (`EditorInfo.IME_FLAG_NO_PERSONALIZED_LEARNING`).
- *
- * The cache used to key on `inputType` alone, so moving between two fields of the same type
- * where only one is incognito (an ordinary and a private tab of the same browser) kept the first
- * field's learning state. imeOptions is now part of the key.
+ * (`EditorInfo.IME_FLAG_NO_PERSONALIZED_LEARNING`): the cache keys on inputType and imeOptions, so
+ * an ordinary and a private field of the same type get their own learning state.
  */
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [34], manifest = Config.NONE, instrumentedPackages = ["com.blackberry.nuanceshim"])

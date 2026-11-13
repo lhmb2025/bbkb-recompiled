@@ -14,21 +14,10 @@ import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 
 /**
- * Link previews for the clipboard board's rows, keyed by [ClipEntry.id].
- *
- * Results belong to an entry, not to a view: a finished fetch records its result under the entry
- * id and tells [listener], and the adapter finds that entry's current row (if it is on screen at
- * all) and rebinds it. The old provider handed each fetch the ViewHolder that asked for it, so a
- * recycled holder could be painted with another row's preview.
- *
- * Each entry is fetched at most once for the life of this provider: a failure is remembered as
- * "no preview" just like a success is remembered, so scrolling a dead link back into view does not
- * fetch it again. Nothing is fetched while [isEnabled] is false (the link-previews setting is off
- * by default), and turning it off forgets every result. Callers decide what may be fetched at all
- * through [previewUrlFor], which never yields a URL for a masked (Password Keeper) row.
- *
- * Main thread only. [release] cancels in-flight fetches; the owner must call it when the board
- * view is replaced or destroyed.
+ * Link previews for clipboard rows, keyed by [ClipEntry.id] rather than by view, so a recycled
+ * holder never shows another row's preview. Each entry is fetched at most once (failures are
+ * remembered too); nothing is fetched while [isEnabled] is false. [previewUrlFor] never yields a
+ * URL for a masked row. Main thread only; the owner must call [release] when the board view goes.
  */
 class ClipboardWebImageProvider internal constructor(
     private val loader: suspend (url: String) -> OpenGraphMetadata?,
@@ -73,8 +62,8 @@ class ClipboardWebImageProvider internal constructor(
         if (!isEnabled || released || results.containsKey(entryId) || inFlight.containsKey(entryId)) {
             return
         }
-        // LAZY so the job is in the map before its body can run: the main-immediate dispatcher
-        // runs an unsuspending body inline, inside launch() itself.
+        // LAZY so the job is in the map before its body runs: main-immediate runs an
+        // unsuspending body inline, inside launch() itself.
         val fetch = scope.launch(start = CoroutineStart.LAZY) {
             val result = try {
                 loader(url)
@@ -113,8 +102,7 @@ class ClipboardWebImageProvider internal constructor(
     }
 
     companion object {
-
-        /** The provider the board uses: real network fetches, results on the main thread. */
+        /** Real network fetches, results on the main thread. */
         @JvmStatic
         fun create(context: Context): ClipboardWebImageProvider {
             val resources = context.resources
@@ -127,9 +115,8 @@ class ClipboardWebImageProvider internal constructor(
         }
 
         /**
-         * The URL to fetch a preview for, if the row's text is exactly one https-fetchable web
-         * address; null for anything else, and always null for a [masked] row, whose text must not
-         * leave the device. A bare host ("example.com") counts and is fetched over https.
+         * The URL to fetch if the text is exactly one https-fetchable web address (a bare host
+         * counts); always null for a [masked] row, whose text must not leave the device.
          */
         @JvmStatic
         fun previewUrlFor(text: String, masked: Boolean): String? =
@@ -140,17 +127,10 @@ class ClipboardWebImageProvider internal constructor(
         fun previewUrlForLink(link: String): String? =
             if (UrlUtils.httpsUrlOrNull(link) != null) link else null
 
-        /**
-         * No web address is longer than this. A longer clip is plain text and is neither trimmed
-         * nor matched: a row is bound every time it scrolls into view, and the pattern over a
-         * copied document, with a copy of it for the trim, was the cost of each bind.
-         */
+        /** Longer clips are plain text and are neither trimmed nor matched (this runs on every bind). */
         const val MAX_URL_CHARS = 2048
 
-        /**
-         * [text] without surrounding white space when the whole of it is one web address (what
-         * gets the link icon), else null.
-         */
+        /** Trimmed [text] when the whole of it is one web address (gets the link icon), else null. */
         @JvmStatic
         fun webUrlOrNull(text: String): String? {
             if (text.length > MAX_URL_CHARS) return null
@@ -158,7 +138,6 @@ class ClipboardWebImageProvider internal constructor(
             return if (isWebUrl(trimmed)) trimmed else null
         }
 
-        /** Whether the whole of [text] is one web address. */
         @JvmStatic
         fun isWebUrl(text: String): Boolean =
             text.isNotEmpty() && text.length <= MAX_URL_CHARS && Patterns.WEB_URL.matcher(text).matches()

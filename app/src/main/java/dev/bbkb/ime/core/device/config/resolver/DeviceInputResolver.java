@@ -21,34 +21,17 @@ import dev.bbkb.ime.core.device.config.parser.DeviceInputMappingParser;
 import dev.bbkb.ime.BuildConfig;
 
 /**
- * Decides which device profile speaks for which keyboard, once per keyboard.
- *
- * <p>Two questions, both answered here and cached by input-device id until a device is attached,
- * removed or changed, or another configuration is chosen:
- * <ul>
- *   <li>{@link #resolveInputMapping}: which profile <em>matches</em> this input device (or, for
- *       {@link #ALL_DEVICES}, this phone). The phone-wide answer is the profile
- *       {@code DeviceProfile} carries.</li>
- *   <li>{@link #keyProfile}: which profile <em>governs a key</em> that came from this device.
- *       Everything decided per key reads this: key roles ({@link #keyRole}), the Alt table and
- *       keypad-layout observation ({@link #isPhoneKeyboard}).</li>
- * </ul>
+ * Decides which device profile speaks for which keyboard, cached by input-device id until a device
+ * changes or another configuration is chosen. {@link #resolveInputMapping} is the profile that
+ * matches a device (or, for {@link #ALL_DEVICES}, the phone); {@link #keyProfile} is the profile
+ * that governs a key from that device, read by everything decided per key.
  */
 public class DeviceInputResolver {
     
     private static final String TAG = "DeviceInputResolver";
     private static DeviceInputConfig sConfig = null;
 
-    /**
-     * Resolved mapping per device id, with {@code sResolvedDeviceIds} recording which ids have
-     * been searched (a resolved-to-null result is a real answer and must not be re-searched).
-     *
-     * This used to be one device-id-agnostic pair of statics guarded by a single
-     * {@code sSearchPerformed} flag that was consulted <em>before</em> the device id was even
-     * looked at -- so once any device had been resolved, every other device silently inherited
-     * that device's alt-mappings, scancode roles, hasTouchKeypad and forcePkbDevice. On a KEY2
-     * with a Bluetooth keyboard attached, the second keyboard got the first one's config.
-     */
+    /** Resolved mapping per device id; {@code sResolvedDeviceIds} marks searched ids, since null is a real answer. */
     private static final SparseArray<DeviceInputMapping> sMappingByDeviceId = new SparseArray<>(4);
     private static final SparseBooleanArray sResolvedDeviceIds = new SparseBooleanArray(4);
 
@@ -69,11 +52,8 @@ public class DeviceInputResolver {
     private static Context sAppContext;
 
     /**
-     * Get the input mapping configuration for a device.
-     *
-     * @param context Application context
-     * @param deviceId Device ID (if 0, will search all physical keyboard devices)
-     * @return DeviceInputMapping if custom config exists, null for default behavior
+     * @param deviceId device id, or {@link #ALL_DEVICES} to search every physical keyboard
+     * @return the matching mapping, or null for default behavior
      */
     public static synchronized DeviceInputMapping resolveInputMapping(Context context, int deviceId) {
         if (context == null) {
@@ -82,7 +62,6 @@ public class DeviceInputResolver {
 
         registerDeviceListener(context);
 
-        // Load config from active configuration (managed by CustomDeviceConfigManager)
         if (sConfig == null) {
             sConfig = CustomDeviceConfigManager.getInstance(context).getActiveConfig();
         }
@@ -91,23 +70,19 @@ public class DeviceInputResolver {
             return null;
         }
 
-        // Return the cached result for *this* device, if it has been resolved.
         if (sResolvedDeviceIds.get(deviceId)) {
             return sMappingByDeviceId.get(deviceId);
         }
 
-        // If deviceId is 0 or invalid, search all physical keyboard devices
         if (deviceId == ALL_DEVICES) {
             return findMappingFromAllDevices();
         }
 
-        // Get device info by ID
         InputDevice device = InputDevice.getDevice(deviceId);
         if (device == null) {
             return findMappingFromAllDevices();
         }
 
-        // Find mapping: name, and vendor/product ids for configs that match on them
         DeviceInputMapping mapping = sConfig.findMappingForInputDevice(device);
 
         cacheMapping(deviceId, mapping);
@@ -115,20 +90,9 @@ public class DeviceInputResolver {
     }
 
     /**
-     * The profile that governs a key from this input device, or null when none does.
-     *
-     * <ul>
-     *   <li>A keyboard that a profile matches gets that profile.</li>
-     *   <li>Any other built-in device gets the phone's profile: a phone's keypad and its side
-     *       keys are often separate input devices, and a profile that names the keypad still
-     *       describes the phone. So does a key Android attributes to no real device (injected
-     *       keys, the virtual keyboard).</li>
-     *   <li>An external keyboard that no profile names gets none, exactly as on a phone with no
-     *       profile at all.</li>
-     * </ul>
-     *
-     * <p>There used to be one process-wide table of key roles, filled from whichever profile
-     * was resolved first and asked without saying which keyboard the key came from.
+     * The profile that governs a key from this device, or null. A matched keyboard gets its
+     * profile; any other built-in or virtual device gets the phone's (keypad and side keys are
+     * often separate devices); an unnamed external keyboard gets none.
      *
      * @param deviceId {@code KeyEvent.getDeviceId()}
      */
@@ -192,11 +156,7 @@ public class DeviceInputResolver {
         return keyProfile(deviceId) == keyProfile(ALL_DEVICES);
     }
 
-    /**
-     * Search all connected input devices for a matching configuration.
-     */
     private static DeviceInputMapping findMappingFromAllDevices() {
-        // Return cached result if already searched
         if (sResolvedDeviceIds.get(ALL_DEVICES)) {
             return sMappingByDeviceId.get(ALL_DEVICES);
         }
@@ -207,7 +167,6 @@ public class DeviceInputResolver {
             InputDevice device = InputDevice.getDevice(id);
             if (device == null) continue;
 
-            // Only consider physical keyboards
             int sources = device.getSources();
             boolean isKeyboard = (sources & InputDevice.SOURCE_KEYBOARD) == InputDevice.SOURCE_KEYBOARD;
             boolean isExternal = !device.isVirtual();
@@ -221,9 +180,7 @@ public class DeviceInputResolver {
             }
         }
 
-        // No keyboard matched (or the phone reports none at all). A configuration the user
-        // picked by hand is the phone's profile anyway; otherwise the answer is "none", cached so
-        // the search is not repeated.
+        // No keyboard matched: a hand-picked configuration is the phone's profile anyway.
         final DeviceInputMapping chosen = sConfig.chosenPhoneProfile();
         cacheMapping(ALL_DEVICES, chosen);
         return chosen;
@@ -234,21 +191,15 @@ public class DeviceInputResolver {
         sResolvedDeviceIds.put(deviceId, true);
     }
 
-    /**
-     * Nothing used to invalidate the mapping cache when a keyboard was attached or detached --
-     * only CustomDeviceConfigManager.setActiveConfigId, via {@link #resetConfig()}. A keyboard
-     * plugged in after boot therefore reused whatever had already been resolved.
-     */
+    /** Invalidates the cache when a keyboard is attached, removed or changed. */
     private static void registerDeviceListener(Context context) {
         if (sDeviceListenerRegistered) return;
         final InputManager inputManager =
                 (InputManager) context.getApplicationContext().getSystemService(Context.INPUT_SERVICE);
         if (inputManager == null) return;
         sAppContext = context.getApplicationContext();
-        // A device change invalidates what was resolved. Android reports the built-in keyboard as
-        // "changed" on every IME subtype switch (the keyboard layout is re-assigned), so this is
-        // frequent; the phone's profile is resolved again right away, and each keyboard's own
-        // answer on its next key.
+        // Frequent: Android reports the built-in keyboard as changed on every subtype switch. The
+        // phone's profile is resolved again at once, each keyboard's on its next key.
         inputManager.registerInputDeviceListener(new InputManager.InputDeviceListener() {
             @Override public void onInputDeviceAdded(int deviceId)   { resetAndResolve(); }
             @Override public void onInputDeviceRemoved(int deviceId) { resetAndResolve(); }
@@ -257,27 +208,15 @@ public class DeviceInputResolver {
         sDeviceListenerRegistered = true;
     }
 
-    /**
-     * Get the Alt mappings table for a device.
-     * Returns loaded table from XML file specified in device config.
-     * 
-     * @param context Application context
-     * @param deviceId Device ID
-     * @return AltMappingsTable or null if no custom mappings configured
-     */
+    /** The Alt table the device config names, or null if none is configured. */
     public static AltMappingsTable getAltMappingsTable(Context context, int deviceId) {
         return AltMappingsParser.tableFor(context, resolveInputMapping(context, deviceId));
     }
 
-    /**
-     * A device was added, removed or reported as changed: forgets what was resolved and resolves
-     * the phone's profile again at once.
-     */
+    /** A device was added, removed or changed: forgets what was resolved and re-resolves the phone's profile. */
     static synchronized void resetAndResolve() {
-        // Not resetConfig(): a device coming, going or "changing" does not change what an XML
-        // resource holds, so the parsed Alt tables stay. Android reports the built-in keyboard
-        // as changed on every language switch, and dropping the tables there made the next
-        // physical key parse its Alt table again on the main thread (Minimal Phone, Titan).
+        // Not resetConfig(): the parsed Alt tables stay, or every language switch would make the
+        // next key re-parse its Alt table on the main thread.
         resetResolved();
         if (sAppContext != null) {
             resolveInputMapping(sAppContext, ALL_DEVICES);
@@ -298,11 +237,7 @@ public class DeviceInputResolver {
         sKeyProfiles = new SparseArray<>(4);
     }
 
-    /**
-     * Makes {@code profile} the phone's profile without a configuration file or an input device
-     * to match it against, neither of which a JVM test has; null installs "no profile". Undo
-     * with {@link #resetConfig()}.
-     */
+    /** Makes {@code profile} (or null for none) the phone's profile for a JVM test; undo with {@link #resetConfig()}. */
     @VisibleForTesting
     public static synchronized void installPhoneProfileForTest(@Nullable DeviceInputMapping profile) {
         resetResolved();

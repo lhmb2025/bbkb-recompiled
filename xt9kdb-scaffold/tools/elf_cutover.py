@@ -50,81 +50,34 @@ CONTRACT = [
     "Load_SetSmartTouch","Load_SetSmartTouchProtectiveArea","Load_XmlKDB","GetKeyPositions",
     "GetKeyPositionByTap","GetKeyboardSize","GetKeyboardDefaultSize","SetKeyboardSize",
     "SetKeyboardOffset","TouchStart","TouchMove","TouchEnd","TouchCancel",
-    # 2026-08-12 INVESTIGATION: redirected to observe the trace->AW handoff. Our definition is a
-    # pass-through that calls the blob's orphaned original by address (see kdb_trace.c), so the
-    # blob keeps doing the decoding; we only get to see the arguments and the record it reads.
-    # Revert by moving this back to NOT_REDIRECTED and re-running cutover_deploy.sh patch.
+    # Pass-through to the blob's orphaned original by address (kdb_trace.c): the blob still
+    # decodes, we only observe the arguments and the record it reads.
     "ProcessStoredTouch",
 ]
 
-# DELIBERATELY NOT REDIRECTED — the tap -> ET9AW input path stays with the blob.
-#   ProcessKey, ProcessKeyBySymbol, ProcessStoredTouch, ModifyCurrentKey
-# Same rule as ET9KDB_Init below: own the KDB *content* (geometry), leave *plumbing* to the blob.
-# Redirecting these shipped a keyboard that could not autocomplete: our implementations forward
-# through a commit sink (kdb_tap.c g_aw_commit) that is only ever wired by DIFF-mode JNI glue, so in
-# CUTOVER every typed character was silently swallowed and ET9 fell back to next-word predictions
-# (2026-07-24; docs/2026-07_frozen-suggestions_investigation.md). The blob's own ProcessKey is 924
-# bytes of multitap/mode/validator logic that reads the NKL at ctx+0x60 — OUR byte-identical NKL —
-# so leaving it in place keeps the geometry win and restores typing. Note ProcessKeyBySymbol
-# tail-calls ProcessKey through the PLT, so both must stay with the blob or neither does.
-# ProcessKey/ProcessKeyBySymbol were briefly redirected (2026-08-12) as logging pass-throughs to
-# see the decoder's key sequence for a gesture. The capture proved gestures NEVER call ProcessKey —
-# its two call sites inside ProcessStoredTouch do not execute on the trace path — so redirecting it
-# buys nothing for swipe work and only puts our code back on the typing path that regressed in July.
-# Reverted. ModifyCurrentKey stays with the blob for the same reason as always.
-#
-# WHAT IT WOULD TAKE TO REDIRECT THEM (written down 2026-09-20 so the next attempt starts from
-# evidence rather than from optimism). Since the census below proved every OTHER un-redirected
-# symbol is uncalled, these three are the only touch-ABI symbols a future cutover could change at
-# all — ProcessKey has 5 live call sites, ProcessKeyBySymbol 3, ModifyCurrentKey 1. The 2026-07
-# regression was not "our implementation was wrong"; it was that our implementation commits
-# through g_aw_commit, a sink only DIFF-mode JNI glue ever wires, so in CUTOVER every typed
-# character was silently swallowed. Four things must hold before trying again, and the first
-# three are checkable offline:
-#   1. The sink is wired in CUTOVER. kdb_tap.c's commit path must reach ET9AddExplicitSymb /
-#      ET9AddCustomSymbolSet on the real ET9WordSymbInfo (ctx+0x18750, magic 0x1428 at +0), by
-#      the same trampoline-by-address technique kdb_tap.c already uses for the blob's ProcessKey.
-#      Today it is NULL in CUTOVER and only logs "commit sink NOT WIRED" on the first keystroke.
-#   2. A test that fails when the sink is unwired. The July build passed validation precisely
-#      because an unwired sink was indistinguishable from "the engine had nothing to say": a
-#      CUTOVER-mode stage must assert that a typed letter lands in a WordSymbInfo-shaped buffer,
-#      not merely that ProcessKeyBySymbol returned 0.
-#   3. Parity on the 924 bytes of ProcessKey. It is multitap + mode + validator logic reading the
-#      NKL at ctx+0x60 (OUR NKL). Redirecting it means reimplementing: the multitap cycle and its
-#      timer, the ambiguous/discrete/regional mode gates, the word-full case that calls
-#      GetKdbVersion at 0xbf680, and ModifyCurrentKey's edit of the in-progress symbol. A
-#      differential stage against the blob's own copy (still present in .text, callable by
-#      address) over a swept input space is the only honest evidence.
-#   4. THEN a device pass. Nothing offline can prove autocomplete works end to end, because the
-#      DLM and the selection list are the blob's.
-# Absent 1-3, leave them here. Note ProcessKeyBySymbol tail-calls ProcessKey through the PLT
-# (0xc08f0), so both move together or neither does.
+# The tap -> ET9AW input path stays with the blob: own the KDB content, leave plumbing to the blob.
+# Our implementations commit through kdb_tap.c's g_aw_commit, which only DIFF-mode JNI wires, so in
+# CUTOVER every typed character would be swallowed. Gestures never call ProcessKey.
+# Before redirecting them (ProcessKey has 5 live call sites, ProcessKeyBySymbol 3, ModifyCurrentKey 1):
+#   1. Wire the sink in CUTOVER: reach ET9AddExplicitSymb / ET9AddCustomSymbolSet on the real
+#      ET9WordSymbInfo (ctx+0x18750, magic 0x1428 at +0) by trampoline-by-address.
+#   2. A CUTOVER test that fails when the sink is unwired (a typed letter must land in a
+#      WordSymbInfo-shaped buffer, not just return 0).
+#   3. Parity with the blob's 924-byte ProcessKey, which reads the NKL at ctx+0x60: multitap cycle
+#      and timer, ambiguous/discrete/regional gates, the word-full case calling GetKdbVersion at
+#      0xbf680, ModifyCurrentKey's edit of the in-progress symbol. Diff against the blob's copy.
+#   4. Then a device pass (the DLM and selection list are the blob's).
+# ProcessKeyBySymbol tail-calls ProcessKey through the PLT (0xc08f0): both move or neither does.
 NOT_REDIRECTED = ["ProcessKey", "ProcessKeyBySymbol", "ModifyCurrentKey"]
 
-# NOT REDIRECTED BECAUSE REDIRECTING THEM WOULD DO NOTHING — measured, not assumed.
-# 2026-09-20: tools/abi_callsites.py censused every internal reference to every ET9KDB_* export in
-# the pristine blob (kdb_backup/libnative-lib.orig.so). Each name below has ZERO of all four kinds:
-# no PLT call site, no direct branch into its body, no GOT/data relocation or adrp+add that takes
-# its address, and its name appears nowhere as a C string — and the blob imports neither dlopen nor
-# dlsym (llvm-nm --dynamic --undefined-only), so there is no name-based path to them either. The
-# cutover redirects PLT call sites; a symbol with none is not "handed over" by being UNDEF'd, it is
-# simply never called. Adding one to CONTRACT would grow the list without changing one instruction
-# executed on device, and would cost a real thing: the contract would stop being a statement about
-# what our code actually serves.
-#
-# This is a property of THIS blob. `run_tests.sh` re-checks it (stage "blob call-site evidence")
-# whenever the pristine backup is present:  tools/abi_callsites.py --in <blob> --check
-#
-# Consequences worth knowing, since they are easy to re-litigate:
-#   * ProcessTrace / ProcessTap have no caller in the blob, so on the shipped build the ONLY
-#     recognizer entry is TouchEnd -> our own process_trace_impl. They are already effectively
-#     ours; the exported names are dead either way.
-#   * TouchEndAll / TouchTimeOut are never invoked, so audit L9's "the engine core abandons a
-#     session behind our back" cannot happen on this blob. (Our copies still release the session,
-#     because the DIFF mirror and the offline suite do call them.)
-#   * GetKeyPositionByStoredTouch is dead, and it is the ONLY caller of GetKeyPositionByTap
-#     (tail-call `b` at 0xc06d0) — so ByTap, though it IS in CONTRACT, is likewise unreachable on
-#     device today. Keep it: it costs nothing and the JNI surface may grow a reader.
+# Exports with no reference of any kind in the blob: no PLT call, no direct branch, no GOT/data
+# reloc or adrp+add, no name string, and no dlopen/dlsym import. UNDEFing them changes nothing that
+# runs. A property of this blob: run_tests.sh re-checks it (tools/abi_callsites.py --check).
+#   * ProcessTrace / ProcessTap: the only recognizer entry is TouchEnd -> our process_trace_impl.
+#   * TouchEndAll / TouchTimeOut are never invoked (our copies still release the session for the
+#     DIFF mirror and the offline suite).
+#   * GetKeyPositionByStoredTouch is the only caller of GetKeyPositionByTap (tail-call at 0xc06d0),
+#     so ByTap, though in CONTRACT, is unreachable on device too.
 INERT_NO_CALLERS = [
     "ProcessTap", "ProcessTrace", "TouchEndAll", "TouchTimeOut", "SetTraceInput",
     "ClearTraceInput", "GetKeyPositionByStoredTouch", "GetSwitchedKeys", "GetMultiTapSequence",
@@ -132,12 +85,10 @@ INERT_NO_CALLERS = [
     "GetPageNum", "Validate", "NextDiacritic", "Load_TextKDB",
 ]
 
-# The blob's LDB reader (P-9, 2026-11 performance audit; xt9kdb-scaffold/cpp/src/ldb_reader.c):
-# ldbReadDataAW is reached only through its GLOB_DAT (alphaInit hands it to ET9AWLdbInit as the
-# read callback; ldbReadDataCP branches into the ORIGINAL body internally and keeps it), and
-# ldbTerminate / ldbDeleteIndex only through their PLT slots. Handing these three over lets libkb.so
-# map stored APK assets copy-on-write instead of keeping a malloc'd copy of each 5-6 MB dictionary.
-# The ownership proof (every reader and the only free of a node's data) is in ldb_reader.c.
+# The blob's LDB reader (ownership proof in ../cpp/src/ldb_reader.c). ldbReadDataAW is reached only
+# through its GLOB_DAT (alphaInit's ET9AWLdbInit read callback; ldbReadDataCP keeps branching into
+# the original body), the other two only through their PLT slots. Lets libkb.so map stored APK
+# assets instead of a malloc'd copy of each 5 to 6 MB dictionary.
 LDB_CONTRACT = ["ldbReadDataAW", "ldbTerminate", "ldbDeleteIndex"]
 
 CONTRACT_SYMS = {"ET9KDB_" + n for n in CONTRACT} | set(LDB_CONTRACT)
@@ -150,7 +101,6 @@ DYN_SZ     = 16                  # ELF64 Elf64_Dyn
 DT_NEEDED  = 1
 
 
-# ---- minimal ELF64 (little-endian) reader ------------------------------------------------
 class Elf:
     def __init__(self, data):
         if data[:4] != b"\x7fELF" or data[4] != 2 or data[5] != 1:

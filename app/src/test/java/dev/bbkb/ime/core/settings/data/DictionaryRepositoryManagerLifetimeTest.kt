@@ -17,15 +17,9 @@ import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
 
 /**
- * The settings editors keep one [DictionaryRepository] for as long as the screen is open, and the
- * keyboard service, which runs in the same process, replaces [DictionaryManager]'s singleton when
- * it starts (`BlackBerryIME.initializeSingletons` calls `DictionaryManager.shutdownInstance()`)
- * and shuts it down when it stops (`onDestroy`). After an install or an update the service is
- * first created by the first keyboard shown, which is typically the add form on this screen.
- *
- * The repository used to keep the manager it was built with, so from then on every add on the
- * screen went to a shut-down manager, which answered "not loaded", and the screen said "Failed to
- * add word" / "Failed to add shortcut" until it was left (emulator, 2026-11-05).
+ * A settings editor keeps one [DictionaryRepository] while open, but the keyboard service (same
+ * process) replaces [DictionaryManager]'s singleton on start and shuts it down on stop, often while
+ * this screen's add form is up. The repository must follow the current manager, not keep its own.
  */
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [34], manifest = Config.NONE)

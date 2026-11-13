@@ -22,13 +22,7 @@ public final class CommitEventRecord {
 
     public final int shiftStateAtCommit;
 
-    /**
-     * TI-21: allocated only when the constructor is actually given coordinates to copy. A
-     * {@code TouchPointerCoordTracker(48)} builds six {@code IntArrayList(48)} backing arrays
-     * (~1.1 KB), and a CommitEventRecord is built on every word commit - including the
-     * {@link #IDLE} singleton and every record constructed with a {@code null} source, where
-     * nothing was ever copied in. {@code null} when no source tracker was supplied.
-     */
+    /** {@code null} when no source tracker was supplied (avoids ~1.1 KB per commit). */
     public final TouchPointerCoordTracker coordinateTracker;
 
     public final CommitType commitType;
@@ -47,6 +41,13 @@ public final class CommitEventRecord {
         BATCH_INPUT_WORD
     }
 
+    /**
+     * @param c0697m the touch coordinates of the word, copied (may be null)
+     * @param str the typed word
+     * @param str2 the separator committed after the word
+     * @param i the shift state at commit time
+     * @param z true to skip learning this word
+     */
     public CommitEventRecord(TouchPointerCoordTracker c0697m, String str, CharSequence charSequence, String str2, PrevWordsInfo prevWordsInfo, int i, CommitType commitTypeVar, boolean z) {
         if (c0697m != null) {
             this.coordinateTracker = new TouchPointerCoordTracker(48);
@@ -64,12 +65,7 @@ public final class CommitEventRecord {
         this.commitType = commitTypeVar;
     }
 
-    /**
-     * TI-29: {@link #IDLE} is a process-wide shared singleton that {@code InputLogic} assigns to
-     * {@code mEventDispatcher} and then calls this on, permanently mutating it. Harmless today
-     * only because {@link #isRevertEligible()} already short-circuits on the empty
-     * {@code committedWord}; guard it so the singleton stays immutable in fact and not by luck.
-     */
+    /** No-op on the shared {@link #IDLE} singleton, which InputLogic also calls this on. */
     public void disableRevert() {
         if (this == IDLE) {
             return;

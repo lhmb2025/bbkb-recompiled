@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Material split of ic_inputboard_fcc_control: the disc alone, white so a plain
-     SRC_IN tint colors it. Layered under ic_inputboard_fcc_control_rings at runtime
-     (FccView) so the rings can carry a contrasting tint instead of flattening. -->
+<!-- Disc of ic_inputboard_fcc_control, white for an SRC_IN tint; FccView layers the rings over it with their own tint -->
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
     android:width="62dp"
     android:height="62dp"

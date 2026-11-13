@@ -39,12 +39,14 @@ public class NumericSubpanelController implements SimplifiedKeyboardView.onKeyEv
 
     private Locale currentLocale;
 
-    @Override // dev.bbkb.ime.keyboard.SimplifiedKeyboardView.onKeyEventListener
+    @Override
     public void onKeyDown(Key key) {
+        // Keys commit on key up.
     }
 
-    @Override // dev.bbkb.ime.keyboard.SimplifiedKeyboardView.onKeyEventListener
+    @Override
     public void onKeyLongPress(Key key) {
+        // The pad has no long-press actions.
     }
 
     public NumericSubpanelController(BlackBerryIME blackBerryIME, SubtypeManager subtypeManager, SettingsManager settingsManager) {
@@ -62,11 +64,7 @@ public class NumericSubpanelController implements SimplifiedKeyboardView.onKeyEv
         applyKeys(this.settingsManager.getSettingsValues());
     }
 
-    /**
-     * Currency first, then the customised pad, on a freshly built keyboard. Every path that
-     * builds the pad (first show, language switch, settings change) goes through here, so they
-     * can't drift apart again.
-     */
+    /** Currency first, then the customised pad. Every path that builds the pad goes through here. */
     private void applyKeys(SettingsValues settingsValues) {
         this.customSymbols = settingsValues.customSlideboardSymbols;
         this.currencySymbol = settingsValues.currencySymbol;
@@ -74,13 +72,10 @@ public class NumericSubpanelController implements SimplifiedKeyboardView.onKeyEv
         this.keyboardView.applyCustomKeys(this.customSymbols, currencyPlaceholders(settingsValues.currencySymbol));
     }
 
-    /**
-     * What the currency slot of a customised pad may hold and still mean "the currency key":
-     * the shipped "$", the currency setting's symbol, or the phone locale's own.
-     */
+    /** What the currency slot may hold and still mean "the currency key". */
     public static Set<String> currencyPlaceholders(String currencySymbol) {
         Set<String> placeholders = new HashSet<>();
-        placeholders.add("$"); // the shipped default in the editor
+        placeholders.add("$"); // the editor's default
         placeholders.add(currencySymbol);
         try {
             placeholders.add(Currency.getInstance(Locale.getDefault()).getSymbol());
@@ -103,7 +98,8 @@ public class NumericSubpanelController implements SimplifiedKeyboardView.onKeyEv
         return aVar.build();
     }
 
-    @Override // dev.bbkb.ime.keyboard.SimplifiedKeyboardView.onKeyEventListener
+    /** @param z unused */
+    @Override
     public void onKeyUp(Key key, boolean z) {
         this.ime.onCodeInput(key.getCode(), -6, -6, SystemClock.uptimeMillis(), false);
     }
@@ -128,11 +124,7 @@ public class NumericSubpanelController implements SimplifiedKeyboardView.onKeyEv
         }
     }
 
-    /**
-     * Releases the view. The {@code ime} field is deliberately NOT nulled: it is the IME
-     * service, not a view, and createBuilder dereferences it - so a refresh() followed by the
-     * next setView() (SlideboardManager.setSlideboardComponent) used to NPE.
-     */
+    /** Releases the view. Keep {@code ime}: the next setView() needs it in createBuilder. */
     public void refresh() {
         NumericSubpanelKeyboardView numericSubpanelKeyboardView = this.keyboardView;
         if (numericSubpanelKeyboardView != null) {

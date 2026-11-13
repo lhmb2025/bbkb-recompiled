@@ -14,11 +14,8 @@ import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
 
 /**
- * [BoardKeyPressTracker]'s contract on its own — no IME, no converter, no processor.
- *
- * <p>Every clause of the contract stated in that class's javadoc has a test here, including the two
- * that are easy to get wrong in a rewrite: one slot per *action* (not per key), and which
- * [ModifierResetReason]s discard a pending action.
+ * [BoardKeyPressTracker]'s contract on its own (no IME, converter or processor), including one slot
+ * per action (not per key) and which [ModifierResetReason]s discard a pending action.
  */
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [34], manifest = Config.NONE)
@@ -31,8 +28,6 @@ class BoardKeyPressTrackerTest {
 
     @After
     fun tearDown() = tracker.clearPendingActions()
-
-    // ===================================================== arm / consume
 
     @Test
     fun `nothing is armed to begin with`() {
@@ -72,10 +67,7 @@ class BoardKeyPressTrackerTest {
         assertFalse(tracker.isArmed(PendingKeyAction.MULTIFUNCTION))
     }
 
-    /**
-     * One slot per action, not one per key — the shape of the three booleans this replaces. Two
-     * emoji-role keys held together used to set one flag and they arm one slot.
-     */
+    /** One slot per action, not per key: two emoji-role keys held together arm one slot. */
     @Test
     fun `arming the same action for a second key replaces the first`() {
         tracker.arm(event(KeyEvent.KEYCODE_ALT_RIGHT, 250), PendingKeyAction.EMOJI_BOARD)
@@ -88,8 +80,6 @@ class BoardKeyPressTrackerTest {
         assertTrue(tracker.consume(PendingKeyAction.EMOJI_BOARD))
         assertFalse("one arm, one action", tracker.consume(PendingKeyAction.EMOJI_BOARD))
     }
-
-    // ===================================================== the recorded identity
 
     @Test
     fun `the arming key's identity is recorded`() {
@@ -118,8 +108,6 @@ class BoardKeyPressTrackerTest {
 
         assertNull(tracker.armedBy(PendingKeyAction.VOICE_INPUT))
     }
-
-    // ===================================================== the reset contract
 
     @Test
     fun `every full reset reason discards pending actions`() {
@@ -158,8 +146,6 @@ class BoardKeyPressTrackerTest {
             assertFalse(action.name, tracker.isArmed(action))
         }
     }
-
-    // ===================================================== Identity
 
     @Test
     fun `identity is the key code and the scancode together`() {

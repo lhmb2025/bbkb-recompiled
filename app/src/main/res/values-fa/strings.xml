@@ -721,7 +721,6 @@
     <string name="device_config_import_unreadable">آن فایل یک پیکربندی دستگاه نیست</string>
     <string name="device_config_import_failed">آن فایل وارد نشد</string>
 
-    <!-- OTA app updates -->
     <string name="settings_updates_title">به‌روزرسانی‌ها</string>
     <string name="settings_updates_summary">بررسی نسخه جدید BBKB</string>
     <string name="settings_update_installed_version_title">نسخه نصب‌شده</string>
@@ -755,7 +754,6 @@
     <string name="settings_update_ready_title">آماده نصب</string>
     <string name="settings_update_version_details">جزئیات نسخه</string>
     <string name="settings_update_unknown_sources_title">به BBKB اجازه نصب به‌روزرسانی‌ها داده شود؟</string>
-    <!-- Downloadable language packs (core/languagepack) -->
     <string name="language_packs_installed_header">نصب‌شده</string>
     <string name="language_packs_available_header">قابل بارگیری</string>
     <string name="language_packs_download">بارگیری</string>
@@ -877,7 +875,6 @@
     <string name="settings_voice_stop_on_pause_summary_off">در مکث‌ها نیز به شنیدن ادامه می‌دهد تا وقتی روی میکروفون ضربه بزنید یا پس از نیم دقیقه سکوت</string>
     <string name="voice_status_listening_tap_to_stop">در حال شنیدن&#8230; برای توقف روی میکروفون ضربه بزنید</string>
 
-    <!-- Settings text moved out of the code (2026-11) -->
     <string name="settings_common_save">ذخیره</string>
     <string name="settings_common_edit">ویرایش</string>
     <string name="settings_common_back">برگشت</string>

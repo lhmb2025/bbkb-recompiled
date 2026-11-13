@@ -9,20 +9,15 @@
     <files-path
         name="nuance"
         path="nuance/"/>
-    <!-- Device configs: imported ones and the ones the profile builder writes. Shared out of
-         here by the builder's "Share" action, so another handset can import the same file. -->
+    <!-- Device configs (imported and builder-written), shared by the builder -->
     <files-path
         name="device_configs"
         path="device_configs/"/>
-    <!-- Imported letter layouts (LetterLayoutRegistry, layouts/letter/<id>.xml). Shared out of
-         here by Custom physical layouts' "Share" action. -->
+    <!-- Imported letter layouts, shared by Custom physical layouts -->
     <files-path
         name="letter_layouts"
         path="layouts/letter/"/>
-    <!-- cacheDir/downloads/ — DistributionConfig.downloadDir. A downloaded APK has to be handed
-         to the platform installer as a content:// URI (file:// is refused since API 24), so
-         ApkInstaller needs this provider to be able to serve out of that directory. Extending the
-         existing provider rather than declaring a second one: one authority, one paths file. -->
+    <!-- Downloaded APKs: the installer needs a content:// URI (file:// refused since API 24) -->
     <cache-path
         name="downloads"
         path="downloads/"/>

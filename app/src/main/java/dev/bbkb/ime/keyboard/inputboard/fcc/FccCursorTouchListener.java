@@ -66,7 +66,7 @@ public final class FccCursorTouchListener implements View.OnTouchListener {
         this.mVerticalOffset = this.mMaxTravelY * 0.333333f;
     }
 
-    @Override // android.view.View.OnTouchListener
+    @Override
     public boolean onTouch(View view, MotionEvent motionEvent) {
         switch (motionEvent.getAction()) {
             case 0: // ACTION_DOWN
@@ -77,14 +77,12 @@ public final class FccCursorTouchListener implements View.OnTouchListener {
                 this.mFccView.playKeyFeedback();
                 return true;
             case 2: // ACTION_MOVE
-                // If tracking is active and view state is valid, handle the move
                 if (this.mTracking && this.mFccView.isShowing()) {
                     moveNub(motionEvent);
                     updateDirection();
                     return true;
                 }
-                // Fall through to cancel handler if condition fails
-                // (intentional - cancels gesture when h() returns false during move)
+                // Intentional fall-through: a move while not tracking or hidden cancels the drag.
             case 1: // ACTION_UP
             case 3: // ACTION_CANCEL
             case 5: // ACTION_POINTER_DOWN
@@ -112,16 +110,15 @@ public final class FccCursorTouchListener implements View.OnTouchListener {
         animateScale(view, 1.0f, 300);
     }
 
+    /**
+     * @param f the target scale
+     * @param i the duration in ms
+     */
     private void animateScale(View view, float f, int i) {
         view.animate().scaleX(f).scaleY(f).setDuration(i);
     }
 
-    /**
-     * Audit IB-23: the X assignment was a jadx-expanded pair of Float.compare
-     * ternaries that evaluated Math.abs(rawY) three times, on every ACTION_MOVE of the
-     * nub drag. It says exactly this - and it is the mirror of the horizontal test on
-     * the line above, which the longhand form hid.
-     */
+    /** Follow the finger, locked to the dominant axis once past the threshold. */
     private void moveNub(MotionEvent motionEvent) {
         float rawX = motionEvent.getRawX() - this.mTouchStartX;
         float rawY = motionEvent.getRawY() - this.mTouchStartY;
@@ -137,6 +134,10 @@ public final class FccCursorTouchListener implements View.OnTouchListener {
                 : clampTravel(rawY, false) + this.mNubOriginalY);
     }
 
+    /**
+     * @param f the travel to clamp
+     * @param z true for the horizontal axis
+     */
     private float clampTravel(float f, boolean z) {
         float f2 = z ? this.mMaxTravelX : this.mMaxTravelY;
         if (f > f2) {
@@ -176,10 +177,18 @@ public final class FccCursorTouchListener implements View.OnTouchListener {
         }
     }
 
+    /**
+     * @param f the nub's travel
+     * @param z true when the drag is horizontal
+     */
     private void scaleNubForDrag(float f, boolean z) {
         animateScale(this.mNub, 1.0f - (computeDragRatio(f, z) * 0.39999998f), 0);
     }
 
+    /**
+     * @param f the nub's travel
+     * @param z true when the drag is horizontal
+     */
     private float computeDragRatio(float f, boolean z) {
         float f2 = z ? this.mMaxTravelX : this.mMaxTravelY;
         float fAbs = Math.abs(f);
@@ -187,17 +196,23 @@ public final class FccCursorTouchListener implements View.OnTouchListener {
         return (fAbs - f3) / (f2 - f3);
     }
 
+    /**
+     * @param j the base delay in ms
+     * @param z true when the drag is horizontal
+     * @param f the nub's travel (further is faster)
+     */
     private long computeRepeatDelay(long j, boolean z, float f) {
         float f2 = j;
         return Math.max((long) (f2 - ((Math.abs(f) / (z ? this.mMaxTravelX : this.mMaxTravelY + this.mVerticalOffset)) * f2)), 5L);
     }
 
+    /** @param enumC0992a the direction to repeat */
     private void startRepeat(final FccView.Direction enumC0992a) {
         if (this.mFccView.getRepeatRunnable() == null || this.mCurrentDirection != enumC0992a) {
             this.mFccView.stopRepeat();
             this.mCurrentDirection = enumC0992a;
             this.mFccView.setRepeatRunnable(new Runnable() {
-                @Override // java.lang.Runnable
+                @Override
                 public void run() {
                     if (FccCursorTouchListener.this.mListener != null) {
                         FccCursorTouchListener.this.mListener.onMove(enumC0992a);

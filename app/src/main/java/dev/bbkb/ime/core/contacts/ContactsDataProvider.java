@@ -18,15 +18,11 @@ public class ContactsDataProvider {
 
     
     interface Listener {
+        /** @param bVar the contact set that changed */
         void onContactsChanged(ContactsType bVar);
     }
 
-    
-    /**
-     * WORK is never produced any more: getContactNames() only ever returns data for
-     * PERSONAL/ALL. It survives because DynamicLearningManager.addContactsWordsInternal still
-     * switches on it.
-     */
+    /** WORK is never returned by getContactNames(); DynamicLearningManager still switches on it. */
     public enum ContactsType {
         PERSONAL,
         WORK,
@@ -38,11 +34,10 @@ public class ContactsDataProvider {
         this.changeObserver = new ContactsChangeObserver(context);
     }
 
-
+    /** @param bVar which contact set to read; only PERSONAL and ALL return names */
     ArrayList<String> getContactNames(ContactsType bVar, Uri uri) {
         ArrayList<String> arrayList = new ArrayList<>();
         synchronized (this) {
-            // Only return personal contacts (work contacts removed)
             if (bVar == ContactsType.PERSONAL || bVar == ContactsType.ALL) {
                 arrayList.addAll(this.changeObserver.getContactNames(uri));
             }
@@ -53,6 +48,7 @@ public class ContactsDataProvider {
     /** Set by {@link #release}: no observer is registered again. */
     private boolean released;
 
+    /** @param aVar listener notified when contacts change */
     void registerListener(Listener aVar) {
         synchronized (this) {
             if (this.released) {
@@ -63,6 +59,7 @@ public class ContactsDataProvider {
         }
     }
 
+    /** @param bVar contact set the names belong to; only PERSONAL is saved */
     void saveContactsSnapshot(ContactsType bVar, ArrayList<String> arrayList) {
         if (arrayList.isEmpty()) {
             return;
@@ -83,9 +80,8 @@ public class ContactsDataProvider {
     }
 
     /**
-     * The owner is going away for good: unregisters, and refuses any registration that was
-     * already queued behind this call. {@link #unregister} alone could be followed by a sync
-     * task registering the observer again, on a service that no longer exists.
+     * Unregisters for good and refuses any registration queued behind this call; {@link #unregister}
+     * alone could be followed by a sync task re-registering on a service that no longer exists.
      */
     void release() {
         synchronized (this) {

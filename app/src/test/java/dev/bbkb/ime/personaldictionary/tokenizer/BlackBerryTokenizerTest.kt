@@ -9,10 +9,7 @@ import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
 import java.util.Locale
 
-/**
- * Reading the text once per split (P-18) must not change the tokens. The expected strings were
- * captured from the implementation that re-read textInfo.text per token.
- */
+/** Reading the text once per split must not change the tokens (expected strings are golden output). */
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [34], manifest = Config.NONE)
 class BlackBerryTokenizerTest {

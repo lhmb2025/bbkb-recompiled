@@ -24,38 +24,12 @@ import java.util.Map;
 import java.util.Objects;
 
 /**
- * Regional dictionary variants grouped under the engine locale they can actually load as.
- *
- * <p><b>Why this exists.</b> Four packs in the BlackBerry catalogue - {@code de_CH}, {@code fr_CH},
- * {@code it_CH}, {@code nl_BE} - have no entry of their own in the ET9 core's 105-entry locale
- * table. They are perfectly good dictionaries; they simply have no locale to be addressed by. The
- * engine can only load such a pack <em>as</em> its base language, in the slot the shipped German /
- * French / Italian / Dutch pack occupies.
- *
- * <p><b>How the swap works.</b> The engine is handed
- * {@code noBackupFilesDir} once at construction and enumerates its {@code nuance/} directories
- * then: for locale {@code de} it reads whatever {@code *.ldb} sits in {@code no_backup/nuance/de/}.
- * A directory that appears while the engine runs must be handed to it with
- * {@code NuanceSDK.registerLdb} ({@code PackInstallService} does that for base packs). A variant
- * reuses the base language's directory, which the engine already knows, so activating one means
- * <b>putting its file in that directory</b> and asking the engine to set the language again
- * (whether a running engine re-reads a swapped file has not been verified on a device).
- *
- * <p>Inactive members are parked in {@code no_backup/lang_variants/&lt;locale&gt;/&lt;tag&gt;.ldb},
- * a SIBLING of {@code nuance/} rather than a child. That matters:
- * {@link LanguagePackInstaller#getInstalledLocales} treats every directory directly under
- * {@code nuance/} holding a {@code .ldb} and a {@code version.txt} as an installed locale, so
- * parking variants inside {@code nuance/} would invent locales that do not exist.
- *
- * <p><b>The {@code shipped} member.</b> A preinstalled pack is read from the APK's assets and may
- * have no directory under {@code nuance/} at all. It is represented by the reserved tag
- * {@link #TAG_SHIPPED}, and activating it DELETES the group's {@code nuance/} directory so the
- * engine falls back to assets. That keeps "go back to the pack the app came with" always available,
- * and is why a group never has to copy a multi-megabyte asset out just to have something to return
- * to.
- *
- * <p>Learned words are unaffected: the DLM ({@code alphadlm.bin}) is keyed by language, not by
- * variant, so switching between German variants keeps your learned German.
+ * Regional dictionary variants ({@code de_CH}, {@code fr_CH}, {@code it_CH}, {@code nl_BE}) that
+ * have no entry in the engine's locale table, so they load in their base language's slot by
+ * copying the file into {@code no_backup/nuance/&lt;locale&gt;/} and setting the language again.
+ * Inactive members are parked under {@code no_backup/lang_variants/}, a sibling of {@code nuance/}
+ * because {@link LanguagePackInstaller#getInstalledLocales} counts every child there as a locale.
+ * {@link #TAG_SHIPPED} means "use the APK asset" (the slot directory is deleted). The DLM is per language.
  */
 public final class LanguageVariantStore {
 
@@ -69,13 +43,7 @@ public final class LanguageVariantStore {
     /** The pack the app shipped with: no file of ours, the engine reads it from assets. */
     public static final String TAG_SHIPPED = "shipped";
 
-    /**
-     * In-process signal that the file behind some locale's dictionary has changed.
-     *
-     * <p>Posted by the Language packs screen after a swap, consumed by a running {@code
-     * BlackBerryIME}, which re-reads the dictionary. No subscriber means the IME is not running and
-     * will read the new file when it next starts, which needs no signal.
-     */
+    /** Posted after a swap so a running IME re-reads the dictionary; one that is not running needs no signal. */
     public static final String ACTION_LANGUAGE_PACK_CHANGED = "language_pack_changed";
 
     /** One selectable dictionary within a group. */
@@ -123,8 +91,6 @@ public final class LanguageVariantStore {
     static File variantFile(Context context, String locale, String tag) {
         return new File(variantDir(context, locale), tag + ".ldb");
     }
-
-    // ── reading ────────────────────────────────────────────────────────────────
 
     /** Every group, keyed by engine locale. Empty when nothing has been grouped. */
     public static synchronized Map<String, Group> read(Context context) {
@@ -211,14 +177,7 @@ public final class LanguageVariantStore {
         return read(context).get(locale);
     }
 
-    // ── writing ────────────────────────────────────────────────────────────────
-
-    /**
-     * Replaces the store through {@link AtomicFile}: the JSON goes to
-     * {@code nuance_language_variants.json.new}, is synced to disk and is then renamed over the
-     * live file, so a crash or a power cut mid-write cannot lose the record of which parked file
-     * is which - the parked files are the only copy of a side-loaded variant.
-     */
+    /** Atomic replace: the parked files are the only copy of a side-loaded variant, so this record must survive a crash. */
     private static boolean write(Context context, Map<String, Group> groups) {
         final File f = file(context);
         final AtomicFile atomic = new AtomicFile(f);
@@ -267,16 +226,9 @@ public final class LanguageVariantStore {
         return true;
     }
 
-    // ── the operations ─────────────────────────────────────────────────────────
-
     /**
-     * Park {@code sourceLdb} as a member of {@code locale}'s group and make it active.
-     *
-     * <p>The first variant added to a locale also creates the group's {@link #TAG_SHIPPED} member,
-     * so there is always a way back to what the app came with.
-     *
-     * @param sourceLdb the .ldb to adopt; it is COPIED, the caller still owns the original
-     * @return {@code true} when the variant is parked, recorded and active
+     * Parks a copy of {@code sourceLdb} in {@code locale}'s group and makes it active. The first
+     * variant also adds the {@link #TAG_SHIPPED} member so there is always a way back.
      */
     public static synchronized boolean installVariant(Context context, String locale, String tag,
             String displayName, File sourceLdb) {
@@ -324,12 +276,8 @@ public final class LanguageVariantStore {
     }
 
     /**
-     * Make {@code tag} the dictionary the engine loads for {@code locale}.
-     *
-     * <p>This is the file swap: the chosen member's parked .ldb is copied into
-     * {@code no_backup/nuance/&lt;locale&gt;/}, or, for {@link #TAG_SHIPPED}, that directory is
-     * removed so the engine falls back to the APK's assets. The caller is responsible for asking
-     * the engine to set the language again afterwards - this class does no engine work.
+     * Swaps {@code tag}'s parked file into the locale's pack directory (or deletes it for
+     * {@link #TAG_SHIPPED}). The caller must set the engine language again afterwards.
      */
     public static synchronized boolean activate(Context context, String locale, String tag) {
         final Map<String, Group> groups = read(context);
@@ -352,8 +300,7 @@ public final class LanguageVariantStore {
 
         final File slot = LanguagePackInstaller.getLanguagePackDirectory(context, locale);
         if (chosen.isShipped()) {
-            // Remove OUR directory so the engine reads the preinstalled pack from assets again.
-            // Nothing is lost: every non-shipped member is parked under lang_variants/.
+            // Every non-shipped member is parked under lang_variants/, so nothing is lost.
             LanguagePackInstaller.deleteRecursively(slot);
         } else {
             final File parked = variantFile(context, locale, tag);
@@ -367,8 +314,7 @@ public final class LanguageVariantStore {
             }
             try {
                 copy(parked, new File(slot, locale + ".ldb"));
-                // getInstalledLocales() requires BOTH a .ldb and a version.txt before it counts
-                // this directory as an installed pack.
+                // getInstalledLocales() needs both a .ldb and a version.txt.
                 writeText(new File(slot, "version.txt"), "1.0");
             } catch (IOException e) {
                 Logger.errorWithException(TAG, e, "Failed to activate " + tag);
@@ -380,11 +326,8 @@ public final class LanguageVariantStore {
     }
 
     /**
-     * Forget a variant, deleting its parked file.
-     *
-     * <p>If it was active, the most recently installed remaining member takes over - falling back
-     * to {@link #TAG_SHIPPED}, which is always present. Removing the last real variant removes the
-     * group entirely.
+     * Deletes a variant's parked file. An active one is replaced by the newest remaining member;
+     * removing the last real variant removes the group.
      */
     public static synchronized boolean removeVariant(Context context, String locale, String tag) {
         if (TAG_SHIPPED.equals(tag)) {
@@ -417,7 +360,6 @@ public final class LanguageVariantStore {
             }
         }
         if (!stillHasVariant) {
-            // Back to just the shipped pack: drop the group and restore the assets fallback.
             groups.put(locale, new Group(locale, TAG_SHIPPED, members));
             write(context, groups);
             activate(context, locale, TAG_SHIPPED);
@@ -444,13 +386,7 @@ public final class LanguageVariantStore {
         return sorted.get(0);
     }
 
-    /**
-     * A readable name for the "go back to what shipped" entry.
-     *
-     * <p>Derived from the locale rather than from the manifest: {@code LanguagePackInstaller}
-     * exposes no display name, and {@code Locale.getDisplayName()} already answers this in the
-     * user's own language ("German", "Allemand"), which is what the row needs to read.
-     */
+    /** Name for the shipped member, localized via {@code Locale.getDisplayName()} (the manifest has no display name). */
     static String shippedNameFor(String locale) {
         final java.util.Locale l =
                 dev.bbkb.ime.core.locale.LocaleUtils.constructLocaleFromString(locale);

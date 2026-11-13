@@ -21,7 +21,6 @@ public final class DrawingPreviewPlacerView extends RelativeLayout {
 
     private final ArrayList<AbstractDrawingPreview> previews;
 
-    /** See {@link #requestFrameWithoutDamage}. */
     private View frameTrigger;
 
     public DrawingPreviewPlacerView(Context context, AttributeSet attributeSet) {
@@ -32,6 +31,7 @@ public final class DrawingPreviewPlacerView extends RelativeLayout {
         setLayoutDirection(View.LAYOUT_DIRECTION_LTR);
     }
 
+    /** @param z true to draw previews on a hardware layer */
     public void setHardwareAcceleratedDrawingEnabled(boolean z) {
         if (z) {
             Paint paint = new Paint();
@@ -41,13 +41,9 @@ public final class DrawingPreviewPlacerView extends RelativeLayout {
     }
 
     /**
-     * Requests a frame that damages (almost) nothing: invalidates a 1x1 child that draws nothing.
-     * The keyboard view uses it to show a re-recorded per-key layer (KeyboardView.keyLayers)
-     * without invalidating itself, which would re-record and damage the whole keyboard. A view
-     * with an empty display list adds no damage; the frame still syncs every RenderNode in the
-     * window, so the only damage is the changed layer's rectangle.
-     *
-     * @return false when no frame was requested (not attached); the caller must invalidate
+     * Requests a frame that damages almost nothing by invalidating an empty 1x1 child, so the
+     * keyboard view can show a re-recorded per-key layer without re-recording itself.
+     * @return false when not attached; the caller must invalidate
      */
     public boolean requestFrameWithoutDamage() {
         if (!isAttachedToWindow()) {
@@ -60,13 +56,11 @@ public final class DrawingPreviewPlacerView extends RelativeLayout {
             this.frameTrigger = trigger;
         }
         if (trigger.getParent() != this) {
-            // First use, or removeAllViews() dropped it with the previews. Adding it re-records
-            // this view once.
+            // First use, or removeAllViews() dropped it; adding it re-records this view once.
             if (trigger.getParent() instanceof android.view.ViewGroup) {
                 ((android.view.ViewGroup) trigger.getParent()).removeView(trigger);
             }
-            // Over the keyboard's corner, so that even if a platform counted it as damage, the
-            // frame's (single, bounding) damage rectangle would stay inside the keyboard.
+            // Over the keyboard's corner, so any damage it counts stays inside the keyboard.
             RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(1, 1);
             params.leftMargin = Math.max(0, CoordinateUtils.x(this.keyboardViewOrigin));
             params.topMargin = Math.max(0, CoordinateUtils.y(this.keyboardViewOrigin));
@@ -82,6 +76,11 @@ public final class DrawingPreviewPlacerView extends RelativeLayout {
         }
     }
 
+    /**
+     * @param iArr keyboard view origin in this view
+     * @param i keyboard width
+     * @param i2 keyboard height
+     */
     public void setKeyboardViewGeometry(int[] iArr, int i, int i2) {
         CoordinateUtils.copy(this.keyboardViewOrigin, iArr);
         int size = this.previews.size();
@@ -97,13 +96,13 @@ public final class DrawingPreviewPlacerView extends RelativeLayout {
         }
     }
 
-    @Override // android.view.ViewGroup, android.view.View
+    @Override
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
         removeAllDrawingPreviews();
     }
 
-    @Override // android.view.View
+    @Override
     public void onDraw(Canvas canvas) {
         super.onDraw(canvas);
         float xTranslate = CoordinateUtils.x(this.keyboardViewOrigin);

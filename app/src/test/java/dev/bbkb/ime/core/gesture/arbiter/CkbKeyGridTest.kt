@@ -4,10 +4,7 @@ import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull
 import org.junit.Test
 
-/**
- * Unit tests for [CkbKeyGrid.keyAt] — the normalized-coordinate hit test used by the
- * new-engine gesture path and the Gesture Lab overlay. Pure JVM, no Robolectric needed.
- */
+/** [CkbKeyGrid.keyAt], the normalized-coordinate hit test of the gesture path. Pure JVM. */
 class CkbKeyGridTest {
 
     // Two adjacent keys on one row: q centered at (0.05, 0.17), w at (0.15, 0.17),

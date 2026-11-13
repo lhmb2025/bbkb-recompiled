@@ -31,13 +31,9 @@ import org.robolectric.annotation.Config
 import java.util.concurrent.Executor
 
 /**
- * CHARACTERISATION of [DynamicLearningManager] through its REAL constructor — Wave 3b package G1.
- *
- * Complements [CommitTransitionInvariantTest] / [LearnStaleSelectionListTest] (which work on
- * Unsafe-allocated shells). This pins the lifecycle those cannot see: when a learner becomes
- * active (only `onManagedModeChanged(false)`), the dynamic-learning switch and its engine flag,
- * `destroy()` ordering, and the contacts bulk-add threshold. Learning writes to the engine's DLM
- * (alphadlm.bin) — WHEN it happens is the contract here.
+ * Characterisation of [DynamicLearningManager] through its real constructor: when a learner becomes
+ * active (only `onManagedModeChanged(false)`), the learning switch and its engine flag, `destroy()`
+ * ordering, and the contacts bulk-add threshold. When learning writes to the DLM is the contract.
  */
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [34], manifest = Config.NONE, instrumentedPackages = ["com.blackberry.nuanceshim"])
@@ -83,8 +79,8 @@ class DynamicLearningManagerTest {
 
     @Test
     fun anEngineThatAnswersTheCallbackAtOnce_activatesTheLearner_insteadOfCrashing() {
-        // The learned model already attached (the Learned words screen opened before the keyboard
-        // bound): setCallbackHandler replays onManagedModeChanged(false) inside the constructor.
+        // The learned model is already attached (Learned words opened before the keyboard bound):
+        // setCallbackHandler replays onManagedModeChanged(false) inside the constructor.
         val replaying = mock(NuanceSDK::class.java)
         org.mockito.Mockito.doAnswer { (it.getArgument<Any>(0) as NuanceSDK.ManagedModeCallback).onManagedModeChanged(false); null }
             .`when`(replaying).setCallbackHandler(org.mockito.ArgumentMatchers.any())
@@ -118,7 +114,7 @@ class DynamicLearningManagerTest {
 
     @Test
     fun activeLearner_nullNuanceWordInfo_endsTheWordWithoutLearning() {
-        // EB-6: with an active learner, a suggestion lacking nuanceWordInfo still clears, learning nothing.
+        // With an active learner, a suggestion lacking nuanceWordInfo still clears, learning nothing.
         manager.onManagedModeChanged(false)
         manager.learn(SuggestedWords.SuggestedWordInfo("x", 1, 0, Dictionary.DICTIONARY_USER_TYPED, -1, -1, null))
         verify(engine).clear()
@@ -206,8 +202,6 @@ class DynamicLearningManagerTest {
         verify(engine).addContactsWords(words)
     }
 
-    // ── incognito (IME_FLAG_NO_PERSONALIZED_LEARNING) ─────────────────────────
-
     private fun staleSuggestion() = SuggestedWords.SuggestedWordInfo(
         "secret", 100, 0, Dictionary.DICTIONARY_USER_TYPED, -1, -1,
         WordInfo().apply {
@@ -258,8 +252,7 @@ class DynamicLearningManagerTest {
     @Test
     fun incognito_forcedLearnKeepsTheEngineSelection() {
         // A Japanese or partial Chinese pick needs the engine's own selection to keep the rest of
-        // the composition: that transition survives, with the engine in explicit-learning mode
-        // exactly as when the preference is off.
+        // the composition; it survives, in explicit-learning mode as when the preference is off.
         manager.onManagedModeChanged(false)
         enterIncognitoField()
         manager.learn(freshSuggestion(6), true)
@@ -269,7 +262,7 @@ class DynamicLearningManagerTest {
 
     @Test
     fun learningOn_forcedStaleLearnStillLearnsByContent() {
-        // The EB-3 fallback is unchanged for a session that may learn.
+        // The stale-index content fallback is unchanged for a session that may learn.
         manager.onManagedModeChanged(false)
         manager.setDynamicLearningEnabled(true)
         manager.learn(staleSuggestion(), true)

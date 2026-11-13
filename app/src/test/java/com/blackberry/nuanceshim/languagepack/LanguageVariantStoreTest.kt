@@ -14,12 +14,9 @@ import org.robolectric.annotation.Config
 import java.io.File
 
 /**
- * Regional variants sharing one engine locale's slot.
- *
- * `de_CH`, `fr_CH`, `it_CH` and `nl_BE` have no entry in the ET9 core's locale table, so they can
- * only load AS their base language. The engine finds a dictionary by reading whatever `*.ldb` sits
- * in `no_backup/nuance/<locale>/` — there is no register call — so "activate a variant" is a file
- * swap, and these scenarios are about that swap being correct and reversible.
+ * Regional variants sharing one engine locale's slot. `de_CH`, `fr_CH`, `it_CH`, `nl_BE` have no
+ * ET9 locale-table entry and load as their base language; the engine reads whatever `*.ldb` sits
+ * in `no_backup/nuance/<locale>/`, so activating a variant is a file swap, pinned as reversible.
  */
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [34], manifest = Config.NONE)
@@ -45,19 +42,16 @@ class LanguageVariantStoreTest {
         LanguagePackInstaller.deleteRecursively(File(context.noBackupFilesDir, "nuance"))
     }
 
-    // ── installing a variant ───────────────────────────────────────────────────
-
     @Test
     fun installingAVariantParksItAndMakesItActive() {
         val src = sourceLdb("de_CH.ldb", "SWISS-GERMAN")
         assertTrue(LanguageVariantStore.installVariant(
             context, "de", "de_CH", "German (Switzerland)", src))
 
-        // active: the engine's slot holds the variant's bytes
         assertEquals("SWISS-GERMAN", activeLdb("de").readText())
-        // getInstalledLocales() needs a version.txt beside it or the pack does not count
+        // getInstalledLocales() counts a pack only with a version.txt beside it
         assertTrue(File(slotDir("de"), "version.txt").exists())
-        // parked: the only durable copy of a side-loaded variant
+        // the parked copy is the only durable copy of a side-loaded variant
         assertEquals("SWISS-GERMAN",
             LanguageVariantStore.variantFile(context, "de", "de_CH").readText())
 
@@ -68,21 +62,18 @@ class LanguageVariantStoreTest {
 
     @Test
     fun theFirstVariantSeedsAWayBackToTheShippedPack() {
-        // Without this the user could never return to the pack the APK came with.
         LanguageVariantStore.installVariant(
             context, "de", "de_CH", "German (Switzerland)", sourceLdb("a.ldb", "CH"))
         val g = LanguageVariantStore.groupFor(context, "de")!!
         val shipped = g.members.single { it.isShipped }
         assertEquals(LanguageVariantStore.TAG_SHIPPED, shipped.tag)
         assertEquals(0L, shipped.installedAt)
-        // named for a human, not a locale code
         assertTrue(shipped.name.contains("German"))
     }
 
     @Test
     fun parkedVariantsAreNotMistakenForInstalledLocales() {
-        // lang_variants/ is a SIBLING of nuance/. Parking inside nuance/ would make
-        // getInstalledLocales() report locales that do not exist.
+        // lang_variants/ is a sibling of nuance/: inside it, getInstalledLocales() would report them.
         LanguageVariantStore.installVariant(
             context, "de", "de_CH", "German (Switzerland)", sourceLdb("a.ldb", "CH"))
         val installed = LanguagePackInstaller.getInstalledLocales(context)
@@ -99,8 +90,6 @@ class LanguageVariantStoreTest {
         assertEquals("AT", activeLdb("de").readText())
     }
 
-    // ── toggling ───────────────────────────────────────────────────────────────
-
     @Test
     fun activatingAnotherVariantSwapsTheFileInTheEnginesSlot() {
         LanguageVariantStore.installVariant(context, "de", "de_CH", "Swiss", sourceLdb("a.ldb", "CH"))
@@ -110,14 +99,12 @@ class LanguageVariantStoreTest {
 
         assertEquals("CH", activeLdb("de").readText())
         assertEquals("de_CH", LanguageVariantStore.groupFor(context, "de")!!.activeTag)
-        // and the other one is still parked, not lost
         assertEquals("AT", LanguageVariantStore.variantFile(context, "de", "de_AT").readText())
     }
 
     @Test
     fun activatingShippedRemovesOurDirectorySoTheEngineFallsBackToAssets() {
-        // The preinstalled pack lives in the APK. The only way to "select" it is to stop shadowing
-        // it — there is no file of ours to put back.
+        // The preinstalled pack lives in the APK: selecting it means no longer shadowing it.
         LanguageVariantStore.installVariant(context, "de", "de_CH", "Swiss", sourceLdb("a.ldb", "CH"))
         assertTrue(slotDir("de").isDirectory)
 
@@ -126,7 +113,6 @@ class LanguageVariantStoreTest {
         assertFalse("the slot must be empty for the assets fallback", slotDir("de").exists())
         assertEquals(LanguageVariantStore.TAG_SHIPPED,
             LanguageVariantStore.groupFor(context, "de")!!.activeTag)
-        // the variant survives being deselected
         assertEquals("CH", LanguageVariantStore.variantFile(context, "de", "de_CH").readText())
     }
 
@@ -153,8 +139,6 @@ class LanguageVariantStoreTest {
     fun aGroupThatDoesNotExistCannotBeActivated() {
         assertFalse(LanguageVariantStore.activate(context, "fr", "fr_CH"))
     }
-
-    // ── removing ───────────────────────────────────────────────────────────────
 
     @Test
     fun removingTheActiveVariantPromotesTheNextMostRecent() {
@@ -193,8 +177,6 @@ class LanguageVariantStoreTest {
     fun removingFromAGroupThatDoesNotExistIsHarmless() {
         assertTrue(LanguageVariantStore.removeVariant(context, "fr", "fr_CH"))
     }
-
-    // ── guards ─────────────────────────────────────────────────────────────────
 
     @Test
     fun theShippedTagIsReservedAndCannotBeInstalledOver() {

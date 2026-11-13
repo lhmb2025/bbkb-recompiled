@@ -64,7 +64,7 @@ public final class SoftwareMultitapHandler extends WeakOwnerHandler<BlackBerryIM
         this.multitapInProgress = false;
     }
 
-    /** Audit DW-4: drop multitap state without committing. See MultitapEventHandler's copy. */
+    /** Drops multitap state without committing; see {@link MultitapEventHandler#resetMultitapState}. */
     public void resetMultitapState() {
         BlackBerryIME ime = getOwner();
         if (ime != null) {
@@ -76,6 +76,10 @@ public final class SoftwareMultitapHandler extends WeakOwnerHandler<BlackBerryIM
         this.multitapInProgress = false;
     }
 
+    /**
+     * @param i the multitap base code point
+     * @param i2 index into its more-keys, or -1 for the base itself
+     */
     private String getMultitapCandidate(int i, int i2) {
         String[] moreKeys = this.keyboardSwitcher.getMoreKeysForCode(i);
         if (moreKeys == null || i2 >= moreKeys.length) {
@@ -88,6 +92,7 @@ public final class SoftwareMultitapHandler extends WeakOwnerHandler<BlackBerryIM
         return this.multitapInProgress;
     }
 
+    /** @param i the code point of the tapped key */
     public KeyCharacterResult.Interpretation interpretCodePoint(int i) {
         int i2;
         boolean z;

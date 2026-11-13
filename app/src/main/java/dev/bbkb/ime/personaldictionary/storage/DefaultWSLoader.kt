@@ -11,23 +11,15 @@ import java.io.IOException
 import java.util.*
 
 /**
- * Loads default word substitutions (macros) from JSON asset files.
- *
- * Supports locale-specific substitutions with fallback to language-only or base macros.
- * Filters out user-deleted default substitutions.
+ * Loads the built-in word substitutions from macros.json assets, falling back from
+ * language_country to language, plus the base set; user-deleted keys are skipped.
  */
 object DefaultWSLoader {
     private const val TAG = "DefaultWSLoader"
 
     /**
-     * Memo of parsed default-substitution sets.
-     *
-     * Audit PD-38: `isWsDefaultForLocale` re-read and re-parsed the locale's
-     * macros.json asset on *every* call, just to answer a membership question - once
-     * per removed substitution, inside the loop that holds the process-global
-     * AUD_SYNC_LOCK. Assets cannot change at runtime, and the deleted-key set is part
-     * of the key, so the result is safely memoisable. Every caller treats the returned
-     * map as read-only.
+     * Memo of parsed sets (callers run under AUD_SYNC_LOCK). Assets never change and the
+     * deleted keys are part of the key; callers treat the map as read-only.
      */
     private val defaultsCache = android.util.LruCache<String, Map<String, WordSubstitution>>(8)
 
@@ -133,20 +125,13 @@ object DefaultWSLoader {
         deletedKeys: Set<String>
     ) {
         val filePath = dirPath + File.separator + PersonalDictionaryConstants.DEFAULT_MACROS_FILENAME
-        // Audit PD-5: this whole body used to sit inside `catch (Exception)` with an
-        // empty handler, so the method could never throw despite its @Throws(IOException)
-        // contract - and every caller's IOException fallback was dead code. A device
-        // whose locale is e.g. en_ZA, with only assets/.../en/ present, therefore
-        // loaded ZERO default word substitutions: the language-only retry in
-        // loadLocaleWithLanguageCountry never ran. The asset read is deliberately
-        // outside the try so a missing file still propagates.
+        // Outside the try: a missing file must throw so callers fall back to the language-only file.
         val jsonContent = FileUtils.readAndroidAssetToString(context, filePath)
         try {
             val lines = JSONArray(jsonContent)
 
             for (i in 0 until lines.length()) {
-                // The file is a JSON array of strings; a number or a boolean is read as its text,
-                // as Gson's List<String> binding read it, and anything else is not a macro.
+                // A JSON array of strings; a number or boolean is read as its text (as Gson did).
                 val line = when (val value = lines.opt(i)) {
                     is String -> value
                     is Int, is Long, is Boolean -> value.toString()
@@ -198,6 +183,7 @@ object DefaultWSLoader {
         return locale.language.isNotEmpty() && locale.country.isNotEmpty()
     }
 
+    /** @param c the first character of a macros.json line */
     private fun isAutoCapsEnabled(c: Char): Boolean {
         return c == PersonalDictionaryConstants.AUTO_CAPS_ENABLED
     }

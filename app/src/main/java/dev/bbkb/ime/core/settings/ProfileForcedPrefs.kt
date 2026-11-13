@@ -7,20 +7,10 @@ import java.lang.ref.WeakReference
 import java.util.WeakHashMap
 
 /**
- * The app's settings as everything should read them: the stored preferences, with the active
- * device profile's `forced-value` settings laid over the top.
+ * The stored preferences with the active device profile's `forced-value` settings laid over the
+ * typed reads, so Settings and the keyboard cannot disagree. Nothing is written: [getAll],
+ * [contains] and [edit] are the stored file, so backups never carry a forced value.
  *
- * A profile can force a setting (`<setting key="…" forced-value="…"/>`). That used to change only
- * the switch the Settings screen drew; the keyboard read the stored preference, which can differ
- * (set before the profile applied, or restored from a backup). Answering here, where a setting is
- * read, means the Settings screen and the keyboard cannot disagree, and a newly forced setting
- * needs no code at its readers.
- *
- * Only the typed reads of a forced key change. Nothing is written: [getAll], [contains] and
- * [edit] are the stored file, so a backup never carries a forced value to another phone and the
- * user's own value is back the moment the profile stops forcing it.
- *
- * @param stored the preferences file
  * @param forced the active profile's override for a key, or null; must not block
  */
 internal class ProfileForcedPrefs(
@@ -50,12 +40,8 @@ internal class ProfileForcedPrefs(
     override fun contains(key: String?): Boolean = stored.contains(key)
     override fun edit(): SharedPreferences.Editor = stored.edit()
 
-    // A listener is handed the preferences that changed and usually reads the new value from
-    // them, so it must be handed these, not the stored file underneath.
-    //
-    // The stored preferences hold their listeners weakly, so each relay is kept alive here for as
-    // long as the listener it stands for; it holds that listener weakly in turn, or the map entry
-    // would keep itself alive.
+    // Listeners must be handed these prefs, not the stored file. The stored prefs hold listeners
+    // weakly, so each relay lives here as long as its listener, which it holds weakly in turn.
     private val relays = WeakHashMap<OnSharedPreferenceChangeListener, Relay>()
 
     private class Relay(

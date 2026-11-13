@@ -61,30 +61,29 @@ public final class KeyVisualAttributes {
 
     public final float hintLabelOffCenterRatio;
 
-    // Updated to use proper R.styleable.Keyboard_Key_* indices instead of hardcoded values from C1123a
     private static final int[] STYLE_ATTRIBUTE_IDS = {
-        R.styleable.Keyboard_Key_keyTypeface,                                    // 36
-        R.styleable.Keyboard_Key_keyLetterSize,                                  // 22
-        R.styleable.Keyboard_Key_keyLabelSize,                                   // 19
-        R.styleable.Keyboard_Key_keyLargeLetterRatio,                           // 21
-        R.styleable.Keyboard_Key_keyHintLetterRatio,                            // 13
-        R.styleable.Keyboard_Key_keyShiftedLetterHintRatio,                     // 30
-        R.styleable.Keyboard_Key_keyMultilineHintLabelRatio,                    // 24
-        R.styleable.Keyboard_Key_keyHintLabelRatio,                             // 10
-        R.styleable.Keyboard_Key_keyPreviewTextRatio,                           // 27
-        R.styleable.Keyboard_Key_keyTextColor,                                   // 33
-        R.styleable.Keyboard_Key_keyTextInactivatedColor,                       // 34
-        R.styleable.Keyboard_Key_keyTextShadowColor,                            // 35
-        R.styleable.Keyboard_Key_functionalTextColor,                           // 3
-        R.styleable.Keyboard_Key_keyHintLetterColor,                            // 12
-        R.styleable.Keyboard_Key_keyHintLabelColor,                             // 8
-        R.styleable.Keyboard_Key_keyShiftedLetterHintInactivatedColor,         // 29
-        R.styleable.Keyboard_Key_keyShiftedLetterHintActivatedColor,           // 28
-        R.styleable.Keyboard_Key_keyPreviewTextColor,                           // 26
-        R.styleable.Keyboard_Key_keyHintLabelVerticalAdjustment,               // 11
-        R.styleable.Keyboard_Key_keyLabelOffCenterRatio,                        // 18
-        R.styleable.Keyboard_Key_keyLabelVerticalBaselineRatio,                 // 20
-        R.styleable.Keyboard_Key_keyHintLabelOffCenterRatio                     // 9
+        R.styleable.Keyboard_Key_keyTypeface,
+        R.styleable.Keyboard_Key_keyLetterSize,
+        R.styleable.Keyboard_Key_keyLabelSize,
+        R.styleable.Keyboard_Key_keyLargeLetterRatio,
+        R.styleable.Keyboard_Key_keyHintLetterRatio,
+        R.styleable.Keyboard_Key_keyShiftedLetterHintRatio,
+        R.styleable.Keyboard_Key_keyMultilineHintLabelRatio,
+        R.styleable.Keyboard_Key_keyHintLabelRatio,
+        R.styleable.Keyboard_Key_keyPreviewTextRatio,
+        R.styleable.Keyboard_Key_keyTextColor,
+        R.styleable.Keyboard_Key_keyTextInactivatedColor,
+        R.styleable.Keyboard_Key_keyTextShadowColor,
+        R.styleable.Keyboard_Key_functionalTextColor,
+        R.styleable.Keyboard_Key_keyHintLetterColor,
+        R.styleable.Keyboard_Key_keyHintLabelColor,
+        R.styleable.Keyboard_Key_keyShiftedLetterHintInactivatedColor,
+        R.styleable.Keyboard_Key_keyShiftedLetterHintActivatedColor,
+        R.styleable.Keyboard_Key_keyPreviewTextColor,
+        R.styleable.Keyboard_Key_keyHintLabelVerticalAdjustment,
+        R.styleable.Keyboard_Key_keyLabelOffCenterRatio,
+        R.styleable.Keyboard_Key_keyLabelVerticalBaselineRatio,
+        R.styleable.Keyboard_Key_keyHintLabelOffCenterRatio
     };
 
     private static final SparseIntArray STYLE_ATTRIBUTE_SET = new SparseIntArray();

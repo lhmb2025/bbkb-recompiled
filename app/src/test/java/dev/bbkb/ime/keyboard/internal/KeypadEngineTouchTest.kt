@@ -30,9 +30,8 @@ import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
 
 /**
- * Wave 3 Phase B, the touch keypad: what [GestureEventProcessor] gives the engine for a contact.
- * A contact in a field that takes no swipes gives it nothing; a tap is a start, its moves and
- * one cancel; a swipe is decoded once.
+ * The touch keypad: what [GestureEventProcessor] gives the engine for a contact. A field that takes
+ * no swipes gives it nothing; a tap is a start, its moves and one cancel; a swipe is decoded once.
  */
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [34], manifest = Config.NONE, instrumentedPackages = ["com.blackberry.nuanceshim"])

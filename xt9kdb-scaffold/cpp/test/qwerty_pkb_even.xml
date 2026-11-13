@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 
-<!-- GENERIC even-row test layout (1080x384, 128px rows) for the owned unit tests / roundtrip.
-     Decoupled from the live athena KDB (which uses the firmware's uneven sensor bands). This exists
-     only to exercise the parser/geometry LOGIC against the kQwertyPkbEn fixture; it is NOT a device KDB. -->
+<!-- Even-row test layout (1080x384, 128px rows) for the kQwertyPkbEn fixture; not a device KDB -->
 
 <keyboard primaryId="9" secondaryId="6" defaultLayoutWidth="1080" defaultLayoutHeight="384" addAltChars="true">
   <area>

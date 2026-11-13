@@ -27,12 +27,9 @@ import java.lang.reflect.Field
 import java.util.Locale
 
 /**
- * Characterises the spell-checker session's per-word path against a stubbed service (no engine):
- * word classification, case fallback, the suggestion cache and its invalidation, cookie/sequence
- * handling, the user-dictionary observer lifecycle, and sentence reconstruction.
- *
- * The session is driven without onCreate (which needs the native engine); the locale and script
- * code onCreate would set are injected.
+ * The spell-checker session's per-word path against a stubbed service: classification, case
+ * fallback, caches and invalidation, cookie/sequence, the user-dictionary observer and sentence
+ * reconstruction. onCreate needs the native engine, so its locale and script code are injected.
  */
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [34], manifest = Config.NONE)
@@ -109,8 +106,6 @@ class SpellCheckerSessionTest {
         return "a=${info.suggestionsAttributes} n=$n [$words]"
     }
 
-    // ---- classification --------------------------------------------------------------------
-
     @Test
     fun tooShortWordIsJudgedByTheDictionaryAlone() {
         valid += "a"
@@ -154,8 +149,6 @@ class SpellCheckerSessionTest {
         assertEquals("a=2 n=0 []", describe(single("foo.baz")))
     }
 
-    // ---- case fallback + normalisation -----------------------------------------------------
-
     @Test
     fun lowercaseWordIsCheckedExactlyOnce() {
         single("1hello")
@@ -188,8 +181,6 @@ class SpellCheckerSessionTest {
         single("1don’t")
         assertEquals(listOf("1don't", "1don’t"), validWordCalls())
     }
-
-    // ---- cache -----------------------------------------------------------------------------
 
     @Test
     fun sequentialWordsKeyTheCacheWithThePreviousWord() {
@@ -264,8 +255,6 @@ class SpellCheckerSessionTest {
         }
     }
 
-    // ---- lifecycle -------------------------------------------------------------------------
-
     private fun observer(): ContentObserver = field("mUserDictObserver").get(session) as ContentObserver
 
     @Test
@@ -291,8 +280,6 @@ class SpellCheckerSessionTest {
         session.mLocaleForTesting = "fr_CA"
         assertEquals("fr_CA", session.locale)
     }
-
-    // ---- sentence reconstruction -----------------------------------------------------------
 
     private fun info(attrs: Int, seq: Int, vararg s: String) =
         SuggestionsInfo(attrs, arrayOf(*s)).apply { setCookieAndSequence(0, seq) }
@@ -366,8 +353,6 @@ class SpellCheckerSessionTest {
         assertEquals(0, SentenceTokenizer.getEmptyResult().size)
         assertSame(SentenceTokenizer.getEmptyResult(), SentenceTokenizer.getEmptyResult())
     }
-
-    // ---- dictionary answer cache (P-20) ---------------------------------------------------
 
     @Test
     fun recheckOfAKnownWordSkipsTheEngine() {

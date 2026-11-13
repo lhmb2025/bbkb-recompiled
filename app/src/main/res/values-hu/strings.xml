@@ -721,7 +721,6 @@
     <string name="device_config_import_unreadable">Az a fájl nem eszközkonfiguráció</string>
     <string name="device_config_import_failed">Nem sikerült importálni azt a fájlt</string>
 
-    <!-- OTA app updates -->
     <string name="settings_updates_title">Frissítések</string>
     <string name="settings_updates_summary">BBKB új verziójának keresése</string>
     <string name="settings_update_installed_version_title">Telepített verzió</string>
@@ -755,7 +754,6 @@
     <string name="settings_update_ready_title">Telepítésre kész</string>
     <string name="settings_update_version_details">Verzió részletei</string>
     <string name="settings_update_unknown_sources_title">Engedélyezi, hogy a BBKB frissítéseket telepítsen?</string>
-    <!-- Downloadable language packs (core/languagepack) -->
     <string name="language_packs_installed_header">Telepítve</string>
     <string name="language_packs_available_header">Letölthető</string>
     <string name="language_packs_download">Letöltés</string>
@@ -877,7 +875,6 @@
     <string name="settings_voice_stop_on_pause_summary_off">Szünetekben is tovább figyel, amíg nem koppint a mikrofonra, vagy fél perc csend után leáll</string>
     <string name="voice_status_listening_tap_to_stop">Figyelek&#8230; Koppintson a mikrofonra a leállításhoz</string>
 
-    <!-- Settings text moved out of the code (2026-11) -->
     <string name="settings_common_save">Mentés</string>
     <string name="settings_common_edit">Szerkesztés</string>
     <string name="settings_common_back">Vissza</string>

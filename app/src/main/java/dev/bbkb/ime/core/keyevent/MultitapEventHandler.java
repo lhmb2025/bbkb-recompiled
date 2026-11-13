@@ -44,11 +44,7 @@ public final class MultitapEventHandler extends WeakOwnerHandler<BlackBerryIME> 
         int i = event.mKeyCode;
         if (this.multitapKeyCode == i) {
             this.multitapIndex++;
-            // Audit CT-19: getMoreKeysForKeyByStyle returns null when the keyboard is gone
-            // (KeyboardSwitcher.getCurrentKeyboard() == null) or the base character is unmapped.
-            // Dereferencing it unguarded threw out of onKeyDown — i.e. crashed the IME — when a
-            // PKB Alt-multitap key was held across a keyboard teardown. The sibling
-            // SoftwareMultitapHandler already guards; this copy did not.
+            // Null when the keyboard is gone or the base character is unmapped.
             String[] moreKeys = this.keyboardLayoutCallback.getMoreKeysForKeyByStyle(this.multitapBaseChar);
             if (moreKeys == null || this.multitapIndex >= moreKeys.length) {
                 this.multitapIndex = -1;
@@ -78,16 +74,8 @@ public final class MultitapEventHandler extends WeakOwnerHandler<BlackBerryIME> 
     }
 
     /**
-     * Audit DW-4: drop multitap state without committing anything.
-     *
-     * {@link #commitMultitap()} cannot be used at session teardown because it calls
-     * {@code commitTouchEventText()}, which would flush the in-progress character into whatever
-     * editor is current by then — the very shape of bug this reset exists to prevent. Without
-     * some reset, the state and the queued MSG_MULTITAP_TIMEOUT both outlived the session, and
-     * pressing the same key in the next field within the leftover 750 ms window hit the stale
-     * continuation branch at {@link #onInputEvent} — where the resulting shift-locked event is
-     * then dropped by TouchHighlightTracker, so the keystroke vanishes entirely. Each such press
-     * re-armed the timer, so the loss repeated until the user paused or changed keys.
+     * Drops multitap state and the pending timeout without committing: at session teardown a commit would
+     * flush the character into the next editor, and leftover state would swallow the next field's keystroke.
      */
     public void resetMultitapState() {
         BlackBerryIME ime = getOwner();
@@ -100,9 +88,11 @@ public final class MultitapEventHandler extends WeakOwnerHandler<BlackBerryIME> 
         this.multitapInProgress = false;
     }
 
+    /**
+     * @param str the multitap base character
+     * @param i index into its more-keys, or -1 for the base itself
+     */
     private String getMultitapCandidate(String str, int i) {
-        // Audit CT-19: same null path as onInputEvent. interpretKeyCharacter's repeat branch
-        // reaches here without having null-checked, so this is the NPE site.
         String[] moreKeys = this.keyboardLayoutCallback.getMoreKeysForKeyByStyle(str);
         if (moreKeys == null || i >= moreKeys.length) {
             i = -1;
@@ -122,6 +112,7 @@ public final class MultitapEventHandler extends WeakOwnerHandler<BlackBerryIME> 
         return this.altMultitapSupported;
     }
 
+    /** @param i the meta state to interpret the key under */
     @Override
     public KeyCharacterResult.Interpretation interpretKeyCharacter(KeyEvent keyEvent, int i) {
         int i2;
@@ -140,12 +131,8 @@ public final class MultitapEventHandler extends WeakOwnerHandler<BlackBerryIME> 
             z2 = true;
         } else {
             i2 = -1;
-            // ALT_DOT FIX: getUnicodeChar() can return COMBINING_ACCENT (0x80000000) ORed
-            // with an accent code point (e.g. 0x800000B4 = dead acute accent). Strip the
-            // flag to get the real character; return null if nothing usable remains.
-            // The letter layouts come first: on an Arabic or Russian keyboard the multitap base is
-            // the script letter, and its sequence comes from the same document. Under Alt, a
-            // letter layout's Alt character outranks the system key map's.
+            // Letter layouts first (the multitap base is the script letter), then their Alt character,
+            // then the KCM. Strip COMBINING_ACCENT from dead keys to get the real character.
             int rawUnicode = PhysicalKeyResolver.letter(keyEvent, i);
             if (rawUnicode == 0) {
                 rawUnicode = PhysicalKeyResolver.altFor(keyEvent, i);

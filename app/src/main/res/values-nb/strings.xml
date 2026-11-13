@@ -721,7 +721,6 @@
     <string name="device_config_import_unreadable">Den filen er ikke en enhetskonfigurasjon</string>
     <string name="device_config_import_failed">Kunne ikke importere den filen</string>
 
-    <!-- OTA app updates -->
     <string name="settings_updates_title">Oppdateringer</string>
     <string name="settings_updates_summary">Se etter en ny versjon av BBKB</string>
     <string name="settings_update_installed_version_title">Installert versjon</string>
@@ -755,7 +754,6 @@
     <string name="settings_update_ready_title">Klar til installering</string>
     <string name="settings_update_version_details">Versjonsdetaljer</string>
     <string name="settings_update_unknown_sources_title">Vil du la BBKB installere oppdateringer?</string>
-    <!-- Downloadable language packs (core/languagepack) -->
     <string name="language_packs_installed_header">Installert</string>
     <string name="language_packs_available_header">Tilgjengelig for nedlasting</string>
     <string name="language_packs_download">Last ned</string>
@@ -877,7 +875,6 @@
     <string name="settings_voice_stop_on_pause_summary_off">Fortsetter å lytte gjennom pauser til du trykker på mikrofonen, eller etter et halvt minutt med stillhet</string>
     <string name="voice_status_listening_tap_to_stop">Lytter&#8230; Trykk på mikrofonen for å stoppe</string>
 
-    <!-- Settings text moved out of the code (2026-11) -->
     <string name="settings_common_save">Lagre</string>
     <string name="settings_common_edit">Rediger</string>
     <string name="settings_common_back">Tilbake</string>

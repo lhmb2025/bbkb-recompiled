@@ -33,31 +33,10 @@ import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
 
 /**
- * CHARACTERISATION TEST — [TextShortcutsScreen] and [UserDictionaryScreen] with entries in them.
- *
- * These two screens are the same screen written twice, and Wave 3 collapses their shared body into
- * one. `SettingsScreenRenderTest` renders both, but only ever in the state a fresh install produces,
- * which for these two is the loading spinner: `DictionaryRepository` reaches
- * `DictionaryManager.getInstance()`, which reaches the Nuance SDK, which is not there in a unit
- * test, so `initialize()` never completes and no list is ever drawn. Everything below the top bar
- * was therefore unobserved.
- *
- * The `storeFactory` seam exists for exactly this: composed against a stand-in store, the screens
- * reach their loaded state and every difference between them becomes assertable — the counter
- * wording, the search predicate, the language headers, the row composition, the markers, the
- * de-duplication key, the sort order, and the two empty states. Those are precisely the things a
- * shared body has to keep telling apart, so they are what is pinned here. Since the 2026-11
- * alignment with Learned words it also drives what the shared body does: the sheet a tap opens,
- * delete with Undo, and selection.
- *
- * The assertions are whole-screen: every laid-out string, top to bottom, in the order the user
- * reads it. A row that appears, disappears, moves or changes its wording fails the case, which is
- * what makes this a safety net for a rewrite rather than a spot check.
- *
- * **Not covered:** the add/edit dialog and form, on either screen. Under this Robolectric/Compose
- * combination a Material 3 text field inside a dialog never reaches an idle composition — it
- * reproduces with entirely stock components — so no dialog in this codebase can be driven from a
- * unit test. That is why both screens keep their own hand-written one.
+ * Pins [TextShortcutsScreen] and [UserDictionaryScreen] with entries, via the `storeFactory` seam
+ * (the real repository needs the Nuance SDK and never loads in a unit test). Every laid-out string
+ * is asserted in reading order, plus the tap sheet, delete with Undo, and selection. Not covered:
+ * the add/edit dialogs; a Material 3 text field in a dialog never idles under Robolectric.
  */
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [34], qualifiers = "w411dp-h891dp")
@@ -66,11 +45,9 @@ class DictionaryEditorScreensTest {
     @get:Rule
     val composeRule = createComposeRule()
 
-    // ------------------------------------------------------------------ the stand-in store
-
     /**
-     * A store that answers from a fixed table. Deliberately synchronous: the real repository hops
-     * to `Dispatchers.IO` and polls, which a composition test cannot wait out.
+     * Synchronous on purpose: the real repository hops to `Dispatchers.IO` and polls, which a
+     * composition test cannot wait out.
      */
     private class FakeStore(
         private val locales: List<String>,
@@ -117,8 +94,6 @@ class DictionaryEditorScreensTest {
 
     private fun word(word: String, locale: String) =
         DictionaryEntry(word = word, shortcut = null, locale = locale)
-
-    // ----------------------------------------------------------------------- rendering
 
     private fun render(content: @Composable () -> Unit) {
         composeRule.setContent {
@@ -170,8 +145,6 @@ class DictionaryEditorScreensTest {
     }
 
     private val dictionaryTitle get() = context.getString(dev.bbkb.ime.R.string.settings_user_dictionary_screen_title)
-
-    // ============================================================ text shortcuts
 
     @Test
     fun shortcutsInOneLanguageAreOneGroupUnderTheirCount() {
@@ -274,7 +247,7 @@ class DictionaryEditorScreensTest {
             listOf(
                 "Text shortcuts",
                 "2 shortcuts",
-                // Locales sort before shortcuts; the headers no longer count their rows.
+                // Locales sort before shortcuts; the headers do not count their rows.
                 "English (United States)",
                 "sig", "Best regards",
                 "French (France)",
@@ -555,8 +528,6 @@ class DictionaryEditorScreensTest {
             screen()
         )
     }
-
-    // =========================================================== user dictionary
 
     @Test
     fun personalWordsInOneLanguageAreOneGroupUnderTheirCount() {

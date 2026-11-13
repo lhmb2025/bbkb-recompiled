@@ -12,46 +12,35 @@ import dev.bbkb.ime.core.shared.Logger
 import dev.bbkb.ime.core.subtypeswitcher.SideloadedSubtypes
 
 /**
- * The model behind the consolidated Languages screen: the keyboards the user can switch between,
- * the languages they could add, and the edits between the two.
- *
- * "Keyboard" here is one enabled subtype of this IME: a layout language, plus - for a
- * multi-language keyboard - the extra languages it also predicts in. A multi-language keyboard is
- * not a separate feature on this screen; it is a keyboard with extras, and giving a keyboard
- * extras swaps its plain subtype for the combined one.
- *
- * Android is the only store of *which* keyboards are on. Nothing here caches that: every [read]
- * asks the framework, because the user can change the same list in system settings at any time.
- * Edits go through [SubtypeEnabler.setEnabledList], so they need API 34; before that each edit
- * returns false and the screen sends the user to the system list instead.
+ * Model behind the Languages screen. A "keyboard" is one enabled subtype: a layout language plus,
+ * for a multi-language keyboard, extra prediction languages (adding extras swaps in the combined
+ * subtype). Android is the only store of which keyboards are on, so every [read] asks the
+ * framework. Edits need API 34 ([SubtypeEnabler.setEnabledList]); before that they return false.
  */
 object KeyboardLanguages {
 
     private const val TAG = "KeyboardLanguages"
 
-    /** One keyboard the user can switch to. */
     data class Keyboard(
         val subtype: InputMethodSubtype,
         val name: String,
-        /** Non-null for a multi-language keyboard: the saved config its subtype was built from. */
+        /** Non-null for a multi-language keyboard. */
         val config: MultiLanguageConfig?,
-        /** Whether this keyboard's layout language can lead a multi-language keyboard (Latin). */
+        /** Whether the layout language can lead a multi-language keyboard (Latin). */
         val canHaveExtras: Boolean,
     ) {
         val locale: String get() = subtype.locale
         val extras: List<LocaleItem> get() = config?.getSupportingLocales().orEmpty()
 
-        /** Every language this keyboard types in, layout language first. */
+        /** Layout language first. */
         val locales: List<String> get() = listOf(locale) + extras.map { it.first as String }
     }
 
-    /** What the screen shows at the top: who picks the keyboards, and which are on. */
     data class Snapshot(val followsSystem: Boolean, val keyboards: List<Keyboard>)
 
     /**
-     * A language the user could add. [subtype] is null for a language that has no keyboard until
-     * its pack is installed (the installer then registers one); [pack] is the dictionary adding it
-     * would download, if any.
+     * [subtype] is null until the language's pack is installed (the installer registers one);
+     * [pack] is what adding it would download, if anything.
      */
     data class Candidate(
         val locale: String,
@@ -83,7 +72,6 @@ object KeyboardLanguages {
         return Snapshot(followsSystem = explicit.isEmpty(), keyboards = keyboards)
     }
 
-    /** Every language that could be added, not counting the keyboards already on. */
     fun candidates(context: Context, snapshot: Snapshot, packs: Packs?, missing: (String) -> PackEntry?): List<Candidate> {
         RichInputMethodManager.init(context)
         ResourceLocaleUtils.init(context)
@@ -100,9 +88,8 @@ object KeyboardLanguages {
     }
 
     /**
-     * Pure half of [candidates]. Single-language keyboards that are not on, then catalogue
-     * languages that have no keyboard yet but will get one when their pack installs. Sorted by
-     * name; the plain-alphabet `zz` keyboard is left out (it is not a language).
+     * Pure half of [candidates]: single-language keyboards not on, plus catalogue languages that
+     * get a keyboard when their pack installs. Sorted by name; `zz` (plain alphabet) is left out.
      */
     internal fun buildCandidates(
         all: List<InputMethodSubtype>,
@@ -125,16 +112,12 @@ object KeyboardLanguages {
         return (fromKeyboards + fromCatalogue).sortedBy { it.name.lowercase() }
     }
 
-    /** Where the user's own list is parked while Android picks the keyboards. */
+    /** The user's own list, parked while Android picks the keyboards. */
     private const val PREF_SAVED_LIST = "languages_hub_saved_keyboards"
 
     /**
-     * Hand the choice of keyboards to Android's system languages, or take it back.
-     *
-     * Handing it over discards the explicit list (that is what "follow the system" is to
-     * Android), so the user's own list is parked first and restored when they take the choice
-     * back; otherwise flipping the switch twice would silently lose every keyboard they added.
-     * Parked keyboards that no longer exist (a removed multi-language keyboard) are skipped.
+     * Following the system discards the explicit list, so it is parked first and restored when
+     * the choice is taken back (skipping keyboards that no longer exist).
      */
     fun setFollowsSystem(context: Context, follow: Boolean): Boolean {
         val prefs = PrefsManager.getPrefs(context)
@@ -152,10 +135,8 @@ object KeyboardLanguages {
     }
 
     /**
-     * The list to switch on when the user takes the choice back: their parked keyboards, plus
-     * whatever Android picked meanwhile *unless* the same layout language is already among the
-     * parked ones. Android picks plain keyboards, so a parked "English (US) + French" would
-     * otherwise come back alongside a second, plain "English (US)" (owner's KEY2, 2026-09-24).
+     * Parked keyboards plus Android's picks whose layout language is not already parked (else a
+     * parked "English (US) + French" returns next to a plain "English (US)").
      */
     internal fun mergeRestored(
         current: List<InputMethodSubtype>,
@@ -182,13 +163,9 @@ object KeyboardLanguages {
     enum class ExtrasResult { DONE, NEEDS_SYSTEM_SETTINGS, FAILED }
 
     /**
-     * Give [keyboard] these extra prediction languages (or none), replacing it in the switch list.
-     *
-     * With extras, the keyboard becomes the multi-language keyboard for its layout language plus
-     * [extras]: the config is saved and registered with Android like the old wizard did, then
-     * swapped in for [keyboard]. With none, a multi-language keyboard goes back to the plain one.
-     * Before API 34 the config is still saved and registered, and [ExtrasResult.NEEDS_SYSTEM_SETTINGS]
-     * says the user has to switch the new keyboard on themselves.
+     * Replaces [keyboard] with its multi-language form for [extras], or the plain one for none.
+     * Before API 34 the config is still saved and registered, and
+     * [ExtrasResult.NEEDS_SYSTEM_SETTINGS] means the user must switch it on.
      */
     fun setExtras(context: Context, keyboard: Keyboard, extras: List<LocaleItem>): ExtrasResult {
         val repository = MultiLanguageRepository.getInstance(context)
@@ -214,17 +191,13 @@ object KeyboardLanguages {
         return if (SubtypeEnabler.setEnabledList(context, list)) ExtrasResult.DONE else ExtrasResult.FAILED
     }
 
-    /** Languages written in [keyboard]'s script that can be its extras (not its own layout language). */
+    /** Languages in [keyboard]'s script that can be its extras. */
     fun extraChoices(context: Context, keyboard: Keyboard): List<LocaleItem> {
         val primary = (keyboard.config?.getPrimaryLocale()?.first ?: keyboard.locale) as String
         return MultiLanguageRepository.getInstance(context).getAvailableLocalesFor(primary)
     }
 
-    /**
-     * Re-register every runtime subtype. All three sources, as [RichInputMethodManager] does at
-     * startup: registering only the multi-language ones (as the old wizard does) would drop the
-     * runtime keyboards for side-loaded languages until the next restart.
-     */
+    /** All runtime subtype sources: registering only the multi-language ones drops side-loaded keyboards. */
     private fun registerAdditionalSubtypes(context: Context) {
         try {
             val rimm = RichInputMethodManager.getInstance()

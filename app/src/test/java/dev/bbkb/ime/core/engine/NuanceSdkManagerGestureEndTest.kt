@@ -29,10 +29,9 @@ import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicInteger
 
 /**
- * Wave 3: `touchEnd` runs on the engine thread, so the deposit seq is written there. The main
- * thread must still see "a swipe word may be coming" from the moment it posts the op (a swipe
- * with suggestions off is committed only through the prediction request that check lets
- * through), and the request posted after the op must run after it.
+ * `touchEnd` runs on the engine thread, yet the main thread sees "a swipe word may be coming" from
+ * the moment it posts the op (with suggestions off, a swipe commits only through the request that
+ * check lets through), and the request posted after the op runs after it.
  */
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [34], manifest = Config.NONE, instrumentedPackages = ["com.blackberry.nuanceshim"])

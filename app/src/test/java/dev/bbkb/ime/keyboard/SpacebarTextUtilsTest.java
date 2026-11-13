@@ -66,11 +66,8 @@ public class SpacebarTextUtilsTest {
     }
 
     /**
-     * Regression for the non-terminating input. The shrink loop used to stop updating the
-     * measured width as soon as the required scale fell below the minimum, so its exit condition
-     * ({@code width > available}) could never change again and it spun forever on the draw
-     * thread. A font whose width has a floor reproduces it: no scale makes the label fit, so the
-     * loop must give up and fall through to the ellipsis path.
+     * A font whose width has a floor: no scale makes the label fit, so the shrink loop must give up
+     * and fall through to the ellipsis path instead of spinning on the draw thread.
      */
     @Test(timeout = 5000)
     public void labelThatCanNeverBeScaledToFitTerminates() {
@@ -84,11 +81,7 @@ public class SpacebarTextUtilsTest {
         assertEquals("", SpacebarTextUtils.truncateTextToWidth(100, null, 10f, 0.7f, paintWith(LINEAR)));
     }
 
-    /**
-     * The ellipsis cut used to step back by UTF-16 chars, so it could keep the high half of a
-     * surrogate pair. Here the first estimate lands between the two halves of the emoji; the cut
-     * must move back past the whole emoji instead.
-     */
+    /** The first cut estimate lands inside the emoji's surrogate pair; the cut must move back past it. */
     @Test
     public void ellipsisNeverSplitsASurrogatePair() {
         // 8 chars at the 0.5 minimum scale are 5px each, so 20px holds three chars plus the

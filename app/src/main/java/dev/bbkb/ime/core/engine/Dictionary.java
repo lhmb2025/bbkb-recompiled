@@ -23,13 +23,18 @@ public abstract class Dictionary {
 
     public final String dictType;
 
+    /**
+     * @param c0670ag the composing tracker
+     * @param c0805e the suggestion strip settings
+     * @param i the session id
+     */
     public abstract ArrayList<SuggestedWords.SuggestedWordInfo> generateSuggestions(ComposingTextTracker c0670ag, PrevWordsInfo prevWordsInfo, SuggestionStripSettings c0805e, int i);
 
     /**
-     * The suggestions for a composing state taken on the main thread (Wave 3 Phase A: the IME's
-     * requests run on the engine thread and never read its tracker). Named apart from
-     * {@link #generateSuggestions} so a mock's {@code any()} or a {@code null} argument still
-     * picks one method. Dictionaries that build no suggestions answer null.
+     * For a snapshot taken on main (engine-thread requests never read the tracker). Named apart from
+     * {@link #generateSuggestions} so a mock's {@code any()} or a null still picks one method.
+     *
+     * @param i the session id
      */
     public ArrayList<SuggestedWords.SuggestedWordInfo> generateSuggestionsForSnapshot(ComposingSnapshot composing, PrevWordsInfo prevWordsInfo, SuggestionStripSettings stripSettings, int i) {
         return null;
@@ -38,6 +43,14 @@ public abstract class Dictionary {
     public void close() {
     }
 
+    /**
+     * Reports a recorrection to the learned model.
+     *
+     * @param str the text holding the recorrected word
+     * @param i the recorrection cursor position in {@code str}
+     * @param str2 the original word
+     * @param str3 the current (replacement) word
+     */
     public boolean onWordChanged(String str, int i, String str2, String str3) {
         return false;
     }
@@ -52,10 +65,7 @@ public abstract class Dictionary {
 
     public abstract boolean isWordValid(String str);
 
-    /**
-     * Forget a learned word, after the user reverted an auto-correction to it. Dictionaries
-     * without a learned model ignore the call. True when an entry was removed.
-     */
+    /** Forgets a learned word the user rejected; ignored without a learned model. */
     public boolean unlearnWord(String str) {
         return false;
     }
@@ -72,10 +82,7 @@ public abstract class Dictionary {
         return isWordValid(str);
     }
 
-    /**
-     * Whether the language dictionaries alone know the word, leaving out the learned model.
-     * Dictionaries without a learned model answer as {@link #isValidWord}.
-     */
+    /** Whether the language dictionaries alone know the word; {@link #isValidWord} without a learned model. */
     public boolean isDictionaryWord(String str) {
         return isWordValid(str);
     }

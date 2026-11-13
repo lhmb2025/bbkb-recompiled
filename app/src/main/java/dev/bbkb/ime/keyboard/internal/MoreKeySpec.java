@@ -23,6 +23,12 @@ public class MoreKeySpec {
 
     private final String mOutputText;
 
+    /**
+     * @param str label
+     * @param i icon id
+     * @param i2 code
+     * @param str2 output text
+     */
     public MoreKeySpec(String str, int i, int i2, String str2) {
         this.mLabel = str;
         this.mIconId = i;
@@ -30,6 +36,10 @@ public class MoreKeySpec {
         this.mOutputText = str2;
     }
 
+    /**
+     * @param str more-key spec
+     * @param z true to upper-case for a shifted keyboard
+     */
     public MoreKeySpec(String str, boolean z, Locale locale) {
         if (TextUtils.isEmpty(str)) {
             throw new KeySpecParser.KeySpecParserError("Empty key spec");
@@ -51,6 +61,12 @@ public class MoreKeySpec {
         this.mIconId = KeySpecParser.getIconId(str);
     }
 
+    /**
+     * @param str key spec
+     * @param str2 label overriding the spec's, or null
+     * @param i code to use when the spec has none, or -21
+     * @param z true to upper-case for a shifted keyboard
+     */
     public MoreKeySpec(String str, String str2, int i, boolean z, Locale locale) {
         if (z && locale == null) {
             throw new IllegalArgumentException("Invalid null locale reference");
@@ -147,9 +163,10 @@ public class MoreKeySpec {
     }
 
     /**
-     * Build a plain key from this spec at the given position, using the keyboard's default key
-     * metrics. Came from the MoreKeySpec subclass, which existed only to add this and a
-     * constructor that delegated straight to super (§5.9).
+     * Builds a plain key from this spec with the keyboard's default key metrics.
+     * @param i x
+     * @param i2 y
+     * @param i3 label flags
      */
     public Key buildKey(int i, int i2, int i3, KeyboardParams c1025ah) {
         return new Key(this, MoreKeySpec.getEmpty(), KeyHintPosition.HIDDEN, null, i3, 1, i, i2, c1025ah.mDefaultKeyWidth, c1025ah.mDefaultRowHeight, c1025ah.mHorizontalGap, c1025ah.mVerticalGap, null, null, null, 0, 2, -1);

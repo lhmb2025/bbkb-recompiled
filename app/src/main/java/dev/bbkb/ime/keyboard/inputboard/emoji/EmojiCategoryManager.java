@@ -18,23 +18,11 @@ import java.util.concurrent.ConcurrentHashMap;
 import dev.bbkb.ime.BuildConfig;
 
 /**
- * Manages emoji categories, pages, and keyboard instances for the emoji picker.
- *
- * Coordinates emoji organization across 9 categories (Recents, Smileys, People, Animals,
- * Food, Travel, Activities, Objects, Symbols, Flags). Each category contains multiple
- * pages of emojis, and this manager handles:
- * - Category initialization and page counting
- * - Keyboard caching and lazy loading
- * - Current category/page state tracking
- * - Navigation between categories and pages
- * - Integration with ModernEmojiKeyboardFactory for emoji data
- *
- * <h3>Ids, tab indices and pager positions</h3>
- * A category id is 0 (Recents) to 9 and is what {@code last_shown_emoji_category_id} stores. A
- * category with no pages gets no tab, so once one is empty a tab index is no longer its id; the
- * pager's positions run through the non-empty categories in tab order. Lookups of an id that has
- * no tab fall back to index/position/page-count 0. All of this is pinned by
- * {@code EmojiPalettesViewCharacterisationTest}.
+ * Emoji categories, their pages and the lazily built page keyboards for the emoji board.
+ * Category ids run 0 (Recents) to 9 ({@code last_shown_emoji_category_id}). An empty category
+ * gets no tab, so tab index can differ from id; pager positions run through non-empty categories
+ * in tab order. An id with no tab maps to index/position/page-count 0
+ * (pinned by {@code EmojiPalettesViewCharacterisationTest}).
  */
 
 
@@ -42,7 +30,7 @@ final class EmojiCategoryManager {
 
     private static final String TAG = "EmojiCategoryManager";
 
-    // Direct mapping of category index to R.styleable attribute index
+    // Tab icon attribute per category id.
     private static final int[] CATEGORY_ICON_ATTR_IDS = {
         R.styleable.EmojiPalettesView_iconEmojiRecentsTab,    // 0: Recents
         R.styleable.EmojiPalettesView_iconEmojiSmileyTab,     // 1: Smileys & Emotion
@@ -100,6 +88,7 @@ final class EmojiCategoryManager {
      */
     private String toneMemorySnapshot;
 
+    /** @param c0978h builder for the page keyboards */
     public EmojiCategoryManager(SharedPreferences sharedPreferences, Context context, KeyboardBuilder c0978h, TypedArray typedArray) {
         this.currentCategoryId = -1;
         this.sharedPreferences = sharedPreferences;
@@ -110,7 +99,6 @@ final class EmojiCategoryManager {
         for (int i = 0; i < CATEGORY_COUNT; i++) {
             this.categoryIconIds[i] = typedArray.getResourceId(CATEGORY_ICON_ATTR_IDS[i], 0);
         }
-        // Use modern emoji keyboard factory
         this.emojiKeyboardFactory = new EmojiKeyboardFactory(context, sharedPreferences, c0978h);
         final int[] ids = new int[CATEGORY_COUNT];
         final int[] starts = new int[CATEGORY_COUNT + 1];
@@ -121,16 +109,13 @@ final class EmojiCategoryManager {
         this.categoryIds = Arrays.copyOf(ids, present);
         this.categoryStarts = Arrays.copyOf(starts, present + 1);
         this.currentCategoryId = SettingsManager.getLastShownEmojiCategory(this.sharedPreferences, this.defaultCategoryId);
-        // Must name a category that has a tab. This used to compare the id against the COUNT of
-        // non-empty categories, which rejected the last ids whenever one category was empty and let
-        // negative or empty-category ids through to open on Recents (and stay remembered). An invalid
-        // id becomes the default here, and onFinishInflate's setCategory persists that default.
+        // Must name a category with a tab; otherwise the default, which onFinishInflate's
+        // setCategory then persists.
         if (indexOf(this.currentCategoryId) < 0) {
             this.currentCategoryId = this.defaultCategoryId;
         }
         EmojiKeyboard c0970aM6665b = getOrCreateKeyboard(0, 0);
-        // hasEmoji(), not getKeys().isEmpty(): this port pads the Recents grid with blank keys (the
-        // original did not), so an empty-key test never fired and "no recents" opened on a blank page.
+        // hasEmoji(), not getKeys().isEmpty(): the Recents grid is padded with blank keys.
         if (this.currentCategoryId == 0 && !c0970aM6665b.hasEmoji()) {
             if (BuildConfig.DEBUG) Log.i(TAG, "No recent emojis found, starting in category " + this.currentCategoryId);
             this.currentCategoryId = this.defaultCategoryId;
@@ -138,18 +123,9 @@ final class EmojiCategoryManager {
     }
 
     /**
-     * Records how many pages a category has, without building any of them, and appends it to
-     * {@code ids}/{@code starts} when it has any. Returns the new number of categories with pages.
-     *
-     * <p>Audit IB-1: this used to call {@link #getOrCreateKeyboard(int, int)}, which
-     * materialises a {@link dev.bbkb.ime.keyboard.Key} plus
-     * MoreKeySpec for <em>every</em> emoji in the category. Run over all ten
-     * categories from the constructor — itself reached from
-     * {@code KeyboardSwitcher.createInputView()} on every theme/orientation change —
-     * that built ~1800 keys on the main thread for users who never open the emoji
-     * board. The page count is a size division over the same emoji list, so the
-     * category info is identical; keyboards are still built lazily per (category,
-     * page) by {@code getKeyboardAtPosition}.</p>
+     * Counts a category's pages without building them (this runs on every input view creation) and
+     * appends it to {@code ids}/{@code starts} if it has any. Returns the new count of categories with pages.
+     * @param i the category id
      */
     private int initializeCategory(int i, int[] ids, int[] starts, int present) {
         final int pageCount;
@@ -171,6 +147,7 @@ final class EmojiCategoryManager {
         return present + 1;
     }
 
+    /** @param i the category id */
     public int getCategoryIconId(int i) {
         return this.categoryIconIds[i];
     }
@@ -188,6 +165,7 @@ final class EmojiCategoryManager {
         return getPageCount(this.currentCategoryId);
     }
 
+    /** @param i the category id */
     public int getPageCount(int i) {
         final int k = indexOf(i);
         if (k < 0) {
@@ -197,11 +175,13 @@ final class EmojiCategoryManager {
         return this.categoryStarts[k + 1] - this.categoryStarts[k];
     }
 
+    /** @param i the category id */
     public void setCurrentCategoryId(int i) {
         this.currentCategoryId = i;
         SettingsManager.setLastShownEmojiCategory(this.sharedPreferences, i);
     }
 
+    /** @param i the page within the current category */
     public void setCurrentPageInCategory(int i) {
         this.currentPageInCategory = i;
     }
@@ -214,7 +194,10 @@ final class EmojiCategoryManager {
         return this.currentCategoryId == 0;
     }
 
-    /** The category's tab index, or 0 when it has no tab. */
+    /**
+     * The category's tab index, or 0 when it has no tab.
+     * @param i the category id
+     */
     public int getCategoryIndex(int i) {
         final int k = indexOf(i);
         if (k < 0) {
@@ -224,7 +207,10 @@ final class EmojiCategoryManager {
         return k;
     }
 
-    /** The category's first pager position, or 0 when it has no tab. */
+    /**
+     * The category's first pager position, or 0 when it has no tab.
+     * @param i the category id
+     */
     public int getCategoryStartPosition(int i) {
         final int k = indexOf(i);
         if (k < 0) {
@@ -258,9 +244,8 @@ final class EmojiCategoryManager {
     }
 
     /**
-     * The category id at pager {@code position}. Called every frame of a fling from
-     * {@code EmojiPalettesView.onPageScrolled}, so it allocates nothing (audit IB-10: this used to
-     * return a boxed Pair, memoised to avoid the allocation). {@code position} must be a page.
+     * The category id at pager {@code position}, which must be a page. Called every fling frame from
+     * {@code EmojiPalettesView.onPageScrolled}, so it must not allocate.
      */
     public int getCategoryAt(int position) {
         return this.categoryIds[indexAtPosition(position)];
@@ -271,6 +256,7 @@ final class EmojiCategoryManager {
         return position - this.categoryStarts[indexAtPosition(position)];
     }
 
+    /** @param i the pager position */
     public EmojiKeyboard getKeyboardAtPosition(int i) {
         final int k = indexAtPosition(i);
         if (k < 0) {
@@ -279,10 +265,18 @@ final class EmojiCategoryManager {
         return getOrCreateKeyboard(this.categoryIds[k], i - this.categoryStarts[k]);
     }
 
+    /**
+     * @param i the category id
+     * @param i2 the page
+     */
     private static final Long makeCacheKey(int i, int i2) {
         return Long.valueOf(i2 | ((long)i << 32));
     }
 
+    /**
+     * @param i the category id
+     * @param i2 the page within it
+     */
     public EmojiKeyboard getOrCreateKeyboard(int i, int i2) {
         synchronized (this.keyboardCache) {
             Long lM6657c = makeCacheKey(i, i2);
@@ -311,24 +305,15 @@ final class EmojiCategoryManager {
         }
     }
 
-    /** The one Recents grid. Callers ask every time rather than keep it: {@link #prepareForOpen} may replace it. */
+    /** The one Recents grid. Do not keep it: {@link #prepareForOpen} may replace it. */
     public EmojiKeyboard getRecentsKeyboard() {
         return getOrCreateKeyboard(0, 0);
     }
 
     /**
-     * Drops only the pages that went stale while the board was closed, before it binds them again.
-     *
-     * <p>Every close used to drop every page, so each open rebuilt the whole current category on
-     * the main thread, a Key and its skin-tone specs per emoji (audit P-16). The pages only go stale
-     * in two ways: a skin tone remembered since they were built (EmojiKeyboardFactory reads
-     * EmojiToneMemory when it builds a key), which drops every category page; and recents written
-     * by something other than the Recents grid (a backup restore, a reset), which drops the grid so
-     * it reloads from the preference. The Recents grid is otherwise kept as the single instance
-     * that picks are added to, so it always shows them.
-     *
-     * <p>A reload of the emojibase dataset does not drop pages: the asset is the same, and the
-     * page counts this manager laid the pager out with are fixed at construction anyway.
+     * Before an open, drops only stale pages: all category pages if the skin-tone memory changed since
+     * they were built, and the Recents grid if recents were written elsewhere (restore, reset).
+     * An emojibase reload drops nothing (same asset; page counts are fixed at construction).
      */
     public void prepareForOpen() {
         synchronized (this.keyboardCache) {
@@ -350,11 +335,8 @@ final class EmojiCategoryManager {
     }
 
     /**
-     * A skin tone was remembered or forgotten for the emoji whose base form is {@code base} while
-     * the board is open: rebuilds that emoji's keys in every cached category page (the Recents grid
-     * shows exactly what was picked and is left alone), so they show and insert the tone at once.
-     * The cached pages then match the stored memory again, so the next open keeps them.
-     *
+     * A tone changed for {@code base} while open: rebuilds its keys in every cached category page
+     * (not Recents), so the cache matches the stored memory again.
      * @return the pages whose keys changed
      */
     public java.util.Set<EmojiKeyboard> retone(String base) {
@@ -372,11 +354,7 @@ final class EmojiCategoryManager {
         return changed;
     }
 
-    /**
-     * On close: keeps the Recents grid and the pages of the categories at and next to pager
-     * {@code position} (what the next open binds first), and drops the rest, so a closed board does
-     * not hold every category the user browsed.
-     */
+    /** On close: keeps Recents and the categories at and next to {@code position}; drops the rest. */
     public void retainPagesAround(int position) {
         final int last = getTotalPageCount() - 1;
         if (last < 0) {
@@ -403,21 +381,14 @@ final class EmojiCategoryManager {
         return this.categoryStarts[this.categoryIds.length];
     }
 
-    /**
-     * Get the keyboard factory for creating keyboards.
-     * Used by overlay to create search/recents keyboards directly.
-     */
+    /** For the overlay, which builds search/recents keyboards directly. */
     public EmojiKeyboardFactory getKeyboardFactory() {
         return this.emojiKeyboardFactory;
     }
 
     /**
-     * Recent emojis for the search/recents overlay: at most {@value #OVERLAY_RECENTS_LIMIT}
-     * non-empty entries, read from the preference (not from the Recents keyboard's queue).
-     *
-     * <p>Reading here never throws: any failure reads as no recents. Entries are returned unparsed;
-     * {@link EmojiKeyboardFactory#createRecentsKeyboards} skips any the key-spec parser rejects.
-     * Pinned by EmojiRecentsPersistenceTest.
+     * Up to {@value #OVERLAY_RECENTS_LIMIT} recents for the overlay, from the preference. Never throws
+     * (failure = none); entries are unparsed, the keyboard factory skips rejected ones.
      */
     public List<String> getRecentEmojis() {
         try {

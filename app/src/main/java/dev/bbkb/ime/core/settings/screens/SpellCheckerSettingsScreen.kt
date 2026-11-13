@@ -35,10 +35,6 @@ import dev.bbkb.ime.core.settings.ui.SettingsScaffold
 import dev.bbkb.ime.core.settings.ui.SwitchPreference
 import dev.bbkb.ime.core.settings.ui.rememberContactsPermission
 
-/**
- * Spell Checker Settings Screen
- * Configure spell checking behavior and permissions
- */
 @Composable
 fun SpellCheckerSettingsScreen(
     onNavigateBack: () -> Unit
@@ -46,8 +42,6 @@ fun SpellCheckerSettingsScreen(
     val context = LocalContext.current
     val prefs = remember { PrefsManager.getPrefs(context) }
     
-    
-    // Get preference values
     var useContacts by remember {
         mutableStateOf(prefs.getBoolean("pref_spellcheck_use_contacts", true))
     }
@@ -57,7 +51,6 @@ fun SpellCheckerSettingsScreen(
     }
 
     // Turning "Accept contact names" on asks for the contacts permission; a grant turns it on.
-    // Nothing is asked for just by opening the screen.
     val contacts = rememberContactsPermission { granted ->
         if (granted) {
             useContacts = true
@@ -65,8 +58,8 @@ fun SpellCheckerSettingsScreen(
         }
     }
 
-    // Whether Android uses BBKB to spell check. Only Android's own spell checker setting can
-    // change that, so it is re-read whenever the user comes back from there.
+    // Whether Android uses BBKB to spell check; only Android's setting can change it, so it is
+    // re-read on resume.
     var bbkbIsSpellChecker by remember { mutableStateOf(isBbkbSpellChecker(context)) }
     LifecycleEventEffect(Lifecycle.Event.ON_RESUME) { bbkbIsSpellChecker = isBbkbSpellChecker(context) }
 
@@ -84,17 +77,12 @@ fun SpellCheckerSettingsScreen(
                 .padding(paddingValues)
                 .verticalScroll(rememberScrollState())
         ) {
-            // What the screen is for, as a sentence rather than as a card with a heading. The
-            // heading said "About Spell Checker" one line under an app bar reading "Spell
-            // checker", so it named the screen twice and told the reader nothing.
             PreferenceInfo(
                 text = stringResource(R.string.settings_spellcheck_intro)
             )
 
-            // The master row, in a card of its own as "Enable suggestions" is. The switch shows
-            // whether Android uses BBKB to spell check. Apps cannot choose the system spell
-            // checker, so tapping the row or the switch opens Android's picker; the switch catches
-            // up when the user comes back (ON_RESUME above).
+            // Apps cannot choose the system spell checker, so the switch opens Android's picker
+            // and catches up on resume.
             PreferenceGroup {
                 SwitchPreference(
                     title = stringResource(R.string.settings_spellcheck_enable_title),
@@ -107,8 +95,6 @@ fun SpellCheckerSettingsScreen(
             Spacer(modifier = Modifier.height(spacing.large))
 
             PreferenceGroup {
-
-                // Use Contacts for Spellchecking
                 SwitchPreference(
                     title = context.getString(R.string.settings_spellcheck_use_contacts_title),
                     summary = context.getString(
@@ -158,9 +144,8 @@ private fun isBbkbSpellChecker(context: Context): Boolean {
 }
 
 /**
- * Android's spell checker picker (Settings › System › Languages › Spell checker). It has no public
- * action, but the Settings app exports the screen; anywhere it is missing, the language and input
- * settings that lead to it.
+ * Android's spell checker picker: no public action, but Settings exports the screen; falls back
+ * to the language and input settings.
  */
 private fun openSpellCheckerSettings(context: Context) {
     val picker = Intent().setClassName(

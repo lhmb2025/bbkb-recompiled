@@ -13,10 +13,9 @@ import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
 
 /**
- * Android reports the built-in keyboard as "changed" on every language switch. That event used
- * to drop the parsed Alt tables with everything else, so the next physical key on a Minimal
- * Phone or Titan parsed its table again on the main thread. A table is read from an XML
- * resource, which no device event changes: only choosing another device configuration drops it.
+ * Parsed Alt tables survive device events (Android reports the built-in keyboard as "changed" on
+ * every language switch), so no key reparses one on the main thread. Only choosing another device
+ * configuration drops them.
  */
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [34])

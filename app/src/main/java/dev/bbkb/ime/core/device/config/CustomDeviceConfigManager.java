@@ -28,25 +28,19 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-/**
- * Manages device configurations, including the default system config,
- * preloaded configurations from resources, and user-imported custom configurations.
- */
+/** Device configurations: the default, the preloaded ones in res/xml, and user-imported custom ones. */
 public class CustomDeviceConfigManager {
 
     private static final String TAG = "CustomDeviceConfigManager";
     private static final String PREF_ACTIVE_CONFIG_ID = "active_device_config_id";
     /**
-     * True once the user has picked the stored configuration on the Device configuration screen
-     * with a build that treats a pick as "apply this to my phone". An id stored by an earlier
-     * build has no such flag and keeps what it meant then: it applies only where its
-     * {@code <match>} rules hold. Without this, a profile someone once tapped on a phone it was
-     * not made for, where it did nothing, would switch itself on with the update.
+     * True when the stored id was picked by hand, meaning "apply this to my phone". An id stored
+     * without the flag applies only where its {@code <match>} rules hold, so an old stray pick on
+     * the wrong phone stays inert.
      */
     private static final String PREF_ACTIVE_CONFIG_CHOSEN = "active_device_config_chosen";
     private static final String CUSTOM_CONFIG_DIR = "device_configs";
-    
-    // Config ID prefixes
+
     public static final String ID_DEFAULT = "default";
     private static final String PREFIX_PRELOADED = "preloaded:";
     private static final String PREFIX_CUSTOM = "custom:";
@@ -54,22 +48,16 @@ public class CustomDeviceConfigManager {
     private static CustomDeviceConfigManager sInstance;
     private final Context mContext;
     private final SharedPreferences mPrefs;
-    
-    // Cached active config. setActiveConfigId() is the only writer of PREF_ACTIVE_CONFIG_ID
-    // and clears these, so a non-null mActiveConfig is authoritative.
+
+    // setActiveConfigId() is the only writer of PREF_ACTIVE_CONFIG_ID and clears these, so a
+    // non-null mActiveConfig is authoritative.
     private DeviceInputConfig mActiveConfig;
 
-    // Memoised findMatchingPreloadedConfig() result. That search reflects over every field of
-    // R.xml and pull-parses one XML per preloaded config, and getActiveConfigId() used to run
-    // it on every call whenever the stored id was "default" -- which is the shipped default.
+    // Memoised findMatchingPreloadedConfig(): an R.xml reflection sweep plus one parse per config.
     private String mAutoSelectedId;
     private boolean mAutoSelectSearched;
 
-    // Memoised getPreloadedConfigs() result. The scan reflects over every field of R.xml (431
-    // entries in this app) and then pull-parses one XML per device_config_* match just to read
-    // its name attribute. Nothing about it can change while the process lives: R.xml's fields
-    // are compile-time constants and the XMLs are in the APK. It used to be re-run on every
-    // getAvailableConfigs() (the device-config screen) and on every auto-select search.
+    // Memoised getPreloadedConfigs(): expensive, and fixed for the process (R.xml and the XMLs are in the APK).
     private List<ConfigInfo> mPreloadedConfigs;
 
     public enum ConfigType {
@@ -112,14 +100,9 @@ public class CustomDeviceConfigManager {
         sInstance = null;
     }
 
-    /**
-     * Get the currently active device configuration.
-     * @return DeviceInputConfig object, never null (falls back to default).
-     */
+    /** The active device configuration; never null (falls back to default). */
     public synchronized DeviceInputConfig getActiveConfig() {
-        // Fast path first. getActiveConfigId() used to run *before* this check, dragging the
-        // whole preloaded-config scan onto DeviceInputResolver.resolveInputMapping - reached
-        // from DeviceProfile.initialize and, if that has not run yet, from the first keystroke.
+        // Fast path before getActiveConfigId(), which can trigger the preloaded-config scan.
         if (mActiveConfig != null) {
             return mActiveConfig;
         }
@@ -128,10 +111,8 @@ public class CustomDeviceConfigManager {
 
         DeviceInputConfig config = loadConfigById(activeId);
         if (isUnusable(activeId, config)) {
-            // The stored choice is gone (its file was deleted, a restore brought the id without
-            // the file, an update renamed a shipped profile) or holds no device. It used to leave
-            // the phone on the empty default with detection switched off and no row selected.
-            // Now the choice is dropped, so detection runs again as on a fresh install.
+            // The stored choice is gone (file deleted, restored id without the file, renamed
+            // profile) or holds no device: drop it so detection runs as on a fresh install.
             Logger.error(TAG, "Active config " + activeId + " cannot be used; back to automatic detection");
             forgetStoredChoice();
             activeId = getActiveConfigId();
@@ -168,14 +149,10 @@ public class CustomDeviceConfigManager {
         mAutoSelectSearched = false;
     }
 
-    /**
-     * Get the ID of the currently active configuration.
-     * If set to default and a preloaded config matches the connected device, auto-selects it.
-     */
+    /** The active configuration id; on default, a preloaded config matching a connected keyboard. */
     public synchronized String getActiveConfigId() {
         String storedId = mPrefs.getString(PREF_ACTIVE_CONFIG_ID, ID_DEFAULT);
-        
-        // Auto-select matching preloaded config if currently on default
+
         if (ID_DEFAULT.equals(storedId)) {
             if (!mAutoSelectSearched) {
                 mAutoSelectedId = findMatchingPreloadedConfig();
@@ -185,35 +162,28 @@ public class CustomDeviceConfigManager {
                 }
             }
             if (mAutoSelectedId != null) {
-                // Don't persist - let user explicitly choose if they want to keep it
+                // Not persisted: only a hand pick is stored.
                 return mAutoSelectedId;
             }
         }
         
         return storedId;
     }
-    
-    /**
-     * Find a preloaded config that matches a connected physical keyboard device.
-     */
+
+    /** A preloaded config that matches a connected physical keyboard, or null. */
     private String findMatchingPreloadedConfig() {
-        // Enumerate first, scan second. The device list is the cheap half and it decides the
-        // question: with no external physical keyboard attached the answer is null whatever the
-        // preloaded configs say, and asking anyway cost an R.xml reflection sweep plus one XML
-        // pull-parse per preloaded config -- on the IME's cold-start path and on every cold
-        // Settings launch, on phones that can never match.
+        // Enumerate devices first: with no external keyboard the answer is null, and the config
+        // scan is on the cold-start path.
         final List<android.view.InputDevice> keyboards = connectedExternalKeyboards();
         if (keyboards.isEmpty()) return null;
 
         List<ConfigInfo> preloaded = getPreloadedConfigs();
         if (preloaded.isEmpty()) return null;
 
-        // Each preloaded config is parsed at most once. The nested loop used to re-parse every
-        // preloaded config from XML once per connected keyboard device.
+        // Each preloaded config is parsed at most once.
         final Map<String, DeviceInputConfig> parsed = new HashMap<>();
 
         for (android.view.InputDevice keyboard : keyboards) {
-            // Check each preloaded config for a match
             for (ConfigInfo info : preloaded) {
                 DeviceInputConfig config;
                 if (parsed.containsKey(info.id)) {
@@ -231,9 +201,8 @@ public class CustomDeviceConfigManager {
     }
 
     /**
-     * The connected non-virtual keyboard devices, in {@code InputDevice.getDeviceIds()} order --
-     * the same devices, in the same order, as the nested loop this was lifted out of. Devices
-     * rather than names so a config's {@code vendor-id} / {@code product-id} rules can match.
+     * The connected non-virtual keyboards in {@code getDeviceIds()} order. Devices rather than
+     * names so {@code vendor-id} / {@code product-id} rules can match.
      */
     private static List<android.view.InputDevice> connectedExternalKeyboards() {
         final List<android.view.InputDevice> keyboards = new ArrayList<>(2);
@@ -254,46 +223,31 @@ public class CustomDeviceConfigManager {
         return keyboards;
     }
 
-    /**
-     * Set the active configuration ID.
-     */
     public void setActiveConfigId(String id) {
-        // Every pick made here is by hand: the Device configuration screen and a deleted
-        // configuration falling back to the default are the only callers.
+        // Every pick here is by hand: the Device configuration screen, or a deleted config reverting.
         mPrefs.edit()
                 .putString(PREF_ACTIVE_CONFIG_ID, id)
                 .putBoolean(PREF_ACTIVE_CONFIG_CHOSEN, !ID_DEFAULT.equals(id))
                 .apply();
-        // Clear cache to force reload on next get
         synchronized (this) {
             mActiveConfig = null;
             mAutoSelectedId = null;
             mAutoSelectSearched = false;
         }
-        // Also clear the DeviceInputResolver cache and refresh DeviceProfile
         DeviceInputResolver.resetConfig();
-        // The device-classification and hardware-scan caches are computed once at first key or
-        // boot and were then immutable for the process: switching config in Settings left them
-        // stale, including primaryTouchKeypad, which decides isFromTouchKeypad() and therefore
-        // whether CKB swipe input works at all.
+        // These caches are otherwise fixed for the process; stale primaryTouchKeypad breaks CKB swipe input.
         KeyEventDeviceClassifier.getInstance().clearCache();
         KeyboardDeviceScanner.getInstance().refresh();
         DeviceProfile.initialize(mContext);
     }
 
-    /**
-     * Get a list of all available configurations.
-     */
     public List<ConfigInfo> getAvailableConfigs() {
         List<ConfigInfo> configs = new ArrayList<>();
 
-        // 1. Default
         configs.add(new ConfigInfo(ID_DEFAULT, "Detect automatically", ConfigType.DEFAULT, null, 0));
 
-        // 2. Preloaded (scan R.xml for device_config_*)
         configs.addAll(getPreloadedConfigs());
 
-        // 3. Custom (scan internal storage)
         configs.addAll(getCustomConfigs());
 
         return configs;
@@ -305,8 +259,7 @@ public class CustomDeviceConfigManager {
         }
         List<ConfigInfo> list = new ArrayList<>();
         try {
-            // Use reflection to find all XML resources starting with "device_config_"
-            // Use the build-time R class directly (namespace != applicationId at runtime)
+            // The build-time R class: namespace != applicationId at runtime.
             Class<?> rXmlClass = dev.bbkb.ime.R.xml.class;
             Field[] fields = rXmlClass.getFields();
 
@@ -314,7 +267,6 @@ public class CustomDeviceConfigManager {
                 String name = field.getName();
                 if (name.startsWith("device_config_")) {
                     int resId = field.getInt(null);
-                    // Parse just the name from the XML header
                     String displayName = getNameFromResource(resId);
                     if (displayName == null) {
                         displayName = formatNameFromResource(name);
@@ -329,20 +281,14 @@ public class CustomDeviceConfigManager {
         }
 
         if (list.isEmpty()) {
-            // Not merely "this device has no preloaded config": R.xml fields are compile-time
-            // constants, so R8 can inline and strip them and getFields() then returns nothing.
-            // An empty list makes every device fall back to the default config, losing
-            // per-device scancode roles, KDB variant and CKB warp - release-only behaviour
-            // that never reproduces in a debug build. proguard-rules.pro keeps
-            // dev.bbkb.ime.R$xml's static fields for exactly this reason.
+            // R8 can strip R.xml's constant fields, leaving every device on the default config
+            // (release builds only). proguard-rules.pro keeps R$xml's static fields for this.
             Logger.error(TAG, "No preloaded device configs found by the R.xml scan"
                     + " - check the R$xml keep rule in proguard-rules.pro");
         }
         
         Collections.sort(list, BY_NAME);
-        // Memoised even when empty: an empty result means the R.xml fields were stripped, which
-        // will not become untrue later in the process, and re-running the sweep to rediscover
-        // that is the expensive case.
+        // Memoised even when empty: stripped fields stay stripped.
         mPreloadedConfigs = Collections.unmodifiableList(list);
         return mPreloadedConfigs;
     }
@@ -358,16 +304,14 @@ public class CustomDeviceConfigManager {
             return list;
         }
 
-        // Locale.ROOT: in a Turkish locale "CONFIG.XML".toLowerCase() yields a dotless i and
-        // the .xml test fails, so an imported .XML config silently disappears.
+        // Locale.ROOT: a Turkish lowercase of "XML" has a dotless i.
         File[] files = dir.listFiles((dir1, name) -> name.toLowerCase(Locale.ROOT).endsWith(".xml"));
         if (files == null) return list;
 
         for (File file : files) {
             String filename = file.getName();
             String id = PREFIX_CUSTOM + filename;
-            
-            // Parse display name from file header
+
             String displayName = getNameFromFile(file);
             if (displayName == null) {
                 displayName = filename;
@@ -380,30 +324,19 @@ public class CustomDeviceConfigManager {
         return list;
     }
 
-    /**
-     * Import a custom configuration from a URI.
-     * @return The ID of the imported config, or null if failed.
-     */
+    /** @return the id of the imported config, or null on failure */
     public String importCustomConfig(Uri uri) {
         InputStream is = null;
         OutputStream os = null;
         try {
-            // 1. Read to check validity and get name
             is = mContext.getContentResolver().openInputStream(uri);
             String displayName = DeviceInputMappingParser.parseDisplayName(is);
             is.close();
             
             if (displayName == null) {
-                // Try to use filename if name attribute is missing, but still validate?
-                // For now, let's assume if parseDisplayName returns null, it might be invalid XML or missing root.
-                // Re-open to fully parse/validate if needed.
-                // Let's at least require it to be parseable.
-                // For now, we will use a generated name if attribute is missing.
                 displayName = "Imported Config " + System.currentTimeMillis();
             }
 
-            // 2. Determine destination filename
-            // We use the displayName to generate a filename, sanitized
             String safeName = displayName.replaceAll("[^a-zA-Z0-9\\.\\-]", "_");
             String filename = safeName + ".xml";
             
@@ -413,14 +346,12 @@ public class CustomDeviceConfigManager {
             }
             
             File destFile = new File(dir, filename);
-            // Handle duplicates
             int counter = 1;
             while (destFile.exists()) {
                 destFile = new File(dir, safeName + "_" + counter + ".xml");
                 counter++;
             }
 
-            // 3. Copy file
             is = mContext.getContentResolver().openInputStream(uri);
             os = new FileOutputStream(destFile);
             
@@ -440,14 +371,11 @@ public class CustomDeviceConfigManager {
                 if (is != null) is.close();
                 if (os != null) os.close();
             } catch (IOException e) {
-                // ignore
+                // Nothing to do if closing fails.
             }
         }
     }
 
-    /**
-     * Delete a custom configuration.
-     */
     public boolean deleteCustomConfig(String id) {
         if (!id.startsWith(PREFIX_CUSTOM)) return false;
         
@@ -460,7 +388,6 @@ public class CustomDeviceConfigManager {
         }
         
         if (deleted) {
-            // If active config was deleted, revert to default
             if (id.equals(getActiveConfigId())) {
                 setActiveConfigId(ID_DEFAULT);
             }
@@ -474,10 +401,9 @@ public class CustomDeviceConfigManager {
             return loadDefaultConfig();
         } else if (id.startsWith(PREFIX_PRELOADED)) {
             String resName = id.substring(PREFIX_PRELOADED.length());
-            // Use runtime packageName (applicationId) for getIdentifier()
+            // getIdentifier() needs the runtime applicationId.
             int resId = mContext.getResources().getIdentifier(resName, "xml", mContext.getPackageName());
             if (resId != 0) {
-                // XML resources must use getXml(), not openRawResource()
                 return DeviceInputMappingParser.parseConfigFromXmlResource(mContext, resId);
             }
         } else if (id.startsWith(PREFIX_CUSTOM)) {
@@ -499,10 +425,9 @@ public class CustomDeviceConfigManager {
     }
 
     /**
-     * The built-in profile a custom one builds on ({@code <device extends="device_config_athena">}),
-     * parsed afresh so the caller can change it; null when no built-in profile has that name. Only
-     * {@code device_config_*} resources can be named: a file from outside must not be able to pull
-     * in any other XML resource.
+     * The built-in profile a custom one extends ({@code <device extends="device_config_athena">}),
+     * parsed afresh so the caller can change it, or null. Only {@code device_config_*} resources
+     * can be named, so an imported file cannot pull in any other XML resource.
      */
     private dev.bbkb.ime.core.device.config.model.DeviceInputMapping loadBuiltInProfile(String name) {
         if (name == null) return null;
@@ -530,7 +455,7 @@ public class CustomDeviceConfigManager {
     }
 
     private String getNameFromResource(int resId) {
-        // XML resources in res/xml/ must be opened with getXml(), not openRawResource()
+        // res/xml resources must be opened with getXml(), not openRawResource().
         try {
             android.content.res.XmlResourceParser parser = mContext.getResources().getXml(resId);
             int eventType = parser.getEventType();
@@ -565,7 +490,6 @@ public class CustomDeviceConfigManager {
     private String formatNameFromResource(String resName) {
         // device_config_titan_pocket -> Titan Pocket
         String name = resName.replace("device_config_", "").replace("_", " ");
-        // Capitalize words
         StringBuilder result = new StringBuilder();
         boolean nextUpper = true;
         for (char c : name.toCharArray()) {

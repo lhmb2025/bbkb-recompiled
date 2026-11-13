@@ -3,23 +3,13 @@ package dev.bbkb.ime.core.device.config.model;
 import android.util.SparseIntArray;
 
 /**
- * Holds Alt+key character mappings and special function key remappings loaded from XML.
- * Uses SparseIntArray for efficient keyCode → character lookup.
- *
- * <p>Audit W1-F: the {@code List<AltKeyMapping> allMappings} shadow list (and the
- * {@code AltKeyMapping} value type it held) existed only for {@code getAllMappings()}, which had
- * no callers — every real lookup goes through the two SparseIntArrays. The
- * {@code requiredDeviceBrand} / {@code requiredLayout} condition attributes went the same way:
- * the parser wrote them and nothing ever called {@code matchesConditions}. The gating those
- * attributes describe is performed structurally, by {@code <layout-alt-overrides>} in the device
- * config plus that config's {@code <brand exact="..."/>}.
+ * Alt+key characters and special function key remaps loaded from XML. Brand/layout gating is done
+ * by the device config ({@code <layout-alt-overrides>} plus {@code <brand>}), not here.
  */
 public class AltMappingsTable {
 
     private final String name;
-    // SparseIntArray, not SparseArray<Character>: getMapping is on the Alt+key path
-    // (AuxCharacterResolver, KeyEventConverter) and a boxed read plus unbox per lookup is
-    // wasted on a primitive char. The sibling specialFunctions field already had it right.
+    // SparseIntArray, not SparseArray<Character>: getMapping is on the hot Alt+key path.
     private final SparseIntArray mappings;          // keyCode → character (with Alt)
     private final SparseIntArray specialFunctions;  // keyCode → virtual keyCode (without Alt)
 
@@ -29,43 +19,25 @@ public class AltMappingsTable {
         this.specialFunctions = new SparseIntArray();
     }
 
-    /**
-     * Add an Alt+key character mapping.
-     */
     public void addMapping(int keyCode, char character) {
         mappings.put(keyCode, character);
     }
 
-    /**
-     * Add a special function keycode remapping (hardware keycode → virtual keycode).
-     * @param keyCode The hardware keycode
-     * @param virtualKeyCode The virtual keycode to remap to
-     */
     public void addSpecialFunction(int keyCode, int virtualKeyCode) {
         specialFunctions.put(keyCode, virtualKeyCode);
     }
 
-    /**
-     * Get the mapped character for a keyCode (when Alt is pressed).
-     * @return The character, or 0 if no mapping exists
-     */
+    /** The Alt character for {@code keyCode}, or 0. */
     public char getMapping(int keyCode) {
         return (char) mappings.get(keyCode, 0);
     }
 
-    /**
-     * Get the virtual keycode for hardware keycode remapping (when Alt is NOT pressed).
-     * @return The virtual keycode, or 0 if no remapping exists
-     */
+    /** The remapped keycode without Alt, or 0. */
     public int getSpecialFunctionCode(int keyCode) {
         return specialFunctions.get(keyCode, 0);
     }
 
-    /**
-     * A table holding everything in {@code base} with everything in {@code over} laid on top: a
-     * key both name gets {@code over}'s answer. Either may be null. This is how a profile's own
-     * {@code <mapping>} entries sit on the table its {@code <source>} names.
-     */
+    /** {@code base} with {@code over} laid on top ({@code over} wins); either may be null. */
     public static AltMappingsTable layered(String name, AltMappingsTable base, AltMappingsTable over) {
         final AltMappingsTable out = new AltMappingsTable(name);
         for (AltMappingsTable from : new AltMappingsTable[] {base, over}) {
@@ -80,9 +52,6 @@ public class AltMappingsTable {
         return out;
     }
 
-    /**
-     * Get the number of mappings.
-     */
     public int size() {
         return mappings.size();
     }

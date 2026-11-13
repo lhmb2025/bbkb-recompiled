@@ -8,13 +8,8 @@ import dev.bbkb.ime.R
 import dev.bbkb.ime.core.settings.PrefsManager
 
 /**
- * BBKB's colours for framework [AlertDialog]s.
- *
- * The settings screens are Compose under [BlackBerryTheme]; everything the keyboard itself pops
- * up (the Change-language menu, the add-word dialog, permission rationales, the input options
- * menu) is a platform dialog, which reads its colours from the theme of the context it is built
- * with. This picks `BbkbDialogTheme.Light` or `.Dark` the way [BlackBerryTheme] does, from
- * `pref_keyboard_theme_mode` ("auto" follows the system), so both kinds of UI match.
+ * Themes framework [AlertDialog]s the keyboard pops up to match [BlackBerryTheme]: picks
+ * `BbkbDialogTheme.Light` or `.Dark` from `pref_keyboard_theme_mode` ("auto" follows the system).
  */
 object BbkbDialogs {
 

@@ -12,15 +12,11 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.window.DialogProperties
 import dev.bbkb.ime.R
 
-/**
- * Blocks a settings screen draws that are not preference rows, so they ride the spec's `Custom`
- * escape hatch rather than being contorted into a row type.
- */
+/** Non-row blocks that settings screens draw through the spec's `Custom` escape hatch. */
 
 /**
- * Swipe typing is unavailable on Chinese subtypes (a NuanceSDK limitation), and the two screens
- * that offer a swipe-typing toggle say so with a modal the user must acknowledge. One copy: the
- * two screens carried identical 15-line versions of this.
+ * Swipe typing is unavailable on Chinese subtypes (a NuanceSDK limitation); screens with a
+ * swipe-typing toggle show this modal the user must acknowledge.
  */
 @Composable
 fun ChineseLocaleSwipeWarning() {

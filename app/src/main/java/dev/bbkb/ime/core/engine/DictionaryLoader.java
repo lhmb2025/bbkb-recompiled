@@ -22,11 +22,7 @@ import java.util.Set;
 
 import dev.bbkb.ime.BuildConfig;
 
-
-/**
- * Owns the one main {@link Dictionary}, its locale and additional locales, and reloads it when they
- * change. Load/reload/threading behaviour is pinned by {@code DictionaryLoaderTest}.
- */
+/** Owns the main {@link Dictionary}, its locale and additional locales, and reloads it when they change. */
 public class DictionaryLoader {
 
     public static final String TAG = "DictionaryLoader";
@@ -43,18 +39,9 @@ public class DictionaryLoader {
     }
 
     /**
-     * Forgets a word the user rejected: after an auto-correction is reverted
-     * ({@code RecorrectionController.revertAutoCorrection}), and when one backspace wipes a word
-     * still held open after a gesture commit ({@code BackspaceController}).
-     *
-     * <p>The original keyboard left this empty ({@code core/g.a(Ljava/lang/String;)V} is
-     * {@code return-void}; it was once misnamed {@code onLanguagePackInstalled} by the
-     * deobfuscation). Since 2026-10-12 it reaches the engine's learned model: a reverted
-     * correction is an explicit rejection, and leaving the word learned is how a bad correction
-     * reinforces itself — every space that committed "bout" for the typed "about" taught the
-     * model "bout" again. The engine offers only outright deletion of the learned entry
-     * ({@code NuanceSDK.deleteDLMWord}); the static lexicon is never touched, so a dictionary
-     * word merely loses its learned boost.
+     * Deletes a rejected word's learned entry (reverted auto-correction, or a backspace that wipes
+     * a gesture word), so a bad correction does not reinforce itself. Dictionary words only lose
+     * their learned boost.
      */
     public void unlearnWord(String word) {
         Dictionary dict = this.mDictionaryGroup.mMainDictionary;
@@ -63,19 +50,14 @@ public class DictionaryLoader {
         }
     }
 
-    /**
-     * A locale and the dictionary loaded for it, swapped into {@link #mDictionaryGroup} as a unit.
-     * The dictionary arrives later on the async path; the additional locales are recorded only when
-     * a dictionary is kept or {@link #updateAdditionalLocales} succeeds.
-     */
+    /** A locale and its dictionary, swapped in as a unit; the dictionary arrives later when async. */
     private static class DictionaryGroup {
 
         public final Locale mLocale;
 
         /**
-         * True only for the empty group a fresh loader or {@link #closeAndReset} installs. Its locale
-         * is null, like a group initialised for a null locale, so the locale alone can't tell a
-         * pending load "you were reset" apart from "your null-locale load is still wanted".
+         * True only for the empty group of a fresh loader or {@link #closeAndReset}: its null locale
+         * alone cannot tell "reset" from "a null-locale load is still wanted".
          */
         final boolean mRefusesPendingLoads;
 
@@ -137,10 +119,8 @@ public class DictionaryLoader {
         Dictionary existingDict = this.mDictionaryGroup.mMainDictionary;
         boolean needsReload = localeChanged || localesChanged || forceReload || (existingDict != null && !existingDict.isInitialized());
         Dictionary keptDict = needsReload ? null : existingDict;
-        // A reload records the additional locales it was started for, not null. With null, every
-        // init before the async updateAdditionalLocales landed saw a change and reloaded again.
-        // updateAdditionalLocales clears the record if the engine refuses them, so the next init
-        // still retries.
+        // Record the additional locales the reload started for, so inits before the async
+        // updateAdditionalLocales lands do not reload again (a refusal clears the record).
         DictionaryGroup newGroup = new DictionaryGroup(locale, keptDict, activeLocales);
         synchronized (this.mLock) {
             DictionaryGroup oldGroup = this.mDictionaryGroup;
@@ -174,14 +154,11 @@ public class DictionaryLoader {
             Logger.info(TAG, "Initializing main dictionary");
             Dictionary newDict = DictionaryFactory.createDictionary(context, locale);
             synchronized (this.mLock) {
-                // Install only if no later init (or closeAndReset) has moved the locale on. A null
-                // locale is a real request (the factory answers it with FallbackDictionary); the
-                // original non-null requirement discarded that fallback on every load.
+                // Install only if no later init or reset moved on. A null locale is a real request
+                // (answered with FallbackDictionary).
                 DictionaryGroup current = this.mDictionaryGroup;
                 if (!current.mRefusesPendingLoads && Objects.equals(current.mLocale, locale)) {
-                    // Two loads for the same locale can both be pending (e.g. two forced reloads).
-                    // Each closes only the group current when IT was queued, so the later install
-                    // would otherwise replace the earlier one's dictionary without closing it.
+                    // Two same-locale loads can both be pending; close what the later one replaces.
                     Dictionary replaced = current.mMainDictionary;
                     current.mMainDictionary = newDict;
                     if (replaced != null && replaced != newDict) {
@@ -217,8 +194,7 @@ public class DictionaryLoader {
                 }
                 return true;
             }
-            // Refused: forget the locales a reload recorded when it started, so the next init sees
-            // them as changed and reloads (the retry the old null record gave implicitly).
+            // Refused: forget the recorded locales so the next init reloads.
             this.mDictionaryGroup.mAdditionalLocales = null;
         }
         return false;
@@ -275,11 +251,7 @@ public class DictionaryLoader {
         return perfLogger;
     }
 
-    /**
-     * {@link #generateSuggestions(ComposingTextTracker, PrevWordsInfo, ProximityGrid, SuggestionStripSettings, int)}
-     * for a composing state taken on the main thread: the IME's requests run on the engine thread,
-     * which never reads the tracker (Wave 3 Phase A).
-     */
+    /** For a snapshot taken on main: the IME's requests run on the engine thread, which never reads the tracker. */
     public SuggestionResult generateSuggestions(ComposingSnapshot composing, PrevWordsInfo prevWordsInfo, ProximityGrid proximityGrid, SuggestionStripSettings stripSettings, int sessionId) {
         ArrayList<SuggestedWords.SuggestedWordInfo> suggestions;
         DictionaryGroup group = this.mDictionaryGroup;
@@ -354,10 +326,7 @@ public class DictionaryLoader {
         return false;
     }
 
-    /**
-     * Whether the language dictionaries alone know {@code word}, exactly as written: the learned
-     * model (learned words, words added on purpose, contact names) is left out.
-     */
+    /** Whether the language dictionaries alone know {@code word} as written, ignoring the learned model. */
     public boolean isDictionaryWord(String word) {
         if (TextUtils.isEmpty(word)) {
             return false;

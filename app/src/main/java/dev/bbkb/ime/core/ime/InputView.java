@@ -14,24 +14,10 @@ import androidx.core.view.WindowCompat;
 import dev.bbkb.ime.keyboard.KeyboardColorManager;
 
 /**
- * The IME's root input view (input_view.xml).
- *
- * <p>Audit CT-20/TD-4: this class used to carry a {@code MotionEventForwarder} hierarchy that
- * forwarded touches landing in the keyboard's top padding to the strip above it. Its only
- * surviving subclass, {@code KeyboardTopPaddingForwarder}, had been reduced to
- * {@code onInterceptTouchEvent -> return false}, so {@code InputView.onInterceptTouchEvent} could
- * never take its {@code true} branch, {@code activeForwarder} was permanently null and the whole
- * {@code onTouchEvent} override was dead — yet the per-touch geometry work in front of the closed
- * path ({@code getGlobalVisibleRect} plus two coordinate reads) still ran on every finger-down on
- * the keyboard. All of it is removed; if top-padding forwarding is wanted back it should be
- * rebuilt against {@code AuxBarView}.
- *
- * <p>The nav-bar bottom padding ({@link ImeInsets#installNavBarInsetListener}) leaves a strip
- * under the keyboard that nothing else paints, so the app behind showed through under the gesture
- * pill and the system's IME back/switcher buttons. This view fills that strip with the keyboard
- * background while IME content is shown ({@link #setNavBarFillShown}) — or, before Android 15,
- * sets the window's nav-bar color to it ({@link #setImeWindow}) — and tells the system
- * whether the background is light so those buttons are drawn dark on light themes.
+ * The IME's root input view (input_view.xml). Paints the nav-bar padding strip
+ * ({@link ImeInsets#installNavBarInsetListener}) with the keyboard background while content is
+ * shown, or before Android 15 sets the window's nav-bar color, and marks light backgrounds so the
+ * system's IME buttons draw dark.
  */
 public final class InputView extends RelativeLayout {
 
@@ -49,10 +35,7 @@ public final class InputView extends RelativeLayout {
         navBarFill.setColor(KeyboardColorManager.INSTANCE.getBackgroundColor());
     }
 
-    /**
-     * Before Android 15 the IME window stops at the nav bar and the system paints the area under
-     * it from the window's nav-bar color, so that color has to follow the keyboard background too.
-     */
+    /** Before Android 15 the system paints under the nav bar from the window's nav-bar color, so it follows the keyboard. */
     public void setImeWindow(Window window) {
         imeWindow = window;
         if (window != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
@@ -61,7 +44,7 @@ public final class InputView extends RelativeLayout {
         applyNavBarColors();
     }
 
-    /** Called from {@link ImeInsets#compute}: fill the nav-bar strip only while content is shown. */
+    /** From {@link ImeInsets#compute}: fill the strip only while content is shown. */
     void setNavBarFillShown(boolean shown) {
         if (navBarFillShown != shown) {
             navBarFillShown = shown;

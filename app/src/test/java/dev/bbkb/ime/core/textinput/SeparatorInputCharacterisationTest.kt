@@ -29,31 +29,11 @@ import org.robolectric.annotation.Config
 import java.util.Locale
 
 /**
- * CHARACTERISATION scenarios for [InputLogic.handleSeparatorInput] — the branch forest Phase 1c
- * step 4 turns into a staged pipeline.
- *
- * ## What the method decides
- *
- * A separator keystroke does up to four separate things, and the old body interleaved all of
- * them in one 90-line sequence of booleans named `z`, `z2`, `z3` and `zM5182e`:
- *
- *  1. **retire the composing word** — commit it, auto-corrected or verbatim, with this separator
- *     as its trailing payload (or reset instead, if the caret had moved inside the word);
- *  2. **insert an auto-space BEFORE the separator**, when the previous commit asked for one and
- *     this separator is the kind usually preceded by a space;
- *  3. **pick a disposition for the separator itself** — double-space-to-period, punctuation swap,
- *     plain space, or anything else — which decides whether the separator is written at all;
- *  4. **set `mCommitType`**, the 0/1/2/3/4 state the NEXT keystroke reads.
- *
- * Step 4 is the reason these tests assert `mCommitType` as well as the editor: it is invisible in
- * the text but it steers the following keystroke's auto-space and swap decisions. A refactor that
- * gets the text right and the code wrong breaks the *next* character, which is exactly the class
- * of bug that is hard to find by hand.
- *
- * ## Oracle
- *
- * As in [CommitEntryPointsCharacterisationTest], the assertion is the exact `InputConnection`
- * call sequence, because "the same text by a different route" is a real behaviour change.
+ * Characterises [InputLogic.handleSeparatorInput], which: 1. retires the composing word (commit,
+ * or reset if the caret moved inside it); 2. inserts an owed auto-space before the separator;
+ * 3. picks a disposition (double-space period, punctuation swap, space, other); 4. sets
+ * `mCommitType` (0..4), which steers the next keystroke and so is asserted alongside the exact
+ * `InputConnection` call log.
  */
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [34], manifest = Config.NONE, instrumentedPackages = ["com.blackberry.nuanceshim"])
@@ -84,8 +64,6 @@ class SeparatorInputCharacterisationTest {
         h.close()
     }
 
-    // ── fixtures ────────────────────────────────────────────────────────────────
-
     private val NORMAL_FIELD = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_MULTI_LINE
 
     private fun settings(
@@ -106,15 +84,10 @@ class SeparatorInputCharacterisationTest {
     )
 
     /**
-     * Drive one separator keystroke through the real method.
+     * Drives one separator keystroke through the private method by reflection.
      *
-     * `handleSeparatorInput` and its only caller `routeKeyEvent` are both private, so reflection
-     * is the way in — the same tactic [dev.bbkb.ime.harness.PipelineHarness] uses for the
-     * `@JvmField` back-references and `MacroCommitAutoCorrectOffTest` uses for this same method.
-     *
-     * @param commitType the `mCommitType` left over from the PREVIOUS keystroke — the 0/1/2/3/4
-     *                   state that gates the auto-space and swap decisions. 4 is "a word was just
-     *                   committed and a space may be owed".
+     * @param commitType `mCommitType` left by the previous keystroke; 4 means a word was just
+     *   committed and a space may be owed
      */
     private fun separator(
         codePoint: Int,
@@ -152,11 +125,7 @@ class SeparatorInputCharacterisationTest {
 
     private fun log(): String = h.editor.callLog.joinToString(" ")
 
-    /**
-     * A bare double quote. The call log wraps every payload in quotes of its own, so a quote
-     * payload logs as `commitText(""",1)` — three quotes in a row, which a Kotlin raw string
-     * cannot spell directly.
-     */
+    /** A bare double quote: the log wraps payloads in quotes, so it logs as `commitText(""",1)`. */
     private val QUOTE = "\""
 
     /** The `mCommitType` the next keystroke will read. */
@@ -174,12 +143,10 @@ class SeparatorInputCharacterisationTest {
         return SuggestedWords(list, false, false, 0)
     }
 
-    // ── disposition: SPACE ──────────────────────────────────────────────────────
-
     @Test
     fun space_whileComposing_commitsTheWordAndTheSpaceAsOneCommitPair() {
-        // The word commit consumes the separator, so the SPACE disposition must NOT write it
-        // again (`!z` gate). Two commitTexts, not three.
+        // The word commit consumes the separator, so the SPACE disposition must not write it again
+        // (`!z` gate): two commitTexts, not three.
         armComposing("hello")
 
         val ctx = separator(' '.code)
@@ -205,9 +172,7 @@ class SeparatorInputCharacterisationTest {
 
     @Test
     fun space_alwaysClaimsCommitTypeThree() {
-        // A space always claims mCommitType 3. The former guard `!isAutoCorrection()` was dead
-        // (hard-coded false) and was deleted on the owner's decision 2026-09-22; this pins that a
-        // pending correction still does not change the outcome.
+        // A space always claims mCommitType 3, even with a pending correction.
         armIdle("hi", 2)
         h.inputLogic.mCurrentSuggestions = SuggestedWords(
             arrayListOf(
@@ -248,8 +213,6 @@ class SeparatorInputCharacterisationTest {
         )
     }
 
-    // ── disposition: OTHER (any non-space separator) ─────────────────────────────
-
     @Test
     fun period_whileComposing_commitsTheWordThenTheSeparator() {
         armComposing("hello")
@@ -283,8 +246,8 @@ class SeparatorInputCharacterisationTest {
 
     @Test
     fun aSeparatorAlwaysNeutralisesTheSuggestionStrip_unlessItIsASpace() {
-        // The OTHER disposition ends in setNeutralSuggestionStrip(); the SPACE one does not.
-        // That asymmetry is the only externally visible difference between the two tails.
+        // The OTHER disposition ends in setNeutralSuggestionStrip(); the SPACE one does not (the only
+        // externally visible difference between the two tails).
         armIdle("hi", 2)
         separator('.'.code)
         org.mockito.Mockito.verify(h.suggestionStripListener).setNeutralSuggestionStrip()
@@ -297,12 +260,10 @@ class SeparatorInputCharacterisationTest {
             .setNeutralSuggestionStrip()
     }
 
-    // ── stage 2: the auto-space inserted BEFORE the separator ───────────────────
-
     @Test
     fun anOpeningParenAfterAWordCommit_getsAnAutoSpaceBeforeIt() {
-        // `isUsuallyPrecededBySpace('(')` is true, and mCommitType 4 means the previous commit
-        // deferred its space — so the separator stage writes the space first, then the paren.
+        // `isUsuallyPrecededBySpace('(')` is true and mCommitType 4 means the previous commit
+        // deferred its space, so the space is written first, then the paren.
         armIdle("hi", 2)
 
         separator('('.code, commitType = 4)
@@ -337,13 +298,10 @@ class SeparatorInputCharacterisationTest {
         assertEquals("""commitText("(",1)""", log())
     }
 
-    // ── the quote-after-digit special case ──────────────────────────────────────
-
     @Test
     fun aQuoteAfterADigit_isTreatedAsAnInchMarkAndArmsAnAutoSpace() {
-        // `34 == cp && endsWithQuoteAfterDigit()` — a quote following a digit is a unit mark
-        // (`6"`), not the close of a quotation, so it suppresses the auto-space BEFORE it and
-        // arms one AFTER it instead.
+        // `34 == cp && endsWithQuoteAfterDigit()`: a quote after a digit is a unit mark (`6"`), so it
+        // suppresses the auto-space before it and arms one after it.
         armIdle("6", 1)
 
         separator('"'.code, commitType = 4)
@@ -364,12 +322,10 @@ class SeparatorInputCharacterisationTest {
         assertEquals("""commitText(" ",1) commitText("$QUOTE",1)""", log())
     }
 
-    // ── disposition: DOUBLE_SPACE_PERIOD ────────────────────────────────────────
-
     @Test
     fun aSecondSpaceInQuickSuccession_becomesAPeriodAndASpace() {
-        // The highest-priority disposition, and the only one that DELETES. It is reached only
-        // when nothing was composing (`!z`), which is why the word is committed first here.
+        // The highest-priority disposition and the only one that deletes. Reached only when nothing
+        // was composing (`!z`), hence the word is committed first here.
         armIdle("hi ", 3)
         h.inputLogic.recordSpaceTimestamp(
             InputEventContext(settings(doubleSpacePeriod = true), InputEvent.createEmptyEvent(), 900L, 0, 0),
@@ -388,13 +344,9 @@ class SeparatorInputCharacterisationTest {
 
     @Test
     fun aSpaceThatCommittedAWord_isNeverTurnedIntoADoubleSpacePeriod() {
-        // The `!wordCommitted` guard on the highest-priority disposition. Without it, a space
-        // that terminates a word would find the word's own trailing space in the buffer, decide
-        // the user had double-tapped, and rewrite "hi ok " as "hi ok. ".
-        //
-        // Everything needed to make the wrong branch attractive is armed: the preference is on,
-        // the timestamp is inside the timeout, and the text before the caret ends in a space
-        // (the one the word commit just wrote).
+        // The `!wordCommitted` guard: without it, a space terminating a word would see the word's
+        // own trailing space and rewrite "hi ok " as "hi ok. ". Everything that would make the wrong
+        // branch fire is armed (preference on, inside the timeout, text ending in a space).
         armIdle("hi ", 3)
         h.inputLogic.mRichInputConnection.setComposingText("ok", 1)
         h.seedComposing("ok")
@@ -443,13 +395,10 @@ class SeparatorInputCharacterisationTest {
         assertEquals(3, commitTypeAfter())
     }
 
-    // ── the cursor-moved reset that runs before everything else ──────────────────
-
     @Test
     fun aSeparatorWithTheCaretInsideTheWord_resetsInsteadOfCommittingIt() {
-        // The first statement of the method: a moved in-composing caret means the word is
-        // abandoned, not committed. The separator itself is still written by the disposition,
-        // because after the reset nothing is composing.
+        // A moved in-composing caret abandons the word rather than committing it; the separator is
+        // still written because nothing is composing after the reset.
         armComposing("hello")
         h.inputLogic.mComposingTracker.setComposingCursorPosition(2)
         h.editor.callLog.clear()
@@ -463,8 +412,6 @@ class SeparatorInputCharacterisationTest {
         assertEquals("hello.", h.editor.text)
         h.fourCopies().assertConsistent()
     }
-
-    // ── the invariant after every disposition ───────────────────────────────────
 
     @Test
     fun everyDisposition_leavesTheCopiesConsistent() {

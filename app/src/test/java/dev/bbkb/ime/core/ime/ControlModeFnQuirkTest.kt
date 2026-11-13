@@ -18,12 +18,9 @@ import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
 
 /**
- * The Titan 2 Elite's Fn key sends CTRL_LEFT with no key-up and auto-repeats while held (the
- * `fn-no-key-up` quirk). [ControlModeController] must not read those repeats as anything but a
- * held Ctrl, and must not leave Ctrl stuck down for want of a release: there Ctrl is a one-shot
- * for the next key. Everywhere else — no quirk — a tap of Ctrl is on for the next key.
- *
- * Also the config-declared Ctrl-like modifier remap (the Titan 2's Fn on scancode 251).
+ * Pins the `fn-no-key-up` quirk: the Titan 2 Elite's Fn sends CTRL_LEFT with no key-up and repeats
+ * while held, so [ControlModeController] treats repeats as a held Ctrl and Ctrl as a one-shot for
+ * the next key. Also the config-declared Ctrl-like modifier remap (Titan 2 Fn on scancode 251).
  */
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [34], manifest = Config.NONE)
@@ -47,8 +44,6 @@ class ControlModeFnQuirkTest {
     fun tearDown() {
         DeviceInputResolver.resetConfig()
     }
-
-    // ── without the quirk: Ctrl works like Shift and Alt ─────────────────────
 
     @Test
     fun noQuirk_ctrlPressedAndReleasedAlone_isOnForTheNextKey_howeverLongItWasHeld() {
@@ -76,8 +71,6 @@ class ControlModeFnQuirkTest {
         }
         assertFalse(host.ctrlKeySendsNoKeyUp)
     }
-
-    // ── with the quirk ───────────────────────────────────────────────────────
 
     @Test
     fun quirk_repeatsNeverLatch_evenIfAReleaseArrives() {
@@ -155,8 +148,6 @@ class ControlModeFnQuirkTest {
         c.handleHardKeyDown(ctrl, 1, false)
         assertTrue(c.isCtrlActive)
     }
-
-    // ── the config-declared Ctrl-like modifier ───────────────────────────────
 
     private fun keyEvent(keyCode: Int, scanCode: Int, action: Int = KeyEvent.ACTION_DOWN) =
         KeyEvent(0L, 0L, action, keyCode, 0, 0, 3, scanCode, 0, InputDevice.SOURCE_KEYBOARD)

@@ -32,10 +32,8 @@ import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
 
 /**
- * On a fresh install a settings screen must show the value the keyboard is actually using. Each
- * case here was a screen carrying its own copy of a default that disagreed with the runtime
- * reader (`SettingsManager` / `SettingsValues`); the runtime value is what every user has been
- * getting, so it is the one the screen now shows.
+ * Pins that a settings screen opens on the value the runtime reader (`SettingsManager` /
+ * `SettingsValues`) uses for an unset key, not a default of the screen's own.
  */
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [34], qualifiers = "w411dp-h891dp")
@@ -107,8 +105,8 @@ class SettingsScreenDefaultsTest {
 
     @Test
     fun debugSlidersShowTheRuntimeDefaults() {
-        // The Debug screen's own sliders are gone (2026-10-20); the gesture activation delay
-        // lives on Advanced gesture thresholds, which still has to open on the engine's default.
+        // The gesture activation delay lives on Advanced gesture thresholds and must open on the
+        // engine's default.
         render { AdvancedGestureParametersScreen({}) }
         assertEquals(
             "Value: ${context.resources.getInteger(R.integer.config_default_VKB_swipe_gesture_suppression_timeout)}ms",
@@ -117,11 +115,8 @@ class SettingsScreenDefaultsTest {
     }
 
     /**
-     * The same assertion the CKB row carried while it lived on the debug screen: the slider must
-     * open on the `R.integer` default the engine reads, not on a value the screen hardcoded. The
-     * row moved to [CkbGesturesScreen] (the one screen a user looks at for CKB gestures), and
-     * that screen writes the preference by hand rather than through a `Slide` spec, so the check
-     * matters more there, not less.
+     * The CKB slider must open on the engine's `R.integer` default; [CkbGesturesScreen] writes the
+     * preference by hand rather than through a `Slide` spec.
      */
     @Test
     fun theCkbGestureSuppressionSliderShowsTheRuntimeDefault() {
@@ -143,9 +138,8 @@ class SettingsScreenDefaultsTest {
 
     @Test
     fun anUnsetCurrencyShowsTheKeyboardsOwnSymbolNotADollar() {
-        // "" is what the runtime reads for an unset key, and it means "leave the layout's own
-        // currency key alone" — so claiming "$" was wrong for every non-dollar layout.
-        // The row's icon is the chosen symbol; unset shows the generic currency sign.
+        // "" is what the runtime reads for an unset key: leave the layout's own currency key
+        // alone, so "$" would be wrong for every non-dollar layout. Unset shows the ¤ icon.
         render { AppearanceLayoutScreen({}, {}) }
         val texts = rendered()
         assertTrue(texts.toString(), "¤" in texts)
@@ -173,7 +167,7 @@ class SettingsScreenDefaultsTest {
 
     @Test
     fun aKeypressVolumeStoredAsTheOriginalFloatFractionRendersItsLevel() {
-        // The original APK's seek bar wrote putFloat(0..1); the Compose screen's getInt threw on it.
+        // Old installs may hold a float (0..1) here; reading it with getInt threw.
         prefs.edit().putFloat("pref_keypress_sound_volume", 0.7f).commit()
         render { KeyPressFeedbackScreen({}) }
         assertTrue(rendered().toString(), "7" in rendered())

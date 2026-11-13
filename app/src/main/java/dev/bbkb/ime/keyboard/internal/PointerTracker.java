@@ -169,11 +169,7 @@ public final class PointerTracker extends AbstractDrawingHandler {
         setViewProxies(interfaceC1020ac, interfaceC1046e, aVar, bVar, cVar);
     }
 
-    /**
-     * Install (or re-install) the per-input-view collaborators. Split out of {@link #init} so that
-     * {@link #release()} can drop them on detach and the owning view can restore them when it is
-     * re-attached without re-parsing its styled attributes.
-     */
+    /** Installs the per-input-view collaborators; separate from {@link #init} so a re-attached view can restore them after {@link #release()}. */
     public static void setViewProxies(TimerProxy interfaceC1020ac, TimerCallback interfaceC1046e, KeyDrawingProxy aVar, GestureEnabledProvider bVar, SlidingPanel cVar) {
         sKeyboardActionCallback = interfaceC1020ac;
         sTimerCallback = interfaceC1046e;
@@ -183,13 +179,9 @@ public final class PointerTracker extends AbstractDrawingHandler {
     }
 
     /**
-     * Drop every static reference this class holds to the input view that installed it.
-     *
-     * <p>{@link #init} stores the {@code MainKeyboardView} (as the drawing proxy, the sliding panel
-     * and the gesture-enabled provider) plus its timer handlers in static fields. A new input view
-     * is built on every rotation, theme change and {@code forceRecreateInputView()}; without this
-     * the previous View, its themed Context and its whole inflated hierarchy stay strongly
-     * reachable for the process lifetime, and a stale tracker can still draw into a detached view.
+     * Drops every static reference to the input view that installed it. The view is rebuilt on
+     * rotation, theme change and recreate; without this the old view hierarchy leaks for the
+     * process lifetime and a stale tracker can draw into a detached view.
      */
     public static void release() {
         sDrawingProxy = null;
@@ -201,7 +193,8 @@ public final class PointerTracker extends AbstractDrawingHandler {
         sTrackers.clear();
     }
 
-    @Override // dev.bbkb.ime.keyboard.AbstractDrawingHandler
+    /** @param j event time */
+    @Override
     public void updateBatchInputTimer(long j) {
         this.mGesturePathTracker.onUpdateBatchInputTimer(j, this);
     }
@@ -218,6 +211,7 @@ public final class PointerTracker extends AbstractDrawingHandler {
         return sPointerTrackerQueue.size();
     }
 
+    /** @param i pointer id; trackers are created on demand up to it */
     public static PointerTracker getPointerTracker(int i) {
         ArrayList<PointerTracker> arrayList = sTrackers;
         for (int size = arrayList.size(); size <= i; size++) {
@@ -230,6 +224,7 @@ public final class PointerTracker extends AbstractDrawingHandler {
         return sPointerTrackerQueue.isAnyInSlidingKeyInput();
     }
 
+    /** @param c0964d the detector for the current keyboard; ignored if it has no keyboard */
     public static void setKeyDetector(KeyDetector c0964d) {
         if (c0964d.getKeyboard() == null) {
             return;
@@ -395,7 +390,7 @@ public final class PointerTracker extends AbstractDrawingHandler {
         if (isShowingMoreKeysPanel()) {
             return;
         }
-        // FIX-L8: null when the engine failed to load. The keyboard must still type.
+        // Must not throw when the engine failed to load: the keyboard must still type.
         EngineTouch.cancel("PointerTracker.cancelTrackingForAction", this.mPointerId);
         this.mIsTrackingCanceled = true;
     }
@@ -510,12 +505,7 @@ public final class PointerTracker extends AbstractDrawingHandler {
         return onMoveToNewKey(onMoveKey(i, i2), i, i2);
     }
 
-    /**
-     * Euclidean distance between two on-screen points. Deliberately not {@link Math#hypot}: hypot
-     * pays for overflow/underflow correctness that integer pixel deltas bounded by the screen can
-     * never need, and it is roughly an order of magnitude slower. Called on every ACTION_MOVE
-     * sample and on every historical sample replayed with it.
-     */
+    /** Not {@link Math#hypot}: that is far slower and its overflow safety is useless for pixel deltas; runs on every move sample. */
     private static int getDistance(int i, int i2, int i3, int i4) {
         final int dx = i - i3;
         final int dy = i2 - i4;
@@ -634,10 +624,8 @@ public final class PointerTracker extends AbstractDrawingHandler {
             Keyboard c0965e = this.mKeyboard;
             this.mIsDetectingGesture = (c0965e == null || !c0965e.mId.isAlphabetKeyboard() || !SettingsManager.getInstance().getSettingsValues().editorCapabilities.shouldSupportGestureInput || keyM7645a == null || keyM7645a.isModifierKey()) ? false : true;
             if (this.mIsDetectingGesture) {
-                // Only a contact that can become a swipe is given to the engine. One that
-                // cannot (a symbol board, a field without swiping, a touch off the keys or on
-                // a modifier) used to post a start, every move and a cancel for nothing, and
-                // its start took the session from a finger that was swiping.
+                // Only a contact that can become a swipe goes to the engine; any other start
+                // would take the session from a finger that is swiping.
                 if (InputPathDebug.on()) android.util.Log.i("CKB_SWIPE_TYPE_DEBUG", "PointerTracker.touchStart: pointerId=" + this.mPointerId + " x=" + i + " y=" + i2 + " time=" + j + " isOnKey=" + keyM7645a);
                 EngineTouch.start("PointerTracker.onDownEvent", this.mPointerId, i, i2, j);
                 resetGestureStrokeTime();
@@ -679,9 +667,6 @@ public final class PointerTracker extends AbstractDrawingHandler {
         this.mIsInSlidingKeyInput = true;
     }
 
-    // AOSP also tracks "sliding key input started on a modifier" (longer long-press timeout,
-    // modifier hysteresis, gesture trail, onFinishSlidingInput on up). Nothing here ever entered
-    // that state — the original BlackBerry build only ever cleared its flag — so it is not modelled.
     private void resetSlidingKeyInput() {
         this.mIsInSlidingKeyInput = false;
         sDrawingProxy.dismissGestureTrail();
@@ -752,9 +737,8 @@ public final class PointerTracker extends AbstractDrawingHandler {
         sKeyboardActionCallback.cancelKeyTimers(this);
     }
 
-    // Key selection by dragging a finger is always on here (config_key_selection_by_dragging_finger
-    // is true, pinned by PointerTrackerCallbackStreamTest), so AOSP's "cancel on slide" and
-    // "sliding finger while multi touching" arms are gone from these two methods.
+    // Key selection by dragging a finger is always on (pinned by PointerTrackerCallbackStreamTest),
+    // so AOSP's "cancel on slide" and multi-touch sliding arms are not here.
     private void onMoveToNewKeyInternal(Key key, int i, int i2, long j, Key key2) {
         if (this.mIsAllowedDraggingFinger) {
             processSlidingKeyInput(key2);
@@ -773,9 +757,8 @@ public final class PointerTracker extends AbstractDrawingHandler {
     }
 
     private float getSlideboardDistanceX(MotionEvent motionEvent) {
-        // Raw against raw: the start is recorded as a raw (screen) x, and the view-local x is
-        // offset by the keyboard's own translation once the slideboard is open, which made every
-        // held key look like a 540px drag and swallowed the keystroke.
+        // Raw against raw: the start is a raw x, and the view-local x shifts with the keyboard's
+        // translation once the slideboard is open, making a held key look like a long drag.
         return Math.abs(motionEvent.getRawX() - this.mSlideboardStartRawX);
     }
 
@@ -806,8 +789,7 @@ public final class PointerTracker extends AbstractDrawingHandler {
 
     private boolean processSlideboardMove(int i, int i2, long j, MotionEvent motionEvent) {
         long jNanoTime = System.nanoTime() - this.mDownEventNanoTime;
-        // One snapshot per sample: this runs on every ACTION_MOVE, and re-reading mid-expression
-        // can observe two different SettingsValues if a settings reload lands between the reads.
+        // One snapshot per sample: a settings reload between reads would mix two SettingsValues.
         final SettingsValues sv = SettingsManager.getInstance().getSettingsValues();
         if (!sv.isSlideboardEnabled || sSuppressSlideboard || ((!this.mSlideboardActive && getSlideboardDistanceX(motionEvent) <= 150f) || jNanoTime <= 200000000)) {
             return false;
@@ -829,7 +811,7 @@ public final class PointerTracker extends AbstractDrawingHandler {
         return true;
     }
 
-    @Override // dev.bbkb.ime.keyboard.AbstractDrawingHandler
+    @Override
     protected void onCancelEvent(int i, int i2, long j) {
         super.onCancelEvent(i, i2, j);
         if (this.mSlideboardActive) {
@@ -847,19 +829,11 @@ public final class PointerTracker extends AbstractDrawingHandler {
             EngineTouch.cancel("PointerTracker.onUpEvent/slideboard", this.mPointerId);
             cancelTracking();
         }
-        // Same as GestureEventProcessor.touchEnd: the deposit raises the pending seq in the
-        // touchEnd op itself, so the suggestion request's defensive clear() can't wipe the flow
-        // trace before the gesture commit reads it. This path (VKB batch input) was missed by
-        // the original fix, which made VKB swipe words vanish: the trace reached the engine but
-        // gesturePending was never set, so the next prediction request cleared the results and
-        // no commit ran.
-        // Wave 3: the request is ordered against the touchEnd op by FIFO on the engine thread,
-        // so during a swipe the op is posted BEFORE onUpEventInternal, which ends the batch
-        // input and posts the prediction request that consumes the deposit. A lift that does
-        // not end a swipe is never decoded: whatever the contact still has in the engine is
-        // cancelled after onUpEventInternal (a tap has already cancelled it there, and then
-        // nothing more is posted). It used to post a touchEnd, which decoded a held key's
-        // jiggle as a swipe that nothing was waiting for.
+        // As in GestureEventProcessor.touchEnd, the touchEnd op raises the pending seq itself so
+        // the suggestion request's clear() cannot wipe the trace before the gesture commit reads it.
+        // Ordering is FIFO on the engine thread: post touchEnd before onUpEventInternal, which
+        // posts the prediction request that consumes it. A lift that ends no swipe is only
+        // cancelled, never decoded (a held key's jiggle would decode as a stray swipe).
         final boolean endsSwipe = sInGesture && !isShowingMoreKeysPanel();
         if (endsSwipe) postTouchEnd(i, i2, j);
         if (!sInGesture) {
@@ -964,7 +938,7 @@ public final class PointerTracker extends AbstractDrawingHandler {
         }
     }
 
-    @Override // dev.bbkb.ime.keyboard.AbstractDrawingHandler
+    @Override
     protected void onCancelEventInternal(long j) {
         cancelBatchInput();
         cancelAllPointerTrackers();
@@ -1008,6 +982,7 @@ public final class PointerTracker extends AbstractDrawingHandler {
         }
     }
 
+    /** @param i key code */
     public long getLongPressTimeoutTime(int i) {
         return this.mKeyDownTime + getKeyLongPressTimeout(i);
     }
@@ -1016,8 +991,7 @@ public final class PointerTracker extends AbstractDrawingHandler {
         if (i == -1) {
             return sParams.mLongPressShiftLockTimeout;
         }
-        // One delay for every key (2026-10-20): the slideboard used to swap in a second
-        // preference of its own for the whole keyboard while it was enabled.
+        // One delay for every key, slideboard included.
         return SettingsManager.getInstance().getSettingsValues().keyLongpressTimeoutMs;
     }
 
@@ -1046,6 +1020,10 @@ public final class PointerTracker extends AbstractDrawingHandler {
         startKeyRepeatTimer(1);
     }
 
+    /**
+     * @param i key code of the repeating key
+     * @param i2 repeat count so far
+     */
     public void onKeyRepeat(int i, int i2) {
         setSuppressSlideboard(true);
         Key keyM7652o = getKey();
@@ -1078,10 +1056,9 @@ public final class PointerTracker extends AbstractDrawingHandler {
         sKeyboardActionCallback.startLockFocusTimer(this, sParams.mLockFocusToFirstOnDownKeyDuration);
     }
 
-    @Override // dev.bbkb.ime.keyboard.AbstractDrawingHandler
+    @Override
     protected void printTouchEvent(String str, int i, int i2, long j) {
-        // Whole body under the compile-time gate: this is called per down/move/up sample, and the
-        // Object[7] plus five boxed values were being built before the test.
+        // Whole body under the compile-time gate: runs per sample, so skip the varargs boxing.
         if (!BuildConfig.DEBUG) {
             return;
         }
@@ -1090,11 +1067,7 @@ public final class PointerTracker extends AbstractDrawingHandler {
         Log.d(TAG, String.format("[%d]%s%s %4d %4d %5d %s", this.mPointerId, this.mIsTrackingCanceled ? "-" : " ", str, i, i2, j, printableCode));
     }
 
-    /**
-     * Debug line {@code "[pointerId] " + fmt}. Every caller guards with
-     * {@code BuildConfig.DEBUG && Logger.isLoggable(TAG, Log.DEBUG)} so release builds fold the
-     * call, its varargs array and the boxing away.
-     */
+    /** Debug line prefixed with the pointer id; callers guard with BuildConfig.DEBUG so release builds drop the call. */
     private void logD(String fmt, Object... args) {
         final Object[] withId = new Object[args.length + 1];
         withId[0] = this.mPointerId;

@@ -17,14 +17,9 @@ import dev.bbkb.ime.core.shared.Logger
 import java.util.Locale
 
 /**
- * "Add to dictionary" in BBKB's own colours.
- *
- * The plus on the add-to-dictionary highlight adds the word with one tap ([OneTapAddWord]). When
- * that is refused - the personal dictionary is not loaded yet, or the word is already in it - the
- * keyboard used to hand the word to Android's own add-word dialog, which wears the system's
- * colours, not the keyboard's (owner request 2026-09-26). This is that fallback, themed like every
- * other BBKB dialog: the word, editable, and Add / Cancel. Add goes to the personal dictionary
- * first and to the system user dictionary when that still refuses, so the word is never lost.
+ * Themed "Add to dictionary" dialog, the fallback when [OneTapAddWord] is refused (dictionary not
+ * loaded, or word already present). Add goes to the personal dictionary first and to the system
+ * user dictionary when that still refuses, so the word is never lost.
  */
 class AddWordDialog : Activity() {
 

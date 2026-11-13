@@ -10,66 +10,28 @@ import dev.bbkb.ime.core.distribution.Packs
 import dev.bbkb.ime.core.locale.LocaleUtils
 
 /**
- * The published catalogue merged with what this phone actually has.
- *
- * [from] is **pure**: it takes a parsed manifest, a snapshot of what is installed and a snapshot
- * of what is downloading, and answers with rows. No disk, no network, no `Context` — which is
- * what lets it be tested against the real `dist/manifest.json` with any installed set you like,
- * and what keeps "is this pack installed" a single decision made in one place rather than one
- * made again in every row of a `LazyColumn`.
- *
- * ### Rows, not a flat list
- *
- * The catalogue is not flat: four entries carry a `group` ([PackEntry.isVariant]) and load *in
- * place of* a base language rather than as a language of their own — Swiss German, Swiss French,
- * Swiss Italian and Belgian Dutch. Showing them as peers of German and French would offer the
- * user two "German" dictionaries with no hint that picking one replaces the other. So a [Row] is
- * one *language*: the base entry, plus the variants that can occupy its slot. A base language
- * with no variants is a row with an empty [Row.variants].
- *
- * A variant whose base language is not in the catalogue at all (which the published manifest has
- * never contained) becomes a row of its own rather than being dropped, so nothing can silently
- * disappear from the list.
- *
- * ### Provenance
- *
- * [fromCache] and [fetchedAt] come straight off the manifest and exist so the screen can say
- * "catalogue from <date>" when the bytes came off disk. A cached catalogue is a complete, usable
- * catalogue — it is only the *freshness* that is unknown — so nothing here is degraded by it.
+ * The published catalogue merged with what the phone has. [from] is pure (no disk, network or
+ * Context), so "is this installed" is decided once, here. A [Row] is one language: its base entry
+ * plus the regional variants that load in place of it (Swiss German etc.), so the user is not shown
+ * two "German" peers. A variant whose base is missing from the catalogue becomes its own row.
  */
 data class PackCatalog(
-    /** Every language in the catalogue, sorted by display name. */
     val rows: List<Row>,
-    /** The catalogue version the manifest stated, e.g. `"1902.01"`. */
     val version: String,
-    /** True when the manifest these rows came from was served out of the on-disk cache. */
     val fromCache: Boolean,
-    /** Epoch millis of the fetch (or re-validation) that produced the manifest; `0` if unknown. */
+    /** `0` if unknown. */
     val fetchedAt: Long,
 ) {
-
-    /**
-     * Rows with something installed: the base pack, or any of its variants. These are the
-     * languages the user already has, and the ones whose variant radio list is worth showing.
-     */
+    /** Rows with the base pack or any variant installed. */
     val installedRows: List<Row> get() = rows.filter { it.hasAnythingInstalled }
 
-    /**
-     * Rows with something still to download — the catalogue minus what is installed. A row
-     * appears here when its base pack is not installed *or* when any of its variants is not,
-     * which is why a row can legitimately be in both lists: German installed, Swiss German not.
-     */
+    /** Rows with anything not installed; a row can be in both lists (German yes, Swiss German no). */
     val availableRows: List<Row> get() = rows.filter { it.hasAnythingAvailable }
 
-    /** Every entry, base and variant, in row order. */
     val items: List<Item> get() = rows.flatMap { listOf(it.base) + it.variants }
 
-    /** The item for an exact locale identifier, or `null`. */
     fun item(locale: String): Item? = items.firstOrNull { it.entry.locale == locale }
 
-    /**
-     * One language: its own dictionary, and the regional dictionaries that can take its place.
-     */
     data class Row(val base: Item, val variants: List<Item> = emptyList()) {
         val locale: String get() = base.entry.locale
         val displayName: String get() = base.displayName
@@ -80,13 +42,10 @@ data class PackCatalog(
         val hasAnythingAvailable: Boolean
             get() = base.state !is PackState.Installed || variants.any { it.state !is PackState.Installed }
 
-        /** The variants of this language that are not installed yet. */
         val availableVariants: List<Item> get() = variants.filter { it.state !is PackState.Installed }
     }
 
-    /** One catalogue entry and what this phone currently makes of it. */
     data class Item(val entry: PackEntry, val state: PackState) {
-        /** The name the catalogue gives this pack, e.g. `"German (Switzerland)"`. */
         val displayName: String get() = entry.name
         val locale: String get() = entry.locale
         val isVariant: Boolean get() = entry.isVariant
@@ -96,13 +55,9 @@ data class PackCatalog(
     companion object {
 
         /**
-         * Merge [manifest]'s packs with [installed] and [downloads].
-         *
-         * @param downloads live state from [PackDownloadManager], keyed by locale. It wins over
-         *   [PackState.Available] — a pack that is downloading or that just failed says so — but
-         *   never over [PackState.Installed], so a stale failure cannot hide a pack the user has.
-         * @return `null` when the manifest carries no `packs` object at all, which is a manifest
-         *   that publishes no dictionaries rather than an error.
+         * @param downloads live state keyed by locale; beats [PackState.Available] but never
+         *   [PackState.Installed], so a stale failure cannot hide an installed pack
+         * @return `null` when the manifest has no `packs` object (publishes no dictionaries)
          */
         fun from(
             manifest: DistributionManifest,
@@ -114,7 +69,6 @@ data class PackCatalog(
                 .copy(fromCache = manifest.fromCache, fetchedAt = manifest.fetchedAt)
         }
 
-        /** [from] against a bare [Packs], for callers that already unwrapped the manifest. */
         fun from(
             packs: Packs,
             installed: InstalledPacks,
@@ -136,8 +90,7 @@ data class PackCatalog(
                             .orEmpty(),
                     )
                 }
-                // By display name, and by locale when two packs share a name, so the order is
-                // total and the list does not shuffle between two equal rows.
+                // Tie-break on locale so the order is total and rows do not shuffle.
                 .sortedWith(compareBy({ it.displayName }, { it.locale }))
 
             return PackCatalog(
@@ -148,10 +101,7 @@ data class PackCatalog(
             )
         }
 
-        /**
-         * What one entry is, right now. Installed beats downloading beats failed beats available:
-         * an installed pack is a fact on disk, and everything else is a claim about the future.
-         */
+        /** Installed beats downloading/failed beats available. */
         private fun stateOf(
             entry: PackEntry,
             installed: InstalledPacks,
@@ -165,86 +115,56 @@ data class PackCatalog(
     }
 }
 
-/**
- * What the Language packs screen shows for one catalogue entry.
- *
- * Deliberately a small closed set. "Installed" has four shapes because the user can act on them
- * differently — a shipped dictionary cannot be deleted, a downloaded one can, and a variant is
- * either the one loading for its language or one of the alternatives to it — but everything else
- * is a single fact plus, at most, the reason.
- */
+/** What the Language packs screen shows for one entry; installed has four shapes because each allows different actions. */
 sealed class PackState {
-
-    /** On this phone. [origin] decides what the row offers. */
     data class Installed(val origin: Origin) : PackState()
 
-    /** In the catalogue, not on this phone. [sizeBytes] is what downloading it would cost. */
     data class Available(val sizeBytes: Long) : PackState()
 
-    /**
-     * Downloading now. A pack waiting behind another download is reported as
-     * `Downloading(0, size)` — it is queued, which the progress bar renders as 0 %.
-     */
+    /** A pack queued behind another download is `Downloading(0, size)`. */
     data class Downloading(val bytes: Long, val totalBytes: Long) : PackState() {
-        /** `0f..1f`, or `0f` while the total is unknown. */
+        /** `0f` while the total is unknown. */
         val progress: Float
             get() = if (totalBytes > 0L) (bytes.toFloat() / totalBytes).coerceIn(0f, 1f) else 0f
     }
 
     /**
-     * The last attempt failed and nothing was installed. [error] is the
-     * [dev.bbkb.ime.core.distribution.DistributionException] the transport raised or the
-     * [PackInstallException] the installer raised, so the row can say *why* without parsing a
-     * message string. Clearing it is the user's next action, not a timer's.
+     * Nothing was installed. [error] is a [dev.bbkb.ime.core.distribution.DistributionException] or
+     * [PackInstallException]; it clears on the user's next action, not a timer.
      */
     data class Failed(val error: Throwable) : PackState()
 
-    /** How an installed pack got here, which is what decides whether it can be removed. */
+    /** Decides whether an installed pack can be removed. */
     enum class Origin {
-        /** In the APK. Cannot be deleted. */
+        /** In the APK; cannot be deleted. */
         SHIPPED,
 
-        /** Downloaded or side-loaded into `nuance/<locale>/`. */
         CUSTOM,
 
-        /** A regional variant, and the one currently loading for its base language. */
+        /** The variant currently loading for its base language. */
         VARIANT_ACTIVE,
 
-        /** A regional variant that is installed but not the one loading. */
         VARIANT_INACTIVE,
     }
 }
 
 /**
- * A snapshot of the packs on this phone, in the three shapes the app stores them in.
+ * A snapshot of installed packs, a value type so every "is this installed" decision is pure; only
+ * [read] touches disk.
  *
- * A value type on purpose: every decision about "is this installed" is then a pure function of
- * this plus the catalogue, and a test can describe any phone it likes in three lines. [read] is
- * the only part that touches disk.
- *
- * @property shipped locales whose dictionary is in the APK (`preinstalled` in the shipped
- *   registry). These can never be deleted and are never offered for download.
- * @property custom locales with a dictionary under `no_backup/nuance/<locale>/`. Note that an
- *   active variant also puts a file in its *base* language's directory, so a base locale can be
- *   in both [shipped] and [custom]; [shipped] wins when reporting what a row is.
- * @property variants variant groups keyed by base locale — which variants are installed for a
- *   language and which of them is loading.
+ * @property shipped in the APK; never deletable or offered for download
+ * @property custom under `no_backup/nuance/<locale>/`; [read] excludes shipped ones (an active
+ *   variant also writes into its base's directory)
+ * @property variants variant groups keyed by base locale
  */
 data class InstalledPacks(
     val shipped: Set<String> = emptySet(),
     val custom: Set<String> = emptySet(),
     val variants: Map<String, Group> = emptyMap(),
 ) {
-
-    /** One language's variant group: the installed variant tags, and the active one. */
     data class Group(val activeTag: String, val tags: Set<String>)
 
-    /**
-     * The [PackState.Installed] for [entry], or `null` when this phone does not have it.
-     *
-     * A variant is installed when its own tag appears in its group; the tag *is* its locale
-     * identifier (`de_CH`), which is how [LanguageVariantStore] names it.
-     */
+    /** `null` when not installed. A variant's tag is its locale id (`de_CH`), as [LanguageVariantStore] names it. */
     fun stateOf(entry: PackEntry): PackState.Installed? {
         val group = entry.group
         if (group != null) {
@@ -265,19 +185,13 @@ data class InstalledPacks(
         }
     }
 
-    /** Whether the dictionary for this exact locale identifier is on the phone. */
     fun isInstalled(locale: String): Boolean = locale in shipped || locale in custom
 
     companion object {
 
         /**
-         * Read the three sources off disk. Blocking I/O — call it from a worker.
-         *
-         * `shipped` is asked of [LanguagePackManager] rather than read out of the shipped
-         * manifest, because `LanguagePackInfo` is package-private to the shim: the registry's
-         * own answer to "is this preinstalled" comes through `LanguagePackInstaller`. Only the
-         * locales the catalogue actually offers are asked about, so this is at most ~110 cached
-         * lookups rather than a walk of the whole table.
+         * Blocking I/O. `shipped` comes from [LanguagePackManager] because `LanguagePackInfo` is
+         * package-private to the shim; only the catalogue's locales are asked about.
          */
         fun read(context: Context, catalogueLocales: Collection<String>): InstalledPacks {
             val manager = LanguagePackManager.getInstance(context)

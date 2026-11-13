@@ -16,11 +16,9 @@ import java.io.File
 import java.security.MessageDigest
 
 /**
- * The compact asset (generateEmojibaseCompact in app/build.gradle) must load to exactly what the
- * old Gson parse of emojibase's data.json loaded: same entries in the same order with the same
- * fields, the same skin variants, and so the same categories and indexes. The reference is the
- * JSON in node_modules, read with org.json into what that Gson parse produced (see [json]); the
- * test is skipped when npm has not run.
+ * The compact asset (generateEmojibaseCompact in app/build.gradle) must load to exactly what a Gson parse of
+ * emojibase's data.json gives: same entries, order, fields and skin variants. The reference is read from
+ * node_modules (see [json]); skipped when npm has not run.
  */
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [34])
@@ -40,12 +38,9 @@ class EmojibaseCompactAssetTest {
     fun needsTheJson() = assumeTrue("no ${dataJson.absolutePath} (npm install not run)", dataJson.isFile)
 
     /**
-     * The pre-compact-asset load, reproduced: Gson reflected into EmojiData through @SerializedName
-     * names (emoji, hexcode, label, tags, shortcodes, group, subgroup, version, order, type,
-     * gender, tone, skins). It allocated EmojiData without running a constructor, so a missing
-     * non-null number (group, subgroup and order on the component entries; version) became 0, a
-     * missing nullable field null, and unknown keys (text, emoticon) were ignored. A skin's tone
-     * is left null: it is an Int or an array, nothing reads it, and the asset does not carry it.
+     * The Gson reference parse, reproduced: Gson allocated EmojiData without a constructor, so a missing non-null
+     * number became 0, a missing nullable field null, unknown keys were ignored. Skin tone is left null (Int or
+     * array, unread, not in the asset).
      */
     private fun json(): List<EmojiData> {
         val array = JSONArray(dataJson.readText(Charsets.UTF_8))

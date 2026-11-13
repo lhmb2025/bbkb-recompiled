@@ -12,15 +12,9 @@ import dev.bbkb.ime.core.settings.util.SettingsManager;
 /**
  * Turns what the keyboard knows about a language into the tag a speech recogniser accepts.
  *
- * <p>Verified against Google's recognition service on the KEY2 (2026-09-28, its own
- * {@code IntentParsingUtil} log): an underscore form such as {@code en_US}, {@code de_CH} or
- * {@code zh_CN_pinyin} is "invalid" and is silently replaced by the phone's default language, with
- * no error to the client; a bare language code works, with {@code iw} and {@code in} mapped to
- * {@code he} and {@code id} by the service; a hyphenated BCP-47 tag is used as given. So every
- * region-bearing keyboard dictated in the wrong language until this normaliser existed.
- *
- * <p>Pure functions over strings so the rules can be tested without Android ({@link #likelyRegion}
- * excepted: it asks Android's locale data).
+ * <p>Google's recognition service silently replaces an underscore form ({@code en_US},
+ * {@code zh_CN_pinyin}) with the phone's default language; bare codes and hyphenated BCP-47 tags
+ * work. Pure string functions, JVM-testable ({@link #likelyRegion} excepted).
  */
 public final class VoiceLanguageTags {
 
@@ -38,10 +32,8 @@ public final class VoiceLanguageTags {
     }
 
     /**
-     * Codes a recogniser may use for a language the keyboard spells another way: Google lists
-     * Mandarin and Cantonese as {@code cmn-Hans-CN} and {@code yue-Hant-HK} where the keyboard
-     * says {@code zh}, and some services say {@code no} and {@code fil} for {@code nb} and
-     * {@code tl}. Used only to compare tags ({@link #bestMatch}); nothing is rewritten.
+     * Recogniser codes for languages the keyboard spells another way (Google's {@code cmn-Hans-CN},
+     * {@code yue-Hant-HK} for {@code zh}). Used only to compare tags in {@link #bestMatch}.
      */
     private static final Map<String, String> SAME_LANGUAGE = new HashMap<>();
 
@@ -60,8 +52,6 @@ public final class VoiceLanguageTags {
     }
 
     /**
-     * The tag to send for a dictation session.
-     *
      * @param useKeyboardLanguage the "Use keyboard language" setting
      * @param keyboardLocale the current subtype's locale string ({@code en_US}, {@code zh_TW_stroke})
      * @param manualTag the "Voice input language" setting (already a hyphenated tag)
@@ -80,9 +70,8 @@ public final class VoiceLanguageTags {
 
     /**
      * {@code en_US} to {@code en-US}, {@code zh_CN_pinyin} to {@code zh-CN}, {@code iw} to
-     * {@code he}, {@code es_419} to {@code es-419}. A tag that already carries hyphens (one the
-     * voice-language picker stored, possibly with a script such as {@code cmn-Hans-CN}) is passed
-     * through as it is. Returns null for nothing usable: empty, {@code zz}, or no language part.
+     * {@code he}, {@code es_419} to {@code es-419}. Hyphenated tags pass through as they are. Null
+     * for nothing usable: empty, {@code zz}, or no language part.
      */
     public static String normalise(String raw) {
         if (raw == null) {
@@ -108,8 +97,7 @@ public final class VoiceLanguageTags {
         if (alias != null) {
             language = alias;
         }
-        // The second part is a region only when it looks like one; a layout name ("pinyin",
-        // "stroke", "cangjie", "zhuyin") or anything else is not part of the language tag.
+        // The second part is a region only when it looks like one, not a layout name ("pinyin").
         String region = null;
         if (parts.length > 1) {
             final String candidate = parts[1];
@@ -142,15 +130,10 @@ public final class VoiceLanguageTags {
         return tags;
     }
 
-    /** "English (United States)" for {@code en-US}; the tag itself when the platform has no name. */
     /**
      * The tag in {@code candidates} to use for {@code wanted}, or null when none is in the same
-     * language. In order: {@code wanted} itself; the same language in the same region; the same
-     * language in {@code likelyRegion} (what a bare "fr" most likely means); the same language
-     * anywhere. Comparison ignores case, and the returned tag is the candidate's own spelling.
-     *
-     * <p>Recognisers list their languages with regions ("fr-FR", "fr-CA") while a keyboard
-     * language may be bare ("fr"), and one may carry a script the other lacks ("sr-Latn-RS").
+     * language. In order: exact (ignoring case), same region, {@code likelyRegion}, any region.
+     * Returns the candidate's own spelling.
      *
      * @param likelyRegion a two-letter or three-digit region, or null for none
      */
@@ -190,8 +173,7 @@ public final class VoiceLanguageTags {
         if (inLikelyRegion != null) {
             return inLikelyRegion;
         }
-        // Chinese is the exception to "any region will do": the mainland, Taiwan and Hong Kong
-        // entries are different scripts and, for Hong Kong, a different spoken language.
+        // Not for Chinese: mainland, Taiwan and Hong Kong differ in script (and, for HK, language).
         return "zh".equals(language) ? null : sameLanguage;
     }
 
@@ -212,7 +194,7 @@ public final class VoiceLanguageTags {
         }
     }
 
-    /** The language part of a hyphenated tag, lower-cased and with old codes mapped: "fr" for "fr-CA". */
+    /** The language part of a hyphenated tag, lower-cased, old and same-language codes mapped. */
     private static String languageOf(String tag) {
         final int hyphen = tag.indexOf('-');
         final String language = (hyphen < 0 ? tag : tag.substring(0, hyphen)).toLowerCase(Locale.ROOT);
@@ -233,6 +215,7 @@ public final class VoiceLanguageTags {
         return null;
     }
 
+    /** "English (United States)" for {@code en-US}; the tag itself when the platform has no name. */
     public static String displayName(String tag) {
         if (tag == null || tag.isEmpty()) {
             return "";

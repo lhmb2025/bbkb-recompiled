@@ -2,16 +2,7 @@ package dev.bbkb.ime.personaldictionary.model
 
 import dev.bbkb.ime.personaldictionary.sync.AudSyncer
 
-/**
- * Abstract base class for dictionary word entries.
- *
- * Defines common properties (word, locale, auto-caps) and AUD synchronization state.
- * Extended by [PersonalWord] and [WordSubstitution].
- *
- * @property word The dictionary word text
- * @property locale The locale identifier for this word
- * @property isAutoCapsEnabled Whether auto-capitalization applies to this word
- */
+/** Base of [PersonalWord] and [WordSubstitution]: word, locale, auto-caps and AUD sync state. */
 abstract class DictionaryWord(
     var word: String,
     val locale: String,

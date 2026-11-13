@@ -17,50 +17,11 @@ import java.nio.charset.StandardCharsets
 import kotlin.coroutines.coroutineContext
 
 /**
- * Fetches the distribution manifest, with an on-disk cache in front of it.
- *
- * ### What `fetch` decides, in order
- *
- * 1. `force == false` and the cache is younger than [cacheMaxAgeMs] → **serve the cache**, no
- *    network call at all. This is what makes the once-a-day background check and an on-demand
- *    "check now" cheap to call from anywhere.
- * 2. No usable network → **serve the cache** at any age, or fail with [OfflineException] when
- *    there is nothing cached.
- * 3. Otherwise **go to the network**, sending `If-None-Match` when the last response carried an
- *    `ETag`:
- *     - `200` → parse, write the cache, return it as **fresh**.
- *     - `304` → the cached bytes are still current; return them, with the freshness window
- *       restarted.
- *     - anything else → fail with [HttpStatusException]. A cached manifest is *not* substituted
- *       for a server error: the caller asked to go to the network and deserves to hear that it
- *       did not work.
- *
- * ### Provenance is never hidden
- *
- * Every success carries [DistributionManifest.fromCache] and [DistributionManifest.fetchedAt].
- * `fromCache == true` means "these bytes came off disk" — including the `304` case, where the
- * content is known-current but was not re-transferred; `fetchedAt` is then the moment of that
- * re-validation, not the moment the bytes were first downloaded. A manifest is never returned
- * as fresh unless it was actually just parsed off the wire.
- *
- * ### The cache is keyed by URL
- *
- * The cache records which URL produced it. Flipping the debug
- * [DistributionConfig.PREF_MANIFEST_URL] override therefore invalidates it, so a local test
- * manifest can never be served as though it came from the production URL, or the reverse.
- *
- * ### Threading
- *
- * [fetch] is a suspend function that does all of its network and disk work on
- * [Dispatchers.IO]. Cancellation propagates as [CancellationException] and is never reported as
- * a `Result.failure`. A parse failure never overwrites a good cache.
- *
- * Instances are cheap and hold no state beyond their configuration; the state lives in
- * `files/distribution/`. Writes go through [AtomicFile] (a synced `.new` file renamed into
- * place), so a reader never sees half a file. Two concurrent `fetch` calls both hit the network
- * (the caller owns any de-duplication), and they also share each file's one `.new` name: two
- * writes that overlap can leave a file that does not parse, which reads as no cache and only
- * costs a re-fetch.
+ * Fetches the manifest behind an on-disk cache keyed by URL. Order: a fresh cache (unless
+ * `force`) is served with no network; offline serves the cache at any age or [OfflineException];
+ * otherwise a conditional request: `200` parses and caches, `304` serves the cache with the window
+ * restarted, anything else fails (no cache substitution for a server error). `fromCache` is true for
+ * `304` too. A parse failure never overwrites a good cache; concurrent fetches are not de-duplicated.
  */
 class ManifestSource @JvmOverloads constructor(
     private val context: Context,
@@ -71,17 +32,7 @@ class ManifestSource @JvmOverloads constructor(
     private val connectTimeoutMs: Int = DistributionConfig.TIMEOUT_MS,
     private val readTimeoutMs: Int = DistributionConfig.TIMEOUT_MS,
 ) {
-
-    /**
-     * The manifest, from the cache or the network per the rules above.
-     *
-     * @param force skip the freshness shortcut and always ask the server (an `ETag` may still
-     *   make that a cheap `304`). Use it for a user-initiated "check for updates"; leave it
-     *   `false` for the daily background check.
-     * @return on failure a [DistributionException]: [OfflineException], [HttpStatusException],
-     *   [ManifestFormatException], [UnsupportedSchemaException], [InsecureUrlException],
-     *   [TooManyRedirectsException] or [TransportException].
-     */
+    /** @param force skip the freshness shortcut (user "check now"); an ETag may still make it a `304` */
     suspend fun fetch(force: Boolean): Result<DistributionManifest> = withContext(Dispatchers.IO) {
         val url = manifestUrlProvider()
         try {
@@ -145,14 +96,12 @@ class ManifestSource @JvmOverloads constructor(
         if (status == HTTP_NOT_MODIFIED) {
             val cached = cachedManifest()
             if (cached != null) {
-                // Still current: restart the freshness window but keep the ETag, and be honest
-                // that the bytes came off disk.
+                // Restart the freshness window, keep the ETag.
                 val now = clock()
                 writeMeta(Meta(url = url, etag = etag, fetchedAt = now))
                 return Result.success(cached.withProvenance(true, now))
             }
-            // The server says "unchanged" but our cache is gone or corrupt, so the ETag we sent
-            // was stale state. Drop it and ask once more for the whole thing.
+                // "Unchanged" but the cache is gone: the ETag was stale, so refetch in full.
             clearCache()
             return request(url, etag = null)
         }
@@ -169,30 +118,19 @@ class ManifestSource @JvmOverloads constructor(
         return Result.success(manifest.withProvenance(fromCache = false, fetchedAt = now))
     }
 
-    // ── Cache ─────────────────────────────────────────────────────────────────────────────────
-
-    /**
-     * The cached manifest without touching the network, or `null` when there is none, it does
-     * not parse, or it belongs to a different manifest URL. Its
-     * [DistributionManifest.fromCache] is `true` and its [DistributionManifest.fetchedAt] is
-     * when it was fetched.
-     *
-     * Blocking disk I/O; safe to call from any thread but not from the main one.
-     */
+    /** The cache for the current URL without network, or `null`; blocking disk I/O. */
     fun cached(): DistributionManifest? {
         val meta = readMeta(manifestUrlProvider()) ?: return null
         return cachedManifest()?.withProvenance(true, meta.fetchedAt)
     }
 
-    /** Whether [cached] would return something younger than [cacheMaxAgeMs]. */
     fun hasFreshCache(): Boolean {
         val meta = readMeta(manifestUrlProvider()) ?: return false
         return clock() - meta.fetchedAt < cacheMaxAgeMs && cacheFile().isFile
     }
 
-    /** Delete the cached manifest and its metadata. */
     fun clearCache() {
-        // AtomicFile.delete also removes a `.new` a crash during a write left behind.
+        // Also removes a `.new` left by a crash mid-write.
         AtomicFile(cacheFile()).delete()
         AtomicFile(metaFile()).delete()
     }
@@ -201,39 +139,26 @@ class ManifestSource @JvmOverloads constructor(
 
     private fun metaFile(): File = DistributionConfig.manifestMetaFile(context)
 
-    /** The parsed cache, or `null` if it is missing or no longer readable by this build. */
     private fun cachedManifest(): DistributionManifest? {
         val file = cacheFile()
         if (!file.isFile) return null
         return try {
             DistributionManifestParser.parse(file.readText(StandardCharsets.UTF_8))
         } catch (unreadable: DistributionException) {
-            // A cache this build cannot read is worthless — and if it is an
-            // UnsupportedSchemaException, keeping it would make every offline call fail
-            // forever. Drop it and behave as though there were no cache.
+            // Unreadable here; keeping an unsupported-schema cache would fail every offline call.
             null
         } catch (unreadable: IOException) {
             null
         }
     }
 
-    /**
-     * Replaces the cache through [AtomicFile]: the body goes to `manifest.json.new`, is synced to
-     * disk and is then renamed over `manifest.json`, so a reader sees the whole old manifest or
-     * the whole new one, even after a crash or a power cut.
-     */
     private fun writeCache(body: String) {
         val file = cacheFile()
         file.parentFile?.mkdirs()
         writeAtomically(file, body)
     }
 
-    /**
-     * Writes [text] over [file] through [AtomicFile]. A file we could not write is not a failed
-     * fetch: the caller still gets the manifest, it just will not survive the process (or, for
-     * the metadata, costs a re-fetch), so a failure is swallowed. A `.new` a crash left behind
-     * is deleted by the next write or by [clearCache].
-     */
+    /** Write failures are swallowed: the manifest is still returned, it just costs a re-fetch later. */
     private fun writeAtomically(file: File, text: String) {
         val bytes = text.toByteArray(StandardCharsets.UTF_8)
         val atomic = AtomicFile(file)
@@ -247,10 +172,8 @@ class ManifestSource @JvmOverloads constructor(
         }
     }
 
-    /** What we remember about the last successful fetch. */
     private data class Meta(val url: String, val etag: String?, val fetchedAt: Long)
 
-    /** `null` unless the stored metadata belongs to [url] and names a real cache file. */
     private fun readMeta(url: String): Meta? {
         val file = metaFile()
         if (!file.isFile || !cacheFile().isFile) return null
@@ -274,7 +197,6 @@ class ManifestSource @JvmOverloads constructor(
         }
     }
 
-    /** A string, number or boolean as text; `null` for JSON null, an object, an array or absent. */
     private fun primitiveText(value: Any?): String? = when (value) {
         is String -> value
         is Number, is Boolean -> value.toString()
@@ -292,8 +214,6 @@ class ManifestSource @JvmOverloads constructor(
                 w.endObject()
             }
         }.toString()
-        // Through AtomicFile like the cache, so a crash mid-write cannot leave half a JSON file;
-        // losing the metadata costs a re-fetch, nothing more.
         val file = metaFile()
         file.parentFile?.mkdirs()
         writeAtomically(file, text)

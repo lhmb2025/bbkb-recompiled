@@ -59,7 +59,7 @@ public class MoreKeysKeyboardView extends KeyboardView implements MoreKeysPanel 
         this.mKeyDetector = new MoreKeysDetector(getResources().getDimension(R.dimen.config_more_keys_keyboard_slide_allowance));
     }
 
-    @Override // dev.bbkb.ime.keyboard.KeyboardView, android.view.View
+    @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         Keyboard keyboard = getKeyboard();
         if (keyboard != null) {
@@ -69,7 +69,7 @@ public class MoreKeysKeyboardView extends KeyboardView implements MoreKeysPanel 
         }
     }
 
-    @Override // dev.bbkb.ime.keyboard.KeyboardView
+    @Override
     protected void drawKeyContent(Key key, Canvas canvas, Paint paint, KeyDrawParams formatter, boolean isPreview) {
         if (key.isSpacerKey() && (key instanceof MoreKeysKeyboard.MoreKeysDivider) && this.mDivider != null) {
             int iM6219ae = key.getDrawWidth();
@@ -79,16 +79,12 @@ public class MoreKeysKeyboardView extends KeyboardView implements MoreKeysPanel 
             drawDrawable(canvas, this.mDivider, (iM6219ae - iMin) / 2, (iM6215aa - intrinsicHeight) / 2, iMin, intrinsicHeight);
             return;
         }
-        // Propagate rather than forcing false: the override shadowed its own parameter. Both are
-        // false at every call site today (KeyboardView.onDrawKeyboard passes false), so this is
-        // behaviour-identical and correct if the preview flag is ever plumbed through.
         super.drawKeyContent(key, canvas, paint, formatter, isPreview);
     }
 
-    @Override // dev.bbkb.ime.keyboard.KeyboardView
+    @Override
     public void setKeyboard(Keyboard keyboard) {
-        // Popups are cached and reused (MoreKeysKeyboardCache): a key left pressed when the last
-        // showing was dismissed mid-drag must not come back highlighted.
+        // Popups are cached and reused: a key left pressed by a mid-drag dismiss must not stay highlighted.
         if (keyboard != null) {
             for (Key key : keyboard.getKeys()) {
                 key.onReleased();
@@ -99,7 +95,13 @@ public class MoreKeysKeyboardView extends KeyboardView implements MoreKeysPanel 
         this.mKeyDetector.setKeyboard(keyboard, -getPaddingLeft(), (-getPaddingTop()) + getVerticalCorrection());
     }
 
-    @Override // dev.bbkb.ime.keyboard.internal.MoreKeysPanel
+    /**
+     * @param aVar the controller told when the panel shows and closes
+     * @param i x to center the panel on (the key's center or the touch point)
+     * @param i2 y the panel's bottom sits at in {@code view}
+     * @param interfaceC0976f receives the typed key
+     */
+    @Override
     public void showMoreKeysPanel(View view, MoreKeysPanel.Controller aVar, int i, int i2, KeyboardActionListenerInterface interfaceC0976f) {
         this.mController = aVar;
         this.mListener = interfaceC0976f;
@@ -120,13 +122,25 @@ public class MoreKeysKeyboardView extends KeyboardView implements MoreKeysPanel 
         return ((MoreKeysKeyboard) getKeyboard()).getDefaultCoordX();
     }
 
-    @Override // dev.bbkb.ime.keyboard.internal.MoreKeysPanel
+    /**
+     * @param i x
+     * @param i2 y
+     * @param i3 pointer id
+     * @param j event time
+     */
+    @Override
     public void onDownEvent(int i, int i2, int i3, long j) {
         this.mActivePointerId = i3;
         this.mCurrentKey = detectKey(i, i2);
     }
 
-    @Override // dev.bbkb.ime.keyboard.internal.MoreKeysPanel
+    /**
+     * @param i x
+     * @param i2 y
+     * @param i3 pointer id
+     * @param j event time
+     */
+    @Override
     public void onMoveEvent(int i, int i2, int i3, long j) {
         if (this.mActivePointerId != i3) {
             return;
@@ -138,7 +152,13 @@ public class MoreKeysKeyboardView extends KeyboardView implements MoreKeysPanel 
         }
     }
 
-    @Override // dev.bbkb.ime.keyboard.internal.MoreKeysPanel
+    /**
+     * @param i x
+     * @param i2 y
+     * @param i3 pointer id
+     * @param j event time
+     */
+    @Override
     public void onUpEvent(int i, int i2, int i3, long j) {
         if (this.mActivePointerId != i3) {
             return;
@@ -152,6 +172,11 @@ public class MoreKeysKeyboardView extends KeyboardView implements MoreKeysPanel 
         }
     }
 
+    /**
+     * @param i x
+     * @param i2 y
+     * @param j event time
+     */
     protected void onKeyInput(Key key, int i, int i2, long j) {
         int iM6232c = key.getCode();
         if (iM6232c == -4) {
@@ -181,9 +206,6 @@ public class MoreKeysKeyboardView extends KeyboardView implements MoreKeysPanel 
         return keyMo6590a;
     }
 
-    // Named for what they do, matching PointerTracker's vocabulary. The decompiled names
-    // (onDownKey / onUpKey) were the exact inverse of their bodies, and every call site was
-    // inverted to compensate.
     private void setReleasedKeyGraphics(Key key) {
         key.onReleased();
         invalidateKey(key);
@@ -194,24 +216,26 @@ public class MoreKeysKeyboardView extends KeyboardView implements MoreKeysPanel 
         invalidateKey(key);
     }
 
-    @Override // dev.bbkb.ime.keyboard.internal.MoreKeysPanel
+    @Override
     public void dismissMoreKeysPanel() {
         if (isShowingInParent()) {
             this.mController.onCancelMoreKeysPanel();
         }
     }
 
-    @Override // dev.bbkb.ime.keyboard.internal.MoreKeysPanel
+    /** @param i x in the parent view */
+    @Override
     public int translateX(int i) {
         return i - this.mOriginX;
     }
 
-    @Override // dev.bbkb.ime.keyboard.internal.MoreKeysPanel
+    /** @param i y in the parent view */
+    @Override
     public int translateY(int i) {
         return i - this.mOriginY;
     }
 
-    @Override // android.view.View
+    @Override
     @SuppressLint({"ClickableViewAccessibility"})
     public boolean onTouchEvent(MotionEvent motionEvent) {
         int actionMasked = motionEvent.getActionMasked();
@@ -240,13 +264,13 @@ public class MoreKeysKeyboardView extends KeyboardView implements MoreKeysPanel 
         return (View) getParent();
     }
 
-    @Override // dev.bbkb.ime.keyboard.internal.MoreKeysPanel
+    @Override
     public void showInParent(ViewGroup viewGroup) {
         removeFromParent();
         viewGroup.addView(getContainerView());
     }
 
-    @Override // dev.bbkb.ime.keyboard.internal.MoreKeysPanel
+    @Override
     public void removeFromParent() {
         View containerView = getContainerView();
         ViewGroup viewGroup = (ViewGroup) containerView.getParent();
@@ -255,7 +279,7 @@ public class MoreKeysKeyboardView extends KeyboardView implements MoreKeysPanel 
         }
     }
 
-    @Override // dev.bbkb.ime.keyboard.internal.MoreKeysPanel
+    @Override
     public boolean isShowingInParent() {
         return getContainerView().getParent() != null;
     }

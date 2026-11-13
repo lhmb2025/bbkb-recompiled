@@ -23,14 +23,9 @@ import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
 
 /**
- * The DEVELOPER category on [CkbGesturesScreen] is sensor-map instrumentation for whoever is
- * working on the gesture decoder, not settings, so it is hidden behind
- * [PREF_SHOW_CKB_DEVELOPER_SETTINGS] — the same treatment the unfinished device profile builder
- * gets in [DeviceProfileBuilderScreenTest].
- *
- * Nothing is deleted: switching the flag on from the debug screen brings the whole category back,
- * which is the second case here. The screen is a `Column` with `verticalScroll`, so every row is
- * composed whether or not it is on screen and `assertExists` is enough.
+ * Pins that [CkbGesturesScreen]'s DEVELOPER category (sensor-map instrumentation) shows only with
+ * [PREF_SHOW_CKB_DEVELOPER_SETTINGS] on, and that nothing else is gated. The screen is a scrolling
+ * `Column`, so every row is composed and `assertExists` is enough.
  */
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [34], qualifiers = "w411dp-h891dp")
@@ -94,11 +89,7 @@ class CkbGesturesScreenTest {
         composeRule.onNodeWithText("Export sensor map").assertExists()
     }
 
-    /**
-     * The gate is meant to take the instrumentation away and nothing else. The gesture slots and
-     * the gesture-timing slider are ordinary settings — someone whose gestures fire while typing
-     * comes here for that slider — so they render on a fresh install, with the flag off.
-     */
+    /** The gate hides only the instrumentation: gesture slots and the timing slider render with the flag off. */
     @Test
     fun theSlotsAndTheTimingSliderAreNotDeveloperOnly() {
         render()

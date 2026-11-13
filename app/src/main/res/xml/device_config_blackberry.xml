@@ -1,21 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!--
-    Device Configuration: BlackBerry PKB Devices
-    Schema v2.1
-
-    Matches every BlackBerry-branded device (KEYone, KEY2, ...) and is auto-selected when
-    Build.BRAND == "blackberry" and no more specific config matches first. Note that on a KEY2 a
-    more specific one always does: preloaded configs are offered in display-name order and the
-    first match wins, so "BlackBerry KEY2" is selected before this file is ever reached.
-
-    This config carries no input mappings. It used to hold <layout-alt-overrides> pointing at
-    device_alt_mappings_{azerty,qwertz}_overrides.xml; those were retired on 2026-09-16 because
-    BlackBerry firmware already ships one KeyCharacterMap per keypad layout
-    (/vendor/usr/keychars/stmpe{,_azerty,_qwertz}.kcm on the KEY2, selected by a matching .idc),
-    so the app's own tables could only displace a correct character with a hand-maintained one —
-    and the AZERTY table did exactly that, breaking Alt+P, Alt+V and Alt+Y. Alt characters for
-    these devices come from the system KCM, via AuxCharacterResolver's tier 3. See CHANGELOG.md.
--->
+<!-- Any BlackBerry-branded device; no input mappings, Alt characters come from the firmware KCM -->
 
 <device-input-config version="2.1" name="Other BlackBerry keyboard phones">
 
@@ -23,10 +7,7 @@
         <match>
             <brand exact="blackberry"/>
         </match>
-        <!-- Schema v2.5: BlackBerry firmware delivers every key the keyboard handles (Sym, the
-             Speed Key, the mic key), so the BBKB helper (the accessibility key interceptor) is
-             never needed here. "off" switches its component off at runtime, which also removes
-             it from Settings > Accessibility on this phone, and greys out its settings row. -->
+        <!-- Firmware delivers every key, so the helper is disabled (also hides it from Accessibility settings) -->
         <accessibility-helper>off</accessibility-helper>
     </device>
 

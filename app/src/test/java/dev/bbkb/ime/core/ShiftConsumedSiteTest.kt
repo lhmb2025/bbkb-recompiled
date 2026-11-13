@@ -39,16 +39,12 @@ import org.robolectric.util.ReflectionHelpers
 import java.util.Locale
 
 /**
- * Phase 1h: the three reads Phase 1f had to leave on the tracker, now asked through
- * `ModifierState`, checked in the one state that kept them there: a physical Shift that is still
- * held after Alt was pressed with it (CONSUMED). Each site is driven by a real
- * [PhysicalKeyboardStateTracker] fed real key presses, so the state is the one the KEY2 reaches.
- *
- * - `InputLogic.handleEnterKey`: Shift+Enter in a single-line field must NOT insert a newline
- *   while the Shift is consumed (it is not a pending manual shift), and must still insert one for
- *   a tapped (sticky) Shift.
- * - `BlackBerryIME.isShiftChording()`: a consumed Shift is not released, so no chord.
- * - `BlackBerryIME.isMetaKeyActive()`: its "Shift not released" term is true while consumed.
+ * Three `ModifierState` reads in the CONSUMED state (physical Shift still held after Alt was pressed
+ * with it), driven by a real [PhysicalKeyboardStateTracker] fed real key presses:
+ * - `InputLogic.handleEnterKey`: Shift+Enter in a single-line field inserts no newline while
+ *   consumed, but does for a tapped (sticky) Shift.
+ * - `isShiftChording()`: a consumed Shift is not released, so no chord.
+ * - `isMetaKeyActive()`: its "Shift not released" term is true while consumed.
  */
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [34], manifest = Config.NONE, instrumentedPackages = ["com.blackberry.nuanceshim"])
@@ -93,8 +89,6 @@ class ShiftConsumedSiteTest {
         h.close()
     }
 
-    // ── fixtures ────────────────────────────────────────────────────────────────
-
     private val SINGLE_LINE = InputType.TYPE_CLASS_TEXT
 
     private fun editorInfo(inputType: Int) = EditorInfo().apply {
@@ -124,9 +118,8 @@ class ShiftConsumedSiteTest {
     }
 
     /**
-     * One hardware Enter through the real `handleEnterKey` (private, so reflection, as the other
-     * InputLogic characterisation tests do). `shiftPressed` is what `processInputEvent` would have
-     * copied from the symbol-page provider; false here so the tracker read is what decides.
+     * One hardware Enter through the private `handleEnterKey` via reflection. `shiftPressed` (copied
+     * from the symbol-page provider in `processInputEvent`) is false so the tracker read decides.
      */
     private fun enter(inputType: Int): InputEventContext {
         `when`(h.ime.getCurrentInputEditorInfo()).thenReturn(editorInfo(inputType))
@@ -144,8 +137,6 @@ class ShiftConsumedSiteTest {
     private fun insertedNewline(): Boolean =
         h.editor.getText().contains('\n') ||
             h.editor.sentKeyEvents.any { it.keyCode == KeyEvent.KEYCODE_ENTER }
-
-    // ── InputLogic: Shift+Enter ─────────────────────────────────────────────────
 
     @Test
     fun enterInASingleLineFieldWithAConsumedShiftDoesNotInsertANewline() {
@@ -216,8 +207,6 @@ class ShiftConsumedSiteTest {
         verify(tracker, never()).getModifierState()
     }
 
-    // ── BlackBerryIME: isShiftChording / isMetaKeyActive ─────────────────────────
-
     private fun ime(shiftKeyReleasing: Boolean): BlackBerryIME {
         val ime = Mockito.mock(BlackBerryIME::class.java, Mockito.CALLS_REAL_METHODS)
         val switcher = Mockito.mock(KeyboardSwitcher::class.java)
@@ -251,9 +240,8 @@ class ShiftConsumedSiteTest {
     }
 
     /**
-     * `isMetaKeyActive()` = Shift not released AND shift-locked for the layout AND Alt not used
-     * with a key. The layout lock is driven by a keyboard meta mask that sets the 0x100 bit (the
-     * only way to have it while a Shift key is down), so the Shift-released term is what decides.
+     * `isMetaKeyActive()` = Shift not released AND layout shift-locked AND Alt not used with a key.
+     * The lock comes from a meta mask with the 0x100 bit, so the Shift-released term decides.
      */
     @Test
     fun aConsumedShiftCountsAsNotReleasedForMetaKeyActive() {

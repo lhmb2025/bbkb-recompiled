@@ -9,16 +9,10 @@ import java.util.concurrent.Callable
 import java.util.concurrent.ExecutionException
 
 /**
- * Moving the whole learned model in and out of the engine, with the safety the engine's own
- * import lacks: the data is read by [LearnedModelStream] first, so nothing the engine would
- * refuse reaches it; the current model is exported before the import and put back if the engine
- * refuses after all (its import resets the model before it checks the data); and the
- * spell-checker's engine, which maps the same model file, is re-attached afterwards so it sees
- * the new model rather than its own stale caches.
- *
- * Every entry point runs its engine work as one op on the loader thread ([EngineThreads.load])
- * and blocks its caller until that op is done, so it must not be called on the main thread
- * (debug builds throw). Called from the loader or the engine thread, it runs inline.
+ * Moves the whole learned model in and out of the engine. Data is validated by [LearnedModelStream]
+ * first; the current model is exported beforehand and restored if the engine refuses (its import
+ * resets the model before checking); the spell checker's engine, mapping the same file, is re-attached.
+ * Each entry point blocks on one loader-thread op: never call on main (debug throws).
  */
 object LearnedModelTransfer {
 
@@ -35,10 +29,7 @@ object LearnedModelTransfer {
         class Refused(val status: Int, val restored: Boolean) : Outcome()
     }
 
-    /**
-     * Runs [block] on the loader thread and waits for it: inline when the caller is already one of
-     * the engine's own threads (a nested call, or the probe), never on the main thread.
-     */
+    /** Runs [block] on the loader thread and waits; inline when already on an engine thread. */
     private fun <T> onLoader(block: () -> T): T {
         if (EngineThreads.onEngineCapableThread()) return block()
         EngineThreads.assertNotMain("LearnedModelTransfer")
@@ -83,7 +74,7 @@ object LearnedModelTransfer {
         return importParsed(model)
     }
 
-    /** [importModel] for a stream already read, such as one edited with [LearnedModelStream.withCounts]. */
+    /** [importModel] for a stream already read, such as one edited with [LearnedModelStream.withChanges]. */
     fun importParsed(model: LearnedModelStream.Model): Outcome = onLoader { importOnLoader(model) }
 
     private fun importOnLoader(model: LearnedModelStream.Model): Outcome {
@@ -99,11 +90,7 @@ object LearnedModelTransfer {
         return Outcome.Imported(model.words.size)
     }
 
-    /**
-     * The spell-checker's engine maps the same file; re-attach it so it reads the new model. Only
-     * when it is loaded (never creates it). Called from the import op on the loader, so it runs
-     * inline there, right after the import, as before.
-     */
+    /** Re-attaches the spell checker's engine (only if loaded) so it reads the new model; runs inline on the loader. */
     private fun reattachSecondary() {
         EngineOps.loadPeekSecondary<Unit>("LearnedModelTransfer.reattachSecondary") { secondary ->
             if (secondary.isDLMAttached && !secondary.loadDLMFromFile()) {

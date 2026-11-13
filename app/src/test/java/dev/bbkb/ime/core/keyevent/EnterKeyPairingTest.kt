@@ -29,13 +29,10 @@ import org.robolectric.annotation.Config
 import java.util.Locale
 
 /**
- * A hardware ENTER press reaches the app whole or not at all.
- *
- * On a physical keyboard the IME answers Enter in a multi-line field itself (it commits the
- * newline), consuming the key-down, while the key-up was still delegated by the Enter rule in
- * [KeyEventProcessor.shouldDelegateEnterKeyUp]: the app saw a release with no press. The
- * editor-action branch passes the key-down through, and there the key-up must follow it.
- * What "the app sees" is what reaches [BlackBerryIME.superOnKeyDown] / [BlackBerryIME.superOnKeyUp].
+ * A hardware ENTER press reaches the app whole or not at all: when the IME answers Enter itself
+ * (committing a newline in a multi-line field) the key-up is consumed too; when the editor-action
+ * branch passes the key-down through, the key-up follows. "The app sees" means
+ * [BlackBerryIME.superOnKeyDown] / [BlackBerryIME.superOnKeyUp].
  */
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [34], manifest = Config.NONE)

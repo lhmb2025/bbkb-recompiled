@@ -33,7 +33,6 @@
             android:clickable="true"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
-        <!-- Performance: ViewStub for lazy inflation of infrequently used views -->
         <ViewStub
             android:id="@+id/fcc_view_stub"
             android:layout_width="match_parent"
@@ -56,14 +55,13 @@
             android:layout="@layout/emoji_palettes_view"/>
     </FrameLayout>
 
-    <!-- Unified AuxBarView - single container for all aux bars (suggestions, UIM, arrows, accents, diacritics) -->
+    <!-- One container for every aux bar (suggestions, UIM, arrows, accents, diacritics) -->
     <dev.bbkb.ime.keyboard.auxbar.AuxBarView
         android:id="@+id/aux_bar_view"
         android:layout_width="match_parent"
         android:layout_height="@dimen/config_suggestions_strip_height"
         android:layout_above="@+id/keyboard_frame" />
 
-    <!-- Swipe to delete animation (overlay) -->
     <dev.bbkb.ime.core.ime.SwipeToDeleteAnimatorView
         android:id="@+id/delete_animation_view"
         android:layout_width="wrap_content"
@@ -71,7 +69,6 @@
         android:src="@drawable/ic_key_delete"
         android:layout_alignParentBottom="true"/>
 
-    <!-- Flick suggestion view (overlay) -->
     <dev.bbkb.ime.keyboard.auxbar.suggestions.FlickSuggestionView
         android:id="@+id/flick_suggestion_view"
         android:layout_width="match_parent"

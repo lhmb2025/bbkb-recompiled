@@ -1,47 +1,9 @@
-/* getkeys_probe_drv.c — settles the one-shot `getKeys` capture rule (audit §4.3, unknown #2).
- *
- * THE CLAIM UNDER TEST. `CkbKeyGridCapture.needsCapture()` is a process-level latch and
- * `KeyboardSwitcher.syncKeyboardLayout` reads `engine.getKeys()` at most once per process,
- * because "repeated reads can perturb ET9's gesture recognition accuracy". That was a candidate
- * fix from 2026-06, never assessed.
- *
- * WHAT THIS DRIVER DOES. Replays the whole W6 sitting-1 corpus (240 labeled real KEY2 swipes,
- * SENSOR space — see memory/w6-corpus-coordinate-frame; extracting from TRACEPT double-warps)
- * through the REAL touch ABI — TouchStart / TouchMove* / TouchEnd, one point per call exactly as
- * the JNI shim delivers them — and interleaves N `getKeys`-equivalent reads between every pair
- * of gesture stages. Then, per gesture, it measures the two things §4.3 asks for separately:
- *
- *   - the STORED SAMPLE COUNT (`xt9kdb_stored_path`, i.e. kdb_trace.c's g_n) — does the probe
- *     perturb SAMPLING?
- *   - RECOGNITION, at both stages of the pipeline: decode the stored path exactly as
- *     owned_pst_v2 does (sensor->authored, per-row params, minimal feed, cross_min 6), score
- *     DECODER RECALL (is the intended word reachable through the ambiguous sets — eval_drv's
- *     metric, the stage that moves when segmentation moves) and TOP-1 over a generator-like
- *     decoy pool with xt9kdb_rank_score — does the probe perturb RECOGNITION?
- *
- * plus a per-arm FNV-1a digest over every gesture's (sample count, decoded spell, pool size,
- * rank), so "identical" means byte-identical and not merely equal in aggregate.
- *
- * THE PROBE. `getkeys_probe()` reproduces the blob's JNI shim at vaddr 0x20fc0 as closely as a
- * host binary can: one ET9KDB_GetKeyPositions(ctx, buf, capacity=0x50, &count) into a 0x50*0x30
- * buffer (0x21008), bail on a non-zero status (0x2100c), then per record read the same seven
- * fields at the same offsets and widths the shim's SetIntField calls read — keyCode u16 @+0x0a
- * (0x21070), centerX u32 @+0x20 (0x21090), centerY u32 @+0x24 (0x210ac), left u16 @+0x28
- * (0x210c8), top u16 @+0x2a (0x210e4), right u16 @+0x2c (0x21100), bottom u16 @+0x2e (0x2111c,
- * with the 0x30-stride post-increment). The only part not reproduced is the JNI object churn
- * (NewObjectArray / NewObject / SetIntField / SetObjectArrayElement), which touches Java objects
- * only and cannot exist off-device.
- *
- * WHAT THIS CAN AND CANNOT DECIDE. It decides the STATE hypothesis: if the engine kept anything
- * that a getKeys read disturbs, a flood between stages would move the sample count or the
- * decode. It cannot decide the TIMING hypothesis (main-thread cost causing the Android input
- * pipeline to drop MotionEvents), because a replayed corpus delivers a fixed point list by
- * construction — that one is a property of the input pipeline, not of the engine.
- *
+/* getkeys_probe_drv.c: does repeated getKeys disturb gesture state? Replays a sensor-space corpus
+ * through TouchStart/Move/End (one point per call, as the JNI shim does) with N getKeys-equivalent
+ * reads between stages, and reports stored sample count, decoder recall, top-1 against a decoy pool
+ * and an FNV-1a digest per arm. Tests the state hypothesis only, not main-thread timing.
  * Usage: getkeys_probe_drv <corpus> <kdb.xml> <wordlist> --n=<N> [--drop=K] [--verbose]
- * Driven by test/getkeys_probe.sh, which runs N = 0, 1, 20 and diffs the arms, plus the
- * --drop negative control that proves the metrics can move at all.
- */
+ * Driven by test/getkeys_probe.sh (N = 0, 1, 20, plus the --drop negative control). */
 #include "et9kdb.h"
 #include "et9_context.h"
 #include "kdb_internal.h"
@@ -55,20 +17,17 @@
 #define MAX_PTS    4096
 #define MAX_WORDS  40000
 
-/* A context big enough that GetKeyPositions' ctx+0xfc30..36 reads land inside it. Zeroed, so
- * offset and scale read as 0 — the PKB configuration the KEY2 actually runs. */
+/* Big enough for GetKeyPositions' ctx+0xfc30..36 reads; zeroed = the PKB configuration. */
 #define CTX_SZ 0x10000
 
 static unsigned char* g_ctx;
 static int g_verbose;
 
-/* ---- the probe: the blob's JNI shim at 0x20fc0, minus the JNI object churn ------------------ */
-
+/* The probe: the blob's JNI getKeys shim at 0x20fc0, minus the JNI object churn. */
 #define SHIM_CAPACITY 0x50
 #define SHIM_STRIDE   0x30
 
-/* volatile so the seven per-key reads cannot be optimized away — the shim hands each of them to
- * SetIntField, which the compiler here cannot see. */
+/* volatile so the seven per-key reads (SetIntField on device) are not optimized away */
 static volatile unsigned g_sink;
 
 static void getkeys_probe(void) {
@@ -76,22 +35,20 @@ static void getkeys_probe(void) {
     ET9U32 count = 0;
     /* 0x21008: bl ET9KDB_GetKeyPositions(x0=ctx, x1=sp+0x18, w2=0x50, x3=sp+0x14) */
     ET9STATUS st = xt9kdb_GetKeyPositions((ET9KDBInfoPtr)g_ctx, buf, SHIM_CAPACITY, &count);
-    if (st != ET9STATUS_NONE) return;            /* 0x2100c: cbz w0 — non-zero returns NULL */
+    if (st != ET9STATUS_NONE) return;            /* 0x2100c: cbz w0, non-zero returns NULL */
     for (ET9U16 i = 0; i < count; i++) {
         const unsigned char* rec = buf + (size_t)i * SHIM_STRIDE;
-        g_sink += *(const ET9U16*)(rec + 0x0a);  /* keyCode  — 0x21070 ldurh */
-        g_sink += *(const ET9U32*)(rec + 0x20);  /* centerX  — 0x21090 ldur  */
-        g_sink += *(const ET9U32*)(rec + 0x24);  /* centerY  — 0x210ac ldur  */
-        g_sink += *(const ET9U16*)(rec + 0x28);  /* left     — 0x210c8 ldurh */
-        g_sink += *(const ET9U16*)(rec + 0x2a);  /* top      — 0x210e4 ldurh */
-        g_sink += *(const ET9U16*)(rec + 0x2c);  /* right    — 0x21100 ldurh */
-        g_sink += *(const ET9U16*)(rec + 0x2e);  /* bottom   — 0x2111c ldrh, post-inc 0x30 */
+        g_sink += *(const ET9U16*)(rec + 0x0a);  /* keyCode  0x21070 ldurh */
+        g_sink += *(const ET9U32*)(rec + 0x20);  /* centerX  0x21090 ldur  */
+        g_sink += *(const ET9U32*)(rec + 0x24);  /* centerY  0x210ac ldur  */
+        g_sink += *(const ET9U16*)(rec + 0x28);  /* left     0x210c8 ldurh */
+        g_sink += *(const ET9U16*)(rec + 0x2a);  /* top      0x210e4 ldurh */
+        g_sink += *(const ET9U16*)(rec + 0x2c);  /* right    0x21100 ldurh */
+        g_sink += *(const ET9U16*)(rec + 0x2e);  /* bottom   0x2111c ldrh, post-inc 0x30 */
     }
 }
 
 static void probe_n(int n) { for (int i = 0; i < n; i++) getkeys_probe(); }
-
-/* ---- touch-ABI call shapes (one point per call, as the shim delivers them) ------------------ */
 
 static void tstart(float x, float y, ET9U32 t) {
     float xs[1] = {x}, ys[1] = {y}; ET9U32 ts[1] = {t};
@@ -105,8 +62,6 @@ static void tend(float x, float y, ET9U32 t) {
     float xs[1] = {x}, ys[1] = {y}; ET9U32 ts[1] = {t};
     (void)xt9kdb_TouchEnd((ET9KDBInfoPtr)g_ctx, 1, xs, ys, ts, 1);
 }
-
-/* ---- corpus / wordlist ---------------------------------------------------------------------- */
 
 static unsigned char* read_file(const char* path, long* len) {
     FILE* fp = fopen(path, "rb");
@@ -135,9 +90,7 @@ static void add_word(const char* tok) {
     memcpy(g_words[g_nwords++], tmp, l + 1);
 }
 
-/* The decoy pool's vocabulary. w24_words.txt is one whitespace-separated line, so split on any
- * whitespace rather than on newlines; the corpus's own labels are folded in by the caller so a
- * target word is always rankable. */
+/* Decoy vocabulary; w24_words.txt is one whitespace-separated line, so split on any whitespace. */
 static void load_wordlist(const char* path) {
     long len; char* buf = (char*)read_file(path, &len);
     char* saveptr = 0;
@@ -146,9 +99,7 @@ static void load_wordlist(const char* path) {
     free(buf);
 }
 
-/* ---- decoder-recall metric (the same one eval_drv scores) ----------------------------------- */
-
-/* Is the intended letter in this position's ambiguous set? (case-insensitive) */
+/* Is the letter in this position's ambiguous set? (case-insensitive) */
 static int in_set(const Xt9DecPos* p, char c) {
     char lc = c | 0x20;
     for (int i = 0; i < p->nsymb; i++)
@@ -156,11 +107,8 @@ static int in_set(const Xt9DecPos* p, char c) {
     return 0;
 }
 
-/* Can the intended word be spelled by choosing one symbol from each of an ORDERED subsequence of
- * decoded positions? The necessary condition for AW's ambiguous-set matcher to recover the word —
- * the offline RECALL floor, and the metric that moves when the segmentation moves. Reported
- * alongside top-1 because the ranker resamples the path and is therefore much less sensitive to
- * the sample count than the decoder is (see the --drop control). */
+/* Can the word be spelled by one symbol from each of an ordered subsequence of positions? The
+ * recall floor (as in eval_drv); more sensitive to sample count than the resampling ranker. */
 static int reachable(const char* want, const Xt9DecPos* pos, int np) {
     int wl = 0; while (want[wl]) wl++;
     static char dp[66];
@@ -178,15 +126,11 @@ static const ET9KdbKey* key_of(const ET9KdbLoaded* m, char lc) {
     return 0;
 }
 
-/* ---- digest ---------------------------------------------------------------------------------- */
-
 static unsigned long long g_digest = 1469598103934665603ULL;   /* FNV-1a 64 */
 static void digest(const void* p, size_t n) {
     const unsigned char* b = (const unsigned char*)p;
     for (size_t i = 0; i < n; i++) { g_digest ^= b[i]; g_digest *= 1099511628211ULL; }
 }
-
-/* ---------------------------------------------------------------------------------------------- */
 
 int main(int argc, char** argv) {
     if (argc < 4) {
@@ -212,8 +156,7 @@ int main(int argc, char** argv) {
     const ET9KdbLoaded* m = g_kdb_model;
     load_wordlist(argv[3]);
 
-    /* Fold the corpus's own labels into the vocabulary, so every intended word is a real pool
-     * member rather than a special case appended past the endpoint filter. */
+    /* fold the corpus labels into the vocabulary so every intended word is rankable */
     {
         FILE* lp = fopen(argv[1], "r");
         if (!lp) { fprintf(stderr, "cannot open corpus\n"); return 2; }
@@ -259,16 +202,14 @@ int main(int argc, char** argv) {
             raw[i].x = x; raw[i].y = y; raw[i].t = t;
         }
 
-        /* ---- replay the gesture through the real ABI, probing between every stage ---------- */
+        /* replay through the real ABI, probing between every stage */
         struct timespec t0, t1;
         clock_gettime(CLOCK_MONOTONIC, &t0);
         tstart(raw[0].x, raw[0].y, raw[0].t);
         probe_n(probes);
         for (int i = 1; i < n - 1; i++) {
-            /* NEGATIVE CONTROL (--drop=K): skip every Kth TouchMove. This is the SHAPE the
-             * timing hypothesis predicts — main-thread cost so high the input pipeline never
-             * delivers some samples. It exists to prove this rig can SEE such an effect, so
-             * that "all arms identical" is evidence and not just an insensitive metric. */
+            /* negative control (--drop=K): skip every Kth TouchMove, proving the rig can see
+             * dropped samples */
             if (drop && (i % drop) == 0) continue;
             tmove(raw[i].x, raw[i].y, raw[i].t);
             probe_n(probes);
@@ -278,7 +219,7 @@ int main(int argc, char** argv) {
         clock_gettime(CLOCK_MONOTONIC, &t1);
         sum_ms += (double)(t1.tv_sec - t0.tv_sec) * 1e3 + (double)(t1.tv_nsec - t0.tv_nsec) / 1e6;
 
-        /* ---- read back the stored path and decode it exactly as owned_pst_v2 does ---------- */
+        /* decode the stored path as owned_pst_v2 does */
         ET9U32 gn = 0;
         const ET9KdbSample* stored = xt9kdb_stored_path(&gn);
         if (gn > MAX_PTS) gn = MAX_PTS;
@@ -298,7 +239,7 @@ int main(int argc, char** argv) {
         }
         spell[spn] = 0;
 
-        /* ---- rank the intended word against a generator-like decoy pool ------------------- */
+        /* rank the intended word against a decoy pool */
         float sx = sp[0].x, sy = sp[0].y, ex = sp[gn ? gn-1 : 0].x, ey = sp[gn ? gn-1 : 0].y;
         int pool = 0, better = 0;
         float wantScore = xt9kdb_rank_score(m, &p, sp, gn, want, 0);
@@ -328,7 +269,6 @@ int main(int argc, char** argv) {
         if (rank == 1) top1++;
         if (rank <= 3) top3++;
 
-        /* Per-gesture digest: anything the probe could move shows up here. */
         {
             ET9U32 g = gn; int r = rank, ps = pool, npv = np, rc = reach;
             digest(want, strlen(want)); digest(&g, sizeof g); digest(spell, strlen(spell));

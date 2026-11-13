@@ -721,7 +721,6 @@
     <string name="device_config_import_unreadable">Sú skrá er ekki tækjastilling</string>
     <string name="device_config_import_failed">Ekki tókst að flytja inn þá skrá</string>
 
-    <!-- OTA app updates -->
     <string name="settings_updates_title">Uppfærslur</string>
     <string name="settings_updates_summary">Athuga hvort ný útgáfa af BBKB sé til</string>
     <string name="settings_update_installed_version_title">Uppsett útgáfa</string>
@@ -755,7 +754,6 @@
     <string name="settings_update_ready_title">Tilbúið til uppsetningar</string>
     <string name="settings_update_version_details">Upplýsingar um útgáfu</string>
     <string name="settings_update_unknown_sources_title">Leyfa BBKB að setja upp uppfærslur?</string>
-    <!-- Downloadable language packs (core/languagepack) -->
     <string name="language_packs_installed_header">Uppsett</string>
     <string name="language_packs_available_header">Í boði til niðurhals</string>
     <string name="language_packs_download">Hlaða niður</string>
@@ -877,7 +875,6 @@
     <string name="settings_voice_stop_on_pause_summary_off">Heldur áfram að hlusta í hléum þar til þú ýtir á hljóðnemann, eða eftir hálfrar mínútu þögn</string>
     <string name="voice_status_listening_tap_to_stop">Hlusta&#8230; Ýttu á hljóðnemann til að hætta</string>
 
-    <!-- Settings text moved out of the code (2026-11) -->
     <string name="settings_common_save">Vista</string>
     <string name="settings_common_edit">Breyta</string>
     <string name="settings_common_back">Til baka</string>

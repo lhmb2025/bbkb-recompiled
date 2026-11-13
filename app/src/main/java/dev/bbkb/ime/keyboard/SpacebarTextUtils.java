@@ -13,8 +13,15 @@ public final class SpacebarTextUtils {
     private static final String TAG = "SpacebarTextUtils";
 
     private SpacebarTextUtils() {
+        // Static helpers only.
     }
 
+    /**
+     * @param i available width
+     * @param str the text
+     * @param f text size
+     * @param f2 minimum scale
+     */
     public static String truncateTextToWidth(int i, String str, float f, float f2, Paint paint) {
         if (str == null) {
             return "";
@@ -32,10 +39,8 @@ public final class SpacebarTextUtils {
             if (fM5651a2 <= f3) {
                 return str;
             }
-            // Shrink the text until it fits. If the required scale drops below the minimum scale
-            // we must stop: leaving the loop without updating the measured width would spin
-            // forever on the draw thread (the loop condition can no longer change). Fall through
-            // to the ellipsis path below.
+            // Below the minimum scale we must break: the width would stop changing and the loop
+            // would spin forever on the draw thread. Falls through to the ellipsis path.
             boolean fits = true;
             do {
                 f4 = (f4 * f3) / fM5651a2;
@@ -53,8 +58,7 @@ public final class SpacebarTextUtils {
         paint.setTextSize(f2 * f);
         float fM5651a3 = TypefaceUtils.getStringWidth(str + "…", paint);
         int iRound = Math.round(((fM5651a3 - f3) / (fM5651a3 / ((float) str.length()))) + 0.5f);
-        // Cut index. It only ever moves back by whole code points, so the kept text never ends
-        // in half of a surrogate pair (an emoji, or a supplementary-plane letter).
+        // Moves back by whole code points so the kept text never ends in half a surrogate pair.
         int end = str.length() - iRound;
         if (end > 0 && end < str.length()
                 && Character.isLowSurrogate(str.charAt(end))

@@ -28,12 +28,9 @@ import org.robolectric.annotation.Config
 import java.io.File
 
 /**
- * [PackDownloadManager] against a real HTTP server on a real socket — see [LocalHttpServer] for
- * why a mock would not be worth writing.
- *
- * The invariants: a pack that reports installed **is** on disk; a pack whose bytes did not match
- * the catalogue leaves nothing behind; a cancelled download leaves nothing behind *and* does not
- * report a failure; and two requests are two downloads in order, not two at once.
+ * [PackDownloadManager] against a real loopback server ([LocalHttpServer]). Pins: installed means
+ * on disk; a hash mismatch or cancel leaves nothing behind (cancel reports no failure); two
+ * requests download one at a time, in order.
  */
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [34])
@@ -100,8 +97,6 @@ class PackDownloadManagerTest {
             manager.states.map { it[locale] }.first(predicate)
         }
 
-    // ── Success ───────────────────────────────────────────────────────────────────────────────
-
     @Test
     fun downloadsVerifiesAndInstallsUnderTheManifestLocale() = runBlocking<Unit> {
         server.respondWith { it.reply(200, welshBytes) }
@@ -115,7 +110,7 @@ class PackDownloadManagerTest {
         assertTrue(File(dir, "version.txt").isFile)
         // The catalogue's version, not the picker's placeholder.
         assertEquals("1902.01", File(dir, "version.txt").readText())
-        // Installed under the locale, NOT under the asset file name.
+        // Installed under the locale, not the asset file name.
         assertFalse(PackFixtures.packDir(context, "welsh").exists())
         assertTrue(
             "registry entry missing",
@@ -123,8 +118,7 @@ class PackDownloadManagerTest {
         )
         assertEquals(listOf("language_pack_changed"), posted)
 
-        // The download is a copy and its job is done; several megabytes per pack must not sit in
-        // the cache waiting for clearStale.
+        // The downloaded copy is deleted at once rather than left for clearStale.
         assertFalse(File(downloader.downloadDir(), "welsh.ldb").exists())
         assertFalse(File(downloader.downloadDir(), "welsh.ldb.tmp").exists())
     }
@@ -165,8 +159,6 @@ class PackDownloadManagerTest {
         assertFalse(PackFixtures.packDir(context, "de_CH").exists())
     }
 
-    // ── Failure ───────────────────────────────────────────────────────────────────────────────
-
     @Test
     fun aShaMismatchFailsAndInstallsNothing() = runBlocking<Unit> {
         server.respondWith { it.reply(200, welshBytes) }
@@ -205,8 +197,6 @@ class PackDownloadManagerTest {
         assertEquals(null, manager.states.value["cy"])
     }
 
-    // ── Cancellation ──────────────────────────────────────────────────────────────────────────
-
     @Test
     fun cancellingLeavesNothingInstalledAndReportsNoFailure() = runBlocking<Unit> {
         server.respondWith { it.replySlowly(total = 400_000, chunkSize = 1_024, pauseMs = 20L) }
@@ -218,8 +208,7 @@ class PackDownloadManagerTest {
         awaitState("cy") { it is PackState.Downloading && it.bytes > 0L }
         manager.cancel("cy")
 
-        // Cancellation is the user changing their mind, not an error: the row goes back to
-        // offering a download rather than showing a failure.
+        // Cancellation is not an error: the row goes back to offering a download.
         val gone = withTimeout(TIMEOUT_MS) { manager.states.first { !it.containsKey("cy") } }
         assertFalse(gone.containsKey("cy"))
         assertFalse(PackFixtures.packDir(context, "cy").exists())
@@ -227,8 +216,6 @@ class PackDownloadManagerTest {
         assertTrue(posted.isEmpty())
         assertFalse(manager.isBusy())
     }
-
-    // ── The queue ─────────────────────────────────────────────────────────────────────────────
 
     @Test
     fun twoRequestsAreTwoDownloadsInOrderNotTwoAtOnce() = runBlocking<Unit> {
@@ -244,8 +231,7 @@ class PackDownloadManagerTest {
         manager.download(catalogue, welsh())
         manager.download(catalogue, afrikaans())
 
-        // Both are "requested" from the moment the button was pressed - a queued row that snapped
-        // back to Download until the first finished would read as a button that did nothing.
+        // Both read as requested from the press; a queued row reverting to Download would look dead.
         assertTrue(manager.states.value["cy"] is PackState.Downloading)
         assertTrue(manager.states.value["af"] is PackState.Downloading)
 

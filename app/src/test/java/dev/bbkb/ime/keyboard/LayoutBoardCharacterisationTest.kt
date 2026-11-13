@@ -29,22 +29,10 @@ import org.robolectric.util.ReflectionHelpers
 import java.util.Locale
 
 /**
- * Characterisation of **what each layout actually puts on the screen**, pinned before Phase 1d
- * starts collapsing the layout axis into the board axis.
- *
- * `KeyboardStateTest` already pins the state machine (which loader is called, in which order, with
- * which page). What it cannot see is the half on the other side of the
- * [KeyboardState.SwitcherCallbacks] seam: which **element** of the layout set each loader actually
- * asks [KeyboardBuilder] for, whether it goes through the VKB (`getKeyboardForShift`) or the PKB
- * (`getKeyboardInternal`) entry point, and what each load does to the aux bar and the slideboard.
- *
- * Those element numbers are the thing the owner's "don't screw up the current key layout
- * behaviour" is about: they select the actual key arrangement, and nothing else in the suite
- * asserts them. Every number here was read off the unmodified code and then confirmed by running
- * this file against it.
- *
- * The harness is [KeyboardSwitcherLayoutTransitionTest]'s: a real switcher whose constructor never
- * ran, with only the collaborators these paths touch injected.
+ * Pins which layout-set element each [KeyboardState.SwitcherCallbacks] loader asks
+ * [KeyboardBuilder] for, through which entry point (VKB `getKeyboardForShift` or PKB
+ * `getKeyboardInternal`), and what each load does to the aux bar and slideboard. Uses
+ * [KeyboardSwitcherLayoutTransitionTest]'s harness: a switcher whose constructor never ran.
  */
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [34], manifest = Config.NONE)
@@ -60,8 +48,8 @@ class LayoutBoardCharacterisationTest {
 
     @Before
     fun setUp() {
-        // The code under test still calls the engine from the main thread; until those callers
-        // move onto EngineThreads, run engine ops inline so the debug thread assertions pass.
+        // The code under test calls the engine from the main thread; run engine ops inline so the
+        // debug thread assertions pass.
         dev.bbkb.ime.core.engine.EngineThreads.setInlineForTests(true)
         val context = ApplicationProvider.getApplicationContext<Context>()
         val settings = SettingsManager.getInstance()
@@ -134,13 +122,7 @@ class LayoutBoardCharacterisationTest {
         return element.value
     }
 
-    // ══════════════════════════════════════════════ the ALPHABET layout
-
-    /**
-     * The alphabet board's five faces. The shift mode IS the element id — the switcher passes it
-     * straight through — so this is the whole mapping from "what shift state the machine is in"
-     * to "which key arrangement is on screen".
-     */
+    /** The alphabet board's five faces: the shift mode is passed straight through as the element id. */
     @Test
     fun theAlphabetLayoutSelectsTheElementForItsShiftMode() {
         val cases = listOf(
@@ -158,9 +140,8 @@ class LayoutBoardCharacterisationTest {
     }
 
     /**
-     * `requestManualShiftOff` is the one alphabet path that does NOT go through
-     * `setAlphabetKeyboard(int)`: it builds element 0 directly with the hardware flag hard-coded
-     * false, and then tells the IME it came back from the symbol keyboard.
+     * `requestManualShiftOff` bypasses `setAlphabetKeyboard(int)`: it builds element 0 with the
+     * hardware flag false, then tells the IME it came back from the symbol keyboard.
      */
     @Test
     fun theManualShiftOffPathBuildsElementZeroAsAnOnScreenKeyboard() {
@@ -172,9 +153,8 @@ class LayoutBoardCharacterisationTest {
     }
 
     /**
-     * The alphabet load's hardware flag is the negation of "an on-screen keyboard is showing", and
-     * when no on-screen keyboard is up the slideboard comes with it. That slideboard raise is the
-     * sixth surface the cross-axis table deliberately leaves at the call site.
+     * The alphabet load's hardware flag is "no on-screen keyboard showing", and in that case the
+     * slideboard comes up with it.
      */
     @Test
     fun theAlphabetLoadWithNoOnScreenKeyboardBuildsForHardwareAndRaisesTheSlideboard() {
@@ -196,7 +176,7 @@ class LayoutBoardCharacterisationTest {
         verify(slideboard, never()).show()
     }
 
-    /** The alphabet load never raises the aux bar. Only the PKB symbol load does. */
+    /** The alphabet load never raises the aux bar. */
     @Test
     fun theAlphabetLoadLeavesTheBarAlone() {
         Mockito.`when`(ime.isUimEnabled()).thenReturn(true)
@@ -207,12 +187,7 @@ class LayoutBoardCharacterisationTest {
         verify(uim, never()).show(Mockito.anyBoolean())
     }
 
-    // ═══════════════════════════════════════════ the ON-SCREEN SYMBOL layout
-
-    /**
-     * The on-screen symbol pages live at elements **page + 5**. This is the single arithmetic that
-     * turns the state machine's page index into a key arrangement.
-     */
+    /** The on-screen symbol pages live at elements page + 5. */
     @Test
     fun theOnScreenSymbolLayoutSelectsPagePlusFive() {
         for (page in 0..2) {
@@ -222,10 +197,7 @@ class LayoutBoardCharacterisationTest {
         }
     }
 
-    /**
-     * With VKB symbol customisation on AND the custom page first, every ordinary page shifts down
-     * one — the custom page has taken slot 0, so page 1 is element 5, not 6.
-     */
+    /** With the custom page first it takes slot 0, so page 1 is element 5, not 6. */
     @Test
     fun theOnScreenSymbolLayoutShiftsDownOneWhenTheCustomPageComesFirst() {
         Mockito.`when`(prefs.getBoolean("enable_symbol_customization_vkb", false)).thenReturn(true)
@@ -236,7 +208,7 @@ class LayoutBoardCharacterisationTest {
         assertEquals(5, vkbElement())
     }
 
-    /** Customisation enabled but the custom page LAST leaves the ordinary pages where they were. */
+    /** With the custom page last the ordinary pages stay where they were. */
     @Test
     fun theOnScreenSymbolLayoutKeepsPagePlusFiveWhenTheCustomPageComesLast() {
         Mockito.`when`(prefs.getBoolean("enable_symbol_customization_vkb", false)).thenReturn(true)
@@ -247,7 +219,7 @@ class LayoutBoardCharacterisationTest {
         assertEquals(6, vkbElement())
     }
 
-    /** The custom symbol page is element **8** whatever its position, and it carries its own page. */
+    /** The custom symbol page is element 8 whatever its position, and it carries its own page. */
     @Test
     fun theOnScreenCustomSymbolPageIsElementEight() {
         switcher.setVkbSymbolsKeyboard(0, false, true, 3)
@@ -256,7 +228,7 @@ class LayoutBoardCharacterisationTest {
         verify(builder).setCustomSymbolPage(3)
     }
 
-    /** The on-screen symbol load leaves the bar exactly where it was — unlike the PKB one. */
+    /** The on-screen symbol load leaves the bar where it was. */
     @Test
     fun theOnScreenSymbolLoadLeavesTheBarAlone() {
         Mockito.`when`(ime.isUimEnabled()).thenReturn(true)
@@ -267,8 +239,6 @@ class LayoutBoardCharacterisationTest {
         verify(uim, never()).show(Mockito.anyBoolean())
         verify(slideboard, never()).showNumericPanel()
     }
-
-    // ═══════════════════════════════════════════════ the PKB SYMBOL layout
 
     /** The PKB symbol pages use the same page+5 arithmetic, through the hardware entry point. */
     @Test
@@ -303,10 +273,7 @@ class LayoutBoardCharacterisationTest {
         assertEquals(5, pkbElement())
     }
 
-    /**
-     * The PKB symbol load raises the slideboard's numeric panel and nothing else: the bar stays
-     * as it was, as in the original app. (It used to raise the UIM bar too.)
-     */
+    /** The PKB symbol load raises the slideboard's numeric panel and leaves the bar as it was. */
     @Test
     fun thePkbSymbolLoadRaisesTheNumericPanelAndLeavesTheBarAlone() {
         Mockito.`when`(ime.isUimEnabled()).thenReturn(true)
@@ -330,12 +297,7 @@ class LayoutBoardCharacterisationTest {
         verify(slideboard).showNumericPanel()
     }
 
-    // ══════════════════════════════════════════════════ the EMOJI board
-
-    /**
-     * Opening emoji raises the bar the same way a PKB symbol load does — `show(false)` then
-     * `showEmojiBoard()` — but only when the bar is not already up.
-     */
+    /** Opening emoji raises the bar (`show(false)` then `showEmojiBoard()`) only when it is not already up. */
     @Test
     fun theEmojiOpenRaisesTheBarWhenItIsDown() {
         Mockito.`when`(ime.isUimEnabled()).thenReturn(true)
@@ -381,14 +343,8 @@ class LayoutBoardCharacterisationTest {
     }
 
     /**
-     * **Reordered by Phase 1d.** The open report used to be the LAST thing `showEmojiKeyboard()`
-     * did, after the palettes had gone up and the bar had been refreshed. It is now the epilogue of
-     * the `BOARD_RAISED` row, so it lands right after the bar raise.
-     *
-     * The final state is the same, which is why this is a reordering and not a behaviour change:
-     * `EmojiBoardController.isShowing()` reads the *mode*, which the state machine has already set
-     * before it calls back here, so the key-painting pass sees the board open either way — and the
-     * `refresh()` that follows repaints regardless.
+     * The open report is the `BOARD_RAISED` epilogue, right after the bar raise. Safe because
+     * `EmojiBoardController.isShowing()` reads the mode, already set before this callback.
      */
     @Test
     fun theEmojiOpenRaisesTheBarThenReportsTheOpenThenRefreshes() {
@@ -404,17 +360,10 @@ class LayoutBoardCharacterisationTest {
         inOrder.verify(uim).refresh()
     }
 
-    // ═══════════════════════════ the emoji OPEN prologue (owner ruling R2)
-
     /**
-     * **R2, the behaviour change.** Every other board clears a PKB symbol mode before it takes the
-     * screen (`UnifiedInputBoardManager.beginBoardTransition`). Emoji did not, so opening it from
-     * the PKB symbol board left `symbolEntryMethod` at 2 or 3 with the mode already moved on — and
-     * the next Sym press then showed the board with `wasSymbolEnteredFromAlphabet()` false, so
-     * every hinted physical key typed its letter instead of its symbol.
-     *
-     * It has to run BEFORE the state machine moves the mode to EMOJI, which is why the emoji open
-     * is `BOARD_OPENING` + `BOARD_RAISED` and not one `OPEN_BOARD`.
+     * Opening emoji clears a PKB symbol mode first, like every other board; otherwise the next Sym
+     * press sees `wasSymbolEnteredFromAlphabet()` false and hinted keys type letters. It must run
+     * before the mode moves to EMOJI, hence `BOARD_OPENING` + `BOARD_RAISED`.
      */
     @Test
     fun openingEmojiFromThePkbSymbolBoardClearsTheSymbolModeFirst() {
@@ -427,7 +376,7 @@ class LayoutBoardCharacterisationTest {
         inOrder.verify(state).onEmojiInput()
     }
 
-    /** Closing it again — the same toggle — must NOT run the open prologue a second time. */
+    /** Closing it with the same toggle must not run the open prologue. */
     @Test
     fun theEmojiKeyThatCLOSESTheBoardRunsNoOpenPrologue() {
         val state = pkbInSymbolMode()
@@ -459,7 +408,7 @@ class LayoutBoardCharacterisationTest {
         verify(state, never()).resetSymbolMode()
     }
 
-    /** Off a PKB the prologue is a no-op, exactly as `clearPkbSymbolMode()` has always been. */
+    /** Off a PKB the prologue is a no-op. */
     @Test
     fun openingEmojiOnAVkbClearsNoSymbolMode() {
         val state = pkbInSymbolMode()
@@ -493,12 +442,7 @@ class LayoutBoardCharacterisationTest {
         return state
     }
 
-    // ═════════════════════════════════════════════ which board is up
-
-    /**
-     * Phase 1d's one question. A panel board wins whenever one is open, because it is drawn over
-     * the main keyboard view.
-     */
+    /** A panel board wins whenever one is open, because it is drawn over the main keyboard view. */
     @Test
     fun anOpenPanelBoardIsTheActiveBoard() {
         val coordinator =
@@ -509,11 +453,7 @@ class LayoutBoardCharacterisationTest {
         assertEquals(-46, switcher.activeBoard())
     }
 
-    /**
-     * With no panel board open the main keyboard view is showing one of the TYPING boards, and
-     * which one is the layout mode read through the board vocabulary. This is the mapping that did
-     * not exist before Phase 1d.
-     */
+    /** With no panel board open, the typing board is the layout mode read as a board. */
     @Test
     fun withNoPanelBoardOpenTheLayoutModeIsTheActiveBoard() {
         val coordinator =
@@ -533,7 +473,7 @@ class LayoutBoardCharacterisationTest {
         }
     }
 
-    /** Some board is ALWAYS up. With nothing else, it is the alphabet — the default board. */
+    /** Some board is always up; with nothing else it is the alphabet. */
     @Test
     fun theAlphabetIsTheBoardThatIsUpWhenNothingElseIs() {
         inject("unifiedInputBoardManager", null)

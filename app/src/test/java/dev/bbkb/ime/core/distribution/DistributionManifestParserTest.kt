@@ -10,13 +10,8 @@ import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
 
 /**
- * The manifest is a file the app reads off the network and then trusts enough to install an APK
- * from, so what the parser accepts *is* the contract. Every case below is a shape the published
- * manifest can really have, plus the malformed ones a future release tool could produce by
- * mistake.
- *
- * Robolectric because the parser walks the framework's `org.json`, which is an empty stub on the
- * plain JVM (every call would return null and the strict cases would pass for the wrong reason).
+ * Pins what the manifest parser accepts (the app installs APKs on its word): real published shapes
+ * plus malformed ones. Robolectric because `org.json` is an empty stub on the plain JVM.
  */
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [34], manifest = Config.NONE)
@@ -51,8 +46,6 @@ class DistributionManifestParserTest {
           }
         }
     """.trimIndent()
-
-    // ── The happy path ────────────────────────────────────────────────────────────────────────
 
     @Test
     fun parsesEveryFieldOfASchema1Manifest() {
@@ -90,14 +83,11 @@ class DistributionManifestParserTest {
 
     @Test
     fun roundTripsUnchanged() {
-        // Re-serialising the model and re-parsing it must be a no-op, so nothing downstream can
-        // depend on a field the parser quietly drops.
+        // A round trip must be a no-op, so no field is quietly dropped.
         val once = DistributionManifestParser.parse(full)
         val twice = DistributionManifestParser.parse(reserialise(once))
         assertEquals(once, twice)
     }
-
-    // ── Forward compatibility ─────────────────────────────────────────────────────────────────
 
     @Test
     fun unknownFieldsAreIgnoredAtEveryLevel() {
@@ -159,8 +149,7 @@ class DistributionManifestParserTest {
 
     @Test
     fun trailingContentAfterTheObjectIsAFormatError() {
-        // Gson's parser refused a document it did not consume entirely; org.json's tokener stops
-        // after one value, so the parser checks the rest itself.
+        // org.json's tokener stops after one value, so the parser must reject trailing content itself.
         for (bad in listOf("""{"schema": 1} x""", """{"schema": 1}{"schema": 1}""")) {
             val failure = runCatching { DistributionManifestParser.parse(bad) }.exceptionOrNull()
             assertTrue("$bad -> $failure", failure is ManifestFormatException)
@@ -210,12 +199,9 @@ class DistributionManifestParserTest {
         assertTrue(failure.exceptionOrNull() is UnsupportedSchemaException)
     }
 
-    // ── Channels ──────────────────────────────────────────────────────────────────────────────
-
     @Test
     fun aMissingBuildTypeIsNullNotAnError() {
-        // The published manifest carries `release` only; on a debug build the lookup must simply
-        // come back empty.
+        // The published manifest carries `release` only; a debug-channel lookup comes back empty.
         val releaseOnly = """
             {"schema": 1,
              "app": {"release": {"versionCode": 1431, "versionName": "n",
@@ -239,8 +225,7 @@ class DistributionManifestParserTest {
 
     @Test
     fun aBrokenChannelIsDroppedWithoutTakingTheOthersDown() {
-        // The failure this guards: a half-written `release` entry must not stop a debug build
-        // from seeing its own channel.
+        // A half-written `release` entry must not hide the debug channel.
         val oneBroken = """
             {"schema": 1,
              "app": {
@@ -274,8 +259,6 @@ class DistributionManifestParserTest {
         assertTrue(build.isInstallableOn(23))
     }
 
-    // ── isNewerThan ───────────────────────────────────────────────────────────────────────────
-
     @Test
     fun isNewerThanIsStrictlyGreater() {
         val build = AppBuild(1430, "n", "https://e.test/a.apk", "ab", 1L, 23, null)
@@ -292,8 +275,6 @@ class DistributionManifestParserTest {
         assertTrue(build.isInstallableOn(26))
         assertTrue(build.isInstallableOn(36))
     }
-
-    // ── Packs ─────────────────────────────────────────────────────────────────────────────────
 
     @Test
     fun packForMatchesTheAppsOwnLocaleIdentifiers() {
@@ -383,8 +364,7 @@ class DistributionManifestParserTest {
 
     @Test
     fun packsWithoutAVersionOrBaseUrlIsNoCatalogueAtAll() {
-        // Every pack URL is built from baseUrl, so a catalogue without one is unusable rather
-        // than partially usable.
+        // Every pack URL is built from baseUrl, so a catalogue without one is rejected whole.
         assertNull(
             DistributionManifestParser.parse("""{"schema": 1, "packs": {"items": []}}""").packs
         )
@@ -399,7 +379,7 @@ class DistributionManifestParserTest {
         assertNull(packs.forLocale("af"))
     }
 
-    /** Model → JSON, for the round-trip test. Mirrors the wire format by hand. */
+    /** Model to JSON for the round-trip test, mirroring the wire format by hand. */
     private fun reserialise(manifest: DistributionManifest): String {
         fun app(build: AppBuild) = buildString {
             append("""{"versionCode": ${build.versionCode},""")

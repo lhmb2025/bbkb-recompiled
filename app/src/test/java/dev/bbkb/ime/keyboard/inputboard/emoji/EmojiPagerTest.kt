@@ -29,11 +29,8 @@ import java.util.Collections
 import java.util.IdentityHashMap
 
 /**
- * The emoji pagers on ViewPager2 (they replaced androidx ViewPager with a hand-written free list):
- * the adapter binds each position's page and reuses views, the page counts kept match the v1
- * pager's, the more-keys placers follow their pages through RecyclerView's recycling, a long-press
- * can stop the inner RecyclerView from taking the gesture, recents refresh as before, and paging
- * stays left to right in an RTL language.
+ * The ViewPager2 emoji pagers: page binding and view reuse, bounded page views, more-keys placers through
+ * recycling, the long-press disallow request, recents refresh, and left-to-right paging in RTL languages.
  *
  * Dataset: positions 0 Recents | 1-2 Smileys (41) | 3-7 People (200) | 8 Animals (3).
  */
@@ -102,8 +99,6 @@ class EmojiPagerTest {
         return (0 until content.childCount).count { content.getChildAt(it) is DrawingPreviewPlacerView }
     }
 
-    // ------------------------------------------------------------------ binding and reuse
-
     @Test
     fun eachPositionIsBoundToItsOwnPage() {
         val v = openOn(2)
@@ -122,9 +117,8 @@ class EmojiPagerTest {
     }
 
     /**
-     * Never more page views than the v1 pager kept: three laid out (one page either side) plus at
-     * most three spares, beyond which a recycled view is dropped (as the v1 free list dropped it).
-     * Once warm, swiping page by page inflates nothing.
+     * At most three laid-out page views (one either side) plus three spares; beyond that a recycled view is
+     * dropped. Once warm, swiping page by page inflates nothing.
      */
     @Test
     fun pageViewsAreReusedAndBoundedLikeTheV1Pager() {
@@ -153,9 +147,10 @@ class EmojiPagerTest {
         assertEquals("inflated while swiping once warm", warm, seen.size)
     }
 
-    // ------------------------------------------------------------------ the more-keys placers
-
-    /** Each laid-out page has its placer in the window content; a recycled page's goes (one turn later at worst). */
+    /**
+     * Each laid-out page has its placer in the window content; a recycled page's goes (one turn later at
+     * worst).
+     */
     @Test
     fun placersFollowTheirPagesThroughRecycling() {
         val v = openOn(2)
@@ -176,7 +171,10 @@ class EmojiPagerTest {
         assertEquals(3, placersInContent())
     }
 
-    /** The long-press popup's disallow request, made on the page's parent, reaches the RecyclerView that scrolls. */
+    /**
+     * The long-press popup's disallow request, made on the page's parent, reaches the RecyclerView that
+     * scrolls.
+     */
     @Test
     fun aLongPressCanStopTheInnerRecyclerViewFromIntercepting() {
         val v = openOn(2)
@@ -191,12 +189,9 @@ class EmojiPagerTest {
     }
 
     /**
-     * Once the skin-tone popup is up, no move of the same finger may drag the page, whatever its
-     * direction. The popup opens from the long-press timer, between touch events, so the page's
-     * per-event disallow request comes too late for the first move after it: RecyclerView
-     * intercepts any move whose horizontal part passes its slop (it has no angle test, unlike
-     * ViewPager v1), which turned a diagonal slide to a tone into a page drag. Fails without the
-     * request made on the long-press.
+     * Once the skin-tone popup is up, no move of the same finger may drag the page. The popup opens from the
+     * long-press timer, so the per-event disallow request comes too late for the first move, and RecyclerView
+     * intercepts any move past its horizontal slop (no angle test). The request on the long-press prevents that.
      */
     @Test
     fun noMoveCanDragThePageWhileTheTonePopupIsUp() {
@@ -212,10 +207,8 @@ class EmojiPagerTest {
     }
 
     /**
-     * The request ends with its finger: whether that finger lifted (a tone picked or the popup
-     * left) or was cancelled, the next swipe drags the page. A long-press on an emoji without
-     * tones (its popup holds that emoji alone) makes no request, so its own sideways slide still
-     * drags the page, as on the v1 board.
+     * The request ends with its finger, lifted or cancelled; the next swipe drags the page. A long-press on an
+     * emoji without tones makes no request, so its own sideways slide still drags the page.
      */
     @Test
     fun theTonePopupNeverLocksThePagerOutOfTheNextSwipe() {
@@ -241,10 +234,8 @@ class EmojiPagerTest {
     }
 
     /**
-     * One finger on People's first page (position 3), sent to the pager's RecyclerView: DOWN on
-     * [emoji]'s key, then what the page's long-press does about the pager. The page's own touch
-     * handling is stood in for (key tracking and the popup need the IME's pointer trackers), so
-     * the only thing keeping the pager out is that long-press request.
+     * One finger on People's first page (position 3): DOWN on [emoji]'s key, then the page's long-press request.
+     * The page's own touch handling is stood in for, so only that request keeps the pager out.
      */
     private fun longPressOn(emoji: String): Finger {
         val shared = EmojibaseDataProvider.getSharedLoaded(EmojiTestEnv.app)
@@ -279,9 +270,10 @@ class EmojiPagerTest {
         fun end(action: Int) = send(action, lastX, lastY)
     }
 
-    // ------------------------------------------------------------------ recents
-
-    /** A pick elsewhere shows on a laid-out Recents page at once; a pick on Recents waits until the board leaves it. */
+    /**
+     * A pick elsewhere shows on a laid-out Recents page at once; a pick on Recents waits until the board
+     * leaves it.
+     */
     @Test
     fun recentsRefreshOnPickOutsideRecentsAndOnLeavingRecents() {
         EmojiTestEnv.prefs().edit().putString(RECENTS_KEY, EmojiTestEnv.padded("a0")).commit()
@@ -296,7 +288,7 @@ class EmojiPagerTest {
         assertEquals(listOf("a0", "s3"), outputs(v.bound().getValue(0)))
     }
 
-    /** A drag starting releases the current page's pressed keys (it used to be the v1 listener's state 1). */
+    /** A drag starting releases the current page's pressed keys. */
     @Test
     fun aDragStartReleasesTheCurrentPagesKeys() {
         val v = openOn(2)
@@ -307,9 +299,7 @@ class EmojiPagerTest {
         assertTrue(!key.isPressed)
     }
 
-    // ------------------------------------------------------------------ direction
-
-    /** The v1 pager ignored layout direction; the board is layoutDirection="locale", so this keeps RTL paging as it was. */
+    /** The board is layoutDirection="locale"; paging must stay left to right in RTL. */
     @Test
     fun pagingStaysLeftToRightInAnRtlLayout() {
         val v = openOn(2)

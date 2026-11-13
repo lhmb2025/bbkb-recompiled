@@ -21,13 +21,9 @@ import org.mockito.Mockito.`when`
 import org.robolectric.RuntimeEnvironment
 
 /**
- * Wires the REAL text pipeline (`InputLogic` + `RichInputConnection` + `ComposingTextTracker`)
- * to a [FakeEditor], so historical typing/newline/stale-text bugs can be replayed as
- * deterministic JVM tests. The engine is static-mocked (no native); the host IME is a
- * Mockito mock returning the fake editor.
- *
- * Lifecycle: construct inside a `@Before`, call [close] in `@After` (releases the static mocks).
- * See [TextPipelineScenariosTest] for usage; the four-copies checker is [FourCopies].
+ * Wires the real text pipeline (`InputLogic`, `RichInputConnection`, `ComposingTextTracker`) to a
+ * [FakeEditor] as deterministic JVM tests. The engine is static-mocked; the IME is a Mockito mock.
+ * Construct in `@Before`, call [close] in `@After` (releases the static mocks).
  */
 class PipelineHarness {
 
@@ -42,62 +38,41 @@ class PipelineHarness {
     val settings: SettingsValues
 
     /**
-     * The same mock [SuggestionStripListener] the real [InputLogic] was constructed with.
-     * Exposed so a scenario can assert what the pipeline told the strip to do — the
-     * `setNeutralSuggestionStrip()` call is the only externally visible trace of
-     * `performRecorrection` bailing out, which the backspace path leans on.
+     * The strip listener [InputLogic] was built with. `setNeutralSuggestionStrip()` is the only
+     * visible trace of `performRecorrection` bailing out.
      */
     val suggestionStripListener: SuggestionStripListener = mock(SuggestionStripListener::class.java)
 
     /**
-     * The REAL [UIUpdateHandler], not a mock — so the deferred-work findings
-     * (which are all "is this message in the cancel set?") can be asserted against an actual
-     * message queue. Robolectric's default paused looper means nothing here ever runs:
-     * messages queue, [android.os.Handler.hasMessages] observes them, and `removeMessages`
-     * is proved to have taken effect. That is deliberate — *handling* a message calls back
-     * into the mock IME and would NPE. This harness proves the cancel set, not the handlers.
-     *
-     * `initializeDelays()` is intentionally not called (it needs DeviceProfile + real
-     * resources); with a paused looper a 0ms delay queues exactly like a real one.
+     * The real [UIUpdateHandler]. Robolectric's paused looper never runs its messages (handling one
+     * would NPE on the mock IME), so tests prove the queue and cancel set, not the handlers.
+     * `initializeDelays()` is not called (needs DeviceProfile); a 0ms delay queues the same way.
      */
     val uiHandler: UIUpdateHandler
 
     /**
-     * The REAL [SuggestionUpdater]. It is a plain final class over the IME whose request methods
-     * only reach `mIme.uiUpdateHandler` and `mIme.getInputLogic()`, both of which this harness
-     * already wires for real — so a genuine instance behaves correctly and its effects are
-     * observable as queued messages on [uiHandler], which beats verifying calls on a mock.
-     *
-     * It exists because `commitVoiceInput` dereferences `mIme.suggestionUpdater` unconditionally;
-     * without this the whole commitVoiceInput path NPE'd and `SS-1` could not be tested at all.
-     * Note `requestDelayedLocaleAware` additionally reads a static locale and is not exercised
-     * here; `requestDelayed` (the commitVoiceInput path) is clean.
+     * The real [SuggestionUpdater]; its effects show up as queued messages on [uiHandler].
+     * `commitVoiceInput` dereferences it unconditionally. `requestDelayedLocaleAware` reads a
+     * static locale and is not exercised here.
      */
     val suggestionUpdater: SuggestionUpdater
 
-    /**
-     * The mock [DictionaryLoader] the pipeline learns and unlearns through. The revert and
-     * prediction-mode backspace paths both call `unlearnWord`, and that call is the only
-     * observable evidence that they took the "reject this word" branch.
-     */
+    /** Mock loader; `unlearnWord` is the only evidence the revert/backspace "reject" branch ran. */
     val dictionaryLoader: DictionaryLoader
 
     init {
         // If anything below throws, the static mock must still be released or every later
         // test fails with "static mocking is already registered".
         try {
-            // Engine ops run at once on the test thread instead of being posted to the engine
-            // or loader thread, so the scenarios keep their synchronous expectations as the
-            // callers move onto EngineThreads.
+            // Engine ops run inline on the test thread so scenarios stay synchronous.
             EngineThreads.setInlineForTests(true)
             val nuance = mock(NuanceSDK::class.java)
             // The composing tracker resolves script from the engine's primary language while
             // building the buffer; a bare mock returns null and NPEs in ScriptUtils.
             `when`(nuance.primaryLanguage).thenReturn(java.util.Locale.US)
             sdkStatic.`when`<NuanceSDK> { NuanceSDKManager.getInstance() }.thenReturn(nuance)
-            // The engine ops (EngineOps) resolve the engine through sdkOrWarn, and the main
-            // thread reads the published facts instead of calling the engine (Wave 3 Phase A).
-            // A static mock answers null for both unless told otherwise.
+            // EngineOps resolve the engine via sdkOrWarn and the main thread reads facts();
+            // a static mock answers null for both unless stubbed.
             sdkStatic.`when`<NuanceSDK> { NuanceSDKManager.sdkOrWarn(org.mockito.ArgumentMatchers.anyString()) }
                 .thenReturn(nuance)
             sdkStatic.`when`<EngineFacts> { NuanceSDKManager.facts() }.thenReturn(FACTS_EN_US)
@@ -105,17 +80,13 @@ class PipelineHarness {
             `when`(ime.currentInputConnection).thenReturn(editor)
 
             uiHandler = UIUpdateHandler(ime)
-            // The handler is reachable two ways and BOTH must resolve, or a fix is "verified"
-            // against a null the production path never sees. `uiUpdateHandler` is @JvmField, so
-            // Kotlin call sites compile to a direct field read that Mockito cannot intercept —
-            // that one has to be set reflectively. Java call sites go through the real
-            // getUiUpdateHandler() method, which does need a stub.
+            // Both access paths must resolve: `uiUpdateHandler` is @JvmField, so Kotlin callers
+            // read the field directly (set reflectively); Java callers use the getter (stubbed).
             BlackBerryIME::class.java.getDeclaredField("uiUpdateHandler")
                 .apply { isAccessible = true }.set(ime, uiHandler)
             `when`(ime.getUiUpdateHandler()).thenReturn(uiHandler)
 
-            // Same @JvmField story as uiUpdateHandler — no getter exists at all for this one,
-            // so the reflective set is the only way production code can see it.
+            // @JvmField with no getter, so only a reflective set reaches production code.
             suggestionUpdater = SuggestionUpdater(ime)
             BlackBerryIME::class.java.getDeclaredField("suggestionUpdater")
                 .apply { isAccessible = true }.set(ime, suggestionUpdater)
@@ -127,13 +98,10 @@ class PipelineHarness {
                 dictionaryLoader,
             )
             `when`(ime.getInputLogic()).thenReturn(inputLogic)
-            // `inputLogic` is @JvmField too, so Kotlin call sites (the UIUpdateHandler's own
-            // message branches among them) read the field directly and never see the getter stub.
+            // @JvmField too: Kotlin callers (UIUpdateHandler among them) bypass the getter stub.
             BlackBerryIME::class.java.getDeclaredField("inputLogic")
                 .apply { isAccessible = true }.set(ime, inputLogic)
-            // Every word commit ends in a learn() call. A no-op mock is the right stand-in:
-            // these scenarios assert what reaches the EDITOR, and the real manager would drag
-            // the DLM and its native learner into a JVM test.
+            // Every commit ends in learn(); a no-op mock keeps the native DLM out of the JVM.
             `when`(ime.dynamicLearningManager).thenReturn(mock(DynamicLearningManager::class.java))
             settings = buildSettings()
         } catch (t: Throwable) {
@@ -144,21 +112,14 @@ class PipelineHarness {
     }
 
     /**
-     * A [SettingsValues] carrying only the field the scoped entry points read
-     * (`spacingAndPunctuation`, used by `hasWordAfterCursor`). Its real constructor reaches
-     * SubtypeManager/RichInputMethodManager — far outside the text-core scope — so we allocate
-     * the shell without running it and inject the one real collaborator.
+     * A [SettingsValues] allocated without its constructor (which reaches SubtypeManager), with
+     * only `spacingAndPunctuation` injected.
      */
     private fun buildSettings(): SettingsValues = settingsWith()
 
     /**
-     * A [SettingsValues] shell like [settings], with the named fields overridden.
-     *
-     * Everything not named keeps the JVM default the raw allocation gives it — `false` / `0` /
-     * `null` — which is deliberate: a scenario should switch on exactly the settings it is
-     * about, and a field it forgot reads as "off" rather than as whatever a real device had.
-     *
-     * Example: `settingsWith("isPredictionsEnabled" to true, "shouldShowLxxButton" to true)`.
+     * A [SettingsValues] shell like [settings] with the named fields overridden; every other field
+     * reads as off (`false`/`0`/`null`). Example: `settingsWith("isPredictionsEnabled" to true)`.
      */
     fun settingsWith(vararg overrides: Pair<String, Any?>): SettingsValues {
         val ctx = RuntimeEnvironment.getApplication()
@@ -179,10 +140,7 @@ class PipelineHarness {
         return sv
     }
 
-    /**
-     * Arm the pipeline against an editor pre-loaded with [text] and a collapsed cursor at
-     * [cursor], with NO composing region — the normal starting point for a scenario.
-     */
+    /** Arm the pipeline on an editor holding [text], cursor at [cursor], no composing region. */
     fun startSession(text: String = "", cursor: Int = text.length) {
         editor.appSetText(text, cursor, cursor)
         editor.dropPendingSelectionEvents() // the setup itself is not an IME-visible event
@@ -191,24 +149,17 @@ class PipelineHarness {
         }
     }
 
-    /**
-     * Put the tracker into the composing state for [word] (as if the user had typed it),
-     * without going through the full key path — enough to exercise the suggestion/commit
-     * entry points. Mirrors InputLogic's own tracker seeding.
-     */
+    /** Put the tracker into the composing state for [word] without going through the key path. */
     fun seedComposing(word: String) {
         val codePoints = word.codePoints().toArray()
-        // Flattened (x,y) pairs — 2 ints per code point; no real geometry needed for the
-        // composing buffer (coords drive prediction only), so use the no-coordinate sentinel.
+        // Flattened (x,y) pairs per code point; -1 is the no-coordinate sentinel.
         val coords = IntArray(codePoints.size * 2) { -1 }
         inputLogic.mComposingTracker.setComposingFromCodePoints(codePoints, coords)
     }
 
     /**
-     * Deliver the next queued [FakeEditor.SelectionEvent] to `InputLogic.onUpdateSelection`,
-     * exactly as the framework would after the editor applied a change — the asynchronous half
-     * of every cursor-movement scenario. Returns what `onUpdateSelection` returned, or `null`
-     * if nothing was queued.
+     * Deliver the next queued [FakeEditor.SelectionEvent] to `InputLogic.onUpdateSelection`.
+     * Returns its result, or `null` if nothing was queued.
      */
     fun deliverSelectionEvent(settingsValues: SettingsValues = settings): Boolean? {
         val e = editor.pollSelectionEvent() ?: return null
@@ -216,13 +167,9 @@ class PipelineHarness {
     }
 
     /**
-     * Deliver an `onUpdateSelection` the editor did NOT generate — an external cursor move (the
-     * user tapping elsewhere, an app repositioning the caret).
-     *
-     * Argument order is the framework's `InputMethodService.onUpdateSelection` order,
-     * (oldStart, oldEnd, newStart, newEnd), which is what `BlackBerryIME` forwards positionally.
-     * Note that `InputLogic.onUpdateSelection`'s own `@param` list documents a DIFFERENT order
-     * (old start, new start, old end, new end); the javadoc is wrong, the code is right.
+     * Deliver an external `onUpdateSelection` (user tap, app moving the caret), in the framework's
+     * (oldStart, oldEnd, newStart, newEnd) order. `InputLogic.onUpdateSelection`'s javadoc lists a
+     * different order; the javadoc is wrong.
      */
     fun selectionChanged(
         oldStart: Int, oldEnd: Int, newStart: Int, newEnd: Int,
@@ -244,12 +191,7 @@ class PipelineHarness {
         inputLogic.onSuggestionsReceived(sw, settings, ime.uiUpdateHandler)
     }
 
-    /**
-     * Make the static-mocked `NuanceSDKManager` gesture-pending flag actually STATEFUL, so tests
-     * can observe it being set and cleared. Without this the static mock answers `false` to
-     * `isGesturePending()` no matter what was set, and any assertion about the flag passes or
-     * fails for the wrong reason.
-     */
+    /** Make the static-mocked gesture-pending flag stateful (otherwise it always reads `false`). */
     fun enableStatefulGesturePending() {
         val pending = booleanArrayOf(false)
         sdkStatic.`when`<Unit> { NuanceSDKManager.noteGestureDeposit() }
@@ -258,8 +200,7 @@ class PipelineHarness {
             .thenAnswer { pending[0] }
         sdkStatic.`when`<Boolean> { NuanceSDKManager.consumeGesturePending() }
             .thenAnswer { val was = pending[0]; pending[0] = false; was }
-        // The commit handler consumes by sequence now (e37de97d); a legacy payload (seq <= 0, e.g.
-        // SuggestedWords.EMPTY) falls back to consume-all, which is what this stub models.
+        // A payload with seq <= 0 (e.g. SuggestedWords.EMPTY) consumes all, which this stub models.
         sdkStatic.`when`<Boolean> { NuanceSDKManager.consumeGestureSeq(org.mockito.ArgumentMatchers.anyInt()) }
             .thenAnswer { val was = pending[0]; pending[0] = false; was }
     }
@@ -276,11 +217,7 @@ class PipelineHarness {
         trackerIsComposing = inputLogic.mComposingTracker.isComposing,
     )
 
-    /**
-     * The `MSG_*` values of [UIUpdateHandler], which are private there. Mirrored
-     * rather than exposed because widening real visibility for a test is worse than a mirror
-     * that [pendingMessages] keeps honest — a renumbering shows up as a scrambled test result.
-     */
+    /** Mirror of [UIUpdateHandler]'s private `MSG_*` values; a renumbering scrambles test results. */
     object Msg {
         const val UPDATE_SUGGESTIONS = 2
         const val BATCH_INPUT_SUGGESTIONS = 6
@@ -306,10 +243,7 @@ class PipelineHarness {
         val CANCEL_SET = SUGGESTION_UPDATE_SET + TEXT_COMMIT_SET
     }
 
-    /**
-     * arg2 of the queued MSG_SHOW_SUGGESTIONS — the session generation the reply was dispatched
-     * under (audit DW-3). Robolectric's paused looper keeps the message inspectable.
-     */
+    /** arg2 of the queued MSG_SHOW_SUGGESTIONS: the session generation the reply was dispatched under. */
     fun pendingShowSuggestionsGeneration(): Int {
         val q = android.os.Looper.myLooper()!!.queue
         val f = android.os.MessageQueue::class.java.getDeclaredField("mMessages")

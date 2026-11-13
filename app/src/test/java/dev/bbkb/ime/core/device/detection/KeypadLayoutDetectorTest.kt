@@ -14,25 +14,13 @@ import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
 
 /**
- * Pins [KeypadLayoutDetector]: each source in isolation, the order they are consulted in, and the
- * three device shapes that motivated the class.
- *
- * The bug being fixed: the old detector read one system property and returned `"qwerty"` whenever
- * it could not parse it. The owner's KEY2 (athena) sets `ro.hwf.keypadlanguage=1 qwerty`, but
- * several LineageOS builds set nothing at all, so an AZERTY or QWERTZ KEY2 on one of those ROMs
- * silently got the QWERTY symbol rows and no later evidence could dislodge that. Every assertion
- * below about a source *abstaining* — returning no answer rather than `"qwerty"` — is guarding
- * that regression.
- *
- * The fingerprints come from the three keymaps the KEY2 firmware ships
- * (`/vendor/usr/keychars/stmpe{,_azerty,_qwertz}.kcm`), read on the owner's device 2026-09-18.
+ * Pins [KeypadLayoutDetector]: each source alone, their order, and real device shapes. A source
+ * with no evidence must abstain, not answer "qwerty" (some ROMs set no keypad property). The fake
+ * Alt tables mirror the KEY2 firmware's `/vendor/usr/keychars/stmpe{,_azerty,_qwertz}.kcm`.
  */
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [34], manifest = Config.NONE)
 class KeypadLayoutDetectorTest {
-
-    // ── fake Alt tables, standing in for the three vendor .kcm files ─────────
-
     /** `KeyCharacterMap.get(keyCode, META_ALT_ON)` for one keymap; 0 for anything unlisted. */
     private fun altTable(vararg entries: Pair<Int, Char>): KeypadLayoutDetector.AltCharLookup {
         val map = entries.toMap()
@@ -71,8 +59,6 @@ class KeypadLayoutDetectorTest {
     @After
     fun clearProcessStateAfter() = KeypadLayoutDetector.resetForTest()
 
-    // ── source 1: device config ─────────────────────────────────────────────
-
     @Test
     fun deviceConfigLayoutIsTaken() {
         assertDetected("qwertz", Source.DEVICE_CONFIG, detect(config = "qwertz"))
@@ -82,14 +68,11 @@ class KeypadLayoutDetectorTest {
 
     @Test
     fun unrecognisedDeviceConfigLayoutAbstains() {
-        // Not "fall back to qwerty with source DEVICE_CONFIG" — a junk value must let the live
-        // sources below answer, which is the whole point of the rewrite.
+        // A junk value must let the live sources below answer, not fall back to qwerty.
         assertDetected("azerty", Source.DEVICE_NAME,
             detect(config = "dvorak", name = "stmpe_azerty_keypad"))
         assertDetected("qwerty", Source.FALLBACK, detect(config = ""))
     }
-
-    // ── source 2: InputDevice name ──────────────────────────────────────────
 
     @Test
     fun deviceNameNamesTheLayout() {
@@ -102,14 +85,11 @@ class KeypadLayoutDetectorTest {
 
     @Test
     fun plainDeviceNameAbstains() {
-        // The owner's QWERTY KEY2 is plain "stmpe_keypad": it names no variant, so this source
-        // must say nothing rather than claim qwerty by absence.
+        // A QWERTY KEY2 is plain "stmpe_keypad": no variant, so this source must abstain.
         assertNull(KeypadLayoutDetector.fromDeviceName("stmpe_keypad"))
         assertNull(KeypadLayoutDetector.fromDeviceName("AT Translated Set 2 keyboard"))
         assertNull(KeypadLayoutDetector.fromDeviceName(null))
     }
-
-    // ── source 3: keypad-language system property ───────────────────────────
 
     @Test
     fun syspropIndexAndNameIsParsed() {
@@ -126,16 +106,13 @@ class KeypadLayoutDetectorTest {
 
     @Test
     fun missingOrUnparsableSyspropAbstains() {
-        // This is the reporter's LineageOS case. The old code returned "qwerty" for every one of
-        // these, which is exactly the wrong answer on a non-QWERTY unit.
+        // Missing or unparseable (some LineageOS builds): abstain, never "qwerty".
         assertNull(KeypadLayoutDetector.fromKeypadLanguageProp(null))
         assertNull(KeypadLayoutDetector.fromKeypadLanguageProp(""))
         assertNull(KeypadLayoutDetector.fromKeypadLanguageProp("   "))
         assertNull(KeypadLayoutDetector.fromKeypadLanguageProp("1"))
         assertNull(KeypadLayoutDetector.fromKeypadLanguageProp("1 dvorak"))
     }
-
-    // ── source 4: KCM Alt fingerprint ───────────────────────────────────────
 
     @Test
     fun kcmAltFingerprintSeparatesTheThreeKeymaps() {
@@ -150,8 +127,6 @@ class KeypadLayoutDetectorTest {
         assertNull(KeypadLayoutDetector.fromKeyCharacterMap(genericKcm))
         assertNull(KeypadLayoutDetector.fromKeyCharacterMap(null))
     }
-
-    // ── source 5: scancode observation ──────────────────────────────────────
 
     @Test
     fun scancodeObservationReadsTheTwoMovingKeys() {
@@ -204,16 +179,12 @@ class KeypadLayoutDetectorTest {
         assertDetected("azerty", Source.SCANCODE, detect(observed = "azerty"))
     }
 
-    // ── source 6: fallback ──────────────────────────────────────────────────
-
     @Test
     fun nothingKnownFallsBackToQwerty() {
         assertDetected("qwerty", Source.FALLBACK, detect())
         assertDetected("qwerty", Source.FALLBACK,
             detect(name = "stmpe_keypad", prop = "", kcm = genericKcm))
     }
-
-    // ── precedence ──────────────────────────────────────────────────────────
 
     @Test
     fun configBeatsNameBeatsSyspropBeatsKcmBeatsScancode() {
@@ -237,12 +208,10 @@ class KeypadLayoutDetectorTest {
             name = "stmpe_keypad", prop = "", kcm = genericKcm, observed = "qwertz"))
     }
 
-    // ── the device fixtures ─────────────────────────────────────────────────
-
     @Test
     fun athenaOnStockFirmware() {
-        // Verified on the owner's KEY2 2026-09-18: InputDevice name "stmpe_keypad" (no variant in
-        // the name, so source 2 abstains), ro.hwf.keypadlanguage "1 qwerty", stmpe.kcm.
+        // A stock KEY2: InputDevice "stmpe_keypad" (source 2 abstains), ro.hwf.keypadlanguage
+        // "1 qwerty", stmpe.kcm.
         assertDetected("qwerty", Source.SYSPROP, detect(
             name = "stmpe_keypad", prop = "1 qwerty", kcm = qwertyKcm))
     }
@@ -255,8 +224,8 @@ class KeypadLayoutDetectorTest {
 
     @Test
     fun qwertzKey2OnLineageOsWithNoSysprop() {
-        // The reporter's shape. The keypad MUST be named stmpe_qwertz_keypad for the ROM to have
-        // loaded stmpe_qwertz.kcm at all, so the name answers before anything else is needed.
+        // A QWERTZ KEY2 on a ROM with no property: the keypad must be named stmpe_qwertz_keypad
+        // for stmpe_qwertz.kcm to load, so the name answers first.
         assertDetected("qwertz", Source.DEVICE_NAME, detect(
             name = "stmpe_qwertz_keypad", prop = null, kcm = qwertzKcm))
     }
@@ -284,13 +253,10 @@ class KeypadLayoutDetectorTest {
             detect(name = "keypad", prop = null, kcm = genericKcm, observed = "azerty"))
     }
 
-    // ── the live adapter ────────────────────────────────────────────────────
-
     @Test
     fun detectLiveOnAJvmFallsBackAndRecordsItself() {
-        // No InputDevices and no keypad properties under Robolectric — the shape every JVM test
-        // of DeviceProfile runs in. It must land on FALLBACK, and must record itself so a later
-        // observeKeyEvent knows it is allowed to upgrade.
+        // Robolectric has no InputDevices or keypad properties: FALLBACK, recorded so a later
+        // observeKeyEvent may upgrade it.
         val detection = KeypadLayoutDetector.detectLive(null, null)
         assertDetected("qwerty", Source.FALLBACK, detection)
         assertDetected("qwerty", Source.FALLBACK, KeypadLayoutDetector.last()!!)

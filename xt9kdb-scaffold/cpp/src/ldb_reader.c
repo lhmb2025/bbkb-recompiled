@@ -1,48 +1,21 @@
-/* ldb_reader.c — the blob's LDB read callback and index teardown, owned (P-9, 2026-11 audit).
+/* ldb_reader.c: owned LDB read callback and index teardown. elf_cutover.py hands over
+ * ldbReadDataAW (0x1e6d0, via GLOB_DAT), ldbTerminate and ldbDeleteIndex (via PLT); the blob keeps
+ * ldbInit, the ldbIndex* builders and ldbReadDataCP (which jumps into the blob's ldbReadDataAW+0x24).
+ * The blob mallocs a 5 to 6 MB copy per LDB per engine. Uncompressed APK assets are instead mmapped
+ * MAP_PRIVATE read/write (same copy-on-write semantics, clean shared pages). Everything else takes
+ * malloc + memcpy / fread; downloaded packs are never mapped since an update can rewrite them in place.
  *
- * WHAT IT REPLACES
- *   libnative-lib.so keeps every dictionary (LDB) it has opened in a private heap copy: its read
- *   callback ldbReadDataAW (0x1e6d0) opens the APK asset in BUFFER mode, mallocs the whole file
- *   (5 to 6 MB), memcpys it and closes the asset (0x1e7e8-0x1e838). That copy lives until the
- *   engine is disposed, one per language ever activated, per engine (the spell checker runs a
- *   second engine with its own copies). elf_cutover.py hands three of the blob's exports to this
- *   file, exactly as it hands over the ET9KDB_* contract: ldbReadDataAW (reached only through its
- *   GLOB_DAT, the callback alphaInit passes to ET9AWLdbInit), ldbTerminate and ldbDeleteIndex
- *   (reached only through their PLT slots). Everything else about the index stays with the blob:
- *   ldbInit, ldbIndexAssetManager / ldbIndexDirectory / ldbIndexFile build the nodes, and
- *   ldbReadDataCP (Chinese) keeps the blob's own body, which branches into the ORIGINAL
- *   ldbReadDataAW+0x24 and so still mallocs.
- *
- * WHAT CHANGES
- *   An APK asset that is stored uncompressed (app/build.gradle noCompress 'ldb', Wave 1) is
- *   mmapped straight from the APK, MAP_PRIVATE with PROT_READ|PROT_WRITE: clean, file-backed,
- *   reclaimable pages shared by both engines instead of a dirty heap copy each. A private
- *   writable mapping has exactly the semantics of the private copy it replaces — if the engine
- *   ever wrote into its LDB the written page would be copied on write and nothing else would
- *   see it — so the change does not depend on the engine treating the LDB as read-only (Swype's
- *   iOS build of the same engine reads it from a PROT_READ mmap, MemoryMappedStartOfFile in
- *   SKI8, which suggests it does). Anything else (a compressed asset, a downloaded pack on disk,
- *   a failed mapping) takes the blob's own path byte for byte: malloc + memcpy / fread. Downloaded
- *   packs are deliberately NOT mapped: a pack can be rewritten in place by an update while an
- *   engine still holds its pointer, which a heap copy survives and a mapping does not.
- *
- * WHO OWNS node->data (the proof the change rests on; addresses in the pristine blob)
- *   - set and returned only here (the blob's 0x1e744 / 0x1e834 / 0x1e89c);
- *   - cached by the engine at ling+0x28 (size at +0x30) by the two callers of the callback,
- *     ET9AWLdbValidate (0xec238) and 0x6f534; the engine never frees it;
- *   - freed only by ldbTerminate (0x1f070: the only free() of a node's +0x18 in the blob), which
- *     dispose and the init failure paths reach through the PLT (0x20164/0x201d4/0x20224/0x20378);
- *   - ldbDeleteIndex (0x1efb8, from deregisterLdb at 0x2289c) unlinks and frees the node only.
- *   The nodes are reachable only through the index table at block+0xae200 (users: init,
- *   setLanguage, registerLdb, deregisterLdb, and the read callbacks via *ling).
+ * node->data: set only here; cached by the engine at ling+0x28 (size +0x30) by ET9AWLdbValidate
+ * (0xec238) and 0x6f534, never freed by it; freed only by ldbTerminate (0x1f070), reached from
+ * dispose and init failure paths (0x20164/0x201d4/0x20224/0x20378); ldbDeleteIndex (0x1efb8, from
+ * deregisterLdb 0x2289c) frees the node only. Index table at block+0xae200.
  *
  * NODE (calloc(1, 0x30) in ldbIndexAssetManager 0x1eaf4 / ldbIndexFile 0x1ef08)
  *   +0x00 u8 primary language (bucket)   +0x01 u8 secondary language   +0x08 char* name
  *   +0x10 u8 format flag   +0x14 u32 size   +0x18 u8* data   +0x20 u8 asset (1) or file (0)
- *   +0x21 u8 MAPPED — ours: padding the blob never reads or writes, zero from calloc
+ *   +0x21 u8 mapped (ours: padding the blob never touches, zero from calloc)
  *   +0x28 next
- *   The table is calloc(1, 0x7f8): 255 buckets, keyed by the language id's low byte.
- */
+ * Table: calloc(1, 0x7f8), 255 buckets keyed by the language id's low byte. */
 #define _POSIX_C_SOURCE 200809L   /* mmap, sysconf, strdup under -std=c11 */
 #include <stdint.h>
 #include <stdio.h>
@@ -102,8 +75,7 @@ static void release_data(LdbNode* n) {
     n->mapped = 0;
 }
 
-/* Fills node->data/size from the APK asset or the file named by node->name (the blob's
- * 0x1e7d4-0x1e938, plus the mapping). Leaves data NULL when nothing could be read. */
+/* Fills node->data/size from the asset or file (blob 0x1e7d4-0x1e938); data stays NULL on failure. */
 static void load_node(LdbNode* n) {
     if (n->isAsset) {
         LdbAsset* a = ldb_asset_open(n->name);
@@ -136,7 +108,7 @@ static void load_node(LdbNode* n) {
     if (len > 0) {
         uint8_t* buf = (uint8_t*)malloc((size_t)len);
         if (buf) {
-            /* As the blob does: a short read is logged and the buffer is still handed out. */
+            /* a short read is logged and the buffer still handed out */
             if (fread(buf, (size_t)len, 1, f) == 0)
                 ldb_log("Failed to read entire LDB.  errno: %s", strerror(errno));
             n->data = buf; n->size = (uint32_t)len;
@@ -161,11 +133,7 @@ int ldb_read_data(void** table, uint32_t langid, uint8_t** ppData, uint32_t* pSi
     return 0;
 }
 
-/* ---- the three exports elf_cutover.py hands over ------------------------------------------- */
-
-/* ET9 read callback: ET9STATUS (ET9AWLingInfo*, ET9U8** ppData, ET9U32* pSize). The index table
- * is the first word of the LingInfo, the language id is at info (ling+0x20) + 0xa0: the blob's
- * 0x1e6d0-0x1e6e0. */
+/* ET9 read callback. Index table = first word of the LingInfo; language id at *(ling+0x20) + 0xa0. */
 int ldbReadDataAW(void* ling, uint8_t** ppData, uint32_t* pSize) {
     if (!ling) return LDB_STATUS_NO_DATA;
     void** table = *(void***)ling;
@@ -174,8 +142,7 @@ int ldbReadDataAW(void* ling, uint8_t** ppData, uint32_t* pSize) {
     return ldb_read_data(table, *(const uint32_t*)(info + 0xa0), ppData, pSize);
 }
 
-/* Frees every node, its name and its data, then the table; *holder = NULL. Returns 1 (the blob
- * returns 1 whatever happens, including for a NULL holder). */
+/* Frees every node, name, data and the table; *holder = NULL. Always returns 1. */
 int ldbTerminate(void*** holder) {
     if (!holder) return 1;
     void** table = *holder;
@@ -196,11 +163,8 @@ int ldbTerminate(void*** holder) {
     return 1;
 }
 
-/* Unlinks the node for `langid` (the deregisterLdb path) and frees it and its name. The DATA is
- * deliberately not released, as in the blob: deregisterLdb does not deactivate the language,
- * so an engine whose active LDB this is still reads it through ling+0x28 until its next
- * setLanguage. A mapped buffer left behind is clean, reclaimable file memory; a heap one stays
- * allocated, as before. (The blob also leaked the name; nothing reads it once unlinked.) */
+/* Unlinks and frees the node for langid. The data is not released: deregisterLdb does not
+ * deactivate the language, so the engine still reads it through ling+0x28 until setLanguage. */
 void ldbDeleteIndex(void** table, uint32_t langid) {
     unsigned bucket = langid & 0xff, second = (langid >> 8) & 0xff;
     if (!table || bucket >= LDB_BUCKETS) return;

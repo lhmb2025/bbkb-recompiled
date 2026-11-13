@@ -75,21 +75,10 @@ public class SlideboardManager implements SettingsManager.OnSettingsChangeListen
     private static final float EDGE_SHADOW_WIDTH_DP = 12f;
 
     /**
-     * The soft shadow along the keyboard's edge, falling on the open panel, so the panel reads
-     * as sitting under the keyboard. Called at input-view creation and again on settings
-     * changes, so an in-place theme switch never leaves a stale color. The drawable fades from
-     * the shadow tone on its left to clear on its right; animateTranslation mirrors the view
-     * (scaleX -1) for the left-hand panel. The drawable's intrinsic size is required: the
-     * ImageView is layout_width="wrap_content", so it measures from the intrinsic width.
-     *
-     * The intrinsic HEIGHT must stay at 1px. The view is layout_height="match_parent"
-     * inside the layout_height="wrap_content" keyboard_frame, and FrameLayout folds every
-     * visible child's first-pass measured height into its own wrap_content height before
-     * it re-measures match_parent children. ImageView's first pass resolves to
-     * min(intrinsicHeight, availableHeight), so a screen-tall intrinsic height makes the
-     * view claim the whole input area the moment it becomes visible -- which lifts the
-     * keyboard to the top of the screen for the duration of a slide. scaleType="fitXY"
-     * stretches the 1px drawable to whatever the second pass hands the view.
+     * The shadow the keyboard edge casts on an open panel (re-applied on settings changes so a theme
+     * switch leaves no stale color; mirrored for the left panel). The ImageView measures from the
+     * intrinsic width. The intrinsic height must stay 1px: in the wrap_content keyboard_frame a tall
+     * first-pass height lifts the keyboard to the top of the screen during a slide; fitXY stretches it.
      */
     private void applyDividerFill() {
         if (this.dividerView == null) {
@@ -127,6 +116,7 @@ public class SlideboardManager implements SettingsManager.OnSettingsChangeListen
         this.quickPhrasesView = null;
     }
 
+    /** @param c0965e the keyboard now shown */
     public void setKeyboard(Keyboard c0965e) {
         if (c0965e != null && c0965e.isSlideboardEligible()) {
             SlideboardComponent interfaceC1082d = this.leftComponent;
@@ -139,7 +129,8 @@ public class SlideboardManager implements SettingsManager.OnSettingsChangeListen
         animateTranslation(0.0f, true, true, true);
     }
 
-    @Override // dev.bbkb.ime.core.settings.SharedPreferencesOnSharedPreferenceChangeListenerC0774c
+    /** @param c0804d the new settings */
+    @Override
     public void onSettingsValuesChanged(SettingsValues c0804d) {
         applyDividerFill();
         applySettings(c0804d);
@@ -148,6 +139,7 @@ public class SlideboardManager implements SettingsManager.OnSettingsChangeListen
         this.numericSubpanelController.applySettings(c0804d);
     }
 
+    /** @param c0804d the settings that place the numeric panel left or right */
     private void applySettings(SettingsValues c0804d) {
         if (c0804d.slideboardNumericLocation == 0) {
             this.leftComponent = this.numericSubpanelView;
@@ -158,6 +150,7 @@ public class SlideboardManager implements SettingsManager.OnSettingsChangeListen
         }
     }
 
+    /** @param interfaceC1082d the numeric or quick-phrases panel to attach */
     public void setSlideboardComponent(SlideboardComponent interfaceC1082d) {
         if (interfaceC1082d instanceof NumericSubpanelKeyboardView) {
             this.numericSubpanelView = (NumericSubpanelKeyboardView) interfaceC1082d;
@@ -172,11 +165,7 @@ public class SlideboardManager implements SettingsManager.OnSettingsChangeListen
         applySettings(SettingsManager.getInstance().getSettingsValues());
     }
 
-    /**
-     * Collapse the slideboard: both slide-out panels off, no divider. The name is the
-     * SlideboardManager's own (it "shows" the keyboard with the panels put away); the calls
-     * below say hide() now because that is what they do to the panels.
-     */
+    /** Collapse the slideboard ("show" the keyboard): both panels hidden, no divider. */
     public void show() {
         SlideboardComponent interfaceC1082d = this.leftComponent;
         if (interfaceC1082d != null) {
@@ -201,8 +190,7 @@ public class SlideboardManager implements SettingsManager.OnSettingsChangeListen
         if (interfaceC1082d2 != null) {
             interfaceC1082d2.show();
         }
-        // The edge shadow keeps its drawable's intrinsic width. The original stretched this view
-        // to half the screen, which with a flat fill laid a tint over the whole open panel.
+        // The edge shadow keeps its intrinsic width; stretching it would tint the whole panel.
     }
 
     public boolean isShowing() {
@@ -230,10 +218,20 @@ public class SlideboardManager implements SettingsManager.OnSettingsChangeListen
         }
     }
 
+    /**
+     * @param f the keyboard's target x translation
+     * @param z true to animate
+     */
     public void setTranslation(float f, boolean z) {
         animateTranslation(f, z, false, false);
     }
 
+    /**
+     * @param f the keyboard's target x translation
+     * @param z true to animate (a snap), false to set it directly
+     * @param z2 true to move even if the keyboard is not slideboard-eligible
+     * @param z3 true to collapse the panels when the snap ends
+     */
     public void animateTranslation(float f, boolean z, boolean z2, boolean z3) {
         if (f > this.maxTranslation || f < (-this.maxTranslation) || f == this.translationX) {
             return;
@@ -244,8 +242,7 @@ public class SlideboardManager implements SettingsManager.OnSettingsChangeListen
                 this.ime.hideFlickSuggestions();
             }
             this.translationX = f;
-            // Fully open (either side) or fully closed - the three states that change which
-            // alphabet key the UIM shows.
+            // Fully open (either side) or closed: the states that change the UIM's alphabet key.
             if (this.translationX == 0.0f || Math.abs(this.translationX) == this.maxTranslation) {
                 UnifiedInputBoardManager boardManager = this.keyboardSwitcher.getUnifiedInputBoardManager();
                 if (boardManager != null) {
@@ -296,7 +293,7 @@ public class SlideboardManager implements SettingsManager.OnSettingsChangeListen
         return this.translationX;
     }
 
-    @Override // dev.bbkb.ime.keyboard.slideboard.SlideboardComponent
+    @Override
     public void onSlideComplete() {
         setTranslation(0.0f, true);
     }
@@ -327,18 +324,29 @@ public class SlideboardManager implements SettingsManager.OnSettingsChangeListen
 
         private boolean cancelled;
 
-        @Override // android.animation.Animator.AnimatorListener
+        @Override
         public void onAnimationCancel(Animator animator) {
+            // onAnimationEnd follows and checks the cancelled flag.
         }
 
-        @Override // android.animation.Animator.AnimatorListener
+        @Override
         public void onAnimationRepeat(Animator animator) {
+            // The snap does not repeat.
         }
 
-        @Override // android.animation.Animator.AnimatorListener
+        @Override
         public void onAnimationStart(Animator animator) {
+            // Nothing to set up; the update listener drives the views.
         }
 
+        /**
+         * @param interfaceC1082d the left panel
+         * @param interfaceC1082d2 the right panel
+         * @param f the keyboard's target x translation
+         * @param i the left panel's width
+         * @param i2 the screen width
+         * @param z true to collapse the panels when the snap ends
+         */
         SnapAnimation(SlideboardComponent interfaceC1082d, View view, SlideboardComponent interfaceC1082d2, float f, int i, int i2, boolean z) {
             this.animLeftComponent = interfaceC1082d;
             this.keyboardView = view;
@@ -367,7 +375,7 @@ public class SlideboardManager implements SettingsManager.OnSettingsChangeListen
             this.animator.start();
         }
 
-        @Override // android.animation.ValueAnimator.AnimatorUpdateListener
+        @Override
         public void onAnimationUpdate(ValueAnimator valueAnimator) {
             float fFloatValue = ((Float) valueAnimator.getAnimatedValue()).floatValue();
             this.keyboardView.setTranslationX(fFloatValue);
@@ -396,14 +404,13 @@ public class SlideboardManager implements SettingsManager.OnSettingsChangeListen
             }
         }
 
-        @Override // android.animation.Animator.AnimatorListener
+        @Override
         public void onAnimationEnd(Animator animator) {
             if (SlideboardManager.this.activeSnap == this) {
                 SlideboardManager.this.activeSnap = null;
             }
             if (this.cancelled) {
-                // Cancelled by hide(): the components and the keyboard view this snap captured
-                // belong to an input view that is being torn down.
+                // Cancelled by hide(): what this snap captured belongs to a torn-down input view.
                 return;
             }
             if (this.showOnEnd) {

@@ -17,11 +17,8 @@ import org.robolectric.annotation.Config
 import java.io.File
 
 /**
- * Runtime subtypes for the engine-supported languages `method.xml` does not declare.
- *
- * The engine's locale table covers 94 languages; `method.xml` declares 66. Without this, the other
- * 28 install correctly and can never be selected — the pack is real, the dictionary loads, and the
- * language does not appear anywhere a user can reach.
+ * Runtime subtypes for engine-supported languages `method.xml` does not declare (94 in the engine,
+ * 66 declared). Without them the other packs install but can never be selected.
  */
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [34], manifest = Config.NONE)
@@ -33,14 +30,10 @@ class SideloadedSubtypesTest {
     @Before
     fun clean() {
         prefs.edit().remove("sideloaded_subtypes").commit()
-        // SubtypeFactory drops any subtype whose name resolves to subtype_generic, and the
-        // layout -> name table that decides that is built by this call. RichInputMethodManager
-        // makes it before reading the preference; a test that skips it sees every subtype filtered
-        // out and would "prove" the pref format is wrong.
+        // Builds the layout -> name table SubtypeFactory filters on (subtype_generic is dropped).
+        // Without it every subtype is filtered out.
         ResourceLocaleUtils.init(context)
     }
-
-    // ── the layout table ────────────────────────────────────────────────────────
 
     @Test
     fun everyLatinScriptLanguageGetsQwerty() {
@@ -51,8 +44,7 @@ class SideloadedSubtypesTest {
 
     @Test
     fun eachNonLatinLanguageGetsALayoutThatWritesItsOwnScript() {
-        // Not qwerty: a Burmese dictionary behind a Latin keyboard is unusable, and the point of
-        // the table is that every entry can actually type the language it claims.
+        // Not qwerty: every entry must be able to type the language it claims.
         assertEquals("bengali", SideloadedSubtypes.layoutFor("as"))
         assertEquals("east_slavic", SideloadedSubtypes.layoutFor("kk"))
         assertEquals("east_slavic", SideloadedSubtypes.layoutFor("tt"))
@@ -66,8 +58,7 @@ class SideloadedSubtypesTest {
 
     @Test
     fun everyLayoutNamedInTheTableActuallyShips() {
-        // Guards a typo turning into a subtype that resolves to no keyboard at all. Checked against
-        // the real resource, not a hardcoded list of layout names.
+        // Checked against the real resource so a typo cannot become a subtype with no keyboard.
         val res = context.resources
         for (lang in listOf("ha", "as", "kk", "tt", "ks", "sa", "ne", "my", "si", "ps", "ur", "ug", "tg", "am", "bo", "gu", "or", "pa")) {
             val layout = SideloadedSubtypes.layoutFor(lang)
@@ -79,7 +70,6 @@ class SideloadedSubtypesTest {
 
     @Test
     fun theFiveFormerlyExcludedLanguagesGetTheirOwnScriptLayouts() {
-        // Until 2026-09-28 these were refused because the tree had no layout for their scripts.
         val expected = mapOf("am" to "ethiopic", "bo" to "tibetan", "gu" to "gujarati", "or" to "oriya", "pa" to "gurmukhi")
         val res = context.resources
         for ((l, layout) in expected) {
@@ -91,15 +81,12 @@ class SideloadedSubtypesTest {
 
     @Test
     fun noLanguageMethodXmlAlreadyDeclaresIsInTheTable() {
-        // The table is for the GAP only. An entry duplicating a built-in subtype would register a
-        // second, competing subtype for the same language.
+        // The table covers the gap only; duplicating a built-in would register a competing subtype.
         for (builtIn in listOf("en", "fr", "de", "es", "it", "ru", "ja", "ko", "zh", "ar", "he", "iw", "jv", "nb", "fil", "in")) {
             assertFalse("$builtIn is declared in method.xml and must not be here",
                 SideloadedSubtypes.canOfferSubtypeFor(builtIn))
         }
     }
-
-    // ── the preference ──────────────────────────────────────────────────────────
 
     @Test
     fun addStoresThePairInTheFormatSubtypeFactoryParses() {
@@ -138,8 +125,7 @@ class SideloadedSubtypesTest {
 
     @Test
     fun aLanguageWhoseNameIsAPrefixOfAnotherIsNotRemovedByAccident() {
-        // "s" vs "sw": the entry match is on "<lang>:" precisely so that removing one language
-        // cannot take a longer-named one with it.
+        // "s" vs "sw": entries match on "<lang>:" so removing one language cannot remove a longer one.
         SideloadedSubtypes.add(context, "sw")
         SideloadedSubtypes.add(context, "st")
         SideloadedSubtypes.remove(context, "s")
@@ -153,8 +139,6 @@ class SideloadedSubtypesTest {
         assertEquals(0, SideloadedSubtypes.read(prefs).size)
         assertEquals(0, SubtypeFactory.createSubtypesFromPref(SideloadedSubtypes.readRaw(prefs)).size)
     }
-
-    // ── the non-Latin layouts survive the factory's filter ────────────────────────────────────
 
     @Test
     fun aRuntimeSubtypeOnANonLatinLayoutIsKeptAndOneOnAnUnknownLayoutIsDropped() {

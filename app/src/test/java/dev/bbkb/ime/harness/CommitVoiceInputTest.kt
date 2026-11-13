@@ -13,18 +13,9 @@ import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
 
 /**
- * Executable proof for `SS-1` of the Phase 2 audit
- * (docs/2026-07_pipeline-audit-findings_reference.md).
- *
- * `commitVoiceInput` is the entry point for TEXT_INPUT events — the route a single-char BMP
- * emoji from the palette takes (U+2705 and friends, fully-qualified emoji without VS16; the
- * supplementary-plane ones go through `onCodeInput` instead). When a word is composing, the
- * payload was committed twice: once by the separator-append gate inside `commitWordExtended`
- * — `isWordCharacter` reports symbols as separators — and again by `commitVoiceInput`'s own
- * unconditional `commitText`. Typing "k" and tapping ✅ produced "k✅✅".
- *
- * This suite exists at all only because the harness can now build a real `SuggestionUpdater`;
- * `commitVoiceInput` dereferences `mIme.suggestionUpdater` unconditionally and used to NPE here.
+ * Pins that `commitVoiceInput` (TEXT_INPUT events, e.g. a single-BMP palette emoji like U+2705)
+ * commits its payload once while a word is composing, despite the separator-append gate in
+ * `commitWordExtended` treating symbols as separators.
  */
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [34], manifest = Config.NONE, instrumentedPackages = ["com.blackberry.nuanceshim"])
@@ -39,12 +30,8 @@ class CommitVoiceInputTest {
     private val checkMark = "✅"
 
     /**
-     * An ordinary message field. `commitVoiceInput` reaches
-     * `CommitController.autoCorrectAndCommitExtended`, which now reads
-     * `editorCapabilities.shouldShowSuggestions` to decide whether a macro may expand - so these
-     * scenarios have to say which editor they are in. [PipelineHarness.settingsWith] leaves any
-     * field it is not given at its JVM default, and for an object field that default is `null`,
-     * not "off": before this, the suite NPE'd.
+     * An ordinary message field. `autoCorrectAndCommitExtended` reads
+     * `editorCapabilities.shouldShowSuggestions`, and an unset object field is `null` (NPE).
      */
     private fun settings() = h.settingsWith(
         "editorCapabilities" to EditorCapabilities(
@@ -85,8 +72,7 @@ class CommitVoiceInputTest {
 
     @Test
     fun ss1_emojiWithNoComposingWord_isStillCommittedOnce() {
-        // The non-composing branch never reached commitWordExtended, so it was always correct.
-        // Asserted so a fix to the composing branch cannot silently break this one.
+        // The non-composing branch never reaches commitWordExtended.
         h.startSession("hi ", 3)
 
         commitTextInput(checkMark)
@@ -96,8 +82,7 @@ class CommitVoiceInputTest {
 
     @Test
     fun ss1_multiCodePointTextInput_isCommittedOnce() {
-        // commitWordExtended's gate requires codePointCount == 1, so a longer payload was never
-        // double-committed. Pins that, since the fix must not start dropping these.
+        // commitWordExtended's gate requires codePointCount == 1, so longer payloads bypass it.
         h.startSession()
         h.editor.setComposingText("k", 1)
         h.seedComposing("k")
@@ -109,8 +94,8 @@ class CommitVoiceInputTest {
 
     @Test
     fun ss1_wordCharacterPayloadWhileComposing_isCommittedOnce() {
-        // A letter payload is NOT a separator, so commitWordExtended's gate does fire for it too
-        // (isWordCharacter || z). Pinned to catch a fix that keys off the wrong half of the gate.
+        // A letter payload also fires the gate (isWordCharacter || z); catches a fix keyed
+        // off the wrong half of it.
         h.startSession()
         h.editor.setComposingText("k", 1)
         h.seedComposing("k")

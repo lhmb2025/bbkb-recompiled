@@ -27,9 +27,8 @@ import org.robolectric.util.ReflectionHelpers
 import org.robolectric.util.ReflectionHelpers.ClassParameter
 
 /**
- * [KeyboardDeviceScanner]'s touch keypad half: the source-based passes as they always were (the
- * KEY2's standalone touch_keypad), the profile-named pad, and the live re-scan an input-device
- * listener drives — which must never touch the key configuration.
+ * [KeyboardDeviceScanner]'s touch keypad half: the source-based scan (the KEY2's touch_keypad),
+ * the profile-named pad, and the listener-driven live re-scan, which never touches the key config.
  */
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [34], manifest = Config.NONE)
@@ -89,8 +88,6 @@ class KeyboardDeviceScannerTest {
     private fun keyboard(id: Int, name: String) =
         device(id, name, InputDevice.SOURCE_KEYBOARD, InputDevice.KEYBOARD_TYPE_ALPHABETIC)
 
-    // ── the source-based scan, unchanged ─────────────────────────────────────
-
     @Test
     fun key2_standaloneTouchpadIsTheTouchKeypad() {
         keyboard(3, "stmpe_keypad")
@@ -109,8 +106,6 @@ class KeyboardDeviceScannerTest {
         device(9, "touchPad", InputDevice.SOURCE_TOUCHPAD)
         assertNull(KeyboardDeviceScanner.getInstance().primaryTouchKeypad)
     }
-
-    // ── the profile-named pad ────────────────────────────────────────────────
 
     @Test
     fun theNamedPadIsFound_whateverItsSources_andTheRearScreenIsNot() {
@@ -145,8 +140,6 @@ class KeyboardDeviceScannerTest {
         assertEquals(1440f, scanner.primaryTouchKeypad!!.xRangeMax, 0f)
     }
 
-    // ── live re-scan from the input-device listener ──────────────────────────
-
     @Test
     fun aPadThatAppearsAndVanishes_isPickedUpWithoutARestart() {
         keyboard(3, "TitanKey")
@@ -176,9 +169,8 @@ class KeyboardDeviceScannerTest {
     }
 
     /**
-     * Android reports the built-in keyboard as "changed" on every IME subtype switch. A reaction
-     * to that once emptied the scancode-role resolver and left every config-mapped key dead
-     * (2026-09-26). The scanner's listener re-scans the touch keypad only.
+     * Android reports the built-in keyboard "changed" on every subtype switch; reacting by
+     * rebuilding the key configuration kills every mapped key, so the listener re-scans the pad only.
      */
     @Test
     fun aDeviceChangedEvent_leavesTheKeyConfigurationAlone() {

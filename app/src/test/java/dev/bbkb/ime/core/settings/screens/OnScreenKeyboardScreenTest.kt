@@ -24,11 +24,7 @@ import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
 
-/**
- * "Slideboard settings" is here rather than under Personalization: everything behind it is
- * on-screen-keyboard behaviour. (The unified input menu rows moved to Auxiliary input, see
- * [AuxiliaryInputScreenTest].)
- */
+/** Pins that "Slideboard settings" sits on this screen: everything behind it is on-screen keyboard behaviour. */
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [34], qualifiers = "w411dp-h891dp")
 class OnScreenKeyboardScreenTest {

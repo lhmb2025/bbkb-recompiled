@@ -721,7 +721,6 @@
     <string name="device_config_import_unreadable">ไฟล์นั้นไม่ใช่การกำหนดค่าอุปกรณ์</string>
     <string name="device_config_import_failed">นำเข้าไฟล์นั้นไม่ได้</string>
 
-    <!-- OTA app updates -->
     <string name="settings_updates_title">การอัปเดต</string>
     <string name="settings_updates_summary">ตรวจหาเวอร์ชันใหม่ของ BBKB</string>
     <string name="settings_update_installed_version_title">เวอร์ชันที่ติดตั้ง</string>
@@ -755,7 +754,6 @@
     <string name="settings_update_ready_title">พร้อมติดตั้ง</string>
     <string name="settings_update_version_details">รายละเอียดเวอร์ชัน</string>
     <string name="settings_update_unknown_sources_title">อนุญาตให้ BBKB ติดตั้งการอัปเดตไหม</string>
-    <!-- Downloadable language packs (core/languagepack) -->
     <string name="language_packs_installed_header">ติดตั้งแล้ว</string>
     <string name="language_packs_available_header">พร้อมดาวน์โหลด</string>
     <string name="language_packs_download">ดาวน์โหลด</string>
@@ -877,7 +875,6 @@
     <string name="settings_voice_stop_on_pause_summary_off">ฟังต่อเนื่องแม้หยุดพูด จนกว่าคุณจะแตะไมโครโฟนหรือเงียบไปครึ่งนาที</string>
     <string name="voice_status_listening_tap_to_stop">กำลังฟัง&#8230; แตะไมโครโฟนเพื่อหยุด</string>
 
-    <!-- Settings text moved out of the code (2026-11) -->
     <string name="settings_common_save">บันทึก</string>
     <string name="settings_common_edit">แก้ไข</string>
     <string name="settings_common_back">กลับ</string>

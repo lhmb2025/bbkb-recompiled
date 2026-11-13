@@ -38,19 +38,10 @@ import org.robolectric.annotation.Config
 import java.util.Locale
 
 /**
- * Phase 1e characterisation: **key identity only**.
- *
- * <p>Every assertion here is a question about *which key this is* — is the event physical, what
- * did the remap turn it into, what does the device config call it, and what do the two
- * pseudo-keycodes 666 / 667 mean — asked through [KeyEventProcessor]'s two entry points. The
- * suite was written against the code as it stood at `fc35c516` and must keep passing verbatim
- * after the identity resolution is hoisted into [ResolvedKey]; nothing in it asserts on modifier
- * semantics or on the emoji/mic/multifunction down-up pairing flags, which Phase 1e does not
- * touch.
- *
- * <p>It is deliberately written against *observable* effects (which board the coordinator is
- * asked for, whether the key is handed back to the framework) rather than against the shape of
- * the branches, so that the refactor cannot make it pass by construction.
+ * Pins key identity only, through [KeyEventProcessor]'s two entry points: is the event physical,
+ * what the remap turned it into, what the device config calls it, and what pseudo-keycodes
+ * 666 / 667 mean. Asserts on observable effects (board requested, framework hand-back), not on
+ * branch shape.
  */
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [34], manifest = Config.NONE)
@@ -126,8 +117,6 @@ class KeyIdentityCharacterisationTest {
         PrefsManager.getPrefs(context).edit().clear().commit()
     }
 
-    // ===================================================== physical vs virtual
-
     @Test
     fun `a non-physical key-down goes straight back to the framework`() {
         `when`(classifier.isPhysicalKeyboardEvent(anyArg())).thenReturn(false)
@@ -151,9 +140,8 @@ class KeyIdentityCharacterisationTest {
     }
 
     /**
-     * The classification that the branches below the remap use is the one taken from the
-     * *remapped* event, not from the event the framework delivered. Pinned through the emoji
-     * board key, whose whole branch is gated on it.
+     * The branches below the remap classify the remapped event, not the delivered one. Pinned
+     * through the emoji board key, whose whole branch is gated on it.
      */
     @Test
     fun `the physical classification used after the remap is the remapped event's`() {
@@ -169,8 +157,6 @@ class KeyIdentityCharacterisationTest {
         verify(ime.getKeyboardSwitcher().unifiedInputBoardManager, never()).requestBoard(anyInt())
     }
 
-    // ===================================================== the remap decides identity
-
     @Test
     fun `the remapped key code is what the rest of the key-up path sees`() {
         val raw = keyUp(KeyEvent.KEYCODE_SHIFT_LEFT)
@@ -181,8 +167,6 @@ class KeyIdentityCharacterisationTest {
 
         verify(ime.getControlMode()).handleHardKeyUp(eq(KeyEvent.KEYCODE_CTRL_LEFT), anyArg())
     }
-
-    // ===================================================== the 666 / 667 pseudo-keycodes
 
     @Test
     fun `pseudo-keycode 666 is the emoji board key even with no device mapping`() {
@@ -219,8 +203,8 @@ class KeyIdentityCharacterisationTest {
     }
 
     /**
-     * 666 never reaches the bottom of the key-up path at all: it IS the emoji key, so the emoji
-     * branch consumes it (and, with no armed down-flag, opens nothing).
+     * 666 is the emoji key, so the emoji branch consumes it (opening nothing with no pending
+     * action) before the bottom of the key-up path.
      */
     @Test
     fun `an untracked 666 key-up is consumed by the emoji branch`() {
@@ -268,8 +252,6 @@ class KeyIdentityCharacterisationTest {
         verify(ime).superOnKeyUp(eq(KeyEvent.KEYCODE_FUNCTION), anyArg())
     }
 
-    // ===================================================== board roles
-
     @Test
     fun `a BOARD_EMOJI role opens the emoji board`() {
         mapKey(KeyRole.BOARD_EMOJI)
@@ -310,8 +292,6 @@ class KeyIdentityCharacterisationTest {
         verify(ime.getKeyboardSwitcher().unifiedInputBoardManager).requestBoard(43)
     }
 
-    // ===================================================== multifunction
-
     @Test
     fun `a MULTIFUNCTION key set to the emoji action takes the emoji board path`() {
         mapKey(KeyRole.MULTIFUNCTION, defaultAction = MultifunctionKeyHandler.ACTION_EMOJI_BOARD)
@@ -342,8 +322,6 @@ class KeyIdentityCharacterisationTest {
         verify(ime.getKeyboardSwitcher().unifiedInputBoardManager).requestBoard(-25)
     }
 
-    // ===================================================== the Sym key's two names
-
     @Test
     fun `the Sym key is recognised by key code when the device config is silent`() {
         assertTrue(KeyEventProcessor.isSymBoardKey(KeyEvent.KEYCODE_SYM, null))
@@ -361,8 +339,6 @@ class KeyIdentityCharacterisationTest {
             KeyEventProcessor.isSymBoardKey(KeyEvent.KEYCODE_SYM, character)
         )
     }
-
-    // ===================================================== board keys on the key-DOWN path
 
     @Test
     fun `an ordinary text key-down dismisses the open boards`() {
@@ -418,8 +394,6 @@ class KeyIdentityCharacterisationTest {
         verify(ime.getKeyboardSwitcher()).onSymbolKeyLongPress(anyInt(), anyInt())
     }
 
-    // ===================================================== one-shot symbol release gating
-
     @Test
     fun `the pseudo-keycodes never end a one-shot symbol entry`() {
         trackedWithHint()
@@ -469,8 +443,6 @@ class KeyIdentityCharacterisationTest {
         verify(ime.getKeyboardSwitcher()).onSymbolKeyLongPress(anyInt(), anyInt())
     }
 
-    // ===================================================== helpers
-
     /** Puts the key-up in the tracked branch with a symbol hint on the board. */
     private fun trackedWithHint() {
         `when`(ime.getInputLogic().isKeyTracked(anyArg())).thenReturn(true)
@@ -491,12 +463,7 @@ class KeyIdentityCharacterisationTest {
         KeyRoleTestSupport.everyKeyIs(mapping)
     }
 
-    /**
-     * Put a pending board action in place, the way a key-DOWN would. Phase 1g: this used to
-     * assign the `InputMethodHelper.emojiKeyPressed` / `micKeyPressed` /
-     * `multifunctionKeyPressed` flags; [BoardKeyPressTracker] owns that pairing now. Setup only —
-     * nothing this suite asserts is about the pairing.
-     */
+    /** Put a pending board action in place, the way a key-DOWN would. Setup only. */
     private fun arm(action: PendingKeyAction) {
         // The identity does not matter here: consumption is not gated on it (see
         // BoardKeyPairingCharacterisationTest), and this suite is about key identity, not pairing.
@@ -521,9 +488,8 @@ class KeyIdentityCharacterisationTest {
     )
 
     /**
-     * The two pseudo-keycodes, spelled out here so the characterisation suite keeps asserting on
-     * the *numbers* 666 and 667 rather than on whatever constant the production code later names
-     * them. If [ResolvedKey] ever changes their values this suite fails, which is the point.
+     * The pseudo-keycodes as literal numbers, so this suite fails if [ResolvedKey] ever changes
+     * their values.
      */
     private object ResolvedKeyConstants {
         const val PSEUDO_EMOJI = 666

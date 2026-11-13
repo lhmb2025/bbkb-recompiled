@@ -17,14 +17,9 @@ import org.robolectric.annotation.Config
 import java.util.Locale
 
 /**
- * The settings-load restructure (DeviceProfile built on a worker, the preloaded-config scan
- * memoised, the language-pack catalogue made lazy) touches everything `loadSettings` runs
- * through. `pref_*` keys and their defaults are frozen user state, so this pins the values a
- * `SettingsValues` comes out with — first for an untouched preferences file, then for one the
- * user has actually edited — against literals rather than against "whatever the code does now".
- *
- * A failure here means a stored preference changed meaning, which is the one outcome the startup
- * work was not allowed to have.
+ * Pins the values a `SettingsValues` comes out with, for an untouched and an edited preferences
+ * file, against literals. `pref_*` keys and defaults are frozen user state, so a failure means a
+ * stored preference changed meaning.
  */
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [34], manifest = Config.NONE)
@@ -43,12 +38,9 @@ class SettingsValuesSnapshotTest {
 
     @After
     fun tearDown() {
-        // SettingsManager is a process singleton and Robolectric shares its sandbox classloader
-        // between test classes with the same @Config, so an initialized manager outlives this
-        // class: its preference-change listener stays registered on the shared prefs instance
-        // and fires a full loadSettings() out of the next class's first `edit().commit()`, with
-        // whatever EditorCapabilities this class left behind. Hand the singleton back the way it
-        // was found.
+        // SettingsManager is a process singleton shared across test classes by Robolectric's
+        // sandbox; a left-registered listener would fire loadSettings() in the next class's first
+        // commit. Hand the singleton back the way it was found.
         val manager = SettingsManager.getInstance()
         runCatching { manager.unregisteredListener() }
         listOf("settingsValues", "sharedPreferences", "deviceProfile", "listeners").forEach {
@@ -72,10 +64,8 @@ class SettingsValuesSnapshotTest {
     private fun bool(id: Int) = context.resources.getBoolean(id)
 
     /**
-     * The same instance SettingsManager reads through. PrefsManager is a process singleton and
-     * Robolectric shares its sandbox classloader between test classes, so reaching for
-     * PreferenceManager.getDefaultSharedPreferences() here can hand back a *different* file from
-     * the one SettingsManager captured.
+     * The instance SettingsManager reads through: with the shared sandbox classloader,
+     * PreferenceManager.getDefaultSharedPreferences() can return a different file.
      */
     private fun prefs() = PrefsManager.getPrefs(context)
 
@@ -84,8 +74,7 @@ class SettingsValuesSnapshotTest {
         val sv = load()
         assertNotNull(sv)
 
-        // Resource-backed defaults: the value the shipped config says, read independently of the
-        // path SettingsValues took to it.
+        // Resource-backed defaults, read independently of the path SettingsValues took to them.
         assertEquals(bool(R.bool.config_default_show_predictions), sv.isPredictionsEnabled)
         assertEquals(bool(R.bool.config_default_on_key_predictions), sv.isOnKeyPredictionsEnabled)
         assertEquals(bool(R.bool.config_default_emoji_predictions), sv.isEmojiPredictionsEnabled)
@@ -93,8 +82,7 @@ class SettingsValuesSnapshotTest {
         assertEquals(bool(R.bool.config_default_flick_commit_animation), sv.flickCommitAnimationEnabled)
         assertEquals(bool(R.bool.config_default_sound_enabled), sv.isSoundEnabled)
 
-        // Hard-coded defaults, which have no resource to compare against and are therefore the
-        // ones a refactor can silently move.
+        // Hard-coded defaults have no resource to compare against, so a refactor can silently move them.
         assertEquals("regular", sv.keyboardHeightMode)
         assertEquals("disabled", sv.altSymShortcutAction)
         assertEquals("", sv.multifunctionKeyAction)
@@ -141,9 +129,8 @@ class SettingsValuesSnapshotTest {
     }
 
     /**
-     * `loadSettings` is called repeatedly on the cold path (once from `onCreate`, again from
-     * `onStartInputView` with the real editor). Whatever the count turns out to be on hardware,
-     * the values must not drift between loads for identical inputs.
+     * `loadSettings` runs repeatedly on the cold path (`onCreate`, then `onStartInputView`); values
+     * must not drift between loads for identical inputs.
      */
     @Test
     fun repeatedLoadsWithTheSameInputsAgreeFieldForField() {
@@ -165,11 +152,7 @@ class SettingsValuesSnapshotTest {
         assertEquals(first.locale, second.locale)
     }
 
-    /**
-     * `SettingsManager.loadSettings` also republishes the device profile. With the profile now
-     * built on a worker, the one thing that must stay true is that a load never leaves the
-     * manager holding a null profile.
-     */
+    /** `loadSettings` republishes the device profile (built on a worker) and must never leave it null. */
     @Test
     fun everyLoadPublishesADeviceProfile() {
         load()

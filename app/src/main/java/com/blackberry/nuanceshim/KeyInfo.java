@@ -1,10 +1,6 @@
 package com.blackberry.nuanceshim;
 
-/**
- * KeyInfo - Data structure for keyboard key position and metadata
- * Stores key bounds (left, top, right, bottom), center coordinates (x, y), and keyCode.
- * Used by NuanceSDK for tap position to key mapping.
- */
+/** Key bounds, center and keyCode for tap-to-key mapping; the engine blob looks this class up by name. */
 
 public class KeyInfo {
     public int bottom;

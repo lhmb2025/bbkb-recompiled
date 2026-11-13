@@ -721,7 +721,6 @@
     <string name="device_config_import_unreadable">ໄຟລ໌ນັ້ນບໍ່ແມ່ນການກຳນົດຄ່າອຸປະກອນ</string>
     <string name="device_config_import_failed">ນຳເຂົ້າໄຟລ໌ນັ້ນບໍ່ໄດ້</string>
 
-    <!-- OTA app updates -->
     <string name="settings_updates_title">ການອັບເດດ</string>
     <string name="settings_updates_summary">ກວດຫາເວີຊັນໃໝ່ຂອງ BBKB</string>
     <string name="settings_update_installed_version_title">ເວີຊັນທີ່ຕິດຕັ້ງ</string>
@@ -755,7 +754,6 @@
     <string name="settings_update_ready_title">ພ້ອມຕິດຕັ້ງ</string>
     <string name="settings_update_version_details">ລາຍລະອຽດເວີຊັນ</string>
     <string name="settings_update_unknown_sources_title">ອະນຸຍາດໃຫ້ BBKB ຕິດຕັ້ງການອັບເດດບໍ?</string>
-    <!-- Downloadable language packs (core/languagepack) -->
     <string name="language_packs_installed_header">ຕິດຕັ້ງແລ້ວ</string>
     <string name="language_packs_available_header">ສາມາດດາວໂຫຼດໄດ້</string>
     <string name="language_packs_download">ດາວໂຫຼດ</string>
@@ -877,7 +875,6 @@
     <string name="settings_voice_stop_on_pause_summary_off">ຟັງຕໍ່ໄປເຖິງແມ່ນຈະຢຸດເວົ້າ ຈົນກວ່າທ່ານຈະແຕະໄມໂຄຣໂຟນ ຫຼື ຫຼັງຈາກງຽບເຄິ່ງນາທີ</string>
     <string name="voice_status_listening_tap_to_stop">ກຳລັງຟັງ&#8230; ແຕະໄມໂຄຣໂຟນເພື່ອຢຸດ</string>
 
-    <!-- Settings text moved out of the code (2026-11) -->
     <string name="settings_common_save">ບັນທຶກ</string>
     <string name="settings_common_edit">ແກ້ໄຂ</string>
     <string name="settings_common_back">ກັບຄືນ</string>

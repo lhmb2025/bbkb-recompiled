@@ -16,11 +16,8 @@ public abstract class RunInLocale<T> {
     protected abstract T job(Resources resources);
 
     /**
-     * Runs {@link #job} against a {@code Resources} configured for {@code locale}.
-     *
-     * <p>This is the preferred entry point: it derives a throw-away configuration context instead
-     * of mutating the shared process-wide {@code Resources}, so a concurrent resource read on
-     * another thread cannot observe the swapped locale, and no global lock is taken.
+     * Runs {@link #job} against {@code Resources} for {@code locale}, via a throw-away configuration
+     * context so other threads never see the swapped locale and no global lock is taken.
      */
     public T runInLocale(Context context, Locale locale) {
         final Resources resources = context.getResources();

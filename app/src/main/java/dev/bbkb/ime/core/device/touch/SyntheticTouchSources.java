@@ -9,20 +9,13 @@ import java.util.Arrays;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
- * Device ids that a touch source stamps on MotionEvents it synthesises (a privileged evdev reader
- * has no InputDevice of its own to borrow), with the pad ranges that source measured.
- * {@code DeviceProfile.isFromTouchKeypad} accepts events carrying a registered id, a registered
- * source counts toward {@code hasTouchKeypad()}, and the measured ranges are
- * {@link TouchKeypadGeometry}'s top-precedence frame (see {@link #measuredPad()}).
- *
- * <p>A source registers its id when it starts delivering and unregisters it when it stops. The
- * set is tiny (one source at a time in practice) and read on every keypad MotionEvent, so it is an
- * immutable array swapped on write. {@link Listener}s hear about every change, on the thread that
- * made it.
+ * Device ids stamped on synthesised MotionEvents (an evdev reader has no InputDevice), with the
+ * ranges each source measured. Registered ids pass {@code isFromTouchKeypad}, count toward
+ * {@code hasTouchKeypad()}, and give {@link TouchKeypadGeometry} its top-precedence frame.
+ * Read on every keypad event, so it is an immutable array swapped on write; listeners run on the
+ * writing thread.
  */
 public final class SyntheticTouchSources {
-
-    /** Told after every registration change. */
     public interface Listener {
         void onSyntheticTouchSourcesChanged();
     }
@@ -32,15 +25,12 @@ public final class SyntheticTouchSources {
 
     private SyntheticTouchSources() {}
 
-    /** Register a source by its id alone: it measured nothing, so the profile's frame applies. */
+    /** Registers an id with no measured ranges, so the profile's frame applies. */
     public static void register(int deviceId) {
         register(TouchKeypadInfo.measured(deviceId, 0f, 0f));
     }
 
-    /**
-     * Register a source with the pad ranges it measured. Registering an id again replaces its
-     * ranges; registering the same facts again changes nothing and notifies no one.
-     */
+    /** Re-registering an id replaces its ranges; identical facts notify no one. */
     public static void register(@NonNull TouchKeypadInfo pad) {
         synchronized (SyntheticTouchSources.class) {
             final TouchKeypadInfo[] pads = sPads;
@@ -82,9 +72,8 @@ public final class SyntheticTouchSources {
     }
 
     /**
-     * The first registered source that measured both of the pad's ranges, or null. The same
-     * instance comes back until the registrations change, so a cache keyed on it stays valid
-     * exactly as long as its answer does.
+     * The first source that measured both ranges, or null. Same instance until registrations
+     * change, so callers may cache on its identity.
      */
     @Nullable
     public static TouchKeypadInfo measuredPad() {
@@ -102,7 +91,7 @@ public final class SyntheticTouchSources {
         sListeners.remove(listener);
     }
 
-    /** Drop every registration (tests). */
+    /** For tests. */
     public static void clear() {
         synchronized (SyntheticTouchSources.class) {
             if (sPads.length == 0) return;

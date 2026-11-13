@@ -46,7 +46,7 @@ public final class GestureTrailsDrawingPreview extends AbstractDrawingPreview im
         this.mGesturePaint = paint;
     }
 
-    @Override // dev.bbkb.ime.keyboard.internal.AbstractDrawingPreview
+    @Override
     public void setKeyboardViewGeometry(int[] iArr, int i, int i2) {
         super.setKeyboardViewGeometry(iArr, i, i2);
         this.mOffscreenOffsetY = (int) (i2 * 0.25f);
@@ -54,12 +54,10 @@ public final class GestureTrailsDrawingPreview extends AbstractDrawingPreview im
         this.mOffscreenHeight = this.mOffscreenOffsetY + i2;
     }
 
-    @Override // dev.bbkb.ime.keyboard.internal.AbstractDrawingPreview
+    @Override
     public void onDeallocateMemory() {
-        // Cancel the self-scheduled re-invalidate first: this is the detach path
-        // (DrawingPreviewPlacerView.removeAllDrawingPreviews from onDetachedFromWindow), and a
-        // pending run() would invalidate a detached view and let a racing drawPreview allocate a
-        // fresh full-size ARGB_8888 buffer nobody can see.
+        // Cancel the self-scheduled invalidate first: on detach a pending run() would let a
+        // racing drawPreview allocate a full-size buffer nobody can see.
         this.mDrawingHandler.removeCallbacks(this);
         synchronized (this.mGestureTrails) {
             this.mGestureTrails.clear();
@@ -107,16 +105,14 @@ public final class GestureTrailsDrawingPreview extends AbstractDrawingPreview im
         return zM7399a;
     }
 
-    @Override // java.lang.Runnable
+    @Override
     public void run() {
         invalidateDrawingView();
     }
 
     /**
-     * Drops any trail and frees its buffer; the next trail point allocates it again. Called when
-     * the keyboard goes away (MainKeyboardView.closing / onHideWindow) and when the trail is
-     * switched off. Same as {@link #onDeallocateMemory}, kept apart because that one is the
-     * placer's detach contract.
+     * Drops any trail and frees its buffer when the keyboard hides or the trail is switched off.
+     * Separate from {@link #onDeallocateMemory}, which is the placer's detach contract.
      */
     public void releaseOffscreenBuffer() {
         if (this.mOffscreenBuffer == null) {
@@ -126,12 +122,10 @@ public final class GestureTrailsDrawingPreview extends AbstractDrawingPreview im
         this.mOffscreenDirtyRect.setEmpty();
     }
 
-    @Override // dev.bbkb.ime.keyboard.internal.AbstractDrawingPreview
+    @Override
     public void drawPreview(Canvas canvas) {
         if (isPreviewEnabled()) {
-            // The placer draws on every key preview too. Only a trail needs the buffer (2.7 MB
-            // portrait): it used to be allocated at the first key preview and kept, even with
-            // swipe typing never used.
+            // The placer also draws for key previews; only a trail needs the buffer (2.7 MB portrait).
             if (this.mOffscreenBuffer == null) {
                 synchronized (this.mGestureTrails) {
                     if (this.mGestureTrails.size() == 0) {
@@ -153,6 +147,7 @@ public final class GestureTrailsDrawingPreview extends AbstractDrawingPreview im
         }
     }
 
+    /** @param c1084t the tracker whose stroke to draw */
     public void setGestureStroke(PointerTracker c1084t) {
         GestureTrailDrawingPoints c1057p;
         if (isPreviewEnabled()) {

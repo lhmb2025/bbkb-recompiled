@@ -22,8 +22,8 @@ import org.robolectric.Shadows.shadowOf
 import org.robolectric.annotation.Config
 
 /**
- * D-6: the key-preview placer MainKeyboardView adds to the window's content view leaves with the
- * keyboard view, so recreating the input view (a theme or height change) no longer stacks placers.
+ * The key-preview placer MainKeyboardView adds to the window's content view leaves with the
+ * keyboard view, so recreating the input view (theme or height change) does not stack placers.
  */
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [34])

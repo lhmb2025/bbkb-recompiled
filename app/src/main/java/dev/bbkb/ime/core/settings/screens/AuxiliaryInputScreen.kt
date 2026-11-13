@@ -20,17 +20,8 @@ import dev.bbkb.ime.keyboard.inputboard.clipboard.ClipboardHistoryManager
 import dev.bbkb.ime.keyboard.inputboard.clipboard.ClipboardPrefs
 
 /**
- * Input > Auxiliary input: the tools around typing itself, which the unified input menu
- * launches. The menu rows used to sit under On-screen keyboard, the emoji rows under
- * Suggestions, and the clipboard rows had a screen of their own (its "Clear history" action
- * went with it: switching history off wipes the clips anyway). Voice input was linked from here
- * for a month and went back to the Input hub (2026-11-11). The same day the four shake actions
- * came here as a closing section; they had a screen of their own, reached from the Input hub,
- * that held nothing else.
- *
- * "Replace text with emoji" greys out with dynamic search off rather than disappearing, so the
- * row count is fixed. The clipboard keys are [ClipboardPrefs]'s, written out as literals because
- * the search index anchors on them.
+ * Input > Auxiliary input: the input menu, clipboard and shake actions. The clipboard keys are
+ * [ClipboardPrefs]'s, written as literals because the search index anchors on them.
  */
 @Composable
 fun AuxiliaryInputScreen(
@@ -49,8 +40,7 @@ fun AuxiliaryInputScreen(
             ),
             modifier = Modifier.settingsSearchAnchor("pref_uim_enabled"),
         ),
-        // Open while the menu's switch is off: a key can still raise the menu then
-        // (SettingsValues.isUimEnabled), and its order is worth setting up beforehand anyway.
+        // Enabled while the menu's switch is off: a key can still raise the menu then.
         Nav(
             title = R.string.settings_customize_menu_title,
             icon = drawableIcon(R.drawable.ic_settings_uim_customize),
@@ -58,11 +48,8 @@ fun AuxiliaryInputScreen(
             onClick = { onNavigateToCustomizeMenu() },
         ),
 
-        // The emoji search switches moved to the two keyboard screens (2026-11-03): the
-        // on-screen one filters by the word being composed, the physical one types into the board.
         Category(R.string.settings_uim_toggle_clipboard),
-        // Off stops capturing and deletes what was kept, pinned clips included: a history the
-        // user switched off must not stay on the device.
+        // Off also deletes kept clips, pinned ones included.
         Toggle(
             store = boolPref("pref_clipboard_history_enabled", ClipboardPrefs.DEFAULT_HISTORY_ENABLED),
             title = R.string.clipboard_history_title,
@@ -93,7 +80,7 @@ fun AuxiliaryInputScreen(
         ),
 
         Category(R.string.settings_shake_title),
-        // The anchors are written out as literals: the search index test finds them by text.
+        // Literal anchors: the search index test finds them by text.
         shakeAction("shake_x_action", R.string.settings_shake_x_axis_title, R.drawable.ic_settings_shake_horizontal,
             Modifier.settingsSearchAnchor("shake_x_action")),
         shakeAction("shake_y_action", R.string.settings_shake_y_axis_title, R.drawable.ic_settings_shake_vertical,

@@ -15,10 +15,8 @@ import dev.bbkb.ime.BuildConfig
 import dev.bbkb.ime.core.BlackBerryIME
 
 /**
- * Reacts to the preference changes that must rebuild or re-theme the live keyboard:
- * UIM on/off, the physical keyboard's suggestion bar on/off, UIM menu order, a keyboard language's
- * letter layout, keyboard height mode, and the three theme keys.
- * Registered by [BlackBerryIME] on the default shared preferences for the service's lifetime.
+ * Preference changes that rebuild or re-theme the live keyboard (UIM, PKB bar, menu order, layouts,
+ * height mode, theme). Registered by [BlackBerryIME] for the service's lifetime.
  */
 class ThemePrefsListener(private val ime: BlackBerryIME) : SharedPreferences.OnSharedPreferenceChangeListener {
 
@@ -30,8 +28,7 @@ class ThemePrefsListener(private val ime: BlackBerryIME) : SharedPreferences.OnS
             if (!uimEnabled && uimManager != null) {
                 uimManager.hide()
             } else if (uimEnabled && uimManager != null) {
-                // The UIM will also show on the next onStartInputView() if shouldShowUim() agrees,
-                // so re-enabling never needs a keyboard rebuild.
+                // No rebuild needed: the next onStartInputView() shows it too.
                 if (ime.isInputViewShown()) {
                     uimManager.show(false)
                 }
@@ -39,47 +36,36 @@ class ThemePrefsListener(private val ime: BlackBerryIME) : SharedPreferences.OnS
         }
 
         if ("show_predictions" == key || "pref_uim_enabled" == key) {
-            // The bar above a physical keyboard's keys hides when neither suggestions nor the
-            // menu would be on it. Read from the preferences, not SettingsValues: SettingsManager's
-            // own listener may not have reloaded it yet.
+            // Read prefs, not SettingsValues: SettingsManager's listener may not have reloaded yet.
             val hasContent = SettingsManager.pkbBarHasContent(sharedPreferences, ime.resources)
             val uimManager = keyboardSwitcher.getUnifiedInputBoardManager()
             if (SettingsValues.isPkbSuggestionBarHidden(hasContent)) {
                 uimManager?.hide()
                 ime.auxBarManager?.hideSuggestionBar()
             } else if (hasContent && uimManager != null && ime.isInputViewShown()) {
-                // Back now if the menu is enabled; the strip returns with the next suggestions.
                 uimManager.show(false)
             }
         }
 
         if (UimMenuOrder.PREF_KEY == key) {
-            // The AuxBarManager keeps its own reference to the UIM keyboard; clear it so
-            // its no-arg show path re-fetches the recomposed bar from the UIM manager.
+            // AuxBarManager caches the UIM keyboard; clear it so show() re-fetches the new bar.
             ime.auxBarManager?.clearKeyboardCache()
             keyboardSwitcher.getUnifiedInputBoardManager()?.onMenuOrderChanged()
         }
 
         if (DeviceProfile.PREF_KEYPAD_LAYOUT == key) {
-            // The keypad's shape changed by the user's word: the device profile is rebuilt
-            // (symbol rows, Alt characters and the letter layouts' bindings all follow it), and
-            // every keyboard built on the old shape goes.
+            // Symbol rows, Alt characters and layout bindings all follow the rebuilt profile.
             DeviceProfile.initialize(ime.applicationContext)
             LetterLayoutRegistry.invalidate()
             KeyboardBuilder.clearKeyboardCache()
         }
 
         if (dev.bbkb.ime.core.layout.OnScreenKeyboardChoice.isPrefKey(key)) {
-            // A language's "Always show the on-screen keyboard" changed: shown or hidden now if
-            // that is the current keyboard's language.
             ime.refreshLanguageOnScreenKeyboard()
         }
 
         if (LetterLayoutChoice.isPrefKey(key)) {
-            // A language's Layout changed (here, or by a settings restore): the physical keys and
-            // the engine re-read it, and the on-screen keyboard is rebuilt from the chosen layout
-            // set on the next startInput. Its keyboards differ by layout set in the cache key, so
-            // the old ones only take memory.
+            // Rebuilt on the next startInput; old cached keyboards (keyed by layout set) only take memory.
             LetterLayoutRegistry.invalidate()
             KeyboardBuilder.clearKeyboardCache()
         }
@@ -88,9 +74,7 @@ class ThemePrefsListener(private val ime: BlackBerryIME) : SharedPreferences.OnS
             ime.numberPadController?.invalidateKeyboard()
             KeyboardBuilder.clearKeyboardCache()
             ResourceConfigManager.invalidateDimensionCache()
-            // AuxBarManager survives input-view recreation and caches its arrow/diacritics/UIM
-            // keyboards, which are built at the scaled strip height -- without this they keep
-            // the previous height forever.
+            // AuxBarManager survives view recreation and caches keyboards built at the old strip height.
             ime.auxBarManager?.clearKeyboardCache()
             ime.loadSettings()
             keyboardSwitcher.forceRecreateInputView()
@@ -109,10 +93,7 @@ class ThemePrefsListener(private val ime: BlackBerryIME) : SharedPreferences.OnS
                 sharedPreferences.getBoolean(PrefsManager.Keys.KEYBOARD_USE_SYSTEM_COLORS, false),
             )
             try {
-                // Full input-view recreation (same cascade as a height change): the input boards
-                // (FCC, voice, clipboard) gate their layouts on the theme at inflate time, so a
-                // repaint-only reload leaves them showing the previous theme's layout until the
-                // IME restarts.
+                // Full recreation: FCC, voice and clipboard pick their layout by theme at inflate time.
                 KeyboardBuilder.clearKeyboardCache()
                 ime.auxBarManager?.clearKeyboardCache()
                 ime.numberPadController?.invalidateKeyboard()

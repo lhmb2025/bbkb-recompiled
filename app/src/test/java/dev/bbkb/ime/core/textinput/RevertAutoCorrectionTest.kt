@@ -29,22 +29,10 @@ import org.robolectric.annotation.Config
 import java.util.Locale
 
 /**
- * CHARACTERISATION tests for the revert-auto-correction path — `RecorrectionController`
- * .revertAutoCorrection, reached through `BackspaceController.handleBackspace`.
- *
- * This is the behaviour a user notices most ("it changed my word and one backspace put it
- * back") and it had no test at all. Wave 3/4 touches both the gate in `handleBackspace` and
- * the body of `revertAutoCorrection`, so both halves are pinned here:
- *
- *  - **the gate**: `mEventDispatcher.isRevertEligible() && (!isFollowedBySpaceSymbol ||
- *    event.mX == COORD_SWIPE_DELETE_REVERT)` — defect 3 removed a word-separator test from
- *    this gate that no real post-auto-correction state could satisfy
- *  - **the body**: how much is deleted, what is put back, and whether what comes back is
- *    COMPOSING (still open for editing) or COMMITTED — which is decided entirely by whether
- *    the recorded word separator is really sitting before the cursor.
- *
- * The second backspace after a revert is asserted too: that is the keystroke users hit when
- * the revert was not what they wanted, and it behaves differently in the two cases.
+ * Pins `RecorrectionController.revertAutoCorrection` via `BackspaceController.handleBackspace`:
+ * the gate (`isRevertEligible() && (!isFollowedBySpaceSymbol || event.mX == COORD_SWIPE_DELETE_REVERT)`),
+ * the body (what is deleted and restored, and whether it comes back composing or committed, decided
+ * by whether the recorded separator really sits before the cursor), and the second backspace.
  */
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [34], manifest = Config.NONE, instrumentedPackages = ["com.blackberry.nuanceshim"])
@@ -68,19 +56,14 @@ class RevertAutoCorrectionTest {
         settingsStatic = mockStatic(SettingsManager::class.java)
         settingsStatic.`when`<SettingsManager> { SettingsManager.getInstance() }.thenReturn(sm)
 
-        // The revert re-opens the typed word as composing text, which needs key coordinates for
-        // it; the mock IME would hand back null. The no-coordinate sentinel is what
-        // PipelineHarness.seedComposing uses.
+        // The revert re-opens the typed word as composing, which needs key coordinates; the mock IME
+        // returns null. The no-coordinate sentinel matches PipelineHarness.seedComposing.
         `when`(h.ime.getKeyCoordinates(anyArg())).thenAnswer { inv ->
             IntArray((inv.arguments[0] as IntArray).size * 2) { -1 }
         }
     }
 
-    /**
-     * `ArgumentMatchers.any()` hands back `null`, which Kotlin refuses to pass to a
-     * non-nullable parameter. The matcher is still registered by the call, so casting the null
-     * through an unbounded type parameter is the standard way to use it from Kotlin.
-     */
+    /** `any()` returns null, which Kotlin cannot pass as non-null; the matcher is still registered, so cast through T. */
     @Suppress("UNCHECKED_CAST")
     private fun <T> anyArg(): T = any<T>() as T
 
@@ -91,12 +74,7 @@ class RevertAutoCorrectionTest {
         h.close()
     }
 
-    // ── setup helpers ───────────────────────────────────────────────────────────
-
-    /**
-     * Put the pipeline in the state that exists immediately after an auto-correction: the
-     * editor holds [committed], and the commit record remembers what the user actually typed.
-     */
+    /** The state right after an auto-correction: the editor holds [committed], the record remembers what was typed. */
     private fun afterAutoCorrection(
         editorText: String,
         cursor: Int,
@@ -133,8 +111,6 @@ class RevertAutoCorrectionTest {
         return t.substring(0, c) + "|" + t.substring(c)
     }
 
-    // ── the gate ────────────────────────────────────────────────────────────────
-
     @Test
     fun revertFires_whenTheCharacterBeforeTheCursorIsPartOfTheWord() {
         // No separator typed yet: the cursor sits right after the corrected word, so
@@ -147,16 +123,9 @@ class RevertAutoCorrectionTest {
 
     @Test
     fun revertFires_whenTheSeparatorTypedWithTheCorrectionSitsBeforeTheCursor() {
-        // DEFECT 3, now fixed. This is the case every user hits: auto-correct commits on
-        // space, so the character before the cursor when the backspace arrives is the space
-        // that was committed together with the correction. The gate used to demand word
-        // content there — a state no post-auto-correction cursor can be in — so keyboard
-        // backspace never reverted a correction at all; only the swipe-delete coordinate
-        // reached `revertAutoCorrection`. One backspace now puts the typed word back.
-        //
-        // The space goes too, and the word comes back composing: that is where the original
-        // keyboard ended up after its two presses (space deleted, then reverted). Restoring
-        // "teh |" left the next space press typing a second space (beta report 2026-10-23).
+        // Auto-correct commits on space, so the char before the cursor is that space; one backspace
+        // must still revert. The space goes too and the word comes back composing, so the next space
+        // press does not type a second space.
         afterAutoCorrection("the ", 4, typed = "teh", committed = "the", separator = " ")
         assertTrue(h.inputLogic.mEventDispatcher.isRevertEligible())
         backspace()
@@ -179,11 +148,8 @@ class RevertAutoCorrectionTest {
 
     @Test
     fun revertDoesNotFire_whenAFollowedBySpaceSymbolSitsBeforeTheCursor() {
-        // DEFECT 3 kept one exclusion: `symbols_followed_by_space` is ".,;:!?)]}&", and when
-        // one of those sits before the cursor the keystroke has to fall through to the
-        // double-space-period / swap-punctuation reverts further down `handleBackspace`, which
-        // own the undo for those. So the auto-correct revert stays shut here and the keystroke
-        // is an ordinary character delete.
+        // The one exclusion: with a `symbols_followed_by_space` char (".,;:!?)]}&") before the cursor,
+        // the double-space-period / swap-punctuation reverts own the undo, so this is a plain delete.
         afterAutoCorrection("the.", 4, typed = "teh", committed = "the", separator = ".")
         assertTrue(h.inputLogic.mEventDispatcher.isRevertEligible())
         backspace()
@@ -196,9 +162,8 @@ class RevertAutoCorrectionTest {
 
     @Test
     fun revertFires_afterASeparator_whenTheEventCarriesTheSwipeDeleteCoordinate() {
-        // The `event.mX == COORD_SWIPE_DELETE_REVERT` arm: a swipe-to-delete right after an
-        // auto-correction reverts it whatever sits before the cursor — including the
-        // followed-by-space punctuation the gate itself excludes.
+        // A swipe-to-delete (`COORD_SWIPE_DELETE_REVERT`) reverts whatever sits before the cursor,
+        // including the punctuation the gate excludes.
         afterAutoCorrection("the ", 4, typed = "teh", committed = "the", separator = " ")
         backspace(x = swipeDeleteRevert)
         assertEquals("teh |", editorState())
@@ -220,8 +185,6 @@ class RevertAutoCorrectionTest {
         backspace()
         assertEquals("th|", editorState())
     }
-
-    // ── the body: no separator -> the word comes back COMPOSING ─────────────────
 
     @Test
     fun revertWithNoSeparator_restoresTheTypedWordAsComposingText() {
@@ -253,8 +216,8 @@ class RevertAutoCorrectionTest {
 
     @Test
     fun secondBackspaceAfterANoSeparatorRevert_shrinksTheRestoredWordByOne() {
-        // The restored word is composing, so the next keystroke takes the composing path and
-        // trims one character — it does NOT re-apply the correction and does NOT drop the word.
+        // The restored word is composing, so the next keystroke trims one character; it neither
+        // re-applies the correction nor drops the word.
         afterAutoCorrection("the", 3, typed = "teh", committed = "the", separator = "")
         backspace()
         assertEquals("teh|", editorState())
@@ -274,8 +237,6 @@ class RevertAutoCorrectionTest {
         assertFalse(h.inputLogic.mComposingTracker.isComposing)
         assertFalse(h.editor.hasComposingRegion())
     }
-
-    // ── the body: separator present -> the word comes back COMMITTED ────────────
 
     @Test
     fun revertWithASeparator_restoresTheTypedWordAndTheSeparatorAsCommittedText() {
@@ -321,34 +282,27 @@ class RevertAutoCorrectionTest {
 
     @Test
     fun revertWhenTheRecordedSeparatorIsNotActuallyThere_fallsBackToTheComposingForm() {
-        // The `TextUtils.equals(str3, getTextBeforeCursor(length2, 0))` check: the record says a
-        // space was typed, but the editor shows something else. The separator is then NOT
-        // restored and the word comes back composing instead of committed.
+        // The `TextUtils.equals(str3, getTextBeforeCursor(length2, 0))` check: the record says a space
+        // was typed but the editor shows otherwise, so the word comes back composing, separator not restored.
         afterAutoCorrection("the!", 4, typed = "teh", committed = "the", separator = " ")
         backspace(x = swipeDeleteRevert)
         assertEquals("teh|", editorState())
         assertTrue(h.editor.hasComposingRegion())
     }
 
-    // ── commitType 1 overrides the recorded separator ───────────────────────────
-
     @Test
     fun revertWithCommitTypeOne_usesPeriodSpaceAsTheSeparator() {
-        // `if (1 == commitType) str3 = ". "` — the double-space-period substitution records its
-        // own separator regardless of what the commit event said.
+        // `if (1 == commitType) str3 = ". "`: the double-space period records its own separator.
         afterAutoCorrection("the. ", 5, typed = "teh", committed = "the", separator = " ")
         backspace(x = swipeDeleteRevert, commitType = 1)
         assertEquals("teh. |", editorState())
         assertFalse(h.editor.hasComposingRegion())
     }
 
-    // ── the auto-corrected composing word is committed before the revert ────────
-
     @Test
     fun backspaceOnAnAutoCorrectedComposingWord_commitsItFirst() {
-        // `composing && wasAutoCorrected` is the one composing state that does NOT take the
-        // shrink-by-one path: the word is committed first and the keystroke then continues
-        // down the ordinary delete path.
+        // `composing && wasAutoCorrected` skips the shrink-by-one path: the word is committed first and
+        // the keystroke continues down the ordinary delete path.
         h.startSession("", 0)
         h.inputLogic.mRichInputConnection.setComposingText("the", 1)
         h.seedComposing("the")

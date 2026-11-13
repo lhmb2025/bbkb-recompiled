@@ -75,44 +75,28 @@ import androidx.compose.foundation.layout.widthIn
 import androidx.compose.ui.res.stringResource
 import dev.bbkb.ime.R
 
-/**
- * Base preference item composable - Foundation for all preference types
- * Follows Material 3 design guidelines with design system tokens
- */
+/** The base settings row every preference type builds on. */
 @Composable
 fun PreferenceItem(
     title: String,
     summary: String? = null,
     icon: ImageVector? = null,
-    /** Alternative to [icon] for rows whose art is a drawable rather than a vector asset. */
+    /** Alternative to [icon] for drawable art. */
     iconPainter: Painter? = null,
-    /**
-     * Alternative to [icon] for rows whose leading art is composed rather than drawn from an asset -
-     * e.g. a short text badge. Laid out in the same 24dp column with the same gap, so titles still
-     * align with icon-bearing rows.
-     */
+    /** Composed alternative to [icon] (e.g. a text badge), in the same 24dp column so titles align. */
     leading: (@Composable () -> Unit)? = null,
     iconSpaceReserved: Boolean = false,
     enabled: Boolean = true,
     modifier: Modifier = Modifier,
-    /**
-     * The row's own background. Defaults to the group card inside a [PreferenceGroup] and to
-     * nothing (the page shows through) outside one; a list with a selection mode passes a tinted
-     * one for the rows that are selected.
-     */
+    /** Row background; defaults to the group card inside a [PreferenceGroup], else transparent. */
     containerColor: Color? = null,
     /**
-     * Where the row sits in a group that a lazy list lays out: the first and last rows paint the
-     * group's outer corners (see [groupOuterCorners]). Rows inside a [PreferenceGroup] leave this
-     * at [GroupEdge.Middle]; the group's clip rounds their outer corners for them.
+     * Position in a lazy-list group, so edge rows paint the outer corners ([groupOuterCorners]).
+     * Rows inside a [PreferenceGroup] keep [GroupEdge.Middle]; its clip rounds them.
      */
     groupEdge: GroupEdge = GroupEdge.Middle,
     onClick: (() -> Unit)? = null,
-    /**
-     * A small mark that belongs to the title - a chip, a tag - drawn right after it on the same
-     * line. When the title leaves it no room it moves to a line of its own under the title, so
-     * the title is never cut short for it.
-     */
+    /** A chip or tag after the title; wraps to its own line rather than cutting the title short. */
     titleAccessory: @Composable (() -> Unit)? = null,
     trailing: @Composable (() -> Unit)? = null
 ) {
@@ -132,20 +116,14 @@ fun PreferenceItem(
                     Modifier.clickable { onClick() }
                 } else Modifier
             ),
-        // Inside a group a row is a card with the group's small inner corners; the group's clip
-        // rounds the first and last rows' outer corners to the group radius. Outside a group the
-        // row stays flat on the page, as every row was before the grouped layout.
+        // In a group: a card with small inner corners (the group's clip rounds the outer ones).
         shape = if (inGroup) shapes.row else RectangleShape,
         color = containerColor ?: if (inGroup) settingsColors.card else Color.Transparent
     ) {
         Row(
-            // The caller's modifier (a search anchor, a selectable) sits inside the surface's
-            // clip, so the search pulse takes the row's shape instead of a square over the card.
+            // Caller's modifier inside the surface clip, so the search pulse takes the row's shape.
             modifier = modifier
-                // The minimum applies to the WHOLE row, padding included. It used to sit inside the
-                // 16dp vertical padding (min 48dp content), which made every single-line row
-                // 16 + 48 + 16 = 80dp instead of Material 3's 56dp one-line list item. A 56dp row
-                // still exceeds the 48dp touch target, which is what that minimum was for.
+                // Minimum height includes the padding, giving Material 3's 56dp one-line item.
                 .heightIn(min = spacing.oneLineListItemHeight)
                 .padding(
                     horizontal = spacing.listItemPadding,
@@ -154,7 +132,6 @@ fun PreferenceItem(
                 .fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            // Icon
             if (icon != null) {
                 Icon(
                     imageVector = icon,
@@ -191,15 +168,13 @@ fun PreferenceItem(
                     leading()
                 }
             } else if (iconSpaceReserved) {
-                // Reserve space so text aligns with icon-bearing items
                 Spacer(
                     modifier = Modifier
                         .padding(end = spacing.iconTextGap)
                         .size(spacing.iconSize)
                 )
             }
-            
-            // Text Content
+
             Column(
                 modifier = Modifier
                     .weight(1f)
@@ -208,7 +183,7 @@ fun PreferenceItem(
                 TitleWithAccessory(accessory = titleAccessory) {
                     Text(
                         text = title,
-                        style = MaterialTheme.typography.bodyLarge,  // Standard for preference items
+                        style = MaterialTheme.typography.bodyLarge,
                         color = if (enabled) {
                             MaterialTheme.colorScheme.onSurface
                         } else {
@@ -229,18 +204,13 @@ fun PreferenceItem(
                     )
                 }
             }
-            
-            // Trailing content (switch, checkbox, chevron, etc.)
+
             trailing?.invoke()
         }
     }
 }
 
-/**
- * A row's title with an optional mark after it (see [PreferenceItem]'s `titleAccessory`). The two
- * flow like words: side by side while both fit, the mark under the title when they do not.
- * Without a mark this is the title alone, laid out exactly as it always was.
- */
+/** A title with an optional mark that flows beside it, or under it when there is no room. */
 @Composable
 fun TitleWithAccessory(
     accessory: @Composable (() -> Unit)?,
@@ -263,9 +233,6 @@ fun TitleWithAccessory(
     }
 }
 
-/**
- * Switch preference composable - Material 3 switch with preference styling
- */
 @Composable
 fun SwitchPreference(
     title: String,
@@ -286,10 +253,8 @@ fun SwitchPreference(
         modifier = modifier,
         onClick = if (enabled) { { onCheckedChange(!checked) } } else null,
         trailing = {
-            // The switch asks for a 48dp touch target, which made a switch row a few dp taller
-            // than a navigation row and shifted its text down (Learning's first row sat lower
-            // than Assistance's). The row itself is the touch target, so the switch is laid out
-            // at its drawn height and the row keeps the same height as every other row.
+            // The row is the touch target, so lay the switch out at its drawn height; its 48dp
+            // target would make switch rows taller than other rows.
             Box(modifier = Modifier.height(32.dp), contentAlignment = Alignment.Center) {
                 Switch(
                     checked = checked,
@@ -301,10 +266,7 @@ fun SwitchPreference(
     )
 }
 
-/**
- * List preference composable with Material 3 dialog
- * Displays a dialog with radio button selection
- */
+/** A row that opens a single-choice radio dialog. */
 @Composable
 fun ListPreference(
     title: String,
@@ -338,10 +300,8 @@ fun ListPreference(
             onDismissRequest = { showDialog = false },
             title = { Text(title, style = MaterialTheme.typography.headlineSmall) },
             text = {
-                // Scrollable, and never taller than about half the screen, so long option lists
-                // (the multifunction-key and Alt+Sym pickers) keep their title and Cancel button
-                // on a short screen and scroll inside; the dialog's own bound alone let the last
-                // rows clip into text-less "bubbles" on the KEY2.
+                // Capped near half the screen and scrollable: the dialog's own bound alone let long
+                // lists clip their last rows into text-less bubbles on short screens.
                 val maxListHeight = (LocalConfiguration.current.screenHeightDp * 0.55f).dp
                 Column(modifier = Modifier.heightIn(max = maxListHeight).verticalScroll(rememberScrollState())) {
                     entries.forEachIndexed { index, entry ->
@@ -381,11 +341,7 @@ fun ListPreference(
     }
 }
 
-/**
- * Preference category header: the label above a [PreferenceGroup], in sentence case as the
- * Android 16 Settings app draws it (the string itself carries the case; nothing is uppercased
- * here any more), aligned with the row text inside the group.
- */
+/** The label above a [PreferenceGroup]; the string carries its own (sentence) case. */
 @Composable
 fun PreferenceCategory(
     title: String,
@@ -411,7 +367,7 @@ fun PreferenceCategory(
 /** True inside a [PreferenceGroup]; rows read it to paint themselves as cards. */
 val LocalInGroup = compositionLocalOf { false }
 
-/** Where a row sits in a group that a lazy list lays out: which of the group's outer edges it is on. */
+/** Which outer edges of a lazy-list group a row is on. */
 enum class GroupEdge { Middle, Top, Bottom, Only }
 
 /** The [GroupEdge] of row [index] in a run of [count] rows. */
@@ -423,12 +379,8 @@ fun groupEdge(index: Int, count: Int): GroupEdge = when {
 }
 
 /**
- * Paints the group's outer corners onto a row on the group's top or bottom edge, for lists a
- * [PreferenceGroup] cannot wrap (a `LazyColumn`): the page colour is drawn over the corner regions
- * outside the group radius, after the row's own content. The row keeps the uniform inner corners
- * for its clip, so hit-testing inside it is the same as in a middle row. (A clip with mixed corner
- * radii is hit-tested through path operations, which the JVM test environment does not implement:
- * every tap inside such a row missed its buttons there and landed on the row itself.)
+ * Group outer corners for `LazyColumn` edge rows, painted in the page colour over the row rather
+ * than clipped: a mixed-radius clip hit-tests via path ops, which Robolectric lacks, so taps missed.
  */
 fun Modifier.groupOuterCorners(edge: GroupEdge): Modifier = composed {
     if (edge == GroupEdge.Middle) return@composed this
@@ -468,11 +420,8 @@ fun Modifier.groupOuterCorners(edge: GroupEdge): Modifier = composed {
 }
 
 /**
- * A group of rows in the Android 16 Settings look: inset from the screen edge, clipped to the
- * group's outer radius, rows 2dp apart. Each row paints its own card with small inner corners and
- * the clip turns the first and last rows' outer corners into the group's. A row that is not
- * composed (hidden by a gate) leaves no gap, so a group needs no first/last bookkeeping, and the
- * same holds for a `LazyColumn` given the same clip and spacing.
+ * Android 16 Settings style group: inset, clipped to the outer radius, rows 2dp apart as their own
+ * cards. The clip rounds whichever rows are first and last, so hidden rows need no bookkeeping.
  */
 @Composable
 fun PreferenceGroup(
@@ -493,9 +442,7 @@ fun PreferenceGroup(
     }
 }
 
-/**
- * Preference screen navigation item - Navigates to sub-screen
- */
+/** A row that navigates to a sub-screen. */
 @Composable
 fun PreferenceScreen(
     title: String,
@@ -518,13 +465,6 @@ fun PreferenceScreen(
     )
 }
 
-/**
- * Preference screen navigation item with Painter icon - Navigates to sub-screen
- *
- * Was a hand copy of [PreferenceItem] plus a chevron, existing only because [PreferenceItem]
- * took an [ImageVector]. It now delegates, and the two rows are the same row by construction
- * rather than by two people keeping the padding and disabled alphas in step.
- */
 @Composable
 fun PreferenceScreen(
     title: String,
@@ -545,7 +485,6 @@ fun PreferenceScreen(
     )
 }
 
-/** The trailing affordance every navigation row draws. */
 @Composable
 private fun NavigateChevron(enabled: Boolean) {
     Icon(
@@ -559,9 +498,6 @@ private fun NavigateChevron(enabled: Boolean) {
     )
 }
 
-/**
- * Simple preference item for informational purposes
- */
 @Composable
 fun SimplePreference(
     title: String,
@@ -581,20 +517,18 @@ fun SimplePreference(
     )
 }
 
-/**
- * Text input preference with dialog
- */
+/** A row that edits text in a dialog. */
 @Composable
 fun EditTextPreference(
     title: String,
     summary: String? = null,
-    /** What the row shows as its title when that is not the dialog's heading ([title]). */
+    /** Row title when it differs from the dialog heading ([title]). */
     rowTitle: String = title,
     icon: ImageVector? = null,
     iconSpaceReserved: Boolean = false,
     value: String,
     enabled: Boolean = true,
-    /** False where an empty value means nothing: Save is then off while the field is blank. */
+    /** False disables Save while the field is blank. */
     allowBlank: Boolean = true,
     capitalization: KeyboardCapitalization = KeyboardCapitalization.None,
     onValueChange: (String) -> Unit
@@ -612,7 +546,7 @@ fun EditTextPreference(
 
     if (showDialog) {
         val shapes = LocalShapes.current
-        // Created with the dialog, so it always opens on the current value, cursor at the end.
+        // Created with the dialog, so it opens on the current value with the cursor at the end.
         var text by remember {
             mutableStateOf(TextFieldValue(value, selection = TextRange(value.length)))
         }
@@ -653,9 +587,7 @@ fun EditTextPreference(
     }
 }
 
-/**
- * Slider preference for numeric values with dialog
- */
+/** A row that sets a number with a slider dialog. */
 @Composable
 fun SliderPreference(
     title: String,
@@ -666,19 +598,14 @@ fun SliderPreference(
     valueRange: IntRange = 0..100,
     stepSize: Int? = null,
     unit: String = "",
-    /**
-     * True for a row that shows its current setting as its second line, like a picker does
-     * ("400 ms"); [summary] then moves into the dialog, above the slider. False keeps [summary]
-     * on the row, as the debug tuning screens want: there the sentence says what the parameter is.
-     */
+    /** True shows the value ("400 ms") on the row and moves [summary] into the dialog. */
     valueOnRow: Boolean = false,
     enabled: Boolean = true,
     modifier: Modifier = Modifier,
     onValueChange: (Int) -> Unit
 ) {
     var showDialog by remember { mutableStateOf(false) }
-    // See EditTextPreference above: key on the incoming value so the dialog reopens on the
-    // current setting rather than the one this row first composed with.
+    // Keyed on value so the dialog reopens on the current setting.
     var sliderValue by remember(value) { mutableStateOf(value.toFloat()) }
 
     val displaySummary = when {
@@ -699,8 +626,7 @@ fun SliderPreference(
     if (showDialog) {
         val spacing = LocalSpacing.current
         val shapes = LocalShapes.current
-        
-        // Calculate steps based on stepSize or default to 1-unit steps
+
         val steps = if (stepSize != null && stepSize > 1) {
             ((valueRange.last - valueRange.first) / stepSize) - 1
         } else {
@@ -728,7 +654,6 @@ fun SliderPreference(
                     Slider(
                         value = sliderValue,
                         onValueChange = { newValue ->
-                            // Snap to step size if specified
                             sliderValue = if (stepSize != null && stepSize > 1) {
                                 val snapped = ((newValue - valueRange.first) / stepSize).toInt() * stepSize + valueRange.first
                                 snapped.toFloat()
@@ -762,21 +687,18 @@ fun SliderPreference(
     }
 }
 
-/** A slider's setting as a row shows it: milliseconds through the translated "%d ms". */
+/** Milliseconds go through the translated "%d ms". */
 @Composable
 private fun sliderValueText(value: Int, unit: String): String =
     if (unit == "ms") stringResource(R.string.settings_feedback_milliseconds, value) else "$value$unit"
 
-/**
- * Grid preference composable with Material 3 dialog
- * Displays a dialog with grid selection - ideal for currency symbols, emojis, etc.
- */
+/** A row that picks one symbol from a grid dialog. */
 @Composable
 fun GridPreference(
     title: String,
     summary: String,
     icon: ImageVector? = null,
-    /** Composed leading art, e.g. the chosen symbol drawn as text; see [PreferenceItem]. */
+    /** Composed leading art, e.g. the chosen symbol as text. */
     leading: (@Composable () -> Unit)? = null,
     iconSpaceReserved: Boolean = false,
     entries: List<String>,
@@ -853,25 +775,10 @@ fun GridPreference(
     }
 }
 
-// ============================================================================
-// SHARED BLOCKS — the pieces screens used to hand-roll, one copy each
-// ============================================================================
-
 /**
- * The explanatory paragraph a screen puts above its rows.
- *
- * Five screens each carried a version of this and no two agreed: two drew an elevated card tinted
- * `primaryContainer`, one a `surfaceVariant` card with its own heading, two a bare [Text] with
- * their own padding and their own type ramp. Material 3 spends a card on a tappable *object*; a
- * tinted one reads as a warning the reader is supposed to act on. A sentence is neither.
- *
- * So this is the sentence, at the list's own metrics: its left edge is the row text's left edge
- * inside a group (group inset plus row padding), in the same body style the rows give their
- * summaries.
- *
- * [detail] is a second, smaller line for the screens that have one (a token list, a worked
- * example). [monospaceDetail] is for the one case where the characters themselves are the content
- * and the reader has to tell `%D` from `%d`.
+ * The explanatory paragraph above a screen's rows: plain text, not a card (a tinted card reads as
+ * a warning), aligned with row text. [detail] is a smaller second line; [monospaceDetail] for
+ * when characters like `%D` and `%d` must be told apart.
  */
 @Composable
 fun PreferenceInfo(
@@ -909,11 +816,7 @@ fun PreferenceInfo(
     }
 }
 
-/**
- * Short text in a row's leading slot, where an icon would otherwise be — a language code, a macro
- * tag. Drawn unbounded, so a label wider than the 24dp icon column still centres on it and the
- * title stays at the same x as on every icon-bearing row of every other screen.
- */
+/** Short text in the icon slot (a language code, a macro tag), unbounded so titles stay aligned. */
 @Composable
 fun PreferenceLeadingBadge(text: String) {
     Text(
@@ -927,11 +830,7 @@ fun PreferenceLeadingBadge(text: String) {
     )
 }
 
-/**
- * A word in the trailing slot — "Preinstalled", a state, a count. The 12dp end padding is
- * (48dp IconButton − 24dp glyph) / 2, so the label's right edge meets the right edge of an icon
- * button on a neighbouring row.
- */
+/** A trailing word; 12dp end padding = (48dp IconButton - 24dp glyph) / 2, to align with icon buttons. */
 @Composable
 fun PreferenceTrailingLabel(text: String) {
     Text(
@@ -943,15 +842,8 @@ fun PreferenceTrailingLabel(text: String) {
 }
 
 /**
- * The bin a removable row carries.
- *
- * Neutral on purpose. Material 3 spends the error colour on error states and on destructive
- * *confirmation* — the dialog's Delete button stays red — not on the entry point, where a column of
- * red icons made deletion look like the screen's main activity.
- *
- * Laid out at the glyph's 24dp height, so a row holding it is the same 56dp as a row holding a
- * [PreferenceTrailingLabel]. The button keeps its full 48dp touch target: it is drawn unbounded,
- * centred on the glyph, and 48dp fits inside a 56dp row.
+ * A removable row's delete button, neutral (red is for the confirmation). Laid out at 24dp so the
+ * row stays 56dp, with the 48dp touch target drawn unbounded around the glyph.
  */
 @Composable
 fun PreferenceDeleteButton(contentDescription: String, onClick: () -> Unit) {

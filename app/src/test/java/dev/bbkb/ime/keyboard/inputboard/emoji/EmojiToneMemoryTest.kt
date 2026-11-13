@@ -20,11 +20,11 @@ class EmojiToneMemoryTest {
 
     private lateinit var prefs: SharedPreferences
 
-    private val thumbs = "👍"            // 👍
-    private val thumbsQualified = "👍️" // 👍️ as emojibase stores it
-    private val thumbsMedium = "👍🏽" // 👍🏽
-    private val thumbsDark = "👍🏿"   // 👍🏿
-    private val heart = "❤️"              // ❤️
+    private val thumbs = "👍"
+    private val thumbsQualified = "👍️" // as emojibase stores it
+    private val thumbsMedium = "👍🏽"
+    private val thumbsDark = "👍🏿"
+    private val heart = "❤️"
 
     @Before
     fun setUp() {
@@ -89,7 +89,7 @@ class EmojiToneMemoryTest {
         assertEquals(thumbsMedium, EmojiToneMemory.preferred(prefs, thumbs))
     }
 
-    /** The exact value the old build's Gson wrote (a HashMap, so in its order) must keep answering. */
+    /** The exact value Gson wrote (a HashMap, so in its order) must keep answering. */
     @Test
     fun aValueTheGsonBuildWroteStillAnswers() {
         prefs.edit().putString("emoji_tone_memory", "{\"$heart\":\"x\",\"$thumbs\":\"$thumbsMedium\"}").commit()

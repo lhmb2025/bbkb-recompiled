@@ -12,16 +12,9 @@ import org.robolectric.annotation.Config
 import java.util.Locale
 
 /**
- * [PackListing] against the **real** `dist/manifest.json`.
- *
- * The two things the Language packs screen promises about its lists — one flat list, alphabetical
- * by the name actually on the row — are decided here and nowhere else, so they can be asserted
- * without rendering anything. The interesting case is the four `group` packs (Swiss German, Swiss
- * French, Swiss Italian, Belgian Dutch): they used to be drawn indented under the language they
- * replace and now have to stand in their own alphabetical place.
- *
- * Robolectric because [PackFixtures] parses the manifest with the framework's `org.json`,
- * an empty stub on the plain JVM.
+ * Pins [PackListing] against the real `dist/manifest.json`: one flat list, alphabetical by the
+ * name on the row, with the four `group` packs in their own alphabetical place. Robolectric
+ * because [PackFixtures] parses with `org.json`, an empty stub on the plain JVM.
  */
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [34], manifest = Config.NONE)
@@ -34,8 +27,6 @@ class PackListingTest {
 
     private fun available(installed: InstalledPacks = InstalledPacks()) =
         PackListing.available(PackCatalog.from(packs, installed).rows, Locale.ENGLISH)
-
-    // ── Flat ──────────────────────────────────────────────────────────────────────────────────
 
     @Test
     fun everyUninstalledPackIsItsOwnRowIncludingTheVariants() {
@@ -92,8 +83,6 @@ class PackListingTest {
         assertTrue("fr_CH is not", "fr_CH" in locales)
     }
 
-    // ── Collator cache ───────────────────────────────────────────────────────────────────────
-
     @Test
     fun theCachedCollatorIsHandedOutAsAFreshSecondaryStrengthCopy() {
         val first = PackListing.collator(Locale.GERMAN)
@@ -109,8 +98,6 @@ class PackListingTest {
         }
     }
 
-    // ── Alphabetical ──────────────────────────────────────────────────────────────────────────
-
     @Test
     fun theWholeListIsAlphabeticalByTheNameOnTheRow() {
         val names = available().map { it.displayName }
@@ -125,8 +112,7 @@ class PackListingTest {
 
     @Test
     fun aVariantSitsWhereItsOwnNameBelongsEvenWhenItsBaseIsNotInTheList() {
-        // Dutch ships with the app, so "Dutch" is not in this list at all - and "Dutch (Belgium)"
-        // is still among the D's rather than orphaned at the position its base used to hold.
+        // Dutch ships, so it is absent here, but "Dutch (Belgium)" still sorts among the D's.
         val names = available(withShippedBases).map { it.displayName }
         val belgian = names.indexOf("Dutch (Belgium)")
         assertTrue("Dutch (Belgium) must be offered", belgian > 0)
@@ -137,8 +123,7 @@ class PackListingTest {
 
     @Test
     fun sortingIgnoresCaseAndUsesTheLocalesOwnAlphabet() {
-        // Naively, "Zebra" (Z = 0x5A) sorts before "apple" (a = 0x61) and "ärzte" lands after
-        // "zulu". A collator puts all four where a reader would look for them.
+        // Code-point order puts "Zebra" before "apple" and "ärzte" after "zulu"; a collator does not.
         val names = listOf("zulu", "Banana", "ärzte", "apple", "Zebra")
         assertEquals(
             listOf("apple", "ärzte", "Banana", "Zebra", "zulu"),

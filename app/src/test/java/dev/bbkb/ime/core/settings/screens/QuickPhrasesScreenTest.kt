@@ -21,20 +21,9 @@ import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
 
 /**
- * CHARACTERISATION TEST — which preference key each quick-phrase row is bound to.
- *
- * The five phrases are persisted user state (`quick_phrase_1` … `quick_phrase_5` in the default
- * preferences file) and the slideboard reads them back by those exact keys. The screen was five
- * copy-pasted blocks, so the one thing that could silently break when they became a loop is the
- * row-to-key binding: row 3 must go on showing, and writing, `quick_phrase_3`. These cases pin that
- * by giving every key a distinguishable value and reading the rendered rows back in order.
- *
- * They also pin the defaults the screen shows for an unset key: the keyboard's own fallback phrases.
- *
- * **Not covered:** the write path. Editing a phrase goes through `EditTextPreference`'s dialog, and
- * a Material 3 text field inside an `AlertDialog` never reaches an idle composition under this
- * Robolectric/Compose combination (it reproduces with entirely stock components), so the dialog
- * cannot be driven from a unit test at all.
+ * Pins which `quick_phrase_N` key each quick-phrase row reads (the slideboard reads the same keys)
+ * and the keyboard fallback phrases shown for unset keys. The write path is not covered: its
+ * dialog's Material 3 text field never idles under Robolectric.
  */
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [34], qualifiers = "w411dp-h891dp")
@@ -56,9 +45,8 @@ class QuickPhrasesScreenTest {
     }
 
     /**
-     * Robolectric shares one sandbox — and therefore `PrefsManager`'s memoised SharedPreferences —
-     * between test classes with the same `@Config`. `SettingsScreenRenderTest` renders both this
-     * screen and `SlideboardLayoutScreen` in the fresh-install state, and both read these keys.
+     * Robolectric shares `PrefsManager`'s memoised prefs between test classes with the same
+     * `@Config`, and `SettingsScreenRenderTest` renders this and `SlideboardLayoutScreen` fresh.
      */
     @After
     fun tearDown() {
@@ -114,7 +102,7 @@ class QuickPhrasesScreenTest {
 
     @Test
     fun anUnsetPhraseFallsBackToTheDefaultTheKeyboardInserts() {
-        // The keyboard's own fallback (SettingsValues → R.string.pref_quick_phrase_N_default) is now shown.
+        // The keyboard's own fallback (R.string.pref_quick_phrase_N_default) is shown.
         render()
 
         assertEquals(

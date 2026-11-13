@@ -1,28 +1,8 @@
-/* bbkbevdev.c — raw evdev access for the Shizuku touch reader (libbbkbevdev.so).
- *
- * Loaded ONLY by dev.bbkb.ime.core.device.touch.shizuku.EvdevUserService, the Shizuku
- * UserService that runs as shell (adb-started Shizuku) or root in its own "<applicationId>:evdev"
- * process. The IME process never loads it, and this process never loads the engine blob. libc
- * only.
- *
- * Everything that can be pure Kotlin is (record parsing, packing, name matching, probe
- * decoding: see EvdevPacking.kt, TouchDeviceMatcher.kt, TouchDeviceInfo.kt). This file only does
- * what needs ioctl() and poll():
- *   nativeProbe    EVIOCGNAME, EVIOCGBIT + EVIOCGABS for ABS_X/Y, ABS_MT_POSITION_X/Y and
- *                  ABS_MT_SLOT, EVIOCGBIT for ABS_MT_TRACKING_ID and BTN_TOUCH
- *   nativeOpen     open, re-check the name on the open fd (the node may have been reassigned
- *                  since the probe), EVIOCSCLOCKID(CLOCK_MONOTONIC), and a wake pipe
- *   nativeRead     poll() on the device and the wake pipe, then read() whole input_event records
- *   nativeSetGrab  EVIOCGRAB on/off
- *   nativeWake     make the blocked (or next) nativeRead return 0, for good
- *   nativeClose    release the grab, close everything
- * Failures come back as a negated errno; -ENODEV means the device node is gone.
- *
- * Handles are small ints (1..MAX_HANDLES), not pointers: a tagged heap pointer can be negative
- * as a jlong, which would read as an error. Lifetime contract (kept by EvdevUserService): only
- * the reader thread calls nativeRead and then nativeClose; nativeWake/nativeSetGrab may come from
- * other threads but never after nativeClose.
- */
+/* bbkbevdev.c: raw evdev ioctl/poll for the Shizuku touch reader, loaded only by EvdevUserService
+ * in its own shell/root process (never the IME process). Parsing lives in Kotlin.
+ * Failures are negated errno; -ENODEV means the node is gone. Handles are small ints (1..MAX_HANDLES)
+ * because a tagged heap pointer can be negative as a jlong. Only the reader thread calls nativeRead
+ * then nativeClose; nativeWake/nativeSetGrab may come from other threads, never after nativeClose. */
 #define _GNU_SOURCE   /* pipe2 */
 #include <jni.h>
 #include <errno.h>
@@ -75,8 +55,8 @@ static int test_bit(unsigned bit, const unsigned long* bits) {
     return (int)((bits[bit / BITS_PER_ULONG] >> (bit % BITS_PER_ULONG)) & 1UL);
 }
 
-/* EVIOCGNAME into buf, made safe for NewStringUTF (which takes modified UTF-8): anything
- * outside printable ASCII becomes '?'. EvdevUserService compares names in this form. */
+/* EVIOCGNAME with non-printable-ASCII bytes replaced by '?' (NewStringUTF takes modified UTF-8).
+ * EvdevUserService compares names in this form. */
 static int read_name(int fd, char* buf, size_t cap) {
     memset(buf, 0, cap);
     if (ioctl(fd, EVIOCGNAME(cap - 1), buf) < 0) return -errno;
@@ -205,8 +185,8 @@ Java_dev_bbkb_ime_core_device_touch_shizuku_EvdevNative_nativeOpen(JNIEnv* env, 
         return rc;
     }
 
-    /* Stamp events with CLOCK_MONOTONIC (the uptimeMillis clock) instead of the per-fd default
-     * CLOCK_REALTIME. Kernels before 3.4 lack it; the Kotlin side then converts. */
+    /* CLOCK_MONOTONIC (uptimeMillis) instead of the default CLOCK_REALTIME; kernels before 3.4
+     * lack it and Kotlin converts. */
     monotonic = ioctl(fd, EVIOCSCLOCKID, &clock_id) == 0;
 
     if (pipe2(wake, O_CLOEXEC | O_NONBLOCK) < 0) {
@@ -251,7 +231,6 @@ Java_dev_bbkb_ime_core_device_touch_shizuku_EvdevNative_nativeSetGrab(JNIEnv* en
     (void)env; (void)cls;
     evdev_handle h;
     if (!get_handle(handle, &h)) return -EBADF;
-    /* EVIOCGRAB takes its argument by value: non-zero grabs, zero releases. */
     return ioctl(h.fd, EVIOCGRAB, grab ? 1 : 0) == 0 ? 0 : -errno;
 }
 
@@ -324,7 +303,7 @@ Java_dev_bbkb_ime_core_device_touch_shizuku_EvdevNative_nativeClose(JNIEnv* env,
     }
     pthread_mutex_unlock(&g_lock);
     if (!found) return;
-    ioctl(h.fd, EVIOCGRAB, 0);   /* close() drops it too; say so explicitly. EINVAL if not held. */
+    ioctl(h.fd, EVIOCGRAB, 0);   /* EINVAL if not held */
     close(h.fd);
     close(h.wake_rd);
     close(h.wake_wr);

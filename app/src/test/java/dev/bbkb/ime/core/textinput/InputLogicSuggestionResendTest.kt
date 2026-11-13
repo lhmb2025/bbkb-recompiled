@@ -18,10 +18,8 @@ import org.robolectric.annotation.Config
 import java.util.Locale
 
 /**
- * `InputLogic.onSuggestionsReceived` sends the composing text to the editor again only when the
- * auto-correct indicator's state changes. It used to resend on every reply (the early return
- * covered only an EMPTY list, which never reaches it), one extra `setComposingText` IPC per
- * keystroke on top of the one the typing path makes.
+ * `InputLogic.onSuggestionsReceived` re-sends the composing text only when the auto-correct
+ * indicator's state changes, not on every reply (an extra `setComposingText` IPC per keystroke).
  */
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [34], manifest = Config.NONE, instrumentedPackages = ["com.blackberry.nuanceshim"])

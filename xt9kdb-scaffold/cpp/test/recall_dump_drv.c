@@ -1,7 +1,5 @@
-/* recall_dump_drv.c — print the owned recall's top words for every trace of a corpus, so a change
- * to the frequency table or its index (C-6: the string-pointer table became one string blob plus
- * an offset table) can be checked against the previous build: dump before, dump after, diff.
- * Scores are printed as hex floats, so the diff is bit-exact.
+/* recall_dump_drv.c: prints the owned recall's top words per trace, so a frequency table or index
+ * change can be diffed against the previous build. Scores print as hex floats (bit-exact diff).
  *
  * Usage (from cpp/): recall_dump <kdb.xml> <corpus.txt> [<kdb.xml> <corpus.txt> ...]
  * run_tests.sh's recall_top8 stage runs it over the corpora and compares the whole output with

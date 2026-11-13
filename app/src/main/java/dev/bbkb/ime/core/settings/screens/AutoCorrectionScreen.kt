@@ -15,17 +15,12 @@ import dev.bbkb.ime.core.settings.ui.intAsStringPref
 import dev.bbkb.ime.R
 import dev.bbkb.ime.core.settings.util.SettingsManager
 
-/**
- * Auto-Correction Settings (Subpage 1 of Correction & Learning)
- * Automatic correction behavior
- */
 @Composable
 fun AutoCorrectionScreen(
     onNavigateBack: () -> Unit
 ) {
     SettingsScreenHost(R.string.settings_auto_correction_title, onNavigateBack, listOf(
-        // The switch for auto-correction as a whole (SettingsValues.isAutoCorrectEnabled); the
-        // two strength choices below only matter while it is on. With it and "Show suggestions"
+        // Master switch (SettingsValues.isAutoCorrectEnabled). With it and "Show suggestions"
         // both off, no suggestion lookup runs at all.
         Toggle(
             store = boolPref(SettingsManager.PREF_AUTO_CORRECTION_ENABLED, true),
@@ -35,7 +30,7 @@ fun AutoCorrectionScreen(
             modifier = Modifier.settingsSearchAnchor("auto_correction_enabled"),
         ),
         groupBreak(),
-        // PKB auto-correction mode — only on devices with a physical keyboard.
+        // Only on devices with a physical keyboard
         Choice(
             store = intAsStringPref("auto_correction_mode_PKB", 1),
             title = R.string.settings_autocorrect_pkb_title,
@@ -74,7 +69,7 @@ fun AutoCorrectionScreen(
     ))
 }
 
-/** The three modes both auto-correction rows offer. Values are the legacy int-as-string codes. */
+/** The three modes both auto-correction rows offer; values are int-as-string codes. */
 private fun autoCorrectionModes(context: android.content.Context) = listOf(
     ChoiceOption("0", context.getString(R.string.settings_autocorrect_mode_off)),
     ChoiceOption("1", context.getString(R.string.settings_autocorrect_mode_modest)),

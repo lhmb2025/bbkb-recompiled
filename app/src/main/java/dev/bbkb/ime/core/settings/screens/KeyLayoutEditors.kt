@@ -6,10 +6,7 @@ import dev.bbkb.ime.core.settings.screens.keyeditor.PkbSymbolPageSpec
 import dev.bbkb.ime.core.settings.screens.keyeditor.SlideboardNumpadSpec
 import dev.bbkb.ime.core.settings.screens.keyeditor.VkbSymbolPageSpec
 
-/**
- * The three routes onto the shared key-layout editor. Each is one `KeyEditorSpec`; the editor
- * itself lives in [dev.bbkb.ime.core.settings.screens.keyeditor].
- */
+/** Routes onto the shared key-layout editor in [dev.bbkb.ime.core.settings.screens.keyeditor]. */
 
 /** Custom symbol page, for the physical (`isPkb`) or the on-screen keyboard. */
 @Composable

@@ -24,20 +24,10 @@ import org.robolectric.util.ReflectionHelpers
 import java.util.Locale
 
 /**
- * Characterisation of the **PHYSICAL TEXT KEY** board policy — `dismissBoardsForTextKey`, raised
- * from `KeyEventProcessor` on every non-Shift, non-Enter, non-board physical key-down.
- *
- * This is one of the two "a key was pressed" policies, and until Phase 1d it was the only one with
- * no test at all. It is a different policy from the commit-driven rebuild (`SWITCH_LAYOUT`, whose
- * exempt set `CrossAxisRulesTest` pins): that one spares FCC, the number pad and voice; this one
- * used to spare FCC alone.
- *
- * **Owner ruling R3(b), 2026-09-22:** typing a letter must no longer close the number pad. The
- * number pad is a board the user types *from*, exactly like FCC, so it joins FCC in this policy's
- * exempt set. Voice deliberately does NOT: typing means the user has stopped dictating.
- *
- * The tests below are written against the *post-ruling* set and are marked where they would have
- * failed before it.
+ * Pins `dismissBoardsForTextKey`, raised from `KeyEventProcessor` on every non-Shift, non-Enter,
+ * non-board physical key-down. Exempt: FCC and the number pad (boards the user types from). Voice
+ * closes, since typing means dictation is over. Differs from the commit-driven `SWITCH_LAYOUT`
+ * rebuild pinned in `CrossAxisRulesTest`.
  */
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [34], manifest = Config.NONE)
@@ -103,11 +93,9 @@ class TextKeyBoardDismissalTest {
     /** Arrange "this board is the open one". */
     private fun open(keyCode: Int) = Mockito.`when`(coordinator.activeBoard()).thenReturn(keyCode)
 
-    // ═══════════════════════════════════════════ the boards that survive
-
     /**
-     * FCC keeps its own legacy dismissal with the mid-toggle exemption, and the coordinator is
-     * reconciled only when FCC really did hide. The generic close is never asked for it.
+     * FCC keeps its own dismissal with the mid-toggle exemption; the coordinator is reconciled only
+     * when FCC really hid. The generic close is never asked for it.
      */
     @Test
     fun aTextKeyLeavesTheCursorBoardToFccsOwnExemptDismissal() {
@@ -119,7 +107,7 @@ class TextKeyBoardDismissalTest {
         verify(fcc).hideUnlessToggling()
         verify(coordinator, never()).onTextKeyPressed()
         verify(coordinator, never()).notifyBoardClosed()
-        // the sweep still runs — it is defence-in-depth for components outside the coordinator
+        // the sweep still runs as defence in depth for components outside the coordinator
         verify(uim).hideComponentsExcept(intArrayOf(cursorBoard, numberPad))
     }
 
@@ -134,11 +122,7 @@ class TextKeyBoardDismissalTest {
         verify(coordinator).notifyBoardClosed()
     }
 
-    /**
-     * **R3(b), the behaviour change.** Typing a letter no longer closes the number pad — it is a
-     * board the user types FROM. Before the ruling the generic close fired here and the pad went
-     * away under the user's hands.
-     */
+    /** Typing a letter does not close the number pad: it is a board the user types from. */
     @Test
     fun aTextKeyLeavesTheNumberPadOpen() {
         open(numberPad)
@@ -148,10 +132,7 @@ class TextKeyBoardDismissalTest {
         verify(coordinator, never()).onTextKeyPressed()
     }
 
-    /**
-     * ...and the defence-in-depth sweep spares it too, not just the coordinator close: it runs
-     * with the table's whole text-key exempt set, not just FCC.
-     */
+    /** The defence-in-depth sweep spares it too: it uses the table's whole text-key exempt set. */
     @Test
     fun theDefenceInDepthSweepSparesTheWholeTextKeyExemptSet() {
         open(numberPad)
@@ -160,8 +141,6 @@ class TextKeyBoardDismissalTest {
 
         verify(uim).hideComponentsExcept(intArrayOf(cursorBoard, numberPad))
     }
-
-    // ══════════════════════════════════════════════ the boards that close
 
     /** Voice closes on a text key: typing means the user has stopped dictating. */
     @Test
@@ -183,11 +162,7 @@ class TextKeyBoardDismissalTest {
         verify(coordinator).onTextKeyPressed()
     }
 
-    /**
-     * With nothing open the generic close still runs (it is a no-op inside the coordinator) and
-     * the sweep goes with it. Pinned so the exemption above is visibly an exemption, not the
-     * default.
-     */
+    /** With nothing open the generic close and sweep still run (no-op), so the exemptions are visibly exemptions. */
     @Test
     fun aTextKeyWithNoBoardOpenStillRunsTheCloseAndTheSweep() {
         open(UnifiedBoardCoordinator.NO_BOARD)
@@ -199,13 +174,9 @@ class TextKeyBoardDismissalTest {
         verify(uim).refresh()
     }
 
-    // ════════════════════════════════════════ emoji dynamic search no longer special
-
     /**
-     * R3(c) (a text key closes nothing while emoji dynamic search runs) was retired on 2026-11-02:
-     * the emoji board takes its own text keys upstream, in KeyEventProcessor, so a text key that
-     * reaches this dismissal is one the board did not want and the ordinary policy applies, with
-     * the board up and dynamic search on or off.
+     * The emoji board takes its own text keys upstream in KeyEventProcessor, so a text key reaching
+     * here is one it did not want: the ordinary policy applies whether dynamic search is on or off.
      */
     @Test
     fun aTextKeyThatReachesDismissalDuringEmojiDynamicSearchFollowsTheOrdinaryPolicy() {
@@ -231,8 +202,6 @@ class TextKeyBoardDismissalTest {
 
         verify(coordinator).onTextKeyPressed()
     }
-
-    // ═══════════════════════════════════════════════ the UIM-disabled path
 
     /**
      * With the UIM disabled the coordinator path is skipped entirely and the emoji board, if it is

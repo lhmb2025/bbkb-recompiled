@@ -13,22 +13,11 @@ import dev.bbkb.ime.BuildConfig;
 
 
 /**
- * Captures the capabilities and constraints of the currently focused editor (text field),
- * derived from its {@link EditorInfo}. An instance is created on every
- * {@code onStartInput} call and stored inside
- * {@link dev.bbkb.ime.core.settings.util.SettingsValues} so that all parts
- * of the IME can make input-behaviour decisions — autocorrect, word suggestions, gesture
- * input, voice input, language-specific strip variants, etc. — without re-inspecting the
- * raw {@link EditorInfo} themselves.
- *
- * <p>Public fields are {@code final} and intended to be read directly. The small set of
- * accessor methods ({@link #shouldShowSuggestions()}, {@link #shouldShowChineseSuggestions()}, {@link #shouldShowJapaneseSuggestions()}) exist only
- * because some call sites were compiled against method references rather than field
- * accesses.</p>
- *
- * <p>When {@code editorInfo} is {@code null} or the field's input class is not
- * {@link android.view.inputmethod.InputType#TYPE_CLASS_TEXT} (and not the special dialer
- * value {@code 0x20}), all capability flags default to {@code false}.</p>
+ * What the focused field allows (suggestions, autocorrect, gestures, voice), derived from its
+ * {@link EditorInfo}. Built on every {@code onStartInput} and held in
+ * {@link dev.bbkb.ime.core.settings.util.SettingsValues}; fields are read directly.
+ * When {@code editorInfo} is null or the input class is not {@code TYPE_CLASS_TEXT} (and the raw
+ * inputType is not {@code 0x20}), every flag is false.
  */
 public final class EditorCapabilities {
 
@@ -56,21 +45,13 @@ public final class EditorCapabilities {
 
     public final boolean normalVariation;
 
-    /**
-     * {@code true} when the field accepts multi-line input
-     * ({@link android.view.inputmethod.InputType#TYPE_TEXT_FLAG_MULTI_LINE} is set).
-     * Key input handling should use this to decide whether the Enter key inserts a newline
-     * or triggers the editor's IME action (Send, Search, Done, Go, Next, etc.).
-     */
+    /** {@code TYPE_TEXT_FLAG_MULTI_LINE} is set: Enter inserts a newline instead of the IME action. */
     public final boolean isMultiLine;
 
     /**
-     * {@code true} when the field asks for no personalized learning
-     * ({@link EditorInfo#IME_FLAG_NO_PERSONALIZED_LEARNING}: incognito tabs, private messengers).
-     * Suggestions stay on; only learning and personal-data capture stop. The per-session switch
-     * that the learning sinks read is {@code DynamicLearningManager}, set in
-     * {@code InputLogic.updateDynamicLearningState()} from the live {@link EditorInfo}, because
-     * that runs before {@code loadSettings} rebuilds this object.
+     * {@link EditorInfo#IME_FLAG_NO_PERSONALIZED_LEARNING} (incognito): suggestions stay on, learning stops.
+     * Learning sinks read {@code DynamicLearningManager} instead, set from the live EditorInfo in
+     * {@code InputLogic.updateDynamicLearningState()}, which runs before {@code loadSettings} rebuilds this.
      */
     public final boolean noPersonalizedLearning;
 
@@ -81,20 +62,8 @@ public final class EditorCapabilities {
     private final String keyboardPackageName;
 
     /**
-     * Constructs an {@code EditorCapabilities} by inspecting the supplied {@link EditorInfo}.
-     *
-     * @param editorInfo                    the {@link EditorInfo} for the focused text field,
-     *                                      or {@code null} when no field is active
-     * @param allowsAppSpecifiedCompletions {@code true} if the host app may supply its own
-     *                                      completion candidates (gates {@link #hasAppSpecifiedCompletions})
-     * @param keyboardPackageName           the keyboard's own package name; used to namespace
-     *                                      {@code privateImeOptions} opt-out keys
-     * @param locale                        the current IME locale; determines whether
-     *                                      Chinese/Japanese suggestion variants are enabled
-     * @param forceSuggestions              Bug #3 escape hatch: when {@code true}, overrides the
-     *                                      editor's "no suggestions" declaration and forces
-     *                                      {@link #shouldShowSuggestions} on for normal (non-password)
-     *                                      text fields. Controlled by the "Force suggestions" setting.
+     * @param keyboardPackageName namespace for {@code privateImeOptions} opt-out keys
+     * @param forceSuggestions    the "Force suggestions" setting: overrides a no-suggestions field (not passwords)
      */
     public EditorCapabilities(EditorInfo editorInfo, boolean allowsAppSpecifiedCompletions, String keyboardPackageName, Locale locale, boolean forceSuggestions) {
         this.editorInfo = editorInfo;
@@ -131,15 +100,9 @@ public final class EditorCapabilities {
         boolean isMultiLine = (InputType.TYPE_TEXT_FLAG_MULTI_LINE & inputType) != 0;
         boolean hasAutoCorrectFlag = (InputType.TYPE_TEXT_FLAG_AUTO_CORRECT & inputType) != 0;
         boolean hasAutoCompleteFlag = (InputType.TYPE_TEXT_FLAG_AUTO_COMPLETE & inputType) != 0;
-        // TI-17 (checked against the original APK and refuted): the binding to IME_FLAG_FORCE_ASCII
-        // is correct and deliberate. The original's core/l.java computes the same three suggestion
-        // predicates from compat/e.a(imeOptions), which tests exactly IME_FLAG_FORCE_ASCII, and
-        // AOSP LatinIME's InputAttributes does the same. Only the local's name was misleading.
+        // IME_FLAG_FORCE_ASCII disabling suggestions is intended (AOSP LatinIME does the same).
         boolean forceAscii = (editorInfo.imeOptions & EditorInfo.IME_FLAG_FORCE_ASCII) != 0;
-        // Bug #3 escape hatch: when the user enables "Force suggestions", override an editor's
-        // no-suggestions declaration for normal text fields. Passwords are still excluded for
-        // security. This only affects TYPE_CLASS_TEXT fields (the early-return branch above
-        // already excluded numeric/phone/datetime classes, which never get word suggestions).
+        // "Force suggestions" overrides a no-suggestions text field, never a password.
         this.shouldShowSuggestions = (forceSuggestions && !this.isPassword)
                 || !(this.isPassword || InputTypeUtils.isEmailVariation(inputVariation) || inputVariation == InputType.TYPE_TEXT_VARIATION_URI || inputVariation == InputType.TYPE_TEXT_VARIATION_FILTER || hasNoSuggestionsFlag || forceAscii);
         boolean isPasswordField = this.isPassword;
@@ -149,10 +112,8 @@ public final class EditorCapabilities {
         this.shouldInsertSpaces = InputTypeUtils.isAutoSpaceFriendlyType(inputType);
         
         this.isMicrophoneAllowed = !(this.isPassword || InputTypeUtils.isEmailVariation(inputVariation) || (inputVariation == InputType.TYPE_TEXT_VARIATION_URI) || isAppMicrophoneDisabled());
-        // Original BB design (confirmed by Smali): autocorrect is active only when the field
-        // explicitly opts in via TYPE_TEXT_FLAG_AUTO_CORRECT, OR the field is multi-line.
-        // Single-line fields without the flag have noAutoCorrect=true. More conservative than
-        // stock Android IME behavior, but matches the original BB keyboard intent.
+        // Autocorrect only when the field sets TYPE_TEXT_FLAG_AUTO_CORRECT or is multi-line
+        // (stricter than stock IMEs, on purpose).
         this.noAutoCorrect = (inputVariation == InputType.TYPE_TEXT_VARIATION_WEB_EDIT_TEXT && !hasAutoCorrectFlag)
                 || hasNoSuggestionsFlag
                 || !(hasAutoCorrectFlag || isMultiLine);
@@ -170,38 +131,15 @@ public final class EditorCapabilities {
         this.isMultiLine = isMultiLine;
     }
 
-    /**
-     * Returns {@code true} if the supplied {@link EditorInfo} has the same raw
-     * {@code inputType} as the one this instance was constructed from. Useful for
-     * detecting mid-session input-type changes that would require re-evaluating
-     * capabilities.
-     *
-     * @param editorInfo the editor info to compare
-     * @return {@code true} if the input types match
-     */
     public boolean isSameInputType(EditorInfo editorInfo) {
         return editorInfo.inputType == this.rawInputType;
     }
 
-    /**
-     * Returns {@code true} if the host application has requested that the microphone
-     * (voice-input) key be hidden. Checks for the qualified option
-     * {@code "<keyboardPackageName>.noMicrophoneKey"} or the legacy short-form
-     * {@code "nm"} in {@link EditorInfo#privateImeOptions}.
-     *
-     * @return {@code true} if the application has opted out of the microphone key
-     */
+    /** The app hid the mic key via {@code "<package>.noMicrophoneKey"} or legacy {@code "nm"}. */
     private boolean isAppMicrophoneDisabled() {
         return hasPrivateImeOption(this.keyboardPackageName, "noMicrophoneKey", this.editorInfo) || hasPrivateImeOption(null, "nm", this.editorInfo);
     }
 
-    /**
-     * Returns a human-readable summary of this instance for logging, listing the raw
-     * {@code inputType} value and the names of all active capability flags.
-     *
-     * @return formatted capability string, e.g.
-     *         {@code "EditorCapabilities: inputType=0x00000001 shouldShowSuggestions targetApp=com.example"}
-     */
     @Override
     public String toString() {
         Object[] objArr = new Object[12];
@@ -220,31 +158,12 @@ public final class EditorCapabilities {
         return String.format("%s: inputType=0x%08x%s%s%s%s%s%s%s%s%s targetApp=%s\n", objArr);
     }
 
-    /**
-     * Whether the editor set {@link EditorInfo#IME_FLAG_NO_PERSONALIZED_LEARNING}.
-     *
-     * @param editorInfo the focused editor, or {@code null}
-     * @return {@code true} if the field is incognito
-     */
     public static boolean hasNoPersonalizedLearningFlag(EditorInfo editorInfo) {
         return editorInfo != null
                 && (editorInfo.imeOptions & EditorInfo.IME_FLAG_NO_PERSONALIZED_LEARNING) != 0;
     }
 
-    /**
-     * Checks whether a given option key is present in {@link EditorInfo#privateImeOptions}.
-     *
-     * <p>{@code privateImeOptions} is treated as a comma-separated list of keys. If
-     * {@code namespace} is non-{@code null}, the fully-qualified key tested is
-     * {@code "<namespace>.<optionKey>"}; otherwise {@code optionKey} is matched
-     * directly.</p>
-     *
-     * @param namespace  optional namespace prefix (typically the keyboard package name),
-     *                   or {@code null} to match the bare key
-     * @param optionKey  the option key to search for
-     * @param editorInfo the editor whose {@link EditorInfo#privateImeOptions} are inspected
-     * @return {@code true} if the (possibly namespaced) key is found
-     */
+    /** {@code privateImeOptions} (comma-separated) contains {@code "<namespace>.<optionKey>"}, or the bare key when namespace is null. */
     public static boolean hasPrivateImeOption(String namespace, String optionKey, EditorInfo editorInfo) {
         if (editorInfo == null) {
             return false;
@@ -255,29 +174,14 @@ public final class EditorCapabilities {
         return (!android.text.TextUtils.isEmpty(editorInfo.privateImeOptions) && java.util.Arrays.asList(editorInfo.privateImeOptions.split(",")).contains(optionKey));
     }
 
-    /**
-     * Returns {@code true} if the suggestion strip should be shown for this editor field.
-     *
-     * @return the value of {@link #shouldShowSuggestions}
-     */
     public boolean shouldShowSuggestions() {
         return this.shouldShowSuggestions;
     }
 
-    /**
-     * Returns {@code true} if the Chinese-specific suggestion strip variant should be shown.
-     *
-     * @return the value of {@link #shouldShowChineseSuggestions}
-     */
     public boolean shouldShowChineseSuggestions() {
         return this.shouldShowChineseSuggestions;
     }
 
-    /**
-     * Returns {@code true} if the Japanese-specific suggestion strip variant should be shown.
-     *
-     * @return the value of {@link #shouldShowJapaneseSuggestions}
-     */
     public boolean shouldShowJapaneseSuggestions() {
         return this.shouldShowJapaneseSuggestions;
     }

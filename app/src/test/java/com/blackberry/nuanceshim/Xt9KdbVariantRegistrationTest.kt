@@ -16,10 +16,9 @@ import org.robolectric.annotation.Config
 import java.util.Collections
 
 /**
- * [Xt9KdbVariant]'s registry calls with the owned library replaced by a recording bridge (the
- * library cannot load on the JVM): the device variant [Xt9KdbVariant.apply] builds from the
- * app's assets (its keypad geometry and the built-in letter layouts), and the generated variants a letter layout registers ([Xt9KdbVariant.registerGenerated])
- * and selects ([Xt9KdbVariant.selectVariant]) on top of it.
+ * [Xt9KdbVariant]'s registry calls through a recording bridge (the native library cannot load on
+ * the JVM): the device variant [Xt9KdbVariant.apply] builds from assets, and the generated
+ * variants a letter layout registers and selects on top of it.
  */
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [34])
@@ -117,8 +116,7 @@ class Xt9KdbVariantRegistrationTest {
     fun registerGenerated_refusesWhatTheNativeSideCannotKey() {
         assertFalse(Xt9KdbVariant.registerGenerated("", ByteArray(10)))
         assertFalse(Xt9KdbVariant.registerGenerated("layout:x", ByteArray(0)))
-        // "layout:" plus the longest id a layout may have fits; one byte more than the native
-        // field does not, and is refused rather than cut short.
+        // "layout:" plus the longest layout id fits the native field; one byte more is refused, not cut.
         val longestId = "a".repeat(64)
         assertTrue(Xt9KdbVariant.registerGenerated("layout:$longestId", ByteArray(1)))
         assertFalse(Xt9KdbVariant.registerGenerated("x".repeat(Xt9KdbVariant.MAX_VARIANT_NAME_BYTES + 1), ByteArray(1)))

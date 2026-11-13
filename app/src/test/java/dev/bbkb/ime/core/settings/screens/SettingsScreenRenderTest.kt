@@ -41,36 +41,11 @@ import org.robolectric.annotation.Config
 import java.io.InputStream
 
 /**
- * CHARACTERISATION TEST — renders every Compose settings screen and pins what it puts on screen.
- *
- * The plan's Wave 2 line asks for "one Compose test rendering every `ScreenSpec`". `ScreenSpec`
- * does not exist: it is the type Wave 3 proposes to introduce when the 39 hand-written screens
- * under `core/settings/screens/` are collapsed into a declarative spec table plus one renderer.
- * So this is the characterisation form of that test — it renders the 39 screens as they are today
- * and records their output, which is exactly the safety net the Wave 3 rewrite needs: point
- * [contentFor] at the new renderer, change nothing else, and every row must still come out.
- *
- * Per screen it asserts three things:
- *
- *  1. it composes and lays out without throwing;
- *  2. its top-app-bar title is the topmost laid-out text on screen;
- *  3. the **exact** set of text it renders, split into
- *     - `resources`: the canonical `R.string` name for each rendered string. Several resources can
- *       share a value (four of them are literally "BBKB"); the name recorded is the
- *       lexicographically first, so the mapping is deterministic. Recording names rather than the
- *       English copy means a wording change does not fail this test — only a row appearing,
- *       disappearing, or switching to a different resource does.
- *     - `literals`: text the screen hardcodes in Kotlin rather than reading from a resource. These
- *       are recorded verbatim, and there are more of them than you would hope — see the report.
- *
- * Values shorter than four characters are not resolved to resource names (a screen full of "3",
- * "(" and "@" would otherwise match a dozen unrelated config strings), so single symbols land in
- * `literals`.
- *
- * The screens are rendered in the state a fresh install produces: no preferences written, an empty
- * user dictionary, no custom macros, no multi-language configurations. Two screens take a variant
- * argument and so appear twice (`CustomSymbolPageScreen` for PKB and VKB), which is why 36 files
- * give 37 cases.
+ * Renders every Compose settings screen and pins what it shows: it composes, its app-bar title is
+ * the topmost laid-out text, and its exact text as `resources` (the lexicographically first
+ * `R.string` name per value, so wording changes do not fail) and `literals` (hardcoded text).
+ * Values under four characters are never resolved to names, so symbols land in `literals`.
+ * Screens render in fresh-install state; `CustomSymbolPageScreen` appears twice (PKB and VKB).
  */
 @RunWith(ParameterizedRobolectricTestRunner::class)
 @Config(sdk = [34], qualifiers = "w411dp-h891dp")
@@ -80,13 +55,8 @@ class SettingsScreenRenderTest(private val screenName: String) {
     val composeRule = createComposeRule()
 
     /**
-     * @param name    key into [contentFor]; usually the composable's file name.
-     * @param route   the [SettingsRoute] the settings NavHost reaches this screen by. Not asserted
-     *                here — it is what lets a future test line the screens up against
-     *                `SettingsSearchIndex`, and it documents which route each file serves.
-     * @param title   the top-app-bar title: the topmost text that is actually laid out.
-     * @param resources canonical `R.string` names for every resource-backed string rendered.
-     * @param literals  every rendered string that is not a string resource, verbatim.
+     * @param name key into [contentFor]
+     * @param route the [SettingsRoute] the NavHost reaches this screen by; documentation, not asserted
      */
     private data class Case(
         val name: String,
@@ -95,30 +65,15 @@ class SettingsScreenRenderTest(private val screenName: String) {
         val resources: Set<String>,
         val literals: Set<String>,
         /**
-         * Hardcoded text a screen renders only after a load on `Dispatchers.IO` finishes.
-         * `waitForIdle()` cannot see that work, so whether these are on screen at snapshot time is
-         * a race (machine load decides it). They may be present; nothing outside `literals` and
-         * `lateLiterals` may be.
+         * Hardcoded text that appears only after a `Dispatchers.IO` load, which `waitForIdle()`
+         * cannot see, so it may or may not be on screen at snapshot time.
          */
         val lateLiterals: Set<String> = emptySet(),
-        /**
-         * The same tolerance for resource-backed text: `R.string` names a screen renders only
-         * once an IO load has finished, and therefore may or may not be on screen when the
-         * snapshot is taken.
-         *
-         * Added for `LanguagePacksScreen`, whose downloadable-catalogue section reports whatever
-         * the fetch came back with. Under Robolectric that is always a failure (there is no
-         * network and no cached manifest), but *which* failure and whether it has landed yet are
-         * not things this test should pin. Everything a screen renders unconditionally still
-         * belongs in `resources`, which stays exact.
-         */
+        /** As [lateLiterals], for resource-backed text (e.g. the language pack catalogue's fetch result). */
         val lateResources: Set<String> = emptySet(),
     )
 
-    /**
-     * Version text moves on every release; it is the one thing not pinned. With the build number
-     * on About, without it as the main menu's About subtitle.
-     */
+    /** Version text changes every release, so it is the one thing not pinned. */
     private val volatileText = Regex("""^Version \d\S*( \(Build \d+\))?$""")
 
     @Before
@@ -131,15 +86,8 @@ class SettingsScreenRenderTest(private val screenName: String) {
     }
 
     /**
-     * `LanguagePacksScreen` asks for the published pack catalogue when it opens, and a unit test
-     * must never reach the internet to answer that.
-     *
-     * Robolectric reports no active network, so `ManifestSource` already fails with
-     * `OfflineException` without opening a socket — but that is a default of the shadow, not a
-     * promise. The debug-only manifest-URL override (inert on release builds) pins it to a port
-     * with nothing listening, so the fetch fails locally whatever the shadow decides. Either way
-     * the screen renders its "no catalogue" state, which is what
-     * [Case.lateResources] tolerates.
+     * Points the debug manifest-URL override at a port with nothing listening, so the language pack
+     * catalogue fetch fails locally even if Robolectric's shadow ever reports a network.
      */
     private fun keepTheCatalogueFetchOffTheRealNetwork(context: Context) {
         PrefsManager.getPrefs(context).edit()
@@ -152,20 +100,9 @@ class SettingsScreenRenderTest(private val screenName: String) {
     }
 
     /**
-     * Puts the framework in the state a user who has actually enabled this keyboard is in: our IME
-     * registered, with the real 89 subtypes built from the manifest service. `LanguagesHubScreen`
-     * reads that list to populate its language pickers, so without it the page renders its
-     * empty state and the recorded rows below would describe a state no ordinary user is in.
-     *
-     * This used to be a **workaround**, not a fixture: `MultiLanguageRepository` dereferenced the
-     * null `InputMethodInfo` that `RichInputMethodManager.getInputMethodInfoOfThisIme()` returns
-     * when the framework does not know us, so the wizard crashed before rendering and could not be
-     * tested at all without it. Wave 2.5 defect 1 fixed that in production; what remains here is
-     * only the "IME is enabled" setup, and the null state now has its own case —
-     * [rendersWithoutCrashingWhenThisImeIsNotRegisteredWithTheFramework].
-     *
-     * The two singleton resets are unrelated to either: both are process-wide, and both would
-     * otherwise leak whatever the previous parameterised run left behind.
+     * Registers this IME with its real manifest subtypes, as on a device where the keyboard is
+     * enabled; `LanguagesHubScreen` reads that list. The singleton resets stop one parameterised
+     * run leaking into the next.
      */
     private fun registerThisImeWithTheFramework(context: Context) {
         val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
@@ -180,12 +117,7 @@ class SettingsScreenRenderTest(private val screenName: String) {
         RichInputMethodManager.init(context)
     }
 
-    /**
-     * The inverse of [registerThisImeWithTheFramework]: the framework has no `InputMethodInfo` for
-     * us at all, so `getInputMethodInfoOfThisIme()` returns null. On a device that is the state
-     * between installing the keyboard and enabling it in system settings, and again for the moment
-     * a package update is in flight.
-     */
+    /** No `InputMethodInfo` for us at all, as between installing the keyboard and enabling it. */
     private fun deregisterThisImeFromTheFramework(context: Context) {
         val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         Shadows.shadowOf(imm).setInputMethodInfoList(emptyList())
@@ -195,11 +127,7 @@ class SettingsScreenRenderTest(private val screenName: String) {
         MultiLanguageRepository.clearInstance()
     }
 
-    /**
-     * The single point Wave 3 re-aims. Today each entry calls the hand-written composable; after
-     * the rewrite each should call the one renderer with that screen's spec, and every assertion
-     * below stays as it is.
-     */
+    /** Maps a case name to its screen composable. */
     private fun contentFor(name: String): @Composable () -> Unit = when (name) {
         "AdvancedGestureParametersScreen" -> ({ AdvancedGestureParametersScreen({}) })
         "AdvancedSettingsScreen" -> ({ AdvancedSettingsScreen({}, {}, {}) })
@@ -275,7 +203,7 @@ class SettingsScreenRenderTest(private val screenName: String) {
         val nodes = textNodes()
         assertTrue("${case.name} rendered no text at all", nodes.isNotEmpty())
 
-        // 2 — the app-bar title is the topmost text that actually got laid out.
+        // The app-bar title is the topmost text that actually got laid out.
         val topmost = nodes.filter { it.boundsInRoot.height > 0f }.minByOrNull { it.boundsInRoot.top }
         assertTrue("${case.name} laid out no text", topmost != null)
         assertEquals(
@@ -284,7 +212,7 @@ class SettingsScreenRenderTest(private val screenName: String) {
             topmost!!.config[SemanticsProperties.Text].joinToString("") { it.text }
         )
 
-        // 3 — exactly the same rows as before, by resource name and by hardcoded literal.
+        // Exactly the recorded rows, by resource name and by hardcoded literal.
         val rendered = renderedText(nodes)
         val actualResources = rendered.mapNotNull { index[it] }.toSet()
         val actualLiterals = rendered.filter { index[it] == null }.toSet()
@@ -306,21 +234,8 @@ class SettingsScreenRenderTest(private val screenName: String) {
     }
 
     /**
-     * Wave 2.5 defect 1 — every screen must render when the framework has no `InputMethodInfo`
-     * for this IME.
-     *
-     * `RichInputMethodManager.getInputMethodInfoOfThisIme()` deliberately returns null in that
-     * state rather than propagating the cache supplier's `RuntimeException`, and callers used to
-     * dereference it: `MultiLanguageRepository.loadAvailableLocales()` NPE'd on
-     * `getSubtypeCount()`, which took `MultiLanguageWizardScreen` out before it drew anything.
-     * A user hits this by opening settings between installing the keyboard and enabling it — the
-     * one moment they are most likely to be in settings.
-     *
-     * Correct behaviour: an IME the framework does not know about has no subtypes, so the screen
-     * renders with an empty language list. Asserted for every screen because any of them may grow
-     * a call into [RichInputMethodManager]; the content assertions in
-     * [rendersItsTitleAndExactlyTheRowsItRenderedBefore] stay pinned to the enabled state, which
-     * is what an ordinary user sees.
+     * Every screen must render when the framework has no `InputMethodInfo` for this IME (settings
+     * opened between install and enable): an unknown IME has no subtypes, so language lists are empty.
      */
     @Test
     fun rendersWithoutCrashingWhenThisImeIsNotRegisteredWithTheFramework() {
@@ -328,9 +243,8 @@ class SettingsScreenRenderTest(private val screenName: String) {
         val context = ApplicationProvider.getApplicationContext<Context>()
         deregisterThisImeFromTheFramework(context)
 
-        // The production null: this is the value the fixed callers now have to cope with. Its
-        // contract is deliberately unchanged — two callers branch on it — so the fix is in the
-        // callers, and these assert each of them degrades instead of dereferencing.
+        // The production null. Its contract is unchanged (two callers branch on it); these assert
+        // each caller degrades instead of dereferencing.
         val richImm = RichInputMethodManager.getInstance()
         assertEquals(
             "getInputMethodInfoOfThisIme() no longer returns null for an unregistered IME — " +
@@ -378,34 +292,11 @@ class SettingsScreenRenderTest(private val screenName: String) {
     }
 
     /**
-     * Search-anchor cross-check — the structural guard for defect 16.
-     *
-     * [SettingsSearchIndex] is hand-maintained and each entry carries both a `route` and an
-     * `anchor`; `SettingsSearchIndexTest` already proves every anchor string exists in *some*
-     * screen source, but not that it exists in the screen the route leads to. A search result that
-     * navigates to the right screen and then highlights nothing is exactly what that gap allows,
-     * and it is invisible until someone tries it.
-     *
-     * The probe is the production mechanism itself: `Modifier.settingsSearchAnchor` calls
-     * `SettingsHighlightController.consume()` once it has scrolled its row into view, so an anchor
-     * that is still pending after the composition settles is an anchor that is not on this screen.
-     *
-     * The assertion is an **equality**, and both halves matter:
-     *
-     *  - an entry search offers (`requires` satisfied) whose row does not render is the defect —
-     *    the user taps a result and lands somewhere it is not;
-     *  - an entry search hides (`requires` unsatisfied) whose row *does* render is the inverse —
-     *    a real, reachable setting that has quietly fallen out of search.
-     *
-     * So: the anchors this screen actually claims must be exactly the anchors the index routes
-     * here and marks visible on this device.
-     *
-     * Screens the index claims no anchors for are skipped rather than asserted vacuously.
-     *
-     * Caveat, for Wave 3: `DeviceProfile` is a process-wide singleton, so this runs as one device
-     * shape only — the touch-only one. It pins the touch half of every gated pair; the
-     * physical-keyboard half is checked without rendering, by
-     * `SettingsSearchIndexTest.deviceGatesFollowTheDeviceShape`.
+     * The anchors a screen claims must equal the [SettingsSearchIndex] anchors routed here and
+     * visible on this device: a missing one highlights nothing, an extra one has fallen out of
+     * search. Probed via `SettingsHighlightController.consume()`, which `Modifier.settingsSearchAnchor`
+     * calls once its row is in view. Touch-only device shape only (`DeviceProfile` is a singleton);
+     * `SettingsSearchIndexTest.deviceGatesFollowTheDeviceShape` covers the keyboard half.
      */
     @Test
     fun searchAnchorsClaimedByTheIndexAreReachableOnThisScreen() {
@@ -454,9 +345,8 @@ class SettingsScreenRenderTest(private val screenName: String) {
     }
 
     /**
-     * Rendered text -> canonical `R.string` name. Built by reflection so it needs no upkeep, and
-     * deliberately keeps only values of four characters or more: shorter ones ("1", "@", "ON")
-     * collide with unrelated `config_*` strings and would make the mapping meaningless.
+     * Rendered text to canonical `R.string` name, by reflection. Values under four characters are
+     * skipped: they collide with unrelated `config_*` strings.
      */
     private fun resourceNameIndex(context: Context): Map<String, String> {
         val byValue = HashMap<String, String>()
@@ -470,10 +360,7 @@ class SettingsScreenRenderTest(private val screenName: String) {
         return byValue
     }
 
-    /**
-     * The built-in documents [PhysicalLayoutsScreen] lists here: one, so the Built-in section has a
-     * row to pin, and the case does not change each time the generated assets do.
-     */
+    /** One built-in layout, so the Built-in section has a row and the case ignores generated assets. */
     private object OneBuiltInLayout : LetterLayoutRegistry.BuiltInDocuments {
         private const val ID = "sample"
         private const val DOCUMENT = """<letter-layout version="1" id="sample" name="Sample layout">
@@ -494,9 +381,8 @@ class SettingsScreenRenderTest(private val screenName: String) {
         fun screens(): List<Array<Any>> = SCREEN_NAMES.map { arrayOf<Any>(it) }
 
         /**
-         * Declared as plain strings, not as [Case] objects: `@Parameters` runs outside
-         * Robolectric's sandbox classloader, so anything richer would be built against the wrong
-         * copy of the app's classes. The cases themselves are looked up inside the test.
+         * Plain strings, not [Case]s: `@Parameters` runs outside Robolectric's sandbox classloader,
+         * so richer objects would be built against the wrong copy of the app's classes.
          */
         private val SCREEN_NAMES = listOf(
             "AdvancedGestureParametersScreen", "AdvancedSettingsScreen", "AnimationParametersScreen",
@@ -518,9 +404,7 @@ class SettingsScreenRenderTest(private val screenName: String) {
         )
     }
 
-    // ══════════════════════════════════════════════════════════════════════════════════════════
-    // The recorded output of every screen. Generated by rendering them, not written by hand.
-    // ══════════════════════════════════════════════════════════════════════════════════════════
+    // The recorded output of every screen, generated by rendering them.
 
     private val CASES = listOf(
         Case(
@@ -569,7 +453,7 @@ class SettingsScreenRenderTest(private val screenName: String) {
                 "settings_backup_restore_summary", "settings_backup_restore_title",
                 "settings_debug_summary", "prefs_advanced_settings_title", "settings_device_compatibility_summary",
                 "settings_device_compatibility_title",
-                // "Reset" — the first resource name carrying that value; the row's own is
+                // "Reset" resolves to the first resource with that value; the row's own is
                 // settings_reset_title.
                 "reset_dialog_confirm", "settings_reset_summary", "settings_category_manage_data",
             ),
@@ -617,9 +501,6 @@ class SettingsScreenRenderTest(private val screenName: String) {
                 "settings_appearance_auto", "settings_appearance_layout_title", "settings_appearance_modern",
                 "settings_color_scheme_title", "settings_keyboard_height_regular",
                 "settings_keyboard_height_title", "settings_keyboard_theme_title",
-                // The two `settings_slideboard_*` names are gone: the Slideboard settings row
-                // moved to the On-Screen Keyboard screen, under Behavior.
-                // The default currency picker moved here from the symbols screen (2026-10-19).
                 "settings_default_currency_summary", "settings_default_currency_title",
                 "settings_symbol_customization_summary", "settings_symbol_customization_title",
                 "settings_use_system_colors_summary", "settings_use_system_colors_title"
@@ -637,13 +518,10 @@ class SettingsScreenRenderTest(private val screenName: String) {
                 "settings_auxiliary_input_title", "settings_category_input_menu",
                 "settings_uim_enable_summary_on",
                 "settings_customize_menu_summary", "settings_customize_menu_title",
-                // The Voice group and its one link went back to the Input hub (2026-11-11), and
-                // the four shake actions arrived as the closing section the same day.
                 "settings_shake_title", "settings_shake_fallback_title",
                 "settings_shake_x_axis_title", "settings_shake_y_axis_title", "settings_shake_z_axis_title",
-                // The emoji search rows moved to the two keyboard screens (2026-11-03).
-                // (The clipboard group's "Clipboard" header is a category, which the recorder
-                // does not count.)
+                // The clipboard group's "Clipboard" header is a category, which the recorder
+                // does not count.
                 "clipboard_history_title", "clipboard_history_summary",
                 "clipboard_retention_title", "clipboard_retention_1h",
                 "clipboard_link_previews_title", "clipboard_link_previews_summary", "settings_pkb_multifunction_action_clipboard"
@@ -665,22 +543,16 @@ class SettingsScreenRenderTest(private val screenName: String) {
                 "settings_autocorrect_vkb_title"
             ),
             literals = emptySet(),
-            // The physical-keyboard auto-correction row sits inside `if (hasPhysicalKeyboard)`
-            // (AutoCorrectionScreen.kt:102). On a device with no physical keyboard - which is
-            // what Robolectric reports - searching for it lands on this screen and highlights
-            // nothing. Recorded, not fixed.
+            // The physical-keyboard auto-correction row needs a physical keyboard, which Robolectric
+            // lacks, so its search entry lands here and highlights nothing. Recorded, not fixed.
         ),
         Case(
             name = "CkbGesturesScreen",
             route = SettingsRoute.CkbGestures.route,
             title = "Capacitive gestures",
             resources = setOf(
-                // The DEVELOPER category is NOT here — neither its subhead
-                // (`ckb_gestures_developer_category`, already uppercase, so it matches its own
-                // resource) nor the CKB geometry export's two rows
-                // (`ckb_gestures_export_title` / `_summary`). They compose only when the debug
-                // flag `pref_show_ckb_developer_settings` is on, and this case renders a fresh
-                // install. The slots and the gesture-timing slider are unaffected.
+                // The developer category is absent: it composes only with the debug flag
+                // `pref_show_ckb_developer_settings`, off on a fresh install.
                 "ckb_action_cursor_mode", "ckb_action_cycle_symbols", "ckb_action_delete_word", "ckb_action_none",
                 "ckb_gesture_slot_double_tap", "ckb_gesture_slot_flick_left", "ckb_gesture_slot_flick_right",
                 "ckb_gesture_slot_hold", "ckb_gesture_slot_swipe_down", "ckb_gesture_slot_swipe_left",
@@ -689,10 +561,8 @@ class SettingsScreenRenderTest(private val screenName: String) {
             ),
             literals = setOf(
                 "350 ms",
-                // Same gate: the sensor visualizer's switch and the sensor-map export — four
-                // hardcoded strings — went with the rest of the DEVELOPER category. "GESTURE
-                // TIMING" is the timing subhead, which is not gated (PreferenceCategory
-                // uppercases, so it never matches its own resource).
+                // The developer gate also hides the sensor visualizer and sensor-map export. "GESTURE
+                // TIMING" is ungated but upper-cased by PreferenceCategory, so it never matches.
             ),
         ),
         Case(
@@ -750,8 +620,7 @@ class SettingsScreenRenderTest(private val screenName: String) {
             title = "Custom macros",
             resources = setOf(
                 "settings_custom_macros_title", "settings_custom_macros_intro",
-                // The extended FAB names the action, so the hint can name the button rather than
-                // a "+" that is no longer on screen. "Add macro" is that FAB's label.
+                // "Add macro" is the extended FAB's label, which the empty hint names.
                 "settings_macros_add", "settings_macros_empty_hint", "settings_macros_empty_title",
                 "settings_macros_reserved_tags",
             ),
@@ -796,8 +665,7 @@ class SettingsScreenRenderTest(private val screenName: String) {
             resources = setOf(
                 "settings_keyboard_summary", "settings_preferences_title",
                 "settings_auxiliary_input_summary", "settings_auxiliary_input_title", "settings_category_on_screen_keyboard",
-                // Voice input is a row of this hub again (2026-11-11). "settings_uim_toggle_voice"
-                // because that resource also reads "Voice input" and sorts first.
+                // "settings_uim_toggle_voice": that resource also reads "Voice input" and sorts first.
                 "settings_uim_toggle_voice", "settings_voice_input_summary",
             ),
             literals = emptySet(),
@@ -840,8 +708,7 @@ class SettingsScreenRenderTest(private val screenName: String) {
             route = SettingsRoute.Debug.route,
             title = "Debug settings",
             resources = setOf(
-                // 2026-10-20: tuning links, diagnostics and developer switches only. The
-                // "DEVELOPER" header reads as the CKB screen's resource of the same value.
+                // The "DEVELOPER" header resolves to the CKB screen's resource of the same value.
                 "prefs_advanced_gesture_thresholds_summary", "prefs_advanced_gesture_thresholds_title",
                 "prefs_advanced_settings_title", "prefs_autofill_debug_logging_summary",
                 "prefs_autofill_debug_logging_title", "prefs_category_diagnostics", "prefs_category_tuning",
@@ -861,8 +728,8 @@ class SettingsScreenRenderTest(private val screenName: String) {
             name = "DeviceCompatibilityScreen",
             route = SettingsRoute.DeviceCompatibility.route,
             title = "Device compatibility",
-            // The row reads "BBKB helper" (lower-case h), a value no other resource shares, so it
-            // resolves to its own name; the screen it opens keeps "BBKB Helper" (see below).
+            // The row reads "BBKB helper", a value no other resource shares, so it resolves to its
+            // own name; the screen it opens is titled "BBKB Helper".
             resources = setOf(
                 "keyboard_helper_title", "pref_override_device_meta_state",
                 "pref_override_device_meta_state_summary", "settings_device_compatibility_title",
@@ -878,12 +745,10 @@ class SettingsScreenRenderTest(private val screenName: String) {
             route = SettingsRoute.DeviceConfiguration.route,
             title = "Device configuration",
             resources = setOf(
-                // The profile builder's entry row is NOT here: the builder is unfinished, so the
-                // row and its "THIS DEVICE" subhead only compose when the debug flag
-                // `pref_show_device_profile_builder` is on, and this case renders a fresh install.
+                // The profile builder's row and "THIS DEVICE" subhead compose only with the debug
+                // flag `pref_show_device_profile_builder`, off on a fresh install.
                 "settings_device_configuration_title", "settings_device_config_category_preloaded", "settings_device_config_category_standard",
-                // The importer moved from a bare + in the app bar to an extended FAB, which
-                // renders its label as text rather than only as a content description.
+                // The importer is an extended FAB, whose label renders as text.
                 "device_config_import_button",
             ),
             // The device list is a lazy column; under the 179dp header the last two rows fall
@@ -894,14 +759,10 @@ class SettingsScreenRenderTest(private val screenName: String) {
                 "BlackBerry KEY2",
                 "Other BlackBerry keyboard phones",
                 "Minimal Phone (MP01)",
-                // The five Unihertz Titan profiles are preloaded configs like the rest; listed by
-                // display name, they push "Zinwa Q25" below this case's viewport (a lazy list
-                // composes only what is on screen), so it is no longer among the rendered rows.
                 "Unihertz Titan",
                 "Unihertz Titan 2",
                 "Unihertz Titan 2 Elite",
                 "Unihertz Titan Pocket",
-                // One more row fits since the first row lost its summary line (2026-11-11).
                 "Unihertz Titan Slim",
             ),
         ),
@@ -944,9 +805,8 @@ class SettingsScreenRenderTest(private val screenName: String) {
                 "prefs_keypress_vibration_duration_settings", "settings_category_sound",
                 "settings_category_vibrate", "settings_touch_feedback_title", "sound_on_keypress_summary",
                 "vibrate_on_keypress_summary",
-                // Still the screen's hardcoded "System default" summary: the voice screen's Speech
-                // recognizer row added a resource with that value, and the recorder names any
-                // rendered string after the resource that holds it.
+                // The voice screen's Speech recognizer resource shares the "System default" value,
+                // so the recorder names it.
                 "settings_voice_recognizer_system_default", "vibrate_on_keypress"
             ),
             literals = emptySet(),
@@ -955,8 +815,8 @@ class SettingsScreenRenderTest(private val screenName: String) {
             name = "KeyboardHelperScreen",
             route = SettingsRoute.KeyboardHelper.route,
             title = "BBKB helper",
-            // The screen title is sentence case since 2026-11-11 ("BBKB helper"), so it no longer
-            // shares a value with the accessibility service's label, which keeps its capital H.
+            // The title "BBKB helper" does not share a value with the accessibility service's
+            // label "BBKB Helper".
             resources = setOf(
                 "keyboard_helper_title", "pref_accessibility_service_disabled",
                 "pref_key_interceptor_enabled", "pref_key_interceptor_enabled_summary",
@@ -970,37 +830,26 @@ class SettingsScreenRenderTest(private val screenName: String) {
             route = SettingsRoute.LanguagePacks.route,
             title = "Language packs",
             resources = setOf(
-                // The extended FAB's label, which renders before the IO load finishes. It was the
-                // hardcoded "Add dictionary" until it became "Load LDB file" and a translated
-                // resource with it.
+                // The extended FAB's label, which renders before the IO load finishes.
                 "language_packs_load_ldb",
                 "settings_language_packs_title", "language_packs_available_header", "language_packs_installed_header"
             ),
             literals = emptySet(),
-            // The info banner and the per-row "Version: … • Preinstalled" line are gone
-            // (Material 3 redesign, 2026-09-16): rows are titles only.
-            //
-            // The two section headers are literals because PreferenceCategory upper-cases its
-            // title, so the rendered text is not the resource's own value. They render
-            // unconditionally - the list is always there, with a spinner in whichever half is
-            // still loading - which is what keeps them out of `lateLiterals`.
-            // Everything else arrives with the IO load: one row per shipped pack, each with its
-            // two-letter code badge (too short to resolve to a resource name) and the
-            // "Preinstalled" tag. Recorded as late so the race decides nothing.
+            // The two section headers are literals (PreferenceCategory upper-cases) and render
+            // unconditionally. The rest arrives with the IO load: a row per shipped pack with its
+            // two-letter code badge and "Preinstalled" tag.
             lateLiterals = setOf(
                 "Chinese", "English", "French", "German", "Italian", "Russian", "Spanish", "Ukrainian",
                 "ZH", "EN", "FR", "DE", "IT", "RU", "ES", "UK",
             ),
-            // Whatever the catalogue fetch came back with. Under Robolectric there is no network
-            // and no cached manifest, so it is always one of the failure messages plus its Try
-            // again button; the rest are listed because they are the other answers the same row
-            // can give, and none of them is worth pinning a race on.
+            // Whatever the catalogue fetch returned: under Robolectric always a failure plus Try
+            // again; the other answers are listed so no race is pinned.
             lateResources = setOf(
                 "language_packs_download",
                 "language_packs_error_app_too_old", "language_packs_error_network",
                 "language_packs_error_offline", "language_packs_error_verification",
                 "language_packs_retry", "language_packs_variant_summary",
-                // The "Preinstalled" tag on each shipped pack's row, a resource since 2026-11.
+                // The "Preinstalled" tag on each shipped pack's row.
                 "language_packs_preinstalled",
             ),
         ),
@@ -1019,11 +868,8 @@ class SettingsScreenRenderTest(private val screenName: String) {
         Case(
             name = "MainSettingsScreen",
             route = SettingsRoute.Main.route,
-            // Stale golden: 43f690e7 titled the screen "BBKB Settings".
             title = "BBKB Settings",
             resources = setOf(
-                // The "Language" row resolved to a removed wizard string of the same text until
-                // 2026-09-29; it now resolves to its own title.
                 "english_ime_settings",
                 "settings_about_title",
                 "settings_advanced_summary", "settings_advanced_title", "settings_appearance_layout_summary",
@@ -1046,13 +892,12 @@ class SettingsScreenRenderTest(private val screenName: String) {
                 "settings_pkb_ctrl_key_behavior_title", "settings_pkb_dictation_key_summary_on",
                 "settings_pkb_dictation_key_title", "settings_pkb_hold_action_off_summary",
                 "settings_pkb_hold_action_title", "settings_category_physical_keyboard",
-                // "Enable emoji search" for the physical keyboard (2026-11-03).
+                // "Enable emoji search" for the physical keyboard.
                 "pref_emoji_search_title", "pref_emoji_search_pkb_summary"
             ),
             literals = setOf("Alt"),
-            // The multifunction-key row sits inside `if (multifunctionKeyMapping != null)`
-            // (PhysicalKeyboardScreen.kt:163), which is null when no physical keyboard is
-            // present: the same one-way trip from search as above.
+            // The multifunction-key row needs a physical keyboard too, so its search entry also
+            // highlights nothing here.
         ),
         Case(
             name = "PhysicalLayoutsScreen",
@@ -1067,9 +912,8 @@ class SettingsScreenRenderTest(private val screenName: String) {
             literals = setOf(
                 // The Built-in header: no resource holds the upper-cased value.
             ),
-            // Both lists are read on Dispatchers.IO. On a fresh install the custom list comes back
-            // empty, and its empty-state line appears once it has; the built-in list is the one
-            // document [OneBuiltInLayout] supplies, which names no language and two keys.
+            // Both lists load on Dispatchers.IO: the empty custom list's empty-state line, and the
+            // one [OneBuiltInLayout] document, which names no language and two keys.
             lateLiterals = setOf("Sample layout", "All keyboards · 2 keys"),
             lateResources = setOf("settings_pkb_layouts_empty"),
         ),
@@ -1078,14 +922,9 @@ class SettingsScreenRenderTest(private val screenName: String) {
             route = SettingsRoute.Suggestion.route,
             title = "Suggestions",
             resources = setOf(
-                // "Block offensive words" is no longer here: dictation masking is its only
-                // effect, so the row moved to VoiceInputSettingsScreen (same preference key).
-                // The emoji dynamic search rows moved to Auxiliary input (2026-10-19).
-                
+
                 "settings_pred_contacts_summary_disabled", "settings_pred_contacts_title",
                 "settings_pred_emoji_summary", "settings_pred_emoji_title",
-                // Grouped 2026-10-20: Display / Sources (contacts joined Sources 2026-11-09); the
-                // flick animation row moved to the On-screen keyboard screen.
                 "settings_category_display", "settings_category_sources",
                 "settings_pred_force_suggestions_summary", "settings_pred_force_suggestions_title",
                 "settings_pred_inline_autofill_summary",
@@ -1101,8 +940,7 @@ class SettingsScreenRenderTest(private val screenName: String) {
             name = "QuickPhrasesScreen",
             route = SettingsRoute.QuickPhrases.route,
             title = "Quick phrases",
-            // The unset phrases are now the keyboard's own fallback resources; they used to be four
-            // hardcoded literals plus one ("On my way") that happened to equal a resource.
+            // The unset phrases are the keyboard's own fallback resources.
             resources = setOf(
                 "pref_quick_phrase_1_default", "pref_quick_phrase_2_default", "pref_quick_phrase_3_default",
                 "pref_quick_phrase_4_default", "pref_quick_phrase_5_default",
@@ -1136,8 +974,7 @@ class SettingsScreenRenderTest(private val screenName: String) {
                 "settings_vkb_slideboard_swap_summary_default", "settings_vkb_slideboard_swap_title"
             ),
             literals = setOf(
-                // Was "Thanks, See you soon, On my way, ...": now the phrases the keyboard inserts,
-                // through the translatable settings_vkb_quick_phrases_summary.
+                // The phrases the keyboard inserts, via settings_vkb_quick_phrases_summary.
                 "How are you?, On my way, That's great!…",
             ),
         ),
@@ -1150,13 +987,9 @@ class SettingsScreenRenderTest(private val screenName: String) {
             resources = setOf(
                 
                 "settings_spell_checker_title", "settings_pred_contacts_summary_disabled",
-                // The master row.
                 "settings_spellcheck_enable_title", "settings_spellcheck_enable_summary",
                 "settings_spellcheck_use_contacts_title", "settings_spellcheck_accept_learned_title",
                 "settings_spellcheck_accept_learned_summary",
-                // "About Spell Checker" is gone: it was the heading of an info card, one line
-                // under an app bar already reading "Spell checker settings". The sentence it
-                // introduced is still here, now as a plain PreferenceInfo paragraph.
                 "settings_spellcheck_intro",
             ),
             literals = emptySet(),
@@ -1168,12 +1001,11 @@ class SettingsScreenRenderTest(private val screenName: String) {
             resources = setOf(
                 "settings_vkb_customize_numberpad_summary", "settings_vkb_customize_numberpad_title",
                 "settings_category_on_screen_keyboard",
-                // The default currency moved to the Personalization hub (2026-10-19).
                 "settings_symbol_custom_page_first_summary",
                 "settings_symbol_custom_page_first_title", "settings_symbol_customization_title",
                 "settings_symbol_customize_page_summary", "settings_symbol_customize_page_title",
                 "settings_symbol_enable_customization_summary", "settings_symbol_enable_customization_title",
-                // A link to Slideboard settings (was the number pad editor link, 2026-10-20).
+                // A link to Slideboard settings.
                 "settings_category_slideboard",                             ),
             literals = emptySet(),
         ),
@@ -1181,19 +1013,17 @@ class SettingsScreenRenderTest(private val screenName: String) {
             name = "TextShortcutsScreen",
             route = SettingsRoute.TextShortcuts.route,
             title = "Text shortcuts",
-            // The title is the Learning screen row's string now, as User dictionary's is.
+            // The title is the Learning screen row's string, as User dictionary's is.
             resources = setOf(
                 "settings_dict_text_shortcuts_title",
-                // The round FAB became an extended one, so its label is rendered text rather
-                // than only a content description. (The count line is part of the list now, so
-                // the empty state no longer carries a "0 shortcuts" over it.)
+                // The extended FAB's label renders as text.
                 "settings_shortcuts_add",
             ),
             literals = emptySet(),
-            // "Initialization timeout" is the store failing to come up under Robolectric -- an
+            // "Initialization timeout" is the store failing to start under Robolectric, an
             // environment artefact, pinned only so a new late string is still caught.
             lateResources = setOf(
-                // The hint names that button now that the button says what it does.
+                // The empty hint names that button.
                 "settings_shortcuts_empty_title", "settings_shortcuts_empty_hint", "settings_dict_init_timeout",
             ),
         ),
@@ -1205,20 +1035,14 @@ class SettingsScreenRenderTest(private val screenName: String) {
                 "settings_category_behavior_vkb", "settings_category_feedback", "settings_category_slideboard",
                 "settings_category_gestures",
                  "settings_screen_type_by_swiping",
-                // Moved here from Personalization, into the Behavior list.
                 "settings_slideboard_hub_summary", "settings_slideboard_settings_title",
                 "settings_touch_feedback_summary", "settings_touch_feedback_title",
-                // The unified input menu rows and the clipboard link moved to Auxiliary input
-                // (2026-10-19).
                 "settings_vkb_swipe_down_dismiss_summary", "settings_vkb_swipe_down_dismiss_title",
                 "settings_vkb_swipe_gestures_summary", "settings_vkb_swipe_gestures_title",
                 "settings_vkb_type_by_swiping_summary", "vkb_control_key_summary", "settings_pkb_multifunction_action_ctrl",
-                // The flick commit animation moved here from Suggestions (2026-10-20), and the
-                // key long-press delay from Debug.
                 "settings_pred_flick_animation_summary", "settings_pred_flick_animation_title",
                 "prefs_key_longpress_delay_title", "settings_category_on_screen_keyboard",
-                // The emoji search pair moved here from Auxiliary input (2026-11-03); the "Emoji"
-                // header's text is also ckb_action_emoji's.
+                // The "Emoji" header's text is also ckb_action_emoji's.
                 "ckb_action_emoji", "pref_emoji_search_title", "pref_emoji_search_vkb_summary",
                 "pref_emoji_search_replace_text_summary_on", "pref_emoji_search_replace_text_title"
             ),
@@ -1268,15 +1092,13 @@ class SettingsScreenRenderTest(private val screenName: String) {
             route = SettingsRoute.VoiceInput.route,
             title = "Voice input",
             resources = setOf(
-                // The two `settings_pred_block_offensive_*` names are the "Block offensive words"
-                // row, moved here from Suggestions: it only ever masked dictation results.
+                // The "Block offensive words" row lives here: it only ever masked dictation results.
                 "settings_pred_block_offensive_summary", "settings_uim_toggle_voice",
                 "settings_pred_block_offensive_title", "settings_voice_auto_start_summary_on",
                 "settings_voice_auto_start_title", "settings_voice_builtin_summary",
                 "settings_voice_builtin_title", "settings_voice_prefer_offline_summary",
                 "settings_voice_prefer_offline_title", "settings_voice_use_keyboard_lang_summary",
-                // Always drawn since 2026-11-11: greyed out, not hidden, while the keyboard's
-                // language is followed.
+                // Always drawn: greyed out, not hidden, while the keyboard's language is followed.
                 "settings_voice_input_lang_title",
                 "settings_voice_use_keyboard_lang_title", "settings_voice_show_partial_results_summary",
                 "settings_voice_show_partial_results_title",
@@ -1291,8 +1113,8 @@ class SettingsScreenRenderTest(private val screenName: String) {
                 "settings_voice_group_listening", "settings_voice_group_text",
                 "settings_voice_download_languages_title", "settings_voice_download_languages_summary",
             ),
-            // The Voice input language row's summary: the stored language's own display name,
-            // built from the locale, so not a resource. Drawn since the row stopped hiding.
+            // The Voice input language row's summary: the stored language's display name, built
+            // from the locale, so not a resource.
             literals = setOf("English (United States)"),
         ),
         Case(

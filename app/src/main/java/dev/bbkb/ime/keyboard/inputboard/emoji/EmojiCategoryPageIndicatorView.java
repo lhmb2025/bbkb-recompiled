@@ -6,17 +6,7 @@ import android.graphics.Paint;
 import android.util.AttributeSet;
 import android.view.View;
 
-/**
- * Custom view that displays page indicators for emoji keyboard pages.
- * 
- * Renders a row of circular dots showing:
- * - Total number of pages in the current category
- * - Which page is currently active (highlighted)
- * - Smooth scrolling animation between pages
- * 
- * The indicators are drawn with configurable colors, sizes, and spacing ratios.
- * Updates dynamically as the user swipes between emoji pages.
- */
+/** A row of dots for the current category's pages, the active page highlighted; hidden for one page. */
 
 public final class EmojiCategoryPageIndicatorView extends View {
 
@@ -38,6 +28,7 @@ public final class EmojiCategoryPageIndicatorView extends View {
         this(context, attributeSet, 0);
     }
 
+    /** @param i the default style attribute */
     public EmojiCategoryPageIndicatorView(Context context, AttributeSet attributeSet, int i) {
         super(context, attributeSet, i);
         this.activePaint = new Paint();
@@ -47,17 +38,31 @@ public final class EmojiCategoryPageIndicatorView extends View {
         this.pageOffset = 0.0f;
     }
 
+    /**
+     * @param i the active dot color
+     * @param i2 the inactive dot color
+     * @param i3 the background color
+     */
     public void setColors(int i, int i2, int i3) {
         this.activePaint.setColor(i);
         this.inactivePaint.setColor(i2);
         setBackgroundColor(i3);
     }
 
+    /**
+     * @param f the dot radius as a fraction of half the view height
+     * @param f2 the gap between dots as a fraction of the view width
+     */
     public void setIndicatorRatios(float f, float f2) {
         this.indicatorRadiusRatio = f;
         this.indicatorGapRatio = f2;
     }
 
+    /**
+     * @param i the page count
+     * @param i2 the current page
+     * @param f the scroll offset toward the next page (stored, not drawn)
+     */
     public void setPageInfo(int i, int i2, float f) {
         this.pageCount = i;
         this.currentPage = i2;

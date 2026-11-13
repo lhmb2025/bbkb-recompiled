@@ -7,8 +7,8 @@ import dev.bbkb.ime.core.settings.ui.Slide
 import dev.bbkb.ime.core.settings.ui.intPref
 
 /**
- * Debug > Shake gesture tuning: the detector's thresholds (ShakeGestureHandler / ShakeDetector).
- * The actions a shake triggers are on the Shake gestures screen under Input.
+ * Debug > Shake gesture tuning: the detector's thresholds. The actions a shake triggers are set
+ * under Auxiliary input.
  */
 @Composable
 fun ShakeTuningScreen(onNavigateBack: () -> Unit) {

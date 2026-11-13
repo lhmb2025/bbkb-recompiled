@@ -24,20 +24,9 @@ import org.robolectric.util.ReflectionHelpers
 import java.util.Locale
 
 /**
- * Characterisation of the **layout axis' cross-axis edge**: every path that rebuilds the main
- * keyboard tells the board axis about it first.
- *
- * Four sites raise that change — the alphabet load, the on-screen symbol load, the PKB symbol load
- * and the Sym page turn — and before Phase 1a each of them carried its own hand-written
- * `unifiedInputBoardManager.hideKeyboardOnKeyboardStateChange()` call. These tests pin the effect
- * at the boundary (the sweep really is asked for, and the PKB symbol load raises the bar before
- * asking it) so the move to `KeyboardStateCoordinator.apply(switchLayout(...))` can be verified to
- * change nothing.
- *
- * The switcher is instantiated without running its constructor (`CALLS_REAL_METHODS` under the
- * inline mock maker) and given only the collaborators these paths touch. The keyboard build itself
- * is not stubbed out — it runs against a mock builder whose product carries no keys, which is
- * enough for every downstream step to short-circuit.
+ * Pins that every path rebuilding the main keyboard (alphabet load, on-screen symbol load, PKB
+ * symbol load, Sym page turn) tells the board axis first. The switcher is built without its
+ * constructor (`CALLS_REAL_METHODS`) against a mock builder whose keyboards carry no keys.
  */
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [34], manifest = Config.NONE)
@@ -51,11 +40,8 @@ class KeyboardSwitcherLayoutTransitionTest {
 
     @Before
     fun setUp() {
-        // Settings are wired by hand rather than through SettingsManager.initialize(): initialize()
-        // registers a process-wide SharedPreferences listener that survives this test class, and
-        // any later test that commits a preference then re-enters loadSettings with no editor
-        // capabilities and trips the known SettingsValues constructor NPE. Only getSettingsValues()
-        // is needed here, so only that is set up — and @After puts it back.
+        // Wired by hand, not SettingsManager.initialize(): that registers a process-wide prefs
+        // listener that outlives this class and makes later tests hit a SettingsValues NPE.
         val context = ApplicationProvider.getApplicationContext<Context>()
         val settings = SettingsManager.getInstance()
         ReflectionHelpers.setField(settings, "sharedPreferences", PrefsManager.getPrefs(context))
@@ -82,9 +68,7 @@ class KeyboardSwitcherLayoutTransitionTest {
         // getCurrentKeyboard() == null: updateSecondaryKeySpec and syncKeyboardLayout short-circuit.
         Mockito.`when`(mainKeyboardView.keyboard).thenReturn(null)
 
-        // A board IS open behind the bar, which is the only state in which the layout change has
-        // anything to do on the board axis. No exempt board is up (the mocked isBoardViewShowing
-        // answers false), so the sweep is not spared.
+        // A board is open behind the bar and no exempt board is up, so the sweep is not spared.
         Mockito.`when`(uim.isShowing()).thenReturn(true)
         Mockito.`when`(uim.isAnyBoardShowing()).thenReturn(true)
     }
@@ -105,10 +89,7 @@ class KeyboardSwitcherLayoutTransitionTest {
         return keyboard
     }
 
-    /**
-     * Every alphabet load — and the shift chain runs one after every committed character — tells
-     * the board axis. This is the path the exemption list exists for.
-     */
+    /** Every alphabet load (one runs after each committed character) tells the board axis. */
     @Test
     fun theAlphabetLoadRaisesALayoutChange() {
         switcher.requestShiftOnce()
@@ -118,9 +99,7 @@ class KeyboardSwitcherLayoutTransitionTest {
 
     /**
      * Cold start: a physical key can drive the shift chain before startInput() has built a
-     * keyboard (the first key after an install or update starts the keyboard process, and lands
-     * together with the field's first show request). With no builder there is nothing to switch:
-     * the load is skipped rather than dereferencing it, and the board axis is not told anything.
+     * keyboard. With no builder the load is skipped and the board axis is not told.
      */
     @Test
     fun aShiftRequestBeforeTheFirstStartInputIsIgnored() {
@@ -144,10 +123,8 @@ class KeyboardSwitcherLayoutTransitionTest {
     }
 
     /**
-     * The PKB symbol load — the Sym key, and every page turn after it — leaves the bar as it finds
-     * it, as the original app does. It used to raise the UIM bar when the bar was down, which in
-     * ordinary typing means "when the suggestion strip is showing"; the next suggestion update
-     * took the slot back, so the bar flashed on each page turn (KEY2 report, beta.23).
+     * The PKB symbol load (Sym and each page turn) leaves the bar as it finds it. Raising it made
+     * the bar flash on each page turn, as the next suggestion update took the slot back.
      */
     @Test
     fun thePkbSymbolLoadDoesNotRaiseTheBar() {
@@ -175,10 +152,7 @@ class KeyboardSwitcherLayoutTransitionTest {
         verify(uim).hideKeyboardOnKeyboardStateChange()
     }
 
-    /**
-     * The exemption, reached through the real switcher: with the number pad up, the layout change
-     * spares every board — including the one that is not exempt.
-     */
+    /** With the number pad up, the layout change spares every board, even a non-exempt one. */
     @Test
     fun anExemptBoardBeingUpSparesTheLayoutChangeSweep() {
         Mockito.`when`(uim.isBoardViewShowing(-46)).thenReturn(true)
@@ -211,10 +185,7 @@ class KeyboardSwitcherLayoutTransitionTest {
         verify(uim).hideKeyboardOnKeyboardStateChange()
     }
 
-    /**
-     * The Sym page turn raises the change before the state machine runs, and it does so even when
-     * there is no current keyboard to turn — the early return is after the transition.
-     */
+    /** The Sym page turn raises the change before the state machine runs, even with no current keyboard. */
     @Test
     fun theSymbolPageTurnRaisesALayoutChangeEvenWhenItCannotProceed() {
         switcher.onSymbolShiftToggle(0, -1, false, true)

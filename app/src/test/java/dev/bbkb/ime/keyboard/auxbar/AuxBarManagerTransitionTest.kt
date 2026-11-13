@@ -38,17 +38,9 @@ import org.robolectric.util.ReflectionHelpers
 import java.util.Locale
 
 /**
- * Characterisation of [AuxBarManager]'s aux-bar half: the suggestion-strip gates, the autofill bar,
- * the three key bars (UIM, arrows, accents) with their keyboard caches, `hide`, `updateTheme`,
- * `clearKeyboardCache`, and the routing of the shared key view's key events by state.
- *
- * The PKB hold / accent-trigger state machine (`processKeyDown` and friends) is deliberately not
- * covered here — it is a separate feature.
- *
- * Runs against a real [AuxBarView] (inflated), a real manager, and the two static seams the
- * suggestion gates read: [DeviceProfile.installForTest] and `SettingsManager.settingsValues`.
- * `KeyboardSwitcher`'s `UnifiedInputBoardManager` is null here, so the UIM routing is exercised only
- * where that null matters.
+ * Characterisation of [AuxBarManager]'s aux-bar half: suggestion-strip gates, the autofill bar, the UIM,
+ * arrow and accent bars with their caches, `hide`, `updateTheme` and key routing by state. The PKB hold /
+ * accent-trigger machine is not covered. `KeyboardSwitcher`'s UIM manager is null here.
  */
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [34], manifest = Config.NONE)
@@ -86,8 +78,6 @@ class AuxBarManagerTransitionTest {
         suggestionsAllowed(null)
     }
 
-    // ── fixtures ────────────────────────────────────────────────────────────
-
     private fun pkbDevice() = DeviceProfile.installForTest(
         DeviceCapabilities.forShape(DeviceCapabilities.DetectedDeviceType.PKB, true, true, true, "qwerty", "4row"),
     )
@@ -113,8 +103,8 @@ class AuxBarManagerTransitionTest {
     }
 
     /**
-     * "Show the suggestion bar" is off and applies here, in a field that allows suggestions. The
-     * predicate itself (device shape, on-screen keyboard) is PkbSuggestionBarTest's.
+     * "Show the suggestion bar" off, in a field that allows suggestions (the predicate is
+     * PkbSuggestionBarTest's).
      */
     private fun suggestionBarHidden() {
         suggestionsAllowed(true)
@@ -138,8 +128,6 @@ class AuxBarManagerTransitionTest {
         Mockito.`when`(arrows.buildArrowKeyboard()).thenReturn(kb)
         manager.showArrowBar()
     }
-
-    // ── wiring ──────────────────────────────────────────────────────────────
 
     @Test
     fun stateChangesAreForwardedToTheEventListener() {
@@ -183,8 +171,6 @@ class AuxBarManagerTransitionTest {
         assertSame(bar, manager.auxBarView)
     }
 
-    // ── showSuggestionStrip(words, isCJK) ───────────────────────────────────
-
     @Test
     fun twoArgStripShowsOnAPkbDeviceWithTheGivenMode() {
         manager.showSuggestionStrip(words(), true)
@@ -204,14 +190,13 @@ class AuxBarManagerTransitionTest {
 
     @Test
     fun twoArgStripIgnoresTheOnScreenKeyboardFlag() {
-        // Its gate is isPkbDevice(), NOT isOnScreenKeyboardVisible(): a PKB device with the VKB up
-        // still takes the strip through this overload.
+        // Its gate is isPkbDevice(), not isOnScreenKeyboardVisible(): a PKB device with the VKB up still
+        // takes
+         // the strip through this overload.
         DeviceProfile.setOnScreenKeyboardShowing(true)
         manager.showSuggestionStrip(words(), false)
         assertEquals(AuxBarState.LATIN_SUGGESTIONS, manager.currentState)
     }
-
-    // ── showSuggestionStrip(words) ──────────────────────────────────────────
 
     @Test
     fun oneArgStripShowsWhenNoOnScreenKeyboardIsVisibleAndPicksModeFromLocale() {
@@ -245,8 +230,6 @@ class AuxBarManagerTransitionTest {
         manager.showSuggestionStrip(words())
         assertEquals(AuxBarState.NONE, manager.currentState)
     }
-
-    // ── the field-capability gate (both overloads) ──────────────────────────
 
     @Test
     fun aFieldThatAllowsSuggestionsLetsBothOverloadsThrough() {
@@ -318,8 +301,6 @@ class AuxBarManagerTransitionTest {
         manager.showSuggestionStrip(words(), false)
         assertEquals(AuxBarState.LATIN_SUGGESTIONS, manager.currentState)
     }
-
-    // ── "Show the suggestion bar" off ───────────────────────────────────────
 
     @Test
     fun withTheBarHiddenNeitherOverloadShowsALatinStrip() {
@@ -414,9 +395,8 @@ class AuxBarManagerTransitionTest {
     }
 
     /**
-     * A menu the "Show or hide the input menu" key raised over "Show the suggestion bar" is not
-     * the bar's to hide: every route the hidden bar takes things down by leaves it up, including
-     * an accent pick made over it. Once the override is gone the bar setting has its way again.
+     * A menu the "Show or hide the input menu" key raised over a hidden suggestion bar stays up on every route
+     * that hides the bar, including an accent pick. Once the override is gone the bar setting applies again.
      */
     @Test
     fun withTheBarHiddenAMenuTheKeyRaisedStays() {
@@ -496,8 +476,6 @@ class AuxBarManagerTransitionTest {
         assertEquals(View.GONE, bar.visibility)
     }
 
-    // ── autofill ────────────────────────────────────────────────────────────
-
     @Test
     fun autofillBarShowsAndHidesOnlyFromAutofill() {
         manager.showAutofillBar(emptyList(), 10, 10)
@@ -531,8 +509,6 @@ class AuxBarManagerTransitionTest {
         assertEquals(AuxBarState.NONE, manager.currentState)
         assertEquals(View.GONE, bar.visibility)
     }
-
-    // ── unified input menu ──────────────────────────────────────────────────
 
     @Test
     fun showingTheUimWithAKeyboardShowsItAndCachesIt() {
@@ -617,8 +593,6 @@ class AuxBarManagerTransitionTest {
         assertEquals(View.GONE, bar.visibility)
     }
 
-    // ── arrow bar ───────────────────────────────────────────────────────────
-
     @Test
     fun theArrowBarIsBuiltOnceAndCached() {
         val kb = keyboard("a")
@@ -691,8 +665,6 @@ class AuxBarManagerTransitionTest {
         manager.hideArrowBar()
         assertEquals(AuxBarState.UNIFIED_INPUT_MENU, manager.currentState)
     }
-
-    // ── accent bar ──────────────────────────────────────────────────────────
 
     @Test
     fun theAccentBarIsBuiltFromTheLabelsEveryTime() {
@@ -777,8 +749,6 @@ class AuxBarManagerTransitionTest {
         assertEquals(AuxBarState.LATIN_SUGGESTIONS, manager.currentState)
     }
 
-    // ── hide ────────────────────────────────────────────────────────────────
-
     @Test
     fun hideTakesAnyStateToNone() {
         showArrowBarWith(keyboard("a"))
@@ -787,8 +757,6 @@ class AuxBarManagerTransitionTest {
         assertEquals(View.GONE, bar.visibility)
         assertEquals(false, manager.isShowing)
     }
-
-    // ── key routing from the shared key view ────────────────────────────────
 
     @Test
     fun arrowBarKeysGoToTheArrowController() {

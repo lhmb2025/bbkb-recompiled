@@ -40,10 +40,9 @@ import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
 
 /**
- * [ShizukuTouchSource], against a fake engine: when it runs (each profile pin and SDK case), what
- * it does to the engine around the IME window showing and hiding, how a decoded touch becomes the
- * MotionEvent the IME's generic-motion entry gets, and the two facts a stream changes elsewhere —
- * `DeviceProfile.hasTouchKeypad()` and the [TouchKeypadGeometry] frame.
+ * [ShizukuTouchSource] against a fake engine: when it runs (profile pins, SDKs), the engine calls
+ * around the IME window showing and hiding, decoded touch to MotionEvent, and what a stream changes
+ * elsewhere (`DeviceProfile.hasTouchKeypad()`, the [TouchKeypadGeometry] frame).
  */
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [34], manifest = Config.NONE)
@@ -150,8 +149,6 @@ class ShizukuTouchSourceTest {
     private fun parsed(resId: Int): DeviceInputMapping =
         DeviceInputMappingParser.parseConfigFromXmlResource(context, resId).mappings[0]
 
-    // ── when it runs ─────────────────────────────────────────────────────────
-
     @Test
     fun runsOnlyWhereTheSelectorPicksTheReader() {
         data class Case(val name: String, val config: TouchKeypadConfig?, val sdk: Int,
@@ -203,8 +200,6 @@ class ShizukuTouchSourceTest {
         assertFalse(SyntheticTouchSources.contains(ShizukuTouchSource.DEVICE_ID))
         assertEquals(State.NOT_APPLICABLE, source.status().state)
     }
-
-    // ── the engine around show / hide ────────────────────────────────────────
 
     @Test
     fun startsOnFirstShow_grabsWhileShown_releasesWhenHidden_stopsOnStop() {
@@ -299,8 +294,6 @@ class ShizukuTouchSourceTest {
         assertEquals(TouchSourceStatus.of(State.NOT_APPLICABLE, Reason.OK), KeypadTouchSources.shizukuStatus())
     }
 
-    // ── DecodedTouch → MotionEvent ───────────────────────────────────────────
-
     @Test
     fun aDecodedTouch_becomesATouchpadMotionEvent_inSensorUnits() {
         val (host, source) = source(pad())
@@ -376,8 +369,6 @@ class ShizukuTouchSourceTest {
         assertEquals(listOf(MotionEvent.ACTION_DOWN, MotionEvent.ACTION_CANCEL), host.delivered.map { it.action })
         assertFalse(SyntheticTouchSources.contains(ShizukuTouchSource.DEVICE_ID))
     }
-
-    // ── hasTouchKeypad and the frame ─────────────────────────────────────────
 
     @Test
     fun hasTouchKeypad_isTrueExactlyWhileStreaming() {

@@ -26,22 +26,16 @@ import dev.bbkb.ime.keyboard.inputboard.fcc.FccController
 import dev.bbkb.ime.keyboard.inputboard.numberpad.NumberPadController
 
 /**
- * The physical-keyboard side channels that are not ordinary key events: the accessibility
- * KeyInterceptorService callbacks (special keys such as EMOJI / SYM / MIC on third-party PKB
- * devices, and the optional all-keys pre-processing), the META_SYM_ON tracker and the Alt+Sym
- * shortcut handler, the per-device alt-character resolver, and the voice-key actions.
- *
- * Ordinary hardware key events still enter through [BlackBerryIME.onKeyDown] and
- * [KeyEventProcessor].
+ * Physical-keyboard side channels that are not ordinary key events: KeyInterceptorService
+ * callbacks (EMOJI/SYM/MIC keys, all-keys pre-processing), the Alt+Sym shortcut handler, the
+ * per-device alt-character resolver and the voice-key actions. Ordinary key events enter through
+ * [BlackBerryIME.onKeyDown] and [KeyEventProcessor].
  */
 class HardwareKeyBridge(private val ime: BlackBerryIME) {
 
     private companion object {
         const val TAG = "HardwareKeyBridge"
-        /**
-         * META_ALT_ON | META_ALT_LEFT_ON | META_ALT_RIGHT_ON | ALT_LOCKED (0x200), so Alt-lock is
-         * detected. Kept as an alias of the one definition in [ModifierState]; tests name it.
-         */
+        /** Alias of [ModifierState.ALT_ANY_MASK] (includes ALT_LOCKED 0x200); tests name it. */
         const val ALT_ANY_MASK = ModifierState.ALT_ANY_MASK
         const val EMOJI_BOARD = ResolvedKey.DEFAULT_EMOJI_BOARD_ID
         const val VOICE_BOARD = ResolvedKey.DEFAULT_VOICE_BOARD_ID
@@ -51,23 +45,13 @@ class HardwareKeyBridge(private val ime: BlackBerryIME) {
     private var cachedAuxCharacterResolver: AuxCharacterResolver? = null
 
     /**
-     * Wire the Alt+Sym callbacks. Requires [DeviceProfile] to be initialised.
-     *
-     * **The board actions must not be gated on [BlackBerryIME.isInputViewShown] alone.** On a PKB
-     * device the IME window is down for most of the time the user is typing on the hardware
-     * keyboard, and [requestShowOnKeyPress] — which the SYM entry points call before dispatching
-     * — only *asks* for the window: `showSoftInputFromInputMethod` is asynchronous, so
-     * `isInputViewShown()` is still false when the action runs. A bare `if (isInputViewShown())`
-     * therefore threw the chord away silently, while the plain-Sym fallback
-     * (`onSymbolShiftToggle`, which has no such gate) kept working — exactly the shape of the
-     * owner's "Sym works, Alt+Sym does nothing" report. Ask for the window and then act.
+     * Wire the Alt+Sym callbacks; requires [DeviceProfile]. Board actions must not gate on
+     * [BlackBerryIME.isInputViewShown] alone: on a PKB device the window is usually down and
+     * `showSoftInputFromInputMethod` is async, so the check is still false when the action runs.
      */
     fun install() {
-        // One Ctrl tracker: ControlModeController owns it, and the modifier query API asks it
-        // rather than keeping a copy. The span tracker's own "CTRL_SPAN" is the Sym key (key
-        // code 63 sets META_SYM_ON), so it never was Ctrl state.
-        // Nullable on purpose: install() runs early in IME construction, and tests build a bridge
-        // over an IME that has no tracker at all.
+        // Ctrl state comes from ControlModeController. Nullable: install() runs early in IME
+        // construction, and tests build a bridge over an IME with no tracker.
         val tracker: PhysicalKeyboardStateTracker? = ime.getPhysicalKeyboardStateTracker()
         tracker?.setCtrlStateSource(object : PhysicalKeyboardStateTracker.CtrlStateSource {
             override fun isCtrlActive(): Boolean = ime.getControlMode().isCtrlActive
@@ -110,7 +94,6 @@ class HardwareKeyBridge(private val ime: BlackBerryIME) {
                 if (canShowBoard()) toggleBoard(NumberPadController.KEY_CODE) { ime.numberPadController?.toggle() }
             }
             override fun toggleInputMenu() {
-                // The menu lives in the IME window too, so it needs the window as a board does.
                 if (canShowBoard()) ime.getUiCoordinator().toggleInputMenu()
             }
             override fun tapCtrl() {
@@ -119,48 +102,20 @@ class HardwareKeyBridge(private val ime: BlackBerryIME) {
         })
     }
 
-    /**
-     * Whether a board may be opened now: the IME window is up, or show-on-keypress has just been
-     * asked to put it up. See the note on [install] for why "is it up *right now*" is the wrong
-     * question on a physical keyboard.
-     */
+    /** The IME window is up, or show-on-keypress was just asked to raise it (see [install]). */
     private fun canShowBoard(): Boolean = ime.isInputViewShown() || ime.requestShowOnKeyPress()
 
-    /**
-     * Toggle a UIM board through the coordinator, or run [fallback] when the UIM is off (or hidden
-     * with the suggestion bar): the board's own toggle, without the menu bar. A menu the "Show or
-     * hide the input menu" action has up counts as on, so the coordinator's route applies then.
-     */
+    /** Toggle a UIM board through the coordinator, or run the board's own [fallback] toggle when the UIM is off. */
     private inline fun toggleBoard(boardKeyCode: Int, fallback: () -> Unit) {
         val uibm = ime.getKeyboardSwitcher().getUnifiedInputBoardManager()
         if (uibm != null && ime.isUimEnabled()) uibm.requestBoard(boardKeyCode) else fallback()
     }
 
     /**
-     * Register the KeyInterceptor callbacks for third-party PKB devices (Minimal Phone, Titan Pocket).
-     *
-     * Idempotent, and re-fired from [BlackBerryIME.loadSettings] so that flipping "Enable special
-     * key support" in Settings takes effect on the next input session instead of only at the next
-     * IME process start. Before that, this ran once from the deferred-init token in `onCreate`, so
-     * a user who enabled the accessibility service and the in-app toggle saw no change until the
-     * IME was restarted.
-     *
-     * **The two callbacks have different lifetimes, and conflating them was a bug.**
-     *
-     * [KeyInterceptorService.setAllKeysCallback] is not a feature: it is the *compensation* for
-     * the service's Alt bleed-through block, which consumes hardware Alt and relies on this
-     * callback to keep [dev.bbkb.ime.core.device.state.PhysicalKeyboardStateTracker]
-     * in sync. It is registered for every PKB device for the whole life of this IME instance,
-     * regardless of any preference, and cleared in [unregisterInterceptorCallbacks] (called from
-     * `BlackBerryIME.releaseResources`). Gating it on `pref_key_interceptor_enabled` — default
-     * false — meant that on an MP01 the modifier tracker saw none of the events the service was
-     * eating (beta triage #10, 2026-09).
-     *
-     * [KeyInterceptorManager.setCallback] *is* the feature the "Enable special key support" switch
-     * describes ("capture Emoji, SYM, and Voice keys"): it is what turns an intercepted board key
-     * into an open board. That one stays on the preference, so the switch keeps its user-visible
-     * meaning. With it off, a board key is simply not consumed at the accessibility level and
-     * falls through to the IME's ordinary key pipeline, which has its own handling for it.
+     * Register KeyInterceptor callbacks on PKB devices. Idempotent; re-run from [BlackBerryIME.loadSettings]
+     * so the "special key support" switch applies next session. The all-keys callback is always on:
+     * it keeps the modifier tracker in sync with the Alt the service consumes. Only the special-key
+     * callback follows the preference; with it off, board keys fall through to the ordinary pipeline.
      */
     fun registerInterceptorCallbacks() {
         if (!DeviceProfile.current().isPkbDevice()) {
@@ -168,13 +123,11 @@ class HardwareKeyBridge(private val ime: BlackBerryIME) {
             return
         }
 
-        // Always, for every PKB device: see the lifetime note above.
         KeyInterceptorService.setAllKeysCallback(allKeysCallback)
         val preprocessEnabled = KeyInterceptorManager.isPreprocessAllKeysEnabled(ime)
         KeyInterceptorService.setPreprocessAllKeysEnabled(preprocessEnabled)
         Logger.info(BlackBerryIME.LOG_TAG, "KeyInterceptor: preprocess all keys = $preprocessEnabled")
 
-        // The preference-gated half.
         val specialKeysEnabled = KeyInterceptorManager.isFeatureEnabled(ime)
         if (specialKeysEnabled) {
             KeyInterceptorManager.setCallback(keyInterceptorCallback)
@@ -185,11 +138,8 @@ class HardwareKeyBridge(private val ime: BlackBerryIME) {
     }
 
     /**
-     * Drop every callback this IME instance installed. Called from `BlackBerryIME.releaseResources`
-     * so a destroyed IME can never leave [KeyInterceptorService]'s Alt bleed-through block
-     * consuming hardware Alt with nothing left to compensate — and so the dead service is not
-     * retained by a static field. The service's own `onDestroy` deliberately does *not* do this:
-     * toggling the accessibility service off and on must not silently unregister a live IME.
+     * Called from `releaseResources` so a dead IME never leaves the service eating Alt uncompensated
+     * or retained in a static. The service's `onDestroy` must not do this: toggling it would unregister a live IME.
      */
     fun unregisterInterceptorCallbacks() {
         KeyInterceptorManager.clearCallback()
@@ -197,10 +147,7 @@ class HardwareKeyBridge(private val ime: BlackBerryIME) {
         KeyInterceptorService.setPreprocessAllKeysEnabled(false)
     }
 
-    /**
-     * The alt-character resolver for the current device profile. Cached once the profile has an
-     * alt-mappings table; a profile without one gets a fresh fallback resolver per call.
-     */
+    /** Cached once the profile has an alt-mappings table; otherwise a fresh fallback per call. */
     fun auxCharacterResolver(): AuxCharacterResolver {
         cachedAuxCharacterResolver?.let { return it }
         return try {
@@ -222,38 +169,28 @@ class HardwareKeyBridge(private val ime: BlackBerryIME) {
     }
 
     /**
-     * Toggle voice input without the unified input bar in the loop — the mic key's behaviour when
-     * the UIM is off (or its manager is not built yet). Public because [KeyEventProcessor] needs
-     * exactly this for its own non-UIM leg: it used to call `switchToVoiceIme` there, which hands
-     * off to another IME and can therefore never CLOSE anything, so with the UIM disabled the
-     * physical mic key re-opened voice on every press. The toggle lives in the controller
-     * ([VoiceInputController.toggleVoiceInput]) and the IME-switch fallbacks below are preserved.
+     * Toggle voice input without the UIM (the mic key when the UIM is off); also used by
+     * [KeyEventProcessor]. A plain IME switch cannot close voice, so the toggle must be here.
      */
     fun triggerVoiceInput() {
         if (!ime.isInputActive || !ime.isInputViewShown()) {
             launchVoiceAssistant()
             return
         }
-        // Bug #4 fix: the voice toggle itself must not be gated on isUimEnabled(). The voice view
-        // is independent of the unified input bar; requiring UIM caused the physical voice key to
-        // fall through to the IME switcher when UIM was disabled. UIM active-component
-        // bookkeeping is still performed, but only when UIM is enabled.
+        // The toggle is independent of the UIM; only the UIM bookkeeping below needs it enabled.
         val voice = ime.voiceInputController
         if (voice == null) {
             InputMethodHelper.getInstance().switchToVoiceIme(ime)
             return
         }
-        // Asked before the toggle, not left to VoiceInputController.show(): the open branch below
-        // raises the UIM bar, which a refused open must not do either.
+        // Asked before the toggle: the open branch raises the UIM bar, which a refused open must not do.
         if (voiceKeyRefused()) return
         val wasInVoiceMode = voice.isInVoiceMode()
         voice.toggleVoiceInput()
         if (ime.isUimEnabled()) {
             val unifiedManager = ime.getKeyboardSwitcher().getUnifiedInputBoardManager() ?: return
             if (wasInVoiceMode) {
-                // Scoped to the voice board: reporting a bare "nothing is open" would clear the
-                // coordinator's state for whatever OTHER board it is holding (see
-                // UnifiedInputBoardManager.reportBoardClosed).
+                // Scoped to the voice board, or the coordinator would clear another board's state.
                 unifiedManager.reportBoardClosed(voice.keyCode)
             } else if (voice.isInVoiceMode()) {
                 unifiedManager.setActiveComponent(voice)
@@ -263,11 +200,8 @@ class HardwareKeyBridge(private val ime: BlackBerryIME) {
     }
 
     /**
-     * Whether a voice-key press must stop here. True when built-in voice input has no recognition
-     * service to use: [VoiceInputController.ensureRecognitionService] has then shown the "No
-     * selected voice recognition service" notice, and the press must open nothing — no board, no
-     * UIM bar, no voice mode left switched on. A press that would close voice input (it is open, or
-     * its view is up) is never refused.
+     * True when there is no recognition service: the notice is shown and the press must open nothing.
+     * A press that would close voice input is never refused.
      */
     fun voiceKeyRefused(): Boolean {
         val voice = ime.voiceInputController ?: return false
@@ -276,16 +210,8 @@ class HardwareKeyBridge(private val ime: BlackBerryIME) {
     }
 
     /**
-     * Start the system voice assistant (used when no editor is bound to receive dictation) — the
-     * fallback for the physical mic key pressed outside a text field.
-     *
-     * Audit CT-29: this used to gate each candidate on `intent.resolveActivity(packageManager)`.
-     * With `targetSdk = 36`, Android 11+ package-visibility filtering makes that return null for
-     * every assist intent unless the manifest's `<queries>` declares them — which it does not —
-     * and `getLaunchIntentForPackage` is filtered the same way. So every candidate was rejected
-     * and the method silently fell through to "no voice assistant available" on any modern
-     * device. Attempting the start and letting `ActivityNotFoundException` select the next
-     * candidate needs no visibility declaration at all.
+     * Mic key outside a text field: start the system voice assistant. Tries each action and catches
+     * `ActivityNotFoundException`; `resolveActivity` would return null under package visibility.
      */
     fun launchVoiceAssistant() {
         for (action in arrayOf(Intent.ACTION_ASSIST, Intent.ACTION_VOICE_COMMAND, Intent.ACTION_SEARCH_LONG_PRESS)) {
@@ -302,36 +228,27 @@ class HardwareKeyBridge(private val ime: BlackBerryIME) {
         Logger.debug(BlackBerryIME.LOG_TAG, "No voice assistant available on this device")
     }
 
-    /** Direct callback for AccessibilityService key interception (minimal latency). */
     private val keyInterceptorCallback = object : KeyInterceptorService.KeyEventCallback {
         override fun onSpecialKeyPressed(keyType: KeyInterceptorService.SpecialKeyType, metaState: Int): Boolean {
-            // A key the profile does not name: the built-in defaults and the Alt table answer.
             return handleSpecialKey(keyType, metaState, null)
         }
 
         override fun onSpecialKeyPressed(keyType: KeyInterceptorService.SpecialKeyType, metaState: Int,
                 mapping: ScancodeMapping?): Boolean {
-            // A key the profile names: its entry carries the Alt character and the board id.
+            // The profile's entry carries the Alt character and the board id.
             return handleSpecialKey(keyType, metaState, mapping)
         }
 
         private fun handleSpecialKey(keyType: KeyInterceptorService.SpecialKeyType, metaState: Int,
                 mapping: ScancodeMapping?): Boolean {
-            // SYM opens a board, and a board lives in the IME window, so a hidden window means
-            // "summon it" rather than "give up" — on a PKB device the window is down for most of
-            // the time the user is typing on the hardware keyboard, which is why bailing here was
-            // half of "Sym key does nothing" on the MP01 (beta triage #10). If show-on-keypress
-            // declines (mode set to never, no editor bound), we return false and the key falls
-            // through to the system and thence to the IME's ordinary pipeline.
+            // A hidden window means "summon it" for SYM (the window is usually down on a PKB device).
+            // If show-on-keypress declines, the key falls through to the ordinary pipeline.
             if (!ime.isInputViewShown()) {
                 if (keyType != KeyInterceptorService.SpecialKeyType.SYM) return false
                 if (!ime.requestShowOnKeyPress()) return false
             }
 
-            // One query, both questions: the special-key branches below ask the CHARACTER
-            // question ("should this key type its Alt character"), which the interpreted state
-            // answers, while the SYM branch asks the CHORD question, which only the modifier
-            // keys' own state may answer. ModifierState names the two apart.
+            // Alt-character questions use the interpreted state; the SYM chord uses the modifier keys' own state.
             val tracker = ime.getPhysicalKeyboardStateTracker()
             val modifiers = tracker.getModifierState(metaState)
             val altPressed = modifiers.isAltActiveForCharacter()
@@ -357,9 +274,7 @@ class HardwareKeyBridge(private val ime: BlackBerryIME) {
                     handled = true
                 }
                 KeyInterceptorService.SpecialKeyType.SYM -> {
-                    // Chord detection reads the modifier KEYS' state, not the masked internal
-                    // state: on the symbol board's Alt page the mask adds Alt, and that is the
-                    // board paging, not the user chording (KEY2, 2026-09-21).
+                    // Not the masked state: the symbol board's Alt page adds Alt to the mask, which is paging, not a chord.
                     if (!altSymShortcutHandler.detectAndExecute(modifiers.getChordMetaState())) {
                         keyboardSwitcher.onSymbolShiftToggle(ime.getCurrentInputType(), ime.getCurrentImeOptions(), false, true)
                     }
@@ -368,10 +283,8 @@ class HardwareKeyBridge(private val ime: BlackBerryIME) {
                 KeyInterceptorService.SpecialKeyType.MIC -> {
                     val micAltChar = resolveAltChar(mapping, ResolvedKey.PSEUDO_KEYCODE_VOICE, ".")
                     val dictationEnabled = PrefsManager.getPrefs().getBoolean("pref_voice_input_key", true)
-                    // A mic key that doubles as a digit (the Q25's 0 key, as on a BlackBerry)
-                    // types that digit in a number, phone or date field, whatever the dictation
-                    // setting and the Alt state say: the same rule KeyEventConverter applies on
-                    // the ordinary key path.
+                    // A mic key that doubles as a digit types it in numeric fields regardless of
+                    // dictation and Alt, as KeyEventConverter does on the ordinary path.
                     val digitInNumericField = micKeyTypesDigit(
                         ime.getCurrentInputEditorInfo()?.inputType ?: 0, micAltChar)
                     val shouldTriggerVoice = !digitInNumericField
@@ -402,10 +315,7 @@ class HardwareKeyBridge(private val ime: BlackBerryIME) {
             return handled
         }
 
-        /**
-         * Resolve the alt character for a special key.
-         * Priority: ScancodeMapping.altChar -> AuxCharacterResolver -> hardcoded fallback.
-         */
+        /** Priority: ScancodeMapping.altChar, then AuxCharacterResolver, then the hardcoded fallback. */
         private fun resolveAltChar(mapping: ScancodeMapping?, fallbackKeyCode: Int, hardcodedFallback: String): String {
             if (mapping != null && mapping.hasAltChar()) return mapping.altChar.toString()
             val resolver = auxCharacterResolver()
@@ -419,47 +329,38 @@ class HardwareKeyBridge(private val ime: BlackBerryIME) {
         }
     }
 
-    /** Callback for all-key pre-processing (when enabled). */
     private val allKeysCallback = object : KeyInterceptorService.AllKeysCallback {
         override fun onKeyEvent(event: KeyEvent): Boolean {
             val keyCode = event.keyCode
             val tracker = ime.getPhysicalKeyboardStateTracker()
 
-            // ALT BLEED-THROUGH FIX: always process Alt key events for IME state tracking.
+            // The service consumes Alt, so always feed it to the tracker here.
             if (keyCode == KeyEvent.KEYCODE_ALT_LEFT || keyCode == KeyEvent.KEYCODE_ALT_RIGHT) {
                 ime.processKeyEventForState(event)
-                return true // Already consumed by the accessibility service
+                return true
             }
 
-            // ALT CHORD FIX: when a non-Alt key is pressed while Alt is HELD (chorded), cancel the
-            // long-press timer and consume the modifier.
+            // A key chorded with a held Alt: cancel the long-press timer and spend the modifier.
             if (event.action == KeyEvent.ACTION_DOWN && tracker.getModifierState().isAltHeldBySpan()) {
                 tracker.cancelLongPressTimer()
                 tracker.consumeModifiersAfterKey(keyCode, true)
             }
 
-            // Only preprocess non-Alt keys if there is no active input connection.
-            // Heal a stale-false flag first (window re-shown without onStartInput).
+            // Preprocess other keys only with no input connection. Refresh first: the flag can be
+            // stale-false when the window is re-shown without onStartInput.
             ime.refreshInputActive()
             if (ime.isInputActive && ime.currentInputConnection != null) {
-                return false // Let the normal flow handle it
+                return false
             }
 
-            // Audit CT-30: this is the all-keys pre-processing callback, so the interpolation ran
-            // per key event before Logger.debug could reject it.
             if (BuildConfig.DEBUG) Logger.debug(BlackBerryIME.LOG_TAG, "Pre-processing key event: keyCode=$keyCode")
             ime.processKeyEventForState(event)
-            // Don't consume: let the system also process it for the target app.
             return false
         }
     }
 }
 
-/**
- * Whether a mic key the BBKB helper caught must type its Alt character instead of acting as the
- * mic key: the field is a number, phone or date/time field and the Alt character is a digit. A mic
- * key whose Alt character is not a digit (the Minimal Phone's full stop) is unaffected.
- */
+/** A caught mic key types its Alt character instead: the field is numeric/phone/date and the Alt character is a digit. */
 @VisibleForTesting
 internal fun micKeyTypesDigit(inputType: Int, altChar: String): Boolean {
     if (altChar.length != 1 || !altChar[0].isDigit()) return false

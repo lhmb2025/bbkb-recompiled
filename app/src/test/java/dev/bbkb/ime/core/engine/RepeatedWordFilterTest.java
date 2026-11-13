@@ -6,13 +6,9 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 
 /**
- * The repeated-word suggestion filter.
- *
- * <p>Context: multi-word predictions like "Hello hello hello" come from the DLM's n-gram/context
- * state, and the engine exposes no way to delete them at source — {@code ET9AWDLM*} is entirely
- * word-level, and the {@code ET9CPDLM*} phrase API belongs to the Chinese module. Filtering at
- * presentation is the only per-phrase control available, so this behaviour is load-bearing rather
- * than cosmetic. See docs/2026-07_frozen-suggestions_investigation.md.
+ * The repeated-word suggestion filter. Load-bearing: repeats like "Hello hello hello" come from the
+ * DLM's context state, and the engine cannot delete them at source ({@code ET9AWDLM*} is word-level;
+ * {@code ET9CPDLM*} phrases are Chinese-only), so presentation filtering is the only control.
  */
 public class RepeatedWordFilterTest {
 

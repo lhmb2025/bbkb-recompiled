@@ -1,12 +1,6 @@
-/* kdb_state.c — lifecycle + active-KDB selection (incl. device variants).
- *
- * Owning KDB folds in the device-variant feature for free: SetKdbNum selects by
- * (primaryId, secondaryId) AND an optional device variant — no blob splice needed.
- * Variant layouts (XMLs under assets/kdb/<variant>/) are registered into an owned side
- * registry by the shim (Xt9KdbVariant.apply, from the matched device config's
- * <kdb-variant>); the blob-built index keeps serving the root/default layouts.
- * The selector is the same 16-bit value the shim builds: (secondaryId<<8) | primaryId.
- */
+/* kdb_state.c: lifecycle and active-KDB selection. SetKdbNum selects by (primaryId, secondaryId)
+ * plus an optional device variant registered by the shim (Xt9KdbVariant.apply); the blob-built
+ * index serves the root layouts. Selector = (secondaryId<<8) | primaryId. */
 #include "et9kdb.h"
 #include "et9_context.h"
 #include "kdb_internal.h"
@@ -17,13 +11,9 @@
 /* secondaryId convention: 6 = PhonePad (physical keyboard, PKB); 1 = default (on-screen, VKB). */
 #define ET9_KDB_SID_PKB 6
 
-/* ---- Device-variant KDB registry (owned) ---------------------------------------------------
- * The blob's kdbIndexAssetManager scans assets/kdb/ FLAT (AAssetDir does not recurse), so
- * variant folders (assets/kdb/<device>/) never reach the blob-built index at ctx+0x18 — and its
- * 0x28-byte nodes carry no variant field to hang one on. Variants therefore live in this owned
- * side-registry: the shim reads the XMLs under assets/kdb/<variant>/ and registers the bytes here, keyed
- * by (variant, pid, sid); SetKdbNum consults the registry BEFORE the blob index, so a variant
- * layout overrides the root copy per (pid,sid) and everything else falls back to root. */
+/* Device-variant registry. The blob scans assets/kdb/ flat (AAssetDir does not recurse) into the
+ * index at ctx+0x18, whose 0x28-byte nodes have no variant field. Keyed by (variant, pid, sid) and
+ * consulted before the blob index, so a variant overrides root per (pid,sid). */
 typedef struct Xt9VariantNode {
     ET9U32 pid, sid;
     char   variant[XT9KDB_VARIANT_NAME_MAX];
@@ -33,23 +23,17 @@ typedef struct Xt9VariantNode {
 } Xt9VariantNode;
 static Xt9VariantNode* g_variant_head;
 
-/* Requested device variant, set by the shim from the matched device config.
- * Empty => default (blob-index (pid,sid) match), preserving original behaviour. */
+/* Requested device variant from the matched device config; empty = blob-index match. */
 static char g_req_variant[XT9KDB_VARIANT_NAME_MAX];
 
-/* Active-KDB state (owned). g_active_src points at whichever node (registry or blob index) is
- * loaded, so SetKdbNum reloads only on a real change (selector OR variant), and
- * GetKdbNum/Invalidate work. */
+/* g_active_src = the loaded node (registry or blob index); SetKdbNum reloads only when it changes. */
 static const void* g_active_src;
 static ET9U32      g_active_selector;
 static int         g_active_valid;
 
-/* One lock over the registry, the requested variant and the active-node marker. The shim writes
- * the registry from its own registration thread while the engine thread picks from it and parses
- * a node's bytes in SetKdbNum. That used to be safe by timing alone — the device variant was
- * registered once at start-up, before the first layout load — but a letter layout switched on in
- * settings re-registers a variant's files mid-session, and re-registering frees the bytes a
- * concurrent load may be reading. Never held across a call back into the shim. */
+/* Guards the registry, requested variant and active marker: the shim re-registers variants
+ * mid-session (freeing bytes) while the engine thread parses them in SetKdbNum. Never held across
+ * a call back into the shim. */
 static pthread_mutex_t g_variant_mu = PTHREAD_MUTEX_INITIALIZER;
 
 void xt9kdb_set_requested_variant(const char* v) {
@@ -98,16 +82,13 @@ static Xt9VariantNode* pick_variant(ET9U32 pid, ET9U32 sid) {
     return 0;
 }
 
-/* A letter layout's generated variant (LetterLayoutKdb.VARIANT_PREFIX "layout:"): it may carry
- * on-screen KDBs drawn from that layout, which the VKB must load. Device variants (athena…) never
- * reach the VKB — a device folder describes the keypad's geometry only (2026-08-19). */
+/* Letter-layout variants ("layout:", LetterLayoutKdb.VARIANT_PREFIX) may carry on-screen KDBs the
+ * VKB must load; device variants describe keypad geometry only and never reach the VKB. */
 static int is_letter_layout_variant(const char* v) {
     return strncmp(v, "layout:", 7) == 0;
 }
 
-/* Recognition mode/state held by the owned module. These are STORED faithfully but not yet consumed
- * by the owned decoder (they drive AW-side scoring, which remains the blob); kept so the API is
- * complete and state survives across queries. */
+/* Stored for API completeness; not consumed by the owned decoder (AW scoring stays in the blob). */
 static ET9U16 g_page;
 static ET9U32 g_regionality;
 static ET9U8  g_mode_regional, g_mode_discrete, g_mode_ambig, g_mode_multitap;
@@ -119,14 +100,11 @@ ET9STATUS XT9KDB(Init)(ET9KDBInfoPtr ctx) {
     pthread_mutex_unlock(&g_variant_mu);
     g_page = 0; g_regionality = 0;
     g_mode_regional = g_mode_discrete = g_mode_ambig = g_mode_multitap = 0;
-    /* The variant registry + requested variant survive Init: the shim registers them once per
-     * process, and on-device our Init never runs anyway (the blob's Init is not redirected). */
+    /* Registry and requested variant survive Init (registered once per process). */
     return ET9STATUS_NONE;
 }
 
-/* First (pid,sid) match in the blob-built index — the root/default layout. Variant
- * discrimination lives entirely in the owned registry (pick_variant); the blob's 0x28-byte
- * nodes have no variant field, so reading one here would be out of bounds. */
+/* First (pid,sid) match in the blob index (root layout). Its 0x28-byte nodes have no variant field. */
 static ET9KdbNode* pick_node(ET9KdbIndex* idx, ET9U32 pid, ET9U32 sid) {
     for (ET9KdbNode* n = idx ? idx->head : 0; n; n = n->next)
         if (n->primaryId == pid && n->secondaryId == sid) return n;
@@ -147,35 +125,24 @@ ET9STATUS XT9KDB(SetKdbNum)(ET9KDBInfoPtr ctx, ET9U32 selector, ET9U32 flags) {
 static ET9STATUS set_kdb_num_locked(ET9KDBInfoPtr ctx, ET9U32 selector, ET9U32 flags) {
     ET9U32 pid = selector & 0xff, sid = (selector >> 8) & 0xff;
     const int is_pkb = (sid == ET9_KDB_SID_PKB);
-    /* Owned variant registry first (assets/kdb/<variant>/), blob index (assets/kdb/) as the
-     * per-(pid,sid) fallback — so a variant folder only needs the layouts that differ.
-     * The device-config <kdb-variant> is a PHYSICAL-keyboard geometry (athena: 1080x450,
-     * home-row RADY 180). It must NOT override the on-screen VKB, whose layout + RADY come from
-     * the screen: apply the variant only to the PKB; the VKB always uses the root default KDB
-     * (owner directive 2026-08-19; the athena variant folder ships PKB layouts only, so this is
-     * belt-and-braces against any variant that also carries a vkb/root-named layout). */
+    /* Registry first, blob index as the per-(pid,sid) fallback. A device <kdb-variant> is keypad
+     * geometry (athena 1080x450, RADY 180), so it applies only to the PKB; the VKB uses root
+     * unless the variant is a letter layout. */
     Xt9VariantNode* vn = (is_pkb || is_letter_layout_variant(g_req_variant)) ? pick_variant(pid, sid) : 0;
     ET9KdbNode*     n  = vn ? 0 : pick_node(et9_ctx_kdb_index(ctx), pid, sid);
-    if (!vn && !n) return ET9STATUS_KDB_NOT_LOADED; /* 0x15, mirrors original */
+    if (!vn && !n) return ET9STATUS_KDB_NOT_LOADED; /* 0x15 */
     XT9KDB_LOGD("SetKdbNum sel=0x%x pid=%u sid=%u pkb=%d req_variant='%s' variantApplied=%d",
                 (unsigned)selector, (unsigned)pid, (unsigned)sid, is_pkb, g_req_variant, vn != 0);
-    /* Gate the touch offset to the physical keyboard only (VKB gets zero offset). */
+    /* touch offset applies to the PKB only */
     xt9kdb_set_active_pkb(is_pkb);
 
-    /* Publish the requested selection into the context BEFORE loading, and roll it back if the
-     * load fails — the blob's SetKdbNum (0xba654) does exactly this, saving ctx+0x04/+0x08 into
-     * w25/w24 and restoring them at 0xba77c on a non-zero loader status.
-     *
-     * This must happen on EVERY call, not just when we reload: the blob re-reads ctx+0x04 on every
-     * keystroke (ProcessKeyBySymbol -> 0xba264) and compares it against NKL+0x04 to decide whether
-     * to keep our NKL or reload from its own variant-blind index. Stale or decomposed values here
-     * silently starve the word engine. */
+    /* Publish the selection into ctx+0x04/+0x08 before loading, roll back on failure (blob 0xba654,
+     * restore at 0xba77c). Do it on every call: each keystroke (0xba264) compares ctx+0x04 with
+     * NKL+0x04 and reloads from the variant-blind index on mismatch, starving the word engine. */
     ET9U32 prev_selector = xt9kdb_ctx_get_selector(ctx);
     ET9U16 prev_flags    = xt9kdb_ctx_get_flags(ctx);
     xt9kdb_ctx_set_selection(ctx, selector, (ET9U16)flags);
 
-    /* (Re)load only when the selected node actually changes (covers selector AND variant). The
-     * node carries the raw XML bytes; parse via the owned Load_XmlKDB. */
     const void* src = vn ? (const void*)vn : (const void*)n;
     if (src != g_active_src) {
         const ET9U8* bytes = vn ? vn->contents : n->contents;
@@ -192,8 +159,7 @@ static ET9STATUS set_kdb_num_locked(ET9KDBInfoPtr ctx, ET9U32 selector, ET9U32 f
         g_active_valid    = 1;
     }
 
-    /* The contract the blob's loader enforces on every keystroke. Cheap, and it is the exact
-     * invariant whose violation caused the 2026-07 "suggestions frozen while typing" bug. */
+    /* the invariant the blob checks on every keystroke (violation froze suggestions) */
     XT9KDB_ASSERT_SELECTION_MATCHES_NKL(ctx);
     return ET9STATUS_NONE;
 }
@@ -206,7 +172,6 @@ ET9U32    XT9KDB(GetKdbNum)(ET9KDBInfoPtr ctx) {
     return num;
 }
 
-/* Clear the active marker so the next SetKdbNum re-parses (e.g. after the index/asset changes). */
 ET9STATUS XT9KDB(InvalidateLoadedKdbInfo)(ET9KDBInfoPtr ctx) {
     (void)ctx;
     pthread_mutex_lock(&g_variant_mu);
@@ -217,20 +182,9 @@ ET9STATUS XT9KDB(InvalidateLoadedKdbInfo)(ET9KDBInfoPtr ctx) {
 
 ET9STATUS XT9KDB(SetPageNum)(ET9KDBInfoPtr ctx, ET9U16 p) { (void)ctx; g_page = p; return ET9STATUS_NONE; }
 ET9U16    XT9KDB(GetPageNum)(ET9KDBInfoPtr ctx) { (void)ctx; return g_page; }
-/* Regional vs discrete is NOT bookkeeping: it is the single bit that decides whether the blob
- * expands each typed symbol into its KEY NEIGHBOURS before scoring. Both setters IGNORE their
- * ET9BOOL argument in the original (0xbad84 / 0xbae1c load w1 for the loader gate and never read
- * the parameter) — they are "switch to regional" / "switch to discrete", not setters.
- * NuanceSDK_init (0x201ec) calls SetDiscreteMode straight after ET9KDB_Init (0xbe97c/0xbe98c
- * stamp ctx[0]=1, i.e. bit3 CLEAR = regional). The per-language pick in the static helper at
- * 0x21de4 then reads the LOW BYTE OF languageIds[0] (0x223a8 `ldrb w8,[x19]`) — the id array just
- * handed to alphaSetLanguage, not the LDB — and takes regional only when it is 0x12. Decoding the
- * 105-entry locale table at 0x217c50, exactly one id matches: ko = 0x112. Regional is therefore
- * KOREAN-ONLY; English (0x109/0x809/0xb09) always branches to SetDiscreteMode. Storing these in
- * file statics and leaving ctx+0x00 alone froze the engine in REGIONAL mode for every language —
- * every typed symbol expanded into its key neighbours before scoring (0x5d864 `tbnz w0,#0x3`
- * skips the expansion loop at 0x5d5a4-0x5d63c when bit 3 is set), so "If" offered "Of".
- * See docs/libnative-documentation.md §10 and the 2026-09-15 device A/B. */
+/* ctx[0] bit 3 decides whether typed symbols expand into key neighbours before scoring (clear =
+ * regional; 0x5d864 skips the 0x5d5a4 loop when set). Both setters ignore the ET9BOOL (0xbad84 /
+ * 0xbae1c). Init stamps ctx[0]=1 (regional); only ko (languageIds[0] low byte 0x12) stays regional. */
 ET9STATUS XT9KDB(SetRegionalMode)(ET9KDBInfoPtr ctx, ET9BOOL b) {
     if (!ctx) return ET9STATUS_INVALID_MEMORY;
     g_mode_regional = b ? 1 : 0;
@@ -247,17 +201,15 @@ ET9STATUS XT9KDB(SetAmbigMode)(ET9KDBInfoPtr ctx, ET9BOOL b) { (void)ctx; g_mode
 ET9STATUS XT9KDB(SetMultiTapMode)(ET9KDBInfoPtr ctx, ET9BOOL b) { (void)ctx; g_mode_multitap = b ? 1 : 0; return ET9STATUS_NONE; }
 ET9U32    XT9KDB(GetRegionality)(ET9KDBInfoPtr ctx) { (void)ctx; return g_regionality; }
 ET9STATUS XT9KDB(SetRegionality)(ET9KDBInfoPtr ctx, ET9U32 r) { (void)ctx; g_regionality = r; return ET9STATUS_NONE; }
-/* Our KDBs carry no version string, so the honest answer is "empty", not "nothing written".
- * Mirrors the blob (0xbecac): clear the out-length BEFORE validating ctx, so a caller that ignores
- * the status still reads a defined 0 rather than whatever was on its stack. */
+/* No version string: empty. Clear the out-length before validating ctx (blob 0xbecac) so a caller
+ * ignoring the status reads 0. */
 ET9STATUS XT9KDB(GetKdbVersion)(ET9KDBInfoPtr ctx, ET9SYMB* out, ET9U16 maxLen, ET9U16* outLen) {
     if (outLen) *outLen = 0;
     if (!ctx)   return ET9STATUS_INVALID_MEMORY;
     if (out && maxLen) out[0] = 0;
     return ET9STATUS_NONE;
 }
-/* A KDB is valid once THIS context has a model with keys loaded (per-ctx slots,
- * kdb_load_xml.c — the spellchecker's context must not vouch for the IME's or vice versa). */
+/* Valid once this context has a model loaded (per-ctx: the spell checker's must not vouch for the IME's). */
 ET9STATUS XT9KDB(Validate)(ET9KDBInfoPtr ctx) {
     return xt9kdb_model_for_ctx(ctx) ? ET9STATUS_NONE : ET9STATUS_KDB_NOT_LOADED;
 }

@@ -1,32 +1,10 @@
-/* et9probe.c — read/write the stock ET9 alphabetic engine's configuration from Java.
- *
- * WHY THIS EXISTS
- *   The blob exposes 49 engine knobs (see docs/et9-ranking-documentation.md) but its JNI
- *   layer binds only two of them. Everything else — auto-correct fences, DLM quarantine
- *   level, adaptation flags — is unreachable from Java. This file reaches them the only
- *   way that does not require patching the blob: the ET9AW* symbols are exported with
- *   default visibility, so a library in the same process can dlsym and call them.
- *
- * WHY dlsym RATHER THAN LINKING
- *   libkb.so is pulled in as a DT_NEEDED of libnative-lib.so; linking the other way would
- *   be circular. This lives in libxt9trace.so (loaded independently by Xt9Trace) and
- *   resolves everything lazily through RTLD_DEFAULT, so a missing symbol degrades to a
- *   diagnostic instead of a load failure.
- *
- * SAFETY
- *   Every pointer hop is validated against the engine's own ABI fingerprint (the struct
- *   size 0x1428 that every public ET9AW entry checks) BEFORE it is dereferenced. If any
- *   check fails the probe reports the failure and touches nothing further — this runs
- *   inside the user's live IME and a bad dereference would kill the keyboard.
- *
- * POINTER CHAIN (recovered from Java_..._buildSelectionList and ET9AWSetPrimaryFence)
- *   handle                                    Java NuanceSDK.mNativeHandle (engine block)
- *   P     = *(void**)(handle + 0xAE210)       block -> engine object
- *   ling  = P + 8                             ET9AWLingInfo*, magic u16 @ +0x38
- *   info  = *(void**)(ling + 0x20)            magic u16 @ +0xD8
- *   core  = *(void**)(info + 0x98)            magic u16 @ +0x00
- *   fences live at info + 0x249008 / +0x249009; STM gating at core + 0x15038 / +0x30408.
- */
+/* et9probe.c: read/write ET9 alphabetic engine knobs the blob's JNI does not bind.
+ * Lives in libxt9trace.so; calls blob entry points by address (dlsym cannot reach libnative-lib.so).
+ * Every pointer hop is checked against the 0x1428 ABI magic before it is dereferenced: this runs in
+ * the live IME and a bad dereference kills the keyboard.
+ *   P = *(void**)(handle + 0xAE210); ling = P + 8 (magic u16 @ +0x38)
+ *   info = *(void**)(ling + 0x20) (magic @ +0xD8); core = *(void**)(info + 0x98) (magic @ +0)
+ *   fences at info + 0x249008 / +0x249009; STM gating at core + 0x15038 / +0x30408. */
 
 #include <jni.h>
 #include <dlfcn.h>
@@ -40,7 +18,7 @@
 #include <sys/system_properties.h>
 
 #define TAG "ET9PROBE"
-/* Every line here is a diagnostic; et9_resolve runs on each suggestion request (P-5). */
+/* Every line here is a diagnostic; et9_resolve runs on each suggestion request. */
 #define LOGI(...) ET9_DIAG(ANDROID_LOG_INFO, TAG, __VA_ARGS__)
 
 #define ET9_MAGIC 0x1428
@@ -59,21 +37,10 @@
 
 #include "et9probe.h"
 
-/* Resolve the engine context by SIGNATURE SCAN rather than a hardcoded pointer path.
- *
- * The JNI layer reaches the engine through C++ virtual dispatch, so there is no stable
- * offset chain to hardcode from Java's handle. Instead we scan the engine block for a
- * structure that satisfies all three of the ABI checks every public ET9AW entry performs:
- *
- *     *(u16*)(ling + 0x38) == 0x1428
- *     info = *(void**)(ling + 0x20);  *(u16*)(info + 0xD8) == 0x1428
- *     core = *(void**)(info + 0x98);  *(u16*)(core)        == 0x1428
- *
- * Three chained magics plus two pointer dereferences make a false positive implausible.
- * The scan is bounded to a window the blob's own JNI is known to dereference (it reads
- * handle+0xAE1D8 and handle+0xAE230), so every byte we touch is already proven mapped.
- */
-#define SCAN_LIMIT 0xAE1D0   /* strictly inside the range the blob itself dereferences */
+/* The context is found by signature scan (the JNI reaches it through C++ virtual dispatch, so no
+ * stable offset chain exists): three chained 0x1428 magics make a false positive implausible.
+ * The scan stays below handle+0xAE1D8, which the blob's JNI itself reads, so every byte is mapped. */
+#define SCAN_LIMIT 0xAE1D0
 
 int et9_diag_enabled(void) {
 #ifdef NDEBUG
@@ -88,12 +55,11 @@ int et9_diag_enabled(void) {
 #endif
 }
 
-/* Unused since et9_resolve walks the chain itself; kept as the statement of what a valid chain is. */
+/* Unused: states what a valid chain is (et9_resolve walks it itself). */
 __attribute__((unused)) static int chain_ok(unsigned char *ling) {
     if (*(uint16_t *)(ling + OFF_LING_MAGIC) != ET9_MAGIC) return 0;
     unsigned char *info = *(unsigned char **)(ling + OFF_LING_INFO);
     if (!info) return 0;
-    /* Reject obviously bogus pointers before dereferencing them. */
     if ((uintptr_t)info < 0x1000 || ((uintptr_t)info & 0x7)) return 0;
     if (*(uint16_t *)(info + OFF_INFO_MAGIC) != ET9_MAGIC) return 0;
     unsigned char *core = *(unsigned char **)(info + OFF_INFO_CORE);
@@ -106,14 +72,9 @@ __attribute__((unused)) static int chain_ok(unsigned char *ling) {
 /* The C++ objects the JNI itself loads as candidate ctx values: ling = *(*(block + off)) + 8. */
 static const size_t CAND_OFFSETS[] = {0xAE210, 0xAE228, 0xAE230};
 
-/* CONFIRMED ON-DEVICE: handle + 0x18750 is the engine "core" struct — the blob's own JNI
- * passes it to ET9ClearAllSymbs, and its magic sits at offset 0, matching the third level of
- * the chain every ET9AW entry validates. From there we walk BACKWARDS to the structs that
- * point at it, because those (info, ling) are separate allocations, not inline in the block.
- *
- * This is the full signature scan. Also reports how it got there (the recipe et9_resolve caches):
- * info's offset in the block or the candidate index that led to it, and ling's offset in the
- * block (*has_ling_off) when the second scan found it there. */
+/* handle + 0x18750 is the core struct (the blob's JNI passes it to ET9ClearAllSymbs). info and ling
+ * are found by walking back to the structs that point at it. Also reports the recipe et9_resolve
+ * caches: info's block offset or candidate index, and ling's block offset when found in the block. */
 static et9_ctx et9_resolve_scan(jlong handle, size_t *info_off, size_t *ling_off,
                                 int *has_ling_off, int *cand_idx) {
     et9_ctx c = {0, 0, 0, 0};
@@ -123,9 +84,8 @@ static et9_ctx et9_resolve_scan(jlong handle, size_t *info_off, size_t *ling_off
 
     unsigned char *core = block + 0x18750;
     if (*(uint16_t *)core != ET9_MAGIC) { c.error = "core magic mismatch at handle+0x18750"; return c; }
-    c.core = core;   /* enough on its own for the STM questions */
+    c.core = core;   /* enough on its own for the STM fields */
 
-    /* info: the struct holding core at +0x98, with its own magic at +0xD8. */
     for (size_t off = 0; off + 8 < SCAN_LIMIT; off += 8) {
         if (*(unsigned char **)(block + off) != core) continue;
         if (off < OFF_INFO_CORE) continue;
@@ -136,8 +96,7 @@ static et9_ctx et9_resolve_scan(jlong handle, size_t *info_off, size_t *ling_off
         LOGI("layout: info at handle+0x%zx", off - OFF_INFO_CORE);
         break;
     }
-    /* alphaBuildSelectionList computes pLingInfo = *(void**)ctx + 8. Try the C++ objects the
-     * JNI itself loads as candidate ctx values before falling back to scanning. */
+    /* alphaBuildSelectionList computes pLingInfo = *(void**)ctx + 8: try the JNI's candidate ctx objects. */
     if (!c.info) {
         const size_t *cand = CAND_OFFSETS;
         for (unsigned i = 0; i < 3 && !c.ling; i++) {
@@ -160,8 +119,7 @@ static et9_ctx et9_resolve_scan(jlong handle, size_t *info_off, size_t *ling_off
     }
     if (!c.info) { c.error = "info not located (STM data still valid)"; return c; }
 
-    /* ling: the struct holding info at +0x20, with its own magic at +0x38. Searched even when the
-     * candidate path already found one: an in-block ling, when there is one, wins as it always has. */
+    /* Searched even when the candidate path found a ling: an in-block ling wins. */
     for (size_t off = 0; off + 8 < SCAN_LIMIT; off += 8) {
         if (*(unsigned char **)(block + off) != c.info) continue;
         if (off < OFF_LING_INFO) continue;
@@ -177,16 +135,9 @@ static et9_ctx et9_resolve_scan(jlong handle, size_t *info_off, size_t *ling_off
     return c;
 }
 
-/* ---- the per-handle cache (P-5) -------------------------------------------------------------
- * et9_resolve runs on every suggestion request (Et9Dlm.nativeSelectionListSources), and the scan
- * reads up to 2 x 0.7 MB of the engine block each time. The layout only changes when the engine is
- * re-created, so the RECIPE is cached — where in the block info and ling were found, as offsets
- * from the handle, or which candidate object led to them — never the resolved pointers: after a
- * dispose those can point into freed (even unmapped) memory. Each call re-derives the pointers
- * from the live block and re-checks the same magic chain the scan accepted (core magic, info magic
- * + info->core == core, ling magic + ling->info == info): a few loads. A new handle, or the same
- * address reused by an engine with a different layout, fails the check and rescans. Only a full
- * resolution (ling found) is cached; a partial one rescans next time, as before. */
+/* Per-handle cache: the scan reads up to 2 x 0.7 MB per suggestion request. Only the recipe (offsets
+ * or candidate index) is cached, never pointers, which can dangle after a dispose. Each call
+ * re-derives and re-checks the magic chain; a mismatch rescans. Only full resolutions are cached. */
 typedef struct {
     jlong  handle;          /* 0 = empty */
     size_t info_off;        /* info = block + info_off, when cand_idx < 0 */
@@ -251,18 +202,9 @@ et9_ctx et9_resolve(jlong handle) {
     return c;
 }
 
-/* Replicate the cache-invalidation sweep the engine's own setters perform after storing a
- * value. Recovered verbatim from ET9AWSetPrimaryFence @ 0xd44b4-0xd452c:
- *
- *     for off in {0xca8,0xcb0,0xcb8,0xcc0,0xcc8,0xcd0}:
- *         p = *(void**)(core + 0x2a000 + off);  if (p) *(u8*)(p + 2) = 1;   // mark dirty
- *     *(u8*)(core + 0x150cb) = 0;                                            // list no longer valid
- *     *(u8*)(core + 0x150cd) = 0;
- *
- * Without this a raw field store is invisible to the engine for the rest of the session — it
- * keeps scoring against cached state. All plain field writes; no engine calls involved.
- */
-/* Unused since the setters are called directly (they run this sweep themselves). */
+/* The cache-invalidation sweep the engine's setters run after a store (ET9AWSetPrimaryFence
+ * @ 0xd44b4-0xd452c); without it a raw field store is ignored for the session. Unused: the setters
+ * are called directly and run it themselves. */
 __attribute__((unused)) static void invalidate_caches(unsigned char *core) {
     static const unsigned int slots[] = {0xca8, 0xcb0, 0xcb8, 0xcc0, 0xcc8, 0xcd0};
     unsigned char *tbl = core + 0x2a000;
@@ -275,22 +217,11 @@ __attribute__((unused)) static void invalidate_caches(unsigned char *core) {
     LOGI("caches invalidated");
 }
 
-/* ---- calling the engine's own setters -----------------------------------------------------------
- * Writing the fields directly was never equivalent to calling the engine: the real setters also run
- * a cache-invalidation sweep, which is why the earlier fence sweep produced no behavioural change.
- * Calling them was blocked because dlsym cannot reach libnative-lib.so — Android keeps it out of
- * the global namespace, and dlopen(RTLD_NOLOAD) returns a namespace-tagged handle dlsym faults on.
- *
- * Resolved by not using the dynamic linker: find the blob's load bias with dl_iterate_phdr and call
- * BY ADDRESS — the same trampoline the owned KDB already uses for ProcessKey/ProcessStoredTouch/
- * ProcessTrace, and indifferent to symbol visibility. The addresses are build-specific, but each
- * entry validates the 0x1428 magic at pLingInfo+0x38 before doing anything, so a wrong one reports
- * a status code rather than corrupting state.
- *
- * Signature confirmed at 0xd4438: ET9STATUS f(void* pLingInfo, ET9U8 value). NOT every setter
- * has that shape (2026-11-03): ET9AWSetDLMQuarantineLevel takes three ET9U8 levels, and the
- * Set/Clear pairs (FastAdaptation and the like) take the handle alone. Only the fences go through
- * call_ling_setter. */
+/* Engine setters, called by address from the dl_iterate_phdr load bias: dlsym cannot reach
+ * libnative-lib.so (Android keeps it out of the global namespace; RTLD_NOLOAD handles fault).
+ * Addresses are build-specific; each entry checks the magic at pLingInfo+0x38 first.
+ * Fences: ET9STATUS f(void *pLingInfo, ET9U8). SetDLMQuarantineLevel takes three ET9U8 levels;
+ * Set/Clear pairs (FastAdaptation etc.) take the handle alone. */
 #define BLOB_SET_PRIMARY_FENCE    0xd4438u
 #define BLOB_SET_SECONDARY_FENCE  0xd4548u
 #define BLOB_SET_DLM_QUARANTINE   0xd1e20u
@@ -330,20 +261,9 @@ static int call_ling_setter(unsigned vaddr, void *ling, int value, const char *w
     return st;
 }
 
-/* Field access from here down.
- *
- * An earlier revision resolved the engine's exported getters with dlsym and called them.
- * That crashed: Android does not expose libnative-lib.so's symbols to RTLD_DEFAULT, and
- * dlopen(RTLD_NOLOAD) hands back a namespace-tagged handle that dlsym cannot use. Since
- * every knob's storage offset is already known from static analysis (see §4 of
- * docs/et9-ranking-documentation.md), the probe just reads the fields. No calls into the
- * engine, nothing to get a signature wrong, and nothing that can corrupt engine state.
- *
- * Bases (recovered by disassembly, confirmed on-device by the ABI magic):
- *   core + 0x246cXX  the main settings block
- *   core + 0x1c45XX  selection-list / spell-correction modes
- *   info + 0x249008  primary fence, +0x249009 secondary fence
- */
+/* Knob storage offsets, read directly (no engine calls):
+ *   +0x246cXX  main settings block (base decided in nativeProbe)
+ *   +0x1c45XX  selection-list / spell-correction modes */
 
 #define K_QUARANTINE   0x246c1d
 #define K_DBSTEMS      0x246c3f
@@ -371,9 +291,8 @@ Java_com_blackberry_nuanceshim_Et9Probe_nativeProbe(JNIEnv *env, jclass cls, jlo
         LOGI("probe failed: %s", c.error ? c.error : "?");
         return (*env)->NewStringUTF(env, buf);
     }
-    /* Which base holds the 0x246cXX settings block? The fences proved `info` is right for
-     * the 0x249xxx region; report both candidates for the settings region and let the known
-     * SysInit defaults (NextWordPrediction=1, SelectionListMode=1, WordStemsPoint=2) decide. */
+    /* The settings block may be core- or info-relative: pick the base showing the SysInit
+     * defaults (NextWordPrediction=1, WordStemsPoint=2). */
     unsigned char *k = c.core;
     if (c.info) {
         unsigned char *i = c.info;
@@ -382,7 +301,6 @@ Java_com_blackberry_nuanceshim_Et9Probe_nativeProbe(JNIEnv *env, jclass cls, jlo
              *(uint16_t *)(k + K_WORDSTEMPT),
              *(unsigned char *)(i + K_NEXTWORDPRED), *(uint32_t *)(i + K_SELLISTMODE),
              *(uint16_t *)(i + K_WORDSTEMPT));
-        /* Adopt whichever base shows the engine's documented defaults. */
         if (*(unsigned char *)(i + K_NEXTWORDPRED) == 1 && *(uint16_t *)(i + K_WORDSTEMPT) == 2) {
             k = i;
             LOGI("basecmp: settings block is INFO-relative");
@@ -427,15 +345,13 @@ Java_com_blackberry_nuanceshim_Et9Probe_nativeProbe(JNIEnv *env, jclass cls, jlo
         *(uint32_t *)(k + K_SPELLCORR),
         *(uint16_t *)(k + K_WORDSTEMPT),
         *(uint16_t *)(k + K_WORDCOMPPT),
-        *(unsigned char *)(c.core + 0x492d8));   /* OFF_CORE_MULTITHREADING, below */
-    /* Experiment hook: `adb shell setprop debug.et9.fence N` applies N to both fences on the
-     * next input session, so the fence semantics can be swept without a UI. Unset/empty =
-     * leave the engine's own value alone. */
+        *(unsigned char *)(c.core + 0x492d8));   /* OFF_CORE_MULTITHREADING */
+    /* Experiment hook: `setprop debug.et9.fence N` applies N to both fences on the next
+     * input session; unset leaves the engine's value alone. */
     char prop[PROP_VALUE_MAX] = {0};
     if (c.ling && __system_property_get("debug.et9.fence", prop) > 0 && prop[0]) {
         int v = atoi(prop);
         if (v >= 0 && v <= 255) {
-            /* Through the engine's own setters now, so the cache invalidation actually happens. */
             call_ling_setter(BLOB_SET_PRIMARY_FENCE,   c.ling, v, "SetPrimaryFence");
             call_ling_setter(BLOB_SET_SECONDARY_FENCE, c.ling, v, "SetSecondaryFence");
             if (c.info)
@@ -449,9 +365,7 @@ Java_com_blackberry_nuanceshim_Et9Probe_nativeProbe(JNIEnv *env, jclass cls, jlo
     return (*env)->NewStringUTF(env, buf);
 }
 
-/* Write a knob field directly. Same store the engine's own setter performs, minus the
- * cache-invalidation sweep — adequate for an A/B sweep, NOT a substitute for a real
- * binding if any of these graduate to a product setting. */
+/* Sets either fence through the engine's setter; a negative value leaves that fence alone. */
 JNIEXPORT jint JNICALL
 Java_com_blackberry_nuanceshim_Et9Probe_nativeSetFences(JNIEnv *env, jclass cls,
                                                        jlong handle, jint primary, jint secondary) {
@@ -464,10 +378,8 @@ Java_com_blackberry_nuanceshim_Et9Probe_nativeSetFences(JNIEnv *env, jclass cls,
     return st;
 }
 
-/* ET9AWSetDLMQuarantineLevel (0xd1e20) takes THREE levels, stored at info+0x246c1d/1e/1f, each
- * 0..5 (status 26 otherwise). Until 2026-11-03 this went through call_ling_setter and so passed
- * whatever w2/w3 happened to hold into the other two fields. A negative level keeps the engine's
- * current value of that field. */
+/* ET9AWSetDLMQuarantineLevel (0xd1e20) takes three levels, stored at info+0x246c1d/1e/1f, each
+ * 0..5 (status 26 otherwise). A negative level keeps that field's current value. */
 JNIEXPORT jint JNICALL
 Java_com_blackberry_nuanceshim_Et9Probe_nativeSetQuarantine(JNIEnv *env, jclass cls,
                                                            jlong handle, jint l1, jint l2, jint l3) {
@@ -493,23 +405,12 @@ Java_com_blackberry_nuanceshim_Et9Probe_nativeSetQuarantine(JNIEnv *env, jclass 
     return st;
 }
 
-/* ---- the engine's multithreading switch (P-1) ---------------------------------------------------
- * The "MT" variants of the alphabetic selection-list and spell paths split one search over up to
- * five pthreads with a 64 KB stack each (spawner at 0x54014, the blob's only pthread_create), and
- * join them before returning: 6 to 10 thread births per keystroke, measured. Every one of the nine
- * spawn sites (sub_9dc48, ET9GetExactWord+0x1640/+0x176c, ET9_CP_Trie_Resegmentation_MT,
- * ET9_CP_SBIFillSelList x4, ET9_C_ApplyALM2Spell) first reads ONE byte, core + 0x492d8, and calls
- * the same worker inline, once, when it is 0. The engine's public ET9ClearMultiThreading clears it
- * (ET9SetMultiThreading / ET9GetMultiThreading are its pair); the blob's JNI never calls either,
- * and ET9WordSymbInit sets the byte to 1, so MT is the default.
- *
- * NuanceSDK.setLanguage zeroes the whole core and re-runs ET9WordSymbInit, which turns MT back on,
- * so the switch has to be applied after EVERY native setLanguage, not once per engine.
- *
- * Signatures (0xb8160 / 0xb81bc, 92 and 88 bytes): ET9STATUS f(ET9WordSymbInfo *core); status 9 on
- * NULL, 2 on a bad magic, 62 while a selection list is built over a non-empty input (core+0x150cb
- * and the symbol count at core+2 both non-zero), else 0 after storing the byte. The core is the
- * struct at handle + 0x18750 (magic 0x1428 at +0), the same one et9_resolve validates. */
+/* Multithreading switch. MT search paths spawn up to five 64 KB-stack pthreads per search (spawner
+ * 0x54014), 6 to 10 per keystroke. All nine spawn sites read the byte core + 0x492d8 and run the
+ * worker inline when it is 0. ET9WordSymbInit sets it to 1, and NuanceSDK.setLanguage re-runs that,
+ * so the switch must be reapplied after every native setLanguage.
+ * Set/Clear at 0xb8160 / 0xb81bc: ET9STATUS f(ET9WordSymbInfo *core); 9 on NULL, 2 on bad magic,
+ * 62 while a list is built over non-empty input (core+0x150cb and core+2 non-zero), else 0. */
 #define BLOB_SET_MULTITHREADING   0xb8160u
 #define BLOB_CLEAR_MULTITHREADING 0xb81bcu
 #define OFF_CORE_MULTITHREADING   0x492d8u

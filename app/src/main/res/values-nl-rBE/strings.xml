@@ -721,7 +721,6 @@
     <string name="device_config_import_unreadable">Dat bestand is geen toestelconfiguratie</string>
     <string name="device_config_import_failed">Kan dat bestand niet importeren</string>
 
-    <!-- OTA app updates -->
     <string name="settings_updates_title">Updates</string>
     <string name="settings_updates_summary">Controleren op een nieuwe versie van BBKB</string>
     <string name="settings_update_installed_version_title">Geïnstalleerde versie</string>
@@ -755,7 +754,6 @@
     <string name="settings_update_ready_title">Klaar om te installeren</string>
     <string name="settings_update_version_details">Versiegegevens</string>
     <string name="settings_update_unknown_sources_title">BBKB toestaan updates te installeren?</string>
-    <!-- Downloadable language packs (core/languagepack) -->
     <string name="language_packs_installed_header">Geïnstalleerd</string>
     <string name="language_packs_available_header">Beschikbaar om te downloaden</string>
     <string name="language_packs_download">Downloaden</string>
@@ -877,7 +875,6 @@
     <string name="settings_voice_stop_on_pause_summary_off">Blijft luisteren tijdens pauzes, tot u op de microfoon tikt of er een halve minuut stilte is</string>
     <string name="voice_status_listening_tap_to_stop">Luisteren&#8230; Tik op de microfoon om te stoppen</string>
 
-    <!-- Settings text moved out of the code (2026-11) -->
     <string name="settings_common_save">Opslaan</string>
     <string name="settings_common_edit">Bewerken</string>
     <string name="settings_common_back">Terug</string>

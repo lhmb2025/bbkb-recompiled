@@ -1,6 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- The language-chip bar's gear (the owner's drawing, 2026-10-17): a globe with a gear over its
-     lower right. Tinted by the bar at draw time, so the fill is plain white. -->
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
     android:width="24dp"
     android:height="24dp"

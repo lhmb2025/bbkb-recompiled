@@ -1,9 +1,8 @@
-// Top-level build file for the project
 buildscript {
     repositories {
         google()
         mavenCentral()
-        gradlePluginPortal()  // Required for node-gradle plugin
+        gradlePluginPortal()  // for the node-gradle plugin
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:9.4.1'

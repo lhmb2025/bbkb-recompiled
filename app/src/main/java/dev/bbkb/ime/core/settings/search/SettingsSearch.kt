@@ -19,13 +19,9 @@ import androidx.compose.ui.draw.drawWithContent
 import kotlinx.coroutines.delay
 
 /**
- * Holds the anchors of the settings that should be scrolled-to and highlighted after a search
- * result (or a "go set this up" link) is tapped. Provided to the whole settings NavHost via
- * [LocalSettingsHighlight].
- *
- * Several rows can be pending at once — the Language switching screen's shortcut link lights up
- * both rows that can switch language (multifunction key and Alt+Sym). Each row clears only its
- * own anchor once it has pulsed.
+ * Anchors of the settings rows to scroll to and highlight after a search result or a "go set this
+ * up" link is tapped. Several rows can be pending at once; each clears only its own anchor once it
+ * has pulsed.
  */
 class SettingsHighlightController {
     var pendingAnchors by mutableStateOf<Set<String>>(emptySet())
@@ -38,7 +34,6 @@ class SettingsHighlightController {
         pendingAnchors = anchors.toSet()
     }
 
-    /** One row has been shown and pulsed. */
     fun consume(anchor: String) {
         pendingAnchors = pendingAnchors - anchor
     }
@@ -51,11 +46,8 @@ class SettingsHighlightController {
 val LocalSettingsHighlight = compositionLocalOf { SettingsHighlightController() }
 
 /**
- * Marks a preference row as a search target. When the active search highlight matches [anchor],
- * the row is scrolled into view and a brief tint pulse is drawn over it.
- *
- * Relies on [BringIntoViewRequester] so it works inside the existing `verticalScroll` columns
- * without any manual offset math.
+ * Marks a row as a search target: when [anchor] is pending, the row is brought into view (works
+ * inside `verticalScroll` columns without offset math) and a brief tint pulse is drawn over it.
  */
 @OptIn(ExperimentalFoundationApi::class)
 fun Modifier.settingsSearchAnchor(anchor: String): Modifier = composed {

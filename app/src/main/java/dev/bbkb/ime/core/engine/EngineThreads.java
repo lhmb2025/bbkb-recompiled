@@ -22,46 +22,21 @@ import java.util.concurrent.TimeoutException;
 import dev.bbkb.ime.BuildConfig;
 
 /**
- * The two threads that make every call into the XT9 engine, and the only two that may.
- *
- * <p><b>Why only two, and why they never exit.</b> The engine is a closed native library that
- * keeps pointers into the stack of the thread that last called it. While that thread lives, the
- * stale pointers read stale but mapped memory and nothing visible happens; once it exits, the next
- * call from another thread reads an unmapped stack and the process dies (SIGSEGV in libnative-lib,
- * twice on the KEY2 on 2026-11-04, after a per-service worker thread was quit). Pool threads,
- * binder threads and a startup pool shut down with its service all exit sooner or later, so none
- * of them may call the engine. These two are created once and live as long as the process:
+ * The only two threads that may call the XT9 engine; both live as long as the process. The engine
+ * keeps pointers into the stack of the thread that last called it, so once that thread exits the
+ * next call reads an unmapped stack and crashes (SIGSEGV in libnative-lib).
  * <ul>
- *   <li><b>The engine thread</b> ({@value #ENGINE_THREAD_NAME}, a HandlerThread): every short op.
- *       Key feeds, gesture samples, suggestion requests (the request queue's Handler is on this
- *       looper), learning at commit, validity and converter queries, option setters.</li>
- *   <li><b>The loader thread</b> ({@value #LOADER_THREAD_NAME}, a single-thread executor): every
- *       long hold. Engine init, language loads, pack registration, the contacts batch, learned
- *       model export, import, enumeration and reset, dispose.</li>
+ *   <li>Engine thread ({@value #ENGINE_THREAD_NAME}): short ops (feeds, gestures, suggestion
+ *       requests, learning, queries, setters).</li>
+ *   <li>Loader thread ({@value #LOADER_THREAD_NAME}): long holds (init, language loads, packs,
+ *       contacts, learned model export/import/enumerate/reset).</li>
  * </ul>
- * They are separate so that a keystroke posted during a seconds-long language load waits only for
- * the engine lock ({@code NuanceSDK.sMutex}, which arbitrates between these two threads and
- * nothing else), and the main thread waits for neither. In debug builds every engine wrapper calls
- * {@link #assertEngineCapable}, so a call from any other thread fails at once instead of crashing
- * on some later day.
+ * A keystroke during a language load waits only for {@code NuanceSDK.sMutex}; main waits for neither.
  *
- * <p><b>FIFO is the ordering model.</b> Everything posted to the engine looper with no delay runs
- * in the order it was posted, across every Handler on that looper: a key feed posted before a
- * suggestion request is in the engine's buffer when the request runs, a commit's learn op runs
- * before the next word's first feed, a gesture's deposit and the request that consumes it cannot
- * interleave. No lock between those ops is needed and none should be added. For that reason
- * nothing may use {@code postDelayed} (or {@code sendMessageDelayed}) on this looper: a delayed op
- * jumps behind everything posted after it and silently breaks the order the callers rely on. Delay
- * on the main thread and post from there instead. The one sanctioned exception to plain FIFO is
- * {@link #postAtFront}, for a layout sync that must land before queued feeds after a language load.
- *
- * <p><b>The main thread never waits on the loader.</b> It may wait, bounded, for a short engine
- * thread op ({@link #query}); a long hold is started with {@link #load} and its result arrives
- * through a callback or a coroutine.
- *
- * <p>Both threads already being engine-capable, {@link #post}, {@link #postAtFront},
- * {@link #query} and {@link #load} run the op inline when called from one of them (load: only on
- * the loader itself), which keeps a nested call from deadlocking on its own queue.
+ * <p>Ordering is FIFO on the engine looper, across all its Handlers, so ops need no locks. Never
+ * use {@code postDelayed}/{@code sendMessageDelayed} there (delay on main, then post); the only
+ * exception is {@link #postAtFront}. Main never waits on the loader, only bounded on {@link #query}.
+ * Calls made from either thread run inline so nested calls cannot deadlock.
  */
 public final class EngineThreads {
 
@@ -110,9 +85,8 @@ public final class EngineThreads {
     }
 
     /**
-     * The loader thread's executor. It is never shut down ({@code shutdown()} is ignored), and a
-     * task that throws does not replace its thread: a plain single-thread executor swaps in a new
-     * worker after an uncaught exception, which is a thread exit by another name.
+     * Never shut down, and a throwing task does not replace its thread (a plain single-thread
+     * executor would swap in a new worker, which is a thread exit).
      */
     public static ExecutorService loader() {
         return Loader.EXECUTOR;
@@ -133,10 +107,7 @@ public final class EngineThreads {
         return onEngineThread() || onLoaderThread();
     }
 
-    /**
-     * Runs {@code op} on the engine thread, after everything already posted there. Runs it inline
-     * when the caller is already the engine thread or the loader thread.
-     */
+    /** Runs {@code op} on the engine thread after everything posted; inline from an engine-capable thread. */
     public static void post(Runnable op) {
         if (sInlineForTests || onEngineCapableThread()) {
             op.run();
@@ -145,11 +116,7 @@ public final class EngineThreads {
         engineHandler().post(guarded(op));
     }
 
-    /**
-     * Runs {@code op} on the engine thread ahead of everything queued there. Only for an op that
-     * must land before queued feeds (the layout sync after a language load); see the class
-     * comment. Inline when the caller is already engine-capable.
-     */
+    /** Ahead of everything queued; only for the layout sync after a language load. */
     public static void postAtFront(Runnable op) {
         if (sInlineForTests || onEngineCapableThread()) {
             op.run();
@@ -159,12 +126,8 @@ public final class EngineThreads {
     }
 
     /**
-     * Runs {@code op} on the engine thread and waits up to {@code timeoutMs} for its result.
-     * Inline when the caller is already engine-capable. Returns {@code fallback} when the wait
-     * times out, when the op throws, or when the waiting thread is interrupted (its interrupt
-     * flag is set again). A timed-out op is NOT cancelled: it stays queued and runs later, after
-     * everything posted before it, with its result discarded. So an op passed here must be safe
-     * to run late, which every read is.
+     * Runs {@code op} on the engine thread, waiting up to {@code timeoutMs}; {@code fallback} on
+     * timeout, throw or interrupt. A timed-out op is not cancelled and runs late, so it must be safe to.
      */
     public static <T> T query(Callable<T> op, long timeoutMs, T fallback) {
         if (sInlineForTests || onEngineCapableThread()) {
@@ -191,11 +154,7 @@ public final class EngineThreads {
         }
     }
 
-    /**
-     * Runs {@code op} on the loader thread. When the caller is the loader thread it runs inline
-     * and the returned future is already complete (queueing it would deadlock a caller that then
-     * waits on it).
-     */
+    /** Runs {@code op} on the loader thread; inline (future already complete) when called from it. */
     public static <T> Future<T> load(Callable<T> op) {
         FutureTask<T> task = new FutureTask<>(op);
         if (sInlineForTests || onLoaderThread()) {
@@ -211,11 +170,7 @@ public final class EngineThreads {
         return load(Executors.callable(op));
     }
 
-    /**
-     * Debug builds only: throws unless the caller is the engine thread or the loader thread (or
-     * the tests made every op inline). The first statement of every engine wrapper. In release
-     * builds {@code BuildConfig.DEBUG} is a constant false and R8 removes the body.
-     */
+    /** Debug builds: throws unless on an engine-capable thread. The first statement of every engine wrapper. */
     public static void assertEngineCapable(String what) {
         if (!BuildConfig.DEBUG) {
             return;
@@ -241,19 +196,12 @@ public final class EngineThreads {
         }
     }
 
-    /**
-     * Tests: when true, {@link #post}, {@link #postAtFront}, {@link #query} and {@link #load} run
-     * the op at once on the caller, and the assertions pass, so a test that drives typing on its
-     * own thread keeps its synchronous expectations. Reset it in the test's teardown.
-     */
+    /** Tests: every op runs inline on the caller and the assertions pass. Reset in teardown. */
     public static void setInlineForTests(boolean inline) {
         sInlineForTests = inline;
     }
 
-    /**
-     * An uncaught exception in a Handler callback kills the looper's thread; an op that throws is
-     * logged instead, so the engine thread outlives it.
-     */
+    /** Logs a throwing op instead of letting it kill the engine thread. */
     private static Runnable guarded(Runnable op) {
         return () -> {
             try {
@@ -264,10 +212,7 @@ public final class EngineThreads {
         };
     }
 
-    /**
-     * One worker thread named {@value #LOADER_THREAD_NAME}, a daemon at background priority,
-     * that never exits: tasks run inside a catch-all, and shutdown is ignored.
-     */
+    /** One daemon worker at background priority that never exits: catch-all tasks, shutdown ignored. */
     private static final class PersistentSingleThreadExecutor extends ThreadPoolExecutor {
 
         PersistentSingleThreadExecutor() {

@@ -11,13 +11,9 @@ import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
 
 /**
- * The capture state machine, driven by synthetic key events — the only way to test it, since its
- * real input is a handset keyboard nobody has in CI.
- *
- * Each case here is a failure mode seen on real hardware rather than an invented one: a board key
- * whose key-up the accessibility service swallows, a key the phone does not have, two bezel keys
- * the firmware gave the same scancode, and the Back key, which on a PKB handset is a physical key
- * that would otherwise be recorded as whatever step happened to be open.
+ * The capture state machine on synthetic key events, covering hardware failure modes: a key-up the
+ * accessibility service swallows, a missing key, two keys sharing a scancode, and Back, which must
+ * not be recorded as the open step.
  */
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [34], manifest = Config.NONE)
@@ -138,7 +134,7 @@ class GuidedCaptureTest {
     fun theSameKeyPressedTwiceIsWrittenOnce() {
         val capture = GuidedCapture()
         capture.press(249, KeyEvent.KEYCODE_SYM)          // SYM
-        capture.press(249, KeyEvent.KEYCODE_SYM)          // ALT — same physical key
+        capture.press(249, KeyEvent.KEYCODE_SYM)          // ALT, same physical key
         capture.press(42, KeyEvent.KEYCODE_SHIFT_LEFT)    // SHIFT
 
         assertEquals(listOf(CaptureStep.ALT), capture.duplicateSteps())

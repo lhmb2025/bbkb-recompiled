@@ -44,14 +44,9 @@ import org.robolectric.shadows.ShadowSpeechRecognizer
 import java.util.Locale
 
 /**
- * How a dictation session ends, driven through the real [VoiceRecognitionManager] and
- * Robolectric's [ShadowSpeechRecognizer] (which records the intent and lets the test play the
- * recogniser's side of the conversation).
- *
- * The case that started this (KEY2, 2026-10-06): with no speech-recognition service selected the
- * platform answers `startListening` with `ERROR_CLIENT` before `onReadyForSpeech`. That used to
- * re-arm DICTATION and never report STOPPED, so the board sat "listening" to nothing and the user
- * was told nothing.
+ * How a dictation session ends, through the real [VoiceRecognitionManager] and Robolectric's
+ * [ShadowSpeechRecognizer]. Key case: with no recognition service the platform answers `startListening` with
+ * `ERROR_CLIENT` before `onReadyForSpeech`; the session must end and report STOPPED, not re-arm.
  */
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [34], manifest = Config.NONE)
@@ -112,16 +107,12 @@ class VoiceRecognitionSessionTest {
         putStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION, arrayListOf(*texts))
     }
 
-    // ── the request ──────────────────────────────────────────────────────────
-
     @Test
     fun `dictation asks for the free-form language model`() {
         start()
         assertEquals(RecognizerIntent.LANGUAGE_MODEL_FREE_FORM,
             recognizer().lastRecognizerIntent.getStringExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL))
     }
-
-    // ── no service ───────────────────────────────────────────────────────────
 
     @Test
     fun `client error before ready is reported as no recognition service`() {
@@ -131,7 +122,7 @@ class VoiceRecognitionSessionTest {
         recognizer().triggerOnError(SpeechRecognizer.ERROR_CLIENT)
 
         verify(callback).onNoRecognitionService()
-        // ...and the session is over, not re-armed as the old "transient" handling did.
+        // ...and the session is over, not re-armed.
         assertEquals(VoiceRecognitionManager.Mode.NONE, manager.mode)
         verify(callback).onStateChanged(VoiceRecognitionManager.Mode.NONE, VoiceRecognitionManager.STATE_STOPPED)
         verify(callback, never()).onRecognitionError(anyInt())
@@ -150,8 +141,8 @@ class VoiceRecognitionSessionTest {
     }
 
     /**
-     * Stop, then start again at once: the stop's own ERROR_CLIENT can land in the new session. That
-     * is what the transient re-arm is for, and it must not read as a missing service.
+     * Stop, then start again at once: the stop's own ERROR_CLIENT can land in the new session. The transient
+     * re-arm covers that, and it must not read as a missing service.
      */
     @Test
     fun `a client error that may answer an earlier stop keeps the new session`() {
@@ -176,8 +167,6 @@ class VoiceRecognitionSessionTest {
         verify(callback, never()).onNoRecognitionService()
     }
 
-    // ── errors that used to end the session silently ─────────────────────────
-
     @Test
     fun `no match ends the session with a message`() {
         start()
@@ -198,8 +187,6 @@ class VoiceRecognitionSessionTest {
         verify(callback).onRecognitionError(R.string.voice_status_network_error)
         verify(callback, never()).onNoRecognitionService()
     }
-
-    // ── partial and final results ────────────────────────────────────────────
 
     @Test
     fun `partial results reach the callback`() {
@@ -241,15 +228,13 @@ class VoiceRecognitionSessionTest {
         verify(callback, never()).onPartialResult("hello there")
     }
 
-    // ── "Show words as you speak" ────────────────────────────────────────────
-
     private fun showPartialResults(show: Boolean) {
         prefs().edit().putBoolean("voice_input_show_partial_results", show).commit()
         SettingsManager.getInstance().loadSettings(
             context, Locale.US, EditorCapabilities(null, false, context.packageName, Locale.US, false))
     }
 
-    /** Off: partials stay out of the editor and the final result commits once, as before partials were shown. */
+    /** Off: partials stay out of the editor and the final result commits once. */
     @Test
     fun `with show words as you speak off partials are not forwarded and the final result still commits`() {
         showPartialResults(false)
@@ -295,12 +280,7 @@ class VoiceRecognitionSessionTest {
         verify(callback).onPartialResult("three")
     }
 
-    // ── the "Speech recognizer" setting ──────────────────────────────────────
-
     private val sayboard = ComponentName("com.elishaazaria.sayboard", "com.elishaazaria.sayboard.recognition.RecognitionService")
-
-    /** A recognition app the package query can see, labelled as its launcher would show it. */
-    // ── stopping by hand ─────────────────────────────────────────────────────
 
     private fun stopOnPause(on: Boolean) {
         prefs().edit().putBoolean("voice_input_stop_on_pause", on).commit()
@@ -353,8 +333,6 @@ class VoiceRecognitionSessionTest {
         verify(callback, never()).onRecognitionError(org.mockito.ArgumentMatchers.anyInt())
         assertEquals(VoiceRecognitionManager.Mode.NONE, manager.mode)
     }
-
-    // ── "Stop listening when you pause" ──────────────────────────────────────
 
     @Test
     fun `with stop on pause on the request carries a pause hint and no segmented session`() {
@@ -460,6 +438,7 @@ class VoiceRecognitionSessionTest {
         assertFalse(manager.isContinuous)
     }
 
+    /** A recognition app the package query can see, labelled as its launcher would show it. */
     private fun installRecognizer(component: ComponentName, label: String, microphoneGranted: Boolean = true) {
         val app = ApplicationInfo().apply {
             packageName = component.packageName
@@ -564,7 +543,10 @@ class VoiceRecognitionSessionTest {
         assertFalse(shadowOf(first).isDestroyed)
     }
 
-    /** Uninstalled since it was chosen: the default it falls back to says "no service" if it is gone too. */
+    /**
+     * Uninstalled since it was chosen: falls back to the default, which says "no service" if it is gone
+     * too.
+     */
     @Test
     fun `a chosen app that is no longer installed falls back to the system default`() {
         chooseRecognizer(sayboard.flattenToString())
@@ -596,8 +578,6 @@ class VoiceRecognitionSessionTest {
         assertNull(boundComponent(latest()))
     }
 
-    // ── a refused microphone ─────────────────────────────────────────────────
-
     @Test
     fun `a permission error from a chosen app without the microphone names that app`() {
         installRecognizer(sayboard, "Sayboard", microphoneGranted = false)
@@ -613,11 +593,7 @@ class VoiceRecognitionSessionTest {
         verify(callback, never()).onPermissionNeeded()
     }
 
-    /**
-     * KEY2, 2026-10-08: Claude picked and granted the microphone, and its service still answered
-     * with the permission error. It refused the keyboard; telling the user to grant Claude the
-     * microphone sent them after a permission it already had.
-     */
+    /** The chosen app holds the microphone, so its permission error means it refused the keyboard. */
     @Test
     fun `a permission error from a chosen app that holds the microphone says it refused`() {
         installRecognizer(sayboard, "Sayboard", microphoneGranted = true)
@@ -668,15 +644,12 @@ class VoiceRecognitionSessionTest {
         verify(callback, never()).onRecognizerRefused(anyString())
     }
 
-    // ── the recogniser is let go when idle ───────────────────────────────────
-
     private fun idleFor(millis: Long) =
         shadowOf(Looper.getMainLooper()).idleFor(java.time.Duration.ofMillis(millis))
 
     /**
-     * A recogniser stays connected to its speech service until it is destroyed, which used to be
-     * when the keyboard itself went. Now it goes a while after the dictation, and the next
-     * dictation builds a new one.
+     * The recogniser is destroyed a while after the dictation (it holds its service connection); the next
+     * one builds anew.
      */
     @Test
     fun `the recogniser is destroyed once a dictation has been over for a while`() {

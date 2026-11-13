@@ -29,13 +29,7 @@ import dev.bbkb.ime.core.settings.ui.SettingsScaffold
 import dev.bbkb.ime.core.settings.ui.SwitchPreference
 
 /**
- * Keyboard Helper Settings Screen
- * Manages accessibility service settings for third-party physical keyboards.
- * 
- * Contains:
- * - Manage Accessibility Service link (navigates to system settings)
- * - Enable special key support toggle (moved from Advanced Settings)
- * - Pre-process all key events toggle (new feature)
+ * Accessibility service settings for third-party physical keyboards.
  */
 @Composable
 fun KeyboardHelperScreen(
@@ -43,21 +37,19 @@ fun KeyboardHelperScreen(
 ) {
     val context = LocalContext.current
     val prefs = remember { PrefsManager.getPrefs(context) }
-    
-    // Track accessibility service status
+
     var serviceEnabled by remember {
         mutableStateOf(KeyInterceptorManager.isServiceEnabled(context))
     }
-    
-    // Track preference states
+
     var specialKeyEnabled by remember {
         mutableStateOf(prefs.getBoolean(KeyInterceptorManager.PREF_KEY_INTERCEPTOR_ENABLED, false))
     }
     var preprocessAllKeys by remember {
         mutableStateOf(prefs.getBoolean(KeyInterceptorManager.PREF_PREPROCESS_ALL_KEYS, false))
     }
-    
-    // Re-check service status when activity resumes (e.g., returning from accessibility settings)
+
+    // Re-check on resume, e.g. returning from accessibility settings
     LifecycleEventEffect(Lifecycle.Event.ON_RESUME) {
         serviceEnabled = KeyInterceptorManager.isServiceEnabled(context)
         specialKeyEnabled = prefs.getBoolean(KeyInterceptorManager.PREF_KEY_INTERCEPTOR_ENABLED, false)
@@ -77,7 +69,6 @@ fun KeyboardHelperScreen(
                 .verticalScroll(rememberScrollState())
         ) {
             PreferenceGroup {
-                // Manage Accessibility Service link
                 PreferenceScreen(
                     title = context.getString(R.string.pref_manage_accessibility_service),
                     summary = if (serviceEnabled) {
@@ -90,8 +81,7 @@ fun KeyboardHelperScreen(
                         KeyInterceptorManager.openAccessibilitySettings(context)
                     }
                 )
-            
-                // Enable special key support toggle
+
                 SwitchPreference(
                     title = context.getString(R.string.pref_key_interceptor_enabled),
                     summary = context.getString(R.string.pref_key_interceptor_enabled_summary),
@@ -104,8 +94,7 @@ fun KeyboardHelperScreen(
                         KeyInterceptorManager.setFeatureEnabled(context, newValue)
                     }
                 )
-            
-                // Pre-process all key events toggle
+
                 SwitchPreference(
                     title = context.getString(R.string.pref_preprocess_all_keys),
                     summary = context.getString(R.string.pref_preprocess_all_keys_summary),
@@ -119,8 +108,7 @@ fun KeyboardHelperScreen(
                     }
                 )
             }
-            
-            // Bottom spacing for gesture navigation
+
             Spacer(modifier = Modifier.height(spacing.extraLarge))
         }
     }

@@ -10,14 +10,9 @@ import java.lang.reflect.InvocationTargetException
 import java.util.Locale
 
 /**
- * Characterises `AndroidSpellCheckerService.getKeyboardLayoutName`: script code -> keyboard layout
- * name used to build the spell checker's proximity keyboard, with a language sub-switch for
- * Cyrillic and null for every script it has no layout for (it used to throw, which crashed the
- * service for a session in such a script).
- *
- * The script code is stubbed so every arm is reached independently of which languages the JVM's
- * Locale can express (e.g. "iw" is normalised to "he" on modern JDKs, so Hebrew is unreachable
- * through a real Locale here).
+ * `AndroidSpellCheckerService.getKeyboardLayoutName`: script code to proximity keyboard layout,
+ * with a language sub-switch for Cyrillic and null (never a throw) for scripts with no layout. The
+ * script code is stubbed because a modern JDK's Locale cannot reach some arms ("iw" becomes "he").
  */
 class SpellCheckerLayoutNameTest {
 

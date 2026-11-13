@@ -24,15 +24,9 @@ import org.robolectric.annotation.Config
 import org.robolectric.shadows.ShadowBuild
 
 /**
- * The export half of the profile builder: what a capture on real hardware turns into, and that the
- * app's own parser reads it back as the same thing.
- *
- * The two fixtures are the two reference handsets. The MP01 one is the harder case and the reason
- * the feature exists: its ROM falls back to `Generic.kl`/`Generic.kcm` (its `.idc` names a `.kl`
- * that is not on the filesystem), so its Emoji and Mic keys carry a scancode and no keycode at
- * all, nothing in the firmware will say which keypad is fitted, and its Sym keycode changed
- * between two ROMs. The KEY2 one is the opposite: the firmware answers the layout question, so the
- * generated config must stay out of the way and not pin it.
+ * The profile builder's export: what a hardware capture becomes, and that the app's parser reads
+ * it back the same. MP01 falls back to `Generic.kl`/`.kcm` (Emoji and Mic are scancode only, no
+ * firmware layout answer); on the KEY2 the firmware answers the layout, so the config must not pin it.
  */
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [34], manifest = Config.NONE)
@@ -48,12 +42,8 @@ class DeviceProfileExportTest {
     }
 
     /**
-     * `CustomDeviceConfigManager` is a process singleton holding the application context it was
-     * first built with. Robolectric shares one sandbox — and therefore one set of statics —
-     * between test classes with the same config while giving each test a fresh Application with a
-     * fresh files directory, so a manager built by an earlier class lists a directory this class
-     * no longer writes to. On a phone there is one process and one files directory, so this is a
-     * fixture problem only.
+     * `CustomDeviceConfigManager` is a process singleton holding its first context; Robolectric
+     * shares statics across classes but gives each test a fresh files directory, so it is rebuilt.
      */
     private fun forgetTheConfigManagerSingleton() {
         CustomDeviceConfigManager::class.java.getDeclaredField("sInstance").apply {
@@ -63,11 +53,8 @@ class DeviceProfileExportTest {
     }
 
     /**
-     * Robolectric hands every test in a fork the same app data directory, so a config left in
-     * `files/device_configs` is a config the *next* test class finds: `SettingsScreenRenderTest`
-     * renders the configuration screen and grew a whole "CUSTOM" section from one profile written
-     * here. The active-config preference is reset for the same reason — it is process state the
-     * config manager caches.
+     * A config left in `files/device_configs` leaks into later classes in the fork (for example
+     * `SettingsScreenRenderTest`), so it is deleted; the cached active-config preference is reset too.
      */
     @After
     fun tearDown() {
@@ -76,8 +63,6 @@ class DeviceProfileExportTest {
         CustomDeviceConfigManager.getInstance(context)
             .setActiveConfigId(CustomDeviceConfigManager.ID_DEFAULT)
     }
-
-    // ── fixtures ─────────────────────────────────────────────────────────────
 
     private fun keyboard(
         name: String,
@@ -112,9 +97,7 @@ class DeviceProfileExportTest {
 
     /**
      * A Minimal Phone MP01 on `MP01_20260104_1412`: Sym is scancode 249 reporting `KEYCODE_SYM`
-     * (it reported `KEYCODE_ALT_RIGHT` on the November 2025 ROM — the exact reason the pair is
-     * captured rather than assumed), and the Emoji and Mic keys carry no keycode at all because
-     * `Generic.kl` has nothing to map them to.
+     * (other ROMs report `KEYCODE_ALT_RIGHT`, so the pair is captured), Emoji and Mic have no keycode.
      */
     private fun mp01Facts() = facts(
         buildDevice = "MP01",
@@ -190,8 +173,6 @@ class DeviceProfileExportTest {
 
     private fun draftFor(facts: DeviceFacts, capture: GuidedCapture, name: String) =
         DeviceProfileBuilder.draft(facts, capture, name).withExportDate("2026-09-18")
-
-    // ── the generated document ───────────────────────────────────────────────
 
     @Test
     fun anMp01CaptureProducesExactlyThisConfig() {
@@ -299,8 +280,6 @@ class DeviceProfileExportTest {
         )
     }
 
-    // ── escaping ─────────────────────────────────────────────────────────────
-
     @Test
     fun namesThatWouldBreakTheDocumentAreEscaped() {
         val facts = facts(
@@ -333,8 +312,6 @@ class DeviceProfileExportTest {
         )
     }
 
-    // ── the refusal ──────────────────────────────────────────────────────────
-
     @Test
     fun aConfigThatDoesNotSurviveTheRoundTripIsNotWritten() {
         val draft = draftFor(mp01Facts(), mp01Capture(), "Minimal Phone (MP01)")
@@ -352,8 +329,6 @@ class DeviceProfileExportTest {
         val truncated = xml.substring(0, xml.indexOf("</scancode-mappings>"))
         assertNotNull(DeviceProfileExporter.validate(truncated, draft))
     }
-
-    // ── writing, activating, sharing ─────────────────────────────────────────
 
     @Test
     fun exportWritesIntoTheDirectoryImportedConfigsLiveIn() {
@@ -425,9 +400,8 @@ class DeviceProfileExportTest {
     }
 
     /**
-     * The exporter writes straight into the config manager's private directory under its private
-     * id prefix, because those are what make a built profile activatable without a second copy of
-     * the file. Nothing in the compiler ties the two together, so this does.
+     * The exporter writes into the config manager's private directory under its id prefix, so a
+     * built profile is activatable without a copy; nothing in the compiler ties the two together.
      */
     @Test
     fun theMirroredConfigManagerConstantsStillAgree() {
@@ -439,8 +413,6 @@ class DeviceProfileExportTest {
         assertEquals(constant("CUSTOM_CONFIG_DIR"), DeviceProfileExporter.CUSTOM_CONFIG_DIR)
         assertEquals(constant("PREFIX_CUSTOM"), DeviceProfileExporter.PREFIX_CUSTOM)
     }
-
-    // ── what the import dialog reads ─────────────────────────────────────────
 
     @Test
     fun anExportedProfileSummarisesAsWhatItMatches() {
@@ -499,11 +471,7 @@ class DeviceProfileExportTest {
     }
 
     private companion object {
-        /**
-         * The document a Minimal Phone MP01 capture produces, pinned in full. It is the artefact
-         * the user shares, so a change to any part of it — the header a reader relies on, the
-         * order of the keys, an attribute the parser needs — is a change to the feature.
-         */
+        /** The MP01 capture's document, pinned in full: users share it, so any change is a feature change. */
         val MP01_XML = """
 <?xml version="1.0" encoding="utf-8"?>
 <!--

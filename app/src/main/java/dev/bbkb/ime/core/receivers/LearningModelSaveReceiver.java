@@ -8,13 +8,9 @@ import dev.bbkb.ime.core.engine.learning.DynamicLearningManager;
 import dev.bbkb.ime.core.shared.Logger;
 
 /**
- * BroadcastReceiver for handling "flush learned data to disk" requests.
- * Extracted from BlackBerryIME to improve separation of concerns.
- *
- * <p>Despite the name, the only store this can flush is the personal dictionary. The engine's
- * dynamic learning model is written by native code and has no Java-side save entry point, so
- * there has never been a "learning model" for this receiver to write — see
- * {@link DynamicLearningManager#savePersonalDictionary()} for the full history.
+ * Handles "flush learned data to disk" requests. Despite the name it only flushes the personal
+ * dictionary: the engine's learning model is written by native code with no Java-side save entry
+ * point (see {@link DynamicLearningManager#savePersonalDictionary()}).
  */
 public class LearningModelSaveReceiver extends BroadcastReceiver {
     

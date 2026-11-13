@@ -721,7 +721,6 @@
     <string name="device_config_import_unreadable">ती फाइल डिव्हाइस कॉन्फिगरेशन नाही</string>
     <string name="device_config_import_failed">ती फाइल इंपोर्ट करता आली नाही</string>
 
-    <!-- OTA app updates -->
     <string name="settings_updates_title">अद्यतने</string>
     <string name="settings_updates_summary">BBKB ची नवीन आवृत्ती तपासा</string>
     <string name="settings_update_installed_version_title">स्थापित आवृत्ती</string>
@@ -755,7 +754,6 @@
     <string name="settings_update_ready_title">स्थापित करण्यासाठी तयार</string>
     <string name="settings_update_version_details">आवृत्तीचा तपशील</string>
     <string name="settings_update_unknown_sources_title">BBKB ला अद्यतने स्थापित करण्याची परवानगी द्यायची?</string>
-    <!-- Downloadable language packs (core/languagepack) -->
     <string name="language_packs_installed_header">इंस्टॉल केलेले</string>
     <string name="language_packs_available_header">डाउनलोडसाठी उपलब्ध</string>
     <string name="language_packs_download">डाउनलोड</string>
@@ -877,7 +875,6 @@
     <string name="settings_voice_stop_on_pause_summary_off">तुम्ही मायक्रोफोनवर टॅप करेपर्यंत किंवा अर्धा मिनिट शांतता राहीपर्यंत विरामांमध्येही ऐकणे सुरू राहते</string>
     <string name="voice_status_listening_tap_to_stop">ऐकत आहे&#8230; थांबवण्यासाठी माइकवर टॅप करा</string>
 
-    <!-- Settings text moved out of the code (2026-11) -->
     <string name="settings_common_save">जतन करा</string>
     <string name="settings_common_edit">संपादित करा</string>
     <string name="settings_common_back">मागे जा</string>

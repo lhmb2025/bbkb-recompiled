@@ -23,14 +23,10 @@ import org.robolectric.annotation.Config
 import org.robolectric.util.ReflectionHelpers
 
 /**
- * The multifunction key's "act as Ctrl" remap, now that it lives in [ControlModeController]
- * (Phase 1f) together with its `multifunctionCtrlDown` latch — the last piece of Ctrl state that
- * used to sit in `BlackBerryIME`.
- *
- * Uses the shipped KEY2 (athena) config, whose multifunction key is keyCode 119 / scanCode 110,
- * with its default action switched to Ctrl. The behaviour pinned is the one the method had in
- * `BlackBerryIME`: rewrite to `KEYCODE_CTRL_LEFT` unless Alt is active at press time, and keep the
- * key-up consistent with the key-down whatever Alt did in between.
+ * Pins [ControlModeController]'s multifunction "act as Ctrl" remap and its `multifunctionCtrlDown`
+ * latch: rewrite to `KEYCODE_CTRL_LEFT` unless Alt is active at press time, and keep the key-up
+ * consistent with the key-down. Uses the shipped athena config (keyCode 119 / scanCode 110) with
+ * the default action switched to Ctrl.
  */
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [34], manifest = Config.NONE)
@@ -140,7 +136,7 @@ class MultifunctionCtrlRemapTest {
         assertEquals(KeyEvent.KEYCODE_CTRL_LEFT, repeat.keyCode)
     }
 
-    /** resetAll() drops the latch: it is Ctrl state now, and resetAll drops all Ctrl state. */
+    /** resetAll() drops the latch along with all other Ctrl state. */
     @Test
     fun resetAllDropsTheLatch() {
         controller.remapMultifunctionCtrlKey(event(KeyEvent.ACTION_DOWN))
@@ -151,10 +147,7 @@ class MultifunctionCtrlRemapTest {
         assertEquals("the up is no longer rewritten", MF_KEYCODE, up.keyCode)
     }
 
-    /**
-     * An ordinary key returns the very same event and never asks the Alt question — the snapshot
-     * the host builds to answer it is paid for only by the multifunction key.
-     */
+    /** An ordinary key returns the same event and never pays for the host's Alt snapshot. */
     @Test
     fun anOrdinaryKeyIsUntouchedAndNeverAsksAboutAlt() {
         val a = event(KeyEvent.ACTION_DOWN, keyCode = KeyEvent.KEYCODE_A, scanCode = 30)

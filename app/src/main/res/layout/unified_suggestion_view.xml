@@ -2,14 +2,12 @@
 <merge xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <!-- Content Layer - Main suggestion content -->
     <LinearLayout
         android:id="@+id/suggestion_content_layer"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="horizontal">
 
-        <!-- Hamburger menu button (left) -->
         <ImageButton
             android:id="@+id/hamburger_btn"
             android:layout_width="@dimen/config_suggestion_half_hamburger_icon_width"
@@ -20,7 +18,6 @@
             android:scaleType="center"
             android:src="@drawable/ic_auxbar_hamburger" />
 
-        <!-- RecyclerView for suggestions -->
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/suggestion_recycler"
             android:layout_width="0dp"
@@ -32,9 +29,7 @@
             android:overScrollMode="never"
             tools:listitem="@layout/suggestion_word_item" />
 
-        <!-- Emoji slot: the emojibase hit for the word being typed (EmojibaseStripSuggestion).
-             Outside the word slots so the three words keep their widths; tap inserts, long-press
-             shows the skin tones. -->
+        <!-- Emoji slot outside the word slots so the three words keep their widths -->
         <TextView
             android:id="@+id/emoji_suggestion_slot"
             android:layout_width="@dimen/config_suggestion_min_width_material"
@@ -45,7 +40,6 @@
             android:focusable="true"
             android:visibility="gone" />
 
-        <!-- Right action button (CJK expand) -->
         <ImageButton
             android:id="@+id/action_btn"
             android:layout_width="@dimen/config_suggestion_half_hamburger_icon_width"
@@ -58,16 +52,12 @@
             android:visibility="gone" />
     </LinearLayout>
 
-    <!-- Overlay Layer for Add to Dictionary / Important Notices -->
     <FrameLayout
         android:id="@+id/overlay_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:visibility="gone">
 
-        <!-- Add to dictionary strip -->
-
-        <!-- Important notice strip -->
     </FrameLayout>
 
 </merge>

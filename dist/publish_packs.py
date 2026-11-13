@@ -152,9 +152,8 @@ def main(argv=None):
     packs = {
         "version": args.version,
         "baseUrl": manifest_lib.packs_base_url(args.version, args.repo),
-        # Sorted by locale: the manifest is a repo file the maintainer reviews
-        # and diffs, and a stable, readable order keeps a catalogue refresh's
-        # diff to the packs that actually moved. Uploads stay in file order.
+        # Sorted by locale so a refresh's diff shows only the packs that moved.
+        # Uploads stay in file order.
         "items": [d.item() for d in sorted(published, key=lambda d: d.locale)],
     }
     previous = manifest_lib.load(args.manifest)

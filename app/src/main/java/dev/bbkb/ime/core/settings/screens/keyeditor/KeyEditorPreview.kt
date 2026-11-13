@@ -46,12 +46,9 @@ private const val ELEMENT_NUMBER_SUB_PANEL = 41
 private const val CUSTOM_KEY_STYLE = "customSymbolKeyStyle"
 
 /**
- * The keyboard an editor is editing, built by the keyboard's own [KeyboardBuilder] from the same
- * layout XML, language and size the keyboard uses, so the editor draws exactly what the keyboard
- * will: every theme, key shape and fixed key included.
- *
- * [show] puts the layout being edited on its editable keys; [slotKeys] are then those keys in
- * editor-slot order (reading order, the order of `KeyEditorSpec.load`).
+ * The board being edited, built by the keyboard's own [KeyboardBuilder] from the same XML,
+ * language and size, so the editor draws exactly what the keyboard will. [show] puts the layout
+ * on its editable keys; [slotKeys] are those keys in slot (reading) order.
  */
 internal class EditorKeyboard private constructor(
     private val board: PreviewBoard,

@@ -4,19 +4,12 @@ import android.content.Context
 import dev.bbkb.ime.core.layout.LetterLayoutKdb.Template
 
 /**
- * The engine's physical-keypad KDBs, built from one geometry file per device.
- *
- * Every keypad KDB the app used to ship per language had the same 30 key boxes; only the letters
- * and the header's engine language ids differed. So a device ships one geometry,
- * `assets/kdb/keypad_pkb_<device>.xml` (`keypad_pkb.xml` for any device whose config names no
- * `<kdb-variant>`), and the files the engine loads are built from it at run time: [forDevice]
- * stamps each engine id into the header and writes on the keys the letters of the built-in letter
- * layout that id's file used to carry ([SHIPPED]). They are registered under the device's variant
- * name (`Xt9KdbVariant`), where the engine's lookup by (primaryId, secondaryId) finds them.
- *
- * The keyboards whose letters no built-in letter layout holds yet (the native-script keyboards
- * whose keypad types Latin, the language packs' scripts, Cangjie's own file) keep their shipped
- * `assets/kdb/<name>_pkb.xml`, which the engine falls back to for any id the device's files lack.
+ * The engine's physical-keypad KDBs, built at run time from one geometry file per device,
+ * `assets/kdb/keypad_pkb_<device>.xml` (`keypad_pkb.xml` when the config names no `<kdb-variant>`).
+ * [forDevice] stamps each [SHIPPED] engine id into the header and writes that id's built-in letters
+ * on the keys; the result is registered under the device's variant name (`Xt9KdbVariant`). Ids not
+ * built here (native-script keypads typing Latin, language-pack scripts, Cangjie) fall back to the
+ * shipped `assets/kdb/<name>_pkb.xml`.
  */
 object KeypadKdbs {
 
@@ -29,11 +22,9 @@ object KeypadKdbs {
     const val KEYPAD_SECONDARY_ID: Int = 6
 
     /**
-     * Which built-in letter layout holds the letters of the keypad KDB the engine loads for
-     * [primaryId]: the keyboard of [language] built from the layout set [layoutSet], on a QWERTY
-     * keypad. Each was the shipped `<name>_pkb.xml` of that id, measured to load for that keyboard
-     * (`LetterLayoutBuiltInKdbTest`, whose copies of those files live in
-     * `xt9kdb-scaffold/reference/kdb_pkb/`).
+     * The built-in letter layout ([language], [layoutSet], on a QWERTY keypad) whose letters go into
+     * the keypad KDB for [primaryId]. Pinned by `LetterLayoutBuiltInKdbTest` against the reference
+     * files in `xt9kdb-scaffold/reference/kdb_pkb/`.
      */
     class Source(val primaryId: Int, val language: String, val layoutSet: String?)
 
@@ -70,9 +61,8 @@ object KeypadKdbs {
     fun isTemplate(name: String): Boolean = name.startsWith(FILE_PREFIX)
 
     /**
-     * The engine keypad KDB of each id in [SHIPPED], built from [template] (a device's geometry
-     * file) and the letters of the built-in layout [builtIn] returns for (language, layout set).
-     * An id whose layout is missing is left out, so the engine falls back to a shipped file.
+     * The keypad KDB of each [SHIPPED] id, built from [template] (device geometry) and [builtIn]'s
+     * letters. An id whose layout is missing is left out, so the engine falls back to a shipped file.
      */
     fun forDevice(template: String, builtIn: (language: String, layoutSet: String?) -> LetterLayout?): Map<Int, String> {
         val out = LinkedHashMap<Int, String>()
@@ -89,10 +79,7 @@ object KeypadKdbs {
     fun shippedLetters(registry: LetterLayoutRegistry): (String, String?) -> LetterLayout? =
         { language, layoutSet -> registry.builtIn(language, "qwerty", null, layoutSet) }
 
-    /**
-     * [device]'s engine keypad KDBs, from the app's assets: the bytes to register under its
-     * variant. Null when the device has no geometry file of its own.
-     */
+    /** [device]'s keypad KDB bytes to register under its variant, or null when it has no geometry file. */
     @JvmStatic
     fun forDevice(context: Context, device: String): List<ByteArray>? {
         val template = try {

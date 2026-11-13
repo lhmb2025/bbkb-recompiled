@@ -19,57 +19,13 @@ import java.io.File
 import java.io.IOException
 
 /**
- * The one code path that turns a `.ldb` file into an installed dictionary.
- *
- * Both ways a pack can arrive end here: the "+" picker on the Language packs screen (which has
- * only a file name to go on, so it parses the locale out of it first) and
- * [PackDownloadManager] (which has the catalogue entry, so it passes the manifest's locale).
- * Having one installer is the point — before this, the picker's install lived inside the
- * composable, so anything else that wanted to install a pack would have had to reimplement the
- * registry bookkeeping that makes a pack survive.
- *
- * ### What "installed" means on disk
- *
- * For an ordinary pack, exactly what `LanguagePackInstaller` looks for:
- *
- * ```
- * no_backup/nuance/<locale>/<locale>.ldb
- * no_backup/nuance/<locale>/version.txt
- * files/nuance_custom_packs.json   <- the registry entry that makes the locale "supported"
- * ```
- *
- * Both files are required: `LanguagePackInstaller.getInstalledLocales` counts a directory only
- * when it holds a `.ldb` **and** a `version.txt`. The registry entry is required as well —
- * without it the locale is not supported, `getStatus` will not resolve it, and the pack is a
- * directory nothing ever reads.
- *
- * ### The running engine has to be told
- *
- * The engine enumerates `no_backup/nuance/` once, when it starts. A pack that appears later is
- * invisible to it — even a language it has never been asked for is refused — until the process
- * restarts (KEY2, 2026-09-28). The original app handed a fresh directory to both engines with
- * `NuanceSDK.registerLdb`, and this app had dropped that call; [EngineRegistry] restores it, for
- * whichever engines exist at the time. A pack removed while running is withdrawn the same way.
- *
- * For a pack with a [group] — the four regional variants ({@code de_CH}, {@code fr_CH},
- * {@code it_CH}, {@code nl_BE}) the engine has no locale table entry for — the file is parked and
- * activated by [LanguageVariantStore] instead, in the slot the base language occupies. That is
- * the same call the picker has always made for these; see that class for why they cannot be
- * installed as locales of their own.
- *
- * ### The locale is the caller's, and a downloaded pack's comes from the manifest
- *
- * This service never looks at [File.getName]. A downloaded pack installs under the locale the
- * catalogue states, which is the only thing that can place `es_419`, `zh_TW`, `zh_HK` and
- * `en_ZH`: all four carry their region in the catalogue and not in the file name, so a file-name
- * parse reads them as `es`, `zh`, `zh` and `en` and three of them would land on top of a
- * different language's dictionary.
- *
- * ### Threading and ownership
- *
- * [installFromFile] is a suspend function that does all of its work on [Dispatchers.IO]. The
- * source file is **copied**: the caller still owns it and is responsible for deleting it.
- * A failed install leaves nothing behind.
+ * The one path that installs a `.ldb`: copies it to `no_backup/nuance/<locale>/<locale>.ldb` plus
+ * `version.txt` (both required to count as installed) and adds the `files/nuance_custom_packs.json`
+ * registry entry (required to be supported). The running engine enumerates packs only at start, so
+ * [EngineRegistry] hands it new directories. Regional variants (de_CH, fr_CH, it_CH, nl_BE) go
+ * through [LanguageVariantStore]. The locale always comes from the caller (the manifest for
+ * downloads), never the file name, which would misplace `es_419`, `zh_TW`, `zh_HK`, `en_ZH`.
+ * The source file is copied, not moved; a failed install leaves nothing behind.
  */
 class PackInstallService @JvmOverloads constructor(
     private val context: Context,
@@ -81,21 +37,11 @@ class PackInstallService @JvmOverloads constructor(
 ) {
 
     /**
-     * Copy [file] into place as the dictionary for [locale] and register it.
-     *
-     * @param file the `.ldb` to install. Copied, not moved.
-     * @param locale the identifier the pack installs under: `language` or `language_COUNTRY`
-     *   with an underscore. For a downloaded pack this is `PackEntry.locale` verbatim — never a
-     *   value derived from the file name.
-     * @param displayName the name recorded in the registry and shown in the list.
-     * @param version what goes in `version.txt` and in the registry entry. It is a marker, not a
-     *   precedence number (nothing in the app compares it), but it must parse as a positive
-     *   number, so anything unusable falls back to [FALLBACK_VERSION].
-     * @param group non-null only for a regional variant that loads *in place of* a base
-     *   language; the value is that base language's locale (`PackEntry.group`).
-     * @param turnOn whether to turn the language on as a keyboard of its own afterwards. False
-     *   for a dictionary fetched only as an extra prediction language of another keyboard.
-     * @return the installed pack, or a [PackInstallException] describing what stopped it.
+     * @param locale install id (`language` or `language_COUNTRY`); for downloads `PackEntry.locale`
+     * @param version written to `version.txt`; a marker, not compared, but must parse as a positive
+     *   number or [FALLBACK_VERSION] is used
+     * @param group base language a regional variant loads in place of, else `null`
+     * @param turnOn false for a dictionary fetched only as an extra prediction language
      */
     suspend fun installFromFile(
         file: File,
@@ -117,17 +63,9 @@ class PackInstallService @JvmOverloads constructor(
     }
 
     /**
-     * Remove the pack installed under [locale]: its `nuance/` directory, its registry entry and
-     * the runtime subtype it may have brought with it.
-     *
-     * Idempotent on purpose. The Language packs screen builds its rows from a snapshot of the
-     * disk, so by the time the user confirms a delete the files can already be gone (a second
-     * tap on a row that had not refreshed yet, a variant swap that emptied the slot). That is not
-     * a failure: whatever is still there is cleaned up and [UninstallOutcome.ALREADY_GONE] says
-     * so, instead of the old "directory not found" error over a pack that was in fact removed.
-     *
-     * Variants are not handled here; they are members of a [LanguageVariantStore] group and are
-     * removed through it.
+     * Idempotent: the screen works from a disk snapshot, so the files may already be gone, which
+     * returns [UninstallOutcome.ALREADY_GONE] after cleaning bookkeeping. Variants are removed
+     * through [LanguageVariantStore], not here.
      */
     suspend fun uninstall(locale: String): Result<UninstallOutcome> = withContext(Dispatchers.IO) {
         try {
@@ -152,7 +90,6 @@ class PackInstallService @JvmOverloads constructor(
         }
         val language = locale.substringBefore('_')
         val country = locale.substringAfter('_', "").ifEmpty { null }
-        // Both of these are no-ops when there is nothing to remove.
         CustomPackRegistryStore.remove(context, language, country)
         subtypes.withdrawSubtypeFor(context, language)
         engine.deregister(language, country)
@@ -190,11 +127,7 @@ class PackInstallService @JvmOverloads constructor(
         }
     }
 
-    /**
-     * A variant goes to [LanguageVariantStore], which parks it under `lang_variants/<group>/` and
-     * copies it into the base language's slot. No [CustomPackRegistryStore] entry: the locale it
-     * loads as is the base language, which the shipped registry already knows.
-     */
+    /** No registry entry: a variant loads as its base language, which the shipped registry knows. */
     private fun installVariant(
         file: File,
         locale: String,
@@ -215,8 +148,7 @@ class PackInstallService @JvmOverloads constructor(
             group = group,
             directory = packDirectory(group),
             offeredSubtype = false,
-            // The base language is what gets selected, and it is a shipped language in all four
-            // cases, so it always has a subtype.
+            // The base language is shipped in all four cases, so it has a subtype.
             selectable = true,
             enabled = enabled,
         )
@@ -239,8 +171,7 @@ class PackInstallService @JvmOverloads constructor(
         }
         try {
             file.copyTo(File(directory, "$locale.ldb"), overwrite = true)
-            // getInstalledLocales() wants BOTH files; isInstalled() parses the trailing digits of
-            // this one.
+            // getInstalledLocales() needs both files; isInstalled() parses this one's trailing digits.
             File(directory, "version.txt").writeText(version.toString())
         } catch (failed: IOException) {
             if (!existed) directory.deleteRecursively()
@@ -256,26 +187,22 @@ class PackInstallService @JvmOverloads constructor(
             version,
         )
         if (!registered) {
-            // Nothing half-installed: an unregistered directory is a locale the app does not
-            // consider supported, which is indistinguishable from a pack that is simply broken.
+            // An unregistered directory is unsupported, so roll it back.
             if (!existed) directory.deleteRecursively()
             throw PackInstallException("Could not register $locale; nothing was installed")
         }
 
         LanguagePackManager.getInstance(context).reloadRegistry()
         if (!engine.register(directory)) {
-            // Not fatal: the files are in place and the next engine start finds them; only the
-            // running process stays unaware until then.
+            // Not fatal: the next engine start finds the files.
             Logger.warn(TAG, "The running engine did not accept $locale; it loads on the next restart")
         }
 
-        // If method.xml declares no subtype for this language the pack would install, load, and
-        // have no way to be selected. Offer one at runtime instead - and report honestly when
-        // even that is impossible (five languages have no layout in the tree).
+        // No method.xml subtype means the pack could never be selected, so offer one at runtime
+        // (five languages have no layout, so this can fail).
         val builtIn = subtypes.hasBuiltInSubtypeFor(language)
         val offered = if (builtIn) false else subtypes.offerSubtypeFor(context, language)
-        // Installed is not typeable: the language also has to be on in the keyboard's language
-        // list. Turn it on where Android allows (API 34+); the screen covers the rest.
+        // The language must also be on in the language list; Android allows that on API 34+ only.
         val enabled = turnOn && (builtIn || offered) && subtypes.enableSubtypeFor(context, locale)
 
         events(LanguageVariantStore.ACTION_LANGUAGE_PACK_CHANGED)
@@ -294,46 +221,30 @@ class PackInstallService @JvmOverloads constructor(
     private fun packDirectory(locale: String): File =
         File(context.noBackupFilesDir, "nuance/$locale")
 
-    /**
-     * How a newly installed language gets something the user can select.
-     *
-     * An interface so the install path can be tested without the input-method framework: the
-     * real implementation asks [RichInputMethodManager] what `method.xml` declares and registers
-     * additional subtypes, neither of which exists in a plain JVM test.
-     */
+    /** Interface so the install path is testable without the input-method framework. */
     interface SubtypeRegistrar {
-        /** Does `res/xml/method.xml` already declare a subtype for this language? */
+        /** Whether `res/xml/method.xml` declares a subtype for this language. */
         fun hasBuiltInSubtypeFor(language: String): Boolean
 
-        /** Add a runtime subtype for this language. `false` when there is no usable layout. */
+        /** `false` when there is no usable layout. */
         fun offerSubtypeFor(context: Context, language: String): Boolean
 
-        /** Take back a runtime subtype added by [offerSubtypeFor]. A no-op when none was. */
         fun withdrawSubtypeFor(context: Context, language: String)
 
-        /**
-         * Turn [locale]'s language on in the keyboard's language list. Whether it is on
-         * afterwards: false where Android does not let a keyboard do this (before API 34).
-         */
+        /** Whether it is on afterwards; false before API 34, where a keyboard cannot do this. */
         fun enableSubtypeFor(context: Context, locale: String): Boolean
     }
 
-    /** How a running engine learns about a pack that appeared or vanished mid-process. */
     interface EngineRegistry {
-        /** Hand the pack directory to every live engine. True when none of them refused it. */
+        /** True when no live engine refused it. */
         fun register(directory: File): Boolean
-        /** Withdraw a language from every live engine. A no-op when none is running. */
         fun deregister(language: String, country: String?)
     }
 
     /**
-     * The production [EngineRegistry]: the primary (keyboard) and secondary (spell-checker) engines,
-     * whichever of them exist. It never creates an engine just to register a pack: one that has not
-     * started yet enumerates the directory itself.
-     *
-     * Both calls are one op on the engine's loader thread, with the engines looked up there; the
-     * install coroutine (Dispatchers.IO, whose threads can exit and so must never call the engine)
-     * waits for it, as it waited for the direct calls.
+     * Registers with whichever of the keyboard and spell-checker engines exist (an unstarted one
+     * enumerates on its own). Runs on the engine loader thread and blocks the caller: Dispatchers.IO
+     * threads can exit, so they must never call the engine directly.
      */
     object NuanceEngineRegistry : EngineRegistry {
         override fun register(directory: File): Boolean {
@@ -363,11 +274,10 @@ class PackInstallService @JvmOverloads constructor(
         }
     }
 
-    /** The production [SubtypeRegistrar]: the framework, plus [SideloadedSubtypes]. */
     object FrameworkSubtypeRegistrar : SubtypeRegistrar {
         override fun hasBuiltInSubtypeFor(language: String): Boolean {
-            // Additional subtypes we registered ourselves are excluded, or the answer would flip
-            // to true after the first install and the entry would never be withdrawn on delete.
+            // Exclude our own additional subtypes, or this flips true after install and delete
+            // never withdraws the runtime entry.
             val info = try {
                 RichInputMethodManager.getInstance().inputMethodInfoOfThisIme
             } catch (unavailable: RuntimeException) {
@@ -389,8 +299,7 @@ class PackInstallService @JvmOverloads constructor(
                 rimm.setAdditionalInputMethodSubtypes(rimm.getAdditionalSubtypes(context))
                 true
             } catch (unavailable: RuntimeException) {
-                // The subtype is recorded in our own preference either way; the framework will
-                // pick it up the next time anything re-registers.
+                // Recorded in our preference; the framework picks it up on the next re-register.
                 Logger.warn(TAG, "Recorded a runtime subtype but could not register it: $unavailable")
                 true
             }
@@ -416,44 +325,30 @@ class PackInstallService @JvmOverloads constructor(
     companion object {
         private const val TAG = "PackInstall"
 
-        /**
-         * A file smaller than this is not a dictionary. Kept from the picker path, where it is the
-         * only thing standing between a mis-picked text file and a `nuance/` directory the engine
-         * will try to load.
-         */
+        /** Below this it is not a dictionary (guards a mis-picked file from the picker). */
         const val MIN_LDB_BYTES: Long = 1_000L
 
-        /**
-         * The `version.txt` value used when the caller has nothing better. The catalogue passes
-         * its own version (`"1902.01"`); the picker has no version to pass at all.
-         */
+        /** Used when the caller has no version (the file picker). */
         const val FALLBACK_VERSION: Double = 1.0
     }
 }
 
-/** What [PackInstallService.uninstall] found to remove. Both are success. */
+/** Both outcomes are success. */
 enum class UninstallOutcome {
-    /** The pack's files were on disk and are now gone. */
     REMOVED,
 
-    /** The files were already gone; only bookkeeping was left to clean up. */
+    /** Files were already gone; only bookkeeping was cleaned up. */
     ALREADY_GONE,
 }
 
 /**
- * One installed pack, as the installer just left it.
+ * One installed pack.
  *
- * @property locale the identifier it installed under — for a variant, the variant's own
- *   identifier (`de_CH`), which is its tag within the group rather than a locale the engine knows.
- * @property group the base language it loads in place of, or `null` for an ordinary pack.
- * @property directory the `nuance/` directory the engine will read: the pack's own for an
- *   ordinary pack, the base language's for a variant.
- * @property offeredSubtype whether a runtime subtype had to be added for this language, which is
- *   what makes "enable it in Settings > Languages" worth saying.
- * @property selectable whether the language can be selected at all — `false` for the handful of
- *   languages with no keyboard layout in the tree, where the pack installs and sits unused.
- * @property enabled whether the language is on in the keyboard's language list after the install,
- *   i.e. the user can switch to it now. `false` before Android 14 unless it already was.
+ * @property locale for a variant, its own tag (`de_CH`), not a locale the engine knows
+ * @property directory the directory the engine reads: the base language's for a variant
+ * @property offeredSubtype a runtime subtype had to be added for this language
+ * @property selectable `false` for languages with no keyboard layout (the pack sits unused)
+ * @property enabled on in the language list now; `false` before Android 14 unless it already was
  */
 data class InstalledPack(
     val locale: String,
@@ -468,11 +363,7 @@ data class InstalledPack(
 }
 
 /**
- * An install that did not happen. Nothing was left on disk and nothing was registered.
- *
- * An [IOException] for the same reason [dev.bbkb.ime.core.distribution.DistributionException] is:
- * every way this can fail is I/O-shaped, and a caller that already handles `IOException` needs no
- * new arm. It is deliberately *not* a `DistributionException` — that type is the transport
- * layer's, and this failure happens after every byte has arrived and been verified.
+ * An install that did not happen (nothing left on disk or registered). Not a
+ * `DistributionException`: that is the transport layer's, and this fails after verification.
  */
 class PackInstallException(message: String, cause: Throwable? = null) : IOException(message, cause)

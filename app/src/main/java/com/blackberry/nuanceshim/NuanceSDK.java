@@ -22,12 +22,7 @@ import dev.bbkb.ime.core.engine.EngineThreads;
 import dev.bbkb.ime.core.locale.LocaleUtils;
 import dev.bbkb.ime.core.shared.InputPathDebug;
 
-/**
- * NuanceSDK - JNI wrapper for Nuance XT9 predictive text engine
- * Provides word prediction, auto-correction, and next-word suggestions via native library.
- * Manages language packs, dynamic learning models, and context-aware text prediction.
- * Supports both alphabetic and Chinese input methods with profile-aware learning.
- */
+/** JNI wrapper for the Nuance XT9 engine blob (libnative-lib.so); the blob binds to this class by name. */
 
 public class NuanceSDK {
     public static final String CANGJIE_VARIANT = "cangjie";
@@ -44,14 +39,13 @@ public class NuanceSDK {
     public static final int MAX_CONTEXT_LENGTH = 1024;
 
     /**
-     * {@link #getSelectionListSources} value of a word from the learned model: learned,
-     * typed-once and added-on-purpose words alike. Language-dictionary words and contact names
-     * are 2, the typed word 9.
+     * {@link #getSelectionListSources} value of a learned-model word (learned, typed-once or added).
+     * Language-dictionary words and contact names are 2, the typed word 9.
      */
     public static final int WORD_SOURCE_LEARNED_MODEL = 1;
     public static final String QUICK_CANGJIE_VARIANT = "quick_cangjie";
     private static final String TAG = "NuanceSDK";
-    // Volatile, written without sMutex (audit P-7): see setCallbackHandler.
+    // Volatile, written without sMutex: see setCallbackHandler.
     private volatile AutoCommitCallback mAutoCommitHandler;
     private volatile ManagedModeCallback mCallbackHandler;
     private boolean mIsCurrLocaleChinese;
@@ -65,38 +59,20 @@ public class NuanceSDK {
     private static final Map<String, int[]> sPkbDimensionsMap = buildPkbDimensions();
 
     private static Map<String, int[]> buildPkbDimensions() {
-        // A static builder, not double-brace initialization: the latter created an anonymous
-        // HashMap subclass holding a reference to its enclosing scope.
         final Map<String, int[]> map = new HashMap<>();
         {
             map.put(NuanceSDK.DEVICE_MERCURY, new int[]{1080, 324});
-            // DEAD WEIGHT on the engine path — audit L6. Nothing here reaches ET9 any more: the
-            // PKB branch of setKeyboardSize(boolean,short,short) passes a hardcoded (0,0) and
-            // never consults this map, and setKeyboardSizePkb() was removed. The only remaining
-            // reader is logTapKey's debug NON-PKB branch below, which is a logcat line. Keep the
-            // measurement — it is the record of how the athena sensor was characterised — but do
-            // not read the paragraph below as describing shipped behaviour.
-            //
-            // ATHENA keypad-height calibration (what the engine WOULD scale sensor->authored
-            // against, had this been passed: authored_y = sensor_y * 324 / H, against the
-            // root-324 layout this was measured for, not today's 1080x450 athena KDB).
-            // Measured empirically with the sensor visualizer
-            // (XT9SENSOR / sensor_viz export, ~18k samples): the three LETTER rows are LINEARLY spaced
-            // in the 1080x525 sensor space with density-centers at sensor Y ~69 / ~213 / ~354 (≈142 px
-            // apart -- NOT 131). Fitting those to the authored row centers (54/162/270, 108 apart) gives
-            // slope 324/H ≈ 0.758  ->  H ≈ 425. (The earlier 394 was a 75%-of-525 guess and over-scaled
-            // ~8%, biasing row-3 touches toward the function row.) The function/space row is crammed into
-            // the bottom ~115 px and maps to authored Y > 324 (off the letter grid), correctly ignored.
+            // Never reaches the engine (the PKB path passes (0,0)); only logTapKey's debug line reads it.
+            // Athena 425: letter rows at sensor Y ~69/213/354 in 1080x525 fit authored 54/162/270 of a
+            // 324-high layout (authored_y = sensor_y * 324 / H). Not valid for today's 1080x450 KDB.
             map.put(NuanceSDK.DEVICE_ATHENA, new int[]{1080, 425});
             map.put(NuanceSDK.DEVICE_VENICE, new int[]{1420, 609});
         }
         return Collections.unmodifiableMap(map);
     }
     /**
-     * Serialises every call into the blob. Static because the primary and the spell checker's
-     * engine share native state. Only two threads ever take it, the engine thread and the loader
-     * thread ({@link EngineThreads}); it arbitrates between a short op on the one and a long hold
-     * (a language load, a contacts import) on the other. The main thread never takes it.
+     * Serialises every call into the blob; static because both engines share native state. Only
+     * the engine and loader threads ({@link EngineThreads}) take it, never the main thread.
      */
     private static final Object sMutex = new Object();
 
@@ -105,23 +81,21 @@ public class NuanceSDK {
      * throws unless the caller is the engine thread or the loader thread: the blob keeps pointers
      * into the stack of the thread that last called it, so a call from any thread that can exit
      * (a pool thread, a binder thread, a per-service startup pool) leaves the next caller reading
-     * a dead stack (the KEY2 SIGSEGV of 2026-11-04). In release builds it compiles to nothing.
+     * a dead stack. In release builds it compiles to nothing.
      */
     private static void enter(String what) {
         EngineThreads.assertEngineCapable(what);
     }
 
     /**
-     * What the main thread may know about this engine without calling into it: refreshed under
-     * sMutex by every call that can change it (a language load, an input-method switch, a model
-     * attach) before that call returns, and read without a lock.
+     * Engine state the main thread may read without a lock; refreshed under sMutex by every call
+     * that can change it before that call returns.
      */
     private volatile EngineFacts mFacts = EngineFacts.NONE;
 
     /**
-     * Whether a native setLanguage has ever succeeded on this engine. Until then the facts read
-     * only the language list (setLanguage itself reads that first), not the input-mode and
-     * separator natives, which nothing has ever called on an engine with no language. Under sMutex.
+     * Whether a native setLanguage has ever succeeded here; until then the facts skip the
+     * input-mode and separator natives, never called on an engine with no language. Under sMutex.
      */
     private boolean mLanguageActive = false;
 
@@ -130,24 +104,13 @@ public class NuanceSDK {
         return this.mFacts;
     }
 
-    /** Hoisted so addWord does not recompile the pattern per call. */
     private static final java.util.regex.Pattern WHITESPACE =
             java.util.regex.Pattern.compile("\\s+");
 
     /**
-     * Audit EB-2: monotonic counter of INPUT-BUFFER mutations (clear / clearOneSymbol /
-     * processKeyBySymbol). Bumped inside {@code sMutex} so a reader that samples it under the
-     * same lock discipline sees a consistent value.
-     *
-     * <p>The suggestion worker reads the engine with a non-atomic clear -> replay ->
-     * buildSelectionList -> getSelectionListWord sequence while the main thread can mutate the
-     * same buffer through the tracker. This counter lets the worker tell the two cases apart:
-     * a tracker that merely ADVANCED (normal at typing speed, and already handled by the
-     * delivery-time guards) versus the buffer actually being rewritten INSIDE its read window,
-     * which is the case that scores candidates against a phantom symbol stream.
-     *
-     * <p>Sampled after the worker's own replay, so the worker never trips on its own writes.
-     * Static because the engine buffer is process-global, like {@link #sMutex}.
+     * Monotonic count of input-buffer mutations (clear, clearOneSymbol, processKeyBySymbol), bumped
+     * under sMutex. The suggestion worker samples it after its own replay to detect the buffer
+     * being rewritten inside its non-atomic read window. Static: the engine buffer is process-global.
      */
     private static volatile long sInputBufferEpoch = 0L;
 
@@ -157,15 +120,9 @@ public class NuanceSDK {
     }
 
     /**
-     * Audit EB-3: monotonic generation of the engine's SELECTION LIST, bumped inside
-     * {@code sMutex} every time {@link #buildSelectionList()} rebuilds it.
-     *
-     * <p>{@code selectionListSelectWord} takes a RAW INDEX into whatever list the engine currently
-     * holds. A {@link WordInfo} carries the index it had when the bridge assembled it, so if
-     * anything rebuilds the list between assembly and the learn-time select — an in-flight worker
-     * request is neither cancelled nor drained by a separator commit — that index now points into
-     * a different list and the wrong word gets learned. Stamping the generation onto each WordInfo
-     * lets the learner notice and learn by content instead of by index.
+     * Monotonic generation of the selection list, bumped under sMutex by {@link #buildSelectionList()}.
+     * {@code selectionListSelectWord} takes a raw index, so a {@link WordInfo} stamped with an older
+     * generation must be learned by content instead.
      */
     private static volatile long sSelectionListGeneration = 0L;
 
@@ -175,10 +132,8 @@ public class NuanceSDK {
     }
     private Locale mPrevPrimaryLocale = null;
 
-    // The engine's Amharic dictionary stores each syllable as its first-order letter plus a vowel
-    // marker, while the keyboard types and shows precomposed syllables. While the primary language
-    // is written in Ethiopic every word crossing this boundary is translated; see EthiopicSyllables.
-    // Read and written under sMutex only.
+    // True while an Ethiopic language is primary: words crossing the engine boundary go through
+    // EthiopicSyllables. Under sMutex only.
     private boolean mEthiopicTranslation = false;
     private boolean mIsExplicitLearning = false;
     /**
@@ -187,16 +142,9 @@ public class NuanceSDK {
      */
     private volatile boolean mDlmAttached = false;
 
-    /**
-     * The last {@link #setContactsCategoryState} choice, applied again whenever the model is
-     * (re)attached; null until the first call leaves the engine's own default alone.
-     */
+    /** The last {@link #setContactsCategoryState} choice, reapplied on every model attach; null = engine default. */
     private Boolean mContactsCategoryEnabled = null;
-    /**
-     * Bumped by every call that changes the learned model (a word learned, added, deleted,
-     * changed, the contacts batch, an import, a re-attach), so {@link #getDLMWords} can tell
-     * (in debug logs) that the model changed while it released the lock between chunks.
-     */
+    /** Bumped by every learned-model change, so {@link #getDLMWords} can log a change between chunks. */
     private volatile int mDlmMutations;
 
     /** Words read per hold of sMutex in {@link #getDLMWords}. */
@@ -218,14 +166,17 @@ public class NuanceSDK {
 
     
     public interface AutoCommitCallback {
+        /** @param str the word the engine auto-committed */
         void onAutoCommitWord(String str);
     }
 
     
     public interface ManagedModeCallback {
+        /** @param z true for managed (work profile) mode */
         void onManagedModeChanged(boolean z);
     }
 
+    // Natives: j is the engine handle; the other parameters match the public wrappers below.
     private native int addCategoryWords(long j, char c, String[] strArr);
 
     private native boolean addExplicitSymb(long j, char c);
@@ -366,31 +317,27 @@ public class NuanceSDK {
     }
 
     public void setCallbackHandler(ManagedModeCallback callback) {
-        // Audit P-7: no sMutex. The lock guarded two Java fields here, not native state, and
-        // DynamicLearningManager calls this on the main thread during onCreate, where it waited
-        // out a whole dictionary load (301 ms measured on the emulator). Both fields are volatile:
-        // this writes the handler then reads mDlmAttached, loadDLMFromFile writes mDlmAttached
-        // then reads the handler, so at least one of the two delivers onManagedModeChanged. Both
-        // may, which is harmless: the callback only switches the learner on.
+        // No sMutex: called on the main thread, and the lock is held for whole dictionary loads.
+        // This writes the handler then reads mDlmAttached; loadDLMFromFile does the reverse, so at
+        // least one delivers onManagedModeChanged (both is harmless).
         this.mCallbackHandler = callback;
         boolean replay = callback != null && this.mDlmAttached;
-        // The learned model may already be attached when the handler arrives: the Personal
-        // learned words screen gives this engine a language (and so the model) when it is
-        // opened before the keyboard has bound in the process, and the keyboard's later
-        // setLanguage then skips loadDLMFromFile (the language-init latch). Without this
-        // replay DynamicLearningManager never heard onManagedModeChanged and no learner was
-        // active for the rest of the process -- the "open question (2026-08)" in its source.
+        // The model may already be attached (a settings screen set a language first, so the later
+        // setLanguage skips loadDLMFromFile); replay or no learner runs for the process.
         if (replay) {
             callback.onManagedModeChanged(this.mIsManaged);
         }
     }
 
     public void setAutoCommitCallbackHandler(AutoCommitCallback autoCommitCallback) {
-        // Audit P-7: a volatile write, no sMutex; the lock protected only this field.
+        // Volatile write, no sMutex needed.
         this.mAutoCommitHandler = autoCommitCallback;
     }
 
-    // Called by native code (JNI callback) - DO NOT REMOVE
+    /**
+     * JNI callback from the blob; do not remove.
+     * @param str the auto-committed word
+     */
     public void updateAutoCommittedString(String str) {
         if (InputPathDebug.on()) android.util.Log.i("CKB_SWIPE_TYPE_DEBUG", "NuanceSDK.updateAutoCommittedString: str=" + str + " mAutoCommitHandler=" + this.mAutoCommitHandler);
         AutoCommitCallback autoCommitCallback = this.mAutoCommitHandler;
@@ -403,18 +350,14 @@ public class NuanceSDK {
 
     private void observeNuanceFiles(Context context) {
         final File nuanceDir = new File(context.getFilesDir(), DYNAMIC_MODEL_ABSTRACT_DIR);
-        // Create it rather than bailing out: this used to return early on a first run, and it
-        // was never retried, so the watcher that invalidates the keyboard when alphadlm.bin
-        // changes was simply absent for the rest of the process -- a freshly seeded DLM was
-        // not picked up until the next process start.
+        // Create it: this is never retried, so without the dir the watcher is absent for the process.
         if (!nuanceDir.isDirectory() && !nuanceDir.mkdirs()) {
             if (BuildConfig.DEBUG) Log.w(TAG, "Cannot create nuance dir: " + nuanceDir.getAbsolutePath());
             return;
         }
         final String nuancePath = nuanceDir.getAbsolutePath();
         final int mask = FileObserver.CLOSE_WRITE | FileObserver.CREATE | FileObserver.MOVED_TO;
-        // FileObserver(String, int) is deprecated since API 29 in favour of the File overload,
-        // which does not exist below API 29.
+        // The File overload exists only on API 29+, where the String one is deprecated.
         this.mNuanceFileObserver = (android.os.Build.VERSION.SDK_INT >= 29)
                 ? new FileObserver(nuanceDir, mask) {
             @Override
@@ -434,11 +377,9 @@ public class NuanceSDK {
     private void onNuanceFileEvent(String nuancePath, String path) {
         if (path == null) return;
         String fullPath = nuancePath + "/" + path;
-        // Only react to our dynamic model files
         for (String name : DYNAMIC_MODEL_FILE_ARRAY) {
             if (fullPath.endsWith(name)) {
-                // FileObserver delivers on its own thread; the engine is only called from the
-                // engine thread.
+                // FileObserver runs on its own thread; the engine is only called from the engine thread.
                 EngineThreads.post(() -> invalidateKeyboard(fullPath));
                 break;
             }
@@ -454,6 +395,7 @@ public class NuanceSDK {
         return z;
     }
 
+    /** @param z true for managed (work profile) mode */
     public void setIsManaged(boolean z) {
         enter("setIsManaged");
         synchronized (sMutex) {
@@ -461,6 +403,7 @@ public class NuanceSDK {
         }
     }
 
+    /** @param z whether explicit learning is on; remembered and reapplied for Chinese */
     public void setIsExplicitLearning(boolean z) {
         enter("setIsExplicitLearning");
         synchronized (sMutex) {
@@ -469,6 +412,7 @@ public class NuanceSDK {
         }
     }
 
+    /** @param z true while the physical keypad is the input */
     public void setIsPkb(boolean z) {
         enter("setIsPkb");
         synchronized (sMutex) {
@@ -490,12 +434,10 @@ public class NuanceSDK {
         int iBuildSelectionList;
         synchronized (sMutex) {
             iBuildSelectionList = buildSelectionList(this.mNativeHandle);
-            sSelectionListGeneration++;   // audit EB-3: the list just changed identity
+            sSelectionListGeneration++;   // the list just changed identity
             if (BuildConfig.DEBUG) {
-                // XT9 recognition output: golden target for the owned gesture decoder. For gestures the
-                // result arrives as the INLINE (composing) word, not the selection list (count is 0).
-                // 'spell' = literal decoded keys, 'word' = lexicon-matched result.
-                // View: adb logcat -s XT9WORDS:I XT9OWNED:I  (deflooded: only meaningful results, deduped)
+                // Recognition output for diffing the owned decoder; gesture results arrive as the inline
+                // word (count 0). View: adb logcat -s XT9WORDS:I XT9OWNED:I (deduped)
                 String inline = getInlineWord(this.mNativeHandle);
                 boolean meaningful = iBuildSelectionList > 0 || (inline != null && !inline.isEmpty());
                 String sig = iBuildSelectionList + "|" + inline;
@@ -527,6 +469,10 @@ public class NuanceSDK {
         return strBuildHangul;
     }
 
+    /**
+     * @param str the jamo sequence to decode
+     * @param z engine flag: false from the keypad's per-key decode, true from the flick strip
+     */
     public String decodeHangul(String str, boolean z) {
         enter("decodeHangul");
         String strDecodeHangul;
@@ -536,6 +482,7 @@ public class NuanceSDK {
         return strDecodeHangul;
     }
 
+    /** @param c a compatibility jamo; {@code CODE_NULL} when it has no conjoining form */
     public char compatibilityJamoToJamoTransform(char c) {
         enter("compatibilityJamoToJamoTransform");
         char cCharAt;
@@ -560,9 +507,8 @@ public class NuanceSDK {
     }
 
     /**
-     * The source of each of the first {@code count} words of the selection list as last built
-     * ({@link #WORD_SOURCE_LEARNED_MODEL} and the others), which the blob's own word read leaves
-     * out; null when the engine cannot be reached. One read of the engine's list, no lookups.
+     * The source of each of the first {@code count} words of the last built list
+     * ({@link #WORD_SOURCE_LEARNED_MODEL} etc.), which the blob's word read omits; null if unreachable.
      */
     public byte[] getSelectionListSources(int count) {
         enter("getSelectionListSources");
@@ -577,6 +523,7 @@ public class NuanceSDK {
         }
     }
 
+    /** @param i index into the current selection list */
     public WordInfo getSelectionListWord(int i) {
         enter("getSelectionListWord");
         WordInfo selectionListWord;
@@ -602,11 +549,12 @@ public class NuanceSDK {
         return inlineWord;
     }
 
+    /** @param c the typed symbol; decomposed first while an Ethiopic language is primary */
     public boolean processKeyBySymbol(char c) {
         enter("processKeyBySymbol");
         boolean zProcessKeyBySymbol;
         synchronized (sMutex) {
-            sInputBufferEpoch++;   // audit EB-2: input-buffer mutation
+            sInputBufferEpoch++;
             if (BuildConfig.DEBUG) {
                 Log.d("PIPELINE", "IME:nuanceSDK:processKey" +
                     " char='" + c + "'" +
@@ -626,6 +574,7 @@ public class NuanceSDK {
         return zProcessKeyBySymbol;
     }
 
+    /** @param c the symbol to add as typed */
     public boolean addExplicitSymb(char c) {
         enter("addExplicitSymb");
         boolean zAddExplicitSymb;
@@ -639,7 +588,7 @@ public class NuanceSDK {
         enter("clearOneSymbol");
         boolean zClearOneSymbol;
         synchronized (sMutex) {
-            sInputBufferEpoch++;   // audit EB-2: input-buffer mutation
+            sInputBufferEpoch++;
             zClearOneSymbol = clearOneSymbol(this.mNativeHandle);
         }
         return zClearOneSymbol;
@@ -649,7 +598,7 @@ public class NuanceSDK {
         enter("clear");
         boolean zClear;
         synchronized (sMutex) {
-            sInputBufferEpoch++;   // audit EB-2: input-buffer mutation
+            sInputBufferEpoch++;
             if (InputPathDebug.perGesture()) {
                 final StackTraceElement[] st = new Throwable().getStackTrace();
                 Log.d("PIPELINE", "IME:nuanceSDK:clear" +
@@ -662,38 +611,17 @@ public class NuanceSDK {
         return zClear;
     }
 
+    /**
+     * @param z true for the physical keypad, which always passes (0,0)
+     * @param s keyboard width
+     * @param s2 keyboard height
+     */
     public boolean setKeyboardSize(boolean z, short s, short s2) {
         enter("setKeyboardSize");
         synchronized (sMutex) {
             if (z) {
-                // PKB. The ORIGINAL app calls setKeyboardSizePkb(), which looks its dimensions up
-                // by Build.DEVICE — and on the KEY2 that lookup MISSES, so it passes (0,0): a 1:1
-                // sensor->authored mapping.
-                //
-                // Audit L6 (2026-09-20) corrected why it misses. This comment used to claim the
-                // original's map held ONLY mercury. It does not: it has all three entries, athena
-                // included, at {1080, 525} (orig/.../nuanceshim/NuanceSDK.java:51-57). The lookup
-                // misses because the original KEYS that entry by the string "bbf100" — its
-                // DEVICE_ATHENA constant (orig ibid.:26) is the KEY2's model number — while
-                // Build.DEVICE on the LineageOS KEY2 this was measured on is "athena". That is
-                // not an assumption: it is what selected our own athena config there, via
-                // res/xml/device_config_athena.xml's <build-device> rule, and the athena PKB
-                // layout loading on device is confirmed by the NKL dump quoted on
-                // syncKeyboardLayout below. So on that device the original's athena entry is
-                // dead code, and {1080, 525} never reached its engine.
-                //
-                // 2026-10-01: that holds only where Build.DEVICE is "athena". A KEY2 whose
-                // ro.product.device is "bbf100" (a custom LineageOS build reports it; stock
-                // firmware presumably does too, given the original's key) would HIT in the
-                // original and pass {1080, 525}. Not re-measured; this branch does not depend
-                // on it, because it never consults the map.
-                //
-                // The conclusion is unchanged, and so is this branch: our custom athena KDB is
-                // authored 1080x450 and is verified (taps) to map 1:1 to the touch surface
-                // anchored to the top, so (0,0) is exactly right for it.
-                // (An interim fix that routed through setKeyboardSizePkb + our added athena={1080,425}
-                //  entry stretched the 450 KDB by 450/425 and is reverted; that 425 belonged to the
-                //  root-324 layout, not athena. See the original-APK diff, 2026-08-13.)
+                // PKB: (0,0) means a 1:1 sensor-to-authored mapping. The athena KDB is authored
+                // 1080x450 to match the touch surface anchored at the top; any scaling stretches it.
                 return setKeyboardSize(this.mNativeHandle, (short) 0, (short) 0);
             }
             return setKeyboardSize(this.mNativeHandle, s, s2);
@@ -702,14 +630,12 @@ public class NuanceSDK {
 
     public boolean setLanguage(Locale[] localeArr) {
         enter("setLanguage");
-        // A long hold (the whole LDB + DLM load). It runs on the loader thread, so an engine-thread
-        // op that arrives meanwhile waits for sMutex; the main thread never does.
+        // A long hold (whole LDB + DLM load) on the loader thread; engine-thread ops wait for it.
         synchronized (sMutex) {
             try {
                 return setLanguageLocked(localeArr);
             } finally {
-                // Every path, success or not: the facts describe whatever the engine holds now,
-                // and they are published before setLanguage reports completion.
+                // On every path, published before setLanguage returns.
                 refreshFactsLocked();
             }
         }
@@ -721,21 +647,15 @@ public class NuanceSDK {
                 if (localeArr.length > 0) {
                     this.mPrevPrimaryLocale = getPrimaryLanguage();
                     boolean activated = setLanguage(this.mNativeHandle, localeToString(localeArr));
-                    // The native setLanguage re-creates the engine core with its multithreaded
-                    // selection-list build on, which spawned 3 to 7 short-lived threads per
-                    // keystroke and gave non-deterministic candidate lists; the engine's own
-                    // ClearMultiThreading switches it off, so it is applied after every
-                    // activation, whatever the activation returned.
+                    // Native setLanguage turns multithreaded list builds back on (3 to 7 threads per
+                    // keystroke, non-deterministic lists), so switch it off after every activation.
                     Et9EngineOptions.setMultiThreading(this.mNativeHandle, false);
                     if (activated) {
                         this.mLanguageActive = true;
                         this.mEthiopicTranslation = EthiopicSyllables.appliesTo(localeArr[0]);
-                        // Re-apply the per-engine options once after a language change; whether
-                        // activation resets them inside the blob is not documented.
+                        // Re-apply per-engine options: activation may reset them inside the blob.
                         this.mEmojiPredictionApplied = null;
-                        // Dictionary probe (debug): after the language activates, ask the engine
-                        // directly whether common words are in the active LDB. Settles "is 'hello'
-                        // missing from the dictionary" without relying on a focused text field.
+                        // Debug: log whether common words are in the active LDB.
                         if (BuildConfig.DEBUG) {
                             String[] probe = {"hello", "hell", "help", "the", "jello", "he'll", "hero", "teh", "vey", "adn"};
                             StringBuilder sb = new StringBuilder("DICTPROBE lang=").append(java.util.Arrays.toString(localeToString(localeArr))).append(" ->");
@@ -746,11 +666,8 @@ public class NuanceSDK {
                         if (!shouldReloadDLMFile()) {
                             return true;
                         }
-                        // Audit EB-6: shouldReloadDLMFile() latches mIsLanguageInit BEFORE the
-                        // load is attempted, so a single failed load meant the retry check said
-                        // "already initialised" forever after — no learner for the rest of the
-                        // process, and every commit took the do-nothing path. Release the latch on
-                        // failure so the next setLanguage tries again.
+                        // shouldReloadDLMFile() latches mIsLanguageInit before the load; release it on
+                        // failure so the next setLanguage retries instead of running with no learner.
                         boolean dlmLoaded = loadDLMFromFile();
                         if (!dlmLoaded) {
                             releaseLanguageInitLatch();
@@ -805,10 +722,7 @@ public class NuanceSDK {
         return localeArr;
     }
 
-    /**
-     * Recomputes {@link #mFacts} from the engine. Callers hold sMutex; it reads the private
-     * natives and fields directly, never the public wrappers.
-     */
+    /** Recomputes {@link #mFacts}. Callers hold sMutex; uses the private natives, never the public wrappers. */
     private void refreshFactsLocked() {
         if (this.mNativeHandle == 0L) {
             this.mFacts = EngineFacts.NONE;
@@ -816,8 +730,7 @@ public class NuanceSDK {
         }
         Locale[] languages = languageLocked();
         List<Locale> list = Collections.unmodifiableList(java.util.Arrays.asList(languages));
-        // The same default as getPrimaryLanguage(), so a caller switched to the facts sees the
-        // value it saw before.
+        // Same default as getPrimaryLanguage().
         Locale primary = languages.length > 0 ? languages[0] : Locale.ENGLISH;
         final boolean active = this.mLanguageActive;
         this.mFacts = new EngineFacts(
@@ -865,12 +778,13 @@ public class NuanceSDK {
         return Locale.ENGLISH;
     }
 
+    /** @param str path of the language pack's LDB file */
     public boolean registerLdb(String str) {
         enter("registerLdb");
         boolean zRegisterLdb;
         synchronized (sMutex) {
-            // The pack installer reaches the spell checker's engine through peekSecondary(),
-            // which can now be disposed between that read and this call.
+            // The pack installer reaches the spell checker's engine via peekSecondary(), which can be
+            // disposed between that read and this call.
             if (this.mNativeHandle == 0L) {
                 return false;
             }
@@ -879,6 +793,10 @@ public class NuanceSDK {
         return zRegisterLdb;
     }
 
+    /**
+     * @param str language code
+     * @param str2 country code, or null
+     */
     public void deregisterLdb(String str, String str2) {
         enter("deregisterLdb");
         synchronized (sMutex) {
@@ -895,6 +813,7 @@ public class NuanceSDK {
         }
     }
 
+    /** @param str the word to check */
     public boolean isSpellingCorrect(String str) {
         enter("isSpellingCorrect");
         boolean zIsSpellingCorrect;
@@ -905,10 +824,9 @@ public class NuanceSDK {
     }
 
     /**
-     * Whether the language dictionaries alone know {@code str}: the learned model is switched off
-     * for this one check (this instance only; the other instance and the model file are untouched)
-     * and back on. Words added on purpose and contact names live in the learned model too, so they
-     * fail here. Where the model cannot be switched off, the ordinary check answers.
+     * Whether the language dictionaries alone know {@code str}: the learned model (which also holds
+     * added words and contacts) is switched off for this check on this instance only, then back on.
+     * Falls back to the ordinary check if it cannot be switched off.
      */
     public boolean isSpellingCorrectWithoutLearnedWords(String str) {
         enter("isSpellingCorrectWithoutLearnedWords");
@@ -936,6 +854,11 @@ public class NuanceSDK {
         }
     }
 
+    /**
+     * @param i raw index into the current selection list (check the list generation first)
+     * @param z engine select flag; callers pass true
+     * @param str the word's spell
+     */
     public boolean selectionListSelectWord(int i, boolean z, String str) {
         enter("selectionListSelectWord");
         boolean zSelectionListSelectWord;
@@ -962,8 +885,7 @@ public class NuanceSDK {
             keys = getKeys(this.mNativeHandle);
         }
         if (BuildConfig.DEBUG && keys != null) {
-            // XT9 key-model capture: the loaded KDB geometry, ground truth for the
-            // owned point->key resolver and GetKeyPositions. View: adb logcat -s XT9KEYS:I
+            // Logs the loaded KDB geometry (ground truth for the owned resolver). View: adb logcat -s XT9KEYS:I
             android.util.Log.i("XT9KEYS", "getKeys: " + keys.length + " keys");
             for (int i = 0; i < keys.length; i++) {
                 KeyInfo k = keys[i];
@@ -976,6 +898,7 @@ public class NuanceSDK {
         return keys;
     }
 
+    /** @param z whether explicit learning is on */
     public boolean setExplicitLearning(boolean z) {
         enter("setExplicitLearning");
         boolean explicitLearning;
@@ -985,6 +908,7 @@ public class NuanceSDK {
         return explicitLearning;
     }
 
+    /** @param str text for the engine to scan and learn from */
     public boolean scanBuffer(String str) {
         enter("scanBuffer");
         boolean zScanBuffer;
@@ -994,6 +918,7 @@ public class NuanceSDK {
         return zScanBuffer;
     }
 
+    /** @param str word or phrase to add to the learned model; phrases are added word by word */
     public boolean addWord(String str) {
         enter("addWord");
         if (str == null || str.isEmpty()) {
@@ -1005,12 +930,9 @@ public class NuanceSDK {
             }
             this.mDlmMutations++;
             str = toEngineForm(str);
-            // DLM doesn't support phrases with spaces - split and add each word
+            // The DLM has no phrases; every non-empty token is added, single letters included.
             if (str.contains(" ")) {
                 boolean anyAdded = false;
-                // Every non-empty token is added. The old guard was `length() > 1`, which
-                // silently dropped the single-letter components of a phrase ("a la carte",
-                // "I ll"); its comment named a class, not a word, which is rename-pass damage.
                 for (String word : WHITESPACE.split(str)) {
                     if (!word.isEmpty()) {
                         anyAdded |= addWord(this.mNativeHandle, word);
@@ -1022,6 +944,12 @@ public class NuanceSDK {
         }
     }
 
+    /**
+     * @param str the text holding the recorrected word
+     * @param i the recorrection cursor position in {@code str}
+     * @param str2 the original word
+     * @param str3 the replacement word
+     */
     public boolean wordChanged(String str, int i, String str2, String str3) {
         enter("wordChanged");
         synchronized (sMutex) {
@@ -1032,7 +960,7 @@ public class NuanceSDK {
 
     public void addContactsWords(String[] strArr) {
         enter("addContactsWords");
-        // A long hold like setLanguage (one native call over every contact name): a loader op.
+        // A long hold (one native call over every contact name): a loader op.
         synchronized (sMutex) {
             if (!mIsLanguageInit) {
                 if (BuildConfig.DEBUG) Log.d(TAG, "DLM not ready, skipping addContactsWords (" + strArr.length + " words)");
@@ -1043,6 +971,10 @@ public class NuanceSDK {
         }
     }
 
+    /**
+     * @param strArr contact names
+     * @param z true for work-profile contacts; added only when it matches the managed mode
+     */
     public void addContactsWords(String[] strArr, boolean z) {
         enter("addContactsWords");
         synchronized (sMutex) {
@@ -1053,18 +985,13 @@ public class NuanceSDK {
     }
 
     /**
-     * Whether the engine may offer the words filed under the contacts category, the names
-     * {@link #addContactsWords} adds: the engine half of "Suggest from contacts", which until now
-     * only started or stopped the address-book sync and left the names already learned active.
-     * The choice is kept on this instance and applied again whenever the model is (re)attached,
-     * since the state lives in the engine's copy of the model. Returns false when the model is
-     * not attached yet (the choice is applied on attach) or the engine refused: a model that has
-     * no contacts category yet answers status 93, and then there is nothing to switch off.
+     * Engine half of "Suggest from contacts": whether words in the contacts category may be offered.
+     * Kept and reapplied on every model attach. False when not attached yet or refused (status 93
+     * means the model has no contacts category yet).
      */
     public boolean setContactsCategoryState(boolean enabled) {
         enter("setContactsCategoryState");
-        // loadSettings calls this on every field focus with the same value. Skip the lock when
-        // the attached model already holds it.
+        // Called on every field focus with the same value: skip the lock when the model already holds it.
         Boolean applied = this.mContactsCategoryApplied;
         if (applied != null && applied == enabled) {
             return true;
@@ -1090,13 +1017,13 @@ public class NuanceSDK {
         }
         boolean enabled = this.mContactsCategoryEnabled;
         boolean ok = setCategoryState(this.mNativeHandle, CATEGORY_CONTACTS, enabled);
-        // Remembered only when the engine accepted it: a refusal (no contacts category in the
-        // model yet) has to be retried on the next call.
+        // Remembered only when accepted, so a refusal (no contacts category yet) is retried.
         this.mContactsCategoryApplied = ok ? enabled : null;
         if (BuildConfig.DEBUG) Log.d(TAG, "contacts category " + (enabled ? "on" : "off") + " -> " + ok);
         return ok;
     }
 
+    /** @param str path of the changed model file */
     public boolean invalidateKeyboard(String str) {
         enter("invalidateKeyboard");
         synchronized (sMutex) {
@@ -1108,18 +1035,11 @@ public class NuanceSDK {
         }
     }
 
-    // Stray-touch filter: a real swipe produces many touchMove events; taps and capacitive
-    // edge blips produce 0-2. We track per-pointer move counts and, on touch-up, CANCEL
-    // (rather than end) degenerate gestures so they never register as 1-point records that
-    // pollute the engine's gesture buffer. Both gesture paths (PointerTracker and
-    // GestureEventProcessor) funnel through these wrappers, so this is the single choke point.
+    // Stray-touch filter: taps and edge blips produce 0-2 moves. Such contacts are cancelled, not
+    // ended, so they never become 1-point gesture records. Both gesture paths funnel through here.
     private static final int MIN_GESTURE_MOVES = 3;
 
-    /**
-     * The contacts in flight and their move counts, side by side. There are one or two at a
-     * time, so a scan beats a map, and nothing is boxed per touch sample (a HashMap keyed by
-     * Long allocated a key per lookup and a count per move past 127). Guarded by sMutex.
-     */
+    /** Contacts in flight and their move counts as parallel arrays (no boxing per sample). Under sMutex. */
     private long[] mGestureMoveIds = new long[4];
     private int[] mGestureMoveCounts = new int[4];
     private int mGestureMoveSize;
@@ -1168,10 +1088,7 @@ public class NuanceSDK {
         return count;
     }
 
-    // Debug: log which KDB key a tap lands on, replicating the engine's tap->key mapping —
-    // scale sensor coords into the KDB's authored 1080x324 using the active setKeyboardSize
-    // dimensions, then point-in-rect against the live key model. Tap a physical key and see
-    // what the engine resolves it to. Tag: XT9TAPKEY.
+    // Debug: log which KDB key a tap resolves to, mirroring the engine's mapping. Tag: XT9TAPKEY.
     private KeyInfo[] mDbgKeys;
     private String mLastWordsLog;   // dedup for the deflooded XT9WORDS recognition log
     private static boolean sDbgKbZ;         // last syncKeyboardLayout args (to reload the same layout for RE)
@@ -1181,17 +1098,9 @@ public class NuanceSDK {
     private void logTapKey(float x, float y) {
         KeyInfo[] keys = mDbgKeys;
         if (keys == null || keys.length == 0) { android.util.Log.i("XT9TAPKEY", "no key model yet"); return; }
-        // Mirror what the engine ACTUALLY does, rather than re-deriving it here — this method has
-        // now misreported the resolved key twice by inventing its own mapping.
-        //
-        // PKB passes SetKeyboardSize(0,0), which zeroes the scale, and sensor_to_authored then
-        // skips scaling altogether: the mapping is 1:1, which is exactly what the athena layout
-        // is authored for (1080x450 over a 1080x525 sensor, letters in the top 450). The touch
-        // offset is zero for every shipped layout, so this is a true 1:1 map — but the RAW
-        // coordinates are printed alongside because they are the only value that cannot drift
-        // out of sync with the engine.
-        //
-        // VKB does pass real dimensions, so it keeps a proportional mapping.
+        // Mirror the engine, do not re-derive it. PKB passes SetKeyboardSize(0,0), so
+        // sensor_to_authored skips scaling (1:1); raw coords are logged too since they cannot
+        // drift from the engine. VKB passes real dimensions, so it scales proportionally.
         float ax, ay;
         if (mIsPkb) {
             ax = x;
@@ -1222,6 +1131,12 @@ public class NuanceSDK {
             x, y, mIsPkb, ax, ay, c, hit != null ? hit.keyCode : -1, inside ? "" : " (NEAREST - outside all keys)"));
     }
 
+    /**
+     * @param j pointer id
+     * @param f x in sensor coordinates
+     * @param f2 y in sensor coordinates
+     * @param j2 event time
+     */
     public boolean touchStart(long j, float f, float f2, long j2) {
         enter("touchStart");
         if (InputPathDebug.on()) android.util.Log.i("CKB_SWIPE_TYPE_DEBUG", "NuanceSDK.touchStart: pointer=" + j + " x=" + f + " y=" + f2 + " time=" + j2);
@@ -1236,11 +1151,12 @@ public class NuanceSDK {
         }
         if (InputPathDebug.perGesture()) logTapKey(f, f2);   // one line per gesture — cheap
         if (InputPathDebug.on()) Xt9Kdb.logTap(f, f2);           // tap calibration: owned resolution + coords (any contact)
-        if (InputPathDebug.on()) Xt9Kdb.traceStart(f, f2, j2);   // W3a: mirror to owned scratch trace
+        if (InputPathDebug.on()) Xt9Kdb.traceStart(f, f2, j2);   // mirror to owned scratch trace
         if (InputPathDebug.on()) android.util.Log.i("CKB_SWIPE_TYPE_DEBUG", "NuanceSDK.touchStart: returned " + z);
         return z;
     }
 
+    /** Parameters as in {@link #touchStart}: pointer id, sensor x, sensor y, event time. */
     public boolean touchMove(long j, float f, float f2, long j2) {
         enter("touchMove");
         if (InputPathDebug.on()) android.util.Log.i("CKB_SWIPE_TYPE_DEBUG", "NuanceSDK.touchMove: pointer=" + j + " x=" + f + " y=" + f2 + " time=" + j2);
@@ -1249,20 +1165,15 @@ public class NuanceSDK {
             countGestureMove(j);
             z = touchMove(this.mNativeHandle, j, f, f2, j2);
         }
-        if (InputPathDebug.on()) Xt9Kdb.traceMove(f, f2, j2);   // W3a: mirror to owned scratch trace
+        if (InputPathDebug.on()) Xt9Kdb.traceMove(f, f2, j2);   // mirror to owned scratch trace
         if (InputPathDebug.on()) android.util.Log.i("CKB_SWIPE_TYPE_DEBUG", "NuanceSDK.touchMove: returned " + z);
         return z;
     }
 
     /**
-     * Finish pointer {@code j}'s gesture.
-     *
-     * <p><b>Return contract:</b> {@code true} means <em>the engine took a gesture and there is a
-     * deposit to consume</em> — that is exactly what both callers use it for
-     * ({@code GestureEventProcessor.onUpEvent}, {@code PointerTracker.onUpEvent}, each calling
-     * {@code NuanceSDKManager.noteGestureDeposit()} on true). It is NOT "the native call
-     * succeeded": the native {@code touchEnd} deliberately returns success whatever the
-     * recognizer said, and the stray-touch branch below does not reach the recognizer at all.
+     * Finishes pointer {@code j}'s gesture; parameters as in {@link #touchStart}. True means the
+     * engine took a gesture and there is a deposit to consume (callers then call
+     * {@code noteGestureDeposit()}), not that the native call succeeded: native touchEnd always succeeds.
      */
     public boolean touchEnd(long j, float f, float f2, long j2) {
         enter("touchEnd");
@@ -1273,36 +1184,27 @@ public class NuanceSDK {
             if (n < MIN_GESTURE_MOVES) {
                 // Stray / tap: cancel so it doesn't register as a 1-point gesture record.
                 touchCancel(this.mNativeHandle, j);
-                // AUDIT L5 (docs/2026-09_kdb-touch-abi_audit.md): report FALSE, not touchCancel's
-                // return. Both callers read this boolean as "the engine accepted a gesture" and
-                // call NuanceSDKManager.noteGestureDeposit() on true — and touchCancel always
-                // returns true, because ET9KDB_TouchCancel returns status 0 and the JNI shim maps
-                // 0 to true. So "I cancelled this contact" and "I accepted this gesture" were
-                // indistinguishable to the caller. Nothing broke, because noteGestureDeposit()
-                // re-publishes the CURRENT native rank sequence, which for a cancelled contact is
-                // the previous gesture's already-consumed value — a no-op. It was still an
-                // ignored error return on the one boolean the gesture path acts on.
+                // False, not touchCancel's result (always true): nothing was deposited.
                 z = false;
                 if (InputPathDebug.on()) android.util.Log.i("CKB_SWIPE_TYPE_DEBUG", "NuanceSDK.touchEnd: stray (" + n + " moves) -> touchCancel");
             } else {
                 if (InputPathDebug.on()) android.util.Log.i("CKB_SWIPE_TYPE_DEBUG", "NuanceSDK.touchEnd: gesture end after " + n + " move points");
-                // S1: bracket the native call — recognition consumes + frees the record INSIDE
-                // touchEnd, so "pre" shows the in-progress record (real tag/header bytes) and
-                // "post" shows the freed/consumed state.
+                // Bracket the native call: touchEnd consumes and frees the record, so "pre" shows
+                // the in-progress record and "post" the consumed state.
                 if (InputPathDebug.on()) Xt9Trace.dumpTraceRec(this.mNativeHandle, "pre");
                 z = touchEnd(this.mNativeHandle, j, f, f2, j2);
                 if (InputPathDebug.on()) Xt9Trace.dump(this.mNativeHandle, "touchEnd", 0);
-                if (InputPathDebug.on()) Xt9Trace.dumpTraceRec(this.mNativeHandle, "post");   // S1: blob record ground-truth for byte-diff
-                // W3b: gestures do NOT populate the tap symbol buffer (ctx+0x52) — confirmed empty
-                // after a swipe. The blob's gesture output is the selection list, already logged as
-                // XT9WORDS in buildSelectionList ('spell' = literal decode, the owned-decoder target).
-                if (InputPathDebug.on()) Xt9Kdb.traceEnd(f, f2, j2);   // W3a: owned decode + XT9OWNED log
+                if (InputPathDebug.on()) Xt9Trace.dumpTraceRec(this.mNativeHandle, "post");
+                // Gestures leave the tap symbol buffer (ctx+0x52) empty; their output is the
+                // selection list, logged as XT9WORDS in buildSelectionList.
+                if (InputPathDebug.on()) Xt9Kdb.traceEnd(f, f2, j2);   // owned decode + XT9OWNED log
             }
         }
         if (InputPathDebug.on()) android.util.Log.i("CKB_SWIPE_TYPE_DEBUG", "NuanceSDK.touchEnd: returned " + z);
         return z;
     }
 
+    /** @param j pointer id */
     public boolean touchCancel(long j) {
         enter("touchCancel");
         if (InputPathDebug.on()) android.util.Log.i("CKB_SWIPE_TYPE_DEBUG", "NuanceSDK.touchCancel: pointer=" + j);
@@ -1316,37 +1218,23 @@ public class NuanceSDK {
     }
 
     /**
-     * The engine's keyboard-kind flag is <b>isPkb</b>, not isTouchKb — they are opposites, and
-     * passing the wrong one silently loads the wrong keyboard layout.
+     * Loads and sizes the engine layout. The engine's flag is isPkb, the opposite of the caller's
+     * isTouchKb; passing the wrong one silently loads a VKB layout for the keypad (verified by NKL
+     * dump: 1080x600/33 keys instead of 1080x450/30), so keypad touches resolve to wrong keys.
      *
-     * <p>Confirmed on-device 2026-08-12 by dumping the live NKL right after the layout sync, on a
-     * physical-keyboard session (isTouchKb=false, keyboardId=0):
-     * <pre>
-     *   passing isTouchKb (false) -> NKL 1080x600, 33 keys  = a VKB layout   (wrong)
-     *   passing isPkb     (true)  -> NKL 1080x450, 30 keys  = athena PKB     (correct)
-     * </pre>
-     * The second matched the then-shipped KEY2 uneven-band layout (now assets/kdb/keypad_pkb_athena_test.xml) exactly (1080x450, 30 keys, 108x180
-     * keys), and is the only polarity under which {@link #setKeyboardSize(boolean, short, short)}
-     * takes its documented "true = PKB" branch at all — with isTouchKb it never ran on the PKB,
-     * and {@code setKeyboardSizePkb()} was dead code (since removed).
-     *
-     * <p>Why it mattered: with a VKB layout loaded, physical-keyboard gestures were scored against
-     * on-screen key rectangles, so touches resolved to the wrong keys (a 'd' landing in 's' —
-     * "done" recognised as "some"/"songs"). This also blocked the whole point of the device-variant
-     * KDB registry: the athena override could never win because the PKB branch was never selected.
+     * @param z true for the on-screen keyboard (isTouchKb)
+     * @param str locale string of the layout
+     * @param i keyboard width
+     * @param i2 keyboard height
      */
     public boolean syncKeyboardLayout(boolean z, String str, int i, int i2) {
         enter("syncKeyboardLayout");
         final boolean isPkb = !z;   // engine wants isPkb; callers hand us isTouchKb
-        // A change of keyboard can change whether the active letter layout's KDBs apply; any
-        // switch it queues is on the registration thread awaited before the load.
+        // May queue a letter-layout KDB switch on the registration thread, awaited below.
         dev.bbkb.ime.core.layout.LetterLayoutEngineSync.beforeEngineLayoutSync(isPkb);
-        sDbgKbZ = z; sDbgKbStr = str;   // remember for the RE re-parse trigger
-        // The sync runs on the engine thread, so every tap, swipe or key posted after it is fed
-        // against the new layout by FIFO order alone. Behind a language load it waits for sMutex
-        // on that thread; the main thread never waits for it.
-        // Device KDB variants register on a worker; make sure the registry is populated
-        // before the engine's first SetKdbNum. No-op once registration has completed.
+        sDbgKbZ = z; sDbgKbStr = str;   // remember for the debug re-parse trigger
+        // Runs on the engine thread, so input posted after it uses the new layout by FIFO order.
+        // The KDB registry must be populated before the engine's first SetKdbNum.
         Xt9KdbVariant.awaitReady(2000);
         if (InputPathDebug.on()) android.util.Log.i("CKB_SWIPE_TYPE_DEBUG", "NuanceSDK.syncKeyboardLayout: isTouchKb=" + z + " locale='" + str + "' width=" + i + " height=" + i2 + " kdbVariant='" + Xt9KdbVariant.applied() + "'");
         synchronized (sMutex) {
@@ -1369,8 +1257,7 @@ public class NuanceSDK {
         if (InputPathDebug.on()) {
             android.util.Log.i("CKB_SWIPE_TYPE_DEBUG", "NuanceSDK.syncKeyboardLayout: isPkb=" + isPkb
                 + " (isTouchKb=" + z + ")");
-            // Identify the KDB the engine ACTUALLY ended up with, after the load+size calls.
-            // The one-shot dump on first touch fires before this sync and can be stale.
+            // Dump the KDB the engine ended up with; the first-touch dump predates this sync.
             Xt9Trace.dumpNkl(this.mNativeHandle);
         }
         return sizeResult;
@@ -1391,10 +1278,12 @@ public class NuanceSDK {
         return zLoadKeyboardLayout;
     }
 
-    /** RE (one-shot): the descriptor computer runs only on the VERY FIRST native loadKeyboardLayout of the
-     *  process (then it's cached + memcpy'd). Arm a watchpoint on the bump head neighborhood BEFORE that
-     *  first call, report the writer PC after. All loadKeyboardLayout call sites route through here so the
-     *  earliest one is caught. View: adb logcat -s XT9WP:I */
+    /** Debug one-shot: the descriptor is computed only on the process's first native loadKeyboardLayout
+     *  (then cached), so a watchpoint is armed before that call and its writer PC reported after.
+     *  Every loadKeyboardLayout routes through here. View: adb logcat -s XT9WP:I
+     *  @param h engine handle
+     *  @param z isPkb
+     *  @param s layout locale string */
     private boolean dbgFirstLoad(long h, boolean z, String s) {
         boolean reArm = BuildConfig.DEBUG && !sDescWatchDone && h != 0;
         if (reArm) { sDescWatchDone = true; Xt9Trace.armDescWatch(h, 0x4c, 1); }
@@ -1403,6 +1292,7 @@ public class NuanceSDK {
         return r;
     }
 
+    /** @param str the text before the cursor, as context for predictions */
     public boolean setContextBuffer(String str) {
         enter("setContextBuffer");
         boolean contextBuffer;
@@ -1412,10 +1302,10 @@ public class NuanceSDK {
         return contextBuffer;
     }
 
+    /** @param z whether the engine may predict emoji */
     public boolean setEmojiPredictionEnabled(boolean z) {
         enter("setEmojiPredictionEnabled");
-        // Same per-field caller and same reason as setContactsCategoryState: no lock when the
-        // engine already holds the value.
+        // Called on every field focus: skip the lock when the engine already holds the value.
         Boolean applied = this.mEmojiPredictionApplied;
         if (applied != null && applied == z) {
             return true;
@@ -1435,10 +1325,7 @@ public class NuanceSDK {
         return emojiPredictionEnabled;
     }
 
-    /**
-     * Check if the DLM (Dynamic Learning Model) is initialized and ready for word operations.
-     * @return true if language has been set and DLM is loaded
-     */
+    /** Whether a language has been set and the DLM loaded, so word operations work. */
     public boolean isDLMReady() {
         enter("isDLMReady");
         synchronized (sMutex) {
@@ -1446,10 +1333,7 @@ public class NuanceSDK {
         }
     }
 
-    /**
-     * Audit EB-6: undo {@link #shouldReloadDLMFile()}'s optimistic latch so a failed DLM load is
-     * retried on the next setLanguage rather than being treated as done for the process lifetime.
-     */
+    /** Undoes {@link #shouldReloadDLMFile()}'s optimistic latch so a failed DLM load is retried. */
     private void releaseLanguageInitLatch() {
         synchronized (sMutex) {
             this.mIsLanguageInit = false;
@@ -1486,6 +1370,7 @@ public class NuanceSDK {
         }
     }
 
+    /** @param z true to count explicitly added words (Et9Probe logs both counts) */
     public int getDLMWordCount(boolean z) {
         enter("getDLMWordCount");
         int dLMWordCount;
@@ -1495,6 +1380,7 @@ public class NuanceSDK {
         return dLMWordCount;
     }
 
+    /** @param i cursor command, not an index: 0 rewinds to the first word, anything else steps (see {@link #getDLMWords}) */
     public String getDLMWord(int i) {
         enter("getDLMWord");
         String dLMWord;
@@ -1504,18 +1390,14 @@ public class NuanceSDK {
         return dLMWord;
     }
 
-    /**
-     * The raw engine handle, for {@link Et9Probe} only. The blob's JNI binds just two of the
-     * engine's 49 configuration knobs; the probe reaches the rest by dlsym'ing the exported
-     * ET9AW* entry points, which needs this pointer. Package-private and debug-gated at the
-     * call sites — not a general accessor.
-     */
+    /** The raw engine handle for {@link Et9Probe}'s dlsym'd ET9AW* calls; debug-gated at the call sites. */
     long getNativeHandleForDebug() {
         synchronized (sMutex) {
             return this.mNativeHandle;
         }
     }
 
+    /** @param str the word to delete from the learned model */
     public boolean deleteDLMWord(String str) {
         enter("deleteDLMWord");
         boolean zDeleteDLMWord;
@@ -1527,27 +1409,15 @@ public class NuanceSDK {
     }
 
     /**
-     * Every word in the dynamic language model.
-     *
-     * <p>The blob's {@code getDLMWord(i)} is not an indexed read. It hands {@code i} to
-     * {@code ET9AWDLMGetWord} in the in/out halfword that engine API uses as a cursor command:
-     * 0 rewinds to the first word, anything else steps to the next one, and the engine rejects
-     * a value above 64 (status 26) because that field doubles as a word length. Walking the
-     * model as {@code getDLMWord(0), getDLMWord(1), …, getDLMWord(n-1)} therefore worked only by
-     * accident, and stopped dead at the 66th word: the Learned words screen and the Words
-     * backup never saw more than 65 entries (owner's KEY2, 2026-10-12; reproduced on the
-     * emulator 2026-10-17 with 72 learned words: indices 65–71 came back null). Rewind once,
-     * then step.
+     * Every word in the learned model. The blob's {@code getDLMWord(i)} passes {@code i} to
+     * {@code ET9AWDLMGetWord} as a cursor command in an in/out halfword (0 rewinds, else steps;
+     * above 64 fails with status 26 since the field doubles as a word length): rewind once, then step.
      */
     public ArrayList<String> getDLMWords() {
         enter("getDLMWords");
-        // The Learned words screen and the daily backup read up to 12,882 words, one JNI call
-        // each. Holding sMutex across the whole walk (65 to 250 ms) would make the engine thread's
-        // next key wait for it, so the walk releases the lock every chunk. The engine's word
-        // cursor is engine state (rewind with 0, then step with 1); this runs on the loader
-        // thread and nothing else enumerates, so one walk is enough. An engine-thread op that
-        // changes the model between chunks (a word learned or deleted) can shift the cursor by
-        // that one change; the walk does not restart for it.
+        // Up to 12,882 words, one JNI call each (65 to 250 ms), so sMutex is released every chunk
+        // to keep keys flowing. Runs on the loader thread, the only enumerator. A model change
+        // between chunks can shift the cursor by one; the walk does not restart for it.
         final ArrayList<String> words = new ArrayList<>();
         final int started = this.mDlmMutations;
         final int count;
@@ -1589,10 +1459,8 @@ public class NuanceSDK {
     public static final int DLM_IMPORT_NEWER_VERSION = 91;
 
     /**
-     * Whether the engine's own learned-model export and import ({@link #exportDLM},
-     * {@link #importDLM}) can reach the engine on this phone: the model is attached and the shim
-     * recognises the engine build. False on any phone whose engine library is not the one the
-     * shim was pinned to, where both calls do nothing.
+     * Whether {@link #exportDLM}/{@link #importDLM} work here: the model is attached and the shim
+     * recognises the engine build (both do nothing on other builds).
      */
     public boolean isDLMTransferAvailable() {
         enter("isDLMTransferAvailable");
@@ -1608,11 +1476,9 @@ public class NuanceSDK {
     }
 
     /**
-     * The whole learned model in the engine's own portable form (every word with its use count,
-     * language, category and quality, the categories, the next-word pairs), as the engine's
-     * {@code ET9AWDLMExport} writes it: a byte stream with a trailing checksum, independent of
-     * the process pointers the model file embeds. Null when the model is not attached or the
-     * engine cannot be reached. Read it with {@code LearnedModelStream}.
+     * The learned model as {@code ET9AWDLMExport}'s portable stream (words with counts, languages,
+     * categories, quality, next-word pairs; trailing checksum; no process pointers). Null when not
+     * attached or unreachable. Parse with {@code LearnedModelStream}.
      */
     public byte[] exportDLM() {
         enter("exportDLM");
@@ -1628,16 +1494,10 @@ public class NuanceSDK {
     }
 
     /**
-     * Replaces the learned model with one from {@link #exportDLM} (this phone's or another's),
-     * then re-attaches the model so every engine cache is rebuilt from the file. Returns
-     * {@link #DLM_IMPORT_OK}, {@link #DLM_IMPORT_CORRUPT}, {@link #DLM_IMPORT_NEWER_VERSION},
-     * another engine status, or {@link #DLM_IMPORT_NOT_AVAILABLE}.
-     *
-     * <p>The engine resets the model BEFORE it checks the data, so a refused import leaves the
-     * model empty: callers validate the stream first ({@code LearnedModelStream.parse}) and keep an
-     * export of the current model to put back on a refusal — {@code LearnedModelTransfer} does
-     * both. The secondary (spell-checker) engine maps the same file and has to be re-attached
-     * afterwards too; that is also the transfer's job.
+     * Replaces the learned model with an {@link #exportDLM} stream and re-attaches it; returns a
+     * DLM_IMPORT_* code or another engine status. The engine resets the model before checking the
+     * data, so callers validate first and keep a backup; {@code LearnedModelTransfer} does that and
+     * re-attaches the secondary engine.
      */
     public int importDLM(byte[] data) {
         enter("importDLM");
@@ -1653,8 +1513,7 @@ public class NuanceSDK {
                 if (BuildConfig.DEBUG) Log.w(TAG, "importDLM failed", t);
                 return DLM_IMPORT_NOT_AVAILABLE;
             }
-            // Attached or not, the engine rewrote the model in place: re-attach so the caches
-            // (hash buckets, prediction cache) are rebuilt from what the file holds now.
+            // The engine rewrote the model in place: re-attach so its caches are rebuilt.
             reattachDLM();
             if (BuildConfig.DEBUG) Log.i(TAG, "importDLM: status=" + status + " words=" + getDLMWordCount(false));
             return status < 0 ? DLM_IMPORT_NOT_AVAILABLE : status;
@@ -1669,12 +1528,8 @@ public class NuanceSDK {
     }
 
     /**
-     * Full dynamic-model reset: detach the DLM, delete its persisted file, and reload
-     * so the engine recreates a virgin model. The per-word delete path
-     * ({@link #deleteDLMWord}/{@link #deleteWorkDLMWordsExplicitly}) only prunes the
-     * enumerable unigrams — bigrams ("He'll go"), case variants, and usage boosts all
-     * survive it, which is how a poisoned model persisted through "Clear all learned
-     * words" (see the 2026-08 DLM-poisoning diagnosis).
+     * Full learned-model reset: detach, delete the file, reload an empty model. Per-word deletes
+     * only prune enumerable unigrams; bigrams, case variants and usage boosts survive them.
      *
      * @param nuanceDir the engine's file directory (contextFilesDir/nuance)
      * @return true if the fresh model loaded
@@ -1733,6 +1588,7 @@ public class NuanceSDK {
         return zIsChineseBPMFMode;
     }
 
+    /** @param c a Bopomofo symbol */
     public boolean isBpmfUpperCaseSymbol(char c) {
         enter("isBpmfUpperCaseSymbol");
         boolean zIsBpmfUpperCaseSymbol;
@@ -1742,6 +1598,7 @@ public class NuanceSDK {
         return zIsBpmfUpperCaseSymbol;
     }
 
+    /** @param c a Bopomofo symbol */
     public String convertBpmfSymbolToLower(char c) {
         enter("convertBpmfSymbolToLower");
         String strConvertBpmfSymbolToLower;
@@ -1751,14 +1608,7 @@ public class NuanceSDK {
         return strConvertBpmfSymbolToLower;
     }
 
-    /**
-     * Detaches and re-attaches the current DLM.
-     *
-     * <p>This was {@code loadDLMFromFile(String)}, whose parameter was silently ignored: the
-     * body always used {@link #getDLMFilePath()}. All three callers happened to pass exactly
-     * that, so the bug was latent -- but given the DLM-poisoning history, a signature that
-     * promises "load this DLM" and loads a different one is the wrong thing to leave in place.
-     */
+    /** Detaches and re-attaches the DLM at {@link #getDLMFilePath()}. */
     private boolean reattachDLM() {
         boolean z;
         synchronized (sMutex) {
@@ -1766,7 +1616,6 @@ public class NuanceSDK {
             this.mDlmMutations++;
             z = detachDLMFile(this.mNativeHandle) && attachDLMFile(this.mNativeHandle, getDLMFilePath());
             if (z) {
-                // The category states live in the attached copy of the model.
                 applyContactsCategoryState();
             }
             refreshFactsLocked();
@@ -1812,6 +1661,7 @@ public class NuanceSDK {
         return z;
     }
 
+    /** @param z the managed mode to restore */
     private void setDLMToPrevState(boolean z) {
         this.mIsManaged = z;
         if (z) {
@@ -1820,15 +1670,16 @@ public class NuanceSDK {
         reattachDLM();
     }
 
+    /** @param str the engine input method name (Chinese input modes) */
     public void setInputMethod(String str) {
         enter("setInputMethod");
         synchronized (sMutex) {
             setInputMethod(this.mNativeHandle, str);
-            // The Chinese input modes are what this switches.
             refreshFactsLocked();
         }
     }
 
+    /** @param i the engine's shift state */
     public void setShiftState(int i) {
         enter("setShiftState");
         synchronized (sMutex) {

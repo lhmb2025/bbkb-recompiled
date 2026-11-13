@@ -22,11 +22,8 @@ import org.robolectric.annotation.Config
 import java.util.Locale
 
 /**
- * CHARACTERISATION of [DictionaryFactory] — Wave 3b package G1.
- *
- * The factory's decision: `locale == null` -> [FallbackDictionary] without touching the engine;
- * otherwise a [NuanceSDKDictionaryBridge] over the primary (or, with `secondary`, the secondary)
- * engine instance.
+ * [DictionaryFactory]: `locale == null` -> [FallbackDictionary] without touching the engine;
+ * otherwise a [NuanceSDKDictionaryBridge] over the primary (or, with `secondary`, secondary) engine.
  */
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [34], manifest = Config.NONE, instrumentedPackages = ["com.blackberry.nuanceshim"])
@@ -99,8 +96,8 @@ class DictionaryFactoryTest {
 
     @Test
     fun engineFailedToLoad_isTheFallback_notABridgeOverNull() {
-        // Audit §6 defect 9: NuanceSDKManager reports a failed engine load as null; the factory now
-        // falls back instead of wrapping null (which NPE'd once a supported language pack was found).
+        // A failed engine load is null; the factory falls back instead of wrapping null, which
+        // would NPE once a supported language pack was found.
         sdkStatic.`when`<NuanceSDK> { NuanceSDKManager.getInstance() }.thenReturn(null)
         sdkStatic.`when`<NuanceSDK> { NuanceSDKManager.getSecondary() }.thenReturn(null)
 

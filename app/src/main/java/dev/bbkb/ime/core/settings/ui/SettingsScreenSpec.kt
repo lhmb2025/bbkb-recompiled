@@ -16,42 +16,21 @@ import dev.bbkb.ime.core.device.ResourceConfigManager
 import dev.bbkb.ime.core.device.profile.DeviceProfile
 
 /**
- * The declarative description of a settings screen: a title and a list of rows.
+ * A settings screen as data: a title and rows; [SettingsScreenHost] draws the frame.
  *
- * Every screen under `screens/` used to be a hand-written Composable that repeated the same
- * `Scaffold` + `TopAppBar` + scrolling `Column` frame and the same
- * `var x by remember { mutableStateOf(prefs.getX(key, default)) }` state declarations. Those parts
- * carry no information about the screen, so they live in [SettingsScreenHost] now and each screen
- * declares only its rows.
- *
- * ## The two contracts this model exists to preserve
- *
- * **State lifetime.** A screen reads each preference once, when it first composes, holds the value
- * in composition state, and writes through on change. It never re-reads. [SettingsScreenHost]
- * keeps that exactly: one `remember`ed map, seeded once from every row's [PrefStore] — including
- * rows that are currently hidden, because the old screens declared their `var`s unconditionally
- * too.
- *
- * **Search anchors.** `SettingsSearchIndex` is hand-maintained against `settingsSearchAnchor("…")`
- * calls in `screens/`, and `SettingsSearchIndexTest` scans that directory for them. So a row's
- * anchor is carried as a ready-made [Modifier] written at the row's declaration site — the literal
- * stays in the screen's own file, next to the row it describes, and the search index keeps its
- * source of truth. A row's device gate ([SettingsRow.visible]) and its index entry's
- * `DeviceRequirement` still have to agree; `SettingsScreenRenderTest` asserts that both ways.
+ * State: each preference is read once on first composition (hidden rows included) and written
+ * through on change, never re-read. Search anchors stay as `settingsSearchAnchor("…")` modifiers
+ * at the row's declaration site because `SettingsSearchIndexTest` scans `screens/` for them; a
+ * row's [SettingsRow.visible] gate must agree with its index `DeviceRequirement` (render test).
  */
 class ScreenSpec(
     @StringRes val title: Int,
     val rows: List<SettingsRow>,
 )
 
-// ── where a row's value lives ────────────────────────────────────────────────
-
 /**
- * A single preference: its key, how to read it and how to write it.
- *
- * The key and the default are the persisted user state, so they are written here verbatim as the
- * screen wrote them before. A store that re-declares a default differently from the screen it
- * replaced silently changes what existing users have configured.
+ * A single preference: key, reader and writer. Keys and defaults are persisted user state;
+ * changing a default silently changes existing users' configuration.
  */
 class PrefStore<T>(
     val key: String,
@@ -60,7 +39,7 @@ class PrefStore<T>(
 ) {
     fun read(prefs: SharedPreferences, context: Context): T = reader(prefs, context)
 
-    /** One `edit()`/`apply()` per change, exactly as the screens did. */
+    /** One `edit()`/`apply()` per change. */
     fun write(prefs: SharedPreferences, value: T) {
         prefs.edit().also { writer(it, value) }.apply()
     }
@@ -92,10 +71,7 @@ fun stringPref(key: String, default: (Context) -> String): PrefStore<String> = P
     { editor, value -> editor.putString(key, value) },
 )
 
-/**
- * An int stored with `putInt` but edited as a string (the auto-correction modes). The read
- * tolerates a legacy `String`-typed entry, which is what the screens' `try`/`catch` did.
- */
+/** An int stored with `putInt` but edited as a string; the read tolerates a legacy `String` entry. */
 fun intAsStringPref(key: String, default: Int): PrefStore<String> = PrefStore(
     key,
     { prefs, _ ->
@@ -122,12 +98,8 @@ fun intPrefRes(key: String, @IntegerRes default: Int): PrefStore<Int> = PrefStor
 )
 
 /**
- * A float fraction stored as `0f..1f` but edited as whole percent, with an `R.fraction` default.
- *
- * One copy of what `readTapRegionPercent` (AdvancedGestureParametersScreen) and the identical
- * `readScalePercent` (AnimationParametersScreen) each did privately, discarding a legacy
- * int-typed entry the way `SettingsManager` does on the engine side. The default comes from
- * `ResourceConfigManager`, not `Resources` directly, so a device config override still applies.
+ * A float fraction stored as `0f..1f` but edited as whole percent. A legacy int entry is discarded
+ * (as `SettingsManager` does); the default goes through `ResourceConfigManager` so device overrides apply.
  */
 fun percentPref(key: String, @FractionRes default: Int): PrefStore<Int> = PrefStore(
     key,
@@ -146,9 +118,7 @@ fun percentPref(key: String, @FractionRes default: Int): PrefStore<Int> = PrefSt
     { editor, value -> editor.putFloat(key, value / 100f) },
 )
 
-// ── what a row draws ─────────────────────────────────────────────────────────
-
-/** A row's icon. Vector and drawable take different `PreferenceItem` paths, as they did before. */
+/** A row's icon. Vector and drawable take different `PreferenceItem` paths. */
 sealed interface RowIcon {
     class Vector(val image: ImageVector) : RowIcon
     class Drawable(@DrawableRes val id: Int) : RowIcon
@@ -172,12 +142,7 @@ sealed interface RowSummary {
     class Of(val text: (Context, Any?) -> String?) : RowSummary
 }
 
-/**
- * The device and cross-row facts a row's `visible` / `enabled` gate can read.
- *
- * [bool] / [str] / [int] read the host's live state map, which is what a screen's local `var`
- * gave a dependent row before.
- */
+/** Facts a row's `visible` / `enabled` gate can read; [bool] / [str] / [int] read the live state map. */
 class SettingsEnv internal constructor(
     val context: Context,
     val prefs: SharedPreferences,
@@ -194,10 +159,8 @@ class SettingsEnv internal constructor(
     fun int(key: String): Int = state[key] as? Int ?: 0
 }
 
-// ── the rows ─────────────────────────────────────────────────────────────────
-
 sealed interface SettingsRow {
-    /** Whether this row exists at all. Mirrors the `if (…)` the screen wrapped the row in. */
+    /** Whether this row exists at all. */
     val visible: (SettingsEnv) -> Boolean
 }
 
@@ -206,13 +169,12 @@ sealed interface ValueRow<T> : SettingsRow {
     val store: PrefStore<T>
 }
 
-/** Section header. */
 class Category(
     @StringRes val title: Int,
     override val visible: (SettingsEnv) -> Boolean = { true },
 ) : SettingsRow
 
-/** Navigation row — title, summary, chevron. */
+/** Navigation row with a chevron. */
 class Nav(
     @StringRes val title: Int,
     @StringRes val summary: Int? = null,
@@ -226,7 +188,7 @@ class Nav(
     val onClick: (Context) -> Unit,
 ) : SettingsRow
 
-/** Informational / action row — no chevron. */
+/** Informational or action row, no chevron. */
 class Simple(
     @StringRes val title: Int,
     @StringRes val summary: Int? = null,
@@ -238,7 +200,6 @@ class Simple(
     val onClick: ((Context) -> Unit)? = null,
 ) : SettingsRow
 
-/** Switch row. */
 class Toggle(
     override val store: PrefStore<Boolean>,
     @StringRes val title: Int,
@@ -248,16 +209,13 @@ class Toggle(
     val enabled: (SettingsEnv) -> Boolean = { true },
     val modifier: Modifier = Modifier,
     override val visible: (SettingsEnv) -> Boolean = { true },
-    /** Fired after the value is committed — the side effects a few toggles carry. */
+    /** Fired after the value is committed. */
     val onWrite: ((Context, Boolean) -> Unit)? = null,
 ) : ValueRow<Boolean>
 
 /**
- * Switch row that honours `DeviceProfile`'s per-device settings-override table: a forced value
- * wins over the stored one, a read-only setting greys out, a hidden one is not drawn.
- *
- * Opt-in per row, exactly as `ManagedSwitchPreference` was: applying the override table to every
- * row would be a behaviour change on devices whose `device_config_*.xml` declares overrides.
+ * Switch row that honours `DeviceProfile`'s settings-override table: forced value wins, read-only
+ * greys out, hidden is not drawn. Opt-in per row; applying it everywhere would change behaviour.
  */
 class ManagedToggle(
     override val store: PrefStore<Boolean>,
@@ -273,11 +231,7 @@ class ManagedToggle(
 /** One option in a [Choice] dialog: the persisted value and the label shown for it. */
 class ChoiceOption(val value: String, val label: String)
 
-/**
- * Radio-dialog row. [options] is the single source for both the dialog entries and the row's
- * summary, so the two cannot drift the way the old parallel `entries`/`entryValues` lists plus a
- * `when (value)` summary could.
- */
+/** Radio-dialog row. [options] feeds both the dialog entries and the summary so they cannot drift. */
 class Choice(
     override val store: PrefStore<String>,
     @StringRes val title: Int,
@@ -294,7 +248,6 @@ class Choice(
     val onWrite: ((Context, String) -> Unit)? = null,
 ) : ValueRow<String>
 
-/** Slider-dialog row. */
 class Slide(
     override val store: PrefStore<Int>,
     @StringRes val title: Int,
@@ -311,20 +264,10 @@ class Slide(
     override val visible: (SettingsEnv) -> Boolean = { true },
 ) : ValueRow<Int>
 
-/**
- * The escape hatch: a block the row types cannot express, kept as the Composable it always was.
- *
- * Used for the handful of genuinely bespoke pieces — an intro paragraph, a permission card, a
- * locale warning dialog. A spec table that contorts itself to absorb one odd block is worse than
- * a spec table plus one hand-written block.
- */
+/** Escape hatch for a bespoke block (intro paragraph, permission card, warning dialog). */
 class Custom(
     override val visible: (SettingsEnv) -> Boolean = { true },
-    /**
-     * True for a block that is row-shaped (a `PreferenceItem` under a hand-written trailing
-     * slot, a grid picker): it then sits inside the surrounding group as an item. False, the
-     * default, for paragraphs, progress bars and dialogs, which sit at page level between groups.
-     */
+    /** True for a row-shaped block that sits inside the surrounding group; false sits between groups. */
     val inGroup: Boolean = false,
     val content: @Composable (SettingsEnv) -> Unit,
 ) : SettingsRow

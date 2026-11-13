@@ -16,21 +16,9 @@ import org.robolectric.annotation.Config
 import java.io.File
 
 /**
- * The side-loaded ("+" button) language-pack path, which could not previously install anything the
- * APK did not already ship.
- *
- * Two independent defects, pinned separately here:
- *
- *  1. **The country was thrown away.** `extractLanguageFromFileName` returned a bare 2-letter code,
- *     so a pack from `*_ENubUNUS_*` was written to `nuance/en` — the directory the language-only
- *     "English" pack owns — while `LanguagePackInstaller.getLocaleIdentifier()` looks for en-US
- *     under `nuance/en_US`. The pack was therefore invisible to the installer AND colliding with a
- *     preinstalled one.
- *  2. **There was nowhere to record it.** `assets/ldb/manifest.json` is an APK asset, so a locale
- *     the app does not ship can never appear in it; `LanguagePackInstaller.isSupported()` is just
- *     "the registry knows this language", and `LanguagePackManager`'s hourly cleanup recursively
- *     deletes the directory of every installed-but-unsupported locale. A side-loaded pack was
- *     deleted by the next cleanup pass.
+ * Side-loaded ("+" button) language packs: the country is read from the LDB file name (an en-US
+ * pack lives in `nuance/en_US`, not the language-only `nuance/en`), and a writable registry
+ * records locales that `assets/ldb/manifest.json` cannot.
  */
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [34], manifest = Config.NONE)
@@ -42,8 +30,6 @@ class CustomPackRegistryStoreTest {
     fun clean() {
         CustomPackRegistryStore.file(context).delete()
     }
-
-    // ── defect 1: the region suffix in a real BlackBerry LDB name ───────────────
 
     /** Every one of these names is shipped in `app/src/main/assets/ldb/`. */
     @Test
@@ -77,12 +63,9 @@ class CustomPackRegistryStoreTest {
 
     @Test
     fun anUnrecognisedSuffixIsNotTreatedAsARegion() {
-        // Guards the region allowlist: without it, any trailing letter-pair in the vendor block
-        // becomes a directory name, and the pack lands somewhere nothing will look for it.
+        // Without the region allowlist any trailing letter pair would become a directory name.
         assertNull(extractCountryFromFileName("Blackberry_1305_r1-9_ENubUNZZ_xt9.ldb", "en"))
     }
-
-    // ── defect 2: the writable registry ─────────────────────────────────────────
 
     @Test
     fun addThenReadRoundTripsIncludingTheCountry() {
@@ -91,8 +74,7 @@ class CustomPackRegistryStoreTest {
         assertEquals(1, packs.size)
         assertEquals("en", packs[0].language)
         assertEquals("US", packs[0].country)
-        // Never preinstalled: LanguagePackInstaller.uninstall() refuses to remove a preinstalled
-        // pack, so a side-loaded one marked preinstalled could never be deleted by the user.
+        // uninstall() refuses preinstalled packs, so a side-loaded one must never be marked so.
         assertFalse(packs[0].isPreinstalled)
     }
 
@@ -104,8 +86,7 @@ class CustomPackRegistryStoreTest {
 
     @Test
     fun addingTheSameLocaleTwiceReplacesRatherThanDuplicates() {
-        // A duplicate would make LanguagePackRegistry.addLanguagePack throw on the second merge,
-        // and the throw is caught per-entry — so the user would silently get the older one.
+        // A duplicate makes addLanguagePack throw on merge (caught per entry): the older one would win.
         CustomPackRegistryStore.add(context, "en", "US", "First", "nuance/en_US/en_US.ldb", 1.0)
         CustomPackRegistryStore.add(context, "en", "US", "Second", "nuance/en_US/en_US.ldb", 1.0)
         val packs = CustomPackRegistryStore.read(context)
@@ -141,8 +122,7 @@ class CustomPackRegistryStoreTest {
 
     @Test
     fun theUnMFourNineteenRegionIsAccepted() {
-        // es-419 is in the SHIPPED manifest, so a 2-letter-ISO-only check would reject a locale
-        // the app already supports.
+        // es-419 ships, so a 2-letter-only region check would reject a supported locale.
         assertTrue(CustomPackRegistryStore.isValidLocaleIdentifier("es_419"))
         assertTrue(CustomPackRegistryStore.add(context, "es", "419", "Spanish (LatAm)", "p", 1.0))
     }
@@ -189,14 +169,8 @@ class CustomPackRegistryStoreTest {
 }
 
 /**
- * The end-to-end property the whole change exists for: a side-loaded pack for a locale the APK
- * does not ship must come back from [ManifestParser] as a KNOWN locale.
- *
- * That is not a cosmetic "appears in the list" property. `LanguagePackInstaller.isSupported()` is
- * exactly "the registry knows this language", and `LanguagePackManager` used to run an hourly
- * cleanup (since removed) that deleted the folder of every installed locale that was not
- * supported. Before the merge, the answer here was null and the user's pack was deleted
- * within the hour.
+ * A side-loaded pack for a locale the APK does not ship comes back from [ManifestParser] as a
+ * known locale. `LanguagePackInstaller.isSupported()` is exactly "the registry knows this language".
  */
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [34], manifest = Config.NONE)
@@ -211,10 +185,8 @@ class CustomPackRegistryMergeTest {
 
     @Test
     fun aSideLoadedLocaleBecomesSupported() {
-        // `jw` (Javanese) is the one code in this test file's reach that assets/ldb/manifest.json
-        // genuinely does not ship — 94 of the 96 in the installer's own allowlist are shipped, so
-        // the absent one has to be chosen deliberately rather than assumed. Asserted here, because
-        // if a future manifest adds it this test would otherwise start passing vacuously.
+        // `jw` is one of the few allowlisted codes the manifest does not ship; asserted so the test
+        // cannot pass vacuously if a future manifest adds it.
         assertNull(ManifestParser.parseManifest(context).findLanguagePack("jw", null))
 
         CustomPackRegistryStore.add(context, "jw", null, "Javanese", "nuance/jw/jw.ldb", 1.0)
@@ -222,25 +194,21 @@ class CustomPackRegistryMergeTest {
         val found = ManifestParser.parseManifest(context).findLanguagePack("jw", null)
         assertNotNull("a registered custom pack must be findable, or cleanup deletes it", found)
         assertEquals("Javanese", found!!.name)
-        // Must not be preinstalled, or the user could never uninstall it.
         assertFalse(found.isPreinstalled)
     }
 
     @Test
     fun aSideLoadedVariantIsDistinctFromItsBaseLanguage() {
-        // The country half is what defect 1 was throwing away; prove the registry keeps the two
-        // apart, so nuance/en_US and nuance/en are different packs rather than one collision.
+        // The registry keeps a variant apart from its base language (nuance/jw_ID vs nuance/jw).
         CustomPackRegistryStore.add(context, "jw", "ID", "Javanese (ID)", "nuance/jw_ID/jw_ID.ldb", 1.0)
         val registry = ManifestParser.parseManifest(context)
         assertEquals("Javanese (ID)", registry.findLanguagePack("jw", "ID")!!.name)
-        // and the bare language must NOT resolve to the variant by accident
         assertNull(registry.findLanguagePack("jw", null))
     }
 
     @Test
     fun aCustomEntryCannotShadowAShippedPack() {
-        // en-US ships. A custom entry claiming it must be ignored, not allowed to redirect the
-        // preinstalled pack's path at the engine.
+        // en-US ships: a custom entry claiming it must not redirect the preinstalled pack's path.
         CustomPackRegistryStore.add(context, "en", "US", "Impostor", "nuance/en_US/x.ldb", 1.0)
         val found = ManifestParser.parseManifest(context).findLanguagePack("en", "US")
         assertNotNull(found)

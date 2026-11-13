@@ -22,10 +22,8 @@ import org.robolectric.RuntimeEnvironment
 import org.robolectric.annotation.Config
 
 /**
- * A suggestion request reads the editor context it was SENT with, captured on the main thread,
- * not whatever RichInputConnection's before-cursor buffer holds when the worker gets to it. The
- * worker used to read that StringBuilder (and KeyboardSwitcher, through the shift state) while the
- * main thread was editing it.
+ * A suggestion request reads the editor context it was sent with, captured on the main thread, not
+ * RichInputConnection's before-cursor buffer (which the main thread keeps editing) when the worker runs.
  */
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [34], manifest = Config.NONE, instrumentedPackages = ["com.blackberry.nuanceshim"])

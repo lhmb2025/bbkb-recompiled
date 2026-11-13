@@ -31,21 +31,9 @@ import org.robolectric.annotation.Config
 import java.util.Locale
 
 /**
- * The hardware ENTER key-up must reach the app, not be swallowed by the IME.
- *
- * The 2026-08-27 WhatsApp parity change made the key-DOWN side return
- * [BlackBerryIME.superOnKeyDown] so the APP receives the raw ENTER and applies its own
- * convention, and its comment asserts that "the key-UP side already passes Enter through".
- * It did not: [KeyEventProcessor.onKeyUpInternal]'s tracked-key branch consumed every key-up,
- * so the app saw an ACTION_DOWN with no matching ACTION_UP — half a confirm-key press, which
- * is what a lock screen's password field (and anything else that pairs the two halves) never
- * gets from the stock keyboard. The original delegates it:
- *
- * ```
- * return !(isShiftKey(keyCode) || (keyCode == 66 && N() != 1)) || super.onKeyUp(keyCode, event);
- * ```
- *
- * with `N()` == `getSymbolPageOrder()`. These cases pin that rule.
+ * The hardware ENTER key-up must reach the app (via `superOnKeyUp`) like its key-down, or the app
+ * sees half a confirm-key press (a lock screen's password field pairs the two). Rule: delegate
+ * unless it is a Shift key, or ENTER while `getSymbolPageOrder() == 1`.
  */
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [34], manifest = Config.NONE)
@@ -124,8 +112,8 @@ class EnterKeyUpDelegationTest {
 
     @Test
     fun `Enter key-up is consumed while the shift page is active`() {
-        // The original's N() != 1 guard: Shift+Enter is answered by the key-DOWN side's own
-        // branch, so the release stays with the IME.
+        // getSymbolPageOrder() == 1: Shift+Enter is answered by the key-DOWN side's own branch,
+        // so the release stays with the IME.
         `when`(ime.getPhysicalKeyboardStateTracker().getSymbolPageOrder()).thenReturn(1)
 
         val consumed = processor.onKeyUpInternal(KeyEvent.KEYCODE_ENTER, keyUp(KeyEvent.KEYCODE_ENTER))

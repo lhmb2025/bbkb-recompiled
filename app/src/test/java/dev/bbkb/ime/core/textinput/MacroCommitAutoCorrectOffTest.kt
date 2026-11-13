@@ -25,28 +25,11 @@ import org.robolectric.annotation.Config
 import java.util.Locale
 
 /**
- * FIX-MACRO / divergence D-3 — the kind-7 escape hatch at commit time.
- *
- * A **substitution** (a user macro or a shipped one from `assets/substitution_macros`, e.g.
- * `i → I`, `bb → BlackBerry`, `alot → a lot`, the `%D`/`%T` date macros) reaches the commit
- * path as an auto-correction candidate whose *kind* is 7. The original app committed it
- * regardless of the auto-correct setting:
- *
- * ```
- * // sources/dev/bbkb/ime/core/c/a.java:461  (take-the-typed-word branch)
- * if (this.f.t() == null || (iU != 7 && (!dVar.ab || iU == 0))) { ...commit typed word... }
- * ```
- *
- * i.e. the correction commits when `acWord != null && (kind == 7 || (acEnabled && kind != 0))`.
- * We had dropped the `kind == 7` disjunct at both commit sites, so switching auto-correct off
- * silently switched every macro off with it.
- *
- * These scenarios pin the four corners of that truth table at BOTH commit sites — the
- * decision in [InputLogic.handleSeparatorInput] and the word-selection in
- * [CommitController.autoCorrectAndCommitExtended], which re-derives it independently.
- *
- * Kind 2 (`CORRECTION`, e.g. `teh → the`) stands in for ordinary spelling auto-correction:
- * it must keep obeying the setting exactly as before.
+ * Pins the substitution (macro, kind 7) escape at commit time: a correction commits when
+ * `acWord != null && (kind == 7 || (acEnabled && kind != 0))`, so macros work with auto-correct
+ * off. Covers both sites ([InputLogic.handleSeparatorInput] and
+ * [CommitController.autoCorrectAndCommitExtended], which re-derives the word), the editor gate,
+ * and kind 2 (`teh → the`) still obeying the setting.
  */
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [34], manifest = Config.NONE, instrumentedPackages = ["com.blackberry.nuanceshim"])
@@ -56,7 +39,7 @@ class MacroCommitAutoCorrectOffTest {
     private lateinit var subtypeStatic: MockedStatic<SubtypeManager>
     private lateinit var settingsStatic: MockedStatic<SettingsManager>
 
-    /** `SuggestedWordInfo` kind for a substitution/macro — the escape hatch this file is about. */
+    /** `SuggestedWordInfo` kind for a substitution/macro. */
     private val KIND_SUBSTITUTION = 7
 
     /** `SuggestedWordInfo` kind for an ordinary spelling correction. */
@@ -65,8 +48,7 @@ class MacroCommitAutoCorrectOffTest {
     @Before
     fun setUp() {
         h = PipelineHarness()
-        // Same two seams BackspaceScenariosTest needs: the commit path reaches
-        // SubtypeManager.getInstance() (locale) and the SettingsManager singleton.
+        // The commit path reaches SubtypeManager.getInstance() (locale) and the SettingsManager singleton.
         subtypeStatic = mockStatic(SubtypeManager::class.java)
         val subtypes = mock(SubtypeManager::class.java)
         `when`(subtypes.currentSubtypeLocale).thenReturn(Locale.US)
@@ -85,12 +67,9 @@ class MacroCommitAutoCorrectOffTest {
         h.close()
     }
 
-    // ── driving the two commit sites ────────────────────────────────────────────
-
     /**
-     * A real [EditorCapabilities] for a field of [inputType], not a stub: the whole point of the
-     * editor gate is the predicate this class computes from the input type, so a scenario has to
-     * go through it. [forceSuggestions] is the user's "Force suggestions" override.
+     * A real [EditorCapabilities] for [inputType], since the editor gate is the predicate it computes.
+     * [forceSuggestions] is the user's "Force suggestions" override.
      */
     private fun editorCaps(inputType: Int, forceSuggestions: Boolean = false): EditorCapabilities =
         EditorCapabilities(
@@ -114,9 +93,8 @@ class MacroCommitAutoCorrectOffTest {
         )
 
     /**
-     * Arm a live composing word plus the auto-correction candidate the suggestion round-trip
-     * would have stamped on the tracker. `setAutoCorrection`'s second argument is the candidate's
-     * KIND, not a score — see the F11 note at `InputLogic.onSuggestionsReceived`.
+     * Arm a composing word plus the auto-correction candidate on the tracker.
+     * `setAutoCorrection`'s second argument is the candidate's kind, not a score.
      */
     private fun armComposing(typed: String, candidate: String, kind: Int) {
         h.startSession("", 0)
@@ -127,10 +105,8 @@ class MacroCommitAutoCorrectOffTest {
     }
 
     /**
-     * Send a space through `InputLogic.handleSeparatorInput`, the gate that decides whether the
-     * candidate or the typed word is committed. The method is private and its only caller,
-     * `routeKeyEvent`, is private too, so reflection is the only way in — the same tactic
-     * `PipelineHarness` already uses for the `@JvmField` back-references.
+     * Sends a space through the private `InputLogic.handleSeparatorInput` (by reflection), the gate
+     * that picks the candidate or the typed word.
      */
     private fun separator(settings: SettingsValues) {
         val event = InputEvent.createKeyPress(' '.code, -1, -4, -4, 1000L, false)
@@ -145,10 +121,7 @@ class MacroCommitAutoCorrectOffTest {
         m.invoke(h.inputLogic, event, ctx, h.uiHandler)
     }
 
-    /**
-     * `InputLogic.mCommitController` is private; the second commit site has to be reached
-     * through it because `autoCorrectAndCommitExtended` re-derives the word to commit.
-     */
+    /** The second commit site, reached through the private `mCommitController`. */
     private fun commitController(): CommitController =
         InputLogic::class.java.getDeclaredField("mCommitController")
             .apply { isAccessible = true }.get(h.inputLogic) as CommitController
@@ -156,12 +129,9 @@ class MacroCommitAutoCorrectOffTest {
     /** Text the editor ended up with, trailing separator included. */
     private fun committed(): String = h.editor.text
 
-    // ── D-3, site 1: InputLogic.handleSeparatorInput ────────────────────────────
-
     @Test
     fun separator_macroKind7_commitsExpansion_withAutoCorrectOff() {
-        // The bug: with auto-correct off the gate was `acEnabled && kind != 0`, so `bb` was
-        // committed verbatim and every shipped macro looked broken.
+        // With auto-correct off, `bb` must still expand.
         armComposing("bb", "BlackBerry", KIND_SUBSTITUTION)
         separator(settings(autoCorrect = false))
         assertEquals("BlackBerry ", committed())
@@ -176,8 +146,7 @@ class MacroCommitAutoCorrectOffTest {
 
     @Test
     fun separator_ordinaryCorrection_stillObeysTheSetting_whenOff() {
-        // The other half of the contract: the kind-7 escape must not leak into ordinary
-        // spelling correction. With the setting off, `teh` stays `teh`.
+        // The kind-7 escape must not leak into spelling correction: with the setting off, `teh` stays.
         armComposing("teh", "the", KIND_CORRECTION)
         separator(settings(autoCorrect = false))
         assertEquals("teh ", committed())
@@ -192,19 +161,15 @@ class MacroCommitAutoCorrectOffTest {
 
     @Test
     fun separator_kindZeroCandidate_neverCommits_evenWithAutoCorrectOn() {
-        // Kind 0 is "the word the user typed"; `iU == 0` is a reject in the original too.
-        // The candidate deliberately differs from the typed word, or committing either one
-        // would produce the same text and the assertion would prove nothing.
+        // Kind 0 is the typed word and is rejected. The candidate differs from the typed word so the
+        // assertion can tell them apart.
         armComposing("hello", "hellos", 0)
         separator(settings(autoCorrect = true))
         assertEquals("hello ", committed())
     }
 
-    // ── D-3, site 2: CommitController.autoCorrectAndCommitExtended ──────────────
-    //
-    // InputLogic having decided to auto-correct is not enough: the commit controller picks the
-    // word again from the tracker, and it consulted the setting a second time. Reached here
-    // directly, so a fix applied only at site 1 still fails.
+    // Site 2: the commit controller picks the word again from the tracker, so it is reached
+    // directly; a fix applied only at site 1 still fails here.
 
     @Test
     fun commitController_macroKind7_commitsExpansion_withAutoCorrectOff() {
@@ -235,8 +200,7 @@ class MacroCommitAutoCorrectOffTest {
 
     @Test
     fun commitController_dateMacro_commitsExpansion_withAutoCorrectOff() {
-        // `%D` is one of the shipped dynamic macros; it reaches this path exactly like `bb`,
-        // already expanded to its text by the personal-dictionary lookup.
+        // `%D` is a shipped dynamic macro; it arrives already expanded by the personal-dictionary lookup.
         armComposing("%D", "2026-09-15", KIND_SUBSTITUTION)
         commitController().autoCorrectAndCommitExtended(
             settings(autoCorrect = false), " ", h.uiHandler, InputSource.HARDWARE, false,
@@ -244,14 +208,11 @@ class MacroCommitAutoCorrectOffTest {
         assertEquals("2026-09-15 ", committed())
     }
 
-    // ── the editor gate: a macro must not rewrite what was typed in a field that asked ──
-    // ── for no suggestions. A DELIBERATE DIVERGENCE from the original, which expands   ──
-    // ── a macro in a password box as readily as in a message.                          ──
+    // The editor gate: a macro must not rewrite text in a field that asked for no suggestions.
 
     @Test
     fun separator_macro_doesNotExpand_inPasswordField() {
-        // The reason this gate exists: `bb` is a plausible fragment of a password, and silently
-        // committing `BlackBerry` instead corrupts a credential the user cannot see.
+        // `bb` is a plausible password fragment; committing `BlackBerry` would corrupt a hidden credential.
         armComposing("bb", "BlackBerry", KIND_SUBSTITUTION)
         separator(
             settings(
@@ -264,10 +225,8 @@ class MacroCommitAutoCorrectOffTest {
 
     @Test
     fun separator_macro_doesNotExpand_inPasswordField_evenWithAutoCorrectOn() {
-        // Discriminating against the obvious wrong fix. Folding the editor term into the
-        // original's single expression as `(kind == 7 && allowed) || (acEnabled && kind != 0)`
-        // lets a blocked kind-7 candidate fall straight through the second disjunct - kind 7 is
-        // non-zero - so the macro expands anyway whenever auto-correct happens to be on.
+        // Guards the wrong fix `(kind == 7 && allowed) || (acEnabled && kind != 0)`: a blocked kind-7
+        // candidate falls through the second disjunct and expands whenever auto-correct is on.
         armComposing("bb", "BlackBerry", KIND_SUBSTITUTION)
         separator(
             settings(
@@ -316,9 +275,8 @@ class MacroCommitAutoCorrectOffTest {
 
     @Test
     fun separator_macro_expandsAgain_whenTheUserForcesSuggestions() {
-        // "Force suggestions" is the user's own override of an app's no-suggestions declaration.
-        // EditorCapabilities already honours it, so the gate inherits it: anyone who wants macros
-        // in those fields still has a switch.
+        // "Force suggestions" overrides an app's no-suggestions declaration; EditorCapabilities honours
+        // it, so the gate does too.
         armComposing("alot", "a lot", KIND_SUBSTITUTION)
         separator(
             settings(
@@ -334,8 +292,7 @@ class MacroCommitAutoCorrectOffTest {
 
     @Test
     fun separator_macro_stillBlockedInPasswordField_evenWhenTheUserForcesSuggestions() {
-        // The override deliberately stops at passwords - EditorCapabilities ANDs `!isPassword`
-        // into it - and the gate must not undo that.
+        // The override stops at passwords (EditorCapabilities ANDs `!isPassword` into it).
         armComposing("bb", "BlackBerry", KIND_SUBSTITUTION)
         separator(
             settings(
@@ -351,8 +308,8 @@ class MacroCommitAutoCorrectOffTest {
 
     @Test
     fun commitController_macro_doesNotExpand_inPasswordField() {
-        // Site 2 re-derives the word independently, so it needs the gate independently: a fix
-        // applied only in handleSeparatorInput still leaks here, via the text-input/voice paths.
+        // Site 2 needs the gate independently: a fix only in handleSeparatorInput still leaks via the
+        // text-input/voice paths.
         armComposing("alot", "a lot", KIND_SUBSTITUTION)
         commitController().autoCorrectAndCommitExtended(
             settings(

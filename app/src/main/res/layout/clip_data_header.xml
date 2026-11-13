@@ -1,9 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- One clipboard row: a leading icon (or a link's thumbnail), the clip's text, a pin glyph while
-     the clip is pinned, and the overflow button that opens the row's menu. The root is the card:
-     a tap on it pastes, a long-press opens the same menu as the overflow button. Nothing inside
-     it may be clickable or long-clickable except the overflow button, or it swallows the tap
-     (see ClipboardViewHolder). -->
+<!-- The root card takes tap (paste) and long-press (menu); nothing inside but the overflow button may be clickable, or it swallows the tap -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/clipboard_foreground"
     android:layout_width="match_parent"

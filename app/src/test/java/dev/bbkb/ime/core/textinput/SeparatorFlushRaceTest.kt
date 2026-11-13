@@ -18,18 +18,11 @@ import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
 
 /**
- * Regression tests for the separator-flush race (2026-11-02): typing `bb` and space committed
- * `bb` instead of the `BlackBerry` text shortcut.
- *
- * [SuggestionCoordinator.flushPendingSuggestions] only refreshed the candidate when an update
- * was still QUEUED. Once the queued update had been handed to the worker nothing was pending,
- * yet the last keystroke had cleared the candidate (or a late reply for the previous text stood
- * in for it), so a space in that window committed the typed word with no correction. The flush
- * now waits for the reply already in flight, or makes a synchronous request when there is none.
- *
- * The harness settings leave `shouldShowLxxButton` off, so a synchronous request shows
- * [SuggestedWords.EMPTY] on the strip listener; that call is the observable trace of the flush
- * having made one.
+ * Pins that a space right after typing `bb` commits the `BlackBerry` shortcut even when the queued
+ * suggestion update is already with the worker: [SuggestionCoordinator.flushPendingSuggestions]
+ * waits for the reply in flight, or makes a synchronous request when there is none.
+ * With `shouldShowLxxButton` off, a synchronous request shows [SuggestedWords.EMPTY] on the strip
+ * listener; that call is the trace of the flush having made one.
  */
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [34], manifest = Config.NONE, instrumentedPackages = ["com.blackberry.nuanceshim"])

@@ -25,17 +25,9 @@ public class ModifierStatusBarUpdater implements ModifierStateListener {
     private int mLastMetaState = 0;
 
     /**
-     * The icon last handed to the system: a drawable id, {@code 0} for hidden, or
-     * {@link #ICON_UNKNOWN} before the first post. Each show or hide is a binder transaction
-     * ({@code updateStatusIconAsync}), and a keyboard show or hide used to make about five of
-     * them for an icon that had not moved.
-     *
-     * <p>The invariant: a post goes out only when the icon differs from this record, with one
-     * exception — the first re-assert of a visible icon after an input session ended (see
-     * {@link #mReassertedThisSession}). That exception exists because the record says what we
-     * SENT, not what the slot shows: the system clears the IME slot on unbind and drops a post
-     * made before the privileged operations are attached. A hidden icon needs no such
-     * exception: a cleared or dropped slot is hidden too, so re-sending "hidden" changes nothing.
+     * The icon last sent (drawable id, 0 hidden, {@link #ICON_UNKNOWN} before the first). Each post is a
+     * binder call, so posts go out only when the icon changes, except the first re-assert of a visible icon
+     * per input session: the system clears the slot on unbind and drops posts made before it is attached.
      */
     private int mSentIconResId = ICON_UNKNOWN;
 
@@ -63,11 +55,6 @@ public class ModifierStatusBarUpdater implements ModifierStateListener {
         return state;
     }
 
-    /**
-     * Audit CT-22: the four masks were bare integers, so a reader could not tell that {@code &512}
-     * is Alt-lock and {@code &256} is caps-lock — and those two decide which status icon
-     * the PKB user sees.
-     */
     static int getStatusIconDrawable(int metaState) {
         int altMask = metaState & MetaKeyKeyListener.META_ALT_LOCKED;
         boolean isAltLocked = altMask != 0;
@@ -119,29 +106,16 @@ public class ModifierStatusBarUpdater implements ModifierStateListener {
     }
 
     /**
-     * Re-assert the icon for {@code metaState} whether or not it differs from the last one we
-     * posted. Used from the IME lifecycle (see {@code BlackBerryIME.onWindowShown} /
-     * {@code onStartInputView}): the status-bar slot belongs to the system, not to us, and the
-     * system drops or clears it behind our back — {@code InputMethodService.showStatusIcon}
-     * silently returns whenever {@code InputMethodPrivilegedOperations} is not attached yet, and
-     * {@code InputMethodManagerService} clears the IME slot on every unbind. {@link
-     * #mLastMetaState} is only a record of what we last *sent*, so after any of those the cache
-     * says "already showing" for an icon that is not there.
-     *
-     * <p>"Whether or not" is bounded by {@link #postIcon}: a visible icon is re-posted once per
-     * input session, and a hidden one is not re-posted at all (a cleared slot is hidden already).
+     * Re-asserts the icon even if unchanged, from the IME lifecycle: the system silently drops posts made
+     * before privileged ops attach and clears the slot on unbind. A visible icon re-posts once per session.
      */
     public void refreshModifierStatus(int metaState) {
         updateModifierStatus(metaState, true);
     }
 
     /**
-     * The single feed: {@code PhysicalKeyboardStateTracker} publishes every modifier transition
-     * here and nowhere else. The icon is chosen from
-     * {@link ModifierState#getInterpretedMetaState()} — the state a character key is interpreted
-     * against, which is what the icon has always shown and what the Shift/Alt drawables encode
-     * (including the span tracker's own alt-lock 0x200 and caps-lock 0x100 bits, which are not
-     * {@link KeyEvent} values).
+     * The only feed of modifier transitions. The icon follows the interpreted meta state, including the
+     * span tracker's alt-lock 0x200 and caps-lock 0x100 bits (not {@link KeyEvent} values).
      */
     @Override
     public void onModifierStateChanged(ModifierState state, boolean force) {
@@ -157,15 +131,8 @@ public class ModifierStatusBarUpdater implements ModifierStateListener {
     private static final int ALT_GLYPH_BITS = KeyEvent.META_ALT_ON | MetaKeyKeyListener.META_ALT_LOCKED;
 
     /**
-     * A modifier's glyph does not go away while its key is physically down; what the press did
-     * is shown when the key comes up (the tracker reports every modifier key-up).
-     *
-     * <p>The state machine turns a modifier off on a key-DOWN in three cases, each of which
-     * used to take the icon down in the middle of a press: the second press of a double tap (off
-     * on the down, locked on the up — the icon blinked off for the length of the press), the
-     * press that unlocks, and a held modifier that a character has just used. In all three the
-     * finger is still on the key, so the glyph stays as it was until the release says what the
-     * press came to.
+     * Keeps a modifier's glyph while its key is physically down: the state machine turns modifiers off on
+     * key-down (double-tap second press, unlock press, held modifier just used) and the key-up decides.
      */
     private int holdGlyphsOfKeysStillDown(int metaState, ModifierState state) {
         if (state.isShiftKeyPhysicallyDown() && (metaState & SHIFT_GLYPH_BITS) == 0) {
@@ -177,21 +144,15 @@ public class ModifierStatusBarUpdater implements ModifierStateListener {
         return metaState;
     }
 
-    /**
-     * The input session ended (window hidden, input finished, editor switched, screen off): the
-     * system may clear the status-bar slot before the next show, so the next re-assert of a
-     * visible icon has to post it even though {@link #mSentIconResId} already holds it.
-     */
+    /** The system may clear the slot before the next show, so the next re-assert must post again. */
     @Override
     public void onInputSessionEnded() {
         this.mReassertedThisSession = false;
     }
 
     public void updateModifierStatus(int metaState, boolean forceUpdate) {
-        // Check if status bar icon display is enabled
         SettingsValues settings = SettingsManager.getInstance().getSettingsValues();
         if (settings != null && !settings.showPkbModifierStatusIcon) {
-            // Setting is disabled, hide icon if it's currently showing
             if (this.mLastMetaState != 0 || forceUpdate) {
                 postIcon(0, forceUpdate);
                 this.mLastMetaState = 0;
@@ -199,14 +160,11 @@ public class ModifierStatusBarUpdater implements ModifierStateListener {
             return;
         }
 
-        // The cheap test first: this runs on every physical modifier event, and the
-        // device check below reaches through to Resources.getConfiguration().
+        // Cheap test first: this runs on every modifier event; the device check reads the Configuration.
         if (!forceUpdate && this.mLastMetaState == metaState) {
             return;
         }
-        // forceUpdate means "post it anyway": it skips both this device check (the caller
-        // already knows it is winding the state down) and the unchanged-state short circuit,
-        // so the IME has a way to put the icon back after the system has dropped it.
+        // forceUpdate skips both checks so the IME can put the icon back after the system dropped it.
         if (!forceUpdate && !DeviceProfile.isPhysicalKeyboardAvailable(this.mBlackberryIme)) {
             return;
         }
@@ -215,10 +173,8 @@ public class ModifierStatusBarUpdater implements ModifierStateListener {
     }
 
     /**
-     * The icon to show (0 = hidden), handed to the system at the end of the current main-thread
-     * message rather than at once: one key event can change the modifiers twice (a character
-     * spends Shift, then its handler turns Ctrl off), and posting each step put the in-between
-     * icon on screen for a frame. Only where things end up is sent.
+     * Sends the icon (0 hidden) at the end of the current main-thread message: one key event can change
+     * modifiers twice (Shift spent, then Ctrl off), and only the final icon should reach the screen.
      */
     private void postIcon(int iconResId, boolean reassert) {
         this.mPendingIconResId = iconResId;
@@ -261,14 +217,6 @@ public class ModifierStatusBarUpdater implements ModifierStateListener {
         }
     }
 
-    /**
-     * Audit CT-13: this used {@code InputMethodManager.showStatusIcon(IBinder, String, int)} /
-     * {@code hideStatusIcon(IBinder)} — the token-based variants deprecated in API 28 — behind a
-     * {@code getWindow().getWindow().getAttributes().token} dance that silently no-ops (logging an
-     * error) whenever the window token is unavailable. The owner is itself an
-     * {@link android.inputmethodservice.InputMethodService}, which offers the token-free
-     * replacements, so the whole token plumbing is gone.
-     */
     private void setStatusBarIconVisibility(boolean show, int iconResId) {
         if (show) {
             this.mBlackberryIme.showStatusIcon(iconResId);

@@ -10,9 +10,8 @@ import org.robolectric.annotation.Config
 import java.lang.reflect.Modifier
 
 /**
- * The shift-state indicator bar in [MainKeyboardView.drawKeyContent] draws with one hoisted paint
- * instead of allocating a `Paint` on every shift-key repaint. The hoisted paint must carry exactly
- * the settings the per-draw allocation had (anti-aliased, FILL); only the colour varies per draw.
+ * The shift indicator bar in [MainKeyboardView.drawKeyContent] uses one hoisted paint: anti-aliased,
+ * FILL, with only the colour set per draw.
  */
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [34], manifest = Config.NONE)

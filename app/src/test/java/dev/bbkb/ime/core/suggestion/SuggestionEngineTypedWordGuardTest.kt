@@ -24,14 +24,10 @@ import java.util.ArrayList
 import java.util.Locale
 
 /**
- * The typed-word guard inside `SuggestionEngine.shouldAutoCorrect` (2026-10-12): a word the
- * dictionary knows is not replaced on space, whatever the engine ranked first.
- *
- * Background: the only protection a valid typed word had was the engine's default-word index —
- * when it is 0 the bridge duplicates the typed word into `sugg[1]` and the heuristic stands
- * down. Once the learned model boosts a neighbour the engine's default moves ("about" → "bout",
- * "this" → "his" on the owner's KEY2), the duplicate is gone, and the kind-2 correction at
- * `sugg[1]` committed at any length. The guard asks the dictionary about the typed word itself.
+ * The typed-word guard in `SuggestionEngine.shouldAutoCorrect`: a word the dictionary knows is not
+ * replaced on space, whatever the engine ranked first. The engine's default-word index alone is not
+ * enough: once the learned model boosts a neighbour ("about" to "bout") the typed-word duplicate at
+ * `sugg[1]` is gone.
  */
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [34], manifest = Config.NONE, instrumentedPackages = ["com.blackberry.nuanceshim"])
@@ -53,8 +49,8 @@ class SuggestionEngineTypedWordGuardTest {
         `when`(loader.getMainDictionary()).thenReturn(bridge)
         `when`(bridge.shouldAutoCorrect(any(), any(), any())).thenReturn(false)
         engine = SuggestionEngine(loader)
-        // "Modest" correction with the completion threshold the settings use: a completion of a
-        // four-letter-or-longer word may commit on space.
+        // "Modest" correction with the settings' completion threshold: completions of words of four
+        // or more letters may commit on space.
         engine.setAutoCorrectMode(0)
         engine.setAutoCorrectThreshold(3)
         TypedWordGuard.setFrequencyForTest { mapOf("well" to 58, "we'll" to 54, "wed" to 31, "we'd" to 55)[it] ?: 0 }
@@ -109,7 +105,7 @@ class SuggestionEngineTypedWordGuardTest {
 
     @Test
     fun aDictionaryWord_isNotReplacedByTheEnginesCorrection() {
-        // The KEY2 report: the engine ranked "bout" first, no duplicate of the typed word.
+        // The engine ranked "bout" first, with no duplicate of the typed word.
         dictionaryKnows("about")
         engineReturns("about" to KIND_TYPED, "bout" to KIND_CORRECTION, "abort" to KIND_CORRECTION)
 
@@ -168,8 +164,7 @@ class SuggestionEngineTypedWordGuardTest {
 
     @Test
     fun theEnginesOwnDuplicate_stillProtects() {
-        // Default index 0: the bridge's duplicate trips typedEqualsCorrection as before, with no
-        // dictionary lookup needed to reach that answer.
+        // Default index 0: the bridge's duplicate trips typedEqualsCorrection with no lookup needed.
         engineReturns("about" to KIND_TYPED, "about" to KIND_TYPED, "bout" to KIND_CORRECTION)
 
         assertFalse(run("about").mWillAutoCorrect)

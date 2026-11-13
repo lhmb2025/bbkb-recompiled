@@ -24,8 +24,9 @@ public final class SlidingKeyInputDrawingPreview extends AbstractDrawingPreview 
 
     private final Paint mPaint = new Paint();
 
-    @Override // dev.bbkb.ime.keyboard.internal.AbstractDrawingPreview
+    @Override
     public void onDeallocateMemory() {
+        // Holds no buffer to free.
     }
 
     public SlidingKeyInputDrawingPreview(TypedArray typedArray) {
@@ -40,10 +41,10 @@ public final class SlidingKeyInputDrawingPreview extends AbstractDrawingPreview 
         invalidateDrawingView();
     }
 
-    @Override // dev.bbkb.ime.keyboard.internal.AbstractDrawingPreview
+    @Override
     public void drawPreview(Canvas canvas) {
         if (isPreviewEnabled() && this.mShowsGestureTrail) {
-            // Pull-at-draw: accent at preview alpha (was the slidingKeyInputPreviewColor attr).
+            // Read at draw time: accent at preview alpha.
             int color = dev.bbkb.ime.keyboard.KeyboardColorManager.INSTANCE.getSlidingPreviewColor();
             this.mPaint.setColor(color);
             if (this.mShadowRadius > 0.0f) {
@@ -54,6 +55,7 @@ public final class SlidingKeyInputDrawingPreview extends AbstractDrawingPreview 
         }
     }
 
+    /** @param c1084t the sliding pointer */
     public void showGestureTrail(PointerTracker c1084t) {
         c1084t.getDownCoordinates(this.mPreviousCoords);
         c1084t.getLastCoordinates(this.mCurrentCoords);

@@ -36,14 +36,9 @@ import java.util.concurrent.AbstractExecutorService
 import java.util.concurrent.TimeUnit
 
 /**
- * FIX-D2: a failed engine load must not crash the keyboard.
- *
- * NuanceSDKManager answers null from getInstance()/getSecondary() when the engine failed to load
- * (it swallows the load error). FIX-D made DictionaryFactory fall back; these drive the rest of
- * the startup + learning path the IME runs — construction, onCreate's learning manager, the
- * dictionary load, a suggestion request, commits, layout sync and teardown — and require each to
- * degrade (no learning, fallback suggestions) instead of throwing. Each test isolates one guard so
- * reverting that guard turns exactly that test red.
+ * A failed engine load (getInstance()/getSecondary() answer null) must not crash: construction,
+ * learning manager, dictionary load, suggestions, commits, layout sync and teardown each degrade
+ * instead of throwing. Each test isolates one guard.
  */
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [34], manifest = Config.NONE, instrumentedPackages = ["com.blackberry.nuanceshim"])
@@ -72,7 +67,7 @@ class EngineLoadFailureTest {
     @Before
     fun setUp() {
         sdkStatic = mockStatic(NuanceSDKManager::class.java)
-        // The engine failed to load: both accessors answer null (NuanceSDKManager's documented contract).
+        // The engine failed to load: both accessors answer null.
         sdkStatic.`when`<Any> { NuanceSDKManager.getInstance() }.thenReturn(null)
         sdkStatic.`when`<Any> { NuanceSDKManager.getSecondary() }.thenReturn(null)
         threadStatic = mockStatic(ThreadUtils::class.java)
@@ -151,7 +146,7 @@ class EngineLoadFailureTest {
     fun contacts_areDroppedWithoutAnEngine() {
         val dlm = DynamicLearningManager(ctx)
         dlm.addContactsWords(arrayOf("alice"), ContactsType.ALL)
-        // Over 500 defers to the background executor — the path the contacts sync actually takes.
+        // Over 500 defers to the background executor, the path the contacts sync actually takes.
         dlm.addContactsWords(Array(600) { "w$it" }, ContactsType.WORK)
         // The small batch's engine op is queued on the loader (here the same queue), the large
         // batch on the background executor, which hands it to the loader when drained.
@@ -171,10 +166,7 @@ class EngineLoadFailureTest {
         }
     }
 
-    /**
-     * reloadDictionaryForSubtype → initDictionary installs FIX-D's fallback; a suggestion request
-     * (requestSuggestionsWithContext: shift sync, then the engine query) then serves fallback words.
-     */
+    /** reloadDictionaryForSubtype installs the fallback dictionary, and a suggestion request serves its words. */
     @Test
     fun suggestionRequest_servesFallbackWordsWithoutAnEngine() {
         val loader = DictionaryLoader()

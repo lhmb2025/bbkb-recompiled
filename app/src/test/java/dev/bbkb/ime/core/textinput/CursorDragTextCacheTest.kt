@@ -20,11 +20,9 @@ import org.robolectric.annotation.Config
 import java.util.Locale
 
 /**
- * P-17: a keypad cursor drag is a run of `setSelection` moves, and each used to re-read 1024 chars
- * on both sides of the cursor from the editor (two synchronous round-trips per step). A move that
- * stays inside the cached window now shifts the cached text across the cursor; only a move that
- * leaves it reloads. Asserted through the fake editor: its text-read counters, its selection, and
- * that the connection's caches hold exactly what a reload would have returned.
+ * A keypad cursor drag is a run of `setSelection` moves. A move inside the cached window shifts the
+ * cached text across the cursor; only a move that leaves it reloads (1024 chars each side). Asserted
+ * via the fake editor's read counters, its selection, and caches matching what a reload would return.
  */
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [34], manifest = Config.NONE, instrumentedPackages = ["com.blackberry.nuanceshim"])
@@ -117,9 +115,8 @@ class CursorDragTextCacheTest {
 
     @Test
     fun aReversalWhoseReportsTrailTheMoves_isNotTakenForAnOutsideMove() {
-        // A drag sends moves faster than the editor reports them. On a reversal the trailing
-        // report points back the way the drag came; it used to read as an outside move: a reset
-        // to that stale position, a reload and an engine reset.
+        // A drag sends moves faster than the editor reports them. On a reversal the trailing report
+        // points back the way the drag came and must not read as an outside move (reset + reload).
         arm("The quick brown fox", 4)
         h.inputLogic.moveCursorRight(batched, 1, false) // 5
         h.inputLogic.moveCursorRight(batched, 1, false) // 6

@@ -29,16 +29,10 @@ import org.robolectric.RobolectricTestRunner;
 import org.robolectric.annotation.Config;
 
 /**
- * Which keys the helper treats as Sym, Emoji and Mic: the device profile's role for a key is the
- * answer, and the built-in scancode table (249 / 250 / 251 = the Minimal Phone's Sym, Emoji and
- * Mic) answers only for a key the profile does not name.
- *
- * <p>On a Unihertz Titan the table's scancodes are Func1, Func2 and Fn and must not open boards.
- * On the Minimal Phone, whose profile names them as exactly those board keys, the result is what
- * the table alone would give. A profile's own board keys are caught whatever their scancode.
- *
- * <p>The profile used to be asked first only behind a "Unified key mapping" switch, off by
- * default. These tests cover what that switch's two positions covered between them.
+ * Which keys the helper treats as Sym, Emoji and Mic: the device profile's role wins, and the
+ * built-in scancode table (249 / 250 / 251, the Minimal Phone's Sym, Emoji, Mic) answers only for
+ * keys the profile does not name. On a Titan those scancodes are Func1, Func2 and Fn and must not
+ * open boards. A profile's own board keys are caught whatever their scancode.
  */
 @RunWith(RobolectricTestRunner.class)
 @Config(sdk = 34, manifest = Config.NONE)
@@ -106,8 +100,6 @@ public class KeyInterceptorLegacyTableTest {
         return consumed;
     }
 
-    // ── the Minimal Phone ────────────────────────────────────────────────────
-
     @Test
     public void minimalPhone_boardKeysAreCaughtWithTheirProfileEntries() {
         install(R.xml.device_config_minimal);
@@ -132,8 +124,8 @@ public class KeyInterceptorLegacyTableTest {
 
     @Test
     public void minimalPhone_eventsTheProfileDoesNotNameStillReachTheBuiltInTable() {
-        // The profile's fallback entries need scancode AND key code to be 666 / 667. The ROM
-        // can attach another key code to those scancodes; the table needs only the scancode.
+        // The profile's fallback entries need scancode and key code 666 / 667; the ROM can attach
+        // another key code, while the table needs only the scancode.
         install(R.xml.device_config_minimal);
 
         assertTrue(press(KeyEvent.KEYCODE_UNKNOWN, 666));
@@ -143,8 +135,6 @@ public class KeyInterceptorLegacyTableTest {
         assertNull("no profile entry matched, so none is handed over", mappings.get(0));
         assertNull(mappings.get(1));
     }
-
-    // ── no profile ───────────────────────────────────────────────────────────
 
     @Test
     public void noConfig_theBuiltInTableAnswers() {
@@ -165,8 +155,7 @@ public class KeyInterceptorLegacyTableTest {
 
     @Test
     public void noConfig_anAltEventFromNoDeviceIsTheSymKey() {
-        // The table's last rule: an Alt-left event with no device and no scancode. A profile
-        // has no way to name such an event.
+        // The table's last rule: Alt-left with no device and no scancode, which no profile can name.
         assertTrue(service.onKeyEvent(key(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_ALT_LEFT, 0, -1)));
         assertEquals(KeyInterceptorService.SpecialKeyType.SYM, types.get(0));
         assertTrue(altEvents.isEmpty());
@@ -178,8 +167,6 @@ public class KeyInterceptorLegacyTableTest {
         assertFalse(press(KeyEvent.KEYCODE_A, 30));
         assertTrue(types.isEmpty());
     }
-
-    // ── the Titans: the profile's roles win over the table ───────────────────
 
     @Test
     public void titan2_funcAndFnAreOrdinaryKeys() {
@@ -205,8 +192,6 @@ public class KeyInterceptorLegacyTableTest {
         assertTrue(types.isEmpty());
     }
 
-    // ── a profile's board keys the table does not know ───────────────────────
-
     @Test
     public void titanPocket_symIsCaughtByItsScancodeWhateverKeyCodeTheRomAttaches() {
         // Scancode 127 is KEY_COMPOSE, which Android's generic key layout calls MENU. The table
@@ -225,8 +210,7 @@ public class KeyInterceptorLegacyTableTest {
 
     @Test
     public void q25_symIsCaughtAsSymAndNotTakenForAlt() {
-        // The Q25's Sym key arrives with Android's right-Alt key code. It used to go through the
-        // Alt handling unless the "Unified key mapping" switch was on.
+        // The Q25's Sym key arrives with Android's right-Alt key code.
         install(R.xml.device_config_q25);
 
         assertTrue(press(KeyEvent.KEYCODE_ALT_RIGHT, 100));
@@ -253,7 +237,7 @@ public class KeyInterceptorLegacyTableTest {
         assertEquals(-27, mappings.get(0).boardId);
     }
 
-    // ── the KEY2 profile (the helper is switched off on a real KEY2) ──────────
+    // The KEY2 profile (the helper is switched off on a real KEY2).
 
     @Test
     public void key2Profile_theConvenienceKeyIsNeverCaught() {

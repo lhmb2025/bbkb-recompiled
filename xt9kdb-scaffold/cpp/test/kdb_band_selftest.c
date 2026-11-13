@@ -1,4 +1,4 @@
-/* kdb_band_selftest.c — verify the live athena KDB emits the firmware's UNEVEN row bands.
+/* kdb_band_selftest.c: the athena KDB emits the firmware's uneven row bands.
  * Measured (visualizer + pen-on-dividers): row1=90, row2=180, row3=180 px; authored == sensor (1:1). */
 #include "et9kdb.h"
 #include "et9_context.h"

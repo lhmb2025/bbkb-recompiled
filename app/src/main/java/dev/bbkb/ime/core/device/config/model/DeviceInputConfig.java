@@ -6,19 +6,14 @@ import android.view.InputDevice;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Container class for device input mapping configuration.
- */
+/** One device configuration file: its {@code <device>} profiles in order. */
 public class DeviceInputConfig {
 
     public List<DeviceInputMapping> mappings;
 
     /**
-     * True when the user picked this configuration on the Device configuration screen, as
-     * opposed to automatic detection finding it. A configuration picked by hand is the phone's
-     * profile even when its {@code <match>} rules fail here: that is what picking it is for (a
-     * ROM that renames the keypad's driver, a unit the rules did not foresee). Set by
-     * {@code CustomDeviceConfigManager}; false for a configuration nobody chose.
+     * Picked by hand on the Device configuration screen (set by {@code CustomDeviceConfigManager}).
+     * Such a configuration is the phone's profile even when its {@code <match>} rules fail.
      */
     public boolean chosenByUser;
 
@@ -27,10 +22,8 @@ public class DeviceInputConfig {
     }
 
     /**
-     * The profile a hand-picked configuration gives the phone when nothing matched: its first
-     * {@code <device>}. Null when the configuration was not picked by hand, holds no device, or
-     * identifies its keyboard by USB or Bluetooth ids (that one describes a keyboard that plugs
-     * in, and applies only while it is attached).
+     * The first {@code <device>} of a hand-picked configuration, used when nothing matched. Null when
+     * not hand-picked, empty, or matched by vendor/product id (that applies only while attached).
      */
     public DeviceInputMapping chosenPhoneProfile() {
         if (!chosenByUser || mappings.isEmpty()) {
@@ -42,28 +35,15 @@ public class DeviceInputConfig {
         return external ? null : first;
     }
 
-    /**
-     * Find a mapping for the specified device name. A config whose {@code <match>} sets a
-     * {@code vendor-id} or {@code product-id} rule never matches through this form; callers with
-     * the keyboard's {@link InputDevice} in hand use {@link #findMappingForInputDevice}.
-     * @param deviceName The name of the input device
-     * @return DeviceInputMapping if found, null otherwise
-     */
+    /** Name-only lookup: vendor/product id rules never match here; use {@link #findMappingForInputDevice}. */
     public DeviceInputMapping findMappingForDevice(String deviceName) {
         return findMappingForDevice(deviceName, null, null);
     }
 
     /**
-     * Find a mapping for a connected keyboard, matching its name and its vendor and product ids
-     * (as {@link DeviceMatchCriteria#inputDeviceId hex}). This is what makes {@code vendor-id} and
-     * {@code product-id} rules matchable: every production caller has the InputDevice.
-     *
-     * <p>An external keyboard (USB, Bluetooth) is matched only by a profile that
-     * {@link DeviceInputMapping#namesInputDevice names the keyboard itself}. A built-in device
-     * that no profile matches gets {@link #chosenPhoneProfile()}, when there is one. A profile matched
-     * on the phone's build alone (the KEY2's, the Titans') describes that phone's own keys; it
-     * used to match every keyboard attached to the phone as well, so a Bluetooth keyboard's 0
-     * key was the KEY2's mic key.
+     * Matches a keyboard by name and vendor/product ids. An external keyboard matches only a profile
+     * that {@link DeviceInputMapping#namesInputDevice names the keyboard itself} (a phone-build profile
+     * describes the phone's own keys); an unmatched built-in device gets {@link #chosenPhoneProfile()}.
      */
     public DeviceInputMapping findMappingForInputDevice(InputDevice device) {
         if (device == null) {
@@ -84,17 +64,12 @@ public class DeviceInputConfig {
                 return mapping;
             }
         }
-        // Nothing matched. A configuration the user picked by hand still speaks for the phone's
-        // own devices, exactly as one matched on the phone's build does; never for a keyboard
-        // that is plugged in.
         return external ? null : chosenPhoneProfile();
     }
 
     /**
-     * Whether Android reports the device as external: a USB or Bluetooth device, unless its
-     * input configuration says otherwise. {@code InputDevice.isExternal()} is public from
-     * Android 10; before that it exists but is hidden, so it is called by reflection, and if
-     * that fails the device counts as built-in, which is how every device was treated before.
+     * Whether Android reports the device as external (USB or Bluetooth). {@code isExternal()} is
+     * hidden before Android 10, so it is called by reflection there; failure counts as built-in.
      */
     public static boolean isExternal(InputDevice device) {
         if (device == null || device.isVirtual()) {
@@ -110,20 +85,13 @@ public class DeviceInputConfig {
         }
     }
 
-    /**
-     * Find a mapping for the specified device with full matching criteria.
-     * @param deviceName The name of the input device
-     * @param vendorId Optional vendor ID (hex string)
-     * @param productId Optional product ID (hex string)
-     * @return DeviceInputMapping if found, null otherwise
-     */
+    /** @param vendorId hex id or null; productId likewise */
     public DeviceInputMapping findMappingForDevice(String deviceName, String vendorId, String productId) {
         if (deviceName == null || deviceName.isEmpty()) {
             return null;
         }
 
         for (DeviceInputMapping mapping : mappings) {
-            // Use the proper matchesDevice method that supports matchCriteria
             if (mapping.matchesDevice(deviceName, vendorId, productId)) {
                 return mapping;
             }

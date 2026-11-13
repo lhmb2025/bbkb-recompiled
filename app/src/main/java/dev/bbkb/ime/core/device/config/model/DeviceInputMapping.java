@@ -6,86 +6,64 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-/**
- * Represents a device-specific input mapping configuration entry.
- * Enhanced to support flexible device matching, settings overrides, and layout overrides.
- */
+/** One device profile: how a device is matched and what it overrides (Alt tables, layouts, settings, key roles). */
 public class DeviceInputMapping {
     
     public enum InputMappingType {
-        DEFAULT,                 // Use Android's standard behavior
-        CUSTOM_ALT_MAPPINGS      // Load Alt+key mappings from XML file
+        DEFAULT,                 // Android's standard behavior
+        CUSTOM_ALT_MAPPINGS      // Alt+key mappings from an XML file
     }
-    
-    public String deviceName;               // For logging/display purposes
+
+    public String deviceName;
     public InputMappingType mappingType;
-    public String altMappingsFile;          // XML file name for Alt+key mappings (without .xml extension)
+    public String altMappingsFile;          // Alt mappings XML name, without .xml
     /**
-     * Alt characters written in the profile itself ({@code <mapping>} and
-     * {@code <special-function>} inside {@code <alt-mappings>}); null when it writes none. They
-     * sit on top of the table {@link #altMappingsFile} names, or stand alone when it names none.
-     * This is what lets an imported or built profile carry Alt characters: {@code <source>} can
-     * only name a table built into the app.
+     * Alt characters written inline in {@code <alt-mappings>}, layered over {@link #altMappingsFile}'s
+     * table (or alone); null when none. Lets imported profiles carry Alt characters, since
+     * {@code <source>} can only name a built-in table.
      */
     public AltMappingsTable inlineAltMappings;
     /** {@link #inlineAltMappings} over the named table, built once; see {@code AltMappingsParser.tableFor}. */
     public volatile AltMappingsTable layeredAltMappings;
-    public String keypadType;               // Force specific physical keypad type (e.g., "3row", "4row")
+    public String keypadType;               // Forced keypad type, e.g. "3row", "4row"
 
     /**
-     * Physical keypad layout override from {@code <keypad-layout>} — "qwerty", "qwertz" or
-     * "azerty", already validated by the parser; null leaves {@code KeypadLayoutDetector} to work
-     * it out from the firmware. This is the ONLY override for the detected layout. A shipped
-     * config declares it only for a model sold in one layout (every unit matching the config has
-     * the same keypad), because user letter maps bind to the effective layout and live detection
-     * should not decide that on a known device; a config that matches several keypad variants
-     * (athena: every KEY2 in the world) must not, or every unit is pinned to one layout.
-     * {@code ShippedDeviceConfigsTest} keeps that list by name.
+     * {@code <keypad-layout>} ("qwerty", "qwertz", "azerty"), the only override of the detected layout;
+     * null leaves it to {@code KeypadLayoutDetector}. Declare it only for a model sold in one layout,
+     * never for a config matching several variants (athena); {@code ShippedDeviceConfigsTest} pins the list.
      */
     public String keypadLayout;
-    /**
-     * The keypad shapes the model was sold in ({@code <keypad-layouts>qwerty, qwertz, azerty</keypad-layouts>}),
-     * which the Physical keyboard screen offers as the user's own word on the shape, above
-     * detection. Empty when the config lists none: nothing to choose.
-     */
+    /** {@code <keypad-layouts>}: shapes the model was sold in, offered on the Physical keyboard screen over detection. */
     public java.util.List<String> keypadLayoutOptions = new java.util.ArrayList<>();
-    public String description;              // Optional description for logging
-    
-    // NEW: Device matching criteria
+    public String description;
+
     public DeviceMatchCriteria matchCriteria;
-    
-    // NEW: Layout overrides (structured)
+
     public Map<String, String> layoutOverrides = new HashMap<>();
-    
-    // NEW: Settings overrides
+
     public List<DeviceSettingOverride> settingsOverrides = new ArrayList<>();
-    
-    // NEW: Force PKB device type (from logic-organization-plan-2.md)
-    /** Treat this device as a PKB device, regardless of hardware detection */
+
+    /** Treat this device as a PKB device, regardless of hardware detection. */
     public boolean forcePkbDevice = false;
 
-    /** Force hasTouchKeypad() = true regardless of hardware detection. Set by <device-type>CKB</device-type>. */
+    /** Force hasTouchKeypad() true regardless of hardware; set by {@code <device-type>CKB</device-type>}. */
     public boolean forceTouchKeypad = false;
-    
-    // NEW: Layout-specific alt override files (layout name → alt mappings XML file name)
-    /** Maps keyboard layout (e.g. "azerty") to alt override file (e.g. "device_alt_mappings_azerty_overrides") */
+
+    /** Keyboard layout (e.g. "azerty") to Alt override file (e.g. "device_alt_mappings_azerty_overrides"). */
     public Map<String, String> layoutAltOverrides = new HashMap<>();
-    
-    // NEW: Scancode-to-role mappings (from unified key mapping pipeline, schema v2.1)
-    /** Per-key scancode/keycode → role mappings loaded from <scancode-mappings> XML section */
+
+    /** Per-key scancode/keycode to role mappings from {@code <scancode-mappings>}. */
     public List<ScancodeMapping> scancodeMappings = new ArrayList<>();
 
     /** Optional per-device CKB letter grid (from a {@code <ckb-key-grid>} block); null if unspecified. */
     public CkbKeyGridConfig ckbKeyGridConfig;
 
-    // NEW: Device KDB variant (schema v2.2)
-    /** Engine keyboard-geometry (KDB) variant from {@code <kdb-variant>}: layouts in
-     *  assets/kdb/&lt;variant&gt;/ override the root assets/kdb/ copies (per-layout, with root
-     *  fallback). Requires the owned KDB module; null = default root layouts. */
+    /** {@code <kdb-variant>}: layouts in assets/kdb/&lt;variant&gt;/ override the root copies, per layout.
+     *  Requires the owned KDB module; null = root layouts. */
     public String kdbVariant;
 
-    /** Piecewise CKB sensor-Y -> engine-Y warp, "s0:a0,s1:a1,..." ascending breakpoints
-     * (§8.7.12 retail swipe config). Null = identity. Applies only to the gesture engine feed. */
+    /** Piecewise CKB sensor-Y to engine-Y warp, "s0:a0,s1:a1,..." ascending; null = identity.
+     *  Applies only to the gesture engine feed. */
     public String ckbYWarp;
 
     /** The touch surface over the keys, from {@code <touch-keypad>}; null when undeclared. */
@@ -99,17 +77,14 @@ public class DeviceInputMapping {
     }
 
     /**
-     * This phone never needs the BBKB helper (the accessibility key interceptor), from
-     * {@code <accessibility-helper>off</accessibility-helper>}: its firmware delivers every key the
-     * keyboard handles, as BlackBerry hardware does. The helper's service component is then
-     * switched off at runtime ({@code KeyInterceptorComponent}), which also takes it out of the
-     * system's Accessibility list, and its settings row is greyed out. False (the default and
-     * {@code available}): the helper is offered as usual.
+     * {@code <accessibility-helper>off}: the firmware delivers every key, so the accessibility key
+     * interceptor component is disabled at runtime ({@code KeyInterceptorComponent}), leaving the
+     * system Accessibility list, and its settings row is greyed out.
      */
     public boolean accessibilityHelperOff = false;
 
     public DeviceInputMapping() {
-        // Default constructor
+        // Fields are filled in by DeviceInputMappingParser.
     }
     
     public DeviceInputMapping(String deviceName, InputMappingType mappingType, String altMappingsFile, String description) {
@@ -119,30 +94,25 @@ public class DeviceInputMapping {
         this.keypadType = null;
         this.description = description;
     }
-    
-    /**
-     * Check if this mapping matches the specified device.
-     * Uses the new DeviceMatchCriteria if available, otherwise falls back to exact deviceName match.
-     */
+
+    /** Matches by {@link #matchCriteria} when set, else by exact {@link #deviceName}. */
     public boolean matchesDevice(String deviceName, String vendorId, String productId) {
         if (matchCriteria != null && matchCriteria.hasAnyCriteria()) {
             return matchCriteria.matches(deviceName, vendorId, productId);
         }
-        
-        // Fallback to legacy exact match for backward compatibility
+
         return deviceName != null && deviceName.equals(this.deviceName);
     }
     
     /**
-     * True when this profile is matched by the keyboard itself (its name, vendor id or product
-     * id) rather than only by the phone it is built into. A profile matched on the phone alone
-     * says nothing about a keyboard plugged into that phone.
+     * True when the keyboard itself (name, vendor or product id) matches this profile, not only the
+     * phone; a phone-only profile says nothing about a keyboard plugged into it.
      */
     public boolean namesInputDevice() {
         if (matchCriteria != null && matchCriteria.hasAnyCriteria()) {
             return matchCriteria.hasInputDeviceCriteria();
         }
-        return deviceName != null && !deviceName.isEmpty();  // legacy: matched by exact name
+        return deviceName != null && !deviceName.isEmpty();  // matched by exact name
     }
 
     /** Cache for {@link #roleFor}: (scanCode << 16 | keyCode) → mapping, {@link #NO_ROLE} for a miss. */
@@ -151,13 +121,9 @@ public class DeviceInputMapping {
     private static final ScancodeMapping NO_ROLE = new ScancodeMapping();
 
     /**
-     * The role this profile gives a key ({@code <scancode-mappings>}; the first entry that
-     * matches wins), or null when it gives none. Asked on every hardware key event, so answers
-     * are cached, and the cache is published copy-on-write to keep this lock-free. The list is
-     * not expected to change once the profile is in use.
-     *
-     * <p>Callers with a key event in hand want {@code DeviceInputResolver.keyRole}, which first
-     * works out whether this profile speaks for the keyboard the key came from.
+     * The key's role from {@code <scancode-mappings>} (first match wins), or null. Called per key
+     * event, so cached copy-on-write and lock-free; the list must not change once in use. Callers
+     * with a key event want {@code DeviceInputResolver.keyRole}, which checks the source keyboard.
      */
     public ScancodeMapping roleFor(int scanCode, int keyCode) {
         final List<ScancodeMapping> mappings = scancodeMappings;
@@ -184,11 +150,6 @@ public class DeviceInputMapping {
         return found;
     }
 
-    /**
-     * Get a setting override by key.
-     * @param key Preference key to look up
-     * @return DeviceSettingOverride if found, null otherwise
-     */
     public DeviceSettingOverride getSettingOverride(String key) {
         if (key == null || settingsOverrides == null) {
             return null;
@@ -202,21 +163,12 @@ public class DeviceInputMapping {
         
         return null;
     }
-    
-    /**
-     * Check if a setting has an override.
-     */
+
     public boolean hasSettingOverride(String key) {
         return getSettingOverride(key) != null;
     }
-    
-    /**
-     * Get the device's multifunction key mapping, if the config declares one.
-     * Devices are expected to declare at most one MULTIFUNCTION key; the first wins.
-     *
-     * @return the MULTIFUNCTION ScancodeMapping, or null if this device has none
-     *         (the "Multifunction key" setting is hidden in that case)
-     */
+
+    /** The first MULTIFUNCTION mapping, or null (the "Multifunction key" setting is then hidden). */
     public ScancodeMapping getMultifunctionKeyMapping() {
         if (scancodeMappings == null) {
             return null;
@@ -229,11 +181,6 @@ public class DeviceInputMapping {
         return null;
     }
 
-    /**
-     * Get the layout override for a specific layout resource.
-     * @param originalLayout Original layout resource name
-     * @return Override layout name if configured, null otherwise
-     */
     public String getLayoutOverride(String originalLayout) {
         if (layoutOverrides == null || originalLayout == null) {
             return null;

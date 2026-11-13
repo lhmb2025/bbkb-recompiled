@@ -27,8 +27,8 @@ public final class KeyDrawParams {
 
     public int previewTextSizePixels;
 
-    // Colours are pulled at draw time from KeyboardColorManager, the single source of truth.
-    
+    // Colours are read at draw time from KeyboardColorManager.
+
     public int getTextColor() {
         return KeyboardColorManager.INSTANCE.getIconColor();
     }
@@ -38,7 +38,7 @@ public final class KeyDrawParams {
     }
     
     public int getTextShadowColor() {
-        // Shadow color removed from simplified system - return subtle black
+        // Fixed subtle black shadow.
         return KeyboardColorManager.INSTANCE.applyAlpha(0xFF000000, 0.3f);
     }
     
@@ -72,11 +72,7 @@ public final class KeyDrawParams {
 
     public float multilineHintLabelVerticalAdjustmentRatio;
 
-    /**
-     * Alpha (0-255) applied to key icons/text while the alt-code fade runs. The
-     * decompiler mapped this slot to the name "keyboardHeight"; it never held a
-     * height (KeyboardView resets it to 255 per draw). AOSP heritage: KeyDrawParams.mAnimAlpha.
-     */
+    /** Alpha (0-255) for key icons/text during the alt-code fade; KeyboardView resets it to 255 per draw. */
     public int animAlpha;
 
     private static float getFloatOrDefault(float f, float f2) {
@@ -84,6 +80,7 @@ public final class KeyDrawParams {
     }
 
     public KeyDrawParams() {
+        // Fields start at their defaults.
     }
 
     private KeyDrawParams(KeyDrawParams source) {
@@ -104,6 +101,7 @@ public final class KeyDrawParams {
         this.animAlpha = source.animAlpha;
     }
 
+    /** @param i key height the size ratios apply to */
     public void applyKeyStyleData(int i, KeyVisualAttributes source) {
         if (source == null) {
             return;

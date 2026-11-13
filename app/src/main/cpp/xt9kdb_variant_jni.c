@@ -1,15 +1,7 @@
-/* xt9kdb_variant_jni.c — device-variant KDB registration, built in BOTH modes (unlike
- * xt9kdb_jni.c, which is DIFF-only debug glue).
- *
- * The blob's kdbIndexAssetManager scans assets/kdb/ flat, so per-device variant folders
- * (assets/kdb/<variant>/) are invisible to it. Java (Xt9KdbVariant.apply, driven by the matched
- * device config's <kdb-variant>) reads those files and registers the bytes here; the owned
- * SetKdbNum then prefers a registered (variant,pid,sid) layout over the blob-indexed root copy.
- *
- * In CUTOVER (libkb.so) this is live: the engine's ET9KDB_SetKdbNum is ours. In DIFF
- * (libxt9kdb.so) the registry is populated but the blob still owns the live SetKdbNum, so the
- * variant is inert — same graceful no-op as a fully stock build (where neither lib loads).
- */
+/* xt9kdb_variant_jni.c: Xt9KdbVariant JNI, built in both modes. The blob indexes assets/kdb/ flat,
+ * so Java registers assets/kdb/<variant>/ layouts here and the owned SetKdbNum prefers a registered
+ * (variant,pid,sid) layout. Live only in CUTOVER (libkb.so); in DIFF the blob's SetKdbNum ignores it.
+ * Also hosts the owned gesture ranker and a few small helpers. */
 #include <jni.h>
 #include <android/log.h>
 #include <stdio.h>
@@ -49,12 +41,9 @@ Java_com_blackberry_nuanceshim_Xt9KdbVariant_nativeSetVariant(JNIEnv* env, jclas
     if (v) (*env)->ReleaseStringUTFChars(env, variant, v);
 }
 
-/* ---- owned gesture ranker JNI (§8.7.6) --------------------------------------------------------
- * Ranks candidate words against the CURRENT stored gesture path (kdb_trace.c's accumulated
- * samples) using xt9kdb_rank_score over the loaded model with per-row normalization. Returns the
- * winning index into `words`, or -1 if unrankable (no path / no model / empty list). Called from
- * the bridge's gesture branch under the gesture lock, immediately after buildSelectionList, so
- * the path is still the gesture the candidates came from. */
+/* Ranks `words` against the current stored gesture path; returns the winning index or -1.
+ * Must be called under the gesture lock right after buildSelectionList, so the path is still
+ * the gesture the candidates came from. */
 JNIEXPORT jint JNICALL
 Java_com_blackberry_nuanceshim_Xt9KdbVariant_nativeRankGesture(JNIEnv* env, jclass cls,
                                                                jobjectArray words) {
@@ -93,14 +82,9 @@ Java_com_blackberry_nuanceshim_Xt9KdbVariant_nativeRankGesture(JNIEnv* env, jcla
         }
         (*env)->DeleteLocalRef(env, jw);
     }
-    /* Contamination guard (§8.7.13): when the request-queue race feeds a next-word PREDICTION
-     * list instead of the swipe's candidates (proven in gate-7: inline correct, pool = kitty/
-     * everyone/beautiful), NONE of the candidates fits the swipe geometry, so even the best score
-     * is high (~2.4+ vs ~0.5-1.5 for a real match). Decline (return -1) above a ceiling; the
-     * bridge then keeps the inline word — which for the contaminated case is the engine's actual
-     * gesture inline (often correct, e.g. "the"/"world"), never a random prediction. This is a
-     * robustness net UNDER the full rank-at-deposit fix (W1), not a replacement for it.
-     * debug.et9.rankmax = ceiling in centi-units (default 210 = 2.10; real hard-word matches ~1.86, contamination ~2.36); 0 disables the guard. */
+    /* Contamination guard: if a prediction list arrives instead of the swipe's candidates, even
+     * the best score is high (~2.36 vs ~1.86 for a hard real match). Above the ceiling return -1 so
+     * the bridge keeps the engine's inline word. debug.et9.rankmax = ceiling x100 (0 disables). */
     int ceil_centi = 210;
     {
         char v[PROP_VALUE_MAX];
@@ -113,22 +97,17 @@ Java_com_blackberry_nuanceshim_Xt9KdbVariant_nativeRankGesture(JNIEnv* env, jcla
     return declined ? -1 : best;
 }
 
-/* Deposit sequence of the current rank snapshot (§8.7.11): the bridge consumes each sequence
- * exactly once, so stale worker requests (prediction requests that still see the pending flag,
- * which is only consumed by the main-thread commit handler) can never rank dead engine state. */
+/* Deposit sequence of the current rank snapshot. The bridge consumes each sequence once, so stale
+ * worker requests that still see the pending flag never rank dead engine state. */
 JNIEXPORT jint JNICALL
 Java_com_blackberry_nuanceshim_Xt9KdbVariant_nativeRankSeq(JNIEnv* env, jclass cls) {
     (void)env; (void)cls;
     return (jint)xt9kdb_rank_seq();
 }
 
-/* AUDIT L10 (docs/2026-09_kdb-touch-abi_audit.md): the in-band channel for a recognizer that
- * could not run. ET9KDB_TouchEnd has to report success whatever happened — the blob's JNI shim
- * collapses any non-zero ET9STATUS to `false` in Java, and the blob's own dispatcher hardcodes 0
- * — so without these a dead recognizer is a logcat line and nothing else. It is not hypothetical:
- * on the KEY2 in September 2026 libkb.so loaded before the blob, the weak ET9KDB_ProcessTrace
- * reference resolved to NULL, and every swipe for the life of the process silently did nothing.
- * Both counters are monotonic for the process and cheap enough to read per gesture. */
+/* Reports a recognizer that could not run: ET9KDB_TouchEnd must return success regardless (the
+ * blob's JNI and dispatcher drop its status), e.g. when the weak ET9KDB_ProcessTrace resolved to
+ * NULL. Both counters are process-monotonic and cheap to read per gesture. */
 JNIEXPORT jint JNICALL
 Java_com_blackberry_nuanceshim_Xt9KdbVariant_nativeRecognizerUnavailable(JNIEnv* env, jclass cls) {
     (void)env; (void)cls;
@@ -141,10 +120,8 @@ Java_com_blackberry_nuanceshim_Xt9KdbVariant_nativeRecognizerFailures(JNIEnv* en
     return (jint)xt9kdb_recognizer_failures();
 }
 
-/* W1 (§8.7.14): take the deposit-time-ranked gesture word for the given seq (consume-once).
- * Returns the word, or null if none was produced for this seq (ownrankc off, declined, or
- * already taken). The bridge uses it verbatim as the gesture result — no Java list build, so the
- * §8.7.13 request-queue contamination cannot occur. */
+/* Takes (once) the deposit-time-ranked gesture word for `seq`, or null (ownrankc off, declined,
+ * already taken). Used verbatim, so no list build can be contaminated by a prediction request. */
 JNIEXPORT jstring JNICALL
 Java_com_blackberry_nuanceshim_Xt9KdbVariant_nativeTakeGestureWord(JNIEnv* env, jclass cls, jint seq) {
     (void)cls;
@@ -154,8 +131,7 @@ Java_com_blackberry_nuanceshim_Xt9KdbVariant_nativeTakeGestureWord(JNIEnv* env, 
     return (*env)->NewStringUTF(env, buf);
 }
 
-/* Typed-word guard (2026-10-12): zipf*10 of a lowercase word from the English LDB frequency
- * table, 0 when absent. Java weighs apostrophe-only auto-corrections with it. */
+/* Typed-word guard: zipf*10 of a lowercase word from the English LDB frequency table, 0 when absent. */
 JNIEXPORT jint JNICALL
 Java_com_blackberry_nuanceshim_Xt9KdbVariant_nativeWordZipf10(JNIEnv* env, jclass cls, jstring word) {
     (void)cls;
@@ -167,9 +143,8 @@ Java_com_blackberry_nuanceshim_Xt9KdbVariant_nativeWordZipf10(JNIEnv* env, jclas
     return (jint)z;
 }
 
-/* mallopt(M_PURGE, 0) returns the allocator's cached free pages to the kernel (bionic, API 28+).
- * Resolved at run time: the app's minSdk predates the symbol, and an older libc simply has no
- * such knob, in which case this is a no-op that reports false. -101 is bionic's M_PURGE. */
+/* mallopt(M_PURGE = -101, 0) returns cached free pages to the kernel. Resolved at run time since
+ * minSdk predates it (API 28); without it this returns false. */
 #define BBKB_M_PURGE (-101)
 
 JNIEXPORT jboolean JNICALL

@@ -1,4 +1,4 @@
-/* kdb_nkl_selftest.c — validate the NKL emitter against the live XT9NKL dump (324 root KDB).
+/* kdb_nkl_selftest.c: validates the NKL emitter against the live XT9NKL dump (324 root KDB).
  * Loads the actual root qwerty_pkb.xml, emits the NKL, and checks the geometry fields of three
  * clean keys (a=key[10], s=key[11], d=key[12]) byte-for-byte against the captured dump values. */
 #include "et9kdb.h"
@@ -69,17 +69,10 @@ static int load_and_emit(const char* path) {
     return 0;
 }
 
-/* --vkb mode. The on-screen layouts are the ONLY ones where "max over all keys" and "max over
- * regional keys" differ, and no probe capture distinguishes the two rules — which is exactly how
- * the wrong one shipped and went unnoticed for months (beta-feedback triage #6). qwerty_vkb.xml's
- * SPACE is a 540px function key against a 120px widest letter, so this case fails loudly on a
- * regression to the all-keys max: RADX would read 540, the search box 720 (spanning +-3.3 keys at
- * a 108px pitch) and +0x54 1618. Device-confirmed on a KEY2 in forced-VKB mode, 2026-09-16:
- * radius(0x38)=120,140 and +0x44=0xa0.
- *
- * Runs as its own process (its own stage in run_tests.sh) rather than as a second load inside the
- * pkb run: re-Init-ing and re-loading in one process leaves g_kdb_model on the first layout, and
- * the live code only ever has one KDB active per context anyway. */
+/* --vkb mode: RADX is the max over regional keys, not all keys. qwerty_vkb.xml's SPACE is a 540px
+ * function key vs a 120px widest letter, so the all-keys rule would read RADX 540, search box 720,
+ * +0x54 1618. Device values: radius(0x38)=120,140, +0x44=0xa0. Own process: re-loading in one
+ * process leaves g_kdb_model on the first layout. */
 static int check_vkb_header(const char* vkbPath) {
     printf("[vkb regional-maxW] %s\n", vkbPath);
     if (load_and_emit(vkbPath) != 0) { printf("  FAIL could not load the VKB layout\n"); return 2; }
@@ -95,12 +88,8 @@ static int check_vkb_header(const char* vkbPath) {
     return g_fail ? 1 : 0;
 }
 
-/* --dump <kdb.xml>: print the emitted NKL as deterministic text, for checking a loader change
- * layout-by-layout (the committed before/after pairs under docs/2026-09_kdb-touch-abi_audit/).
- *
- * Deterministic on purpose: the per-key char-list pointer at +0x48 is an ABSOLUTE address into
- * whatever buffer the NKL was emitted into, so it is printed as the OFFSET from the NKL base.
- * Everything else is emitted bytes, read back through the same accessors the checks above use. */
+/* --dump <kdb.xml>: prints the emitted NKL as deterministic text for diffing loader changes per
+ * layout. The +0x48 char-list pointer is absolute, so it prints as an offset from the NKL base. */
 static int dump_nkl(const char* path) {
     if (load_and_emit(path) != 0) return 2;
     const ET9KdbLoaded* m = g_kdb_model;
@@ -178,7 +167,7 @@ int main(int argc, char** argv) {
     ET9U32 kc; memcpy(&kc, g_nkl + NKL_OFF_KEYCOUNT, 4);
     printf("[header]\n"); chk("width", hw, 1080); chk("height", hh, 324); chk("keyCount", (int)kc, 30);
 
-    /* header geometry aggregates — device-confirmed (uniform-108/324 == probe A capture) */
+    /* header geometry aggregates (uniform-108/324 == probe A capture) */
     ET9U32 h; float hf;
     memcpy(&h,  g_nkl + NKL_OFF_AGG2C, 4); chk("agg+0x2c (maxH/3)", (int)h, 36);
     memcpy(&h,  g_nkl + NKL_OFF_ROW1H, 4); chk("row1H +0x34", (int)h, 108);

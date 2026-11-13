@@ -8,13 +8,8 @@ import dev.bbkb.ime.core.settings.util.SettingsValues;
 
 
 /**
- * A one-shot long-press timer: {@link #start} arms it for {@code mDelay} ms and fires
- * {@link Callback#onTimeout} unless something cancels first.
- *
- * <p>Named {@code KeyboardCoordinates} until 2026-09-16 - a decompilation-era name that describes
- * nothing this class does and collides in meaning with the real coordinate helpers
- * ({@code CoordinateUtils}). AOSP folds this into {@link TimerHandler}; ours is separate, so it
- * gets its own truthful name.
+ * One-shot long-press timer: {@link #start} arms it for {@code mDelay} ms and fires
+ * {@link Callback#onTimeout} unless cancelled first.
  */
 public class LongPressTimer {
 
@@ -27,7 +22,7 @@ public class LongPressTimer {
     private final Handler mHandler = new Handler(Looper.getMainLooper());
 
     private final Runnable mRunnable = new Runnable() {
-        @Override // java.lang.Runnable
+        @Override
         public void run() {
             LongPressTimer.this.mCount = 2;
             LongPressTimer.this.mCallback.onTimeout();
@@ -48,6 +43,7 @@ public class LongPressTimer {
         startWithDelay(this.mDelay);
     }
 
+    /** @param j delay in ms */
     public void startWithDelay(long j) {
         if (this.mCount != 0) {
             throw new IllegalStateException("Timer is already running!");

@@ -1,72 +1,30 @@
 package dev.bbkb.ime.core.settings
 
 /**
- * Navigation routes for all settings screens
- * Defines the navigation graph structure for Compose settings
- */
-/**
- * A settings destination: one navigation route string and its title.
- *
- * ## Aliases (§5.8 item 6)
- *
- * This class used to declare twelve extra objects that were duplicate *identities* for routes
- * declared elsewhere in the same file — `Keyboard` and `TouchScreenKeyboard` beside
- * [OnScreenKeyboard], `Credits` beside [About], `LanguagesInput`, `Customization`,
- * `CorrectionLearning`, `PredictionCorrection`, `Prediction`, `PredictionsSuggestions`,
- * `DictionaryLearning`, `DictionariesLearning`, `AutoCorrection`. Nothing outside this file
- * referenced any of them, and each one read as a distinct destination while being the same page.
- *
- * They are gone. No behaviour moved with them: the *route strings* are what deep links and the
- * `"screen"` intent extra carry, and [fromRoute] still resolves every string it ever resolved,
- * including the four legacy spellings that never had an object at all (`"languages_input"`,
- * `"customization"`, `"prediction_correction"`, `"correction_learning"`). `SettingsRouteTest`
- * pins that list.
- *
- * ## Legacy strings with no page of their own
- *
- * Six more objects — `Personalization`, `LearnedWords`, `FeedbackHaptics`, `PersonalDictionary`,
- * `WordSubstitutions`, `UnifiedDictionary` — were accepted by [fromRoute] but never had a
- * `composable{}` in the settings NavHost, so an intent naming one crashed the activity on an
- * unregistered start destination. The objects are gone; each string now resolves to the page
- * that replaced it: `"personalization"` → [AppearanceLayout] (the Personalization hub),
- * `"learned_words"` → [PersonalLearnedWords], `"feedback_haptics"` → [TouchFeedback],
- * `"personal_dictionary"` → [UserDictionary], `"word_substitutions"` → [TextShortcuts],
- * `"unified_dictionary"` → [Learning] (the dictionaries hub). Since 2026-09-29 the same goes for
- * the old Languages menu and the multi-language keyboards list and wizard, whose pages were
- * removed once the Language page replaced them: `"languages"`, `"languages_input"`,
- * `"multi_language_keyboards"` and `"multi_language_wizard_add"` → [LanguagesHub].
- *
- * Two genuine one-page-two-routes cases remain and are deliberate, not aliases of this kind:
- * [TouchFeedback] and [KeyPressFeedback] both render `KeyPressFeedbackScreen` (the second is a
- * back-compat deep link that nothing in the app navigates to), and [CustomSymbolPagePkb] /
- * [CustomSymbolPageVkb] render `CustomSymbolPageScreen` with different arguments.
+ * A settings destination: one route string and its title. Deep links and the `"screen"` intent
+ * extra carry route strings, so [fromRoute] keeps resolving every legacy spelling, each to a page
+ * the NavHost registers (pinned by `SettingsRouteTest`). [TouchFeedback]/[KeyPressFeedback] and
+ * [CustomSymbolPagePkb]/[CustomSymbolPageVkb] are deliberate pairs sharing one screen.
  */
 sealed class SettingsRoute(val route: String, val title: String) {
-    // Main settings menu (root)
     object Main : SettingsRoute("main", "Settings")
 
-    // Primary settings screens (v5 - per docs/archived/2026-01_compose-settings-and-dictionaries/2026-01_settings-compose_history.md)
     object Preferences : SettingsRoute("preferences", "Preferences")
     object AppearanceLayout : SettingsRoute("appearance_layout", "Appearance and layout")
-    // SuggestionCorrection defined below is the primary for "Suggestion and correction"
     object Advanced : SettingsRoute("advanced", "Advanced")
 
-    // Typing and input subpages
     object OnScreenKeyboard : SettingsRoute("on_screen_keyboard", "On-Screen Keyboard")
     object PhysicalKeyboard : SettingsRoute("physical_keyboard", "Physical Keyboard")
     object VoiceInputMain : SettingsRoute("voice_input_main", "Voice Input")
     object TouchFeedback : SettingsRoute("touch_feedback", "Touch Feedback")
 
-    // Suggestion and correction subpages
     object SuggestionCorrection : SettingsRoute("suggestion_correction", "Suggestion and Correction")
     object Suggestion : SettingsRoute("suggestion", "Suggestions")
     object Correction : SettingsRoute("correction", "Correction")
     object Learning : SettingsRoute("learning", "Learning")
 
-    // Advanced subpages
     object DeviceCompatibility : SettingsRoute("device_compatibility", "Device Compatibility")
 
-    // Other sub-screens
     object LanguageSwitching : SettingsRoute("language_switching", "Language Switching")
     object QuickPhrases : SettingsRoute("quick_phrases", "Quick Phrases")
     object VoiceInput : SettingsRoute("voice_input", "Voice Input Settings")
@@ -104,31 +62,22 @@ sealed class SettingsRoute(val route: String, val title: String) {
     object KeyPressFeedback : SettingsRoute("key_press_feedback", "Key Press Feedback")
     
     companion object {
-        // Personal dictionary routes with locale parameter
         fun personalDictionaryWords(locale: String) = "personal_dictionary_words/$locale"
         fun wordSubstitutionWords(locale: String) = "word_substitution_words/$locale"
-        // Unified dictionary routes
         fun unifiedDictionaryEntries(locale: String) = "unified_dictionary_entries/$locale"
 
         /**
-         * Resolve a route string to its destination, or null if it is not a route.
-         *
-         * This is what validates the `"screen"` intent extra before it reaches navigation-compose
-         * as a start destination, so every string it has ever accepted must keep resolving —
-         * including the legacy spellings below that have no `SettingsRoute` object of their own —
-         * and every result must be a destination the NavHost registers. `SettingsRouteTest`
-         * enumerates the accepted set and checks both.
+         * Resolves a route string, or null. Validates the `"screen"` extra before it becomes a start
+         * destination, so every string ever accepted must keep resolving to a registered page.
          */
         fun fromRoute(route: String?): SettingsRoute? {
             return when (route) {
                 Main.route -> Main
-                // The old Languages menu, the multi-language keyboards list and its wizard were
-                // folded into the Language page on 2026-09-29; their strings land there.
+                // The old Languages menu and multi-language keyboard pages.
                 "languages", "languages_input", "multi_language_keyboards",
                 "multi_language_wizard_add" -> LanguagesHub
                 SuggestionCorrection.route, "prediction_correction", "correction_learning" -> SuggestionCorrection
                 Preferences.route, "customization" -> Preferences
-                // Legacy strings whose own page was folded into another; see the KDoc above.
                 AppearanceLayout.route, "personalization" -> AppearanceLayout
                 Advanced.route -> Advanced
                 OnScreenKeyboard.route -> OnScreenKeyboard
@@ -140,7 +89,6 @@ sealed class SettingsRoute(val route: String, val title: String) {
                 DeviceCompatibility.route -> DeviceCompatibility
                 LanguageSwitching.route -> LanguageSwitching
                 QuickPhrases.route -> QuickPhrases
-                // "shake" (its own screen until 2026-11-11) opens Auxiliary input.
                 "shake" -> AuxiliaryInput
                 VoiceInput.route -> VoiceInput
                 AuxiliaryInput.route -> AuxiliaryInput
@@ -164,7 +112,6 @@ sealed class SettingsRoute(val route: String, val title: String) {
                 CustomizeSlideBoard.route -> CustomizeSlideBoard
                 SlideboardSettings.route -> SlideboardSettings
                 CustomizeMenu.route -> CustomizeMenu
-                // "clipboard" (its own screen until 2026-10-19) opens Auxiliary input.
                 "clipboard" -> AuxiliaryInput
                 About.route -> About
                 Licenses.route -> Licenses
@@ -173,8 +120,6 @@ sealed class SettingsRoute(val route: String, val title: String) {
                 TouchSurfaceHelper.route -> TouchSurfaceHelper
                 DeviceConfiguration.route -> DeviceConfiguration
                 DeviceProfileBuilder.route -> DeviceProfileBuilder
-                // The page listed only imported layouts, under this route, until the built-in
-                // ones joined it (2026-10).
                 PhysicalLayouts.route, "custom_physical_layouts" -> PhysicalLayouts
                 BackupRestore.route -> BackupRestore
                 KeyPressFeedback.route -> KeyPressFeedback

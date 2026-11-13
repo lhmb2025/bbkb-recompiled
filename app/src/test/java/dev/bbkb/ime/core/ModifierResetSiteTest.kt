@@ -23,14 +23,9 @@ import org.robolectric.annotation.Config
 import org.robolectric.util.ReflectionHelpers
 
 /**
- * The Phase 1f call sites that stopped calling the tracker's legacy reset shims
- * (`resetAllMetaState`, `resetAltStateAndNotify`, `clearManualShift`) and name a
- * [ModifierResetReason] instead, plus the two reads that changed shape: the symbol board's Sym
- * question and the accent bar's Alt-style lookup.
- *
- * The legacy shims were each a one-line delegation to `resetModifiers` with a fixed reason, so the
- * behavioural claim is about SCOPE: every site that used to clear everything still names an
- * ALL-scope reason, and the two partial resets keep their partial scopes.
+ * Call sites name a [ModifierResetReason] and each keeps its reset scope: full resets stay ALL and
+ * the two partial resets stay partial. Also the symbol board's Sym question and the accent bar's
+ * Alt-style lookup.
  */
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [34], manifest = Config.NONE)
@@ -46,9 +41,7 @@ class ModifierResetSiteTest {
         Mockito.`when`(ime.getPhysicalKeyboardStateTracker()).thenReturn(tracker)
     }
 
-    // ── scope: what each migrated site clears is what it cleared before ────────
-
-    /** The five BlackBerryIME sites, the receiver and the switcher all replaced the ALL-scope shim. */
+    /** The BlackBerryIME, receiver and switcher sites that clear everything. */
     @Test
     fun everyReasonThatReplacedTheFullResetIsStillAFullReset() {
         for (reason in listOf(
@@ -70,8 +63,6 @@ class ModifierResetSiteTest {
         assertEquals("the gesture commit's manual-shift reset",
             ModifierResetReason.Scope.MANUAL_SHIFT_ONLY, ModifierResetReason.MANUAL_SHIFT_SPENT.scope())
     }
-
-    // ── the sites ─────────────────────────────────────────────────────────────
 
     @Test
     fun screenOffResetsForTheScreenOffReason() {
@@ -114,8 +105,6 @@ class ModifierResetSiteTest {
         ReflectionHelpers.setField(KeyboardSwitcher::class.java, switcher, "blackberryIme", ime)
         return switcher
     }
-
-    // ── the accent bar's Alt-style lookup, now on ModifierState directly ──────
 
     @Test
     fun theAccentBarOffersAltStylesOnlyWhenTheEventCarriesAlt() {

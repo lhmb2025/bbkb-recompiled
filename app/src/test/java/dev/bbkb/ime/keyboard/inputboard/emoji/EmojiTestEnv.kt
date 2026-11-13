@@ -27,19 +27,10 @@ import java.lang.reflect.Field
 import java.time.Duration
 
 /**
- * What it takes to run the emoji board headless with the app's real resources and real keyboard
- * XML. Each piece below is a singleton the board reaches that a unit-test JVM does not initialise:
- *
- *  - `SubtypeManager.getEmojiSubtype()` dereferences an uninitialised RichInputMethodManager, so
- *    the emoji subtype is injected directly;
- *  - the keyboard XML parser asks `RichInputMethodManager` for the enabled subtypes, so it is
- *    initialised against the Robolectric application;
- *  - tab changes play haptic feedback through `AudioAndHapticFeedbackManager`, which dereferences
- *    its settings, so both it and `SettingsManager` get an all-defaults `SettingsValues` shell
- *    (the real constructor reaches far outside this package — same technique as `PipelineHarness`);
- *  - the emojibase provider filters by `Paint.hasGlyph`, which is always false under legacy
- *    Robolectric graphics, so every category would be empty. The process-wide provider is seeded
- *    with a small, known dataset instead, which also makes page counts exact.
+ * Runs the emoji board headless with real resources and keyboard XML. Singletons it reaches: the emoji subtype
+ * is injected (`getEmojiSubtype()` needs RichInputMethodManager); RichInputMethodManager is initialised for the
+ * XML parser; haptics and `SettingsManager` get an all-defaults `SettingsValues` shell; and the emojibase
+ * provider is seeded with a known dataset, since `Paint.hasGlyph` is always false under legacy graphics.
  */
 internal object EmojiTestEnv {
 
@@ -97,8 +88,6 @@ internal object EmojiTestEnv {
 
     fun read(target: Any, name: String): Any? = field(target.javaClass, name).get(target)
 
-    // ------------------------------------------------------------------ emoji data
-
     fun emoji(e: String, group: Int, description: String) = EmojiData(
         emoji = e, codepoints = "0", description = description,
         group = group, subgroup = 0, emojiVersion = 1.0, order = 0
@@ -123,8 +112,6 @@ internal object EmojiTestEnv {
         )
     )
 
-    // ------------------------------------------------------------------ keyboards and views
-
     fun emojiBuilder(): KeyboardBuilder {
         val res = app.resources
         return BoardKeyboardFactory.builder(
@@ -139,9 +126,8 @@ internal object EmojiTestEnv {
     fun templateKeyboard(): Keyboard = emojiBuilder().getKeyboard(12)
 
     /**
-     * Inflates the board the way `KeyboardSwitcher`'s ViewStub does and attaches it to [activity].
-     * `EmojiPalettesView.onMeasure` asks its `KeyboardSwitcher` for the alphabet keyboard, which
-     * needs a live IME; a mock answers null, which selects the documented fallback height.
+     * Inflates the board as `KeyboardSwitcher`'s ViewStub does and attaches it to [activity]. A mock
+     * `KeyboardSwitcher` answers null for the alphabet keyboard, which selects the fallback height.
      */
     fun inflatePalettes(activity: Activity): EmojiPalettesView {
         val view = LayoutInflater.from(BoardKeyboardFactory.themedContext(activity))
@@ -175,15 +161,13 @@ internal object EmojiTestEnv {
         return condition()
     }
 
-    /** Lets any debounced search run to completion, for asserting that something did NOT happen. */
+    /** Lets any debounced search run to completion, for asserting that something did not happen. */
     fun settle(ms: Long = 600) {
         repeat((ms / 10).toInt()) {
             shadowOf(Looper.getMainLooper()).idleFor(Duration.ofMillis(10))
             Thread.sleep(3)
         }
     }
-
-    // ------------------------------------------------------------------ recents JSON literals
 
     fun jsonArray(items: List<String>): String = items.joinToString(",", "[", "]") { "\"$it\"" }
 

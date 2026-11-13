@@ -30,11 +30,9 @@ import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
 
 /**
- * The touch-keypad questions [DeviceProfile] answers: [DeviceProfile.isFromTouchKeypad] by the
- * scanned id, by the profile's pad name and by a registered synthetic id;
- * [DeviceProfile.declaresTouchKeypad] against [DeviceProfile.hasTouchKeypad]; the geometry,
- * the live re-scan, the swipe-typing gate term and the profile's setting defaults. And that a KEY2
- * shape answers every one of them as it always did.
+ * The touch-keypad questions [DeviceProfile] answers: [DeviceProfile.isFromTouchKeypad] by scanned
+ * id, pad name and synthetic id; declares vs has; geometry, live re-scan, the swipe gate term and
+ * setting defaults. A KEY2 shape must answer all of them unchanged.
  */
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [34], manifest = Config.NONE)
@@ -55,8 +53,8 @@ class DeviceProfileTouchKeypadTest {
         SyntheticTouchSources.clear()
         KeyboardDeviceScanner.resetForTest(null)
         DeviceProfile.initialize(null)
-        // A re-scan pushes the stroke frame into GestureEventProcessor's statics; put the KEY2's
-        // back so no later test inherits a Titan frame.
+        // A re-scan pushes the stroke frame into GestureEventProcessor's statics; restore the KEY2's
+        // so no later test inherits a Titan frame.
         dev.bbkb.ime.keyboard.internal.GestureEventProcessor.setKeypadGeometry(TouchKeypadGeometry.KEY2_DEFAULT)
     }
 
@@ -92,8 +90,6 @@ class DeviceProfileTouchKeypadTest {
         })
     }
 
-    // ── the KEY2 shape: unchanged ────────────────────────────────────────────
-
     @Test
     fun key2Shape_answersAsBefore() {
         DeviceProfile.installForTest(pkbShape(key2Pad))
@@ -118,8 +114,8 @@ class DeviceProfileTouchKeypadTest {
 
     @Test
     fun key2Config_onTheForcedCkbRig_keepsItsWarpYMax() {
-        // The emulator posing as a KEY2: athena's config (CKB forced, <ckb-y-warp>0:0,450:324),
-        // no hardware pad. getTouchKeypadYMax answered 450 before; it still does.
+        // The emulator posing as a KEY2: athena's config (CKB forced, <ckb-y-warp>0:0,450:324), no
+        // hardware pad, so getTouchKeypadYMax answers 450.
         DeviceProfile.installForTest(pkbShape(null))
         DeviceProfileTestSupport.installMapping(parsed(R.xml.device_config_athena))
         val p = DeviceProfile.current()
@@ -141,8 +137,6 @@ class DeviceProfileTouchKeypadTest {
         assertEquals(0f, p.touchKeypadYMax, 0f)
         assertEquals(TouchKeypadGeometry.Source.KEY2_DEFAULT, p.touchKeypadGeometry.ySource())
     }
-
-    // ── declares vs has ──────────────────────────────────────────────────────
 
     @Test
     fun titan2OnAndroid15_declaresAPad_butNoEventsCanArrive() {
@@ -166,8 +160,6 @@ class DeviceProfileTouchKeypadTest {
         assertTrue(p.hasTouchKeypad())
         assertEquals(TouchSourceSelector.Choice.NATIVE, p.touchSourceSelection.choice)
     }
-
-    // ── isFromTouchKeypad: id, name, synthetic ───────────────────────────────
 
     @Test
     fun isFromTouchKeypad_acceptsTheDeviceTheProfileNames() {
@@ -205,8 +197,6 @@ class DeviceProfileTouchKeypadTest {
         assertFalse(DeviceProfile.current().isFromTouchKeypad(event(9)))
     }
 
-    // ── live re-scan ─────────────────────────────────────────────────────────
-
     @Test
     fun aPadThatAppearsLater_isFoldedIntoTheProfile_andGoesAgain() {
         DeviceProfile.installForTest(pkbShape(null))
@@ -226,8 +216,6 @@ class DeviceProfileTouchKeypadTest {
         assertFalse(p.hasTouchKeypad())
         assertEquals(-1, p.touchKeypadDeviceId)
     }
-
-    // ── swipe typing gate term, defaults, quirks ─────────────────────────────
 
     @Test
     fun swipeTypingNeedsAKdbVariantOnADeclaredPad() {

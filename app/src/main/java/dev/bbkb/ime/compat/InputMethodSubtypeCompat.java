@@ -3,11 +3,8 @@ package dev.bbkb.ime.compat;
 import android.view.inputmethod.InputMethodSubtype;
 
 /**
- * Helpers around {@link InputMethodSubtype}. Formerly reflected the hidden 8-arg
- * constructor to set an explicit subtype id; {@link InputMethodSubtype.InputMethodSubtypeBuilder}
- * (API 19) exposes the same fields publicly, including {@code setSubtypeId} — a non-zero id
- * overrides the subtype's hashCode exactly like the hidden constructor did, which keeps
- * persisted enabled-subtype ids stable.
+ * Helpers around {@link InputMethodSubtype}. A non-zero {@code subtypeId} overrides the subtype's
+ * hashCode, which keeps persisted enabled-subtype ids stable.
  */
 public final class InputMethodSubtypeCompat {
 

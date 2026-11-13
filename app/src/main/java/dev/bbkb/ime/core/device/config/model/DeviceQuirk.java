@@ -2,26 +2,18 @@ package dev.bbkb.ime.core.device.config.model;
 
 import androidx.annotation.Nullable;
 
-/**
- * A firmware behaviour the key pipeline has to tolerate on one device, declared in its config as
- * {@code <quirk name="..."/>} under {@code <device>}. A quirk describes the device; the code that
- * honours it says what it does about it.
- */
+/** A device behaviour to tolerate, declared as {@code <quirk name="..."/>} under {@code <device>}. */
 public enum DeviceQuirk {
 
     /**
-     * The Fn key arrives as {@code KEYCODE_CTRL_LEFT}, sends no key-up, and auto-repeats while held
-     * (Titan 2 Elite: first repeat after about 400 ms). {@code ControlModeController} then treats
-     * Ctrl as a one-shot modifier for the next key and never latches its sticky Ctrl mode from the
-     * repeats, which on any other device mean "Ctrl held alone".
+     * Fn arrives as {@code KEYCODE_CTRL_LEFT} with no key-up and auto-repeats (Titan 2 Elite, ~400 ms).
+     * {@code ControlModeController} treats it as one-shot and never latches sticky Ctrl from the repeats.
      */
     FN_NO_KEY_UP("fn-no-key-up"),
 
     /**
-     * The screen is e-ink (Minimal Phone MP01): every repaint is visible and slow. The on-screen
-     * keyboard skips cosmetic repaints there - pressed-key highlights, fade animations, animated
-     * key previews and the gesture trail (MainKeyboardView). Not a key quirk, but a fact about the
-     * device that only its profile knows.
+     * E-ink screen (Minimal Phone MP01): the on-screen keyboard skips cosmetic repaints (key highlights,
+     * fades, animated previews, gesture trail) in MainKeyboardView.
      */
     EINK_DISPLAY("eink-display");
 

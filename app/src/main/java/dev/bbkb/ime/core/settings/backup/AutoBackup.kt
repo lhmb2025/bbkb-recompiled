@@ -18,35 +18,12 @@ import java.io.IOException
 import java.util.concurrent.atomic.AtomicBoolean
 
 /**
- * BBKB's part in the phone's own backup (Settings > System > Backup: Google, Seedvault or whichever
- * service the phone uses; Android's key/value backup works the same with each): the
- * same bundle the Backup and restore screen writes, kept fresh in `files/backup/auto.zip` and
- * handed to Android's backup service by [dev.bbkb.ime.core.BackupAgent].
- *
- * ## Why a file, kept by the keyboard
- *
- * The backup agent runs whenever Android decides to back the app up, usually overnight, in a
- * process that may have been started for nothing else. The engine is not loaded there, so the
- * learned words cannot be read then. The keyboard therefore refreshes the bundle itself while it
- * is in use — once a day ([refreshIfStale]) and after a restore or reset ([noteDataChanged]) —
- * and tells the backup service that there is something new ([BackupManager.dataChanged]). The
- * agent only backs the file up; it rebuilds it when it is missing or days old, without the
- * learned words.
- *
- * ## Restore
- *
- * Android restores the file when BBKB is installed on a phone signed in to the same account,
- * before the app first runs. The agent renames it to `pending-restore.zip`; on the next start
- * [applyPendingRestore] puts the settings and layouts back at once and, if the bundle carries
- * words, keeps it as `pending-words.zip` until the keyboard has its engine and dictionary up
- * ([applyPendingWordsIfReady]) — the dictionary is written through its own manager and the
- * learned words through the engine's learn call, neither of which exists before then.
- *
- * ## Switching it off
- *
- * "Include in phone backup" is kept in `backup_state`, a preference file that is not itself in
- * any backup: it is this phone's choice. Off deletes the bundle, and the next backup pass drops
- * it from the backup set.
+ * The phone-backup bundle `files/backup/auto.zip`, handed to Android by [dev.bbkb.ime.core.BackupAgent].
+ * The keyboard keeps it fresh (daily and after a restore or reset) because the agent's process has
+ * no engine and cannot read learned words; the agent only rebuilds a missing or days-old one. A
+ * restored bundle becomes `pending-restore.zip`: settings and layouts apply on next start, words
+ * wait as `pending-words.zip` until engine and dictionary are up. The on/off choice lives in
+ * `backup_state`, a pref file outside any backup; off deletes the bundle.
  */
 object AutoBackup {
 
@@ -62,18 +39,17 @@ object AutoBackup {
     private const val KEY_AUTO_WRITTEN_AT = "auto_written_at"
     private const val KEY_LAST_PHONE_BACKUP_AT = "last_phone_backup_at"
 
-    /** How old the bundle may be before the keyboard rewrites it on its next chance. */
+    /** Age at which the keyboard rewrites the bundle. */
     private const val REFRESH_INTERVAL_MILLIS = 20L * 60 * 60 * 1000
-    /** How old it may be before the agent rewrites it itself, without the learned words. */
+    /** Age at which the agent rewrites it itself, without learned words. */
     private const val AGENT_REWRITE_AFTER_MILLIS = 3L * 24 * 60 * 60 * 1000
 
     /**
-     * How long a routine refresh waits after the last input session ends. Capturing the learned
-     * words enumerates the whole model under the engine lock (65 to 250 ms), and doing that the
-     * moment a field closes made the next field's start and first keys wait for it (P-21).
+     * Wait after the last input session before a routine refresh: capturing learned words holds
+     * the engine lock 65 to 250 ms, which would stall the next field's first keys.
      */
     private const val DEFER_MILLIS = 10_000L
-    /** Field after field keeps pushing the refresh back, but never by more than this. */
+    /** Cap on how far repeated sessions push the refresh back. */
     private const val MAX_DEFER_MILLIS = 60_000L
 
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
@@ -81,12 +57,12 @@ object AutoBackup {
 
     private val mainHandler by lazy { Handler(Looper.getMainLooper()) }
     private val deferLock = Any()
-    /** The application context of the waiting refresh (never a service), or null when none waits. */
+    /** Application context (never a service) of the waiting refresh, or null. */
     private var deferredContext: Context? = null
-    /** Uptime of the first request the waiting refresh stands for. */
+    /** Uptime of the first request the waiting refresh covers. */
     private var deferredSince = 0L
 
-    /** Runs on the main thread when the wait is over, then once more when the thread is idle. */
+    /** After the delay, waits for main-thread idle before starting. */
     private val deferredRefresh = Runnable {
         Looper.myQueue().addIdleHandler {
             val app = synchronized(deferLock) {
@@ -101,8 +77,6 @@ object AutoBackup {
         context.applicationContext.getSharedPreferences(STATE_PREFS, Context.MODE_PRIVATE)
 
     private fun file(context: Context, path: String): File = File(context.applicationContext.filesDir, path)
-
-    // ── the user's choice ────────────────────────────────────────────────────
 
     @JvmStatic
     fun isIncludedInPhoneBackup(context: Context): Boolean = state(context).getBoolean(KEY_INCLUDE, true)
@@ -119,24 +93,18 @@ object AutoBackup {
         }
     }
 
-    /** When the keyboard last wrote the bundle, in epoch millis, or 0. */
+    /** Epoch millis of the keyboard's last bundle write, or 0. */
     @JvmStatic
     fun bundleWrittenAt(context: Context): Long = state(context).getLong(KEY_AUTO_WRITTEN_AT, 0L)
 
-    /** When Android last backed the bundle up, in epoch millis, or 0. */
+    /** Epoch millis of Android's last backup of the bundle, or 0. */
     @JvmStatic
     fun lastPhoneBackupAt(context: Context): Long = state(context).getLong(KEY_LAST_PHONE_BACKUP_AT, 0L)
 
-    // ── keeping the bundle fresh ─────────────────────────────────────────────
-
     /**
-     * Rewrites the bundle in the background when it is older than a day (or [force]), and tells
-     * the backup service. Cheap to call often: it returns at once when there is nothing to do.
-     *
-     * The routine call (the keyboard's, after every input session) waits [DEFER_MILLIS] after the
-     * last such call, at most [MAX_DEFER_MILLIS] after the first, and then for the main thread
-     * to go idle, so the capture does not land on the start of the next field. A [force]d
-     * refresh (a settings change, a restore or reset) starts at once.
+     * Rewrites the bundle in the background when stale (or [force]) and notifies the backup service.
+     * A routine call is debounced ([DEFER_MILLIS], capped at [MAX_DEFER_MILLIS]) and then waits for
+     * main-thread idle so it misses the next field's start; [force] starts at once.
      */
     @JvmStatic
     fun refreshIfStale(context: Context, force: Boolean = false) {
@@ -157,8 +125,7 @@ object AutoBackup {
 
     private fun startRefresh(app: Context, force: Boolean) {
         if (!refreshing.compareAndSet(false, true)) return
-        // The checks read a preference file and stat the bundle: off the main thread, which is
-        // where the keyboard calls this from after every input session.
+        // The checks do disk I/O, so off the main thread.
         scope.launch {
             try {
                 if (!isIncludedInPhoneBackup(app)) return@launch
@@ -174,7 +141,7 @@ object AutoBackup {
         }
     }
 
-    /** After a restore or a reset: the bundle no longer describes the phone. */
+    /** After a restore or reset, when the bundle no longer describes the phone. */
     @JvmStatic
     fun noteDataChanged(context: Context) {
         refreshIfStale(context, force = true)
@@ -195,12 +162,9 @@ object AutoBackup {
         Logger.info(TAG, "phone-backup bundle written (engine ${if (NuanceSDKManager.facts().isDLMReady) "up" else "down"})")
     }
 
-    // ── the backup agent's side ──────────────────────────────────────────────
-
     /**
-     * Called by the agent on its backup thread, before the file is read: makes sure there is a
-     * bundle to back up when the user wants one (rebuilding a missing or days-old one, without
-     * the learned words the keyboard would have added), and that there is none when they do not.
+     * Agent backup thread, before the file is read: rebuild a missing or days-old bundle (without
+     * learned words) when backup is on, delete it when off.
      */
     @JvmStatic
     fun prepareForPhoneBackup(context: Context) {
@@ -219,7 +183,6 @@ object AutoBackup {
         }
     }
 
-    /** The agent finished handing data to Android. */
     @JvmStatic
     fun onPhoneBackupWritten(context: Context) {
         if (file(context, AUTO_BUNDLE_PATH).isFile) {
@@ -227,7 +190,7 @@ object AutoBackup {
         }
     }
 
-    /** Android restored the file set: the bundle in it is another phone's, to be applied once. */
+    /** Queue the restored bundle (another phone's) to be applied once. */
     @JvmStatic
     fun onPhoneRestoreFinished(context: Context) {
         val restored = file(context, AUTO_BUNDLE_PATH)
@@ -240,12 +203,7 @@ object AutoBackup {
         }
     }
 
-    // ── applying a restored bundle ───────────────────────────────────────────
-
-    /**
-     * App start: if Android restored a bundle, put its settings and layouts back now and queue
-     * its words for [applyPendingWordsIfReady]. Returns at once; the work is in the background.
-     */
+    /** App start: apply a restored bundle's settings and layouts in the background, queue its words. */
     @JvmStatic
     fun applyPendingRestore(context: Context) {
         val app = context.applicationContext
@@ -280,15 +238,12 @@ object AutoBackup {
         }
     }
 
-    /**
-     * The keyboard has its engine and dictionary up: if a restored bundle's words are waiting,
-     * add them now. Cheap when nothing is waiting.
-     */
+    /** Adds a waiting restored bundle's words once engine and dictionary are up; cheap otherwise. */
     @JvmStatic
     fun applyPendingWordsIfReady(context: Context) {
         val app = context.applicationContext
         val words = file(app, PENDING_WORDS_PATH)
-        // The published fact: this is called on the main thread.
+        // Main thread: read the published fact, not the engine.
         if (!words.isFile || !NuanceSDKManager.facts().isDLMReady) return
         scope.launch {
             try {

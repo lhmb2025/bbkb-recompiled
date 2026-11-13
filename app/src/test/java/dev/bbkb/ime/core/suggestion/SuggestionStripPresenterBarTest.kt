@@ -31,10 +31,9 @@ import org.robolectric.util.ReflectionHelpers
 import java.util.Locale
 
 /**
- * New suggestions fill the strip and never switch the bar (owner decision 2026-11-05). They used to
- * take the menu down on every delivery, standing in for "the user is typing", so FCC and Sym
- * closing, a tap in the text and the dictionary loading all took down a menu the user had raised.
- * With the menu up, the words now go to the hidden strip; typing is what puts the menu away.
+ * New suggestions fill the strip and never switch the bar: FCC and Sym closing, a tap in the text
+ * and the dictionary loading must not take down a menu the user raised. With the menu up the words
+ * go to the hidden strip; typing is what puts the menu away.
  */
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [34], manifest = Config.NONE)
@@ -142,7 +141,7 @@ class SuggestionStripPresenterBarTest {
         verify(uiCoordinator, never()).hideUnifiedInputBoard()
     }
 
-    /** With a board open, a swipe's words no longer close it and the menu (they used to). */
+    /** With a board open, a swipe's words do not close it or the menu. */
     @Test
     fun aSwipesWordsWithABoardOpenLeaveTheBoardAndTheMenu() {
         menuUp(true)

@@ -16,13 +16,10 @@ import org.robolectric.RobolectricTestRunner;
 import org.robolectric.annotation.Config;
 
 /**
- * When the suggestion request must NOT clear and replay the composing text into the engine.
- *
- * <p>The typing path feeds the engine jamo, base letters plus explicit accents, romaji, stroke
- * numbers or Cangjie keys; the composing text holds the composed result. Replaying that result as
- * plain symbols between two keystrokes destroyed the engine's state: on the KEY2 (2026-09-28)
- * Korean final consonants never attached and Telex produced "viẹt" for "việt". Robolectric
- * instruments the nuanceshim package so the native-backed {@code NuanceSDK} class can be mocked.
+ * When the suggestion request must not clear and replay the composing text into the engine: the
+ * typing path feeds jamo, base letters plus accents, romaji, strokes or Cangjie keys, and replaying
+ * the composed result breaks engine state (Korean finals never attach, Telex gives "viẹt"). The
+ * nuanceshim package is instrumented so {@code NuanceSDK} can be mocked.
  */
 @RunWith(RobolectricTestRunner.class)
 @Config(sdk = 34, manifest = Config.NONE, instrumentedPackages = {"com.blackberry.nuanceshim"})

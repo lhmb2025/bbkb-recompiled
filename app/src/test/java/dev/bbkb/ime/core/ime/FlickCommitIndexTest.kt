@@ -4,12 +4,8 @@ import org.junit.Assert.assertEquals
 import org.junit.Test
 
 /**
- * `flickCommitIndex` maps a CKB flick-up onto the suggestion it commits. The strip shows
- * suggestion i in slot i, left to right, so the slot under the flick IS the list index.
- *
- * The first test is the crash from the 2026-09-27 KEY2 pass: with one suggestion showing, the
- * flick was routed to "the centre slot", index 1, and `SuggestedWords.getWordInfo(1)` threw on a
- * one-element list on every flick-up.
+ * Pins `flickCommitIndex`: the strip shows suggestion i in slot i, so the slot under the flick is
+ * the list index. With one suggestion it must be 0, never a "centre slot" 1 that would overflow.
  */
 class FlickCommitIndexTest {
 

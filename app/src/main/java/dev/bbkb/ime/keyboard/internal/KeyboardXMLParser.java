@@ -58,6 +58,7 @@ public class KeyboardXMLParser<KP extends KeyboardParams> {
         this.mSubtypeDisplayNameHelper = new SubtypeDisplayNameHelper(context);
     }
 
+    /** @param c1031an the key interning cache */
     public void setUniqueKeysCache(UniqueKeysCache c1031an) {
         this.mParams.mTextTable = c1031an;
     }
@@ -70,10 +71,13 @@ public class KeyboardXMLParser<KP extends KeyboardParams> {
         }
     }
 
+    /**
+     * @param i keyboard XML resource id
+     * @param c0977g id of the keyboard being built
+     */
     public KeyboardXMLParser<KP> load(int i, KeyboardId c0977g) {
         this.mParams.mId = c0977g;
-        
-        // Apply device-specific layout overrides if configured
+
         int resolvedResourceId = DeviceProfile.resolveLayoutResource(this.mResources, i);
         
         XmlResourceParser xml = this.mResources.getXml(resolvedResourceId);
@@ -95,7 +99,7 @@ public class KeyboardXMLParser<KP extends KeyboardParams> {
         }
     }
 
-
+    /** @param z true if the keyboard allows gesture input on letter keys (read by Keyboard.allowsGestureForCode) */
     public void setAllowRedundantMoreKeys(boolean z) {
         this.mParams.mAllowRedundantMoreKeys = z;
     }
@@ -191,7 +195,6 @@ public class KeyboardXMLParser<KP extends KeyboardParams> {
     private KeyboardRow parseRowAttributes(XmlPullParser xmlPullParser) throws XmlParseUtils.IllegalAttribute {
         TypedArray typedArrayObtainAttributes = this.mResources.obtainAttributes(Xml.asAttributeSet(xmlPullParser), R.styleable.Keyboard);
         try {
-            // Check for deprecated attributes that should not be used
             boolean hasHorizontalGap = typedArrayObtainAttributes.hasValue(R.styleable.Keyboard_horizontalGap);
             if (hasHorizontalGap) {
                 throw new XmlParseUtils.IllegalAttribute(xmlPullParser, "Row", "horizontalGap");
@@ -298,8 +301,7 @@ public class KeyboardXMLParser<KP extends KeyboardParams> {
                 c1027aj.pushRowAttributes(typedArrayObtainAttributes2);
             }
             XmlParseUtils.checkEndTag("include", xmlPullParser);
-            
-            // Apply device-specific layout overrides if configured
+
             int resolvedIncludeId = DeviceProfile.resolveLayoutResource(this.mResources, resourceId);
             
             XmlResourceParser xml = this.mResources.getXml(resolvedIncludeId);
@@ -312,7 +314,6 @@ public class KeyboardXMLParser<KP extends KeyboardParams> {
                 xml.close();
             }
         } finally {
-            // Always recycle TypedArrays exactly once in finally block
             typedArrayObtainAttributes.recycle();
             typedArrayObtainAttributes2.recycle();
         }
@@ -389,9 +390,8 @@ public class KeyboardXMLParser<KP extends KeyboardParams> {
         }
         TypedArray typedArrayObtainAttributes = this.mResources.obtainAttributes(Xml.asAttributeSet(xmlPullParser), R.styleable.Keyboard_Case);
         try {
-            // NOTE: Keyboard_Case_isFormFillAllowed (index 4) is declared and used by
-            // kbd_unified_input_menu_pkb.xml, but no check for it survived decompilation
-            // and no backing state exists -- such a case currently always matches.
+            // Keyboard_Case_isFormFillAllowed (used by kbd_unified_input_menu_pkb.xml) has no
+            // check or backing state, so such a case always matches.
             return matchString(typedArrayObtainAttributes, R.styleable.Keyboard_Case_keyboardLayoutSet, c0977g.keyboardLayoutSet())
                     && matchTypedValue(typedArrayObtainAttributes, R.styleable.Keyboard_Case_keyboardLayoutSetElement, c0977g.mElementId, KeyboardId.elementIdToName(c0977g.mElementId))
                     && matchTypedValue(typedArrayObtainAttributes, R.styleable.Keyboard_Case_mode, c0977g.mMode, KeyboardId.modeName(c0977g.mMode))
@@ -424,11 +424,7 @@ public class KeyboardXMLParser<KP extends KeyboardParams> {
         return !typedArray.hasValue(i) || typedArray.getBoolean(i, false) == z;
     }
 
-
-    /** Matches a "|"-separated attribute value. Note {@code String.split} on a two-char
-     *  escaped delimiter keeps its non-regex fast path, so no Pattern is needed; what did
-     *  cost was boxing the split array into an Arrays$ArrayList for a linear contains, up
-     *  to eight times per &lt;case&gt; element on every keyboard build. */
+    /** Matches a "|"-separated attribute value; an absent attribute matches. */
     private static boolean matchString(TypedArray typedArray, int i, String str) {
         return !typedArray.hasValue(i) || splitContains(typedArray.getString(i), str);
     }
@@ -455,9 +451,6 @@ public class KeyboardXMLParser<KP extends KeyboardParams> {
             return i2 == typedArray.getInt(i, 0);
         }
         // String values match by name against a "|"-separated list, like matchString.
-        // This branch was lost in decompilation, which made every string-valued
-        // keyboardLayoutSetElement/mode <case> fail — e.g. the shifted/locked shift-key
-        // styles never applied, so the shift icon never changed state.
         if (ResourceConfigManager.isStringType(typedValuePeekValue)) {
             return splitContains(typedArray.getString(i), str);
         }

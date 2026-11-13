@@ -66,6 +66,7 @@ public final class DictionaryManager {
 
     
     public interface LearnedWordsCallback {
+        /** @param list the learned words */
         void onLearnedWords(List<String> list);
     }
 
@@ -104,10 +105,15 @@ public final class DictionaryManager {
         return c0624a;
     }
 
+    /** @param list the active input locales */
     public void initialiseOrSwitchLanguages(Context context, List<Locale> list) {
         doInitialiseOrSwitchLanguages(context, list, true);
     }
 
+    /**
+     * @param list the active input locales
+     * @param z true to register the AUD content observer once loaded
+     */
     private void doInitialiseOrSwitchLanguages(final Context context, final List<Locale> list, final boolean z) {
         Iterator<Locale> it = list.iterator();
         while (it.hasNext()) {
@@ -142,12 +148,16 @@ public final class DictionaryManager {
         }
     }
 
+    /**
+     * @param list the active input locales
+     * @param z true to register the AUD content observer once loaded
+     */
         void doInitBasl(Context context, List<Locale> list, final boolean z) throws IOException {
         Logger.debug(TAG, "Initialising PersonalDictionaryManager and PDU");
         this.personalDictionaryManager = PersonalDictionaryManager.getInstance(NuanceSDKManager.getInstance(), context, context.getFilesDir());
         this.personalDictionaryUtil = this.personalDictionaryManager.getPersonalDictionaryUtil("substitution_macros", "primary-model");
         this.personalDictionaryUtil.load(list, new CompletionListener() {
-            @Override // dev.bbkb.ime.basl.CompletionListener
+            @Override
             public void complete(boolean z2) {
                 Logger.debug(DictionaryManager.TAG, "Load complete: " + z2);
                 if (z2) {
@@ -164,13 +174,8 @@ public final class DictionaryManager {
     }
 
     /**
-     * Registers the system-user-dictionary (AUD) observer, the only route by which a word added
-     * outside this app - Settings, or the framework's own "Add to dictionary" popup - reaches
-     * our personal dictionary and the engine's DLM.
-     *
-     * <p>Every outcome is logged at INFO or WARN. These were {@code Logger.debug}, which a
-     * {@code user} build drops ({@code minLogLevel} is INFO there), so the whole 2026-09-21
-     * KEY2 investigation had no line to read either way.
+     * Registers the AUD observer, the only route by which a word added outside this app reaches
+     * the personal dictionary and the engine's DLM. Logged at INFO/WARN: user builds drop debug.
      */
         void registerAudContentObserver() {
         final PersonalDictionaryUtil pdu = this.personalDictionaryUtil;
@@ -187,10 +192,11 @@ public final class DictionaryManager {
         }
     }
 
+    /** @param list the new input locales */
         void switchInputLanguages(List<Locale> list) {
         Logger.debug(TAG, "Switching languages");
         this.personalDictionaryUtil.switchInputLanguages(list, new CompletionListener() {
-            @Override // dev.bbkb.ime.basl.CompletionListener
+            @Override
             public void complete(boolean z) {
                 Logger.debug(DictionaryManager.TAG, "Language switch completed: " + z);
             }
@@ -212,6 +218,10 @@ public final class DictionaryManager {
         return this.personalDictionaryUtil.getWordSubstitutions();
     }
 
+    /**
+     * @param str the shortcut key
+     * @param str2 unused
+     */
     public void removeWordSubstitution(String str, String str2) {
         if (!isLoaded()) {
             Logger.error(TAG, "PersonalDictionaryManager and PDU not loaded");
@@ -223,6 +233,14 @@ public final class DictionaryManager {
         }
     }
 
+    /**
+     * @param str unused
+     * @param str2 the existing key, or empty to add
+     * @param str3 the new word
+     * @param str4 the new key; nothing happens when empty
+     * @param str5 the locale, or empty for all locales
+     * @param z true to keep the word's case (no auto caps)
+     */
     public boolean updateOrAddWordSubstitution(String str, String str2, String str3, String str4, String str5, boolean z) {
         if (!isLoaded()) {
             Logger.error(TAG, "PersonalDictionaryManager and PDU not loaded");
@@ -244,6 +262,13 @@ public final class DictionaryManager {
         return true;
     }
 
+    /**
+     * @param str the word (expansion)
+     * @param str2 the key (shortcut)
+     * @param str3 the locale, or empty for all locales
+     * @param z true to keep the word's case (no auto caps)
+     * @return false when not loaded or refused; the one-tap add then falls back to a dialog
+     */
     public boolean addWordSubstitution(String str, String str2, String str3, boolean z) {
         if (!isLoaded()) {
             Logger.error(TAG, "PersonalDictionaryManager and PDU not loaded");
@@ -256,15 +281,17 @@ public final class DictionaryManager {
             this.personalDictionaryUtil.add(WordSubstitution.createUserSubstitution(str3, str2, str, !z));
             return true;
         } catch (IllegalArgumentException | AudAddException | InitialisationIncompleteException | KeyAlreadyDefinedException e) {
-            // This `false` is what sends the one-tap add back to the system add-word dialog,
-            // and it used to be returned without a word of explanation - so an AUD that was
-            // refusing every write looked exactly like "the word is already there"
-            // (audit 2026-09-21).
+            // Logged so an AUD refusing writes is distinguishable from a duplicate.
             Logger.warn(TAG, "addWordSubstitution(" + str2 + ") refused: " + e);
             return false;
         }
     }
 
+    /**
+     * @param str the key
+     * @param str2 the word
+     * @param z true to keep the word's case (no auto caps)
+     */
     public boolean syncAddWordSubstitution(String str, String str2, boolean z) {
         if (!isLoaded()) {
             Logger.error(TAG, "PersonalDictionaryManager and PDU not loaded");
@@ -279,9 +306,10 @@ public final class DictionaryManager {
         }
     }
 
+    /** @param z true to include shortcut words */
     public void getLearnedWords(final LearnedWordsCallback callback, boolean z) {
         LearnedWordsListener learnedWordsListener = new LearnedWordsListener() {
-            @Override // dev.bbkb.ime.basl.LearnedWordsListener
+            @Override
             public void complete(List<String> list) {
                 callback.onLearnedWords(list);
             }
@@ -310,16 +338,7 @@ public final class DictionaryManager {
         return personalDictionary;
     }
 
-    /**
-     * GD-18: this used to be gated on a {@code syncAudOnLoad} flag that nothing ever assigned —
-     * verified against the original APK ({@code dev/bbkb/ime/b/a.java} field
-     * {@code h}), where the flag is likewise declared {@code false} and never written, so the
-     * AUD-&gt;BASL reconciliation and the out-of-the-box learning start have never run from here.
-     * The dead predicate and its private {@code syncAudDifferencesToBasl()} helper are gone;
-     * {@link PersonalDictionaryUtil#syncAudDifferencesToBasl()} is still the API to call if the
-     * load-time sync is ever wanted, and {@link #startOutOfTheBoxLearningIfEnabled()} keeps its
-     * live call sites.
-     */
+    /** No load-time AUD sync here; call {@link PersonalDictionaryUtil#syncAudDifferencesToBasl()} if one is wanted. */
         void onLoadComplete() {
         synchronized (this.lock) {
             this.loaded = true;
@@ -332,7 +351,7 @@ public final class DictionaryManager {
                 Logger.error(TAG, "PersonalDictionaryManager and PDU not loaded - cannot save");
             } else {
                 this.personalDictionaryUtil.save(new CompletionListener() {
-                    @Override // dev.bbkb.ime.basl.CompletionListener
+                    @Override
                     public void complete(boolean z) {
                         Logger.debug(DictionaryManager.TAG, "Save complete: " + z);
                     }
@@ -342,18 +361,14 @@ public final class DictionaryManager {
     }
 
     /**
-     * How long {@link #shutdown} waits for the final save of unsaved dictionary changes. Writing
-     * the three JSON files takes a few ms for a typical dictionary; the bound only matters when
-     * the save is stuck behind the AUD sync lock, and a save that outlives it still finishes on
-     * its own thread.
+     * How long {@link #shutdown} waits for the final save. Only matters when the save is stuck
+     * behind the AUD sync lock; a save that outlives it still finishes on its own thread.
      */
     static final long FINAL_SAVE_WAIT_MS = 500L;
 
     public void shutdown() {
-        // The keyboard's onDestroy queues a save on the learning executor and then calls this
-        // straight away: the queued save launched a coroutine on the dictionary's scope, which
-        // the teardown below cancels, so a save not yet dispatched was lost (or, run after this,
-        // it found a fresh unloaded manager). Unsaved changes are written here first.
+        // Write unsaved changes first: a save queued by onDestroy runs on the dictionary's
+        // scope, which the teardown below cancels.
         final PersonalDictionaryUtil pdu;
         synchronized (this.lock) {
             pdu = this.loaded ? this.personalDictionaryUtil : null;
@@ -372,16 +387,8 @@ public final class DictionaryManager {
 
 
     /**
-     * Writes {@code pdu}'s unsaved changes on a thread of its own, waiting at most
-     * {@link #FINAL_SAVE_WAIT_MS}. The save itself is plain blocking code, so a cancelled
-     * dictionary scope does not stop it.
-     */
-    /**
-     * One thread for the life of the process for the final save, not a thread per shutdown.
-     * Wave 3: the save no longer reaches the engine. {@code PersonalDictionaryUtil.doSave} only
-     * writes the three JSON files under the AUD sync lock, and the one engine call this package
-     * makes ({@code addWord}, from {@code addToBasl}) is posted to the engine thread, so this
-     * thread never enters the engine (see EngineThreads for why only two threads may).
+     * One process-wide thread for the final save. It never enters the engine: doSave only writes
+     * files, and engine calls are posted to the engine thread (see EngineThreads).
      */
     private static final ExecutorService FINAL_SAVE_EXECUTOR = Executors.newSingleThreadExecutor(r -> {
         Thread t = new Thread(r, "DictionaryFinalSave");
@@ -389,6 +396,7 @@ public final class DictionaryManager {
         return t;
     });
 
+    /** Writes {@code pdu}'s unsaved changes off-thread, waiting at most {@link #FINAL_SAVE_WAIT_MS}. */
     private static void flushUnsaved(final PersonalDictionaryUtil pdu) {
         if (pdu == null || !pdu.getAreDataDirty()) {
             return;
@@ -413,11 +421,7 @@ public final class DictionaryManager {
         return this.personalDictionaryManager;
     }
 
-    /**
-     * Presents an already-loaded {@link PersonalDictionaryUtil} as this manager's, so a test can
-     * drive the real {@code OneTapAddWord -> addWordSubstitution -> PersonalDictionaryUtil.add}
-     * chain without a Nuance SDK behind {@link #doInitBasl}.
-     */
+    /** Attaches a loaded {@link PersonalDictionaryUtil} so a test can run the add chain without the SDK. */
     @VisibleForTesting
     void attachLoadedUtilForTest(PersonalDictionaryUtil util) {
         this.personalDictionaryUtil = util;
@@ -435,7 +439,7 @@ public final class DictionaryManager {
         clearInstance();
     }
 
-
+    /** @param str the typed input */
     public String getWordSubstitutionForInput(String str, CapsMode mode, Locale locale) {
         PersonalDictionaryUtil.CapsMode capsMode;
         if (!isLoaded()) {
@@ -474,14 +478,17 @@ public final class DictionaryManager {
         }
     }
 
+    /** @param obj a {@link DictionaryWord} */
     public DictionaryWord asDictionaryWord(Object obj) {
         return (DictionaryWord) obj;
     }
 
+    /** @param obj a {@link DictionaryWord} */
     public String getWord(Object obj) {
         return asDictionaryWord(obj).getWord();
     }
 
+    /** @param obj a {@link DictionaryWord}; null is returned unless it is a WordSubstitution */
     public String getSubstitutionKey(Object obj) {
         DictionaryWord dictionaryWordM3844a = asDictionaryWord(obj);
         if (dictionaryWordM3844a instanceof WordSubstitution) {
@@ -490,6 +497,10 @@ public final class DictionaryManager {
         return null;
     }
 
+    /**
+     * @param str the locale string, or empty for entries stored for all locales
+     * @param z true for word substitutions, false for personal words
+     */
     public List<DictionaryWord> getWordsForLocale(String str, boolean z) {
         Map personalDictionary;
         PersonalDictionaryUtil personalDictionaryUtilM3859d = getPersonalDictionaryUtil();

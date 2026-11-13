@@ -128,9 +128,8 @@ def main(argv=None):
         gh.ensure_release(tag, "BBKB %s" % gradle.version_name,
                           args.notes or "BBKB %s" % gradle.version_name)
         if not dry_run:
-            # Copy the APK under its published name first: `gh release upload`
-            # names the asset after the file on disk, and the build output is
-            # app-release.apk, not bbkb-<version>-release.apk.
+            # `gh release upload` names the asset after the file on disk, so copy
+            # app-release.apk to its published name first.
             import shutil
             import tempfile
             staging = tempfile.mkdtemp(prefix="bbkb-publish-")

@@ -19,7 +19,7 @@ import dev.bbkb.ime.BuildConfig;
 
 
 public class SimplifiedKeyboardView extends KeyboardView {
-
+    /** Used until a listener is set: ignores every event. */
     private static final onKeyEventListener NO_OP_KEY_LISTENER = new onKeyEventListener() {
         @Override // dev.bbkb.ime.keyboard.SimplifiedKeyboardView.onKeyEventListener
         public void onKeyDown(Key key) {
@@ -44,10 +44,8 @@ public class SimplifiedKeyboardView extends KeyboardView {
     private Key pressedKey;
 
     /**
-     * Long-press timeout callback. Allocated once: this used to be a fresh anonymous class
-     * capturing the key on EVERY ACTION_DOWN that landed on a long-press-capable key. Reading
-     * {@link #pressedKey} at fire time is equivalent - handleKeyDown assigns it immediately
-     * after start(), and every new ACTION_DOWN cancels the timer first.
+     * Long-press callback, allocated once. Reads {@link #pressedKey} at fire time: handleKeyDown
+     * assigns it right after start(), and every ACTION_DOWN cancels the timer first.
      */
     private final LongPressTimer.Callback longPressCallback = new LongPressTimer.Callback() {
         @Override
@@ -59,6 +57,7 @@ public class SimplifiedKeyboardView extends KeyboardView {
     public interface onKeyEventListener {
         void onKeyDown(Key key);
 
+        /** @param z true if released on the pressed key */
         void onKeyUp(Key key, boolean z);
 
         void onKeyLongPress(Key key);
@@ -68,6 +67,7 @@ public class SimplifiedKeyboardView extends KeyboardView {
         this(context, attributeSet, R.attr.mainKeyboardViewStyle);
     }
 
+    /** @param i default style attribute */
     public SimplifiedKeyboardView(Context context, AttributeSet attributeSet, int i) {
         super(context, attributeSet, i);
         this.keyboardActionListener = new KeyDetector();
@@ -84,10 +84,8 @@ public class SimplifiedKeyboardView extends KeyboardView {
     private boolean stripTextStyle;
 
     /**
-     * Draw key labels the way the suggestion strip draws its words: the strip's text size
-     * ({@code config_suggestion_text_size}), the default typeface, and centred on the font's
-     * full height as a TextView centres, rather than a key's letter size and cap-height
-     * centring. For the accent bar, which stands in for the strip and should read as part of it.
+     * Draws labels like the suggestion strip (its text size, default typeface, TextView-style
+     * centring), for the accent bar, which stands in for the strip.
      */
     public void setStripTextStyle(boolean on) {
         if (stripTextStyle != on) {
@@ -116,10 +114,8 @@ public class SimplifiedKeyboardView extends KeyboardView {
     }
 
     /**
-     * The aux bars (UIM, arrows, accents, diacritics) render as one flat surface in modern
-     * themes. A board with real key surfaces (the number pad) overrides this to false and
-     * gets KeyboardView's normal painting: keyColor for normal keys, keyColorAlt for
-     * functional keys, plus the theme's cap painters.
+     * Aux bars render as one flat surface in modern themes. A board with real key surfaces
+     * (the number pad) returns false to get KeyboardView's normal painting.
      */
     protected boolean drawsFlatModernBackground() {
         return true;
@@ -131,9 +127,7 @@ public class SimplifiedKeyboardView extends KeyboardView {
             super.drawKeyBackground(key, canvas);
             return;
         }
-        // Modern boards: the aux bars (UIM, arrows, accents, diacritics) render as
-        // one flat surface — no per-key fill, no hairline edge dividers. Press feedback
-        // is a rounded translucent state layer centered in the key.
+        // No per-key fill or dividers; press feedback is a rounded translucent state layer.
         if (!key.isPressed()) {
             return;
         }
@@ -155,9 +149,8 @@ public class SimplifiedKeyboardView extends KeyboardView {
 
     @Override
     protected void applyIconTint(Key key, Drawable iconDrawable) {
-        // The highlight-driven tint below is aux-bar semantics (active board = accent,
-        // rest = muted). A board with real key surfaces uses KeyboardView's standard
-        // tinting so its icons (enter arrow, delete) match the regular VKB.
+        // Aux-bar tint (active board = accent, rest muted). Boards with real key surfaces use
+        // the standard tinting so their icons match the regular VKB.
         if (!drawsFlatModernBackground()) {
             super.applyIconTint(key, iconDrawable);
             return;
@@ -249,6 +242,7 @@ public class SimplifiedKeyboardView extends KeyboardView {
         return null;
     }
 
+    /** @param z true if released on the pressed key (commits) */
     private boolean releasedKey(boolean z) {
         Key key = this.pressedKey;
         if (key == null) {
@@ -267,8 +261,7 @@ public class SimplifiedKeyboardView extends KeyboardView {
 
     @Override // android.view.View
     protected void onDetachedFromWindow() {
-        // Every aux bar (UIM, arrows, accents, diacritics) is shown and hidden constantly; a
-        // pending long-press message would otherwise fire onKeyUp on a detached view.
+        // Aux bars are shown and hidden constantly; a pending long-press would fire onKeyUp on a detached view.
         this.keyboardCoordinates.cancel();
         releasedKey(false);
         super.onDetachedFromWindow();

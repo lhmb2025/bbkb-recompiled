@@ -9,16 +9,6 @@ import java.util.HashSet;
 
 
 public final class KeySpecParser {
-
-    // ------------------------------------------------------------------------------------
-    // Key-spec parsing, merged back in from KeySpecParser (§5.9).
-    //
-    // AOSP has ONE KeySpecParser. This tree had it split in two: a label/code/spec splitting
-    // half (used only by the removed <GridRows> tag, so deleted with it) and the
-    // escape/icon/code-reference parsing below. Neither half was AOSP's file, so a diff against
-    // upstream could not line either of them up, which is exactly what C1 exists to prevent.
-    // ------------------------------------------------------------------------------------
-
     private static boolean hasIcon(String str) {
         return str.startsWith("!icon/");
     }
@@ -93,6 +83,7 @@ public final class KeySpecParser {
         throw new KeySpecParserError("Multiple |: " + str);
     }
 
+    /** @param str key spec */
     public static String getLabel(String str) {
         if (str == null || hasIcon(str)) {
             return null;
@@ -112,6 +103,7 @@ public final class KeySpecParser {
         return parseEscape(getAfterLabelEnd(str, i));
     }
 
+    /** @param str key spec */
     public static String getOutputText(String str) {
         if (str == null) {
             return null;
@@ -140,6 +132,7 @@ public final class KeySpecParser {
         return strM7450a;
     }
 
+    /** @param str key spec */
     public static int getCode(String str) {
         if (str == null) {
             return -21;
@@ -166,6 +159,10 @@ public final class KeySpecParser {
         return -4;
     }
 
+    /**
+     * @param str "!code/name" or "0x" hex code
+     * @param i default code when str is neither
+     */
     public static int getCodeFromSpec(String str, int i) {
         if (str == null) {
             return i;
@@ -176,7 +173,7 @@ public final class KeySpecParser {
         return str.startsWith("0x") ? Integer.parseInt(str.substring(2), 16) : i;
     }
 
-    /** Parse an array of icon specs into icon ids (the code parser is {@link #getCode(String)}). */
+    /** Parses icon specs into icon ids. */
     public static int[] getIconIds(String[] strArr) {
         final int n = (strArr == null) ? 0 : strArr.length;
         int[] iArr = new int[n];
@@ -186,6 +183,7 @@ public final class KeySpecParser {
         return iArr;
     }
 
+    /** @param str key spec */
     public static int getIconId(String str) {
         if (str != null && hasIcon(str)) {
             return KeyboardIconSet.getIconId(getBeforeLabelEnd(str, indexOfLabelEnd(str)).substring(6));
@@ -200,25 +198,20 @@ public final class KeySpecParser {
         }
     }
 
-
-    // ------------------------------------------------------------------------------------
-    // More-keys spec parsing, moved here from MoreKeySpec (§5.9).
-    //
-    // AOSP keeps these on KeySpecParser. They had been folded into the subclass of the
-    // MoreKeySpec value type, which is why restoring the MoreKeySpec name needed this move
-    // first: the statics have nothing to do with a key's value, they parse the spec strings a
-    // key is built from, and they were the only reason the pair could not simply collapse.
-    // ------------------------------------------------------------------------------------
-
-    /** Obfuscator residue: was a code-point construction of "%". */
+    /** Placeholder in a more-keys list where additional more-keys are inserted. */
     private static final String PERCENT_MARKER = "%";
 
     private static final String[] EMPTY_KEY_SPECS = new String[0];
 
+    /** @param str comma-separated key specs, backslash escapes allowed */
     public static String[] splitKeySpecs(String str) {
         return splitKeySpecsWithFlag(str, false);
     }
 
+    /**
+     * @param str comma-separated key specs, backslash escapes allowed
+     * @param z true to drop duplicate specs
+     */
     public static String[] splitKeySpecsWithFlag(String str, boolean z) {
         if (TextUtils.isEmpty(str)) {
             return null;
@@ -318,9 +311,7 @@ public final class KeySpecParser {
             }
         } else if (i < length2) {
             arrayListM5681a = new ArrayList<>(java.util.Arrays.asList(strArrM7282a).subList(0, length));
-            // The remaining additional more-keys, appended in order. The decompiled source
-            // indexed with the loop-invariant `i`, so a locale with more additional more-keys
-            // than '%' markers got the same character repeated instead of the distinct tail.
+            // Additional more-keys beyond the '%' markers, appended in order.
             for (int i3 = i; i3 < length2; i3++) {
                 arrayListM5681a.add(strArrM7282a2[i3]);
             }
@@ -334,6 +325,12 @@ public final class KeySpecParser {
         return (String[]) arrayListM5681a.toArray(new String[arrayListM5681a.size()]);
     }
 
+    /**
+     * Reads the int after {@code str} from the first matching spec; matched specs are nulled out.
+     * @param strArr more-keys specs
+     * @param str prefix to look for
+     * @param i default value
+     */
     public static int getIntValue(String[] strArr, String str, int i) throws NumberFormatException {
         if (strArr == null) {
             return i;
@@ -359,6 +356,11 @@ public final class KeySpecParser {
         return i;
     }
 
+    /**
+     * True if {@code str} is present; matching specs are nulled out.
+     * @param strArr more-keys specs
+     * @param str flag to look for
+     */
     public static boolean getBooleanValue(String[] strArr, String str) {
         if (strArr == null) {
             return false;

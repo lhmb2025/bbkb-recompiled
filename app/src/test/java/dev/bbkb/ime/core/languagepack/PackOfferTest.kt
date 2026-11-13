@@ -9,15 +9,9 @@ import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
 
 /**
- * [PackOffer.decide] — the whole "you enabled a language whose dictionary is missing" rule.
- *
- * Pure, so every case is a line. The one that matters most is the Swiss case: enabling a Swiss
- * German keyboard must offer **German**, because the Swiss pack has no locale of its own in the
- * engine's table and installing it would replace the German dictionary as a side effect of adding
- * a keyboard.
- *
- * Robolectric because [PackFixtures] parses the manifest with the framework's `org.json`,
- * an empty stub on the plain JVM.
+ * Pins [PackOffer.decide], the "enabled language has no dictionary" rule. A Swiss German keyboard
+ * must offer German: the Swiss pack has no engine locale and would replace German. Robolectric
+ * because [PackFixtures] parses with `org.json`, an empty stub on the plain JVM.
  */
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [34], manifest = Config.NONE)
@@ -42,8 +36,6 @@ class PackOfferTest {
         declined = declined,
     )
 
-    // ── The ordinary case ─────────────────────────────────────────────────────────────────────
-
     @Test
     fun offersThePackForAnEnabledLanguageThatHasNone() {
         val offer = decide("cy")
@@ -59,8 +51,7 @@ class PackOfferTest {
 
     @Test
     fun offersNothingForALanguageTheEngineCannotLoad() {
-        // isSupported is false for a locale absent from the engine's 105-entry table: a download
-        // would install a dictionary nothing can ever read.
+        // A locale absent from the engine's 105-entry table could never read a download.
         assertNull(decide("cy", supported = emptySet()))
     }
 
@@ -83,8 +74,6 @@ class PackOfferTest {
         assertNull(decide("de_CH", declined = setOf("de")))
     }
 
-    // ── Regional keyboards ────────────────────────────────────────────────────────────────────
-
     @Test
     fun aSwissKeyboardIsOfferedTheBaseLanguagesPackNotTheSwissVariant() {
         val offer = decide("de_CH")
@@ -95,15 +84,13 @@ class PackOfferTest {
 
     @Test
     fun aSwissKeyboardIsOfferedNothingOnceTheBasePackIsInstalled() {
-        // The Swiss variant remains available on the Language packs screen; it is an extra, not a
-        // requirement, so enabling the keyboard does not push it.
+        // The Swiss variant is an optional extra on the Language packs screen, not offered here.
         assertNull(decide("de_CH", installed = setOf("de")))
     }
 
     @Test
     fun anUnknownCountryFallsBackToTheBareLanguage() {
-        // fr_BF has no entry; the engine's registry resolves such a country to French, and so
-        // does the offer.
+        // fr_BF has no entry; the registry resolves it to French, and so does the offer.
         assertEquals("fr", decide("fr_BF")?.locale)
     }
 
@@ -122,11 +109,9 @@ class PackOfferTest {
 
     @Test
     fun aBcp47StyleTagIsAcceptedToo() {
-        // Locale.toLanguageTag() produces dashes and more than one caller has one in hand.
+        // Callers may pass Locale.toLanguageTag() output, with dashes.
         assertEquals("en_US", decide("en-US")?.locale)
     }
-
-    // ── candidateFor on its own ───────────────────────────────────────────────────────────────
 
     @Test
     fun candidateForNamesThePackThatWouldServeALanguage() {
@@ -135,11 +120,8 @@ class PackOfferTest {
         assertNull(PackOffer.candidateFor("tlh", packs))
     }
 
-    // ── Regions the engine's registry substitutes ─────────────────────────────────────────────
-    //
     // The registry maps en_NZ to en_AU, es_MX to es_419 and en_GB (with en_SG/IE/ZA) to the
-    // bundled en_UK. Deciding from the bare language offered New Zealand and Mexico nothing,
-    // because bare en and es are bundled.
+    // bundled en_UK; deciding from the bare language would offer nothing, since en and es ship.
 
     @Test
     fun aSubstitutedRegionIsOfferedThePackTheEngineWillLoad() {

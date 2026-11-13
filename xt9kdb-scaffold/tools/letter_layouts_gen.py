@@ -77,13 +77,12 @@ ROOT = os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)), 
 MAIN = os.path.join(ROOT, "app", "src", "main")
 RES_XML = os.path.join(MAIN, "res", "xml")
 KDB_DIR = os.path.join(MAIN, "assets", "kdb")
-# The per-language keypad KDBs the app used to ship: the app now builds them from a device's
-# geometry file and these documents (KeypadKdbs), so their letters are read from the copies kept here.
+# Reference copies of the per-language keypad KDBs; the app builds its own (KeypadKdbs).
 REFERENCE_KDB_DIR = os.path.join(ROOT, "xt9kdb-scaffold", "reference", "kdb_pkb")
 OUT_DIR = os.path.join(MAIN, "assets", "letter_layouts")
 TEXT_SET_JAVA = os.path.join(MAIN, "java", "dev", "bbkb", "ime", "keyboard", "internal",
                              "KeyboardTextSet.java")
-# The physical-key tables BlackBerry shipped in res/xml; the app no longer carries them.
+# BlackBerry's physical-key tables; not shipped in the app.
 TABLES_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "letter_layouts_tables")
 LATIN_NS = "{http://schemas.android.com/apk/res-auto}"
 ANDROID_NS = "{http://schemas.android.com/apk/res/android}"
@@ -94,33 +93,27 @@ MAX_ENTRY = 8
 MAX_KEYS = 80
 ANY = "any"
 
-# The <switch> kbd_alphabet_pkb.xml used to carry: layout set -> physical-key table, and
-# pkbd_latin for every other layout set whose physical keyboard is kbd_alphabet_pkb.
+# Layout set -> physical-key table; pkbd_latin for every other layout set on kbd_alphabet_pkb.
 PKBD_CASES = {"arabic": "pkbd_arabic", "east_slavic": "pkbd_slavic", "hangul": "pkbd_hangul",
               "hebrew": "pkbd_hebrew", "translit": "pkbd_slavic_translit", "greek": "pkbd_greek"}
 PKBD_DEFAULT = "pkbd_latin"
 
-# The languages whose keys type an alphabet of their own, and the engine layout
-# (assets/kdb/<name>_pkb.xml) the letters come from: the old HardwareScriptLayouts.FILES.
-# LetterLayoutsMatchEngineTest.SCRIPT_KDB holds the same map and checks the documents against it.
+# Languages whose keys type their own alphabet -> the engine layout (assets/kdb/<name>_pkb.xml)
+# the letters come from. Keep in sync with LetterLayoutsMatchEngineTest.SCRIPT_KDB.
 SCRIPT_KDB = {"ar": "arabic", "ru": "east_slavic", "uk": "ukranian", "be": "belarusian",
               "iw": "hebrew", "el": "greek", "ko": "korean",
-              # The Cyrillic languages on the Russian key map: Kyrgyz (method.xml) and the three
-              # offered as runtime subtypes once their pack is installed (SideloadedSubtypes).
+              # Cyrillic on the Russian key map: Kyrgyz (method.xml) and the sideloaded three.
               # Their extra letters come from the text tables as lists.
               "ky": "east_slavic", "kk": "east_slavic", "tg": "east_slavic", "tt": "east_slavic"}
 
-# Layout sets a runtime-subtype language (SideloadedSubtypes.java) gets a document for: the ones
-# with physical-key tables. A script layout with none (hindi, myanmar…) gets no document here.
+# Layout sets a sideloaded language gets a document for: those with physical-key tables.
 SIDELOADED_LAYOUT_SETS = ("qwerty", "east_slavic")
 SIDELOADED_JAVA = os.path.join(MAIN, "java", "dev", "bbkb", "ime", "core", "subtypeswitcher",
                                "SideloadedSubtypes.java")
 
-# The engine KDB each keyboard's engine loads (assets/kdb/<name>_pkb.xml), by language: measured
-# 2026-10-15 by switching through every keyboard on the emulator and reading the XT9KDB SetKdbNum
-# log. Most Latin keyboards share English's qwerty file. The letters a key's KDB carries beyond what
-# its document types (ñ on the Spanish n) become the key's engineKeys, so a KDB built from the
-# document holds the same letters as the file the engine loads today.
+# The engine KDB each language loads (assets/kdb/<name>_pkb.xml), measured from the XT9KDB
+# SetKdbNum log. Letters a KDB key carries beyond what the document types (ñ on the Spanish n)
+# become the key's engineKeys, so a KDB built from the document holds the same letters.
 ENGINE_KDB = {"cs": "qwertz", "de": "qwertz", "hr": "qwertz", "hu": "qwertz",
               "es": "spanish", "eu": "spanish", "fil": "spanish", "gl": "spanish",
               "fi": "finnish", "sv": "finnish", "fr": "azerty", "ca": "catalan", "da": "danish",
@@ -130,8 +123,7 @@ ENGINE_KDB = {"cs": "qwertz", "de": "qwertz", "hr": "qwertz", "hu": "qwertz",
               "ky": "east_slavic", "kk": "east_slavic", "tg": "east_slavic", "tt": "east_slavic"}
 ENGINE_KDB_DEFAULT = "qwerty"
 
-# English names for the documents' name attribute. The app shows its own localised names; this is
-# only the label a file carries.
+# The documents' name attribute only; the app shows its own localised names.
 LANGUAGE_NAMES = {
     "af": "Afrikaans", "ar": "Arabic", "az": "Azerbaijani", "be": "Belarusian", "bs": "Bosnian",
     "ca": "Catalan", "cs": "Czech", "cy": "Welsh", "da": "Danish", "de": "German", "el": "Greek",
@@ -146,8 +138,7 @@ LANGUAGE_NAMES = {
     "ro": "Romanian", "ru": "Russian", "sk": "Slovak", "sl": "Slovenian", "sq": "Albanian",
     "sr": "Serbian", "su": "Sundanese", "sv": "Swedish", "tr": "Turkish", "uk": "Ukrainian",
     "uz": "Uzbek", "vi": "Vietnamese", "zz": "No language (alphabet)",
-    # Romaji, pinyin and cangjie: another script on screen, but the physical keys type the key
-    # map's Latin letters and take pkbd_latin's lists.
+    # Romaji, pinyin, cangjie: the physical keys type Latin letters with pkbd_latin's lists.
     "ja": "Japanese", "zh": "Chinese",
 }
 
@@ -163,8 +154,6 @@ def warn(message):
 def rel(path):
     return os.path.relpath(path, ROOT)
 
-
-# ── code points and Java's character rules ───────────────────────────────────────────────────────
 
 def java_upper(cp):
     """Java's Character.toUpperCase(int): the simple mapping, the code point itself when the full
@@ -191,8 +180,6 @@ def is_latin_or_common(cp):
 def fmt_cp(cp):
     return "U+%04X" % cp
 
-
-# ── KeyboardTextSet.java: the !text/ tables ──────────────────────────────────────────────────────
 
 JAVA_SIMPLE_ESCAPES = {"b": "\b", "t": "\t", "n": "\n", "f": "\f", "r": "\r", '"': '"', "'": "'",
                        "\\": "\\", "s": " "}
@@ -380,8 +367,6 @@ def unescape_token(token):
     return "".join(out)
 
 
-# ── the physical-key tables, letter_layouts_tables/pkbd_*.xml ──────────────────────────────────────────────────
-
 class PkbdTable:
     """The old PhysicalKeySpecTable as KeyboardXMLParser filled it for one subtype: label -> lists."""
 
@@ -460,8 +445,6 @@ def physical_keyboard_of(layout_set):
     return kbd, kbd == "kbd_alphabet_pkb"
 
 
-# ── the engine's hardware layouts, assets/kdb/<name>_pkb.xml ─────────────────────────────────────
-
 AREA = re.compile(r"<area>(.*?)</area>", re.S)
 KEY = re.compile(r"<key\b([^>]*)/>")
 ATTRIBUTE = re.compile(r"([A-Za-z0-9_]+)=\"([^\"]*)\"")
@@ -519,8 +502,7 @@ class ScriptLayout:
                 if not codes:
                     continue
                 if "keyLabel" in attributes:
-                    # The Latin KDBs' "keyLabel + keyCodes" form: parse() ignores the label and
-                    # takes the first code as the letter. No script layout has one today.
+                    # "keyLabel + keyCodes" form: the first code is the letter.
                     self.nordic_form_keys += 1
                 width = dp(attributes.get("keyWidth", ""))
                 if width <= 0:
@@ -604,8 +586,6 @@ def load_script_layout(name):
     return ScriptLayout(kdb_path(name))
 
 
-# ── subtypes: which language uses which tables ───────────────────────────────────────────────────
-
 def language_code(locale):
     """LocaleUtils.languageCode of LocaleUtils.constructLocaleFromString(locale)."""
     language = locale.split("_")[0]
@@ -671,8 +651,6 @@ def read_sideloaded_subtypes():
     return out
 
 
-# ── documents ────────────────────────────────────────────────────────────────────────────────────
-
 class Key:
     def __init__(self, code, key_spec):
         self.code = code
@@ -737,7 +715,7 @@ def clean_list(doc_id, code, field, tokens):
                  % (doc_id, code, field, value, " ".join(fmt_cp(ord(c)) for c in value), problem))
             continue
         if value in out:
-            # Kept: the old list shows it twice too, and §11 does not forbid it.
+            # Allowed by §11.
             warn("%s %s %s: %r appears twice in the source list; kept as it is"
                  % (doc_id, code, field, value))
         out.append(value)
@@ -799,8 +777,8 @@ def script_document(doc_id, language, layout_set, table, layout, sources):
     for code, codes in cells:
         letter = codes[0]
         key = Key(code, chr(letter))
-        # The old HardwareScriptLayouts.letterOf with Shift: the upper case where the script has one,
-        # else the table's Shift legend, else the key's second legend, else the letter itself.
+        # Shift: the upper case where the script has one, else the table's Shift legend, else the
+        # key's second legend, else the letter itself.
         upper = java_upper(letter)
         if upper != letter:
             shifted = upper
@@ -817,9 +795,8 @@ def script_document(doc_id, language, layout_set, table, layout, sources):
                 shifted = letter
         if shifted != java_upper(letter):
             key.character_map_keys = chr(shifted)
-        # The old HardwareScriptLayouts.alternatesFor: on a cased script the further legends are
-        # the double-tap sequence; a caseless script has none, and while a script layout drove the
-        # keys the table's multitap lists were never read (KeyboardSwitcher.getMoreKeysForKeyByStyle).
+        # On a cased script the further legends are the double-tap sequence; a caseless script
+        # has none, and the table's multitap lists are not used for script layouts.
         if len(codes) > 1 and java_upper(letter) != letter:
             key.multitap_keys = clean_list(doc_id, code, "multitapKeys",
                                            [chr(c) for c in codes[1:]])
@@ -857,8 +834,6 @@ def latin_document(language, table, sources, layout_set=None):
                 key.character_map_keys = values[0]
     return doc
 
-
-# ── source documents ─────────────────────────────────────────────────────────────────────────────
 
 # What every generated file carries in its first comment; a file without it is kept by hand.
 GENERATED_MARK = HEADER.split(" — ")[0]
@@ -933,8 +908,6 @@ def read_source_documents():
             sources[doc.id] = doc
     return sources
 
-
-# ── the on-screen rows, res/xml/rowkeys_<id>1..3.xml ─────────────────────────────────────────────
 
 # The positions each rows template gives the on-screen letter rows, by the QWERTY key code a
 # document names them with. The engine's matching geometry is assets/kdb/<template>_vkb.xml.
@@ -1196,8 +1169,6 @@ def on_screen_rows(doc, texts):
     return files
 
 
-# ── writing ──────────────────────────────────────────────────────────────────────────────────────
-
 def xml_attr(value):
     out = []
     for c in value:
@@ -1269,19 +1240,16 @@ def validate(doc):
             assert all(entry_problem(v) is None for v in values), (doc.id, k.code, values)
 
 
-# ── main ─────────────────────────────────────────────────────────────────────────────────────────
-
 def main():
     texts = TextTables(TEXT_SET_JAVA)
     files = SCRIPT_KDB
     pkbd_cases, pkbd_default = PKBD_CASES, PKBD_DEFAULT
     subtypes = read_subtypes()
-    # The documents kept by hand (Colemak, Dvorak): read for their on-screen rows, never written.
+    # Hand-kept documents (Colemak, Dvorak): read for their on-screen rows, never written.
     kept_by_hand = read_source_documents()
 
-    # Languages typed on Latin keys that also have a keyboard with no physical-key table (Chinese:
-    # stroke and Zhuyin beside pinyin and cangjie). A document bound to any layout set would reach
-    # that keyboard too, so these languages get one document per layout set that has tables.
+    # Latin-key languages that also have a keyboard with no physical-key table (Chinese stroke and
+    # Zhuyin): an any-layout-set document would reach it too, so they get one per layout set.
     per_layout_set = set()
     for locale, layout_set, origin in subtypes:
         language = language_code(locale)
@@ -1298,9 +1266,8 @@ def main():
         mark = len(warnings)
         kbd, has_tables = physical_keyboard_of(layout_set)
         if language in files:
-            # The seven languages whose keys type their own alphabet (while the "Use active
-            # language's alphabet" switch is on). The translit keyboards share the letters and
-            # differ in their tables, so they are documents of their own.
+            # Keys type their own alphabet ("Use active language's alphabet"). Translit keyboards
+            # share the letters but not the tables, so they get documents of their own.
             if not has_tables:
                 raise ValueError("%s: layout set %s has no physical-key tables" % (locale, layout_set))
             doc_id = language + "-translit" if layout_set == "translit" else language
@@ -1313,9 +1280,8 @@ def main():
                        "text table %s" % table_key, subtype_note]
             doc = script_document(doc_id, language, layout_set, table, layout, sources)
         elif has_tables and table_file == pkbd_default:
-            # Every other keyboard whose physical keyboard is kbd_alphabet_pkb types the key map's
-            # Latin letters, and the Latin table's lists (keyed by those letters) apply to it
-            # whatever its on-screen alphabet is (romaji, pinyin, cangjie).
+            # Any other kbd_alphabet_pkb keyboard types the key map's Latin letters with the Latin
+            # table's lists, whatever its on-screen alphabet.
             table = PkbdTable(table_file, layout_set, language, table_key, texts)
             sources = ["letters a-z on KEYCODE_A..KEYCODE_Z (the firmware key map)",
                        "lists xt9kdb-scaffold/tools/letter_layouts_tables/%s.xml for layout set %s" % (table_file, layout_set),
@@ -1323,14 +1289,12 @@ def main():
             doc = latin_document(language, table, sources,
                                  layout_set if language in per_layout_set else None)
         elif has_tables:
-            # A script table (pkbd_slavic) on a keyboard whose keys type Latin letters: every entry
-            # is keyed by a letter those keys never type, so nothing of it is reachable.
+            # A script table on Latin keys: no entry is reachable.
             skipped.append((locale, layout_set, "table %s is keyed by letters the keys never type"
                             % table_file))
             continue
         else:
-            # The layout set has no alphabetPkb element, so the physical keys get the on-screen
-            # alphabet, which carries no physical-key table: the key map's letters, nothing more.
+            # No alphabetPkb element: the keys get the on-screen alphabet, which has no table.
             skipped.append((locale, layout_set, "no physical-key table (the physical keyboard is %s)" % kbd))
             continue
         add_engine_keys(doc, language)
@@ -1340,8 +1304,7 @@ def main():
             documents[doc.id] = doc
             continue
         if existing.layout_set != doc.layout_set:
-            # One document can name one layout set; a second set for the same id needs an id of
-            # its own, as the translit keyboards have.
+            # One layout set per document; a second set needs its own id (as translit has).
             raise ValueError("%s: %s is for layout set %s, but %s made the document for %s"
                              % (doc.id, subtype_note, doc.layout_set, existing.sources[-1],
                                 existing.layout_set))
@@ -1354,9 +1317,8 @@ def main():
             del warnings[mark:]
             existing.sources.append(subtype_note)
 
-    # A Latin document is bound to its language on any layout set: where one keyboard of a
-    # language has a document and another has nothing today (Chinese stroke beside pinyin), the
-    # document reaches the second one too once the registry selects by binding.
+    # A Latin document binds to its language on any layout set, so it also reaches a keyboard of
+    # that language that has none (Chinese stroke beside pinyin).
     for locale, layout_set, reason in skipped:
         language = language_code(locale)
         bound = [d.id for d in documents.values()
@@ -1364,9 +1326,8 @@ def main():
         if bound:
             warn("%s:%s has nothing today (%s), but %s is bound to its language %s on any layout set"
                  % (locale, layout_set, reason, ", ".join(sorted(bound)), language))
-    # Two language documents with the same binding could never both be selected; the registry
-    # would always take the one named after the language, and the other would be dead weight.
-    # (Colemak and Dvorak, bound to no language, are chosen by the user and are not checked.)
+    # Two documents with the same binding could never both be selected. (Colemak and Dvorak bind
+    # to no language and are not checked.)
     bindings = {}
     for doc_id in sorted(documents):
         doc = documents[doc_id]
@@ -1383,7 +1344,7 @@ def main():
     os.makedirs(OUT_DIR, exist_ok=True)
     wanted = {doc_id + ".xml" for doc_id in documents}
     for stale in sorted(set(os.listdir(OUT_DIR)) - wanted):
-        # Only a document this script wrote is its to delete; one kept by hand never is.
+        # Never delete a hand-kept document.
         if stale.endswith(".xml") and is_generated(os.path.join(OUT_DIR, stale)):
             os.remove(os.path.join(OUT_DIR, stale))
             print("removed stale %s" % stale)

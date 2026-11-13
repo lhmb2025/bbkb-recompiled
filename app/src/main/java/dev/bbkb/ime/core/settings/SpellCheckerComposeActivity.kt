@@ -9,10 +9,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import dev.bbkb.ime.core.settings.screens.SpellCheckerSettingsScreen
 
-/**
- * Modern Compose-based Spell Checker Settings Activity
- * Launched from Android's system spell checker settings
- */
+/** Spell checker settings, launched from Android's spell checker settings. */
 class SpellCheckerComposeActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

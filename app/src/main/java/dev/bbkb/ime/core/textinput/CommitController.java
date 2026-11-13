@@ -19,99 +19,33 @@ import dev.bbkb.ime.core.suggestion.SuggestionSpanBuilder;
 import dev.bbkb.ime.keyboard.KeyboardSwitcher;
 
 /**
- * The commit pipeline: ONE execution path ({@link #execute}) fed by a {@link CommitRequest}, plus
- * the thin adapters that resolve each caller's intent into such a request.
- *
- * <h2>Shape (Phase 1c)</h2>
- *
- * <p>This class used to expose ten methods that each decided <em>what</em> to commit and then
- * wrote to the editor themselves. The decision logic was duplicated across them (the auto-correct
- * gate is still applied at two independent sites, {@link InputLogic#handleSeparatorInput} and
- * {@link #autoCorrectAndCommitExtended}, because those two see different inputs), the differences
- * between paths were implicit in which method you called, and a caller could not find out what
- * the pipeline had done — {@code commitVoiceInput} double-committed a palette emoji for exactly
- * that reason (audit SS-1).
- *
- * <p>Now every editor write for a commit goes through {@link #execute}. The methods above it are
- * adapters: they resolve the payload (pick the correction, strip engine markers, choose the
- * separator) and build a {@link CommitRequest}. The differences that used to be spread across ten
- * bodies are that request's fields.
- *
- * <p>Three <em>protocols</em> remain inside {@code execute}, because the editor genuinely sees
- * three different call sequences — a span-decorated word, a CJK prediction pick, and a bare
- * {@code commitText}. They are selected by {@link CommitRequest#protocol}, not by which method
- * the caller reached for. See {@link CommitRequest} for why that distinction is the important one.
+ * The commit pipeline: one execution path ({@link #execute}) fed by a {@link CommitRequest}, plus
+ * adapters that resolve each caller's intent (correction, marker stripping, separator) into a
+ * request. The auto-correct gate runs at two sites, {@link InputLogic#handleSeparatorInput} and
+ * {@link #autoCorrectAndCommitExtended}, because they see different inputs.
  */
 class CommitController {
 
     private static final String TAG = "CommitController";
 
-    /**
-     * NuanceSDK suggestion markers (Issue #14).
-     *
-     * <p>GX-32/TI-18: these two were {@code "%ClipboardViewHolder"} and {@code "%TextChangeType"} -
-     * the de-obfuscation pass's class names substituted into string LITERALS. Recovered from the
-     * original APK ({@code sources/dev/bbkb/ime/core/c/a.java}, method
-     * {@code b(String)}), which reads
-     * {@code if (str.contains("%b")) { if (str.startsWith("%b")) deleteSurroundingText(1,0);
-     * str = str.replaceAll(".%b","").replace("%b",""); }} followed by the {@code "%B"} pass.
-     * The engine's markers are a lower/upper pair, which is also why
-     * {@code core/utils/d.java} strips {@code "%B"} case-insensitively.
-     *
-     * <p>Two consequences of the corrupted values: a real {@code %b} marker was never stripped and
-     * committed as raw text, and anything a user literally typed containing {@code %TextChangeType}
-     * was silently deleted. The old {@code MARKER_CLIPBOARD_LOWER} constant is gone - both
-     * constants held the same original literal, so the doubled {@code replace} was one operation
-     * written twice.
-     */
+    /** Engine suggestion markers, a lower/upper pair; both are stripped before commit. */
     private static final String MARKER_BOUNDARY_LOWER = "%b";
     private static final String MARKER_BOUNDARY = "%B";
 
-    /**
-     * {@code SuggestedWordInfo} kind for a SUBSTITUTION - a personal-dictionary macro, either a
-     * user's own or one of the shipped ones in {@code assets/substitution_macros}
-     * ({@code i -> I}, {@code bb -> BlackBerry}, {@code alot -> a lot}, the {@code %D}/{@code %T}
-     * date macros). Inserted at index 1 by
-     * {@code NuanceSDKDictionaryBridge.shouldAutoCorrect}, mirroring the original's
-     * {@code sources/dev/bbkb/ime/core/r.java:208}.
-     */
+    /** Suggestion kind for a personal-dictionary or shipped substitution macro. */
     static final int KIND_SUBSTITUTION = 7;
 
     /**
-     * FIX-MACRO / D-3: the original's auto-correct commit gate, restored.
-     *
-     * <p>{@code sources/dev/bbkb/ime/core/c/a.java:461} picks the TYPED word when
-     * {@code this.f.t() == null || (iU != 7 && (!dVar.ab || iU == 0))}, where {@code iU} is the
-     * candidate's kind and {@code dVar.ab} is the per-user auto-correct setting. Negated, the
-     * CANDIDATE commits when {@code acWord != null && (kind == 7 || (acEnabled && kind != 0))}.
-     *
-     * <p>The {@code kind == 7} disjunct is the escape hatch: a macro expands even when the user
-     * has auto-correct switched off. We had only {@code acEnabled && kind != 0}, so turning
-     * auto-correct off silently turned every macro off with it. Ordinary spelling corrections
-     * (kind 1/2/3) still obey the setting, and kind 0 - "the word the user typed" - never
-     * commits as a correction, in the original as here.
-     *
-     * <p><b>DELIBERATE DIVERGENCE from the original:</b> {@code suggestionsAllowedInEditor}.
-     * The original consults no editor predicate here, so its escape hatch ignores the field it
-     * is typing into - a macro expands in a password box as readily as in a message. Every OTHER
-     * correction is already held back by the editor's own declaration:
-     * {@code SettingsValues.isAutoCorrectionEnabledPerUserSettings} is
-     * {@code isAutoCorrectEnabled && !editorCapabilities.noAutoCorrect}, and {@code noAutoCorrect}
-     * is set for {@code TYPE_TEXT_FLAG_NO_SUGGESTIONS} and for any single-line field that did not
-     * opt in. Kind 7 was the one path left that overrode the app. Gating it on
-     * {@link dev.bbkb.ime.core.textinput.connection.EditorCapabilities#shouldShowSuggestions}
-     * closes that: no expansion in password, email-address, URI, filter, {@code NO_SUGGESTIONS}
-     * or force-ASCII fields, where silently rewriting what was typed can corrupt a credential.
-     * That same flag already honours the user's "Force suggestions" override for non-password
-     * fields, so anyone who wants macros everywhere still has the switch.
+     * Macros (kind 7) expand even with auto-correct off, but never in fields that disallow
+     * suggestions (password, email, URI, {@code NO_SUGGESTIONS}). Other kinds need auto-correct
+     * on; kind 0 (the typed word) never commits as a correction.
      */
     static boolean shouldCommitAutoCorrectCandidate(String acWord, int kind, boolean autoCorrectEnabled,
             boolean suggestionsAllowedInEditor) {
         if (acWord == null) {
             return false;
         }
-        // Not folded into one expression: kind 7 must NOT fall through to the auto-correct term
-        // below, which would re-admit the macro whenever auto-correct happens to be on.
+        // Kind 7 must not fall through to the auto-correct term, which would re-admit it.
         if (kind == KIND_SUBSTITUTION) {
             return suggestionsAllowedInEditor;
         }
@@ -124,21 +58,9 @@ class CommitController {
         this.mInputLogic = inputLogic;
     }
 
-    // ═══════════════════════════════════════════════════════════════════════════
-    //  THE ONE EXECUTION PATH
-    // ═══════════════════════════════════════════════════════════════════════════
-
     /**
-     * Write one resolved {@link CommitRequest} to the editor. Every commit in the typing path
-     * ends here.
-     *
-     * <p>{@code settings} is unused by {@link CommitRequest.Protocol#RAW} — a bare code-point
-     * commit consults nothing — so {@link #commitTouchEventText()}, which has no settings of its
-     * own, may pass {@code null}. The other two protocols require it.
-     *
-     * <p>{@code handler} and {@code eventContext} are needed only by
-     * {@link CommitRequest.Protocol#PREDICTION_WORD}, which cancels pending suggestion updates
-     * and marks the key handled as part of committing; the others accept {@code null}.
+     * Writes one resolved request to the editor. {@code settings} may be null only for RAW;
+     * {@code handler} and {@code eventContext} are required only for PREDICTION_WORD.
      */
     CommitResult execute(SettingsValues settings, CommitRequest request,
             UIUpdateHandler handler, InputEventContext eventContext) {
@@ -153,28 +75,14 @@ class CommitController {
         }
     }
 
-    /** One {@code commitText} and nothing else: a lone code point, or a flushed multi-tap char. */
     private CommitResult executeRaw(CommitRequest request) {
-        // TI-8: this used to branch on DeviceProfile.isPreMarshmallow() to route numeric-editor
-        // commits through postAtFrontOfQueue. That predicate is SDK_INT < VERSION_CODES.M, below
-        // minSdk, so the branch (and its anonymous Runnable allocation site, on the commit
-        // hot path) was unreachable.
         mInputLogic.mRichInputConnection.commitText(request.text, 1);
         return new CommitResult(request.text.length(), false, true);
     }
 
     /**
-     * The ordinary word commit: attach a {@link android.text.style.SuggestionSpan}, write the word
-     * (and the separator if the append gate lets it through), build the {@link CommitEventRecord}
-     * that makes the commit revertible, notify the learning subsystem, and reset touch-highlight
-     * and cached-suggestion state.
-     *
-     * <p>For {@link CommitRequest.Reason#AUTO_CORRECT} two further stages run at the end: the
-     * engine-marker tail delete, and the {@link CorrectionInfo} round trip that tells the editor a
-     * correction happened. Both are guarded on the request actually carrying the fields they need
-     * ({@code rawCandidate} / {@code typedWordBefore}), so a {@code DECIDED_WORD} request built by
-     * {@link #commitWordExtended} — which has no candidate and no correction to report — behaves
-     * exactly as it did before this path was unified.
+     * Span-decorated word commit with revert record and learning. AUTO_CORRECT adds the marker
+     * tail delete and {@link CorrectionInfo}, each only when the request carries its field.
      */
     private CommitResult executeWord(SettingsValues settings, CommitRequest request) {
         final String word = request.text;
@@ -185,8 +93,7 @@ class CommitController {
                     + " composing='" + mInputLogic.mComposingTracker.getComposingText() + "'");
         }
         boolean isBatchInput = request.commitType == CommitEventRecord.CommitType.BATCH_INPUT_WORD;
-        // Learning off for this field (preference, field type, or incognito): the commit still
-        // carries its alternatives, but neither the casing re-learn nor a later popup pick learns.
+        // With learning off the commit still carries its alternatives, but nothing learns.
         boolean learningAllowed = mInputLogic.mIme.getDynamicLearningManager().isLearningAllowed();
         CharSequence payload = request.withSuggestionSpan
                 ? SuggestionSpanBuilder.getTextWithSuggestionSpan(
@@ -194,9 +101,7 @@ class CommitController {
                 : word;
         PrevWordsInfo prevWordsInfo = mInputLogic.mRichInputConnection.getPrevWordsInfo(
                 settings.spacingAndPunctuation, mInputLogic.mComposingTracker.isComposing() ? 2 : 1);
-        // F9: consume-once. The flag is set per manual pick (cursor sits before an existing
-        // separator); without clearing it here, a later unrelated commit could reuse the
-        // stale value and skip the cursor past a character that isn't there.
+        // Consume-once: a stale flag would skip the cursor past a character that isn't there.
         boolean shouldAppendSpace = mInputLogic.mShouldAppendSpace;
         mInputLogic.mShouldAppendSpace = false;
         mInputLogic.mRichInputConnection.commitText(payload, shouldAppendSpace ? 2 : 1);
@@ -221,25 +126,17 @@ class CommitController {
                 SuggestedWords.findByNuanceWord(currentSuggestions, word);
         if (learningAllowed && matched != null && !TextUtils.isEmpty(word)
                 && word.equalsIgnoreCase(matched.word) && !word.equals(matched.word)) {
-            // Typed casing differs from the Nuance entry (e.g. auto-capitalized sentence
-            // start): record the user's casing in the dynamic language model. Posted (Phase A),
-            // ahead of the learn op below and the next word's feeds.
+            // Record the user's casing in the DLM. Posted ahead of the learn op below.
             final String casedWord = word;
             EngineOps.post("casingAddWord", sdk -> sdk.addWord(casedWord));
         }
         if (request.learn) {
-            // Always transition the engine out of the just-typed word. Previously the
-            // case-mismatch branch above returned without this step, leaving the engine's
-            // character buffer holding the typed letters — the next prediction request then
-            // returned completions of the committed word instead of next-word predictions.
-            // See docs/archived/2026-05_composing-and-ckb-gestures/2026-05_post-commit-next-word-prediction_investigation.md. learn either records the
-            // pick via selectionListSelectWord or clears the engine, both of which end the word.
+            // Always end the word in the engine, or the next request returns completions of
+            // the committed word instead of next-word predictions.
             if (matched != null || isBatchInput) {
                 mInputLogic.mIme.getDynamicLearningManager().learn(matched);
             } else {
-                // No candidate list carried this word (suggestions and auto-correction off, so
-                // no lookup ran; or the word was not among the alternatives): learn it by
-                // content, which is also what ends the word in the engine.
+                // No candidate carried this word: learn it by content, which also ends it.
                 mInputLogic.mIme.getDynamicLearningManager().learnTypedWord(word);
             }
         }
@@ -247,13 +144,10 @@ class CommitController {
         if (mInputLogic.mSmartPunctuationAnalyzer != null) {
             mInputLogic.mSmartPunctuationAnalyzer.clearDumbMode();
         }
-        // Clear the cached suggestions for the just-committed word. Otherwise
-        // any code that reads mCurrentSuggestions before the next-word predictions
-        // arrive (e.g. the empty-prediction fallback in SuggestionRequestQueue)
-        // will keep displaying the same word's predictions on the strip.
+        // Otherwise readers before the next-word predictions arrive (e.g. the empty-prediction
+        // fallback) keep showing the committed word's suggestions.
         mInputLogic.mCurrentSuggestions = SuggestedWords.EMPTY;
 
-        // ── AUTO_CORRECT-only tail stages ──────────────────────────────────────
         if (request.reason == CommitRequest.Reason.AUTO_CORRECT) {
             if (request.rawCandidate != null && request.rawCandidate.endsWith(MARKER_BOUNDARY)) {
                 mInputLogic.mRichInputConnection.deleteSurroundingText(1, 0);
@@ -269,9 +163,8 @@ class CommitController {
     }
 
     /**
-     * The CJK / Japanese prediction-strip commit. Unlike {@link #executeWord} it writes the
-     * suggestion text with no {@code SuggestionSpan}, learns through the picked-suggestion record,
-     * re-establishes the composing region afterwards, and refreshes suggestions synchronously.
+     * CJK / Japanese strip commit: no span, learns via the picked-suggestion record, then
+     * re-establishes the composing region and refreshes suggestions synchronously.
      */
     private CommitResult executePredictionWord(SettingsValues settings, CommitRequest request,
             UIUpdateHandler handler, InputEventContext eventContext) {
@@ -296,8 +189,7 @@ class CommitController {
                             + " word=" + picked.word
                             + " thread=" + Thread.currentThread().getName());
                 }
-                // Audit EB-8: tolerate a missing engine. Posted (Phase A), before the tracker's
-                // own clearAll op, as the direct call ran before it.
+                // Posted before the tracker's own clearAll op; tolerates a missing engine.
                 EngineOps.post("japaneseKind7Clear", sdk -> sdk.clear());
                 mInputLogic.mComposingTracker.clearAll();
             }
@@ -310,7 +202,7 @@ class CommitController {
         eventContext.markKeyHandled();
         handler.cancelPendingSuggestionUpdates();
         mInputLogic.updateSuggestionsSync(settings, 1);
-        // F9: consume-once, same rationale as executeWord.
+        // Consume-once, as in executeWord.
         boolean shouldAppendSpace = mInputLogic.mShouldAppendSpace;
         mInputLogic.mShouldAppendSpace = false;
         final String separator = request.trailingSeparator;
@@ -333,15 +225,8 @@ class CommitController {
         return new CommitResult(picked.word.length(), separatorCommitted, !skipLearningAfter);
     }
 
-    // ═══════════════════════════════════════════════════════════════════════════
-    //  ADAPTERS — resolve a caller's intent into a CommitRequest
-    // ═══════════════════════════════════════════════════════════════════════════
-
     /**
-     * Commits the current composing text (if any) as a typed word, or flushes
-     * any pending touch-event text if not composing. Used to flush partial input before
-     * focus change or before voice input begins.
-     *
+     * Commits the composing word, or flushes pending touch text. Used before focus change or voice.
      * @param c0804d current settings values
      */
     void commitComposingOrReset(SettingsValues c0804d) {
@@ -355,11 +240,8 @@ class CommitController {
     }
 
     /**
-     * Commits the current composing text, or resets composing state to idle if the cursor
-     * has been moved mid-word. Falls back to flushing any pending touch-event text when
-     * not composing.
-     *
-     * @param c0804d     current settings values
+     * Like {@link #commitComposingOrReset}, but resets instead when the cursor moved mid-word.
+     * @param c0804d current settings values
      * @param enumC0690f the input source that triggered this flush
      */
     void commitOrResetComposing(SettingsValues c0804d, InputSource enumC0690f) {
@@ -376,11 +258,8 @@ class CommitController {
     }
 
     /**
-     * Commits a single Unicode code point to the editor.
-     *
-     * @param c0804d     current settings values (unused by the RAW protocol; kept for the
-     *                   signature the typing path calls through)
-     * @param i          the Unicode code point to commit
+     * @param c0804d current settings values (unused by the RAW protocol)
+     * @param i the Unicode code point to commit
      * @param enumC0690f the input source that triggered this character commit
      */
     void commitCharacter(SettingsValues c0804d, int i, InputSource enumC0690f) {
@@ -389,11 +268,8 @@ class CommitController {
     }
 
     /**
-     * Flushes any pending touch-event text to the editor. If composing text is active, updates
-     * the composing span; otherwise commits the accumulated touch-event string as plain text.
-     *
-     * <p>Only the second branch is a commit. The first re-sends the composing region, which is a
-     * display refresh rather than a commit, so it does not go through {@link #execute}.
+     * Flushes pending multi-tap text. While composing it only re-sends the composing region (a
+     * display refresh, so not through {@link #execute}).
      */
     void commitTouchEventText() {
         if (mInputLogic.mTouchHighlightTracker.isHighlightActive()) {
@@ -408,21 +284,17 @@ class CommitController {
     }
 
     /**
-     * Commits a voice-recognition result, or a palette payload from the text-input path.
-     *
-     * <p>{@link InputLogic#commitVoiceInput} calls this only when the auto-correct commit ahead of
-     * it did not already write the same payload as its trailing separator (audit SS-1).
+     * Voice or palette text; only called when the payload was not already written as a separator.
+     * @param c0804d current settings values
+     * @param enumC0690f the input source that triggered the commit
      */
     void commitVoiceText(SettingsValues c0804d, String text, InputSource enumC0690f) {
         execute(c0804d, CommitRequest.voiceText(text, enumC0690f), null, null);
     }
 
     /**
-     * A single CKB swipe is one word by definition, but the engine's prediction list can
-     * contain multi-word phrase candidates (kind=8 bigrams like "same time", "end of"). If
-     * one is ranked first, committing getWord(0) verbatim deposits two words from one trace.
-     * Prefer the highest-ranked space-free candidate; if the list is all phrases, fall back
-     * to the first token of the top entry rather than the whole phrase.
+     * A swipe is one word, but the list can hold kind-8 phrase candidates. Takes the best
+     * space-free candidate, else the first token of the top entry.
      */
     private static String pickSingleWordGestureCandidate(SuggestedWords words) {
         if (words == null || words.isEmpty()) {
@@ -442,11 +314,8 @@ class CommitController {
     }
 
     /**
-     * Commits the top gesture (swipe) suggestion as a typed word, appending the appropriate
-     * word separator, updating keyboard state, and requesting a gesture suggestions update.
-     *
-     * @param c0804d     current settings values
-     * @param c0666ac    the gesture suggestion list (top word at index 0 is committed)
+     * @param c0804d current settings values
+     * @param c0666ac the gesture suggestion list (top word at index 0 is committed)
      * @param enumC0690f the input source
      */
     void commitGestureSuggestion(SettingsValues c0804d, SuggestedWords c0666ac, InputSource enumC0690f) {
@@ -467,18 +336,13 @@ class CommitController {
         if (c0979iM4088ac != null) {
             c0979iM4088ac.setAlphabetKeyboard(mInputLogic.getCapsMode(c0804d), mInputLogic.getConfigParserResult());
         }
-        // The commit spent the manual (tapped, released) Shift, so the Shift span goes and nothing
-        // else does — the scope MANUAL_SHIFT_SPENT names, and the reset contract's own entry point.
+        // The commit spent a tapped Shift; only the Shift span resets.
         mInputLogic.mIme.getPhysicalKeyboardStateTracker()
                 .resetModifiers(ModifierResetReason.MANUAL_SHIFT_SPENT);
         mInputLogic.mIme.uiUpdateHandler.postUpdateGestureSuggestions(0);
     }
 
-    /**
-     * The separator the engine wants after {@code word} in the current context, or a plain space
-     * when the dictionary is not loaded yet. Shared by the gesture and manual-pick adapters,
-     * which resolved it with identical code.
-     */
+    /** The engine's separator after {@code word} here, or a space before the dictionary loads. */
     String resolveSeparatorFor(String word) {
         if (mInputLogic.mDictionaryLoader.isDictionaryReady()) {
             return mInputLogic.mDictionaryLoader.getMainDictionary().getWordSeparator(
@@ -488,11 +352,9 @@ class CommitController {
     }
 
     /**
-     * Commits the current composing text as a user-typed word followed by the given separator.
-     * No-op if no composing text is active.
-     *
-     * @param c0804d     current settings values
-     * @param str        the separator to append after the word (may be empty)
+     * Commits the composing word verbatim plus separator {@code str}; no-op when not composing.
+     * @param c0804d current settings values
+     * @param str the separator to append after the word (may be empty)
      * @param enumC0690f the input source that triggered the commit
      */
     void commitTypedWord(SettingsValues c0804d, String str, InputSource enumC0690f) {
@@ -507,55 +369,41 @@ class CommitController {
     }
 
     /**
-     * Flushes pending suggestions then commits the composing text, applying an auto-correction
-     * if one is eligible.
-     *
-     * @return {@code true} if the separator payload was already committed — see SS-1.
+     * @param c0804d current settings values
+     * @param str the separator text that ended the word
+     * @param handlerC0650c UI update handler
+     * @param enumC0690f the input source that triggered the commit
+     * @return {@code true} if the separator payload was already committed
      */
     boolean autoCorrectAndCommit(SettingsValues c0804d, String str, UIUpdateHandler handlerC0650c, InputSource enumC0690f) {
         return autoCorrectAndCommitExtended(c0804d, str, handlerC0650c, enumC0690f, false);
     }
 
     /**
-     * Resolves whether the auto-correction or the typed word should be committed, and commits it.
+     * Commits the auto-correction or the typed word. Does nothing when no word is composing.
      *
-     * <p><b>Precondition:</b> a word must be composing. With nothing composing the resolved word
-     * is the empty string, which is not null, so the "impossible" guard below fires. Every
-     * production caller checks {@code isComposing()} (or a non-empty composing length) first;
-     * {@code CommitEntryPointsCharacterisationTest} pins the throw so a future adapter that
-     * forgets is caught by a test rather than by a crash on a device.
-     *
-     * @param c0804d        current settings values
-     * @param str           the word separator to append after the commit
+     * @param z force the separator append even for a word character
+     * @param c0804d current settings values
+     * @param str the word separator to append after the commit
      * @param handlerC0650c UI update handler used to flush pending async suggestion requests
-     * @param enumC0690f    the input source that triggered this commit
-     * @param z             {@code true} to force appending the separator even if it is a word
-     *                      character
-     * @return {@code true} if this call already committed {@code str} (the separator payload)
-     *         into the editor, so the caller must not commit it again. See audit SS-1.
+     * @param enumC0690f the input source that triggered this commit
+     * @return {@code true} if {@code str} was already written, so the caller must not write it
      */
     boolean autoCorrectAndCommitExtended(SettingsValues c0804d, String str, UIUpdateHandler handlerC0650c, InputSource enumC0690f, boolean z) {
         mInputLogic.flushPendingSuggestions(c0804d, handlerC0650c);
         String candidate = mInputLogic.mComposingTracker.getAutoCorrection();
         String typedWord = mInputLogic.mComposingTracker.getComposingText();
-        // FIX-MACRO / D-3: this site re-derives the word to commit independently of
-        // InputLogic.handleSeparatorInput, so the kind-7 escape has to be applied here too -
-        // autoCorrectAndCommitExtended is also reached from the text-input and voice paths,
-        // which never pass through that gate. (The original at c/a.java:253 consults no setting
-        // at all here; we keep ours so ordinary corrections behave exactly as before.)
+        // The text-input and voice paths reach this without handleSeparatorInput's gate.
         String chosen = shouldCommitAutoCorrectCandidate(
                 candidate,
                 mInputLogic.mComposingTracker.getAutoCorrectionScore(),
                 c0804d.isAutoCorrectionEnabledPerUserSettings,
                 c0804d.editorCapabilities.shouldShowSuggestions) ? candidate : typedWord;
         if (chosen == null) {
-            // Nothing was committed at all, so the caller still owns the separator payload.
             return false;
         }
         if (TextUtils.isEmpty(typedWord)) {
-            // Nothing is composing, so there is no word to correct or commit. Every production
-            // caller checks isComposing() first; when one does not, the caller still owns the
-            // separator payload (owner decision 2026-09-22: return, never throw).
+            // Return, never throw: the caller still owns the separator payload.
             return false;
         }
         CommitResult result = execute(
@@ -567,32 +415,24 @@ class CommitController {
     }
 
     /**
-     * Strips the NuanceSDK suggestion markers ({@code %b} and {@code %B}) from a suggestion word
-     * before it is committed to the editor.
-     *
+     * Strips the engine markers from a suggestion; a leading {@code %b} also deletes one char.
      * @param str the raw suggestion string (may contain engine markers)
-     * @return the cleaned string with all markers removed
      */
     public String processClipboardMarker(String str) {
         if (str.contains(MARKER_BOUNDARY_LOWER)) {
             if (str.startsWith(MARKER_BOUNDARY_LOWER)) {
-                // Side-effect: delete placeholder char inserted when clipboard suggestion was set up.
-                // Audit SS-5: RichInputConnection models deleteSurroundingText as trimming the
-                // composing TAIL, but a real editor deletes the character BEFORE the composing
-                // region — so issuing this while composing left the cache and the editor disagreeing
-                // (composing length and cursor off by one) for the rest of the commit. Retire the
-                // composing region first so the delete means the same thing on both sides.
+                // Finish composing first: the cache models this delete as trimming the composing
+                // tail, while the editor deletes the char before the region.
                 if (mInputLogic.mComposingTracker.isComposing()) {
                     mInputLogic.mRichInputConnection.finishComposingText();
                 }
                 mInputLogic.mRichInputConnection.deleteSurroundingText(1, 0);
             }
-            // FIX Issue #14: literal replace instead of the original's regex replaceAll(".%b", ""),
-            // which matched ANY char + "%b" - overly broad, could strip user text.
+            // Literal replace: a ".%b" regex would also strip the user's preceding character.
             str = str.replace(MARKER_BOUNDARY_LOWER, "");
         }
         if (str.contains(MARKER_BOUNDARY)) {
-            // "%B." regex intentionally strips %B + following boundary char from NuanceSDK
+            // %B carries the following boundary char with it.
             str = str.replaceAll(java.util.regex.Pattern.quote(MARKER_BOUNDARY) + ".", "");
             str = str.replace(MARKER_BOUNDARY, "");
         }
@@ -600,29 +440,24 @@ class CommitController {
     }
 
     /**
-     * Commits the given word through the word protocol.
-     *
-     * @param c0804d        current settings values
-     * @param str           the word to commit
-     * @param commitTypeVar the commit type (typed, auto-corrected, manual pick, etc.)
-     * @param str2          the word separator to append (may be empty)
-     * @param enumC0690f    the input source that triggered the commit
-     * @return the total character length written to the editor (word + any separator)
+     * @param c0804d current settings values
+     * @param str the word to commit
+     * @param str2 the word separator to append (may be empty)
+     * @param enumC0690f the input source that triggered the commit
+     * @return characters written (word plus any separator)
      */
     int commitWord(SettingsValues c0804d, String str, CommitEventRecord.CommitType commitTypeVar, String str2, InputSource enumC0690f) {
         return commitWordExtended(c0804d, str, commitTypeVar, str2, enumC0690f, false);
     }
 
     /**
-     * Commits the given word through the word protocol, optionally forcing the separator append.
+     * Generic word commit; never issues a {@link CorrectionInfo}, even for {@code DECIDED_WORD}.
      *
-     * <p>The generic adapter: it carries no auto-correct candidate and no pre-commit typed word,
-     * so {@link #executeWord}'s correction stages stay inactive even for a {@code DECIDED_WORD}
-     * commit type. A caller that does want the {@link CorrectionInfo} round trip goes through
-     * {@link #autoCorrectAndCommitExtended}.
-     *
-     * @param z {@code true} to force appending the separator even if it is a word character
-     * @return the total character length written to the editor (word length + separator length)
+     * @param z force the separator append even for a word character
+     * @param c0804d current settings values
+     * @param str the word text to commit
+     * @param str2 the separator to append after the word
+     * @param enumC0690f the input source that triggered the commit
      */
     int commitWordExtended(SettingsValues c0804d, String str, CommitEventRecord.CommitType commitTypeVar, String str2, InputSource enumC0690f, boolean z) {
         return execute(c0804d, CommitRequest.word(str, commitTypeVar, str2, z, enumC0690f),
@@ -630,9 +465,12 @@ class CommitController {
     }
 
     /**
-     * Commits a CJK / Japanese prediction-strip pick.
-     *
-     * @return {@code true} if the learning subsystem should record this pick
+     * Commits a CJK / Japanese strip pick; returns whether to record the pick.
+     * @param c0804d current settings values
+     * @param enumC0690f the input source that triggered the commit
+     * @param c0920g the current input event context
+     * @param handlerC0650c UI update handler
+     * @param str the separator that ended the pick
      */
     boolean commitPredictionWord(SettingsValues c0804d, SuggestedWords.SuggestedWordInfo suggestedWordInfoVar, CommitEventRecord.CommitType commitTypeVar2, InputSource enumC0690f, InputEventContext c0920g, UIUpdateHandler handlerC0650c, String str) {
         return execute(

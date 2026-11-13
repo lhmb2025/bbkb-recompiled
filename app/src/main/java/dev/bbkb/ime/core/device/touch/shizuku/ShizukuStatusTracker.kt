@@ -1,28 +1,22 @@
 package dev.bbkb.ime.core.device.touch.shizuku
 
 /**
- * Shizuku's availability, from UNSUPPORTED up to READY, kept current from Shizuku's own
- * callbacks (binder received, binder dead, permission result) with no polling.
- *
- * Pure logic over a [ShizukuFacade]; not thread-safe, so the engine calls it, and has the
- * facade post its callbacks, on one thread. [onChange] fires only when the status differs from
- * the last one reported.
+ * Shizuku's availability, kept current from Shizuku's callbacks with no polling. Not
+ * thread-safe: calls and facade callbacks must share one thread. [onChange] fires only on change.
  */
 class ShizukuStatusTracker(
     private val facade: ShizukuFacade,
     private val onChange: (ShizukuTouchStatus) -> Unit,
 ) : ShizukuFacade.Listener {
-
-    /** The last computed availability; never above READY. */
     var status: ShizukuTouchStatus = ShizukuTouchStatus(ShizukuTouchState.NOT_RUNNING)
         private set
 
-    /** Called with every Shizuku permission answer, after [status] has been refreshed. */
+    /** Called after [status] has been refreshed. */
     var onPermissionResult: ((requestCode: Int, granted: Boolean) -> Unit)? = null
 
     private var attached = false
 
-    /** Starts listening to Shizuku (idempotent) and computes the first status. */
+    /** Idempotent. */
     fun attach() {
         if (attached) return
         attached = true
@@ -36,7 +30,6 @@ class ShizukuStatusTracker(
         facade.setListener(null)
     }
 
-    /** Recomputes [status], reporting it if it changed, and returns it. */
     fun refresh(): ShizukuTouchStatus {
         val next = compute()
         if (next != status) {
@@ -46,11 +39,7 @@ class ShizukuStatusTracker(
         return next
     }
 
-    /**
-     * Asks Shizuku to show its permission dialog. Returns false when there is nothing to ask
-     * (already granted, Shizuku not running, unsupported) or Shizuku would not show a dialog
-     * (denied forever: the user has to allow it in the Shizuku app).
-     */
+    /** False when there is nothing to ask or Shizuku would show no dialog (denied forever). */
     fun requestPermission(requestCode: Int): Boolean {
         val current = refresh()
         if (current.state != ShizukuTouchState.NOT_GRANTED || current.permissionDeniedForever) return false

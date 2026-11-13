@@ -721,7 +721,6 @@
     <string name="device_config_import_unreadable">Тэр файл нь төхөөрөмжийн тохиргоо биш байна</string>
     <string name="device_config_import_failed">Тэр файлыг импортлож чадсангүй</string>
 
-    <!-- OTA app updates -->
     <string name="settings_updates_title">Шинэчлэлүүд</string>
     <string name="settings_updates_summary">BBKB-ийн шинэ хувилбарыг шалгах</string>
     <string name="settings_update_installed_version_title">Суулгасан хувилбар</string>
@@ -755,7 +754,6 @@
     <string name="settings_update_ready_title">Суулгахад бэлэн</string>
     <string name="settings_update_version_details">Хувилбарын дэлгэрэнгүй</string>
     <string name="settings_update_unknown_sources_title">BBKB-д шинэчлэл суулгахыг зөвшөөрөх үү?</string>
-    <!-- Downloadable language packs (core/languagepack) -->
     <string name="language_packs_installed_header">Суулгасан</string>
     <string name="language_packs_available_header">Татах боломжтой</string>
     <string name="language_packs_download">Татах</string>
@@ -877,7 +875,6 @@
     <string name="settings_voice_stop_on_pause_summary_off">Микрофоныг товших хүртэл эсвэл хагас минут чимээгүй болтол завсарлагааны үед ч сонссоор байна</string>
     <string name="voice_status_listening_tap_to_stop">Сонсож байна&#8230; Зогсоохын тулд микрофоныг товшино уу</string>
 
-    <!-- Settings text moved out of the code (2026-11) -->
     <string name="settings_common_save">Хадгалах</string>
     <string name="settings_common_edit">Засах</string>
     <string name="settings_common_back">Буцах</string>

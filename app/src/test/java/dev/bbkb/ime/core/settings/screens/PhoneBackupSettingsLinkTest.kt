@@ -18,8 +18,7 @@ import org.robolectric.annotation.Config
 
 /**
  * "Phone backup settings" opens Android's own Backup page first, which forwards to whichever
- * backup service is on (Google, Seedvault, ...); Google's page and the top of Settings are only
- * fallbacks (owner request 2026-11-07: the section was Google-only).
+ * backup service is on (Google, Seedvault, ...); Google's page and the top of Settings are fallbacks.
  */
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [34])

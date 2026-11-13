@@ -31,8 +31,8 @@ import dev.bbkb.ime.core.settings.editor.EntryListSpec
 import dev.bbkb.ime.personaldictionary.util.LocaleUtil
 
 /**
- * Personal dictionary words, as an [EntryListSpec] — the same editor as `ShortcutsSpec` over the
- * other half of the store.
+ * Personal dictionary words: the same [EntryListSpec] editor as `ShortcutsSpec`, over the other
+ * half of the store.
  */
 internal val UserDictionarySpec = EntryListSpec(
     title = R.string.settings_user_dictionary_screen_title,
@@ -51,7 +51,6 @@ internal val UserDictionarySpec = EntryListSpec(
     loadFailed = R.string.settings_dict_load_failed,
     emptyIcon = R.drawable.ic_settings_m_create,
     emptyTitle = R.string.settings_dict_empty_title,
-    // Names the button, now that the button says what it does.
     emptyHint = R.string.settings_dict_empty_hint,
     belongsHere = { it.isPersonalWord },
     identity = { "${it.word}_${it.locale}" },
@@ -61,10 +60,7 @@ internal val UserDictionarySpec = EntryListSpec(
     logTag = "UserDictionaryScreen",
 )
 
-/**
- * User Dictionary Screen - manages personal words only (no substitutions)
- * Uses BASL pathway for Nuance integration
- */
+/** Personal words only (no substitutions), through the BASL pathway. */
 @Composable
 fun UserDictionaryScreen(
     onNavigateBack: () -> Unit,
@@ -77,16 +73,13 @@ fun UserDictionaryScreen(
         spec = UserDictionarySpec,
         store = store,
         onNavigateBack = onNavigateBack,
-        // The word alone, as Learned words shows its words: a pencil on every row said nothing
-        // the row being tappable did not.
         rowContent = { entry -> Text(text = entry.word, style = MaterialTheme.typography.bodyLarge) },
         dialogs = { host ->
             if (host.adding) {
                 PersonalWordDialog(
                     entry = null,
                     locales = host.locales,
-                    // A new word starts in the first locale ("all languages" when there are
-                    // several); the dialog lets it go to another.
+                    // First locale ("all languages" when there are several); the dialog can change it.
                     initialLocale = host.locales.firstOrNull() ?: "",
                     onDismiss = host.dismissAdd,
                     onSave = { entry ->
@@ -113,15 +106,8 @@ fun UserDictionaryScreen(
 }
 
 /**
- * Add/edit dialog for one personal dictionary word: the word, and which language it belongs to.
- *
- * The language used to be fixed: a new word went into whichever locale came first, with no say,
- * and the dialog only named it. It is a choice now, offered when there is more than one place to
- * put the word. Deleting is no longer here either; it is in the word's sheet, with Undo.
- *
- * `fixedCase` has no control here and never did, but it is still carried from the entry being
- * edited to the entry being saved: a word stored with automatic capitalisation disabled must not
- * quietly lose that because it was opened and re-saved.
+ * Add/edit dialog for a personal word and its language. `fixedCase` has no control here but is
+ * carried through, so re-saving a word does not drop its capitalisation setting.
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

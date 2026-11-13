@@ -45,6 +45,7 @@ public class QuickPhrasesView extends RelativeLayout implements QuickPhrasesAdap
         this(context, attributeSet, 0);
     }
 
+    /** @param i the default style attribute */
     public QuickPhrasesView(Context context, AttributeSet attributeSet, int i) {
         super(context, attributeSet, i);
         LayoutInflater.from(context).inflate(R.layout.quickphrases, this);
@@ -66,7 +67,7 @@ public class QuickPhrasesView extends RelativeLayout implements QuickPhrasesAdap
         return kotlin.Unit.INSTANCE;
     };
 
-    /** The panel ground: the slideboard container tone, a step darker than the tiles. */
+    /** The panel ground, a step darker than the tiles. */
     private void applyColors() {
         setBackground(KeyboardColorManager.fill(KeyboardColorManager.INSTANCE.getSlideGroundColor()));
     }
@@ -84,10 +85,7 @@ public class QuickPhrasesView extends RelativeLayout implements QuickPhrasesAdap
         super.onDetachedFromWindow();
     }
 
-    /**
-     * Rows share the panel height evenly, so every phrase is visible without scrolling;
-     * a shorter keyboard gives shorter rows.
-     */
+    /** Rows share the panel height evenly, so every phrase is visible without scrolling. */
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
@@ -124,7 +122,11 @@ public class QuickPhrasesView extends RelativeLayout implements QuickPhrasesAdap
         this.quickPhraseListener = listener;
     }
 
-    @Override // android.widget.RelativeLayout, android.view.View
+    /**
+     * @param i the width measure spec (ignored)
+     * @param i2 the height measure spec (ignored)
+     */
+    @Override
     public void onMeasure(int i, int i2) {
         int i3;
         int iM5585a = ResourceConfigManager.getScreenWidthPixels(getContext().getResources()) / 2;
@@ -138,32 +140,33 @@ public class QuickPhrasesView extends RelativeLayout implements QuickPhrasesAdap
         super.onMeasure(View.MeasureSpec.makeMeasureSpec(getMeasuredWidth(), View.MeasureSpec.EXACTLY), View.MeasureSpec.makeMeasureSpec(getMeasuredHeight(), View.MeasureSpec.EXACTLY));
     }
 
-    @Override // dev.bbkb.ime.keyboard.slideboard.SlideboardComponent
+    @Override
     public boolean isShowing() {
         return getVisibility() == View.VISIBLE;
     }
 
-    @Override // dev.bbkb.ime.keyboard.slideboard.SlideboardComponent
+    @Override
     public void show() {
         setVisibility(View.VISIBLE);
     }
 
-    @Override // dev.bbkb.ime.keyboard.slideboard.SlideboardComponent
+    @Override
     public void hide() {
         setVisibility(View.GONE);
     }
 
-    @Override // dev.bbkb.ime.keyboard.slideboard.SlideboardComponent
+    @Override
     public int getSlideBoardWidth() {
         return ResourceConfigManager.getScreenWidthPixels(getResources()) / 2;
     }
 
-    @Override // dev.bbkb.ime.keyboard.slideboard.SlideboardComponent
+    /** @param f the panel's x translation */
+    @Override
     public void setXTranslation(float f) {
         setTranslationX(f);
     }
 
-    @Override // dev.bbkb.ime.keyboard.slideboard.SlideboardComponent
+    @Override
     public void setListener(SlideboardComponent.Listener listener) {
         this.slideListener = listener;
     }

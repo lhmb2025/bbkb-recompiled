@@ -12,15 +12,8 @@ import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicBoolean
 
 /**
- * Emoji data provider using the Emojibase dataset (read from a compact preprocessed asset, see
- * [EmojibaseCompactFormat]).
- * Provides comprehensive emoji data with proper Unicode 16.0 category support.
- *
- * Key features:
- * - Uses Emojibase datasets for emoji metadata with Unicode 16.0
- * - Built-in skin tone variants via `skins` array
- * - Clean category grouping with numeric IDs (0-8)
- * - Simplified filtering - just check for `tone` field
+ * Emoji data from the Emojibase dataset (Unicode 16.0), read from a compact asset
+ * ([EmojibaseCompactFormat]): categories 0-8, skin-tone variants from the `skins` array, search.
  */
 class EmojibaseDataProvider(private val context: Context) {
 
@@ -28,11 +21,8 @@ class EmojibaseDataProvider(private val context: Context) {
         private const val TAG = "EmojibaseDataProvider"
         private const val MAX_SEARCH_RESULTS = 80  // ~2 pages worth
 
-        // Shared, already-loaded instance for callers outside the emoji board (e.g. the
-        // custom symbol page in KeyboardBuilder) so repeated keyboard rebuilds don't
-        // re-parse the emojibase data. Loaded once on first use. Every holder reads it through
-        // getSharedLoaded/peekShared and keeps no field of its own, so after releaseShared
-        // nothing retains the old dataset and there is never more than one copy (audit P-2).
+        // Shared instance, loaded on first use. Holders read it through getSharedLoaded/peekShared
+        // and keep no field, so after releaseShared nothing retains the old dataset.
         @Volatile
         private var sharedLoadedInstance: EmojibaseDataProvider? = null
 
@@ -46,11 +36,7 @@ class EmojibaseDataProvider(private val context: Context) {
         /** True from a preload's submission until it has run: coalesces repeated preloads. */
         private val preloadQueued = AtomicBoolean(false)
 
-        /**
-         * For [preloadAsync] callers without an executor of their own: one low-priority daemon
-         * thread that exits when idle, instead of a new Thread per call (every keyboard show
-         * used to start one after a release).
-         */
+        /** For [preloadAsync] callers without an executor: one low-priority daemon thread that exits when idle. */
         private val defaultPreloadExecutor: Executor by lazy {
             ThreadPoolExecutor(0, 1, 10L, TimeUnit.SECONDS, LinkedBlockingQueue()) { r ->
                 Thread(r, "emojibase-preload").apply {
@@ -81,19 +67,11 @@ class EmojibaseDataProvider(private val context: Context) {
         @JvmStatic
         fun peekShared(): EmojibaseDataProvider? = sharedLoadedInstance
 
-        /**
-         * Warms the shared provider on a low-priority background thread so the first strip
-         * update or long-press does not pay for the parse. Same as the two-argument form on this
-         * class's own single-thread executor.
-         */
+        /** Warms the shared provider on this class's low-priority executor so first use skips the parse. */
         @JvmStatic
         fun preloadAsync(context: Context) = preloadAsync(context, defaultPreloadExecutor)
 
-        /**
-         * Warms the shared provider on [executor]. A no-op when the data is already loaded, a
-         * load is running, or an earlier preload is still queued, so calling it on every
-         * keyboard show costs nothing.
-         */
+        /** Warms the shared provider on [executor]; a no-op when loaded, loading or already queued. */
         @JvmStatic
         fun preloadAsync(context: Context, executor: Executor) {
             if (sharedLoadedInstance != null || loadInFlight) return
@@ -114,15 +92,9 @@ class EmojibaseDataProvider(private val context: Context) {
         }
 
         /**
-         * IB-26: drop the shared parsed dataset (the ~1,900 EmojiData objects plus the
-         * per-category, skin-tone and search indexes). Nothing else evicts it, and an IME process
-         * is deliberately long-lived, so it otherwise stays resident whether or not the emoji
-         * board is ever opened again. [getSharedLoaded] re-parses on the next use.
-         *
-         * A plain volatile write, never the parse lock: it is called from onTrimMemory on the main
-         * thread, which was seen blocked 931 ms here waiting for a background parse (audit P-2).
-         * A parse that is running when this is called still publishes its result afterwards;
-         * that is the caller who needed the data, so it is the right outcome.
+         * Drops the shared dataset and indexes (nothing else evicts it); [getSharedLoaded] re-parses.
+         * A plain volatile write, never the parse lock: called from onTrimMemory on the main thread.
+         * A parse already running still publishes its result, for the caller that needed it.
          */
         @JvmStatic
         fun releaseShared() {
@@ -130,21 +102,16 @@ class EmojibaseDataProvider(private val context: Context) {
         }
 
         /**
-         * The glyph cache key: a new OS build, a new dataset or a new rule ([canDraw]) invalidates
-         * it. "whole" names the rule: answers stored under the older first-code-point rule said
-         * yes to emoji the font cannot draw, and the cache trusts every stored yes.
+         * Glyph cache key: a new OS build, dataset or [canDraw] rule invalidates it. "whole" names the
+         * rule; changing the rule must change the key because the cache trusts every stored yes.
          */
         private fun glyphCacheKey(identity: String) =
             "${Build.FINGERPRINT}|${Build.VERSION.SDK_INT}|$identity|whole"
 
         /**
-         * Whether the font draws [emoji] as itself, given [hasGlyph] (`Paint.hasGlyph`).
-         *
-         * The whole emoji is asked about, never a part of it: for a joined emoji (😶‍🌫️) or a flag
-         * the font does not have, the parts each have a glyph and the emoji is drawn as those
-         * parts, side by side. The second question drops U+FE0F: the dataset's fully-qualified
-         * form of an emoji such as ✋️ carries a variation selector the font has no entry for, and
-         * the font draws the emoji with or without it.
+         * Whether the font draws [emoji] as itself, given [hasGlyph] (`Paint.hasGlyph`). Asks about the
+         * whole emoji (parts of a missing ZWJ sequence or flag each have glyphs), then again without
+         * U+FE0F, which fully-qualified forms like ✋️ carry and the font may lack.
          */
         @JvmStatic
         internal fun canDraw(emoji: String, hasGlyph: (String) -> Boolean): Boolean {
@@ -162,20 +129,11 @@ class EmojibaseDataProvider(private val context: Context) {
     private var searchData: SearchData? = null
     private var emojiByCategory: MutableMap<EmojiCategory, MutableList<EmojiData>>? = null
 
-    /**
-     * Skin-tone variants indexed by base emoji, under both the fully-qualified form
-     * and the VS16-stripped form. Built once in [loadEmojiData] so
-     * [getSkinToneVariants] is O(1): it used to linear-scan the whole ~3700-entry
-     * dataset (twice, on a miss) once per emoji key created, i.e. millions of string
-     * comparisons per emoji-board build.
-     */
+    /** Skin-tone variants by base emoji, under both the fully-qualified and VS16-stripped forms. */
     private var skinsByEmoji: Map<String, List<String>> = emptyMap()
     private val paint = Paint()
 
-    /**
-     * Load and categorize emoji data from the compact asset the build generates from emojibase's
-     * JSON (see [EmojibaseCompactFormat]).
-     */
+    /** Loads and categorizes the compact asset ([EmojibaseCompactFormat]). */
     fun loadEmojiData() {
 
         try {
@@ -190,14 +148,11 @@ class EmojibaseDataProvider(private val context: Context) {
     }
 
     /**
-     * Builds the category and skin-tone indexes from the full parsed list. [drawable] answers, for
-     * a list of emoji, whether the font can draw each one; tests pass their own. It is asked once,
-     * about the base emoji in order followed by every skin-tone variant, so one glyph cache covers
-     * both: an emoji the font cannot draw is left off the board and out of search, and a variant
-     * it cannot draw is left out of the long-press popup.
+     * Builds the category and skin-tone indexes. [drawable] (tests pass their own) is asked once, about
+     * the base emoji then every variant; undrawable emoji leave the board and search, undrawable
+     * variants leave the popup.
      */
     internal fun applyDataset(allEmojis: List<EmojiData>, drawable: (List<String>) -> BooleanArray) {
-        // Filter to base emojis only (no variants)
         val baseEmojis = allEmojis.filter { isBaseEmoji(it) }
 
         val variantList = ArrayList<String>()
@@ -207,12 +162,10 @@ class EmojibaseDataProvider(private val context: Context) {
         }
         val flags = drawable(baseEmojis.map { it.emoji } + variantList)
 
-        // Filter device-supported emojis
         val supportedEmojis = baseEmojis.filterIndexed { i, _ -> flags[i] }
         val drawableVariants = HashSet<String>(variantList.size * 2)
         variantList.forEachIndexed { i, variant -> if (flags[baseEmojis.size + i]) drawableVariants.add(variant) }
 
-        // Group by category
         val categoryMap = supportedEmojis.groupBy { it.category }
             .mapValues { it.value.toMutableList() }
             .toMutableMap()
@@ -221,13 +174,11 @@ class EmojibaseDataProvider(private val context: Context) {
         emojiList = null
         searchData = null
 
-        // Index skin-tone variants for O(1) lookup (see skinsByEmoji).
         val skins = HashMap<String, List<String>>(allEmojis.size * 2)
         for (e in allEmojis) {
             val variants = e.skins?.map { it.emoji }?.filter { it in drawableVariants } ?: continue
             if (variants.isEmpty()) continue
-            // Index under the stripped form too, but never let it displace an
-            // entry whose own (fully-qualified) form is that exact string.
+            // The stripped form never displaces an entry whose own form is that exact string.
             val stripped = stripVariationSelectors(e.emoji)
             if (stripped != null && !skins.containsKey(stripped)) {
                 skins[stripped] = variants
@@ -244,31 +195,17 @@ class EmojibaseDataProvider(private val context: Context) {
         return EmojiGlyphCache.flags(dir, glyphCacheKey(identity), emojis, ::isEmojiSupported)
     }
 
-    /**
-     * Check if emoji is a base emoji (not a variant).
-     *
-     * Filtering logic:
-     * - tone != null: Has a skin tone applied, it's a variant
-     * - group < 0: Component emoji (e.g., regional indicators)
-     * - gender != null: Gender variant (man/woman specific versions)
-     * - Contains ZWJ with directional arrows
-     * - Regional indicator symbols (alphabet letters 🇦-🇿)
-     * - Skin tone modifiers (🏻-🏿)
-     * - Hair component emojis (🦰🦱🦲🦳)
-     */
+    /** False for variants and components: toned, gendered, directional, skin/hair components, regional indicators. */
     private fun isBaseEmoji(emoji: EmojiData): Boolean {
-        // Has a skin tone applied - it's a variant
         if (emoji.tone != null) {
             return false
         }
 
-        // Filter out component emojis (regional indicators, etc.)
-        // These have group < 0 or are otherwise not categorized
+        // Components (group < 0).
         if (emoji.group < 0) {
             return false
         }
 
-        // Filter out gender-specific variants (keep only gender-neutral versions)
         if (emoji.gender != null) {
             return false
         }
@@ -276,14 +213,12 @@ class EmojibaseDataProvider(private val context: Context) {
         val hexcode = emoji.codepoints
         val desc = emoji.description.lowercase()
 
-        // Filter out skin tone modifier components (🏻-🏿)
-        // Hexcodes: 1F3FB, 1F3FC, 1F3FD, 1F3FE, 1F3FF
+        // Skin tone modifiers 1F3FB..1F3FF.
         if (hexcode.startsWith("1F3F") && hexcode.length == 5) {
             return false
         }
 
-        // Filter out hair component emojis (🦰🦱🦲🦳)
-        // Hexcodes: 1F9B0 (red hair), 1F9B1 (curly), 1F9B2 (bald), 1F9B3 (white)
+        // Hair components 1F9B0..1F9B3.
         if (hexcode.startsWith("1F9B") && hexcode.length == 5) {
             val lastChar = hexcode.last()
             if (lastChar in '0'..'3') {
@@ -291,13 +226,11 @@ class EmojibaseDataProvider(private val context: Context) {
             }
         }
 
-        // Filter out emojis with ZWJ + arrows (head shaking/nodding)
-        // Contains: 2194 (left-right arrow) or 2195 (up-down arrow)
+        // ZWJ + arrow sequences (head shaking/nodding: 2194, 2195).
         if (hexcode.contains("2194") || hexcode.contains("2195")) {
             return false
         }
 
-        // Filter out directional variants (facing right/left)
         if (desc.contains("facing right") ||
             desc.contains("facing left") ||
             desc.contains("rightward") ||
@@ -305,12 +238,10 @@ class EmojibaseDataProvider(private val context: Context) {
             return false
         }
 
-        // Filter out regional indicators (🇦-🇿)
         if (desc.startsWith("regional indicator")) {
             return false
         }
 
-        // Filter out explicit skin tone/hair descriptions
         if (desc.endsWith("skin tone") ||
             (desc.length < 15 && (desc.contains("hair") || desc == "bald"))) {
             return false
@@ -326,17 +257,10 @@ class EmojibaseDataProvider(private val context: Context) {
         false
     }
 
-    /**
-     * Get skin tone variants for a base emoji.
-     *
-     * Returns the variants from the built-in `skins` array that this device's font can draw
-     * (see [applyDataset]); empty when it can draw none, so there is no popup to show.
-     */
+    /** The drawable skin-tone variants of a base emoji; empty means no popup. */
     fun getSkinToneVariants(baseEmoji: String): List<String> {
-        // The dataset stores fully-qualified forms (with U+FE0F variation
-        // selectors), but callers may hold an unqualified form (e.g. a bare
-        // U+1F44D stored in the custom symbol page prefs), so the index carries
-        // both keys and we fall back to the VS16-insensitive one.
+        // Callers may hold an unqualified form (a bare U+1F44D in custom symbol prefs), so fall
+        // back to the VS16-stripped key.
         skinsByEmoji[baseEmoji]?.let { return it }
         val stripped = stripVariationSelectors(baseEmoji) ?: return emptyList()
         return skinsByEmoji[stripped] ?: emptyList()
@@ -344,16 +268,10 @@ class EmojibaseDataProvider(private val context: Context) {
 
     private fun stripVariationSelectors(s: String?): String? = s?.replace("\uFE0F", "")
 
-    /**
-     * Get emojis for a specific category.
-     */
     fun getEmojisByCategory(category: EmojiCategory): List<EmojiData> {
         return emojiByCategory?.get(category) ?: emptyList()
     }
 
-    /**
-     * Get all emoji data.
-     */
     fun getAllEmojis(): List<EmojiData> {
         if (emojiList == null) {
             emojiList = emojiByCategory?.values?.flatten() ?: emptyList()
@@ -362,14 +280,8 @@ class EmojibaseDataProvider(private val context: Context) {
     }
 
     /**
-     * Search emojis by query string.
-     * Searches in description, tags, and aliases.
-     * Returns results sorted by relevance, limited to MAX_SEARCH_RESULTS.
-     *
-     * A relevance of 0 is exactly "no match" (see [EmojiData.searchRelevance]), so one score per
-     * emoji both filters and ranks. The sort is stable: equal scores keep dataset order.
-     *
-     * Thread-safe: can be called from background thread.
+     * Searches description, tags and aliases; up to MAX_SEARCH_RESULTS by relevance (0 = no match),
+     * ties in dataset order. Thread-safe.
      */
     fun searchEmojis(query: String): List<EmojiData> {
         val lowerQuery = query.trim().lowercase()
@@ -388,14 +300,9 @@ class EmojibaseDataProvider(private val context: Context) {
     }
 
     /**
-     * The single best match for [query], or null when nothing scores at least [minRelevance].
-     * Ties keep dataset order, like [searchEmojis]. This is what the suggestion strip offers.
-     *
-     * Runs on every suggestion request, so it scores only the entries the bigram index says can
-     * contain the query, and remembers the last few answers (a repeated request for the same
-     * composing word, or a backspace to it, is a map lookup). The answer depends only on the
-     * query and the dataset: the strip applies the remembered skin tone afterwards, so neither
-     * tone nor locale belongs in the memo key.
+     * Best match for [query] scoring at least [minRelevance], or null; the suggestion strip's hit. Runs per
+     * suggestion request: scores only bigram-index candidates and memoizes recent answers, keyed on the
+     * query alone (the strip applies the skin tone afterwards).
      */
     fun topHit(query: String, minRelevance: Int): EmojiData? {
         val lowerQuery = query.trim().lowercase()
@@ -421,11 +328,7 @@ class EmojibaseDataProvider(private val context: Context) {
         return hit
     }
 
-    /**
-     * The search fields lower-cased once per dataset. [EmojiData.searchRelevance] lower-cased the
-     * description, tags and aliases of all ~1,900 emoji on every call, and the strip now searches
-     * on every keystroke.
-     */
+    /** The search fields lower-cased once per dataset, since the strip searches on every keystroke. */
     private fun searchData(): SearchData =
         searchData ?: SearchData(getAllEmojis().map { SearchEntry.of(it) }).also { searchData = it }
 
@@ -448,15 +351,9 @@ class EmojibaseDataProvider(private val context: Context) {
     private class Memo(val hit: EmojiData?)
 
     /**
-     * The search entries plus a bigram index over them (audit P-10: the strip used to score all
-     * ~1,767 entries per keystroke).
-     *
-     * Every non-zero [EmojiSearchScoring.score] needs the query to be a substring of the
-     * description, a tag or an alias, so a matching entry contains every two-character piece of
-     * the query in one of those fields. Scoring only the entries in the shortest posting list
-     * among the query's bigrams therefore skips exactly entries that score 0, and walking that
-     * list in dataset order keeps the tie-breaking. (An index on word prefixes would not be
-     * exact: "ar" scores 40 on a "star" entry tagged "starry" with a "star" alias.)
+     * Search entries plus a bigram index. A non-zero score needs the query as a substring of some field,
+     * so scoring only the shortest posting list among the query's bigrams skips exactly the zero scorers,
+     * in dataset order. (A word-prefix index would not be exact: "ar" scores 40 on a "starry" tag.)
      */
     private class SearchData(entryList: List<SearchEntry>) {
         val entries: Array<SearchEntry> = entryList.toTypedArray()

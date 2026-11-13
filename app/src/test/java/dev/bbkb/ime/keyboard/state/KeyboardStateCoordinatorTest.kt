@@ -5,14 +5,8 @@ import org.junit.Before
 import org.junit.Test
 
 /**
- * Pins the funnel — [KeyboardStateCoordinator.apply] — against a fake [KeyboardStateCoordinator.Axes]
- * that records the mechanism calls in order.
- *
- * This is the file that says, for each declarative change, **exactly which axes move and in what
- * order**. The production `Axes` does nothing but forward to the same mechanism methods the
- * scattered sweeps used to call, so what is pinned here is the whole of the decision.
- *
- * Pure JVM — no Robolectric, no Android.
+ * Pins [KeyboardStateCoordinator.apply] against a fake [KeyboardStateCoordinator.Axes] that records the
+ * mechanism calls in order: for each change, exactly which axes move and in what order. Pure JVM.
  */
 class KeyboardStateCoordinatorTest {
 
@@ -63,8 +57,6 @@ class KeyboardStateCoordinatorTest {
     private fun assertCalls(vararg expected: String) =
         assertEquals(expected.toList(), axes.calls)
 
-    // ═══════════════════════════════════════════════ layout axis
-
     @Test
     fun aLayoutChangeWithNoBoardOpenSweepsNothing() {
         axes.boardOpen = false
@@ -84,8 +76,7 @@ class KeyboardStateCoordinatorTest {
     }
 
     /**
-     * The exemption, from the table: one exempt board up spares the whole sweep. This is the rule
-     * that keeps the number pad, FCC and the voice panel open across every committed character.
+     * One exempt board up spares the whole sweep: keeps the number pad, FCC and voice open across commits.
      */
     @Test
     fun anExemptBoardBeingUpSparesTheSweep() {
@@ -107,10 +98,7 @@ class KeyboardStateCoordinatorTest {
         assertCalls("sweepBoardsClosed")
     }
 
-    /**
-     * A symbol load leaves the bar alone — the on-screen keyboard and the PKB one the Sym key opens
-     * alike. The PKB load used to raise the UIM bar ahead of the sweep; the original app never did.
-     */
+    /** A symbol load leaves the bar alone, on-screen and PKB (Sym key) alike. */
     @Test
     fun aSymbolLayoutNeverRaisesTheBar() {
         axes.boardOpen = true
@@ -120,10 +108,7 @@ class KeyboardStateCoordinatorTest {
         assertCalls("sweepBoardsClosed")
     }
 
-    /**
-     * `setKeyboard`'s old `hideEmojiKeyboard()` leak, now an ordinary board switch: leave the emoji
-     * mode (the layout half of emoji's ONE identity) and report board -11 closed.
-     */
+    /** Leaving emoji is a board switch: leave the emoji layout mode and report board -11 closed. */
     @Test
     fun theEmojiBoardLoweringLeavesEmojiModeThenReportsItClosed() {
         coordinator.apply(KeyboardTransition.boardLowered(CrossAxisRules.EMOJI_KEY_CODE))
@@ -131,11 +116,7 @@ class KeyboardStateCoordinatorTest {
         assertCalls("leaveEmojiMode", "reportBoardClosed(-11)")
     }
 
-    /**
-     * **R1:** leaving the emoji board returns to ALPHABET and nothing else. The conditional
-     * `clearPkbSymbolMode()` that used to trail the board report is gone — it could never fire
-     * (the mode reset ran first) and the rule it described is not wanted.
-     */
+    /** Leaving the emoji board returns to ALPHABET and nothing else. */
     @Test
     fun theEmojiBoardLoweringNeverClearsAPkbSymbolMode() {
         coordinator.apply(KeyboardTransition.boardLowered(CrossAxisRules.EMOJI_KEY_CODE))
@@ -143,7 +124,7 @@ class KeyboardStateCoordinatorTest {
         assertCalls("leaveEmojiMode", "reportBoardClosed(-11)")
     }
 
-    /** Any OTHER board lowering itself is a board report and nothing else — no layout column. */
+    /** Any other board lowering itself is a board report and nothing else, no layout column. */
     @Test
     fun anyOtherBoardLoweringOnlyReportsTheClose() {
         coordinator.apply(KeyboardTransition.boardLowered(CrossAxisRules.VOICE_KEY_CODE))
@@ -151,7 +132,7 @@ class KeyboardStateCoordinatorTest {
         assertCalls("reportBoardClosed(-27)")
     }
 
-    /** A board lowering reports ONE board closed. It must never sweep — that is what broke the mic. */
+    /** A board lowering reports one board closed. It must never sweep (that closes the mic panel). */
     @Test
     fun aBoardLoweringNeverSweepsTheOtherBoards() {
         axes.boardOpen = true
@@ -162,12 +143,9 @@ class KeyboardStateCoordinatorTest {
         assertCalls("leaveEmojiMode", "reportBoardClosed(-11)")
     }
 
-    // ══════════════════════════════════ a board that raises itself (R2)
-
     /**
-     * **R2.** The emoji board's open is the ordinary `OPEN_BOARD` row in two halves, because its
-     * mechanism spans the mode change: the prologue clears a PKB symbol mode BEFORE the board takes
-     * the mode...
+     * The emoji open is the `OPEN_BOARD` row in two halves because its mechanism spans the mode change:
+     * the prologue clears a PKB symbol mode before the board takes the mode...
      */
     @Test
     fun aBoardOpeningRunsTheOpenPrologue() {
@@ -203,8 +181,6 @@ class KeyboardStateCoordinatorTest {
         assertCalls("reportBoardOpened(-11)")
     }
 
-    // ══════════════════════════════════════════════ the bare board sweep
-
     /** `SWEEP_BOARDS` is the board column of a layout change without the layout change. */
     @Test
     fun theBareSweepClosesTheBoardsWithTheCommitRebuildExemptions() {
@@ -224,8 +200,6 @@ class KeyboardStateCoordinatorTest {
 
         assertCalls()
     }
-
-    // ═══════════════════════════════════════════════ board axis
 
     @Test
     fun openingABoardRaisesTheBarFirst() {
@@ -250,11 +224,9 @@ class KeyboardStateCoordinatorTest {
         assertCalls("closeBoard(-37)")
     }
 
-    // ═══════════════════════════════════════════════ cursor axis
-
     /**
-     * Entering: the flag goes on BEFORE the arrow bar replaces the boards. `FccController` reads
-     * the flag from inside that teardown, so the order is load-bearing.
+     * The flag goes on before the arrow bar replaces the boards: `FccController` reads it during that
+     * teardown.
      */
     @Test
     fun enteringCursorModeTurnsTheModeOnThenRaisesTheArrowBarOverTheBoards() {
@@ -268,12 +240,7 @@ class KeyboardStateCoordinatorTest {
         )
     }
 
-    /**
-     * **R4.** The board column is a call of its own now. Phase 1a could not split it, because
-     * `showArrowBar` closed the boards twice and the second close was wrapped around the bar work;
-     * the first of those two was the inverted `hideUnifiedInputBoard()`, which did nothing while
-     * the UIM was enabled. R4 deleted it and the columns came apart.
-     */
+    /** The board column is a call of its own, separate from the bar work. */
     @Test
     fun enteringCursorModeSweepsEveryBoardWithNoExemptions() {
         axes.boardOpen = true
@@ -289,10 +256,7 @@ class KeyboardStateCoordinatorTest {
         )
     }
 
-    /**
-     * The arrow bar's own guard spans all three steps: with the bar already up the mode still goes
-     * on, but nothing else moves. That is the `showArrowBar()` early return, now asked once.
-     */
+    /** With the arrow bar already up the mode still goes on, but nothing else moves. */
     @Test
     fun enteringCursorModeWithTheArrowBarAlreadyUpMovesNothingButTheMode() {
         axes.arrowBarCanRise = false
@@ -303,10 +267,7 @@ class KeyboardStateCoordinatorTest {
         assertCalls("cursorModeOn(forced=false)")
     }
 
-    /**
-     * The forced entry is FCC reconciling a state already on screen: the mode goes on and nothing
-     * else moves. Sweeping there would take down the board the caller just put up.
-     */
+    /** The forced entry reconciles a state already on screen: sweeping would take down the caller's board. */
     @Test
     fun aForcedCursorModeEntryLeavesTheBoardsAndTheBarAlone() {
         coordinator.apply(KeyboardTransition.enterCursorMode(true))
@@ -340,8 +301,6 @@ class KeyboardStateCoordinatorTest {
         assertCalls("cursorModeOff", "lowerArrowBarRestoringStrip(false)")
     }
 
-    // ═══════════════════════════════════════════════════ bar axis
-
     @Test
     fun showBarRaisesTheBarUnconditionally() {
         axes.barShowing = true
@@ -361,7 +320,7 @@ class KeyboardStateCoordinatorTest {
         assertCalls("hideUimBar")
     }
 
-    /** The bar axis' one entry point with a decision in it now has a row of its own. */
+    /** The bar axis entry point that makes a decision has a row of its own. */
     @Test
     fun restoreBarPutsBackWhicheverOfTheTwoThisEditorGets() {
         axes.boardOpen = true

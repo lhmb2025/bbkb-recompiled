@@ -10,30 +10,13 @@ import dev.bbkb.ime.core.device.config.model.AltMappingsTable;
 import dev.bbkb.ime.core.layout.PhysicalKeyResolver;
 
 /**
- * Consolidated resolver for Alt+key character mappings.
- *
- * Priority order:
- * 0. The letter layouts ({@link PhysicalKeyResolver#alt}): the user's own, when one is switched on
- *    and bound to the current keyboard — the user said what this key types under Alt — then the
- *    built-in document for the keyboard's language, should it name an Alt character
- * 1. AltMappingsTable (device XML config) — most specific
- * 2. Layout-specific overrides, from the active config's {@code <layout-alt-overrides>}
- * 3. System KCM via KeyEvent.getUnicodeChar(META_ALT_ON) — universal fallback
- *
- * <p>Tier 0 is read per call rather than built into the resolver, so the cached resolver
- * {@code HardwareKeyBridge} keeps needs no rebuilding when the user switches layouts or keyboards.
- * It is also the one tier that can produce a character outside the Basic Multilingual Plane; read
- * {@link Result#codePoint} rather than {@link Result#character} wherever such a character can
- * be typed.
- *
- * <p>Tier 2 exists only for devices whose firmware ships ONE KeyCharacterMap for every keypad
- * layout. It is not one of those on a BlackBerry: the KEY2 (athena) carries
- * {@code /vendor/usr/keychars/stmpe{,_azerty,_qwertz}.kcm} with a matching {@code .kl} and
- * {@code .idc} per variant, so tier 3 already returns the right character for AZERTY and QWERTZ
- * and no shipped config declares a tier-2 table. A hardcoded AZERTY/QWERTZ table used to sit
- * below tier 2 and fire on athena in place of the correct firmware values; see the changelog.
- *
- * Thread-safe after initialization. Immutable once built.
+ * Resolves Alt+key characters. Tiers, first hit wins:
+ * 0. Letter layouts ({@link PhysicalKeyResolver#alt}): the user's own bound layout, then the built-in one
+ * 1. AltMappingsTable (device XML config)
+ * 2. The active config's {@code <layout-alt-overrides>}, for firmware with one KCM for every layout
+ * 3. System KCM via getUnicodeChar(META_ALT_ON)
+ * Tier 0 is read per call so the cached resolver survives layout switches, and is the only tier that can
+ * return a non-BMP character (read {@link Result#codePoint}). Immutable and thread-safe once built.
  */
 public final class AuxCharacterResolver {
 
@@ -43,11 +26,7 @@ public final class AuxCharacterResolver {
     public static final class Result {
         /** The character as a code point; 0 for none. */
         public final int codePoint;
-        /**
-         * The same character as a {@code char}, for the callers that hold one. 0 when there is
-         * none, and also when {@link #codePoint} lies outside the Basic Multilingual Plane, which
-         * only the user's letter layout can produce.
-         */
+        /** As a {@code char}; 0 for none or for a non-BMP {@link #codePoint}. */
         public final char character;
         public final String source;
 
@@ -98,21 +77,14 @@ public final class AuxCharacterResolver {
         this.filterCombiningAccent = filterCombiningAccent;
     }
 
-    // ===== Primary API =====
-
-    /**
-     * Resolve the alt character for a keyCode.
-     * Does NOT require a KeyEvent — uses AltMappingsTable and layout overrides only.
-     * Falls back to Result.none() if no mapping found (no KCM available without KeyEvent).
-     */
+    /** Without an event there is no KCM tier, so this can return none where the event overload would not. */
     public Result resolve(int keyCode) {
-        // Tier 0: the letter layouts. No event, so no scan code to narrow by.
+        // No event, so no scan code to narrow by.
         int user = PhysicalKeyResolver.alt(keyCode, -1);
         if (user != 0) {
             return Result.ofCodePoint(user, "user");
         }
 
-        // Tier 1: AltMappingsTable (device XML config)
         if (altMappingsTable != null) {
             char c = altMappingsTable.getMapping(keyCode);
             if (c != 0) {
@@ -120,31 +92,23 @@ public final class AuxCharacterResolver {
             }
         }
 
-        // Tier 2: Layout-specific overrides (AZERTY/QWERTZ)
         char c = resolveLayoutOverride(keyCode);
         if (c != 0) {
             return Result.of(c, "layout_override");
         }
 
-        // No KCM fallback without KeyEvent
         return Result.none();
     }
 
-    /**
-     * Resolve the alt character for a KeyEvent.
-     * Full resolution chain: AltMappingsTable → layout overrides → system KCM.
-     * Handles COMBINING_ACCENT filtering automatically.
-     */
+    /** Full chain, with COMBINING_ACCENT filtering. */
     public Result resolve(@NonNull KeyEvent event) {
         int keyCode = event.getKeyCode();
 
-        // Tier 0: the letter layouts
         int user = PhysicalKeyResolver.alt(event);
         if (user != 0) {
             return Result.ofCodePoint(user, "user");
         }
 
-        // Tier 1: AltMappingsTable (device XML config)
         if (altMappingsTable != null) {
             char c = altMappingsTable.getMapping(keyCode);
             if (c != 0) {
@@ -152,13 +116,11 @@ public final class AuxCharacterResolver {
             }
         }
 
-        // Tier 2: Layout-specific overrides (AZERTY/QWERTZ)
         char c = resolveLayoutOverride(keyCode);
         if (c != 0) {
             return Result.of(c, "layout_override");
         }
 
-        // Tier 3: System KCM via getUnicodeChar(META_ALT_ON)
         int uc = event.getUnicodeChar(KeyEvent.META_ALT_ON);
         if (filterCombiningAccent && (uc & KeyCharacterMap.COMBINING_ACCENT) != 0) {
             uc = uc & KeyCharacterMap.COMBINING_ACCENT_MASK;
@@ -170,23 +132,11 @@ public final class AuxCharacterResolver {
         return Result.none();
     }
 
-    // ===== Layout Override Logic =====
-
-    /**
-     * Resolve a layout-specific override, from the {@code <layout-alt-overrides>} table the
-     * active device config named for the current keypad layout. Returns 0 when the config
-     * declares no such table — which is the case for every config this app ships, so on real
-     * hardware this tier is a pass-through to the KCM.
-     */
+    /** 0 when the config declares no table, which is true for every shipped config. */
     private char resolveLayoutOverride(int keyCode) {
         return layoutOverridesTable != null ? layoutOverridesTable.getMapping(keyCode) : 0;
     }
 
-    // ===== Lifecycle =====
-
-    /**
-     * Builder for constructing the resolver.
-     */
     public static final class Builder {
         private AltMappingsTable table;
         private AltMappingsTable layoutOverrides;

@@ -4,16 +4,10 @@ import java.util.regex.Pattern
 import java.util.regex.PatternSyntaxException
 
 /**
- * Which input device to read, chosen by its EVIOCGNAME rather than by node number: node numbers
- * move between firmware builds and even between boots (the Titan 2 pad went event7 -> event6 in
- * FW 20260422), names do not.
- *
- * An exact matcher compares the whole name, case and all. A regex matcher uses java.util.regex
- * and *search* semantics (like grep or POSIX regexec): `pad` matches both `mtk-pad` and
- * `touch_keypad`, so anchor with `^...$` when the whole name must match.
- *
- * The matcher travels to [EvdevUserService] as (pattern, isRegex) and is rebuilt there, so the
- * IME and the reader always agree on what matches.
+ * Picks the input device by EVIOCGNAME, not node number (node numbers move between firmware
+ * builds and boots). Exact compares the whole name; regex uses *search* semantics (`pad` matches
+ * `mtk-pad` and `touch_keypad`), so anchor with `^...$` for a whole-name match. Travels to
+ * [EvdevUserService] as (pattern, isRegex) and is rebuilt there so both sides agree.
  */
 class TouchDeviceMatcher private constructor(
     val pattern: String,
@@ -34,7 +28,6 @@ class TouchDeviceMatcher private constructor(
     override fun toString(): String = if (isRegex) "/$pattern/" else "'$pattern'"
 
     companion object {
-        /** Matches a device named exactly [name]. */
         @JvmStatic
         fun exact(name: String): TouchDeviceMatcher {
             require(name.isNotEmpty()) { "device name is empty" }
@@ -53,10 +46,7 @@ class TouchDeviceMatcher private constructor(
             return TouchDeviceMatcher(pattern, true, compiled)
         }
 
-        /**
-         * A matcher from a Kotlin [Regex]. Only the case-insensitive option survives the trip to
-         * the reader process (as an inline `(?i)`); the others mean nothing for a device name.
-         */
+        /** Only the case-insensitive option survives the trip to the reader (as inline `(?i)`). */
         @JvmStatic
         fun regex(regex: Regex): TouchDeviceMatcher {
             val caseless = regex.toPattern().flags() and Pattern.CASE_INSENSITIVE != 0
@@ -83,9 +73,8 @@ object EvdevNodes {
     private const val PREFIX = "event"
 
     /**
-     * The `eventN` entries of a /dev/input listing in numeric order (event2 before event10), so
-     * "the first match" means the lowest node, the way `getevent` lists them. Anything else in
-     * the directory (mice, js0, by-path links) is dropped.
+     * The `eventN` entries in numeric order (event2 before event10), so "first match" is the
+     * lowest node, as `getevent` lists them. Other entries (mice, js0, links) are dropped.
      */
     @JvmStatic
     fun sortedEventNodes(names: Iterable<String>): List<String> = names

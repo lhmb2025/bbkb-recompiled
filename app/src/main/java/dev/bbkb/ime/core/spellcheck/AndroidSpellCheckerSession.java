@@ -62,19 +62,12 @@ public final class AndroidSpellCheckerSession extends SpellCheckerService.Sessio
     /** How long the user-dictionary latch stays closed after a provider notification. */
     private static final long USER_DICT_LATCH_MS = 3000L;
 
-    /**
-     * One scheduler for the whole session, shut down in {@link #onClose()}.
-     *
-     * <p>Audit GD-7: a fresh {@link java.util.Timer} - and therefore a new non-daemon
-     * OS thread - used to be spawned on <em>every</em> UserDictionary change
-     * notification and never cancelled, so a burst of provider notifications spawned a
-     * burst of threads that lived until GC of the Timer.</p>
-     */
+    /** One scheduler for the whole session (not a thread per provider notification); shut down in {@link #onClose()}. */
     private final ScheduledExecutorService mLatchExec = Executors.newSingleThreadScheduledExecutor();
 
     private final SuggestionCache mSuggestionCache = new SuggestionCache();
 
-    /** Dictionary answers for words already checked, so a recheck skips the engine (P-20). */
+    /** Dictionary answers for words already checked, so a recheck skips the engine. */
     private final SpellVerdictCache mVerdictCache = new SpellVerdictCache();
 
     private SentenceTokenizer mSentenceTokenizer;
@@ -85,6 +78,7 @@ public final class AndroidSpellCheckerSession extends SpellCheckerService.Sessio
 
         public final int mFlags;
 
+        /** @param strArr the cached suggestions */
         public CachedResult(String[] strArr, int flags) {
             this.mSuggestions = strArr;
             this.mFlags = flags;
@@ -96,11 +90,7 @@ public final class AndroidSpellCheckerSession extends SpellCheckerService.Sessio
         private final LruCache<String, CachedResult> mCache = new LruCache<>(50);
 
         private static String buildCacheKey(String word, PrevWordsInfo prevWordsInfo) {
-            // onGetSuggestions (the single-word entry point) passes null previous words, as the
-            // original APK did; dereferencing it threw, and spellCheckWord's catch turned every
-            // single-word request into attributes 0 (no typo, no suggestions). Null means "no
-            // previous word": the same key an invalid PrevWordsInfo gets. The engine already
-            // accepts null (NuanceSDKDictionaryBridge.setNativeContext).
+            // onGetSuggestions passes null previous words: same key as an invalid PrevWordsInfo.
             if (TextUtils.isEmpty(word) || prevWordsInfo == null || !prevWordsInfo.isValid()) {
                 return word;
             }
@@ -143,13 +133,13 @@ public final class AndroidSpellCheckerSession extends SpellCheckerService.Sessio
         contentResolver.registerContentObserver(UserDictionary.Words.CONTENT_URI, true, this.mUserDictObserver);
     }
 
-    @Override // android.service.textservice.SpellCheckerService.Session
+    @Override
     public String getLocale() {
         String str = this.mLocaleForTesting;
         return str != null ? str : super.getLocale();
     }
 
-    @Override // android.service.textservice.SpellCheckerService.Session
+    @Override
     public void onCreate() {
         String locale = getLocale();
         this.mSessionLocale = LocaleUtils.constructLocaleFromString(locale);
@@ -159,10 +149,7 @@ public final class AndroidSpellCheckerSession extends SpellCheckerService.Sessio
             throw new NullPointerException("Failed to create locale: " + locale);
         }
         this.mScriptCode = ScriptUtils.getScriptFromLocale(sessionLocale);
-        // Through the service, not straight to the engine: setting the engine's language here
-        // used to drop the keyboard's other languages behind the service's back (it still
-        // recorded them as loaded), and the keyboard layout lookup crashed for a script with no
-        // layout. The service loads the languages, and the layout when there is one.
+        // Load through the service, never the engine directly, so its loaded-language record stays true.
         this.mService.beginRequest();
         try {
             ensureDictionaryLoaded();
@@ -171,7 +158,7 @@ public final class AndroidSpellCheckerSession extends SpellCheckerService.Sessio
         }
     }
 
-    @Override // android.service.textservice.SpellCheckerService.Session
+    @Override
     public void onClose() {
         this.mService.getContentResolver().unregisterContentObserver(this.mUserDictObserver);
         this.mLatchExec.shutdownNow();
@@ -179,28 +166,20 @@ public final class AndroidSpellCheckerSession extends SpellCheckerService.Sessio
         this.mUserDictLatch.open();
     }
 
-    /**
-     * Whether the service's engine holds this session's languages, loading them when it does not.
-     * Cheap once they are loaded, so every request asks; false while the session's language has
-     * no installed pack.
-     */
+    /** Loads this session's languages if needed (cheap once loaded); false while its pack is missing. */
     private boolean ensureDictionaryLoaded() {
         return this.mService.initDictionaryForLocale(this.mSessionLocale);
     }
 
     /**
-     * Once per request: loads the session's languages and drops the cached dictionary answers
-     * when what they were computed against has changed. False as {@link #ensureDictionaryLoaded}.
-     * Runs inside the request's {@code beginRequest}/{@code endRequest} pair, which keeps the
-     * service from releasing the engine until the request is done with it.
+     * Once per request, inside its {@code beginRequest}/{@code endRequest} pair: loads the languages
+     * and drops cached verdicts when the dictionary changed. False as {@link #ensureDictionaryLoaded}.
      */
     private boolean prepareRequest() {
         if (!ensureDictionaryLoaded()) {
             return false;
         }
-        // The service's generation moves on every language load and engine release: exactly
-        // when the answers could change (it used to be the keyboard's subtype, which can
-        // change without a reload and misses a release).
+        // The generation moves on every load and release, exactly when answers can change.
         this.mVerdictCache.syncDictionaryState(this.mService.getEngineGeneration());
         return true;
     }
@@ -218,6 +197,7 @@ public final class AndroidSpellCheckerSession extends SpellCheckerService.Sessio
                 | (prefs.getBoolean("pref_spellcheck_use_contacts", true) ? 2 : 0);
     }
 
+    /** @param str the word to classify */
     private static int classifyWord(String str, int scriptCode) {
         if (TextUtils.isEmpty(str) || str.length() <= 1) {
             return 5; // TOO_SHORT
@@ -264,27 +244,18 @@ public final class AndroidSpellCheckerSession extends SpellCheckerService.Sessio
         return result;
     }
 
-    /**
-     * Checks one word. The caller has run {@link #prepareRequest} once for the whole request
-     * (it used to run per word) and passes its answer as {@code dictionaryLoaded}.
-     */
+    /** Checks one word; {@code dictionaryLoaded} is the caller's single {@link #prepareRequest} answer. */
     private SuggestionsInfo spellCheckWord(TextInfo textInfo, PrevWordsInfo prevWordsInfo, int sugLimit,
             boolean dictionaryLoaded, int verdictSettings) {
-        // Bounded: an unbounded block() parks the spell-check binder thread forever if
-        // the reopen task is ever lost (audit GD-7).
+        // Bounded, so a lost reopen task cannot park the binder thread forever.
         this.mUserDictLatch.block(USER_DICT_LATCH_MS);
-        // The single-word entry points used to check against no dictionary at all (every word
-        // passed). With no dictionary for this language, say nothing rather than mark the word
-        // right or wrong.
+        // No dictionary for this language: no opinion rather than right or wrong.
         if (!dictionaryLoaded) {
             return AndroidSpellCheckerService.createUnknownResult();
         }
         try {
             String text = textInfo.getText();
-            // replace(char, char) rather than replaceAll: this is a single literal
-            // character substitution running once per word the framework checks, on a
-            // binder thread, and replaceAll compiles a Pattern and allocates a Matcher
-            // every call (audit GD-10).
+            // replace(char, char), not replaceAll: no Pattern compiled per checked word.
             String normalizedWord = text.replace('’', '\'');
             int capMode = getCapitalizationMode(normalizedWord);
             if (this.mService.hasPreferenceChanged()) {
@@ -292,8 +263,7 @@ public final class AndroidSpellCheckerSession extends SpellCheckerService.Sessio
                 this.mVerdictCache.clear();
                 this.mService.clearPreferenceChanged();
             }
-            // The cached answer first: the engine check is 1 to 3 locked native calls (more with
-            // learned words not accepted), and correct words were never cached (P-20).
+            // Cached answer first: the engine check is 1 to 3 locked native calls.
             Boolean cachedVerdict = this.mVerdictCache.get(normalizedWord, verdictSettings);
             boolean isInDict;
             if (cachedVerdict != null) {
@@ -302,10 +272,7 @@ public final class AndroidSpellCheckerSession extends SpellCheckerService.Sessio
                 isInDict = isWordInDictionary(normalizedWord, capMode);
                 this.mVerdictCache.put(normalizedWord, verdictSettings, isInDict);
             }
-            // Audit GD-11: the cache is written under the normalized key (see
-            // putCached below), so reading with the raw text meant every word carrying
-            // a curly apostrophe - exactly the class fixApostropheSuggestions then
-            // post-processes - was written and never read.
+            // Read with the normalized key, the same one putCached writes.
             CachedResult cached = this.mSuggestionCache.getCached(normalizedWord, prevWordsInfo);
             if (cached != null) {
                 if ((cached.mFlags == 1) == isInDict) {
@@ -333,18 +300,15 @@ public final class AndroidSpellCheckerSession extends SpellCheckerService.Sessio
                 return AndroidSpellCheckerService.createNotInDictionaryResult(2 == wordClass);
             }
             if (isInDict) {
-                // What the path below gives a known word (no suggestions are generated for it),
-                // without building a composing tracker for nothing.
+                // Same answer the path below gives a known word, without building a tracker.
                 return new SuggestionsInfo(SuggestionsInfo.RESULT_ATTR_IN_THE_DICTIONARY, null);
             }
             Keyboard keyboard = this.mService.getKeyboardForLocale(this.mSessionLocale);
             int[] codePoints = toCodePointArray((CharSequence) normalizedWord);
             ProximityGrid proximityGrid = keyboard != null ? keyboard.getProximityGrid() : null;
             final boolean korean = LocaleUtils.isCurrentSubtypeKorean();
-            // Built and fed on the engine thread, in the same op as the lookup (see
-            // AndroidSpellCheckerService.getSuggestions). peekSecondary, not getSecondary: the
-            // request has just loaded the engine and holds it against release, and the engine
-            // thread must not wait for a create on the loader.
+            // Runs on the engine thread with the lookup. peekSecondary: the request already holds a
+            // loaded engine, and the engine thread must not wait for a create on the loader.
             final java.util.function.Supplier<ComposingTextTracker> trackerFactory = () -> {
                 final com.blackberry.nuanceshim.NuanceSDK engine = NuanceSDKManager.peekSecondary();
                 if (engine == null) return null;
@@ -359,7 +323,7 @@ public final class AndroidSpellCheckerSession extends SpellCheckerService.Sessio
             try {
                 suggestionResult = extractSuggestions(capMode, this.mSessionLocale, sugLimit, normalizedWord, isInDict ? null : this.mService.getSuggestions(trackerFactory, prevWordsInfo, proximityGrid));
             } catch (Throwable e) {
-                // Fallback to basic spell checking if advanced features fail
+                // Engine lookup failed: answer without suggestions.
                 suggestionResult = extractSuggestions(capMode, this.mSessionLocale, sugLimit, normalizedWord, null);
             }
             int flags = (suggestionResult.mHasRecommended ? SuggestionsInfo.RESULT_ATTR_HAS_RECOMMENDED_SUGGESTIONS : 0) | (isInDict ? 1 : 2);
@@ -408,7 +372,7 @@ public final class AndroidSpellCheckerSession extends SpellCheckerService.Sessio
         return new SuggestionResult(suggestions.subList(0, Math.min(suggestions.size(), sugLimit)).toArray(EMPTY_STRING_ARRAY), true);
     }
 
-    @Override // android.service.textservice.SpellCheckerService.Session
+    @Override
     public SuggestionsInfo onGetSuggestions(TextInfo textInfo, int sugLimit) {
         long savedIdentity = Binder.clearCallingIdentity();
         this.mService.beginRequest();
@@ -420,12 +384,6 @@ public final class AndroidSpellCheckerSession extends SpellCheckerService.Sessio
         }
     }
 
-    /**
-     * For each IN_THE_DICTIONARY word containing an apostrophe (straight or U+2019), appends an
-     * empty override span for every non-empty apostrophe-separated part already in the suggestion cache (keyed
-     * with the previous IN_THE_DICTIONARY word). The override covers the part's own characters
-     * and carries the word's cookie/sequence. Returns null when nothing is added.
-     */
     /** Straight or curly (U+2019) apostrophe; each is one UTF-16 unit, which the offsets rely on. */
     private static final String APOSTROPHE_PATTERN = "['’]";
 
@@ -434,10 +392,13 @@ public final class AndroidSpellCheckerSession extends SpellCheckerService.Sessio
         return str.indexOf('\'') >= 0 || str.indexOf('’') >= 0;
     }
 
+    /**
+     * For each IN_THE_DICTIONARY word with an apostrophe, appends an empty override span over every
+     * part already in the suggestion cache (keyed with the previous such word), carrying the word's
+     * cookie/sequence. Null when nothing is added.
+     */
     private SentenceSuggestionsInfo fixApostropheSuggestions(TextInfo textInfo, SentenceSuggestionsInfo sentence) {
         final CharSequence text = textInfo.getCharSequence();
-        // Curly (U+2019) counts as an apostrophe here, as it does in spellCheckWord's normalisation;
-        // checking only the straight one meant curly-apostrophe words never got this pass.
         if (!hasApostrophe(text)) {
             return null;
         }
@@ -462,9 +423,7 @@ public final class AndroidSpellCheckerSession extends SpellCheckerService.Sessio
             if (parts == null || parts.length <= 1) {
                 continue;
             }
-            // Each override must cover the part's own characters. It used to sit at the WORD's
-            // offset with the PART's length (the original APK did the same), so for "don't" the
-            // "t" override covered the "d" instead. The separator is one UTF-16 unit.
+            // Each override sits at the part's own offset; the separator is one UTF-16 unit.
             int nextPartOffset = offset;
             for (CharSequence part : parts) {
                 final int partOffset = nextPartOffset;
@@ -499,7 +458,8 @@ public final class AndroidSpellCheckerSession extends SpellCheckerService.Sessio
         return new SentenceSuggestionsInfo(infos, offsetArr, lengthArr);
     }
 
-    @Override // android.service.textservice.SpellCheckerService.Session
+    @Override
+    /** @param i the suggestion limit; 0 means 5 */
     public SentenceSuggestionsInfo[] onGetSentenceSuggestionsMultiple(TextInfo[] textInfoArr, int i) {
         if (i == 0) {
             i = 5;
@@ -536,10 +496,7 @@ public final class AndroidSpellCheckerSession extends SpellCheckerService.Sessio
             if (tokenizer == null) {
                 String locale = getLocale();
                 if (!TextUtils.isEmpty(locale)) {
-                    // Audit GD-26: getLocale() returns the framework's subtype locale
-                    // string ("en_US"), and new Locale("en_US") builds a Locale whose
-                    // *language* is the literal "en_us" - not en/US. onCreate parses the
-                    // same string correctly, and the tokenizer now splits by this locale.
+                    // getLocale() is "en_US" style; new Locale() would make "en_us" the language.
                     tokenizer = new SentenceTokenizer(LocaleUtils.constructLocaleFromString(locale));
                     this.mSentenceTokenizer = tokenizer;
                 }
@@ -567,7 +524,7 @@ public final class AndroidSpellCheckerSession extends SpellCheckerService.Sessio
         return results;
     }
 
-    @Override // android.service.textservice.SpellCheckerService.Session
+    @Override
     public SuggestionsInfo[] onGetSuggestionsMultiple(TextInfo[] textInfoArr, int sugLimit, boolean sequentialWords) {
         long savedIdentity = Binder.clearCallingIdentity();
         this.mService.beginRequest();

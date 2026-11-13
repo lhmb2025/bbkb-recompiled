@@ -25,15 +25,8 @@ public final class InputMethodHelper {
 
     private static final String TAG = "InputMethodHelper";
 
-    @android.annotation.SuppressLint("StaticFieldLeak") // Uses applicationContext (line 53), safe for static
+    @android.annotation.SuppressLint("StaticFieldLeak") // Holds only the application context
     private static final InputMethodHelper sInstance = new InputMethodHelper();
-
-
-    // Phase 1g: emojiKeyPressed / micKeyPressed / multifunctionKeyPressed used to live here —
-    // three mutable public booleans, armed by KeyEventConverter on a key-down and consumed by
-    // KeyEventProcessor on the key-up, in a class that has nothing else to do with key events and
-    // could not clear them on any lifecycle event. That down-up pairing is owned by
-    // dev.bbkb.ime.core.keyevent.BoardKeyPressTracker now; see PendingKeyAction.
 
     private Context context;
 
@@ -58,18 +51,14 @@ public final class InputMethodHelper {
     }
 
     /**
-     * The last answer of {@link KeyguardManager#isDeviceLocked()}, or null when it has to be asked
-     * again. Asking was a TrustManager binder call on every field focus. The answer can only turn
-     * from unlocked to locked while the screen is off (or on the lock screen itself, which is
-     * SystemUI's window; see {@link #onEditorStarted}), and an unlock announces itself with
-     * USER_PRESENT, so: the screen going off or on forgets it, USER_PRESENT sets it to unlocked,
-     * and the first field after either asks once. A cold start asks on the first field.
+     * Cached {@link KeyguardManager#isDeviceLocked()} (a binder call), null = ask again. Locking
+     * happens only with the screen off or on SystemUI's lock screen: screen off/on forgets it,
+     * USER_PRESENT sets it unlocked, SystemUI fields re-ask ({@link #onEditorStarted}).
      */
     private static volatile Boolean sDeviceLocked;
 
     private static volatile boolean sLockReceiverRegistered;
 
-    /** SystemUI's package: its fields (the lock screen's password entry) re-ask the lock state. */
     private static final String SYSTEM_UI_PACKAGE = "com.android.systemui";
 
     private static synchronized void registerLockStateReceiver(Context appContext) {
@@ -94,7 +83,6 @@ public final class InputMethodHelper {
         }
     }
 
-    /** Package-private for the unit test. */
     static void onLockStateBroadcast(String action) {
         if (Intent.ACTION_USER_PRESENT.equals(action)) {
             sDeviceLocked = Boolean.FALSE;
@@ -103,10 +91,7 @@ public final class InputMethodHelper {
         }
     }
 
-    /**
-     * A field is starting. The lock screen's own field belongs to SystemUI, and the device can
-     * be locked with the screen on (Lockdown from the power menu), so a SystemUI field re-asks.
-     */
+    /** A SystemUI field re-asks: Lockdown from the power menu locks with the screen on. */
     public static void onEditorStarted(EditorInfo editorInfo) {
         if (editorInfo != null && SYSTEM_UI_PACKAGE.equals(editorInfo.packageName)) {
             sDeviceLocked = null;
@@ -124,17 +109,14 @@ public final class InputMethodHelper {
             Logger.debug(TAG, "Voice Input Method is blocked in this control");
             return false;
         }
-        
-        // First check if speech recognition is available on the device
-        // This works with any speech recognition service (Google, on-device, etc.)
+
         Context context = getInstance().getContext();
         if (context != null && isRecognitionAvailable(context)) {
             Logger.verbose(TAG, "Speech recognition service is available");
             return true;
         }
-        
-        // Fallback to checking if Google Voice Typing is enabled as input method
-        // (legacy check for backward compatibility)
+
+        // Fallback: a voice-typing IME is enabled.
         switch (SubtypeManager.getInstance().getShortcutImeState()) {
             case DISABLED:
                 Logger.debug(TAG, "Voice Input Method is disabled and no speech recognition available");
@@ -180,12 +162,7 @@ public final class InputMethodHelper {
         return InputSettingsLauncher.isInputSettingsAvailable(this.context);
     }
 
-    /**
-     * TI-31: the {@code SDK_INT >= 22} half is always true at the app's minSdk, and the
-     * {@code inKeyguardRestrictedInputMode()} fallback it guarded has been deprecated since API 16
-     * and is redundant once {@code isDeviceLocked()} is unconditionally available. The context is
-     * also null until {@code init()} runs, and this is called from the functional-key handler.
-     */
+    /** False until {@code init()} runs; called from the functional-key handler. */
     public static boolean isDeviceLocked() {
         Context context = getInstance().getContext();
         if (context == null) {

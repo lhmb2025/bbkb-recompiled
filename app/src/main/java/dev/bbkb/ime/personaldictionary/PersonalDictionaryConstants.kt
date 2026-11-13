@@ -1,10 +1,6 @@
 package dev.bbkb.ime.personaldictionary
 
-/**
- * Package-wide constants for the Personal Dictionary subsystem.
- *
- * **Renamed from:** `BASLConstants.kt` (original `com.blackberry.basl` package)
- */
+/** Package-wide constants for the personal dictionary. */
 object PersonalDictionaryConstants {
     const val AUD_MAX_LENGTH = 48
     const val AUTO_CAPS_ENABLED = '.'

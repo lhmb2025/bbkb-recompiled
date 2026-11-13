@@ -15,10 +15,7 @@ import java.util.LinkedHashMap;
 import java.util.Locale;
 import java.util.Map;
 
-/**
- * Defines the spacing and punctuation rules for the current input language. It holds arrays of
- * characters for word separators, connectors, and symbols that require specific spacing behavior.
- */
+/** Spacing and punctuation rules for the current input language: separators, connectors, spacing sets. */
 
 
 
@@ -60,7 +57,7 @@ public final class SpacingAndPunctuation {
 
     private final int sentenceSeparatorChar;
 
-    /** U+0964 DEVANAGARI DANDA - the sentence separator Hindi uses in place of '.'. */
+    /** U+0964 DEVANAGARI DANDA, the sentence separator Hindi uses in place of '.'. */
     private static final int DEVANAGARI_DANDA = 0x0964;
 
     /** Parsed sets per resources configuration (which carries the keyboard locale); a few at most. */
@@ -74,11 +71,7 @@ public final class SpacingAndPunctuation {
                 }
             };
 
-    /**
-     * The rules for {@code resources}, parsed once per configuration: everything here comes from
-     * resource strings, so the same locale and configuration always give the same sets, and the
-     * parse (10 strings sorted into arrays) ran on every settings load. Instances are immutable.
-     */
+    /** The rules for {@code resources}, parsed once per configuration (all come from resources); immutable. */
     public static SpacingAndPunctuation forResources(Resources resources) {
         final Configuration key = new Configuration(resources.getConfiguration());
         synchronized (sCache) {
@@ -122,7 +115,10 @@ public final class SpacingAndPunctuation {
         this.suggestedPunctuations = PunctuationSuggestions.newPunctuationSuggestions(KeySpecParser.splitKeySpecs(resources.getString(R.string.suggested_punctuations)));
     }
 
-
+    /**
+     * @param c0806f the rules to copy
+     * @param iArr the sorted word separators to use instead
+     */
     public SpacingAndPunctuation(SpacingAndPunctuation c0806f, int[] iArr) {
         this.symbolsPrecededBySpace = c0806f.symbolsPrecededBySpace;
         this.symbolsFollowedBySpace = c0806f.symbolsFollowedBySpace;
@@ -143,10 +139,12 @@ public final class SpacingAndPunctuation {
         this.usesGermanRules = c0806f.usesGermanRules;
     }
 
+    /** @param i a code point */
     public boolean isWordSeparator(int i) {
         return Arrays.binarySearch(this.wordSeparators, i) >= 0;
     }
 
+    /** @param i a code point */
     public boolean isNotWordSeparatorForLocale(int i, Locale locale) {
         int iBinarySearch;
         if (LocaleUtils.isChinesePinyin(locale)) {
@@ -161,34 +159,42 @@ public final class SpacingAndPunctuation {
         return iBinarySearch >= 0;
     }
 
+    /** @param i a code point */
     public boolean isSwipeDeleteDelimiter(int i) {
         return Arrays.binarySearch(this.swipeDeleteDelimiters, i) >= 0;
     }
 
+    /** @param i a code point */
     public boolean isWordConnector(int i) {
         return Arrays.binarySearch(this.wordConnectors, i) >= 0;
     }
 
+    /** @param i a code point */
     public boolean isLetterOrConnector(int i) {
         return Character.isLetter(i) || isWordConnector(i);
     }
 
+    /** @param i a code point */
     public boolean isPrecededBySpace(int i) {
         return Arrays.binarySearch(this.symbolsPrecededBySpace, i) >= 0;
     }
 
+    /** @param i a code point */
     public boolean isPrecededBySpaceFrench(int i) {
         return LocaleUtils.isCurrentSubtypeNonCanadianFrench() && Arrays.binarySearch(this.symbolsPrecededBySpaceFrench, i) >= 0;
     }
 
+    /** @param i a code point */
     public boolean isFollowedBySpace(int i) {
         return Arrays.binarySearch(this.symbolsFollowedBySpace, i) >= 0;
     }
 
+    /** @param i a code point */
     public boolean clustersWithSymbols(int i) {
         return Arrays.binarySearch(this.symbolsClusteringTogether, i) >= 0;
     }
 
+    /** @param i a code point */
     public boolean isSentenceSeparator(int i) {
         return i == this.sentenceSeparatorChar;
     }

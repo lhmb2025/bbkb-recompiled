@@ -1,11 +1,6 @@
-/* xt9kdb_jni.c — W1/W3a glue: load + self-check the owned ET9KDB module from the app, and (W3a)
- * mirror real swipe points into the owned trace on a SCRATCH context to log the owned candidate sets.
- *
- * Built into libxt9kdb.so (DIFF mode -> the owned symbols are xt9kdb_*). This is debug-only and does
- * NOT touch the live keyboard: it parses a KDB asset through the owned Load_XmlKDB, and the W3a path
- * runs the owned gesture decoder on a NULL context (never the blob's), capturing the committed
- * candidate sets via local sinks. No blob calls; the blob's state is untouched.
- */
+/* xt9kdb_jni.c: debug-only glue in libxt9kdb.so (DIFF mode, owned symbols are xt9kdb_*). Loads a KDB
+ * through the owned Load_XmlKDB and mirrors swipe points into the owned decoder on a NULL context,
+ * logging its candidate sets via local sinks. Never calls or touches the blob. */
 #include <jni.h>
 #include <android/log.h>
 #include <stdio.h>
@@ -18,7 +13,7 @@
 #define LOGO(...) __android_log_print(ANDROID_LOG_INFO, "XT9OWNED", __VA_ARGS__)
 #define LOGT(...) __android_log_print(ANDROID_LOG_INFO, "XT9TAP",  __VA_ARGS__)
 
-/* ---- W3a capture sinks: record the owned candidate sets instead of calling AW ------------------ */
+/* Capture sinks: record the owned candidate sets instead of calling AW. */
 #define CAP_MAX 64
 static struct { ET9SYMB symbs[8]; ET9U8 freqs[8]; int n; } g_cap[CAP_MAX];
 static int  g_cap_n;
@@ -71,18 +66,15 @@ Java_com_blackberry_nuanceshim_Xt9Kdb_nativeLoadKdb(JNIEnv* env, jclass cls, jby
          g_kdb_model ? g_kdb_model->secondaryId : 0u,
          g_kdb_model ? g_kdb_model->authoredWidth  : 0u,
          g_kdb_model ? g_kdb_model->authoredHeight : 0u);
-    /* The athena KDB now uses the firmware's UNEVEN sensor bands (rows 90/180/180), authored 1:1 with
-     * the sensor — so authored == sensor, offset (0,0), no scale, no dead strip (row1 starts at y=0). */
+    /* The athena KDB is authored 1:1 with the sensor's uneven bands (rows 90/180/180): offset (0,0). */
     xt9kdb_set_active_pkb(1);
     xt9kdb_SetKeyboardOffset((ET9KDBInfoPtr)&dummy, 0, 0);
     install_sinks();
     return (jint)kc;
 }
 
-/* ---- Tap calibration: resolve a single tap through the OWNED model and log it ------------------
- * Logs raw SENSOR coords, the owned AUTHORED coords (after the 50px offset), the resolved letter, and
- * the offset from that key's (biased) center. Tap each physical key N times, then average the raw
- * coords per key to build a correction map. View: adb logcat -s XT9TAP:I */
+/* Tap calibration: logs a tap's sensor and authored coords, the resolved key, and the offset from
+ * its biased center (logcat -s XT9TAP:I). */
 JNIEXPORT void JNICALL
 Java_com_blackberry_nuanceshim_Xt9Kdb_nativeLogTap(JNIEnv* env, jclass cls, jfloat x, jfloat y) {
     (void)env; (void)cls;
@@ -101,11 +93,8 @@ Java_com_blackberry_nuanceshim_Xt9Kdb_nativeLogTap(JNIEnv* env, jclass cls, jflo
          (double)(ax-bcx),(double)(ay-bcy), inside ? "" : " [nearest]");
 }
 
-/* ---- W3a: scratch-context gesture mirror -------------------------------------------------------
- * NuanceSDK.touchStart/Move/End mirror raw SENSOR points here. The owned trace accumulates on its own
- * static buffer (never the blob's context). traceEnd decodes + commits to the capture sinks and logs
- * the owned candidate sets (XT9OWNED), to be diffed against the blob's recognized list (XT9WORDS). */
-
+/* Scratch gesture mirror: NuanceSDK.touch* send raw sensor points; traceEnd decodes into the sinks
+ * and logs the owned candidate sets (XT9OWNED) for diffing against XT9WORDS. */
 JNIEXPORT void JNICALL
 Java_com_blackberry_nuanceshim_Xt9Kdb_nativeTraceStart(JNIEnv* env, jclass cls, jfloat x, jfloat y, jlong t) {
     (void)env; (void)cls;
@@ -131,7 +120,6 @@ Java_com_blackberry_nuanceshim_Xt9Kdb_nativeTraceEnd(JNIEnv* env, jclass cls, jf
     g_cap_n = 0;
     xt9kdb_decode_scratch();                                                /* decode + capture */
 
-    /* Concatenated top-candidate-per-position decode, for a direct eyeball vs XT9WORDS 'spell'. */
     char spell[80]; int sp = 0;
     for (int s = 0; s < g_cap_n && sp < (int)sizeof(spell) - 1; s++) {
         ET9SYMB sy = g_cap[s].n ? g_cap[s].symbs[0] : '?';
@@ -140,7 +128,7 @@ Java_com_blackberry_nuanceshim_Xt9Kdb_nativeTraceEnd(JNIEnv* env, jclass cls, jf
     spell[sp] = 0;
     LOGO("owned spell='%s' (%d pos)  <- compare to XT9WORDS spell/word", spell, g_cap_n);
 
-    /* Then one line per position with the full ambiguous set: "pos0: g[255] h[210] f[170]". */
+    /* One line per position: "pos0: g[255] h[210] f[170]". */
     char line[512];
     for (int s = 0; s < g_cap_n; s++) {
         int off = 0;

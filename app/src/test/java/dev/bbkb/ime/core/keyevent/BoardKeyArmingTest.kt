@@ -29,16 +29,10 @@ import org.robolectric.annotation.Config
 import java.util.Locale
 
 /**
- * The **arming** half of the Phase 1g pairing, driven through a real [KeyEventConverter] and the
- * shipped device configs.
- *
- * <p>There were eight sites in that class that set one of the three old `InputMethodHelper` flags —
- * the role-based emoji / voice / multifunction block, the BlackBerry mic key code 7, the
- * `KEYCODE_VOICE_ASSIST` + mic-pseudo-scancode pair, the emoji pseudo-scancode, and the two
- * `AltMappingsTable` virtual key codes. Eight replacements is eight chances to arm the wrong action,
- * or to arm where the old code did not. These tests ask the converter, not a mock, and they cover
- * the two cases the brief singles out as must-not-move: **Alt+mic types the mapping's alt character
- * and arms nothing**, and **a multifunction key set to Ctrl arms nothing at all**.
+ * The arming half of the board-key pairing, driven through a real [KeyEventConverter] and the
+ * shipped device configs: every site that arms an emoji/voice/multifunction action arms the right
+ * one, Alt+mic types the alt character and arms nothing, and a multifunction key set to Ctrl arms
+ * nothing.
  */
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [34], manifest = Config.NONE)
@@ -49,9 +43,8 @@ class BoardKeyArmingTest {
     private val MP01_MIC_SCANCODE = 251
 
     /**
-     * The BlackBerry mic key's key code: raw 7, which is `KEYCODE_0` — the KEY2's mic key doubles
-     * as the zero digit ("Mic/zero key: sends keyCode=7", device_config_athena.xml). Not
-     * `KEYCODE_7`, which is 14.
+     * The BlackBerry mic key's key code: raw 7, which is `KEYCODE_0` (the KEY2 mic key doubles as
+     * zero, per device_config_athena.xml). Not `KEYCODE_7`, which is 14.
      */
     private val MIC_KEYCODE_7 = KeyEvent.KEYCODE_0
 
@@ -81,8 +74,6 @@ class BoardKeyArmingTest {
         DeviceProfile.initialize(null)
         PrefsManager.getPrefs(context).edit().clear().commit()
     }
-
-    // ===================================================== MP01, by device-config role
 
     @Test
     fun `the MP01 emoji key arms the emoji board`() {
@@ -150,12 +141,9 @@ class BoardKeyArmingTest {
         assertNothingArmed()
     }
 
-    // ===================================================== MP01, the legacy pseudo-keycode path
-
     /**
-     * The `.kl`-named emoji key, whose ROM sends the pseudo-scancode 666 with `KEYCODE_UNKNOWN`
-     * because "EM" is not a valid Android keycode name. Reached here with no device config loaded
-     * at all, which is the configuration the fallback exists for.
+     * The `.kl`-named emoji key: the ROM sends pseudo-scancode 666 with `KEYCODE_UNKNOWN` because
+     * "EM" is not a valid keycode name. No device config is loaded, which is what the fallback is for.
      */
     @Test
     fun `the emoji pseudo-scancode arms the emoji board with no device config`() {
@@ -201,8 +189,6 @@ class BoardKeyArmingTest {
         assertNothingArmed()
         assertEquals('.'.code, result.mCodePoint)
     }
-
-    // ===================================================== KEY2 multifunction key
 
     @Test
     fun `a KEY2 multifunction key set to switch language arms the multifunction action`() {
@@ -305,13 +291,9 @@ class BoardKeyArmingTest {
         assertArmedOnly(PendingKeyAction.VOICE_INPUT)
     }
 
-    // ===================================================== numeric fields: the mic key is its digit
-
     /**
-     * The field classes whose keyboards exist to type digits. The KEY2's number layouts add
-     * `META_ALT_ON` to every key so the letter keys type their digits; the mic key must type its
-     * zero with that mask and without it (the mask lives in the keyboard state, which a board or
-     * a Sym press can reset).
+     * Digit field classes. Number layouts add `META_ALT_ON` to every key so letters type digits;
+     * the mic key must type its zero with and without that mask (a board or Sym press can reset it).
      */
     private val numericFields = listOf(
         InputType.TYPE_CLASS_NUMBER,
@@ -336,9 +318,8 @@ class BoardKeyArmingTest {
     }
 
     /**
-     * The beta report ("entering my card number in Samsung Pay, it couldn't recognise the 0
-     * button"): with the dictation key off, the number layout's Alt mask read as "Alt is held", and
-     * the swap turned that into voice input.
+     * With the dictation key off, the number layout's Alt mask must not read as a held Alt and
+     * swap the mic key into voice input.
      */
     @Test
     fun `with the dictation key off, the KEY2 mic key still types a zero in a numeric field`() {
@@ -415,8 +396,6 @@ class BoardKeyArmingTest {
         assertNothingArmed()
     }
 
-    // ===================================================== helpers
-
     private fun assertArmedOnly(expected: PendingKeyAction) {
         for (action in PendingKeyAction.values()) {
             assertEquals("$action", action == expected, pairing.isArmed(action))
@@ -437,9 +416,8 @@ class BoardKeyArmingTest {
     }
 
     /**
-     * What the converter answers for a key whose action fires on release: a gesture-end event with
-     * no data, which is how [KeyEventProcessor] knows to consume the key rather than let its base
-     * character through to the app.
+     * The converter's answer for a key whose action fires on release: a gesture-end event with no
+     * data, which tells [KeyEventProcessor] to consume the key rather than pass its base character.
      */
     private fun assertConsumedWithoutTyping(result: InputEvent) {
         assertTrue("the key must be consumed, not typed", result.isGestureEnd())

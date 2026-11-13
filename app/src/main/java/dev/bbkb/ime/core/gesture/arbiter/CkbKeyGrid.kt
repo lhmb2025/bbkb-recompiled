@@ -1,59 +1,41 @@
 package dev.bbkb.ime.core.gesture.arbiter
 
-/**
- * The capacitive-keyboard letter grid, in the keypad's own normalized [0,1] coordinate space.
- *
- * The authoritative rectangles come from one of two sources (in priority): a committed
- * `<ckb-key-grid>` in the matched `device_config_<device>.xml`, or a runtime capture of ET9's
- * `NuanceSDK.getKeys()`. There is **no** reconstructed fallback — if neither is available the grid
- * is simply absent (the Gesture Lab hides the overlay). Cells are normalized so they're
- * independent of the actual pixel dimensions.
- */
+/** A capacitive-keyboard letter cell in the keypad's normalized [0,1] space (see [CkbKeyGrid.resolve]). */
 data class CkbKey(
-    /** Single-character label. */
     val label: String,
-    /** Normalized center within the keypad rect [0,1]. */
+    /** Center. */
     val cx: Float,
     val cy: Float,
-    /** Normalized width/height within the keypad rect [0,1]. */
     val w: Float,
     val h: Float,
 )
 
 object CkbKeyGrid {
-
-    /**
-     * Keypad coordinate-space width: the active pad's frame from
-     * [TouchKeypadGeometry][dev.bbkb.ime.core.device.touch.TouchKeypadGeometry] (1080 on the
-     * KEY2, whose pad the root KDB is authored for). Was a KEY2 constant.
-     */
+    /** The active pad's frame width (1080 on the KEY2, which the root KDB is authored for). */
     @JvmStatic
     val width: Int
         get() = dev.bbkb.ime.core.device.touch.TouchKeypadGeometry.current().frameWidth()
 
-    /** Keypad coordinate-space height (525 on the KEY2). Was a KEY2 constant. */
+    /** 525 on the KEY2. */
     @JvmStatic
     val height: Int
         get() = dev.bbkb.ime.core.device.touch.TouchKeypadGeometry.current().frameHeight()
 
-    /** Aspect ratio (w/h) of the keypad surface — used to letterbox the overlay accurately. */
+    /** w/h, for letterboxing the overlay. */
     @JvmStatic
     val aspect: Float
         get() = dev.bbkb.ime.core.device.touch.TouchKeypadGeometry.current().frameAspect()
 
-    /** The letter key in [cells] whose cell contains the normalized keypad point, or null. */
     fun keyAt(cells: List<CkbKey>, nx: Float, ny: Float): CkbKey? = cells.firstOrNull { k ->
         nx >= k.cx - k.w / 2f && nx <= k.cx + k.w / 2f && ny >= k.cy - k.h / 2f && ny <= k.cy + k.h / 2f
     }
 
-    /** A resolved grid plus where it came from (for the Lab readout). */
+    /** [source] is for the Lab readout. */
     data class Resolved(val cells: List<CkbKey>, val source: String)
 
     /**
-     * The grid to use, or null if none is available:
-     *  1. the matched device's `<ckb-key-grid>` (committed, authoritative — injectable per device),
-     *  2. a runtime capture cached from ET9 (dev convenience),
-     *  3. null — no grid; callers skip anything that needs one.
+     * The device profile's `<ckb-key-grid>`, else a runtime capture from ET9, else null (no
+     * reconstructed fallback; the Lab hides the overlay).
      */
     fun resolve(context: android.content.Context): Resolved? {
         val cfg = try {

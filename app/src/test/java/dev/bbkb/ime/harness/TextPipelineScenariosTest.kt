@@ -14,17 +14,8 @@ import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
 
 /**
- * Regression harness scenario suite — Phase 1 of the Text Pipeline Quality Campaign
- * (docs/2026-07_text-pipeline-quality-campaign_plan.md).
- *
- * Each test replays a real historical bug (or a core composing invariant) through the REAL
- * [InputLogic] / RichInputConnection / ComposingTextTracker against a [FakeEditor]. The suite
- * is the executable form of the 2026-05 manual regression net: any change to the pipeline that
- * reintroduces one of these bugs fails here, in `./gradlew testDebugUnitTest`, before it ships.
- *
- * The must-pass proof that the harness catches real defects is
- * [launcherEnter_suggestionReplyAfterFinish_doesNotDuplicate]: reverting the 2026-07-24
- * cursor-unknown guard in InputLogic.onSuggestionsReceived makes exactly that test fail.
+ * Composing invariants and stale-reply scenarios replayed through the real [InputLogic],
+ * RichInputConnection and ComposingTextTracker against a [FakeEditor].
  */
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [34], manifest = Config.NONE, instrumentedPackages = ["com.blackberry.nuanceshim"])
@@ -35,12 +26,9 @@ class TextPipelineScenariosTest {
     @Before fun setUp() { h = PipelineHarness() }
     @After fun tearDown() { h.close() }
 
-    // ── FakeEditor semantics (the editor contract the bugs depended on) ──────────
-
     @Test
     fun fakeEditor_setComposingWithNoRegion_inserts() {
-        // The InputConnection contract, and the launcher bug's mechanism: with no composing
-        // region, setComposingText inserts at the cursor rather than replacing anything.
+        // With no composing region, setComposingText inserts at the cursor.
         h.editor.appSetText("instagram", 9, 9)
         assertFalse(h.editor.hasComposingRegion())
         h.editor.setComposingText("instagram", 1)
@@ -67,8 +55,6 @@ class TextPipelineScenariosTest {
         assertEquals(2, e.newSelStart)
     }
 
-    // ── RichInputConnection ⟷ editor consistency ────────────────────────────────
-
     @Test
     fun ric_finishThenInvalidate_leavesCursorUnknown() {
         h.startSession("instagram", 9)
@@ -78,16 +64,10 @@ class TextPipelineScenariosTest {
         assertEquals(-1, h.inputLogic.mRichInputConnection.cursorStart)
     }
 
-    // ── Bug: launcher-search Enter duplication (2026-07-24) ──────────────────────
-
     @Test
     fun launcherEnter_suggestionReplyAfterFinish_doesNotDuplicate() {
-        // Reproduce the exact post-Enter state on a search field:
-        //  - the editor holds the finalized word with NO composing region
-        //    (finishComposingText ran during the editor-action handoff),
-        //  - the RIC connection was invalidated (cursor unknown),
-        //  - BUT the composing tracker was left alive with the word (the handoff never
-        //    cleared it), and a 10 ms-delayed suggestion update was already queued.
+        // Post-Enter state on a search field: editor holds the word with no region, RIC cursor
+        // unknown, but the tracker still holds the word and a suggestion reply is in flight.
         h.startSession("instagram", 9)
         h.seedComposing("instagram")
         h.inputLogic.mRichInputConnection.finishComposingText()
@@ -98,17 +78,15 @@ class TextPipelineScenariosTest {
         // The queued worker reply lands after the search already ran.
         h.deliverSuggestions(listOf("instagram"))
 
-        // With the cursor-unknown guard, the reply is dropped and the editor keeps one copy.
-        // Without it, onSuggestionsReceived re-sends the word via setComposingText into a
-        // region-less editor and the field becomes "instagraminstagram".
+        // The cursor-unknown guard drops the reply; without it the region-less editor would
+        // get a second copy ("instagraminstagram").
         assertEquals("instagram", h.editor.getText())
         h.fourCopies().assertConsistent()
     }
 
     @Test
     fun suggestionReplyWhileComposing_liveConnection_updatesRegionNotDuplicate() {
-        // The healthy counterpart: connection live, editor still holds the composing region,
-        // a suggestion reply refreshes the region in place (no duplication).
+        // Live connection with a region: the reply refreshes the region in place.
         h.startSession()
         h.editor.setComposingText("instagram", 1)
         h.inputLogic.mRichInputConnection.resetConnection(9, 9, false)
@@ -116,8 +94,6 @@ class TextPipelineScenariosTest {
         h.deliverSuggestions(listOf("instagram"))
         assertEquals("instagram", h.editor.getText())
     }
-
-    // ── Bug: composing leak across field switch (BUG5) ───────────────────────────
 
     @Test
     fun fieldSwitch_clearingTracker_preventsLeak() {
@@ -127,7 +103,7 @@ class TextPipelineScenariosTest {
         h.seedComposing("Hello")
         assertTrue(h.inputLogic.mComposingTracker.isComposing)
 
-        // Field switch: the fix clears composing state. Model the post-fix teardown.
+        // Field switch teardown clears composing state.
         h.inputLogic.mComposingTracker.clearAll()
         h.inputLogic.mRichInputConnection.finishComposingText()
 
@@ -140,18 +116,14 @@ class TextPipelineScenariosTest {
         assertEquals("", h.editor.getText())
     }
 
-    // ── Phase 3: audit-finding regressions ──────────────────────────────────────
-
     @Test
     fun staleSuggestionReply_afterTeardown_doesNotStampAutoCorrectOnEmptyTracker() {
-        // Audit DW-3 (tracker half). A worker reply for field A's word can land after the
-        // session for field A is gone. The tracker writes used to run above the isComposing
-        // guard, so field A's auto-correct candidate got stamped onto a tracker holding no
-        // word — and the next separator in field B could commit it.
+        // A worker reply for field A's word landing after teardown must not stamp its
+        // auto-correction onto the empty tracker, or field B's next separator commits it.
         h.startSession()
         h.editor.setComposingText("teh", 1)
         h.seedComposing("teh")
-        // index 0 is the typed word, index 1 the correction — getMinSuggestionsIndex() is 1.
+        // index 0 is the typed word, index 1 the correction (getMinSuggestionsIndex() is 1).
         h.deliverSuggestions(listOf("teh", "the"), willAutoCorrect = true)
         assertEquals("the", h.inputLogic.mComposingTracker.autoCorrection)
 
@@ -162,7 +134,6 @@ class TextPipelineScenariosTest {
         assertFalse(h.inputLogic.mComposingTracker.isComposing)
 
         // The in-flight reply for field A's "teh" finally arrives.
-        // index 0 is the typed word, index 1 the correction — getMinSuggestionsIndex() is 1.
         h.deliverSuggestions(listOf("teh", "the"), willAutoCorrect = true)
 
         assertNull(
@@ -177,9 +148,7 @@ class TextPipelineScenariosTest {
 
     @Test
     fun suggestionReply_whileComposing_stillAppliesAutoCorrection() {
-        // The other side of DW-3: the guard must not starve the normal live-typing path.
-        // This is the assertion the EB-2 revert taught us to write — a fix that quiets a
-        // stale-data bug by also quieting the working case is a regression, not a fix.
+        // The stale-reply guard must not starve the normal live-typing path.
         h.startSession()
         h.editor.setComposingText("recieve", 1)
         h.seedComposing("recieve")
@@ -190,10 +159,8 @@ class TextPipelineScenariosTest {
 
     @Test
     fun autoCommitPostedFromWorker_afterSessionTeardown_doesNotCommitIntoNextField() {
-        // Audit DW-1. The Nuance auto-commit callback arrives on a native thread and posts the
-        // gesture word to the main handler. Before the fix that post was uncancellable and
-        // unguarded, so a field switch between callback and delivery committed the word into
-        // whatever editor was current by then.
+        // The auto-commit callback posts the gesture word from a native thread; a field switch
+        // before delivery must cancel it rather than commit into the next editor.
         h.startSession("", 0)
 
         // Simulate the native callback landing off the main thread.
@@ -216,9 +183,8 @@ class TextPipelineScenariosTest {
 
     @Test
     fun sameEditor_distinguishesTwoFieldsWithIdenticalTypeAndOptions() {
-        // Audit LC-2. The 800 ms orientation swallow keyed on equivalentEditorInfo, which is
-        // true for ANY two fields sharing inputType/imeOptions — so a genuine switch between
-        // two similar fields inside the window was discarded. sameEditor must separate them.
+        // equivalentEditorInfo is true for any two fields sharing inputType/imeOptions; the
+        // 800 ms orientation swallow needs sameEditor to tell them apart.
         val a = android.view.inputmethod.EditorInfo().apply {
             inputType = android.text.InputType.TYPE_CLASS_TEXT
             imeOptions = android.view.inputmethod.EditorInfo.IME_ACTION_SEARCH
@@ -245,12 +211,9 @@ class TextPipelineScenariosTest {
 
     @Test
     fun commitWithCursorSkip_cacheTracksEditorCursor() {
-        // Audit SS-3. The manual-pick path commits with newCursorPosition=2 to step over a
-        // separator already sitting after the cursor. The RIC cache used to advance as if the
-        // cursor always landed right after the committed text, so copy 2 trailed copy 1 by one
-        // character until onUpdateSelection healed it — and word-range/recorrection reads in
-        // between saw the wrong position.
-        h.startSession("hi ", 2)          // "hi| " — a space already follows the cursor
+        // A manual pick commits with newCursorPosition=2 to step over a following separator;
+        // the RIC cursor cache must land where the editor's cursor does.
+        h.startSession("hi ", 2)          // "hi| ": a space already follows the cursor
         h.editor.setComposingText("hi", 1)
         h.seedComposing("hi")
 

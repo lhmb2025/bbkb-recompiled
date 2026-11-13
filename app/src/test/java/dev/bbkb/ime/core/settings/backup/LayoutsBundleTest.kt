@@ -25,13 +25,10 @@ import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
 
 /**
- * The layouts file ([LayoutsBundle]): it carries every editor's layout in **editor order** —
- * including the two stores kept in a scrambled order, which is the part that would silently
- * corrupt someone's keyboard if it went through the raw preferences — and a round trip lands the
- * same bytes back in storage. A bad file is refused, with a reason, before anything is written.
- *
- * Reads and writes the [PrefsManager] singleton, as the editors do (see
- * `KeyLayoutEditorBehaviourTest` for why), and leaves it empty for the next class.
+ * [LayoutsBundle] writes every editor's layout in editor order (two stores are kept scrambled, so
+ * raw preferences would corrupt a keyboard), a round trip restores the same bytes, and a bad file
+ * is refused with a reason before anything is written. Uses the [PrefsManager] singleton as the
+ * editors do (see `KeyLayoutEditorBehaviourTest`) and leaves it empty.
  */
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [34], manifest = Config.NONE)
@@ -90,8 +87,6 @@ class LayoutsBundleTest {
             <key code="KEYCODE_W" keySpec="q"/>
         </letter-layout>
     """.trimIndent()
-
-    // ── export: editor order ─────────────────────────────────────────────────
 
     @Test
     fun theScrambledStoresAreExportedInEditorOrder() {
@@ -161,8 +156,6 @@ class LayoutsBundleTest {
         VkbSymbolPageSpec.save(context, page)
         assertEquals("", JSONObject(export()).getJSONArray("vkbSymbolPage").getString(3))
     }
-
-    // ── round trip ───────────────────────────────────────────────────────────
 
     @Test
     fun aRoundTripPutsTheSameBytesBackInEveryStore() {
@@ -236,16 +229,13 @@ class LayoutsBundleTest {
 
     @Test
     fun anOldLetterMapsSectionIsReadPastNotRefused() {
-        // Builds before the XML layouts kept letter maps in the file; that format never shipped,
-        // so its section is skipped and the rest of the file still restores.
+        // A letter maps section (an unshipped format) is skipped; the rest of the file restores.
         val json = base().put("currency", "€")
             .put("pkbLetterMaps", JSONArray().put(JSONObject().put("format", "bbkb-layout"))).toString()
         assertEquals("€", bundleOf(json).currency)
         // A file that held nothing else holds nothing this build reads.
         assertRefused(base().put("pkbLetterMaps", JSONArray()).toString(), "holds no layouts")
     }
-
-    // ── one import row, two kinds of file ────────────────────────────────────
 
     @Test
     fun aSingleLetterLayoutIsRecognisedAsXml() {
@@ -260,8 +250,6 @@ class LayoutsBundleTest {
         val undeclared = letterLayout.substringAfter("?>")
         assertTrue(LayoutsBundle.parse("\n  $undeclared").getOrThrow() is LayoutsBundle.Import.LetterMap)
     }
-
-    // ── refusals ─────────────────────────────────────────────────────────────
 
     private fun base() = JSONObject().put("format", "bbkb-layouts").put("version", 1)
 

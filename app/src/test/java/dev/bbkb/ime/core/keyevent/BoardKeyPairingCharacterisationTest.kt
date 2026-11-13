@@ -49,23 +49,9 @@ import org.robolectric.annotation.Config
 import java.util.Locale
 
 /**
- * Phase 1g characterisation: the **down/up pairing** for the emoji, mic and multifunction keys.
- *
- * <p>These three keys do nothing on the way down. The key-DOWN arms a pending action and the
- * key-UP performs it, and before Phase 1g the arming travelled through three mutable public
- * fields on the `InputMethodHelper` singleton — armed by [KeyEventConverter], consumed by
- * [KeyEventProcessor], owned by neither.
- *
- * <p>Every assertion here was written and run green against the code as it stood at `de4d2092`,
- * *before* the pairing moved into [BoardKeyPressTracker]. The assertions are about observable
- * effects — which board the coordinator is asked for, whether cursor mode toggles, whether the
- * key is handed back to the framework — not about where the state lives, so the move cannot make
- * them pass by construction.
- *
- * <p>The one thing that had to change with the move is [arm], the helper that puts a pending
- * action in place: it used to assign `InputMethodHelper.emojiKeyPressed` and friends and now
- * calls the owner. Two of the tests below record a deliberate behaviour change and say so on the
- * test itself; everything else is behaviour that must not move.
+ * Pins the down/up pairing for the emoji, mic and multifunction keys: the DOWN arms a pending
+ * action in [BoardKeyPressTracker] and the UP performs it. Assertions are about observable
+ * effects (which board is requested, cursor mode, framework hand-back), not where state lives.
  */
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [34], manifest = Config.NONE)
@@ -153,8 +139,6 @@ class BoardKeyPairingCharacterisationTest {
         PrefsManager.getPrefs(context).edit().clear().commit()
     }
 
-    // ===================================================== a matched down/up pair
-
     @Test
     fun `an armed emoji key opens the emoji board on its release`() {
         mapKey(KeyRole.BOARD_EMOJI)
@@ -196,13 +180,9 @@ class BoardKeyPairingCharacterisationTest {
         verify(ime, never()).updateSuggestionsFromSubtype(InputSource.HARDWARE)
     }
 
-    // ===================================================== board actions with the input menu off
-
     /**
-     * With the unified input menu off — or hidden with "Show the suggestion bar" — the board
-     * actions open their board on its own, without the menu bar: the clipboard always did, and
-     * cursor control and the number pad now take the same route (they used to do nothing). The
-     * board's toggle closes it on the next press.
+     * With the input menu off (or hidden with "Show the suggestion bar") the board actions open
+     * their board on its own, without the menu bar; the board's toggle closes it on the next press.
      */
     @Test
     fun `with the input menu off the multifunction board actions toggle their board directly`() {
@@ -255,12 +235,9 @@ class BoardKeyPairingCharacterisationTest {
         verify(boardManager(), never()).requestBoard(anyInt())
     }
 
-    // ===================================================== the "Show or hide the input menu" action
-
     /**
-     * The menu is hidden with "Show the suggestion bar", so there is no hamburger button to reach
-     * it: the action raises it anyway, as a session override that leaves the preferences alone,
-     * and while it is up the board actions take the menu's route instead of their own toggles.
+     * With the menu hidden there is no hamburger button: the action raises it as a session
+     * override (preferences untouched), and while it is up board actions take the menu's route.
      */
     @Test
     fun `with the bar hidden the input-menu action raises the menu and the board actions take its route`() {
@@ -337,11 +314,9 @@ class BoardKeyPairingCharacterisationTest {
         verify(boardManager(), never()).requestBoard(anyInt())
     }
 
-    // ===================================================== a down with no up
-
     /**
-     * Nothing consumes a pending action until a key-UP arrives, and the pending action survives
-     * any number of further key-DOWNs. This is what makes "hold the mic key" work.
+     * Only a key-UP consumes a pending action; it survives any number of further key-DOWNs.
+     * This is what makes "hold the mic key" work.
      */
     @Test
     fun `a pending action survives further key-downs`() {
@@ -389,12 +364,9 @@ class BoardKeyPairingCharacterisationTest {
         verify(ime, times(1)).updateSuggestionsFromSubtype(InputSource.HARDWARE)
     }
 
-    // ===================================================== an up with no down
-
     /**
-     * An unarmed emoji key-up opens nothing — but it is still **consumed**, because the emoji
-     * branch is gated on the key's identity and not on the pending action. That is what keeps the
-     * key's base character from reaching the app.
+     * An unarmed emoji key-up opens nothing but is still consumed: the emoji branch is gated on
+     * the key's identity, not the pending action, which keeps the base character from the app.
      */
     @Test
     fun `an unarmed emoji key-up opens nothing and is still consumed`() {
@@ -407,9 +379,8 @@ class BoardKeyPairingCharacterisationTest {
     }
 
     /**
-     * An unarmed mic key-up falls through the voice branch entirely — that branch is gated on the
-     * pending action, not on the key — and lands in the generic tracked-key handling, which for a
-     * board-role key hands it back to the framework.
+     * An unarmed mic key-up skips the voice branch (gated on the pending action, not the key) and
+     * lands in generic tracked-key handling, which hands a board-role key back to the framework.
      */
     @Test
     fun `an unarmed mic key-up opens nothing`() {
@@ -430,17 +401,10 @@ class BoardKeyPairingCharacterisationTest {
         verify(ime, never()).updateSuggestionsFromSubtype(InputSource.HARDWARE)
     }
 
-    // ===================================================== the up need not be the armed key
-
     /**
-     * **Characterisation of a quirk, not an endorsement.** The voice branch asks only "is a voice
-     * action pending, and is this event physical" — it never asks whether *this* key is the key
-     * that armed it. So an ordinary letter released while the mic key is still held opens the
-     * voice board.
-     *
-     * <p>Phase 1g records the arming key's identity but deliberately does NOT gate consumption on
-     * it: doing so is a behaviour change on top of the one the owner authorised. See
-     * PHASE1G-SUMMARY.md.
+     * Pins a quirk, not an endorsement: the voice branch never checks that the released key is the
+     * one that armed it, so a letter released while the mic key is held opens the voice board.
+     * Gating consumption on the arming key would be a behaviour change.
      */
     @Test
     fun `a pending voice action is consumed by any physical key-up`() {
@@ -452,11 +416,9 @@ class BoardKeyPairingCharacterisationTest {
     }
 
     /**
-     * The same quirk on the multifunction branch, and it is worse there: the action dispatched is
-     * read from the key being **released**, so an ordinary key's release with a multifunction
-     * action pending resolves a null action and throws. Unreachable in practice (only a
-     * MULTIFUNCTION key arms it, and its own release normally follows), pinned so a later rewrite
-     * cannot quietly change it.
+     * The same quirk on the multifunction branch, worse: the action is read from the key being
+     * released, so another key's release with an action pending resolves null and throws.
+     * Unreachable in practice (only its own release follows), pinned so a rewrite cannot change it.
      */
     @Test
     fun `a pending multifunction action read off the wrong key throws`() {
@@ -484,12 +446,9 @@ class BoardKeyPairingCharacterisationTest {
     }
 
     /**
-     * The `isPhysical()` guard inside the voice and multifunction branches is not the same test as
-     * the "not a physical keyboard" bail-out at the top of the method: this one reads the
-     * **remapped** event's classification, so the only way to reach it with a false answer is a
-     * remap that hands back an event the classifier calls non-physical. Defensive in production —
-     * `ControlModeController.withKeyAndMeta` copies the device id and the classifier keys on it —
-     * but it is the guard, and a mutation that drops it otherwise survives the whole suite.
+     * This `isPhysical()` guard reads the remapped event's classification, unlike the bail-out at
+     * the top of the method. Defensive in production (`withKeyAndMeta` keeps the device id), but a
+     * mutation dropping it otherwise survives the whole suite.
      */
     @Test
     fun `a remap to a non-physical event does not spend a pending voice action`() {
@@ -528,12 +487,9 @@ class BoardKeyPairingCharacterisationTest {
         )
     }
 
-    // ===================================================== two board keys interleaved
-
     /**
-     * Emoji and mic held at once: the two pending actions are independent slots, so each release
-     * performs its own. The emoji branch runs first and returns, so an emoji release cannot spend
-     * the voice action.
+     * Emoji and mic held at once are independent slots, so each release performs its own. The
+     * emoji branch runs first and returns, so an emoji release cannot spend the voice action.
      */
     @Test
     fun `two board keys armed at once each perform their own action`() {
@@ -552,8 +508,8 @@ class BoardKeyPairingCharacterisationTest {
     }
 
     /**
-     * Arming the same slot twice — two emoji-role keys held together, or a repeat that re-armed —
-     * is one pending action, not two: the second release opens nothing.
+     * Arming the same slot twice (two emoji-role keys, or a re-arming repeat) is one pending
+     * action: the second release opens nothing.
      */
     @Test
     fun `arming the same action twice still performs it once`() {
@@ -567,17 +523,9 @@ class BoardKeyPairingCharacterisationTest {
         verify(boardManager(), times(1)).requestBoard(-11)
     }
 
-    // ===================================================== the reset contract
-
     /**
-     * **A deliberate behaviour change, Phase 1g.** Before the move the three flags were cleared
-     * only by the key-up that consumed them, so a modifier reset — the IME window hidden, input
-     * finished, the editor switched, the screen off, the keyboard reloaded — left a pending
-     * action armed indefinitely, and the next physical key-up anywhere opened the board. The
-     * pending actions now clear with the rest of the per-key state.
-     *
-     * <p>Against `de4d2092` this test asserted the opposite (`verify(boardManager())
-     * .requestBoard(-27)`) and passed.
+     * Pending actions clear with the rest of the per-key state on a modifier reset (IME hidden,
+     * input finished, editor switched, screen off, reload), so a stale arm cannot open a board.
      */
     @Test
     fun `a full modifier reset between the down and the up discards the pending action`() {
@@ -590,13 +538,7 @@ class BoardKeyPairingCharacterisationTest {
         verify(boardManager(), never()).requestBoard(anyInt())
     }
 
-    /**
-     * **The same deliberate change** on the multifunction slot, which is the one that could fire
-     * a destructive action (switch language, toggle a board) off a stale arm.
-     *
-     * <p>Against `de4d2092` this test asserted the action fired (`verify(ime).toggleCursorMode()`,
-     * when cursor mode was still a multifunction action) and passed.
-     */
+    /** The same on the multifunction slot, which could fire a destructive action off a stale arm. */
     @Test
     fun `a full modifier reset discards a pending multifunction action`() {
         mapKey(KeyRole.MULTIFUNCTION, defaultAction = MultifunctionKeyHandler.ACTION_LANGUAGE_QUICK_SWITCH)
@@ -609,8 +551,8 @@ class BoardKeyPairingCharacterisationTest {
     }
 
     /**
-     * A partial reset is not a full one. Leaving the Alt page spends the Alt span and nothing
-     * else, so a pending action must survive it — the MP01 arms its emoji key with Alt in play.
+     * A partial reset is not a full one: leaving the Alt page spends only the Alt span, so a
+     * pending action must survive it (the MP01 arms its emoji key with Alt in play).
      */
     @Test
     fun `leaving the Alt page leaves a pending action armed`() {
@@ -623,12 +565,9 @@ class BoardKeyPairingCharacterisationTest {
         verify(boardManager()).requestBoard(-11)
     }
 
-    // ===================================================== board keys on the key-DOWN path
-
     /**
-     * The other half of the pairing contract: a board key's DOWN must not dismiss the boards or
-     * disable cursor mode, because its UP is what decides, and disabling on the way down clears
-     * the state that decision reads (the historical toggle-reopen fight).
+     * A board key's DOWN must not dismiss the boards or disable cursor mode: its UP decides, and
+     * disabling on the way down clears the state that decision reads.
      */
     @Test
     fun `a board key-down does not dismiss boards while an ordinary key-down does`() {
@@ -655,21 +594,9 @@ class BoardKeyPairingCharacterisationTest {
         )
     }
 
-    // ===================================================== helpers
-
     private fun boardManager() = ime.getKeyboardSwitcher().unifiedInputBoardManager
 
-    /**
-     * Put a pending action in place, the way a key-DOWN would.
-     *
-     * <p>This is the ONE part of the suite the Phase 1g move rewrote. Against `de4d2092` it
-     * assigned the `InputMethodHelper` flags:
-     * <pre>
-     *   EMOJI_BOARD   -> InputMethodHelper.getInstance().emojiKeyPressed = true
-     *   VOICE_INPUT   -> InputMethodHelper.getInstance().micKeyPressed = true
-     *   MULTIFUNCTION -> InputMethodHelper.getInstance().multifunctionKeyPressed = true
-     * </pre>
-     */
+    /** Put a pending action in place, the way a key-DOWN would. */
     private fun arm(action: PendingKeyAction, keyCode: Int, scanCode: Int) {
         BoardKeyPressTracker.getInstance().arm(keyDown(keyCode, scanCode), action)
     }
@@ -689,10 +616,9 @@ class BoardKeyPairingCharacterisationTest {
     private class FakeMenu(var up: Boolean = false)
 
     /**
-     * "Show the suggestion bar" off on this physical keyboard, the IME's menu setting answered by
-     * the real [SettingsValues] (the production [BlackBerryIME.isUimEnabled] reads nothing else),
-     * the real [InputViewCoordinator] behind the action, and a menu bar the board manager mock
-     * raises and lowers.
+     * "Show the suggestion bar" off on this physical keyboard, with the real [SettingsValues]
+     * (the only input to [BlackBerryIME.isUimEnabled]), the real [InputViewCoordinator], and a
+     * menu bar the board manager mock raises and lowers.
      */
     private fun inputMenuWithTheBarHidden(): FakeMenu {
         // The bar hides when suggestions and the menu are both off.

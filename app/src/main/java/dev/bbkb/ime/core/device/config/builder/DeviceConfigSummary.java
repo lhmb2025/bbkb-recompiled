@@ -16,22 +16,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * What a device config claims, in a form a confirmation dialog can show.
- *
- * <p>Import is the moment a config file stops being someone else's file and starts deciding how
- * this keyboard reads its hardware, and until now it happened silently: pick a file, get a toast.
- * A config that matches on {@code aw9523b-key} does nothing at all on a KEY2, and a config that
- * matches on {@code Build.DEVICE} alone can claim a handset it was never built for — neither is
- * visible without reading the XML. So the {@code <match>} block, the device type and the key count
- * are read back out of the imported file and shown before the user activates it.
- *
- * <p>This reads the file itself rather than the parsed {@code DeviceInputConfig}, because
- * {@code DeviceMatchCriteria} keeps its rules private (it answers "does this match?", not "what
- * does it match?"), and the whole point here is to show the criteria rather than apply them.
+ * What a device config claims ({@code <match>}, device type, keys), for the import confirmation
+ * dialog. Reads the XML itself because {@code DeviceMatchCriteria} keeps its rules private.
  */
 public final class DeviceConfigSummary {
-
-    /** Display name from the root element, or null if the file did not carry one. */
+    /** Display name from the root element, or null. */
     @Nullable public final String name;
     @Nullable public final String deviceName;
     @Nullable public final String buildDevice;
@@ -67,7 +56,7 @@ public final class DeviceConfigSummary {
         return keyRoles.size();
     }
 
-    /** True when the config names nothing to match on — it would never apply to any device. */
+    /** True when the config names nothing to match on, so it would never apply. */
     public boolean matchesNothing() {
         // A profile that builds on a built-in one and writes no rules of its own uses that one's.
         return isBlank(basedOn) && writesNoMatchRules();
@@ -79,10 +68,8 @@ public final class DeviceConfigSummary {
     }
 
     /**
-     * True when this config's {@code <match>} can apply to the handset described by {@code facts}.
-     * Only the two criteria the builder ever writes are checked; a config matching on vendor or
-     * product ids is reported as "cannot tell" (true), since the dialog's job is to warn about the
-     * obvious mismatch, not to re-implement the matcher.
+     * Whether {@code <match>} can apply to {@code facts}. Checks only name, build device and brand;
+     * vendor/product ids count as "cannot tell" (true). A warning aid, not the matcher.
      */
     public boolean couldMatch(@NonNull DeviceFacts facts) {
         // Inherited rules are not read here; the profile it builds on decides, so no warning.
@@ -106,8 +93,6 @@ public final class DeviceConfigSummary {
         return true;
     }
 
-    // ── reading ──────────────────────────────────────────────────────────────
-
     /** Reads a summary from a config file, or null if it cannot be read at all. */
     @Nullable
     public static DeviceConfigSummary of(@NonNull File file) {
@@ -120,11 +105,7 @@ public final class DeviceConfigSummary {
         }
     }
 
-    /**
-     * Reads a summary from a config stream. Only the first {@code <device>} is described: the
-     * schema allows several, but every config the app ships or builds carries one, and a dialog
-     * that tried to summarise an arbitrary number of them would be a screen, not a dialog.
-     */
+    /** Reads a summary from a config stream, describing only the first {@code <device>}. */
     @Nullable
     public static DeviceConfigSummary of(@NonNull InputStream is) {
         String name = null;
@@ -196,7 +177,7 @@ public final class DeviceConfigSummary {
                 deviceType, keypadLayout, roles, basedOn);
     }
 
-    /** A {@code <match>} child's value, exact or regex, in the form the dialog shows it. */
+    /** A {@code <match>} child's value: the exact value, or {@code "regex: "} plus the pattern. */
     @Nullable
     private static String matchValue(@NonNull XmlPullParser parser) {
         final String exact = parser.getAttributeValue(null, "exact");

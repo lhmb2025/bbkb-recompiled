@@ -63,56 +63,42 @@ import dev.bbkb.ime.core.settings.screens.WordListEditorScreen
 import dev.bbkb.ime.core.device.profile.DeviceProfile
 import dev.bbkb.ime.core.shared.StartupTiming
 
-/**
- * Modern Compose-based Settings Activity
- * Uses Jetpack Compose Navigation for Material 3 native experience
- */
+/** Settings activity: a Compose NavHost over every settings screen. */
 class ComposeSettingsActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         StartupTiming.anchor("settings.onCreate")
         val total = StartupTiming.begin()
         super.onCreate(savedInstanceState)
 
-        // Settings has a LAUNCHER filter, so it is regularly the process's cold start with no
-        // IME service to have warmed anything. getDefaultSharedPreferences() only *starts* the
-        // prefs file load; the first read blocks on it (~190 ms measured from the IME side, see
-        // BlackBerryIME.onCreate). Force it to finish on a worker so the parse overlaps Compose
-        // setup instead of stalling the theme's first pref read during composition.
+        // Settings is often the cold start (LAUNCHER filter). The first pref read blocks on the file
+        // load, so finish it on a worker while Compose sets up.
         var t = StartupTiming.begin()
         PrefsManager.init(applicationContext)
         Thread({
             try {
                 PrefsManager.getPrefs().contains(PrefsManager.Keys.KEYBOARD_THEME_MODE)
             } catch (_: Throwable) {
+                // Best-effort warm-up.
             }
         }, "SettingsPrefsWarm").apply { isDaemon = true }.start()
         StartupTiming.end("settings.onCreate.prefsWarmSpawn", t)
 
-        // DeviceProfile must be initialized with device mappings before any screen reads them --
-        // and still is: startInitialize only moves the work (device scan + active-config XML
-        // parse + debug-override pref read, ~250 ms) onto a worker, and every DeviceProfile
-        // reader joins the load before it can observe the profile. The configuration argument
-        // stays null to match the one-argument DeviceProfile.initialize(this) this replaced,
-        // which likewise did not apply a Configuration.
+        // Screens read DeviceProfile only after it loads; startInitialize moves the ~250 ms scan
+        // and config parse onto a worker and every reader joins it.
         t = StartupTiming.begin()
         DeviceProfile.startInitialize(applicationContext, null)
         StartupTiming.end("settings.onCreate.deviceProfileStart", t)
 
-        // Draw behind transparent system bars on every version, not only where Android 15+
-        // forces it. BlackBerryTheme sets the bar icon colours to match the chosen theme.
+        // Edge to edge on every version; BlackBerryTheme sets the bar icon colours.
         enableEdgeToEdge()
 
-        // Get initial screen from intent, default to main menu. Validated through
-        // SettingsRoute.fromRoute so an unknown "screen" extra cannot reach navigation-compose
-        // as an unregistered start destination.
+        // Validated so an unknown "screen" extra cannot become an unregistered start destination.
         val initialScreen = SettingsRoute.fromRoute(intent.getStringExtra("screen"))?.route
             ?: SettingsRoute.Main.route
 
         t = StartupTiming.begin()
         setContent {
-            // Fires inside the first composition, before the first frame is drawn. Every
-            // DeviceProfile / SharedPreferences read a screen makes at composition time is
-            // already counted against the phases logged after this line.
+            // Fires inside the first composition, before the first frame.
             remember { StartupTiming.mark("settings.firstComposition"); Unit }
             BlackBerryTheme {
                 SettingsNavHost(
@@ -126,9 +112,6 @@ class ComposeSettingsActivity : ComponentActivity() {
     }
 }
 
-/**
- * Navigation host for all settings screens
- */
 @Composable
 fun SettingsNavHost(
     initialRoute: String = "main",
@@ -136,32 +119,26 @@ fun SettingsNavHost(
 ) {
     val navController = rememberNavController()
     val highlightController = remember { SettingsHighlightController() }
-    // 40-odd destination registrations plus the SettingsRoute class-init behind them; the one
-    // non-trivial piece of work that is genuinely inside the first composition.
+    // Destination registrations plus SettingsRoute class-init: the real work in the first composition.
     remember { StartupTiming.mark("settings.navHostComposition"); Unit }
 
-    // Every page's back action is the same: pop, and leave the activity if there is nothing to
-    // pop. Every navigation is the same too. Declared once instead of 40-odd times.
     val back: () -> Unit = { if (!navController.popBackStack()) onExit() }
     fun go(route: SettingsRoute): () -> Unit = { navController.navigate(route.route) }
 
-    // The system Settings app's page transition (see SettingsTransitions); the navigation
-    // library's default is a plain cross-fade.
+    // The system Settings app's page transition, not the library's cross-fade.
     val transitions = SettingsTransitions
 
     CompositionLocalProvider(LocalSettingsHighlight provides highlightController) {
     NavHost(
         navController = navController,
         startDestination = initialRoute,
-        // The page colour behind the pages: while they slide, the edge they uncover shows the
-        // page and not the window's own background.
+        // Behind the sliding pages, so the uncovered edge shows the page colour, not the window.
         modifier = Modifier.background(LocalSettingsColors.current.page),
         enterTransition = transitions.enter,
         exitTransition = transitions.exit,
         popEnterTransition = transitions.popEnter,
         popExitTransition = transitions.popExit,
     ) {
-        // Main Settings Menu (root)
         composable(SettingsRoute.Main.route) {
             MainSettingsScreen(
                 onNavigateToScreen = { route ->
@@ -170,8 +147,7 @@ fun SettingsNavHost(
                 onNavigateBack = onExit
             )
         }
-        
-        // Advanced Settings
+
         composable(SettingsRoute.Advanced.route) {
             AdvancedSettingsScreen(
                 onNavigateBack = back,
@@ -181,16 +157,12 @@ fun SettingsNavHost(
             )
         }
 
-        // Backup and restore — the three kinds of data to and from a file, and the phone backup
         composable(SettingsRoute.BackupRestore.route) {
             BackupRestoreScreen(
                 onNavigateBack = back
             )
         }
-        
-        // V5 Reorganized Primary Screens (per docs/archived/2026-01_compose-settings-and-dictionaries/2026-01_settings-compose_history.md)
-        
-        // 1. Language
+
         composable(SettingsRoute.LanguagesHub.route) {
             LanguagesHubScreen(
                 onNavigateToLanguageSwitching = go(SettingsRoute.LanguageSwitching),
@@ -198,8 +170,7 @@ fun SettingsNavHost(
                 onNavigateBack = back
             )
         }
-        
-        // 3. Suggestion and correction hub
+
         composable(SettingsRoute.SuggestionCorrection.route) {
             CorrectionLearningScreen(
                 onNavigateToAutoCorrection = go(SettingsRoute.Correction),
@@ -209,7 +180,6 @@ fun SettingsNavHost(
             )
         }
 
-        // 2. Typing and input hub
         composable(SettingsRoute.Preferences.route) {
             CustomizationScreen(
                 onNavigateToTouchScreenKeyboard = go(SettingsRoute.OnScreenKeyboard),
@@ -220,7 +190,6 @@ fun SettingsNavHost(
             )
         }
 
-        // 3. Appearance and layout hub
         composable(SettingsRoute.AppearanceLayout.route) {
             AppearanceLayoutScreen(
                 onNavigateToSymbolCustomization = go(SettingsRoute.SymbolCustomization),
@@ -228,7 +197,6 @@ fun SettingsNavHost(
             )
         }
 
-        // On-Screen Keyboard (Gestures / Behavior)
         composable(SettingsRoute.OnScreenKeyboard.route) {
             TouchScreenKeyboardScreen(
                 onNavigateBack = back,
@@ -237,7 +205,6 @@ fun SettingsNavHost(
             )
         }
 
-        // Auxiliary input (input menu, clipboard, emoji, voice)
         composable(SettingsRoute.AuxiliaryInput.route) {
             AuxiliaryInputScreen(
                 onNavigateToCustomizeMenu = go(SettingsRoute.CustomizeMenu),
@@ -245,16 +212,12 @@ fun SettingsNavHost(
             )
         }
 
-        // Clipboard history — linked page from On-Screen Keyboard → Behavior
-
-        // Touch Feedback — linked page from On-Screen Keyboard → Behavior
         composable(SettingsRoute.TouchFeedback.route) {
             KeyPressFeedbackScreen(
                 onNavigateBack = back
             )
         }
 
-        // Slideboard settings — also the direct entry point from the UIM gear icon
         composable(SettingsRoute.CustomizeMenu.route) {
             CustomizeMenuScreen(
                 onNavigateBack = back
@@ -269,7 +232,6 @@ fun SettingsNavHost(
             )
         }
 
-        // Physical Keyboard
         composable(SettingsRoute.PhysicalKeyboard.route) {
             PhysicalKeyboardScreen(
                 onNavigateToCkbGestures = go(SettingsRoute.CkbGestures),
@@ -278,15 +240,12 @@ fun SettingsNavHost(
             )
         }
 
-        // Custom keypad layouts — the user's and the built-in letter layouts for the physical keys;
-        // reached from Device compatibility
         composable(SettingsRoute.PhysicalLayouts.route) {
             PhysicalLayoutsScreen(
                 onNavigateBack = back
             )
         }
 
-        // Device Configuration — still reachable via DeviceCompatibilityScreen
         composable(SettingsRoute.DeviceConfiguration.route) {
             DeviceConfigurationScreen(
                 onNavigateToProfileBuilder = go(SettingsRoute.DeviceProfileBuilder),
@@ -294,14 +253,12 @@ fun SettingsNavHost(
             )
         }
 
-        // Device profile builder — capture this handset's keys and export a config
         composable(SettingsRoute.DeviceProfileBuilder.route) {
             DeviceProfileBuilderScreen(
                 onNavigateBack = back
             )
         }
 
-        // Device Compatibility (new screen — config loader, meta state, keyboard helper)
         composable(SettingsRoute.DeviceCompatibility.route) {
             DeviceCompatibilityScreen(
                 onNavigateToDeviceConfiguration = go(SettingsRoute.DeviceConfiguration),
@@ -318,14 +275,12 @@ fun SettingsNavHost(
             )
         }
 
-        // Touch surface helper — the Titans' keyboard touch surface (Scroll assistant or Shizuku)
         composable(SettingsRoute.TouchSurfaceHelper.route) {
             TouchSurfaceHelperScreen(
                 onNavigateBack = back
             )
         }
 
-        // Voice Input (accessible from Typing and input hub)
         composable(SettingsRoute.VoiceInput.route) {
             VoiceInputSettingsScreen(
                 onNavigateToLanguageSelection = go(SettingsRoute.VoiceLanguageSelection),
@@ -333,31 +288,25 @@ fun SettingsNavHost(
             )
         }
 
-        // Voice Input legacy entry (e.g. deep link from voice_input_main)
         composable(SettingsRoute.VoiceInputMain.route) {
             VoiceInputSettingsScreen(
                 onNavigateToLanguageSelection = go(SettingsRoute.VoiceLanguageSelection),
                 onNavigateBack = back
             )
         }
-        
-        // Suggestion and Correction subpages
 
-        // Suggestion (formerly PredictionsSuggestions)
         composable(SettingsRoute.Suggestion.route) {
             PredictionsSuggestionsScreen(
                 onNavigateBack = back
             )
         }
 
-        // Correction (formerly AutoCorrection)
         composable(SettingsRoute.Correction.route) {
             AutoCorrectionScreen(
                 onNavigateBack = back
             )
         }
 
-        // Learning (formerly DictionariesLearning)
         composable(SettingsRoute.Learning.route) {
             DictionariesLearningScreen(
                 onNavigateToUserDictionary = go(SettingsRoute.UserDictionary),
@@ -367,35 +316,27 @@ fun SettingsNavHost(
             )
         }
 
-        // Note: AutoCorrection.route == Correction.route == "correction"
-        // Note: PredictionsSuggestions.route == Suggestion.route == "suggestion"
-        // Note: DictionariesLearning.route == Learning.route == "learning"
-        // Legacy aliases share the same route strings, so no separate registrations needed.
-        
-        // User Dictionary Screen (personal words with language headers)
+        // Legacy routes (AutoCorrection, PredictionsSuggestions, DictionariesLearning) share these route strings.
+
         composable(SettingsRoute.UserDictionary.route) {
             UserDictionaryScreen(
                 onNavigateBack = back
             )
         }
-        
-        // Text Shortcuts Screen (word substitutions with macro support)
+
         composable(SettingsRoute.TextShortcuts.route) {
             TextShortcutsScreen(
                 onNavigateToCustomMacros = go(SettingsRoute.CustomMacros),
                 onNavigateBack = back
             )
         }
-        
-        // Custom Macros Screen (user-defined macro placeholders)
+
         composable(SettingsRoute.CustomMacros.route) {
             CustomMacrosScreen(
                 onNavigateBack = back
             )
         }
-        
-        // Other Sub-screens
-        
+
         composable(SettingsRoute.LanguageSwitching.route) {
             LanguageSwitchingScreen(
                 onNavigateToPhysicalKeyboard = go(SettingsRoute.PhysicalKeyboard),
@@ -422,10 +363,8 @@ fun SettingsNavHost(
                 onNavigateBack = back
             )
         }
-        
-        // Same page as the TouchFeedback registration above, under its back-compat deep-link
-        // route. Nothing in the app navigates here; SettingsRoute.fromRoute must keep accepting
-        // "key_press_feedback" or an external link to it lands on the main menu (§5.8 item 6).
+
+        // Back-compat deep-link route for the TouchFeedback page; fromRoute must keep accepting it.
         composable(SettingsRoute.KeyPressFeedback.route) {
             KeyPressFeedbackScreen(
                 onNavigateBack = back
@@ -476,8 +415,7 @@ fun SettingsNavHost(
                 onNavigateBack = back
             )
         }
-        
-        // About (renamed from Credits per docs/archived/2026-01_compose-settings-and-dictionaries/2026-01_settings-compose_history.md)
+
         composable(SettingsRoute.About.route) {
             CreditsScreen(
                 onNavigateToUpdates = go(SettingsRoute.Updates),
@@ -490,15 +428,13 @@ fun SettingsNavHost(
             OpenSourceLicensesScreen(onNavigateBack = back)
         }
 
-        // OTA app updates. Reached from About, from the main-menu banner, and from the daily
-        // check's notification (which carries "screen" = "updates").
+        // Also opened by the daily check's notification ("screen" = "updates").
         composable(SettingsRoute.Updates.route) {
             UpdatesScreen(
                 onNavigateBack = back
             )
         }
-        
-        // Symbol Customization
+
         composable(SettingsRoute.SymbolCustomization.route) {
             SymbolCustomizationScreen(
                 onNavigateToCustomSymbolPagePKB = go(SettingsRoute.CustomSymbolPagePkb),
@@ -507,24 +443,21 @@ fun SettingsNavHost(
                 onNavigateBack = back
             )
         }
-        
-        // Custom Symbol Page (PKB)
+
         composable(SettingsRoute.CustomSymbolPagePkb.route) {
             CustomSymbolPageScreen(
                 isPkb = true,
                 onBack = back
             )
         }
-        
-        // Custom Symbol Page (VKB)
+
         composable(SettingsRoute.CustomSymbolPageVkb.route) {
             CustomSymbolPageScreen(
                 isPkb = false,
                 onBack = back
             )
         }
-        
-        // Customize SlideBoard
+
         composable(SettingsRoute.CustomizeSlideBoard.route) {
             CustomizeSlideBoardScreen(
                 onBack = back

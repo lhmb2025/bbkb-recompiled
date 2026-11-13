@@ -52,11 +52,16 @@ public final class XmlParseUtils {
                 throw new NonEmptyTag(xmlPullParser, str);
             }
         } catch (IOException | XmlPullParserException e) {
-            // XML parsing failed - treat as invalid structure
+            // A parse failure counts as a non-empty tag.
             throw new NonEmptyTag(xmlPullParser, str);
         }
     }
 
+    /**
+     * @param i attribute index in {@code typedArray}
+     * @param str attribute name, for the error message
+     * @param str2 tag name, for the error message
+     */
     public static void checkAttributeExists(TypedArray typedArray, int i, String str, String str2, XmlPullParser xmlPullParser) throws ParseException {
         if (typedArray.hasValue(i)) {
             return;

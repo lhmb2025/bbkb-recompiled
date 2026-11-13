@@ -56,8 +56,6 @@ class ControlModeControllerTest {
 
     private fun chord(keyCode: Int, meta: Int) = listOf("down:$keyCode/$meta", "up:$keyCode/$meta")
 
-    // ================================================================== VKB
-
     @Test
     fun softHeldToSymbolChordSendsCtrlLetterDownAndUp() {
         val host = FakeHost()
@@ -115,9 +113,8 @@ class ControlModeControllerTest {
     }
 
     /**
-     * The reported bug: Ctrl+A selected everything and then the "a" was typed over it. The IME
-     * asks [ControlModeController.suppressesSoftCodeInput] between the press (which sent the
-     * chord) and the release; it must say yes for the letter, Enter and Delete, and only then.
+     * Ctrl+A must not also type the "a": between the chord-sending press and the release,
+     * [ControlModeController.suppressesSoftCodeInput] says yes for the letter, Enter and Delete only.
      */
     @Test
     fun softChordLetterIsNotAlsoTyped() {
@@ -174,9 +171,8 @@ class ControlModeControllerTest {
     }
 
     /**
-     * A tap on the key while it reads CTRL turns Ctrl off and does nothing else: the press, the
-     * code input and the release are all swallowed, so the keyboard does not also switch to the
-     * symbols (owner report, KEY2, 2026-10-14).
+     * A tap on the key while it reads CTRL only turns Ctrl off: press, code input and release are
+     * swallowed so the keyboard does not also switch to symbols.
      */
     @Test
     fun softTapOnCtrlOnlyDropsTheLatch() {
@@ -240,8 +236,6 @@ class ControlModeControllerTest {
         c.handleSoftKeyDown('c'.code); c.handleSoftKeyUp('c'.code)
         assertEquals(0, host.vkbShiftConsumed)
     }
-
-    // ================================================================== PKB
 
     @Test
     fun hardCtrlHeldWithAKeySendsTheChordAndReleaseEndsIt() {

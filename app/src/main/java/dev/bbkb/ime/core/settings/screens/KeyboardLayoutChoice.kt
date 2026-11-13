@@ -40,10 +40,8 @@ import dev.bbkb.ime.core.settings.ui.LocalSpacing
 internal data class LayoutChoiceRow(val id: String, val title: String, val summary: String? = null)
 
 /**
- * The rows for one of a keyboard's layout lists, one per [options] entry and in its order: the
- * keyboard's default ([ownTitle], with [ownSummary] under it) or, on the physical keys, the
- * keypad's own letters ([keypadLettersTitle]), then each layout under the name [name] gives it
- * (its own name unless the caller says otherwise).
+ * One row per [options] entry, in order: the default ([ownTitle]/[ownSummary]) or, on the
+ * physical keys, the keypad's own letters ([keypadLettersTitle]), then each layout named by [name].
  */
 internal fun layoutChoiceRows(
     options: List<LetterLayoutChoice.Option>,
@@ -78,8 +76,7 @@ internal fun KeyboardLayoutRow(title: String, current: LayoutChoiceRow, onClick:
 }
 
 /**
- * One layout list itself: one radio row per layout, its name and its note. Picking one applies it
- * and closes the dialog, as the app's other single-choice lists do.
+ * One radio row per layout; picking one applies it and closes the dialog.
  */
 @Composable
 internal fun KeyboardLayoutDialog(

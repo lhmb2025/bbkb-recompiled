@@ -3,13 +3,7 @@ package dev.bbkb.ime.core.locale;
 import android.inputmethodservice.InputMethodService;
 import android.view.inputmethod.InputMethodSubtype;
 
-// Extracted from BlackBerryIME.java
-// TODO: Review for further modularization and dependency reduction
-
-/**
- * Package-private until the 2026-09 move to {@code core.locale}; it is public now only because
- * its sole user, {@code core.BlackBerryIME}, no longer shares a package with it.
- */
+/** Public only because its sole user, {@code core.BlackBerryIME}, is in another package. */
 public final class SubtypeState {
     private InputMethodSubtype lastActiveSubtype;
     private boolean currentSubtypeHasBeenUsed;

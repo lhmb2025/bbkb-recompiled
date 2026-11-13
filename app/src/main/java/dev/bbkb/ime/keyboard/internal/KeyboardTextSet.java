@@ -10,14 +10,9 @@ import java.util.Locale;
 public final class KeyboardTextSet {
 
     /**
-     * WARNING: {@link #NAMES} contains duplicate entries -- "morekeys_c" at indices 6 and 7,
-     * "morekeys_t" at 15 and 17, "morekeys_r" at 18 and 19. This map is built with put(), so the
-     * later index wins and the earlier slot of every TEXTS_* locale table is unreachable.
-     *
-     * <p>The original APK's table has the identical duplicates, and AOSP LatinIME's
-     * KeyboardTextsTable has each of these names once, so no evidence names the earlier slots.
-     * Harmless because every locale table (here and in the original) holds the same value in
-     * both slots of each pair; KeyboardTextSetDuplicateNamesTest fails if one ever diverges.
+     * {@link #NAMES} has duplicates ("morekeys_c" 6/7, "morekeys_t" 15/17, "morekeys_r" 18/19);
+     * put() lets the later index win, so the earlier slots are unreachable. Harmless while both
+     * slots hold the same value in every table (KeyboardTextSetDuplicateNamesTest checks).
      */
     private static final HashMap<String, Integer> sNameToIndexesMap = new HashMap<>();
 
@@ -163,8 +158,7 @@ public final class KeyboardTextSet {
 
     private static final String[] TEXTS_te_IN = {null, null, "అఆఇ", null, null, null, null, null, null, "₹"};
 
-    // Tajik: Cyrillic plus ғ ӣ қ ӯ ҳ ҷ, on long-press of г к у и ч and of э (ҳ), the way Kazakh
-    // places һ.
+    // Tajik long-press: г ғ, к қ, у ӯ, и ӣ, ч ҷ, э ҳ.
     private static final String[] TEXTS_tg = {null, null, "АБВ", null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, "щ", "ы", "э", "и", "ё", "ъ", null, null, null, null, null, null, "ӯ", null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, "ғ", null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, "ҳ", "қ", null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, "ҷ", "ӣ"};
 
     private static final String[] TEXTS_th = {null, null, "กขค", null, null, null, null, null, null, "฿", null, null, null, null, null, null, null, null, null, null, null, null, null, "1", "2", "3", "4", "5", "6", "7", "8", "9", "0", null, null, null, "¹,½,⅓,¼,⅛", "²,⅔", "³,¾,⅜", "⁴", "⅝", "", "⅞", "", "", "ⁿ,∅", "๑", "๒", "๓", "๔", "๕", "๖", "๗", "๘", "๙", "๐"};
@@ -173,8 +167,7 @@ public final class KeyboardTextSet {
 
     private static final String[] TEXTS_tr = {"ö,ô,œ,ò,ó,õ,ø,ō", "â", null, null, "ü,û,ù,ú,ū", "i,î,ï,ì,í,į,ī", "ç,ć,č,©", "ç,ć,č,©", null, "₺", "ş,ß,ś,š", null, null, null, null, null, null, null, null, null, null, null, "ğ", null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, "ı"};
 
-    // Tatar: Cyrillic plus ә җ ң ө ү һ, on long-press of а ж н о у and of э (һ), the way Kazakh
-    // places һ.
+    // Tatar long-press: а ә, ж җ, н ң, о ө, у ү, э һ.
     private static final String[] TEXTS_tt = {null, null, "АБВ", null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, "щ", "ы", "э", "и", "ё", "ъ", null, null, null, null, null, null, "ү", null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, "ң", null, "ө", null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, "һ", null, "ә", null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, "җ"};
 
     private static final String[] TEXTS_uk = {null, null, "АБВ", null, null, null, null, null, null, "₴", null, "!text/double_9qm_lqm", "!text/single_9qm_lqm", null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, "щ", "і", "є", "и", null, "ъ", null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, "ї", null, "ґ"};
@@ -227,6 +220,10 @@ public final class KeyboardTextSet {
         }
     }
 
+    /**
+     * @param str text name from {@link #NAMES}
+     * @param strArr locale table; null slots fall back to TEXTS_DEFAULT
+     */
     public static String getTextInternal(String str, String[] strArr) {
         Integer num = sNameToIndexesMap.get(str);
         if (num == null) {

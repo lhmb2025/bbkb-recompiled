@@ -18,37 +18,24 @@ import dev.bbkb.ime.BuildConfig
 import com.blackberry.nuanceshim.Xt9KdbVariant
 
 /**
- * W2 replay doorway (debug builds only; master plan W2, owner-approved 2026-08-15).
- *
- * One broadcast = one gesture. The `trace` extra is "x,y,t;x,y,t;…" with t in ms (any epoch —
- * only the deltas matter; they are re-based onto uptimeMillis so the replayed MotionEvents carry
- * live timestamps with the ORIGINAL inter-sample spacing). `tag` labels the completion log line;
- * `speed` scales pacing (1.0 = real time). The status action logs every gate the CKB pipeline
- * checks, so the host harness can assert readiness.
- *
- * CKB traces (default) are injected into [BlackBerryIME.onGenericMotionEvent] — the exact entry
- * the capacitive pad's hardware events use — carrying the profile's touchKeypadDeviceId so the
- * isFromTouchKeypad gate passes identically to hardware. `surface=vkb` traces are dispatched as
- * real touchscreen MotionEvents to the live MainKeyboardView instead (see [replayVkbGestureTrace]).
+ * Debug-only gesture replay: one broadcast is one gesture. `trace` is "x,y,t;…" (t in ms, any
+ * epoch; re-based onto uptimeMillis keeping the spacing), `tag` labels the log line, `speed` scales
+ * pacing. CKB traces go into [BlackBerryIME.onGenericMotionEvent] with the profile's
+ * touchKeypadDeviceId, as hardware does; `surface=vkb` traces go to the MainKeyboardView.
+ * The status action logs every CKB gate so the harness can assert readiness.
  */
 class GestureReplayReceiver(private val ime: BlackBerryIME) : BroadcastReceiver() {
 
     companion object {
         private const val TAG = "GESTREPLAY"
-        /**
-         * Debug broadcast actions, namespaced under whatever this build actually installs as
-         * (`dev.bbkb.ime.debug` today). Derived rather than hardcoded so the harness and the
-         * receiver can never drift apart: `tools/w2_replay.py` builds the same strings from its
-         * `PKG`.
-         */
+        /** Namespaced by the installed application id; `tools/w2_replay.py` builds the same strings from its `PKG`. */
         const val ACTION_GESTURE = "${BuildConfig.APPLICATION_ID}.REPLAY_GESTURE"
         const val ACTION_STATUS = "${BuildConfig.APPLICATION_ID}.REPLAY_STATUS"
         const val ACTION_SETUP = "${BuildConfig.APPLICATION_ID}.REPLAY_SETUP"
 
         /**
-         * debug.et9.replayvkbpkg: package to VKB-force at process start (a sysprop is race-free
-         * across the harness's per-epoch force-stops, unlike a broadcast, which can only reach an
-         * already-running process).
+         * debug.et9.replayvkbpkg: package to VKB-force at process start. A sysprop survives the
+         * harness's force-stops; a broadcast only reaches a running process.
          */
         private fun applyVkbForcedPackageFromProp() {
             val p = SystemProps.get("debug.et9.replayvkbpkg")
@@ -70,7 +57,7 @@ class GestureReplayReceiver(private val ime: BlackBerryIME) : BroadcastReceiver(
     }
 
     fun unregister() {
-        try { ime.unregisterReceiver(this) } catch (_: IllegalArgumentException) {}
+        try { ime.unregisterReceiver(this) } catch (_: IllegalArgumentException) { /* was not registered */ }
     }
 
     override fun onReceive(c: Context?, intent: Intent?) {
@@ -87,12 +74,9 @@ class GestureReplayReceiver(private val ime: BlackBerryIME) : BroadcastReceiver(
                 }
             }
             ACTION_STATUS -> logReplayStatus()
-            // Setup: mirror the device's refreshOnScreenKeyboardShowing()=true state (on the KEY2
-            // the visible aux bar's UIM term supplies it; the emulator has no UIM). A VKB-forced
-            // target package makes the switcher build the SAME element family as the device
-            // (VKB elements -> sync isTouchKb=false -> engine isPkb=true -> qwerty_pkb, the
-            // 324-space flat KDB). In-memory only, so the harness re-broadcasts after every IME
-            // restart.
+            // Mirrors the device's refreshOnScreenKeyboardShowing()=true state (the emulator has no
+            // UIM), so the engine gets qwerty_pkb, the 324-space flat KDB. In memory only: the
+            // harness re-broadcasts after every IME restart.
             ACTION_SETUP -> intent.getStringExtra("vkbpkg")?.let {
                 DeviceProfile.addVkbForcedPackage(it)
                 Logger.info(TAG, "setup: vkb-forced package '$it'")
@@ -160,14 +144,10 @@ class GestureReplayReceiver(private val ime: BlackBerryIME) : BroadcastReceiver(
     }
 
     /**
-     * VKB replay (surface=vkb): dispatch the trace as real touchscreen MotionEvents to the live
-     * MainKeyboardView so the genuine on-screen pipeline runs (PointerTracker gesture detection →
-     * batch input → engine feed with the SetKeyboardSize stretch). Points arrive in the CAPTURE
-     * device's keyboard-view space (srcW×srcH — the KEY2 sitting logged SetKeyboardSize 1080×600)
-     * and are rescaled proportionally to this view, which is exact because the VKB KDB is authored
-     * at on-screen proportions and the engine restretches per view. Requires the on-screen
-     * keyboard visible (debug_force_vkb_mode) and debug.et9.replayvkbpkg CLEAR so layout syncs
-     * classify VKB — the CKB rig guard would otherwise pin the engine to the PKB frame.
+     * Dispatches the trace as touchscreen events to the live MainKeyboardView, so the real
+     * on-screen pipeline runs. Points in the capture view's srcW×srcH space are rescaled to this
+     * view (exact: the engine restretches per view). Needs the on-screen keyboard visible and
+     * debug.et9.replayvkbpkg clear, or the CKB rig guard pins the engine to the PKB frame.
      */
     private fun replayVkbGestureTrace(trace: String, tag: String, speed: Float, srcW: Float, srcH: Float) {
         val pts = parseReplayTrace(trace, tag) ?: return

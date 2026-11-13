@@ -24,12 +24,8 @@ import java.util.concurrent.CountDownLatch
 import java.util.concurrent.TimeUnit
 
 /**
- * The on-disk `personal_words` file must come back into memory on load.
- *
- * KEY2, 2026-09-21: the file held eight words and the load logged
- * "Error parsing JSON with Gson: null" — the load path's add threw
- * [InitialisationIncompleteException] on the first word because the loaded flag is (correctly)
- * set only after everything is in. Not one personal word was loaded from disk, on any start.
+ * The on-disk personal words, shortcuts and deleted built-ins come back on load. The loaded flag
+ * is set only after everything is in, so the load path's adds must not check it.
  */
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [34], instrumentedPackages = ["com.blackberry.nuanceshim"])
@@ -76,9 +72,8 @@ class PersonalDictionaryLoadTest {
     }
 
     /**
-     * One entry that does not parse (or that the model refuses) is skipped; the rest of the file
-     * loads. Under Gson's binder the first bad entry aborted the whole file. The escapes are
-     * Gson's HTML-safe ones, which the old build wrote for < > & = and '.
+     * A bad entry is skipped and the rest of the file loads. The escapes are Gson's HTML-safe
+     * ones (< > & = '), which existing files contain.
      */
     @Test
     fun aBadEntryIsSkippedAndTheRestOfTheFileLoads() {
@@ -101,12 +96,7 @@ class PersonalDictionaryLoadTest {
         assertEquals(true, pdu.getWordSubstitutions()["zztwo"]?.isAutoCapsEnabled)
     }
 
-    /**
-     * A built-in shortcut the user deleted stays deleted after a restart. The load path's
-     * `addToDeletedMap` checked the loaded flag, which is set only once everything is in, so
-     * every entry of `deleted_substitutions` was skipped ("Skipped 1 of 1 entries ...
-     * InitialisationIncompleteException") and the deleted `bb` came back (emulator, 2026-11-05).
-     */
+    /** A built-in shortcut the user deleted stays deleted after a restart. */
     @Test
     fun aDeletedBuiltInShortcutStaysDeletedAfterALoad() {
         load(listOf(Locale.US))
@@ -135,8 +125,6 @@ class PersonalDictionaryLoadTest {
         assertEquals(emptySet<String>(), pdu.personalDictionary.keys)
         assertEquals(emptySet<String>(), shortcuts())
     }
-
-    // ---- multi-language keyboards -----------------------------------------------------------
 
     /** One user shortcut per language, plus one saved for all languages. */
     private fun writeShortcuts() {
@@ -168,19 +156,14 @@ class PersonalDictionaryLoadTest {
         assertEquals(setOf("zzen", "zzde", "zzall"), shortcuts())
     }
 
-    /**
-     * The IME hands the manager the keyboard's layout language plus its extras (it used to hand
-     * it the layout language alone), and the extra language's shortcuts come on.
-     */
+    /** The manager gets the layout language plus its extras, and the extras' shortcuts come on. */
     @Test
     fun theDictionaryManagerSwitchesToEveryKeyboardLanguage() {
         writeShortcuts()
         load(listOf(Locale.US))
         assertEquals(setOf("zzen", "zzall"), shortcuts())
-        // AUD is the master in the sync that follows a switch; publish what is on disk so that
-        // sync has nothing to delete. Then mark the one-shot backfill done: the manager registers
-        // the AUD observer, and a backfill then (delete, then re-add) would race the syncs its
-        // own notifications start.
+        // AUD is the master in the post-switch sync, so publish what is on disk first. Mark the
+        // one-shot backfill done: run on observer registration it would race its own syncs.
         assertTrue(pdu.pushUserWordsToAud() > 0)
         context.getSharedPreferences("personal_dictionary_sync_state", Context.MODE_PRIVATE)
             .edit().putBoolean("user_words_pushed_to_aud_v1", true).commit()
@@ -199,9 +182,8 @@ class PersonalDictionaryLoadTest {
     }
 
     /**
-     * The stored list has the phone's language moved to the front; the same-languages check used
-     * to compare it with the list as passed, so a keyboard whose extra is the phone's language
-     * reloaded (and re-synced AUD) on every switch.
+     * The stored list has the phone's language moved to the front; the same-languages check must
+     * still match the list as passed, or every switch reloads and re-syncs AUD.
      */
     @Test
     fun switchingToTheSameLanguagesAgainIsANoOp_whenThePhonesLanguageIsAnExtra() {

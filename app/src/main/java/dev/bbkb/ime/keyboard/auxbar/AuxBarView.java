@@ -25,12 +25,8 @@ import java.util.List;
 import dev.bbkb.ime.BuildConfig;
 
 /**
- * Container view for all auxiliary bars.
- * Contains two child views:
- * - UnifiedSuggestionView: For dynamic content (Latin, CJK, Autofill suggestions)
- * - SimplifiedKeyboardView: For static keys (UIM, Arrows, Accents, Diacritics)
- * 
- * Only one child is visible at a time, managed by AuxBarState.
+ * Container for the auxiliary bars: UnifiedSuggestionView (suggestions, autofill, language chips)
+ * or SimplifiedKeyboardView (UIM, arrows, accents). One child is visible at a time, per AuxBarState.
  */
 public class AuxBarView extends FrameLayout {
 
@@ -71,13 +67,11 @@ public class AuxBarView extends FrameLayout {
         suggestionView = findViewById(R.id.unified_suggestion_view);
         sharedKeyView = findViewById(R.id.shared_aux_key_view);
 
-        // Start with suggestionView visible (default state), sharedKeyView invisible (not GONE)
-        // Using INVISIBLE instead of GONE ensures sharedKeyView participates in layout
-        // and has proper dimensions when we need to show it
+        // INVISIBLE, not GONE, so sharedKeyView is measured and sized before it is first shown.
         suggestionView.setVisibility(VISIBLE);
         sharedKeyView.setVisibility(INVISIBLE);
-        
-        // Ensure touch events are consumed and don't pass through to the app behind
+
+        // Consume touches so they do not reach the app behind.
         setClickable(true);
     }
 
@@ -97,9 +91,6 @@ public class AuxBarView extends FrameLayout {
         return sharedKeyView;
     }
 
-    /**
-     * Show Latin or CJK suggestions.
-     */
     public void showSuggestions(SuggestedWords words, boolean isCJK) {
         AuxBarState oldState = currentState;
         if (BuildConfig.DEBUG) {
@@ -117,14 +108,9 @@ public class AuxBarView extends FrameLayout {
     }
 
     /**
-     * Put words on the suggestion strip while a key bar (the menu, the arrow or accent bar) covers
-     * it, without showing it: the state and the children's visibility are left as they are, so the
-     * words are simply there when the strip is uncovered ({@link #dismissKeyViewAndRestoreSuggestions}).
-     * A no-op unless a key bar is up over a word strip: autofill chips and the language chips
-     * behind a key bar are what the strip will go back to, and are not replaced.
-     *
-     * <p>Owner decision 2026-11-05: the strip stays up to date while it is hidden, so a board
-     * that closes uncovers current words rather than whatever was left from before it opened.
+     * Updates the words under a covering key bar without showing them, so uncovering the strip
+     * shows current words. A no-op unless a key bar covers a word strip (autofill and language
+     * chips underneath are kept).
      */
     public void setSuggestionsBehindKeys(SuggestedWords words, boolean isCJK) {
         if (currentState != AuxBarState.UNIFIED_INPUT_MENU && currentState != AuxBarState.ARROW_BAR
@@ -165,10 +151,7 @@ public class AuxBarView extends FrameLayout {
         enter(oldState, AuxBarState.LANGUAGE_CHIPS);
     }
 
-    /**
-     * The suggestion view as it was before the language-chip bar: its mode and words put back
-     * (the chips replaced them in the one view, unlike a key view drawn over it).
-     */
+    /** Puts back the mode and words the chips replaced (they share one view, unlike a key bar). */
     public void restoreSuggestionsAfterLanguageChips() {
         AuxBarState oldState = currentState;
         showSuggestionChild();
@@ -184,9 +167,6 @@ public class AuxBarView extends FrameLayout {
         enter(oldState, stateForSuggestionMode(modeBeforeLanguageChips));
     }
 
-    /**
-     * Show autofill suggestions (Android 11+).
-     */
     @RequiresApi(api = Build.VERSION_CODES.R)
     public void showAutofill(List<InlineSuggestion> suggestions, int width, int height) {
         AuxBarState oldState = currentState;
@@ -207,9 +187,6 @@ public class AuxBarView extends FrameLayout {
         if (BuildConfig.DEBUG) Log.d(DIAG, "[AUXBARVIEW] showAutofill() complete | newState=AUTOFILL");
     }
 
-    /**
-     * Show a keyboard-based auxiliary bar (UIM, Arrows, Accents, Diacritics).
-     */
     public void showKeys(Keyboard keyboard, AuxBarState state) {
         if (keyboard == null) {
             if (BuildConfig.DEBUG) Log.e(TAG, "DEBUG: showKeys() - FAILED: keyboard is null!");
@@ -217,37 +194,26 @@ public class AuxBarView extends FrameLayout {
         }
         
         AuxBarState oldState = currentState;
-        
-        // Ensure the container is visible
+
         setVisibility(VISIBLE);
         
         suggestionView.setVisibility(GONE);
         sharedKeyView.setVisibility(VISIBLE);
-        // The accent bar reads as part of the suggestion strip it covers: its letters are drawn
-        // with the strip's text size, typeface and centring, not a key's.
+        // The accent bar draws its letters in the strip's text style, not a key's.
         sharedKeyView.setStripTextStyle(state == AuxBarState.ACCENT_BAR);
         sharedKeyView.setKeyboard(keyboard);
-        
-        // Force remeasure after setting keyboard
+
         sharedKeyView.requestLayout();
         enter(oldState, state);
     }
 
-    /**
-     * Dismiss the key-based view (accent bar, etc.) and restore the suggestion view
-     * without clearing its content. Used by hold-to-auto-commit to restore the
-     * suggestion strip after the accent bar is dismissed.
-     */
+    /** Dismisses the key bar and uncovers the suggestion view with its content intact. */
     public void dismissKeyViewAndRestoreSuggestions() {
         AuxBarState oldState = currentState;
         showSuggestionChild();
 
-        // Restore to the suggestion state that was active before the key view was shown.
-        // Derived from the suggestion view's own mode rather than hardcoded to LATIN:
-        // showKeys() never touched the mode, so it still reflects what was on screen, and
-        // a CJK user dismissing a key view must not be reported as LATIN_SUGGESTIONS.
-        // AUTOFILL is carried back too: the chips are what the restored child still shows,
-        // and hideAutofillBar() only acts from AUTOFILL, so reporting LATIN left them stuck.
+        // Derive the state from the view's mode (showKeys never changes it), so CJK and AUTOFILL
+        // come back as themselves; hideAutofillBar() only acts from AUTOFILL.
         enter(oldState, stateForSuggestionMode(suggestionView.getMode()));
     }
 
@@ -262,9 +228,6 @@ public class AuxBarView extends FrameLayout {
         }
     }
 
-    /**
-     * Hide all auxiliary bars.
-     */
     public void hide() {
         AuxBarState oldState = currentState;
         if (oldState == AuxBarState.AUTOFILL) {
@@ -274,23 +237,16 @@ public class AuxBarView extends FrameLayout {
         suggestionView.setVisibility(GONE);
         suggestionView.clear();
         sharedKeyView.setVisibility(GONE);
-        // Hide the container itself — prevents phantom space in layout and
-        // touch-event consumption when the bar is logically hidden.
+        // GONE container: no phantom layout space and no touch consumption while hidden.
         setVisibility(GONE);
 
         enter(oldState, AuxBarState.NONE);
     }
 
-    /**
-     * Check if any auxiliary bar is visible.
-     */
     public boolean isShowing() {
         return currentState != AuxBarState.NONE;
     }
 
-    /**
-     * Update colors based on current theme.
-     */
     public void updateColors() {
         KeyboardColorManager colorManager = KeyboardColorManager.INSTANCE;
         int bgColor = colorManager.getBackgroundColor();
@@ -313,10 +269,7 @@ public class AuxBarView extends FrameLayout {
         super.onDetachedFromWindow();
     }
 
-    /**
-     * Container VISIBLE, key view GONE, suggestion view VISIBLE — in that order, which is the
-     * order a held key on the key view is released in (it is routed by the state being left).
-     */
+    /** Order matters: a held key on the key view is released here, routed by the state being left. */
     private void showSuggestionChild() {
         setVisibility(VISIBLE);
         sharedKeyView.setVisibility(GONE);
@@ -324,9 +277,8 @@ public class AuxBarView extends FrameLayout {
     }
 
     /**
-     * The tail of every transition: record the new state, then notify on a real change. Runs
-     * after the children and content are in place. {@code oldState} is captured by the caller
-     * at the top of the transition, before any visibility callback runs.
+     * Ends every transition, after children and content are in place. {@code oldState} must be
+     * captured before any visibility callback runs.
      */
     private void enter(AuxBarState oldState, AuxBarState newState) {
         currentState = newState;

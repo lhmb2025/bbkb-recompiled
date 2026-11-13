@@ -26,15 +26,10 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * The clipboard board's list: section headers and clip rows, diffed by {@link ClipboardItem}.
- *
- * <p>A tap on a row pastes it. A long-press on the row and a tap on its overflow button open the
- * same {@link ClipboardEntryMenu}; "Show full text" is handled here (it only changes how the row
- * is drawn), every other action goes to the {@link ClipboardActionCallback}.
- *
- * <p>Link previews are bound by entry id: the provider reports a finished preview for an id, and
- * the adapter rebinds whichever row shows that entry now, with {@link #PAYLOAD_PREVIEW} so only
- * the image and text are touched.
+ * The clipboard board's list: section headers and clip rows. Tap pastes; long-press and overflow
+ * open {@link ClipboardEntryMenu}. "Show full text" is handled here, other actions go to the
+ * {@link ClipboardActionCallback}. Link previews are keyed by entry id and rebound with
+ * {@link #PAYLOAD_PREVIEW}.
  */
 public class ClipboardAdapter extends ListAdapter<ClipboardItem, RecyclerView.ViewHolder>
         implements ClipboardWebImageProvider.Listener {
@@ -63,10 +58,8 @@ public class ClipboardAdapter extends ListAdapter<ClipboardItem, RecyclerView.Vi
     private static final int COLLAPSED_MAX_LINES = 3;
 
     /**
-     * The most of a clip a row is given to draw: collapsed, far more than three lines hold;
-     * expanded, hundreds of lines. A TextView measures the whole first paragraph of what it is
-     * handed, so a copied log or document cost its full length on every bind. Pasting always
-     * uses the whole clip.
+     * Most of a clip a row draws: a TextView measures the whole first paragraph it is handed, so a
+     * long clip would cost its full length on every bind. Pasting always uses the whole clip.
      */
     static final int COLLAPSED_MAX_CHARS = 1_000;
     static final int EXPANDED_MAX_CHARS = 20_000;
@@ -83,9 +76,6 @@ public class ClipboardAdapter extends ListAdapter<ClipboardItem, RecyclerView.Vi
 
     private final ClipboardWebImageProvider imageProvider;
 
-    /**
-     * Audit IB-4: resolved once rather than on every bind of every row of every scroll.
-     */
     private final String passwordKeeperAddText;
 
     private final String passwordKeeperMaskText;
@@ -95,7 +85,7 @@ public class ClipboardAdapter extends ListAdapter<ClipboardItem, RecyclerView.Vi
 
     private ClipboardActionCallback actionCallback;
 
-    /** The list this adapter is attached to, for deferring a notification out of a layout pass. */
+    /** For deferring a notification out of a layout pass. */
     private RecyclerView attachedList;
 
     MenuLauncher menuLauncher = PopupMenu::show;
@@ -113,6 +103,7 @@ public class ClipboardAdapter extends ListAdapter<ClipboardItem, RecyclerView.Vi
         return this.imageProvider;
     }
 
+    /** @param cVar receives the row actions */
     public void setActionCallback(ClipboardActionCallback cVar) {
         this.actionCallback = cVar;
     }
@@ -131,10 +122,7 @@ public class ClipboardAdapter extends ListAdapter<ClipboardItem, RecyclerView.Vi
         return entry.hasLabel(this.passwordKeeperAddText);
     }
 
-    /**
-     * The board is opening: collapse expanded rows and apply the link-preview setting, rebinding
-     * the visible rows if either changes what they show.
-     */
+    /** Board opening: collapse expanded rows and apply the link-preview setting, rebinding if needed. */
     void onBoardShown(boolean linkPreviewsEnabled) {
         boolean changed = !this.expandedIds.isEmpty() || this.imageProvider.isEnabled() != linkPreviewsEnabled;
         this.expandedIds.clear();
@@ -143,8 +131,6 @@ public class ClipboardAdapter extends ListAdapter<ClipboardItem, RecyclerView.Vi
             notifyItemRangeChanged(0, getItemCount());
         }
     }
-
-    // ── view holders ─────────────────────────────────────────────────────────
 
     @NonNull
     @Override
@@ -156,8 +142,7 @@ public class ClipboardAdapter extends ListAdapter<ClipboardItem, RecyclerView.Vi
         }
         ClipboardViewHolder holder =
                 new ClipboardViewHolder(ClipDataHeaderBinding.inflate(inflater, parent, false));
-        // The listeners read holder.boundEntry, so they survive rebinding and are set once here
-        // rather than on every bind (audit IB-4).
+        // The listeners read holder.boundEntry, so they survive rebinding and are set once here.
         holder.foreground.setOnClickListener(view -> {
             ClipEntry entry = holder.boundEntry;
             if (entry != null && this.actionCallback != null) {
@@ -200,8 +185,7 @@ public class ClipboardAdapter extends ListAdapter<ClipboardItem, RecyclerView.Vi
         TextView text = holder.dataTextView;
         text.setMaxLines(expanded ? Integer.MAX_VALUE : COLLAPSED_MAX_LINES);
         text.setEllipsize(expanded ? null : TextUtils.TruncateAt.END);
-        // Accessibility: describe the row with what it actually shows, so a masked password stays
-        // masked.
+        // Describe what the row shows, so a masked password stays masked.
         holder.itemView.setContentDescription(shown);
         holder.pinGlyph.setVisibility(entry.isPinned() ? View.VISIBLE : View.GONE);
 
@@ -209,19 +193,14 @@ public class ClipboardAdapter extends ListAdapter<ClipboardItem, RecyclerView.Vi
         bindPreview(holder, entry);
     }
 
-    /**
-     * The leading image and the text: a link's preview (thumbnail, title over the address) once
-     * one has been fetched, otherwise the link or text icon and the clip itself.
-     */
+    /** A link's fetched preview (thumbnail, title over address), otherwise the link/text icon and the clip. */
     private void bindPreview(ClipboardViewHolder holder, ClipEntry entry) {
         boolean masked = isMasked(entry);
-        // One look at the text for both the preview and the icon.
         String link = masked ? null : ClipboardWebImageProvider.webUrlOrNull(entry.getText());
         String previewUrl = link != null ? ClipboardWebImageProvider.previewUrlForLink(link) : null;
         OpenGraphMetadata preview = null;
         if (previewUrl != null) {
-            // A no-op once the entry has a result (or is being fetched); asked first so a result
-            // that is ready immediately is shown by this bind.
+            // Asked first so a result that is ready immediately is shown by this bind.
             this.imageProvider.request(entry.getId(), previewUrl);
             preview = this.imageProvider.previewFor(entry.getId());
         }
@@ -270,8 +249,6 @@ public class ClipboardAdapter extends ListAdapter<ClipboardItem, RecyclerView.Vi
         boolean modernBoards = KeyboardColorManager.styleSpec().getModernBoards();
         float density = holder.itemView.getResources().getDisplayMetrics().density;
         if (modernBoards) {
-            // M3 card: a rounded keyAlt surface floating on the board background, with a rounded
-            // state layer for press feedback.
             holder.cardBackground.setColor(colors.getKeyColorAlt());
             holder.cardBackground.setCornerRadius(12 * density);
             holder.foreground.setBackground(holder.cardBackground);
@@ -280,9 +257,8 @@ public class ClipboardAdapter extends ListAdapter<ClipboardItem, RecyclerView.Vi
             holder.clipImageView.setClipToOutline(true);
             holder.getBinding().dividerImage.setVisibility(View.GONE);
         } else {
-            // Legacy: a flat full-bleed row on the background slot, with the BlackBerry hairline
-            // between icon and text. Re-applied per bind so a theme change in place never leaves a
-            // stale colour; sized by fill() because the ImageView measures from the drawable.
+            // Re-applied per bind so an in-place theme change leaves no stale colour; sized by
+            // fill() because the ImageView measures from the drawable.
             holder.foreground.setBackgroundColor(colors.getBackgroundColor());
             holder.foreground.setForeground(null);
             holder.clipImageView.setOutlineProvider(android.view.ViewOutlineProvider.BACKGROUND);
@@ -298,9 +274,7 @@ public class ClipboardAdapter extends ListAdapter<ClipboardItem, RecyclerView.Vi
         colors.tint(holder.pinGlyph, modernBoards ? colors.getAccentColor() : colors.getIconColor());
     }
 
-    // ── the row menu ─────────────────────────────────────────────────────────
-
-    /** Long-press and overflow both land here, and both anchor the menu to the overflow button. */
+    /** Long-press and overflow both anchor the menu to the overflow button. */
     boolean showMenu(ClipboardViewHolder holder) {
         PopupMenu menu = buildMenu(holder);
         if (menu == null) {
@@ -356,14 +330,11 @@ public class ClipboardAdapter extends ListAdapter<ClipboardItem, RecyclerView.Vi
         }
     }
 
-    // ── link previews ────────────────────────────────────────────────────────
-
     @Override
     public void onPreviewReady(long entryId) {
         RecyclerView list = this.attachedList;
         if (list != null && list.isComputingLayout()) {
-            // Finished inside a bind (the fetch did not need to suspend): RecyclerView refuses
-            // change notifications mid-layout, so announce it once the pass is over.
+            // Finished inside a bind: RecyclerView refuses notifications mid-layout, so post it.
             list.post(() -> onPreviewReady(entryId));
             return;
         }
@@ -397,7 +368,6 @@ public class ClipboardAdapter extends ListAdapter<ClipboardItem, RecyclerView.Vi
         return RecyclerView.NO_POSITION;
     }
 
-    /** "Pinned" / "Recent". */
     static final class HeaderViewHolder extends RecyclerView.ViewHolder {
 
         private final TextView title;
@@ -413,7 +383,6 @@ public class ClipboardAdapter extends ListAdapter<ClipboardItem, RecyclerView.Vi
             if (KeyboardColorManager.INSTANCE.isInitialized()) {
                 KeyboardColorManager colors = KeyboardColorManager.INSTANCE;
                 boolean modernBoards = KeyboardColorManager.styleSpec().getModernBoards();
-                // M3 list subheaders are primary-coloured; the legacy board keeps its grey.
                 this.title.setTextColor(modernBoards
                         ? colors.getAccentColor()
                         : colors.getHintColor(KeyboardColorManager.ALPHA_FULL));

@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- "Pinned" / "Recent" above the clipboard board's two sections. Colours and weight are applied
-     by ClipboardAdapter from the keyboard palette. -->
+<!-- Colours and weight set by ClipboardAdapter from the keyboard palette -->
 <TextView xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/clipboard_section_title"
     android:layout_width="match_parent"

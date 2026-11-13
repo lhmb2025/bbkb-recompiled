@@ -34,13 +34,9 @@ import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
 
 /**
- * The two screens the feature adds to Settings, and the one contract between them and the key
- * pipeline: while the builder is on screen, [HardwareKeyCaptureBus] is live, and whatever any of
- * its three producers offers lands on the step the screen is asking for.
- *
- * The bus is driven directly here rather than through Compose's key input, because that is how the
- * keys that matter actually arrive: the accessibility service consumes a Sym press before any
- * window sees it, so no amount of input injection into this window would reproduce it.
+ * Pins the device profile builder screens: while the builder is on screen [HardwareKeyCaptureBus]
+ * is live and any producer's key lands on the current step. The bus is driven directly because the
+ * accessibility service consumes a Sym press before any window sees it.
  */
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [34], qualifiers = "w411dp-h891dp")
@@ -79,10 +75,7 @@ class DeviceProfileBuilderScreenTest {
 
     private fun string(id: Int, vararg args: Any): String = context.getString(id, *args)
 
-    /**
-     * The builder is one long list and a LazyColumn only composes what is on screen, so a row
-     * below the fold has to be scrolled to before it exists at all.
-     */
+    /** The builder is a LazyColumn, so a row below the fold must be scrolled to before it exists. */
     private fun scrollTo(text: String) {
         composeRule.onNode(hasScrollToIndexAction()).performScrollToNode(hasText(text))
         composeRule.waitForIdle()
@@ -200,8 +193,6 @@ class DeviceProfileBuilderScreenTest {
         composeRule.waitForIdle()
         assertTrue(navigated)
     }
-
-    // ── the import confirmation ──────────────────────────────────────────────
 
     private fun summaryOf(xml: String) =
         DeviceConfigSummary.of(ByteArrayInputStream(xml.toByteArray()))!!

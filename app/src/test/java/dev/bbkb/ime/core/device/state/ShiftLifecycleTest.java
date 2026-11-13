@@ -27,11 +27,9 @@ import org.robolectric.annotation.Config;
 import java.util.Locale;
 
 /**
- * <b>Characterisation</b> of the physical Shift key's lifecycle inside
- * {@link PhysicalKeyboardStateTracker}, and (Phase 1h) the proof that the {@code ModifierState}
- * snapshot now answers the same in every state.
+ * Pins the physical Shift key's lifecycle in {@link PhysicalKeyboardStateTracker}, and that the
+ * {@code ModifierState} snapshot answers the same in every state. Two pieces of state:
  *
- * <h3>Two pieces of state, not one</h3>
  * <ul>
  *   <li><b>Per-key state</b> ({@code mShiftState[]}, one slot for each Shift key):
  *       DOWN (−1), RELEASED (−2) or CONSUMED (−3). A key goes DOWN on press; it goes CONSUMED
@@ -43,13 +41,8 @@ import java.util.Locale;
  *       and USED as <em>nothing</em>.</li>
  * </ul>
  *
- * The tracker's three per-key predicates are exact per-key tests: {@code isShiftKeyDown()} is "a
- * key is DOWN", {@code isShiftKeyConsumed()} is "a key is CONSUMED", and
- * {@code isShiftReleased()} is "<em>both</em> keys are RELEASED". So a Shift that is physically
- * held but CONSUMED is neither down nor released. Before Phase 1h the snapshot's
- * {@code isShiftReleased()} was {@code !shiftKeyDown}, which is true there.
- *
- * <p>Every row below was first run green against the unmodified tracker (commit e6813111).
+ * {@code isShiftReleased()} means both keys are RELEASED, so a held but CONSUMED Shift is neither
+ * down nor released.
  */
 @RunWith(RobolectricTestRunner.class)
 @Config(sdk = 34, manifest = Config.NONE)
@@ -61,7 +54,7 @@ public class ShiftLifecycleTest {
     private static final int KEY_A = KeyEvent.KEYCODE_A;
     private static final int KEY_B = KeyEvent.KEYCODE_B;
 
-    /** 256, what {@code BlackBerryIME.isMetaKeyActive()} originally passed to {@code hasMetaFlag}. */
+    /** 256, the flag {@code isMetaKeyActive()} passes to {@code hasMetaFlag}. */
     private static final int META_CAP_LOCKED = MetaKeyKeyListener.META_CAP_LOCKED;
 
     private PhysicalKeyboardStateTracker tracker;
@@ -88,8 +81,6 @@ public class ShiftLifecycleTest {
         DeviceProfile.initialize(null);
     }
 
-    // ─────────────────────────────────────────────────────────────── key driving
-
     private static KeyEvent event(int action, int keyCode) {
         return new KeyEvent(0L, 0L, action, keyCode, /* repeat */ 0, /* metaState */ 0,
                 /* deviceId */ 0, /* scanCode */ keyCode, /* flags */ 0,
@@ -114,8 +105,6 @@ public class ShiftLifecycleTest {
         down(keyCode);
         tracker.consumeModifiersAfterKey(keyCode, /* isPhysicalKeyboard */ true);
     }
-
-    // ─────────────────────────────────────────────────────────────── the table
 
     /** Expected tracker answers for one row of the lifecycle table. */
     private static final class Row {
@@ -154,10 +143,7 @@ public class ShiftLifecycleTest {
                 tracker.isAltUsedWithKey());
     }
 
-    /**
-     * Phase 1h: the snapshot answers every Shift question the way the tracker does, in this row.
-     * Also the three reads 1f had to leave on the tracker, spelled both ways.
-     */
+    /** The snapshot answers every Shift question the way the tracker does in this row. */
     private void assertSnapshotAgrees(Row row) {
         ModifierState m = tracker.getModifierState();
         assertEquals(row.name + ": held", tracker.isShiftKeyDown(), m.isShiftHeld());
@@ -168,7 +154,7 @@ public class ShiftLifecycleTest {
         assertEquals(row.name + ": alt used with key",
                 tracker.isAltUsedWithKey(), m.isAltUsedWithKey());
 
-        // BlackBerryIME.isMetaKeyActive(), old spelling vs new.
+        // BlackBerryIME.isMetaKeyActive(), tracker spelling vs snapshot spelling.
         boolean oldMetaKeyActive = !tracker.isShiftReleased()
                 && tracker.hasMetaFlag(META_CAP_LOCKED) && !tracker.isAltUsedWithKey();
         boolean newMetaKeyActive = !m.isShiftReleased()
@@ -178,9 +164,8 @@ public class ShiftLifecycleTest {
         assertEquals(row.name + ": isShiftChording's tracker half",
                 tracker.isShiftReleased(), m.isShiftReleased());
 
-        // The derived Shift answers are consistent with the per-key state: a Shift is sticky only
-        // once every key is released, and a consumed Shift is not sticky even though the span
-        // still says Shift (Shift+Alt).
+        // Sticky only once every key is released; a consumed Shift is not sticky even though the
+        // span still says Shift (Shift+Alt).
         boolean spanShift = (row.shiftSpan & KeyEvent.META_SHIFT_ON) != 0;
         assertEquals(row.name + ": sticky", row.released && spanShift, m.isShiftSticky());
         assertEquals(row.name + ": locked", row.shiftSpan == 0x100, m.isShiftLocked());
@@ -192,8 +177,6 @@ public class ShiftLifecycleTest {
         assertTracker(row);
         assertSnapshotAgrees(row);
     }
-
-    // ── the brief's seven states ─────────────────────────────────────────────────
 
     @Test
     public void r01_idle() {
@@ -230,9 +213,8 @@ public class ShiftLifecycleTest {
     public void r06_consumedByLetter() {
         down(SHIFT_L);
         typeLetter(KEY_A);
-        // The span goes PRESSED -> USED, which reads as nothing; the tracker also records the
-        // chord in its (misnamed) "Alt used with key" flag, which is set whenever a key is typed
-        // while any Shift key is not RELEASED.
+        // The span goes PRESSED -> USED (reads as nothing). The misnamed "Alt used with key" flag
+        // is set whenever a key is typed while any Shift key is not RELEASED.
         check(new Row("consumed by letter", F, F, T, 0, F, T));
     }
 
@@ -244,8 +226,6 @@ public class ShiftLifecycleTest {
         up(SHIFT_L);
         check(new Row("released after letter", F, T, F, 0, F, F));
     }
-
-    // ── the rest of the lifecycle ────────────────────────────────────────────────
 
     @Test
     public void r08_lockedThenPressedAgainUnlocksWhileHeld() {

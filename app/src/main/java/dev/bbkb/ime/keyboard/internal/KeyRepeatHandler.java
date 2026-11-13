@@ -14,6 +14,7 @@ public class KeyRepeatHandler extends WeakOwnerHandler<KeyRepeatHandler.Callback
 
     
     public interface Callback {
+        /** @param i key code */
         void onKeyRepeat(MetaKeyStateTracker abstractC0918e, int i);
     }
 
@@ -24,11 +25,12 @@ public class KeyRepeatHandler extends WeakOwnerHandler<KeyRepeatHandler.Callback
         void onModifierKeyRepeatStart();
     }
 
+    /** @param abstractC0918e the owner, held weakly */
     public KeyRepeatHandler(MetaKeyStateTracker abstractC0918e) {
         super(abstractC0918e);
     }
 
-    @Override // android.os.Handler
+    @Override
     public void handleMessage(Message message) {
         Callback aVarV = getOwner();
         if (aVarV == null) {
@@ -45,11 +47,15 @@ public class KeyRepeatHandler extends WeakOwnerHandler<KeyRepeatHandler.Callback
         }
     }
 
-    /** {@code mModifierListener} is installed by the optional {@link #setModifierListener}. */
     private static boolean isShiftKeyCode(int keyCode) {
         return keyCode == KeyEvent.KEYCODE_SHIFT_LEFT || keyCode == KeyEvent.KEYCODE_SHIFT_RIGHT;
     }
 
+    /**
+     * @param abstractC0918e the tracker to call back
+     * @param i key code
+     * @param i2 delay in ms
+     */
     public void startKeyRepeatTimer(MetaKeyStateTracker abstractC0918e, int i, int i2) {
         sendMessageDelayed(obtainMessage(1, i, 0, abstractC0918e), i2);
         if (isShiftKeyCode(i) && this.mModifierListener != null) {

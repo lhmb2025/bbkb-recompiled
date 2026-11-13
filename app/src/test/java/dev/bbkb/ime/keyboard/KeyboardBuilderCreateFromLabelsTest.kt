@@ -15,14 +15,9 @@ import org.robolectric.annotation.Config
 import java.util.Locale
 
 /**
- * Characterisation of [KeyboardBuilder.createFromLabels] — the throwaway single-row keyboard the
- * aux bar's accent strip is built from (`AuxBarManager.buildAccentKeyboard`).
- *
- * Written before the P8 §2(c) consolidation of its two inline `new Key(...)` blocks. Each built key
- * is compared field-by-field AND through `Key.equals`/`hashCode` against a key constructed here
- * with the original argument list — `Keyboard.replaceKey` and the proximity grid look keys up by
- * that hash, so a factory that shifts any constructor argument is a behaviour change even when
- * the visible fields agree.
+ * Pins [KeyboardBuilder.createFromLabels], the single-row keyboard behind the aux bar's accent
+ * strip. Keys are compared field by field and via `Key.equals`/`hashCode`, because
+ * `Keyboard.replaceKey` and the proximity grid look keys up by that hash.
  */
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [34])
@@ -31,7 +26,7 @@ class KeyboardBuilderCreateFromLabelsTest {
     private val context: Context = ApplicationProvider.getApplicationContext()
     private val screenWidth get() = context.resources.displayMetrics.widthPixels
 
-    /** The label key exactly as the pre-consolidation code constructed it. */
+    /** The expected label key, built with the full constructor argument list. */
     private fun expectedLabelKey(label: String, x: Int, keyWidth: Int, keyHeight: Int) = Key(
         MoreKeySpec(label, false, Locale.getDefault()), MoreKeySpec.getEmpty(),
         KeyHintPosition.HIDDEN, null, 0, 1, x, 0, keyWidth, keyHeight, 0, 0,
@@ -77,7 +72,7 @@ class KeyboardBuilderCreateFromLabelsTest {
         }
     }
 
-    /** The always-throwing page-nav variant is gone: the only overload takes no page-nav flag. */
+    /** The only overload takes no page-nav flag. */
     @Test
     fun noPageNavOverloadExists() {
         val signatures = KeyboardBuilder::class.java.declaredMethods
@@ -109,9 +104,8 @@ class KeyboardBuilderCreateFromLabelsTest {
     }
 
     /**
-     * CHARACTERISED: the label loop reads `Character.codePointAt(label, 0)` (its result unused), so
-     * an empty label throws rather than producing an empty key. A factory that drops that read —
-     * as the audit sketch did — changes this.
+     * The label loop reads `Character.codePointAt(label, 0)` (result unused), so an empty label
+     * throws rather than producing an empty key.
      */
     @Test
     fun emptyLabel_throwsStringIndexOutOfBounds() {

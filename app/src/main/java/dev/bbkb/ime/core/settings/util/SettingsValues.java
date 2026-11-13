@@ -20,12 +20,7 @@ import java.util.List;
 import java.util.Locale;
 import dev.bbkb.ime.BuildConfig;
 
-/**
- * Immutable data class containing all keyboard settings and configuration values.
- * Loaded from SharedPreferences and Resources, providing type-safe access to settings.
- * Contains ~200+ settings covering input behavior, UI preferences, gesture parameters,
- * language options, and feature flags. Thread-safe and designed for caching.
- */
+/** Immutable snapshot of every keyboard setting, read from preferences and resources. */
 
 
 
@@ -129,19 +124,12 @@ public final class SettingsValues {
     /** "Enable unified input menu" as stored; {@link #isUimEnabled()} adds the key request. */
     private final boolean uimEnabledSetting;
 
-    /**
-     * "Show the suggestion bar" (Physical keyboard settings) is off. Stored inverted so that a
-     * zero-filled instance means the shipped default, bar shown. See
-     * {@link #isPkbSuggestionBarHidden()}.
-     */
+    /** The PKB bar has nothing to show ({@link SettingsManager#pkbBarHasContent}); inverted so zero means shown. */
     private final boolean pkbSuggestionBarOff;
 
     /**
-     * The "Show or hide the input menu" key action (multifunction key or Alt+Sym) raised the
-     * unified input menu, and nothing has put it away since. See
-     * {@link #isInputMenuRequestedByKey()}. Static, not part of the snapshot: it belongs to the
-     * input session, never to the stored settings, and must survive the settings reloads that
-     * happen mid-session (show-on-keypress reloads them, for one).
+     * The "Show or hide the input menu" key raised the input menu and nothing has put it away.
+     * Static because it belongs to the session and must survive mid-session settings reloads.
      */
     private static volatile boolean inputMenuRequestedByKey;
 
@@ -160,10 +148,6 @@ public final class SettingsValues {
     public final boolean isInternal;
 
     public final boolean hasCustomKeyPreviewAnimationParams;
-
-    // REMOVED: areTutorialsEnabled - Tutorial system eliminated
-
-    // REMOVED: ignoreTutorialDelayThresholds - Tutorial system eliminated
 
     public final int keyPreviewShowUpDuration;
 
@@ -241,7 +225,7 @@ public final class SettingsValues {
 
     public final boolean altDoubleTapLock;
 
-    /** Physical Ctrl locks on a double tap. On by default, like Shift and Alt. */
+    /** Physical Ctrl locks on a double tap (default on). */
     public final boolean ctrlDoubleTapLock;
 
     public final boolean showPkbModifierStatusIcon;
@@ -339,15 +323,16 @@ public final class SettingsValues {
     private final int autoCorrectionModeVkb;
 
     /**
-     * ASCII-only letter-or-digit test. Deliberately narrower than
-     * {@link Character#isLetterOrDigit(int)} - callers use it to decide whether a code point is
-     * part of a plain latin word. (Renaming it to {@code isAsciiLetterOrDigit} needs the
-     * RecorrectionController call site, which is outside this change.)
+     * ASCII-only, deliberately narrower than {@link Character#isLetterOrDigit(int)}: callers ask
+     * whether a code point is part of a plain latin word.
+     *
+     * @param i a code point
      */
     public boolean isLetterOrDigit(int i) {
         return (i >= 'A' && i <= 'Z') || (i >= 'a' && i <= 'z') || (i >= '0' && i <= '9');
     }
 
+    /** @param c0696l the focused editor's capabilities, or null for a default plain-text editor */
     public SettingsValues(Context context, SharedPreferences sharedPreferences, Resources resources, EditorCapabilities c0696l) {
         float touchKeypadResolution = DeviceProfile.current().getTouchKeypadResolution();
         float fM5549d = touchKeypadResolution > 1.0f ? touchKeypadResolution : resources.getDisplayMetrics().density;
@@ -375,11 +360,9 @@ public final class SettingsValues {
         this.isBigramPredictionEnabled = loadBigramPredictionsSetting(sharedPreferences, resources);
         this.doubleSpacePeriodTimeoutMs = resources.getInteger(R.integer.config_double_space_period_timeout);
         this.hasHardwareKeyboard = SettingsManager.hasHardwareKeyboard(resources.getConfiguration());
-        // Metrics logging removed - was non-functional dead code
         this.showUiToAcceptTypedWord = sharedPreferences.getBoolean("pref_show_ui_to_accept_typed_word", true);
         this.shiftKeyLongPressTimeout = resources.getInteger(R.integer.config_longpress_shift_key_timeout);
         this.keyLongpressTimeoutMs = SettingsManager.getIntPref(sharedPreferences, resources, "pref_key_longpress_timeout", R.integer.config_default_longpress_key_timeout);
-        // REMOVED: Tutorial settings initialization - Tutorial system eliminated
         this.keypressVibrationDuration = SettingsManager.getVibrationDuration(sharedPreferences, resources);
         this.keypressSoundVolume = SettingsManager.getKeypressSoundVolume(sharedPreferences, resources);
         this.keyPreviewPopupDismissDelay = SettingsManager.getKeyPreviewDismissDelay(sharedPreferences, resources);
@@ -499,17 +482,15 @@ public final class SettingsValues {
     }
 
     /**
-     * The settings for another editor, without reading the preferences again (P-12). Everything
-     * stored, and everything derived from the resources for this keyboard locale and
-     * configuration, is copied from {@code base}; only the fields that follow the editor
-     * ({@link EditorCapabilities}), the device profile or the recogniser are worked out again.
-     * {@link SettingsManager#loadSettings} uses it while neither the preferences, the keyboard
-     * locale nor the configuration changed since {@code base} was built.
+     * These settings for another editor without re-reading preferences: only fields that follow
+     * the editor, the device profile or the recogniser are redone. Valid while preferences,
+     * locale and configuration are unchanged.
      */
     public SettingsValues forEditor(Context context, EditorCapabilities editorCapabilities) {
         return new SettingsValues(this, context, editorCapabilities);
     }
 
+    /** @param c0696l the new editor's capabilities, or null for a default plain-text editor */
     private SettingsValues(SettingsValues base, Context context, EditorCapabilities c0696l) {
         this.shiftKeyLongPressTimeout = base.shiftKeyLongPressTimeout;
         this.showUiToAcceptTypedWord = base.showUiToAcceptTypedWord;
@@ -649,17 +630,13 @@ public final class SettingsValues {
         this.shouldShowLxxButton = shouldShowLxxButton(context);
     }
 
-    /**
-     * The mic key drives this app's own recogniser session, so a speech recogniser is what it
-     * needs; a system voice IME is the older alternative route. Gating on the IME alone hid the
-     * key on phones that have a recogniser but no Google voice typing.
-     */
+    /** The mic key needs a speech recogniser, or else a system voice IME to hand off to. */
     private boolean computeShowsVoiceInputKey(Context context) {
         return this.voiceInputKeySetting && this.editorCapabilities.isMicrophoneAllowed
                 && (isRecognitionAvailable(context) || SubtypeManager.getInstance().isShortcutImeEnabled());
     }
 
-    /** The cached recogniser query once the input-method caches exist (P-12). */
+    /** The cached recogniser query once the input-method caches exist. */
     private static boolean isRecognitionAvailable(Context context) {
         if (RichInputMethodManager.isInitialized()) {
             return RichInputMethodManager.getInstance().isRecognitionAvailable(context);
@@ -671,13 +648,7 @@ public final class SettingsValues {
         return DeviceProfile.current().hasShiftedSymbolKeyboard() ? this.autoCorrectionModePkb : this.autoCorrectionModeVkb;
     }
 
-    /**
-     * The unified input menu is on: its setting, unless the bar it sits in is hidden by
-     * {@link #isPkbSuggestionBarHidden()}. Read live because that depends on whether the
-     * on-screen keyboard is up, which changes without a settings reload. Whatever the two
-     * settings say, the menu is on while the key has asked for it
-     * ({@link #isInputMenuRequestedByKey()}).
-     */
+    /** The input menu is on: by its setting, or while the key has asked for it ({@link #isInputMenuRequestedByKey()}). */
     public boolean isUimEnabled() {
         return inputMenuRequestedByKey || this.uimEnabledSetting;
     }
@@ -688,18 +659,9 @@ public final class SettingsValues {
     }
 
     /**
-     * The "Show or hide the input menu" key action has the input menu up, and it counts as on
-     * whatever "Enable unified input menu" and "Show the suggestion bar" say: the two
-     * {@code isUimEnabled} readers and {@code InputViewCoordinator.shouldShowUim()} answer yes,
-     * so the bar behaves as a menu bar does with the menu on (its toggles open boards through
-     * the board coordinator, and a closed board leaves the menu up) instead of taking the
-     * menu-off routes.
-     *
-     * <p>Never stored: the preferences are untouched, and the user's settings win again once it
-     * clears. It clears when the key hides the menu, when the menu bar is taken down any other
-     * way ({@code UnifiedInputBoardManager.hide()}: the window going down, the suggestion strip
-     * replacing the menu, cursor mode, a settings change), and at the next input start
-     * ({@code InputSessionCoordinator.onStartInputInternal}).
+     * The "Show or hide the input menu" key has the menu up; it then counts as on whatever the
+     * settings say, so the bar takes the menu-on routes. Never stored. Cleared when the key hides
+     * the menu, by {@code UnifiedInputBoardManager.hide()}, and at the next input start.
      */
     public static boolean isInputMenuRequestedByKey() {
         return inputMenuRequestedByKey;
@@ -711,25 +673,17 @@ public final class SettingsValues {
     }
 
     /**
-     * "Show the suggestion bar" is off and a physical keyboard is in use with no on-screen
-     * keyboard up, so the bar above the keys shows neither the suggestion strip nor the input
-     * menu. A Chinese or Japanese keyboard's candidate strip, autofill chips, the arrow bar and
-     * the accent bar still show. Landscape, a forced on-screen keyboard and touch-only devices
-     * all count as the on-screen keyboard being up, so the setting does not apply there. An
-     * input board opened over the physical keys does not: the bar stays hidden above it, and the
-     * board keys keep their menu-off route (a second press closes the board). The menu itself
-     * can still be called up with the "Show or hide the input menu" key action
-     * ({@link #isInputMenuRequestedByKey()}); this stays true meanwhile, so the strip stays away.
+     * The PKB bar has no content and no on-screen typing keyboard is up, so it shows neither the
+     * strip nor the menu (CJK candidates, autofill chips, arrow and accent bars still show). An
+     * input board over the keys does not count as on-screen. Stays true while the key raises the menu.
      */
     public boolean isPkbSuggestionBarHidden() {
         return isPkbSuggestionBarHidden(!this.pkbSuggestionBarOff);
     }
 
     /**
-     * {@link #isPkbSuggestionBarHidden()} for whether the bar has content: the bar above a
-     * physical keyboard's keys hides when "Show suggestions" and "Enable unified input menu"
-     * are both off (there was a separate "Show the suggestion bar" switch until 2026-10-19).
-     * On-screen, the bar belongs to the keyboard and stays.
+     * {@link #isPkbSuggestionBarHidden()} for whether the bar has content (suggestions or the
+     * input menu on). On-screen, the bar belongs to the keyboard and stays.
      */
     public static boolean isPkbSuggestionBarHidden(boolean barHasContent) {
         return !barHasContent
@@ -742,8 +696,7 @@ public final class SettingsValues {
     }
 
     public boolean shouldShowPredictionsInCandidateStrip() {
-        // A Chinese or Japanese keyboard picks its words from the candidate strip, so that strip
-        // does not answer to "Show suggestions" (2026-10-19: the switch only toggles suggestions).
+        // CJK keyboards pick words from the candidate strip, so it ignores "Show suggestions".
         return (this.isPredictionsEnabled && getKeyCodeHandler().shouldShowSuggestions())
                 || getKeyCodeHandler().shouldShowChineseSuggestions()
                 || getKeyCodeHandler().shouldShowJapaneseSuggestions();
@@ -763,11 +716,9 @@ public final class SettingsValues {
     }
 
     /**
-     * Whether typed letters are composed as a word (the underline, the commit at the separator):
-     * the field allows suggestions and something consumes the word -- predictions, auto-correction
-     * or learning (a typed word is learned at commit, so learning alone keeps composing on even
-     * with suggestions and auto-correction off, 2026-10-19) -- or swipe typing, or a CJK editor.
-     * The name is historical.
+     * Whether typed letters are composed as a word: the field allows suggestions and predictions,
+     * auto-correction or learning consumes the word (learning happens at commit), or swipe typing,
+     * or a CJK editor. The name is historical.
      */
     private boolean shouldShowLxxButton(Context context) {
         return (this.editorCapabilities.shouldShowSuggestions
@@ -777,58 +728,71 @@ public final class SettingsValues {
                 || this.editorCapabilities.shouldShowChineseSuggestions;
     }
 
+    /** @param i a code point */
     public boolean isWordSeparator(int i) {
         return this.spacingAndPunctuation.isWordSeparator(i);
     }
 
     /**
-     * ST-7: named for its target. NOTE the polarity: the sole caller,
-     * {@code InputLogic.isWordSeparator}, negates this, so a CJK code point listed in the
-     * per-script "not separators" table is treated as NOT a word character. That double negative
-     * is the decompiled wiring and is preserved deliberately — do not "simplify" it without
-     * checking CJK backspace and word-boundary behaviour first.
+     * Mind the polarity: the sole caller, {@code InputLogic.isWordSeparator}, negates this, so a
+     * CJK code point in the "not separators" table is treated as not a word character. Check CJK
+     * backspace and word boundaries before simplifying the double negative.
+     *
+     * @param i a code point
      */
     public boolean isNotWordSeparatorForLocale(int i, Locale locale) {
         return this.spacingAndPunctuation.isNotWordSeparatorForLocale(i, locale);
     }
 
+    /** @param i a code point */
     public boolean isWordConnector(int i) {
         return this.spacingAndPunctuation.isWordConnector(i);
     }
 
     /**
-     * Whether a typed code point is word content rather than a separator: letters, digits, word
-     * connectors and combining marks. Both mark classes count. Spacing marks (Mc) always did;
-     * non-spacing marks (Mn) are the vowel signs and subjoined letters of Tibetan, the Arabic and
-     * Hebrew vowel points, the Thai vowels written above and below, and the Indic vowel signs
-     * such as Gujarati ુ. Until 2026-09-28 those ended the word: on the KEY2 the Tibetan keyboard
-     * committed "བྱ" the moment ྱ was typed and started a new word at the next consonant, so no
-     * Tibetan word with a vowel could ever be predicted.
+     * Whether a code point is word content: letters, digits, word connectors and both combining
+     * mark classes (Mn covers Tibetan subjoined letters, Arabic/Hebrew points, Thai and Indic
+     * vowel signs, which must not end a word).
+     *
+     * @param i a code point
      */
     public boolean isWordCodePoint(int i) {
         return Character.isLetterOrDigit(i) || isWordConnector(i) || isCombiningMark(i);
     }
 
-    /** Package-private for {@code WordCodePointTest}. */
+    /**
+     * Package-private for {@code WordCodePointTest}.
+     *
+     * @param i a code point
+     */
     static boolean isCombiningMark(int i) {
         final int type = Character.getType(i);
         return Character.COMBINING_SPACING_MARK == type || Character.NON_SPACING_MARK == type;
     }
 
-    /** True for symbols that are usually PRECEDED by a space ({@code symbolsPrecededBySpace}). */
+    /**
+     * True for symbols usually preceded by a space ({@code symbolsPrecededBySpace}).
+     *
+     * @param i a code point
+     */
     public boolean isUsuallyPrecededBySpace(int i) {
         return this.spacingAndPunctuation.isPrecededBySpace(i);
     }
 
-    /** True for the French-only preceded-by-space symbol set; false outside French locales. */
+    /**
+     * True for the French-only preceded-by-space symbol set; false outside French locales.
+     *
+     * @param i a code point
+     */
     public boolean isPrecededBySpaceFrench(int i) {
         return this.spacingAndPunctuation.isPrecededBySpaceFrench(i);
     }
 
     /**
-     * True for symbols that are usually FOLLOWED by a space ({@code symbolsFollowedBySpace}).
-     * ST-7: this was called {@code isSentenceSeparator}, which is a different predicate that
-     * {@link SpacingAndPunctuation#isSentenceSeparator(int)} really does implement.
+     * True for symbols usually followed by a space ({@code symbolsFollowedBySpace}); not the
+     * same as {@link SpacingAndPunctuation#isSentenceSeparator(int)}.
+     *
+     * @param i a code point
      */
     public boolean isUsuallyFollowedBySpace(int i) {
         return this.spacingAndPunctuation.isFollowedBySpace(i);
@@ -846,26 +810,16 @@ public final class SettingsValues {
         return this.editorCapabilities.isSameInputType(editorInfo);
     }
 
-    /**
-     * Was: the edited app targets an SDK older than Jelly Bean (16). Android refuses to launch apps below targetSdk 23, so this is constant false; the
-     * package-info fetch that computed it has been removed.
-     */
+    /** Constant false: Android no longer launches apps targeting SDKs this checked for (below 16). */
     public boolean isBeamReaderPackage() {
         return false;
     }
 
-    /**
-     * Was: the edited app is broken by re-correction. The predicate behind it
-     * ({@code AppWorkaroundsHelper.evaluateIsBrokenByRecorrection}) is a constant-false stub, so
-     * this is constant false.
-     */
+    /** Constant false: no app is known to be broken by re-correction. */
     public boolean isSupportedAndroidApp() {
         return false;
     }
 
-    // NOTE: the "show_suggestions_setting" -> "show_predictions" migration used to live here.
-    // Writing prefs from inside this constructor re-entered SettingsManager.loadSettings through
-    // the change listener; it now runs once in SettingsManager.migrateLegacyPreferences().
     private static boolean loadPredictionsEnabledSetting(SharedPreferences sharedPreferences, Resources resources) {
         return sharedPreferences.getBoolean("show_predictions", resources.getBoolean(R.bool.config_default_show_predictions));
     }
@@ -882,8 +836,6 @@ public final class SettingsValues {
         return sharedPreferences.getBoolean("next_word_prediction", resources.getBoolean(R.bool.config_default_next_word_prediction));
     }
 
-    // NOTE: the "voice_mode" -> "pref_voice_input_key" migration moved to
-    // SettingsManager.migrateLegacyPreferences() - see loadPredictionsEnabledSetting above.
     private static boolean loadVoiceInputKeySetting(SharedPreferences sharedPreferences, Resources resources) throws Resources.NotFoundException {
         return sharedPreferences.getBoolean("pref_voice_input_key", true);
     }
@@ -893,15 +845,9 @@ public final class SettingsValues {
     }
 
     /**
-     * Type-by-swiping on the touch keypad, for the current keyboard. Off on Chinese keyboards and
-     * on a pad the engine has no key geometry for: the root KDB is the KEY2's pad, so a profile
-     * that declares its own {@code <touch-keypad>} (the Titans) needs a {@code <kdb-variant>}
-     * first. Evaluated per call, like the Chinese check, so a change of keyboard takes effect the
-     * next time the keyboard asks.
-     *
-     * <p>A custom letter layout no longer switches it off: the engine's key letters follow the
-     * active layout ({@code LetterLayoutEngineSync} registers KDBs rewritten from it), so a swipe
-     * is decoded in the letters the keys type.
+     * Keypad swipe typing for the current keyboard, evaluated per call. Off on Chinese keyboards
+     * and on a pad with no engine geometry ({@code isTouchKeypadSwipeTypingSupported}). Custom
+     * letter layouts work: {@code LetterLayoutEngineSync} rewrites the KDBs to match.
      */
     public boolean isCkbGestureInputEnabledForLocale() {
         return this.isCkbGestureInputEnabled && !LocaleUtils.isCurrentSubtypeChinese()
@@ -1069,7 +1015,6 @@ public final class SettingsValues {
             sb.append("" + this.inLetterMaxSwipeToWordDistance);
             sb.append("\n   mShowOnKeypressMode = ");
             sb.append("" + this.showOnKeyPressMode);
-            // REMOVED: Tutorial debug dump - Tutorial system eliminated
             sb.append("\n   mConflictResolution = ");
             sb.append("" + this.isKoreanDoubleConsonantResolutionEnabled);
             sb.append("\n   mConflictResolutionDelay = ");

@@ -10,10 +10,8 @@ import org.junit.Assert.assertTrue
 import org.junit.Test
 
 /**
- * The "Speech recognizer" setting's decisions, as plain values: which services the list offers,
- * what a stored choice builds, where each recogniser's languages are remembered, and when a
- * permission error names the chosen app. The services are the KEY2's (Google TTS, the Google app,
- * the Claude app) plus the open-source recognisers the empty-list summary suggests.
+ * The "Speech recognizer" setting's decisions as plain values: the offered services, what a stored choice
+ * builds, where each recogniser's languages are remembered, and when a permission error names the chosen app.
  */
 class VoiceRecognizerChoiceTest {
 
@@ -33,8 +31,6 @@ class VoiceRecognizerChoiceTest {
     private val key2 = listOf(googleTts, googleApp, claude)
 
     private fun component(service: Service) = service.packageName + "/" + service.className
-
-    // ── the provider list ────────────────────────────────────────────────────
 
     @Test
     fun `providers are listed by app label in alphabetical order`() {
@@ -107,8 +103,6 @@ class VoiceRecognizerChoiceTest {
         assertTrue(VoiceRecognizerChoice.buildProviders(null, null).isEmpty())
     }
 
-    // ── setting → what dictation builds ──────────────────────────────────────
-
     private val installed = VoiceRecognizerChoice.buildProviders(key2, component(googleApp))
 
     @Test
@@ -177,9 +171,7 @@ class VoiceRecognizerChoiceTest {
         assertFalse(VoiceRecognizerChoice.Selection.DEVICE == VoiceRecognizerChoice.Selection.DEFAULT)
     }
 
-    // ── each recogniser's remembered languages ───────────────────────────────
-
-    /** The default keeps the key it always had, so a cache from before this setting is still found. */
+    /** The default keeps its original cache key, so an existing cache is still found. */
     @Test
     fun `the system default keeps the original language cache key`() {
         assertEquals("voice_input_language_cache", VoiceRecognizerChoice.languageCacheKey(""))
@@ -204,8 +196,6 @@ class VoiceRecognizerChoiceTest {
         assertTrue(keys.all { it.startsWith("voice_input_language_cache") })
     }
 
-    // ── the permission error ─────────────────────────────────────────────────
-
     private val chosenClaude get() = VoiceRecognizerChoice.select(component(claude), 34, false, installed)
 
     @Test
@@ -215,8 +205,8 @@ class VoiceRecognizerChoiceTest {
     }
 
     /**
-     * KEY2, 2026-10-08: Claude picked, Claude granted the microphone, and the error still came. The
-     * service was refusing the keyboard, not missing the microphone, so it must not be told to get it.
+     * A chosen app that holds the microphone and still errors is refusing the keyboard; it must not be
+     * told to get the mic.
      */
     @Test
     fun `a chosen app that holds the microphone and still errors refused us`() {

@@ -20,24 +20,29 @@ public class TextDecorator {
     private static final Listener EMPTY_LISTENER = new Listener() {
         @Override
         public void onWordCommit(String str) {
+            // No-op default.
         }
     };
 
     private static final TextDecoratorUiOperator EMPTY_TIMER_PROXY = new TextDecoratorUiOperator() {
-        @Override // dev.bbkb.ime.keyboard.internal.TextDecoratorUiOperator
+        @Override
         public void cancel() {
+            // No-op default.
         }
 
-        @Override // dev.bbkb.ime.keyboard.internal.TextDecoratorUiOperator
+        @Override
         public void showIndicator(Matrix matrix, RectF rectF, boolean z) {
+            // No-op default.
         }
 
-        @Override // dev.bbkb.ime.keyboard.internal.TextDecoratorUiOperator
+        @Override
         public void setOnClickHandler(Runnable runnable) {
+            // No-op default.
         }
 
-        @Override // dev.bbkb.ime.keyboard.internal.TextDecoratorUiOperator
+        @Override
         public void hide() {
+            // No-op default.
         }
     };
 
@@ -66,7 +71,7 @@ public class TextDecorator {
     private TextDecoratorUiOperator mTimerProxy = EMPTY_TIMER_PROXY;
 
     private final Runnable mOnClickHandler = new Runnable() {
-        @Override // java.lang.Runnable
+        @Override
         public void run() {
             TextDecorator.this.commitWaitingWord();
         }
@@ -94,6 +99,12 @@ public class TextDecorator {
         return this.mOnClickHandler;
     }
 
+    /**
+     * @param str the committed word
+     * @param i commit flags
+     * @param i2 selection start
+     * @param i3 selection end
+     */
     public void showCommitIndicator(String str, int i, int i2, int i3) {
         this.mWaitingFlags = i;
         this.mWaitingWord = str;
@@ -103,6 +114,7 @@ public class TextDecorator {
         postUpdateState();
     }
 
+    /** @param z true if the indicator may be shown */
     public void setShouldShow(boolean z) {
         boolean z2 = this.mShouldShow != z;
         this.mShouldShow = z;
@@ -130,8 +142,6 @@ public class TextDecorator {
         if (BuildConfig.DEBUG) Log.d(TAG, str);
     }
 
-    /** Same body as dismiss(String) above: the reason strings its four call sites pass were
-     *  being dropped, which is why the other dismissal path reported nothing at all. */
     private void hideIndicator(String str) {
         this.mTimerProxy.hide();
         if (BuildConfig.DEBUG) Log.d(TAG, str);
@@ -242,17 +252,19 @@ public class TextDecorator {
 
         private final HandlerC1675a mHandler;
 
+        /** @param c1074p the owner, held weakly */
         public UpdateHandler(TextDecorator c1074p) {
             this.mHandler = new HandlerC1675a(c1074p);
         }
 
         
         private static final class HandlerC1675a extends WeakOwnerHandler<TextDecorator> {
+            /** @param c1074p the owner, held weakly */
             public HandlerC1675a(TextDecorator c1074p) {
                 super(c1074p);
             }
 
-            @Override // android.os.Handler
+            @Override
             public void handleMessage(Message message) {
                 TextDecorator c1074pV = getOwner();
                 if (c1074pV != null && message.what == 0) {

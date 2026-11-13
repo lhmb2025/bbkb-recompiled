@@ -15,10 +15,7 @@ import java.util.Locale
 import dev.bbkb.ime.BuildConfig
 import dev.bbkb.ime.R
 
-/**
- * Repository for managing both personal dictionary and word substitutions
- * through the unified DictionaryEntry model.
- */
+/** Personal dictionary words and text shortcuts, both as [DictionaryEntry]. */
 class DictionaryRepository @androidx.annotation.VisibleForTesting internal constructor(
     private val context: Context,
     private val load: (Context, DictionaryManager) -> Unit,
@@ -29,30 +26,18 @@ class DictionaryRepository @androidx.annotation.VisibleForTesting internal const
     })
 
     /**
-     * Looked up on every use, never kept. The keyboard service runs in this process and replaces
-     * the manager when it starts (`BlackBerryIME.initializeSingletons` calls
-     * `DictionaryManager.shutdownInstance()`) and shuts it down when it stops (`onDestroy`).
-     * After an install or an update the service is first started by the first keyboard shown,
-     * which is often the add form on a dictionary screen. This used to be a `val` taken when the
-     * screen opened, so from then on every add, edit and delete on that screen went to a manager
-     * that had been shut down ("Failed to add word", "Failed to add shortcut", and a delete that
-     * said it had worked) until the screen was left.
+     * Looked up on every use, never cached: the keyboard service in this process replaces the
+     * manager when it starts and shuts it down when it stops, often while a dictionary screen is open.
      */
     private val personalDictManager: DictionaryManager
         get() = DictionaryManager.getInstance()
 
-    /**
-     * Whether the manager is loaded, loading it if not: after the keyboard service stops, the
-     * manager that replaces the shut-down one is loaded by nobody until the keyboard starts again.
-     */
+    /** Loads the manager if needed: after the service stops, nobody else loads its replacement. */
     private suspend fun ensureLoaded(): Boolean = personalDictManager.isLoaded() || initialize().isSuccess
 
     /**
-     * The entry already holding [key], if one does, as the failure to report; null when the key
-     * is free or is [ownKey] (an edit keeping its own name, in any case). Words and shortcuts
-     * share one key space (a word is stored as a shortcut for itself) and keys compare ignoring
-     * case, as the dictionary refuses them. The refusal itself is unchanged; this only says why,
-     * where the screens used to say "Failed to add".
+     * The entry already holding [key], as the failure to report; null when free or [ownKey] (an
+     * edit keeping its name). Words and shortcuts share one case-insensitive key space.
      */
     private fun entryInTheWay(key: String, ownKey: String? = null): EntryExistsException? {
         if (ownKey != null && key.equals(ownKey, ignoreCase = true)) return null
@@ -61,17 +46,11 @@ class DictionaryRepository @androidx.annotation.VisibleForTesting internal const
         return EntryExistsException(if (isWord) existing.word else existing.key, isWord)
     }
 
-    /**
-     * Initialize the DictionaryManager if not already initialized
-     * Returns: Result with true if successful, false if failed, or error message on corruption
-     */
+    /** Loads the manager if needed, recovering once from corrupted data. */
     override suspend fun initialize(): InitResult = withContext(Dispatchers.IO) {
         try {
-            // isLoaded() flips in DictionaryManager.onLoadComplete, after the BASL load. The
-            // old readiness test (getWordSubstitutions() != null || getPersonalDictionary() !=
-            // null) was satisfied the moment the substitutions map existed, so the wait below
-            // returned "Initialized successfully" ~250 ms into a load that had not finished and
-            // the learned-words read right after it found the manager unloaded.
+            // isLoaded() flips only after the BASL load completes; a non-null substitutions map
+            // appears earlier and is not readiness.
             val isLoaded = personalDictManager.isLoaded()
             if (!isLoaded) {
                 if (BuildConfig.DEBUG) Log.d("DictionaryRepository", "Initializing DictionaryManager...")
@@ -80,7 +59,6 @@ class DictionaryRepository @androidx.annotation.VisibleForTesting internal const
                 try {
                     load(context, personalDictManager)
                 } catch (e: ClassCastException) {
-                    // Data corruption detected - clear and reinitialize
                     if (BuildConfig.DEBUG) {
                     Log.e(
                         "DictionaryRepository",
@@ -90,14 +68,10 @@ class DictionaryRepository @androidx.annotation.VisibleForTesting internal const
                     }
                     dataWasCorrupted = true
                     clearCorruptedData()
-                    // Try again with clean slate
                     load(context, personalDictManager)
                 }
 
-                // Wait for initialization
-                // delay(), not Thread.sleep(): this runs on an IO-dispatcher thread and is
-                // entered from every dictionary screen, so the poll must be suspending and must
-                // stop when the caller backs out of the screen.
+                // delay(), not Thread.sleep(): the poll must stop when the caller leaves the screen.
                 var attempts = 0
                 while (attempts < 50) {
                     delay(100)
@@ -144,20 +118,13 @@ class DictionaryRepository @androidx.annotation.VisibleForTesting internal const
     private fun clearCorruptedData() = clearCorruptedStore(context)
 
     companion object {
-    /**
-     * Clear corrupted dictionary data files
-     */
     @androidx.annotation.VisibleForTesting
     internal fun clearCorruptedStore(context: Context) {
         try {
             if (BuildConfig.DEBUG) Log.w("DictionaryRepository", "Clearing corrupted dictionary data...")
 
-            // The store is filesDir + PERSONAL_DICTIONARY_UTIL_DIR (DictionaryManager.doInitBasl
-            // passes getFilesDir(); PersonalDictionaryUtil.setupPduDir appends the directory), and
-            // its files are the extension-less LoadConfig names. This used to resolve
-            // getDir(...) = app_<name> (creating it as a side effect) and look for *.json, so it
-            // deleted nothing. It deletes user data: only those named store files, never the
-            // directory or anything else in it.
+            // The store is filesDir + PERSONAL_DICTIONARY_UTIL_DIR holding the extension-less
+            // LoadConfig names. This deletes user data: only those files, never the directory.
             val dataDir = File(
                 context.filesDir,
                 PersonalDictionaryUtil.PERSONAL_DICTIONARY_UTIL_DIR.trimStart('/')
@@ -178,18 +145,15 @@ class DictionaryRepository @androidx.annotation.VisibleForTesting internal const
     }
     }
 
-    /**
-     * Get all entries (both personal words and substitutions) for a locale
-     */
+    /** Words and shortcuts for [locale] ("" or "all" for every locale), sorted by display key. */
     override suspend fun getAllEntries(locale: String): List<DictionaryEntry> = withContext(Dispatchers.IO) {
         val actualLocale = if (locale.isEmpty() || locale == "all") "" else locale
 
         val entries = mutableListOf<DictionaryEntry>()
 
         try {
-            // A manager nobody has loaded has no words to list: the screen would read as empty.
+            // An unloaded manager lists nothing, so the screen would read as empty.
             ensureLoaded()
-            // Get word substitutions
             val substitutions = personalDictManager.getWordsForLocale(actualLocale, true) ?: emptyList()
             entries.addAll(substitutions.mapNotNull { item ->
                 try {
@@ -210,7 +174,6 @@ class DictionaryRepository @androidx.annotation.VisibleForTesting internal const
                 }
             })
 
-            // Get personal words
             val personalWords = personalDictManager.getWordsForLocale(actualLocale, false) ?: emptyList()
             entries.addAll(personalWords.mapNotNull { item ->
                 try {
@@ -220,7 +183,7 @@ class DictionaryRepository @androidx.annotation.VisibleForTesting internal const
 
                     DictionaryEntry(
                         word = word,
-                        shortcut = null, // Personal words have no shortcut
+                        shortcut = null,
                         locale = actualLocale,
                         fixedCase = fixedCase
                     )
@@ -234,27 +197,21 @@ class DictionaryRepository @androidx.annotation.VisibleForTesting internal const
             if (BuildConfig.DEBUG) Log.e("DictionaryRepository", "Error loading entries", e)
         }
 
-        // Sort by display key
         entries.sortedBy { it.displayKey.lowercase() }
     }
 
-    /**
-     * Get all available locales that have dictionary entries
-     */
+    /** Locales with entries, led by "" (all languages) when there are several. */
     override suspend fun getLocales(): List<String> = withContext(Dispatchers.IO) {
         try {
             val treeSet = LocaleUtil.getAvailableLocaleStrings(context)
             val list = mutableListOf<String>()
 
-            // Add "All languages" if multiple locales exist
             if (treeSet.size > 1) {
-                list.add("") // Empty string represents "All languages"
+                list.add("")
             }
 
-            // Add all locales
             list.addAll(treeSet)
 
-            // If empty, add default locale
             if (list.isEmpty()) {
                 list.add(Locale.getDefault().toString())
             }
@@ -266,9 +223,6 @@ class DictionaryRepository @androidx.annotation.VisibleForTesting internal const
         }
     }
 
-    /**
-     * Add a new entry (personal word or substitution)
-     */
     override suspend fun addEntry(entry: DictionaryEntry): Result<Unit> = withContext(Dispatchers.IO) {
         try {
             if (!ensureLoaded()) return@withContext Result.failure(Exception("Dictionary not loaded"))
@@ -276,7 +230,6 @@ class DictionaryRepository @androidx.annotation.VisibleForTesting internal const
             val locale = if (entry.locale.isEmpty()) PersonalDictionaryConstants.LOCALE_ALL else entry.locale
 
             val success = if (entry.isSubstitution) {
-                // Add word substitution
                 personalDictManager.addWordSubstitution(
                     entry.word,
                     entry.shortcut!!,
@@ -284,7 +237,7 @@ class DictionaryRepository @androidx.annotation.VisibleForTesting internal const
                     entry.fixedCase
                 )
             } else {
-                // Add personal word (shortcut = word)
+                // A personal word is stored as a shortcut for itself.
                 personalDictManager.addWordSubstitution(
                     entry.word,
                     entry.word,
@@ -294,7 +247,7 @@ class DictionaryRepository @androidx.annotation.VisibleForTesting internal const
             }
 
             if (success) {
-                personalDictManager.save() // Save
+                personalDictManager.save()
                 Result.success(Unit)
             } else {
                 Result.failure(Exception("Failed to add entry"))
@@ -305,9 +258,6 @@ class DictionaryRepository @androidx.annotation.VisibleForTesting internal const
         }
     }
 
-    /**
-     * Update an existing entry
-     */
     override suspend fun updateEntry(
         oldEntry: DictionaryEntry,
         newEntry: DictionaryEntry
@@ -320,7 +270,6 @@ class DictionaryRepository @androidx.annotation.VisibleForTesting internal const
                 if (newEntry.locale.isEmpty()) PersonalDictionaryConstants.LOCALE_ALL else newEntry.locale
 
             val success = if (newEntry.isSubstitution) {
-                // Update word substitution
                 personalDictManager.updateOrAddWordSubstitution(
                     oldEntry.word,
                     oldEntry.shortcut ?: oldEntry.word,
@@ -330,7 +279,6 @@ class DictionaryRepository @androidx.annotation.VisibleForTesting internal const
                     newEntry.fixedCase
                 )
             } else {
-                // Update personal word
                 personalDictManager.updateOrAddWordSubstitution(
                     oldEntry.word,
                     oldEntry.word,
@@ -342,7 +290,7 @@ class DictionaryRepository @androidx.annotation.VisibleForTesting internal const
             }
 
             if (success) {
-                personalDictManager.save() // Save
+                personalDictManager.save()
                 Result.success(Unit)
             } else {
                 Result.failure(Exception("Failed to update entry"))
@@ -353,17 +301,13 @@ class DictionaryRepository @androidx.annotation.VisibleForTesting internal const
         }
     }
 
-    /**
-     * Delete an entry
-     */
     override suspend fun deleteEntry(entry: DictionaryEntry): Result<Unit> = withContext(Dispatchers.IO) {
         try {
-            // removeWordSubstitution only logs when the manager is not loaded, so without this a
-            // delete that did nothing was reported as done.
+            // removeWordSubstitution silently does nothing on an unloaded manager.
             if (!ensureLoaded()) return@withContext Result.failure(Exception("Dictionary not loaded"))
             val shortcut = if (entry.isSubstitution) entry.shortcut!! else entry.word
             personalDictManager.removeWordSubstitution(shortcut, entry.word)
-            personalDictManager.save() // Save
+            personalDictManager.save()
             Result.success(Unit)
         } catch (e: Exception) {
             if (BuildConfig.DEBUG) Log.e("DictionaryRepository", "Error deleting entry", e)
@@ -371,9 +315,6 @@ class DictionaryRepository @androidx.annotation.VisibleForTesting internal const
         }
     }
 
-    /**
-     * Check if DictionaryManager is loaded
-     */
     fun isLoaded(): Boolean {
         return personalDictManager.getWordSubstitutions() != null || personalDictManager.getPersonalDictionary() != null
     }

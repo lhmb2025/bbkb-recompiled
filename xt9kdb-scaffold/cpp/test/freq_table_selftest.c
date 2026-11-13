@@ -1,15 +1,7 @@
-/* freq_table_selftest.c — the generated frequency table (src/kdb_freq_en.h) reads back exactly
- * what src/kdb_freq_en_gen.py wrote.
- *
- * Since C-6 (2026-11 performance audit) the words are one NUL-separated string blob plus a
- * uint32_t offset per word instead of 59,878 pointers (59,929 relocations, a 1.44 MB .rela.dyn).
- * An offset table can go wrong silently (an off-by-one makes every word the tail of its
- * neighbour and the binary searches still "work"), so this checks the layout and recomputes the
- * generator's FNV-1a hash over every word, zipf and rank from the C arrays. Negative control: the
- * same hash with one word read one byte late must differ.
- *
- * Usage (from cpp/): freq_table_selftest          — run by run_tests.sh
- */
+/* freq_table_selftest.c: src/kdb_freq_en.h reads back exactly what kdb_freq_en_gen.py wrote. The
+ * words are one NUL-separated blob plus u32 offsets, which can go wrong silently (an off-by-one
+ * still binary-searches), so this checks the layout and recomputes the generator's FNV-1a hash.
+ * Negative control: one word read a byte late must differ. Run by run_tests.sh from cpp/. */
 #include <stdio.h>
 #include <string.h>
 #include "../src/kdb_freq_en.h"

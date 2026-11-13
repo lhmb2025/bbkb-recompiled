@@ -44,24 +44,12 @@ import dev.bbkb.ime.keyboard.inputboard.BoardHeightPolicy;
 import dev.bbkb.ime.keyboard.inputboard.BoardKeyboardFactory;
 
 /**
- * Main emoji picker view that displays emoji categories, pages, and controls.
- * Provides a tabbed interface with category tabs, paginated emoji grids, and functional
- * keys (delete, alphabet switch). Integrates with the unified input board system and
- * supports both legacy emoji data and modern Emojibase data sources.
- *
- * <h2>Search</h2>
- *
- * <p>The query lives in {@link EmojiSearchQuery} and has two origins. On a physical keyboard the
- * user types into the open board: {@code KeyEventProcessor} routes each printable key to
- * {@link #appendToQuery} and Backspace to {@link #backspaceQuery}. The first character turns the
- * tab row into the search field (search icon, the query, a clear button where the delete key was)
- * and the page dots show only while the results span more than one page; from the second
- * character the results overlay shows the matches whatever tab was current; a pick inserts the
- * emoji and leaves the query alone; Backspace on the
- * last character, the clear button, or closing the board ends it and the tab row returns. On an
- * on-screen keyboard, with Dynamic Search on, {@link #onEmojiOpened} seeds the query from the word
- * being composed and today's behaviour stands: results on the Recents tab only, and a pick replaces
- * or appends the word. Owner decisions, 2026-11-02.
+ * The emoji board: category tabs, paged emoji grids, delete and ABC keys.
+ * Search ({@link EmojiSearchQuery}) has two origins. Physical keyboard: keys route to
+ * {@link #appendToQuery}/{@link #backspaceQuery}; the first character turns the tab row into a search
+ * field, from the second the overlay shows matches on any tab, a pick keeps the query. On-screen with
+ * Dynamic Search: {@link #onEmojiOpened} seeds it from the composing word; results on Recents only,
+ * and a pick replaces or appends the word.
  */
 
 public final class EmojiPalettesView extends LinearLayout implements TabLayout.OnTabSelectedListener, EmojiPageKeyboardView.OnEmojiKeyListener {
@@ -86,10 +74,7 @@ public final class EmojiPalettesView extends LinearLayout implements TabLayout.O
     /** The category pager's spare page views; outlives the adapter's detach on every close. */
     private final EmojiPagerAdapter.RetainedPagePool pagePool = new EmojiPagerAdapter.RetainedPagePool();
 
-    /**
-     * The pager's events, forwarded to the methods below (which tests also call directly). A
-     * position outside the pages is ignored: ViewPager2 can report one while it has no pages.
-     */
+    /** Pager events, forwarded below. Out-of-range positions are ignored: ViewPager2 reports them with no pages. */
     private final ViewPager2.OnPageChangeCallback pageChangeCallback = new ViewPager2.OnPageChangeCallback() {
         @Override
         public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
@@ -133,8 +118,7 @@ public final class EmojiPalettesView extends LinearLayout implements TabLayout.O
     /** One skin-tone popup view for the whole board (pager and overlay), inflated on the first long-press. */
     private final EmojiPageKeyboardView.SharedMoreKeysPanel moreKeysPanel = new EmojiPageKeyboardView.SharedMoreKeysPanel();
 
-    // The search query and its machinery (no on-screen text field: a physical keyboard types into
-    // the board, the on-screen keyboard seeds it from the composing word).
+    // Search query state (there is no on-screen text field).
     private final EmojiSearchQuery query = new EmojiSearchQuery();
     private android.os.Handler searchHandler;
     private Runnable pendingSearchRunnable;
@@ -142,17 +126,13 @@ public final class EmojiPalettesView extends LinearLayout implements TabLayout.O
     private boolean attached = false;
     private static final long SEARCH_DEBOUNCE_MS = 150;
 
-    // Search/Recents overlay - separate from category ViewPager to avoid state conflicts
+    // Search/Recents overlay, separate from the category pager to avoid state conflicts.
     private EmojiSearchOverlayView searchOverlay;
     private FrameLayout pagerContainer;
 
     /**
-     * A swipe on the Recents overlay pages the categories like a swipe on any category page: the
-     * overlay stands in for the Recents tab's own page, so the swipe drags the category pager behind
-     * it (ViewPager2's fake drag, which settles exactly as a real drag does) and the overlay follows
-     * the page it covers ({@link #onPageScrolled}). Landing on the first category selects its tab,
-     * which hides the overlay, as a tap on that tab does. Only while the overlay shows the Recents
-     * tab: a typed query's results stay put whatever the swipe.
+     * A swipe on the Recents overlay fake-drags the category pager behind it, and the overlay follows
+     * ({@link #onPageScrolled}); landing on the next category hides it. Only for Recents, not typed results.
      */
     private final EmojiSearchOverlayView.PageHandoff recentsHandoff = new EmojiSearchOverlayView.PageHandoff() {
         @Override
@@ -200,14 +180,15 @@ public final class EmojiPalettesView extends LinearLayout implements TabLayout.O
         this(context, attributeSet, R.attr.emojiPalettesViewStyle);
     }
 
+    /** @param i default style attribute */
     public EmojiPalettesView(Context context, AttributeSet attributeSet, int i) throws Resources.NotFoundException {
         super(context, attributeSet, i);
         this.currentPagePosition = 0;
         this.keyboardActionListener = KeyboardActionListenerInterface.EMPTY;
         Resources resources = context.getResources();
         this.layoutParams = new EmojiPalettesLayoutParams(resources);
-        // The emoji pages are pager-height, not keyboard-height, so this passes its own geometry;
-        // the themed context (C7) comes from the shared factory like every other board.
+        // Emoji pages are pager-height, so this passes its own geometry; the themed context comes
+        // from the shared factory.
         KeyboardBuilder c0978hM6751b = BoardKeyboardFactory.builder(
                 context,
                 SubtypeManager.getInstance().getEmojiSubtype(),
@@ -232,9 +213,8 @@ public final class EmojiPalettesView extends LinearLayout implements TabLayout.O
 
     @Override // android.widget.LinearLayout, android.view.View
     protected void onMeasure(int i, int i2) {
-        // Note the shape difference from the other boards: super runs FIRST (the pager and tab
-        // strip need their own measure pass) and there is no EXACTLY re-measure afterwards. Only
-        // the sizing rule is shared.
+        // Unlike other boards, super runs first (the pager and tabs need their own measure pass)
+        // and there is no EXACTLY re-measure.
         super.onMeasure(i, i2);
         setMeasuredDimension(
                 BoardHeightPolicy.measuredWidth(this),
@@ -242,14 +222,9 @@ public final class EmojiPalettesView extends LinearLayout implements TabLayout.O
     }
 
     /**
-     * Appends the tab for category {@code categoryId}. Like the TabHost it replaces, the first tab
-     * added is selected without a callback (no listener is registered yet).
-     *
-     * <p>The icon is a custom view so it keeps the old tab's sizing: inflated without a parent it
-     * fills the tab's width and centres the icon at its intrinsic size. Its id is
-     * {@code android:id/icon}, which is where TabLayout applies {@link TabLayout#setTabIconTint}.
-     * The tab view is made unfocusable (physical keys must keep reaching the board's query, never
-     * a tab) and silent like the old icon view: the board plays its own feedback on a tab change.
+     * Appends the tab for {@code categoryId}; the first is selected with no callback (no listener yet).
+     * The icon is a custom view with id {@code android:id/icon} (where TabLayout applies its tint). Tabs are
+     * unfocusable, so physical keys reach the query, and silent: the board plays its own feedback.
      */
     private void addCategoryTab(int categoryId) {
         TabLayout.Tab tab = this.tabLayout.newTab();
@@ -274,10 +249,8 @@ public final class EmojiPalettesView extends LinearLayout implements TabLayout.O
             addCategoryTab(categoryId);
         }
         this.tabLayout.addOnTabSelectedListener(this);
-        // The BB10 strip: no shipped style turns it on (EmojiPalettesView.LXX sets it false). The
-        // TabWidget drew its background plus a strip either side of the selected tab; TabLayout
-        // draws one indicator under the selected tab, so the nearest equivalent is that background
-        // with the strip drawable as the selected-tab indicator.
+        // Category indicator strip (no shipped style enables it): the background plus the strip
+        // drawable as the selected-tab indicator.
         if (this.categoryIndicatorEnabled) {
             if (this.categoryIndicatorDrawable != 0) {
                 this.tabLayout.setBackgroundResource(this.categoryIndicatorDrawable);
@@ -285,7 +258,7 @@ public final class EmojiPalettesView extends LinearLayout implements TabLayout.O
             if (this.categoryIndicatorBackground != 0) {
                 android.graphics.drawable.Drawable strip =
                         getContext().getDrawable(this.categoryIndicatorBackground);
-                // Colour 0 leaves the drawable untinted, as the TabWidget drew it.
+                // Colour 0 leaves the drawable untinted.
                 this.tabLayout.setSelectedTabIndicatorColor(android.graphics.Color.TRANSPARENT);
                 this.tabLayout.setSelectedTabIndicator(strip);
                 if (strip != null) {
@@ -293,26 +266,24 @@ public final class EmojiPalettesView extends LinearLayout implements TabLayout.O
                 }
             }
         }
-        // Initialize pager container and overlay first (before viewPager setup)
+        // Before the pager setup.
         this.pagerContainer = findViewById(R.id.emoji_pager_container);
         this.searchOverlay = findViewById(R.id.emoji_search_overlay);
 
         this.pagerAdapter = new EmojiPagerAdapter(this.categoryManager, this, this.moreKeysPanel);
         this.viewPager = (ViewPager2) findViewById(R.id.emoji_keyboard_pager);
-        // One page either side, three spare views, no cache or prefetch: what the v1 pager kept.
+        // One page either side, three spare views, no cache or prefetch.
         EmojiPagerAdapter.configure(this.viewPager, this.pagePool);
         this.viewPager.setAdapter(this.pagerAdapter);
         this.viewPager.registerOnPageChangeCallback(this.pageChangeCallback);
 
-        // Apply layout params to pagerContainer (FrameLayout parent of viewPager)
-        // since pagerContainer is the direct child of the LinearLayout
+        // The container, not the pager, is the LinearLayout's child.
         this.layoutParams.applyToPagerContainer(this.pagerContainer);
 
         this.pageIndicatorView = (EmojiCategoryPageIndicatorView) findViewById(R.id.emoji_category_page_id_view);
         this.pageIndicatorView.setIndicatorRatios(this.indicatorRadiusRatio, this.indicatorGapRatio);
         this.layoutParams.applyToIndicatorView(this.pageIndicatorView);
 
-        // Connect overlay to key listener and page indicator
         if (this.searchOverlay != null) {
             this.searchOverlay.setOnKeyEventListener(this);
             this.searchOverlay.setPageHandoff(this.recentsHandoff);
@@ -337,25 +308,17 @@ public final class EmojiPalettesView extends LinearLayout implements TabLayout.O
 
         applyColors();
 
-        // Initialize dynamic search infrastructure
         initSearch();
     }
 
-    /**
-     * Initialize the search infrastructure (background executor, handler and emoji data
-     * provider). There is no on-screen search bar: a physical keyboard types into the board, the
-     * on-screen keyboard seeds the query from the composing word.
-     */
+    /** Sets up the search handler, warms the emoji data and shows recents if starting on Recents. */
     private void initSearch() {
-        // Use main looper handler for UI updates
         searchHandler = new android.os.Handler(android.os.Looper.getMainLooper());
 
-        // Warm the process-wide provider off the UI thread. getSharedLoaded()
-        // double-checked-locks its own parse, so this does not duplicate it (audit IB-3); the
-        // result is not kept in a field, which would pin a released dataset (audit P-2).
+        // getSharedLoaded() locks its own parse, so this cannot duplicate it. The result is not
+        // kept: a field would pin a released dataset.
         searchExecutor().execute(() -> EmojibaseDataProvider.getSharedLoaded(getContext()));
 
-        // Show recents in the overlay if we start on the recents/search category
         updateRecentsForCategory(categoryManager.getCurrentCategoryId());
     }
 
@@ -372,16 +335,12 @@ public final class EmojiPalettesView extends LinearLayout implements TabLayout.O
         super.onDetachedFromWindow();
         attached = false;
 
-        // Clean up to prevent memory leaks
         if (pendingSearchRunnable != null && searchHandler != null) {
             searchHandler.removeCallbacks(pendingSearchRunnable);
             pendingSearchRunnable = null;
         }
 
-        // Shutdown executor gracefully. searchExecutor() recreates it if the view is
-        // attached again - initSearch() only runs from onFinishInflate(), so a
-        // detach/re-attach without re-inflation used to kill emoji search for the rest
-        // of the view's life (audit IB-13).
+        // searchExecutor() recreates it on re-attach (initSearch() runs only from onFinishInflate).
         if (searchExecutor != null) {
             if (!searchExecutor.isShutdown()) {
                 searchExecutor.shutdown();
@@ -390,10 +349,7 @@ public final class EmojiPalettesView extends LinearLayout implements TabLayout.O
         }
     }
 
-    /**
-     * The background search executor, created on demand. Never returns a shut-down
-     * executor.
-     */
+    /** The background search executor, created on demand; never a shut-down one. */
     private ExecutorService searchExecutor() {
         if (searchExecutor == null || searchExecutor.isShutdown()) {
             searchExecutor = Executors.newSingleThreadExecutor();
@@ -421,29 +377,22 @@ public final class EmojiPalettesView extends LinearLayout implements TabLayout.O
         pendingSearchRunnable = null;
     }
 
-    /**
-     * Perform search on background thread to keep UI responsive.
-     * Results are posted back to main thread. The query is never empty: a search is only
-     * scheduled for two or more characters ({@link EmojiSearchQuery#isSearchable()}).
-     */
+    /** Searches in the background and posts results to the main thread; the query has 2+ characters. */
     private void performSearchAsync(String queryText, int generation) {
         if (!attached) {
             return;
         }
 
         searchExecutor().execute(() -> {
-            // Guard: Don't process if view is detached
             if (!attached) {
                 return;
             }
 
-            // Perform search on background thread
             List<EmojiData> results =
                     EmojibaseDataProvider.getSharedLoaded(getContext()).searchEmojis(queryText);
 
-            // Post results to main thread
             postToMainThread(() -> {
-                if (!attached) return;  // Double-check after post
+                if (!attached) return;
                 // The query changed while this search ran (shortened, cleared, or retyped): drop it.
                 if (generation != query.generation()) return;
                 showSearchResults(results);
@@ -475,9 +424,8 @@ public final class EmojiPalettesView extends LinearLayout implements TabLayout.O
     }
 
     /**
-     * Search results in the overlay. With no results, a typed query shows an empty page under
-     * its field (so the user sees the query failed rather than the tab behind it); the on-screen
-     * dynamic-search query hides the overlay and the category pager shows, as before.
+     * Search results in the overlay. With none, a typed query shows an empty page (so the failure is
+     * visible), and an editor query hides the overlay to show the category pager.
      */
     private void showSearchResults(List<EmojiData> results) {
         if (!overlayMayShow()) {
@@ -497,10 +445,8 @@ public final class EmojiPalettesView extends LinearLayout implements TabLayout.O
     }
 
     /**
-     * While the search field is up the page dots are for the results only: drawn when they span
-     * more than one page (owner decision 2026-11-03), blank for a single page, an empty page or no
-     * results yet. The indicator row itself stays, background and all, so the board keeps its
-     * height and colour; the tab row's own dots return with the tab row ({@link #updatePageIndicator}).
+     * With the search field up, dots show only for multi-page results, else blank. The row itself stays
+     * so the board keeps its height; tab dots return with the tab row ({@link #updatePageIndicator}).
      */
     private void updateDotsForTypedQuery() {
         if (pageIndicatorView == null || !query.isTypedInBoard()) {
@@ -516,10 +462,8 @@ public final class EmojiPalettesView extends LinearLayout implements TabLayout.O
     }
 
     /**
-     * Whether the overlay may change now. A typed query shows its results whatever tab was
-     * current when typing began (owner decision 2026-11-02). The on-screen dynamic-search query
-     * keeps today's rule and only changes the overlay while the Recents/search category (0) is
-     * current, so delayed results do not land on a tab the user has moved to.
+     * Whether the overlay may change now: always for a typed query; for an editor query only on
+     * Recents (0), so delayed results do not land on a tab the user moved to.
      */
     private boolean overlayMayShow() {
         if (searchOverlay == null) {
@@ -529,14 +473,9 @@ public final class EmojiPalettesView extends LinearLayout implements TabLayout.O
         return query.isTypedInBoard() || categoryManager.getCurrentCategoryId() == 0;
     }
 
-    // ==================== Typed query (physical keyboard) ====================
-
     /**
-     * A hardware key typed while the board is open, routed here by {@code KeyEventProcessor}.
-     * The first character turns the tab row into the search field; from the second character the
-     * page shows the matches. Space is a space, so a two-word query is allowed.
-     *
-     * @return false only for empty input; the caller treats true as "the board took the key"
+     * A hardware key typed with the board open (from {@code KeyEventProcessor}); space is allowed.
+     * @return false only for empty input; true means the board took the key
      */
     public boolean appendToQuery(CharSequence chars) {
         if (chars == null || chars.length() == 0) {
@@ -552,9 +491,7 @@ public final class EmojiPalettesView extends LinearLayout implements TabLayout.O
     }
 
     /**
-     * Hardware Backspace while the board is open. Removes the last character of a typed query;
-     * removing the only one ends the query and the tab row returns.
-     *
+     * Hardware Backspace with the board open; removing the last character ends the query.
      * @return false when there is no typed query, so the key passes through to the editor
      */
     public boolean backspaceQuery() {
@@ -599,8 +536,7 @@ public final class EmojiPalettesView extends LinearLayout implements TabLayout.O
             searchOverlay.hide();
         }
         updatePageIndicator();
-        // Back to the tab that was current before the first letter: the tabs were hidden
-        // throughout, so it is the current category still.
+        // The tabs were hidden throughout, so the current category is still the pre-query tab.
         updateRecentsForCategory(categoryManager.getCurrentCategoryId());
     }
 
@@ -641,14 +577,9 @@ public final class EmojiPalettesView extends LinearLayout implements TabLayout.O
         tabRow.setVisibility(VISIBLE);
     }
 
-    // ==================== Query from the editor (on-screen dynamic search) ====================
-
     /**
-     * The board was opened from the on-screen keyboard with Dynamic Search on: the word being
-     * composed becomes the query. Two or more characters search; fewer show recents.
-     *
-     * <p>Every call supersedes the previous query: shorter text cancels a debounced search, and a
-     * search already running for an older query has its results dropped.
+     * Opened on-screen with Dynamic Search: the composing word becomes the query (2+ chars search,
+     * fewer show recents). Each call supersedes the last; stale results are dropped.
      */
     public void onEmojiOpened(String composingText) {
         if (query.isTypedInBoard()) {
@@ -663,28 +594,17 @@ public final class EmojiPalettesView extends LinearLayout implements TabLayout.O
         }
     }
 
-    /**
-     * Check if dynamic search is currently active: a query from the editor that is long enough to
-     * search on. A pick then replaces or appends the composing word.
-     */
+    /** An editor query long enough to search; a pick then replaces or appends the composing word. */
     public boolean isDynamicSearchActive() {
         return query.isFromEditor() && query.isSearchable();
     }
 
-    /**
-     * Check if emoji replace mode is enabled (vs append mode).
-     */
     private boolean isReplaceMode() {
         SettingsValues settings = SettingsManager.getInstance().getSettingsValues();
         return settings != null && settings.isEmojiSearchReplaceText;
     }
 
-    /**
-     * Refresh the recents overlay when the visible category changes.
-     * Recents are shown in the overlay whenever we land on the Recents/Search
-     * category (index 0). In dynamic-search mode an active query will replace the
-     * recents shortly afterwards via the debounced search.
-     */
+    /** Shows recents in the overlay on category 0; an active dynamic query replaces them once debounced. */
     private void updateRecentsForCategory(int categoryId) {
         if (categoryId == 0) {
             showRecents();
@@ -698,31 +618,28 @@ public final class EmojiPalettesView extends LinearLayout implements TabLayout.O
 
     @Override // TabLayout.OnTabSelectedListener
     public void onTabUnselected(TabLayout.Tab tab) {
+        // onTabSelected handles the change.
     }
 
-    /** Ignored: TabHost.setCurrentTab of the current tab did not call its listener either. */
+    /** Ignored: reselecting the current tab does nothing. */
     @Override // TabLayout.OnTabSelectedListener
     public void onTabReselected(TabLayout.Tab tab) {
     }
 
     /**
-     * A different tab became current, by a tap or from {@link #setCategory} (TabLayout.selectTab
-     * calls the listener, as TabHost.setCurrentTab did, and this keeps everything that ran on it).
-     * Re-entry is stopped where it always was: the category is already current when setCategory
-     * selects the tab, so the nested setCategory below changes nothing.
+     * A tab became current, by a tap or from {@link #setCategory}. Re-entry is harmless: the category
+     * is already current when setCategory selects the tab.
      */
     private void onTabChanged(int iM6661a) {
         AudioAndHapticFeedbackManager.getInstance().performAudioAndHapticFeedback(-21, this);
 
-        // The on-screen switch only (owner decision 2026-11-03): with a physical keyboard the
-        // query is what the user types into the board, never the word being composed.
+        // On-screen only: with a physical keyboard the query is what is typed into the board.
         SettingsValues sv = SettingsManager.getInstance().getSettingsValues();
         boolean dynamicSearch = sv != null && sv.isEmojiDynamicSearchEnabled
                 && DeviceProfile.isOnScreenKeyboardVisible();
         boolean isSearchCategory = iM6661a == 0;
 
         if (!isSearchCategory) {
-            // Leaving search/recents tab — hide overlay
             if (searchOverlay != null && searchOverlay.isOverlayVisible()) {
                 searchOverlay.hide();
             }
@@ -730,7 +647,7 @@ public final class EmojiPalettesView extends LinearLayout implements TabLayout.O
                 query.clear();
             }
         } else if (dynamicSearch) {
-            // Returning to first tab in dynamic mode — re-trigger search if composing text exists
+            // Back on Recents in dynamic mode: search the composing text again.
             String composing = KeyboardSwitcher.getInstance().getComposingText();
             onEmojiOpened(composing);
         }
@@ -738,10 +655,10 @@ public final class EmojiPalettesView extends LinearLayout implements TabLayout.O
         setCategory(iM6661a, false);
         updatePageIndicator();
 
-        // Refresh recents overlay when tab changes
         updateRecentsForCategory(iM6661a);
     }
 
+    /** @param z true while switching to the emoji board */
     public void setSwitchingToEmoji(boolean z) {
         this.pagerAdapter.setSwitchingToEmoji(z);
     }
@@ -783,10 +700,7 @@ public final class EmojiPalettesView extends LinearLayout implements TabLayout.O
         }
     }
 
-    /**
-     * While the Recents overlay is up it moves with the Recents page it covers, so a swipe from
-     * Recents slides it off as the first category slides in (and back if the swipe is let go).
-     */
+    /** The Recents overlay moves with the Recents page it covers during a swipe. */
     private void followRecentsPage(int position, int offsetPixels) {
         if (this.searchOverlay == null) {
             return;
@@ -803,10 +717,8 @@ public final class EmojiPalettesView extends LinearLayout implements TabLayout.O
     }
 
     /**
-     * A remembered skin tone changed with the board open (the long-press popup, or a pick that
-     * forgot one): that emoji's keys are rebuilt in the category pages and the overlay and drawn
-     * with the tone at once, so a tap on them inserts it. Posted: this comes from inside the popup's
-     * key release, and re-setting the page under that popup must wait until it has closed.
+     * A remembered tone changed with the board open: rebuilds that emoji's keys in pages and overlay.
+     * Posted: this runs inside the popup's key release, and the page must not change until it closes.
      */
     @Override // dev.bbkb.ime.keyboard.inputboard.emoji.EmojiPageKeyboardView.OnEmojiKeyListener
     public void onToneMemoryChanged(String emoji) {
@@ -842,8 +754,7 @@ public final class EmojiPalettesView extends LinearLayout implements TabLayout.O
 
     @Override // dev.bbkb.ime.keyboard.inputboard.emoji.EmojiPageKeyboardView.OnEmojiKeyListener
     public void onEmojiKeyReleased(Key key) {
-        // On-screen dynamic search: replace or append the composing word, and the query ends. A
-        // typed query stays, so a second emoji from the same results is one more tap.
+        // Editor query: replace or append the composing word and end the query. A typed query stays.
         if (isDynamicSearchActive()) {
             if (isReplaceMode()) {
                 KeyboardSwitcher.getInstance().clearComposingText();
@@ -853,8 +764,7 @@ public final class EmojiPalettesView extends LinearLayout implements TabLayout.O
             query.clear();
         }
 
-        // Recents and the remembered skin tone are persisted to prefs: an incognito field leaves
-        // no trace there.
+        // Recents and tones persist to prefs, so incognito fields skip them.
         if (!KeyboardSwitcher.getInstance().isNoPersonalizedLearning()) {
             this.pagerAdapter.addToRecents(key.getKeySpecOutputText());
             if (EmojiToneMemory.onEmojiPicked(PrefsManager.INSTANCE.getPrefs(getContext()), key.getKeySpecOutputText())) {
@@ -875,6 +785,7 @@ public final class EmojiPalettesView extends LinearLayout implements TabLayout.O
         this.keyboardActionListener.onReleaseKey(iM6232c, false);
     }
 
+    /** @param z true to enable hardware-accelerated drawing */
     public void setHardwareAcceleratedDrawingEnabled(boolean z) {
         if (z) {
             setLayerType(View.LAYER_TYPE_HARDWARE, null);
@@ -897,41 +808,33 @@ public final class EmojiPalettesView extends LinearLayout implements TabLayout.O
         }
     }
 
-    /**
-     * Re-attaches the pager adapter after {@link #detachPagerAdapter()}, at the page the user left.
-     * The open path calls it on every open; it used to hide inside the delete-icon update.
-     */
+    /** Re-attaches the pager adapter after {@link #detachPagerAdapter()}, at the page the user left. */
     public void attachPagerAdapter() {
-        // The built pages are kept across closes; drop only what went stale meanwhile (a skin tone
-        // remembered since they were built, recents rewritten from outside) before rebinding.
+        // Pages are kept across closes; drop only what went stale before rebinding.
         this.categoryManager.prepareForOpen();
         this.viewPager.setAdapter(this.pagerAdapter);
-        // Not smooth: ViewPager2's one-argument setCurrentItem animates, and the v1 pager jumped
-        // here (it did not animate before its first layout after setAdapter).
+        // Not smooth: jump straight to the page (the one-argument setCurrentItem animates).
         this.viewPager.setCurrentItem(this.currentPagePosition, false);
-        // The Recents overlay keeps the grid it was last built with, and picks made on Recents
-        // only reach the preference when the board leaves it (here: on the last close), so
-        // reopening on Recents showed the recents from before them.
+        // The overlay keeps its last grid, and Recents picks reach the preference only on close,
+        // so rebuild it or a reopen on Recents shows stale recents.
         updateRecentsForCategory(this.categoryManager.getCurrentCategoryId());
     }
 
     public void detachPagerAdapter() {
-        // Already detached: KeyboardSwitcher.leaveEmojiModeInternal() calls this on every
-        // main-keyboard setKeyboard once the board has been inflated, open or not.
+        // Often already detached: leaveEmojiModeInternal() calls this on every main setKeyboard.
         if (this.viewPager.getAdapter() == null) {
             return;
         }
         this.pagerAdapter.commitPendingRecents();
         final int position = this.viewPager.getCurrentItem();
-        // The pages go to pagePool, which survives this (RecyclerView would otherwise clear it).
-        // Nothing is laid out until the next attach has set the remembered page, so that open
-        // binds only the pages around it.
+        // Pages go to pagePool, which survives this. Nothing lays out until the next attach sets
+        // the remembered page, so that open binds only the pages around it.
         this.viewPager.setAdapter(null);
-        // Pages are no longer rebuilt on every open (audit P-16): keep what the next open binds
-        // first; prepareForOpen() drops them if a skin tone was remembered meanwhile.
+        // Keep what the next open binds first; prepareForOpen() drops stale pages.
         this.categoryManager.retainPagesAround(position);
     }
 
+    /** @param interfaceC0976f the key action listener */
     public void setKeyboardActionListener(KeyboardActionListenerInterface interfaceC0976f) {
         this.keyboardActionListener = interfaceC0976f;
         this.deleteKeyTouchListener.setActionListener(this.keyboardActionListener);
@@ -945,6 +848,10 @@ public final class EmojiPalettesView extends LinearLayout implements TabLayout.O
         emojiCategoryPageIndicatorView.setPageInfo(this.categoryManager.getCurrentPageCount(), this.categoryManager.getCurrentPageInCategory(), 0.0f);
     }
 
+    /**
+     * @param i the category id
+     * @param z true to apply even if already current
+     */
     private void setCategory(int i, boolean z) {
         int iM6664b = this.categoryManager.getCurrentCategoryId();
         if (iM6664b != i || z) {
@@ -967,8 +874,7 @@ public final class EmojiPalettesView extends LinearLayout implements TabLayout.O
     private void applyColors() {
         if (!KeyboardColorManager.INSTANCE.isInitialized()) return;
         boolean modernBoards = KeyboardColorManager.styleSpec().getModernBoards();
-        // Modern boards: the board shares the keyboard's background surface so the
-        // emoji key caps (keyColor) read against it; legacy keeps the flat keyColor panel.
+        // Modern boards sit on the keyboard background so emoji caps (keyColor) read against it.
         int panelColor = modernBoards
                 ? KeyboardColorManager.INSTANCE.getBackgroundColor()
                 : KeyboardColorManager.INSTANCE.getKeyColor();
@@ -985,8 +891,7 @@ public final class EmojiPalettesView extends LinearLayout implements TabLayout.O
             KeyboardColorManager.INSTANCE.getIconColor(0.3f),
             panelColor
         );
-        // The search field: same surface as the tab row it replaces; the search icon in the
-        // accent (modern) or icon colour, the clear button like the delete key it stands in for.
+        // Search field: the tab row's surface; icon in accent (modern) or icon colour; clear button like delete.
         if (this.searchFieldRow != null) {
             this.searchFieldRow.setBackgroundColor(panelColor);
             KeyboardColorManager.INSTANCE.tint(this.searchIcon,
@@ -997,9 +902,8 @@ public final class EmojiPalettesView extends LinearLayout implements TabLayout.O
             this.clearSearchButton.setForeground(
                     modernBoards ? KeyboardColorManager.pressedHighlight() : null);
         }
-        // The category icons: the icon colour on the selected tab, the secondary icon colour on
-        // the rest. Re-applied with every colour change (colorObserver), so a theme or dynamic
-        // colour change re-tints them; selection only switches state within this list.
+        // Category icons: icon colour when selected, secondary otherwise. Re-applied on every colour
+        // change (colorObserver).
         this.tabLayout.setTabIconTint(new android.content.res.ColorStateList(
                 new int[][] { { android.R.attr.state_selected }, {} },
                 new int[] {
@@ -1009,11 +913,8 @@ public final class EmojiPalettesView extends LinearLayout implements TabLayout.O
     }
 
     /**
-     * Whether the palettes are actually on screen. This is a <em>view</em> question and is
-     * deliberately not the board's "is emoji open" answer — that lives in the KeyboardState
-     * machine and is asked through {@link EmojiBoardController} (§5.6 item 4). This view used to
-     * implement UnifiedInputBoardComponent itself, which meant the two questions were conflated
-     * and had to be special-cased apart again in UnifiedInputBoardManager.
+     * Whether the palettes are on screen. A view question, not "is emoji open", which KeyboardState
+     * answers through {@link EmojiBoardController}.
      */
     public boolean isPalettesVisible() {
         return isShown() && this.viewPager != null && this.viewPager.getVisibility() == VISIBLE;
@@ -1056,6 +957,7 @@ public final class EmojiPalettesView extends LinearLayout implements TabLayout.O
             };
         }
 
+        /** @param interfaceC0976f the key action listener */
         public void setActionListener(KeyboardActionListenerInterface interfaceC0976f) {
             this.keyboardActionListener = interfaceC0976f;
         }

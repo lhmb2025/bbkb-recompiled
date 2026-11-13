@@ -20,7 +20,7 @@ class VoiceLanguageDisplayNameTest {
 
     @Test
     fun aCodeWithAScript_namesTheScriptAndTheCountry() {
-        // Split by hand, "Hant" used to be taken for the country and shown as "(HANT)".
+        // Split by hand, "Hant" would be taken for the country and shown as "(HANT)".
         val name = voiceLanguageDisplayName("zh-Hant-TW")
         assertFalse(name, name.contains("HANT", ignoreCase = true))
         assertTrue(name, name.contains("繁體"))

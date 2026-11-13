@@ -40,14 +40,17 @@ public final class FlickSuggestionAnimationView extends AppCompatTextView implem
         this.mShadowColor = ContextCompat.getColor(getContext(), R.color.flick_suggestion_shadow_color);
     }
 
-    @Override // android.animation.Animator.AnimatorListener
+    @Override
     public void onAnimationCancel(Animator animator) {
+        // onAnimationEnd follows and does the cleanup.
     }
 
-    @Override // android.animation.Animator.AnimatorListener
+    @Override
     public void onAnimationRepeat(Animator animator) {
+        // The animation does not repeat.
     }
 
+    /** @param i the text color */
     public void animateSelection(TextView textView, int i, ViewParent viewParent) {
         if (viewParent == null) {
             return;
@@ -107,12 +110,12 @@ public final class FlickSuggestionAnimationView extends AppCompatTextView implem
         }
     }
 
-    @Override // android.animation.Animator.AnimatorListener
+    @Override
     public void onAnimationStart(Animator animator) {
         setVisibility(View.VISIBLE);
     }
 
-    @Override // android.animation.Animator.AnimatorListener
+    @Override
     public void onAnimationEnd(Animator animator) {
         setVisibility(View.GONE);
         AnimatorSet animatorSet = this.mAnimatorSet;

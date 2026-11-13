@@ -13,11 +13,8 @@ import java.io.File
 import java.util.concurrent.Executor
 
 /**
- * [ClipboardHistoryStore]: the JSON file format and the AtomicFile round trip.
- *
- * The format half is strict about the envelope (not JSON, not an object, another version: nothing
- * loads) and forgiving per entry (one malformed row is dropped, the rest load), the same split
- * `DistributionManifestParser` makes for the same reason.
+ * [ClipboardHistoryStore]'s JSON format and AtomicFile round trip: strict about the envelope (nothing loads),
+ * forgiving per entry (a malformed row is dropped), as `DistributionManifestParser` is.
  */
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [34], manifest = Config.NONE)
@@ -84,9 +81,8 @@ class ClipboardHistoryStoreTest {
     }
 
     /**
-     * The bytes Gson's JsonObject.toString wrote for [entries] before the switch to org.json
-     * (compact, no HTML escaping, a missing label left out). The new writer produces the same
-     * bytes, and they read back to the same entries.
+     * The bytes Gson wrote for [entries] (compact, no HTML escaping, missing label omitted); the org.json
+     * writer matches them.
      */
     private val gsonWritten =
         """{"version":1,"entries":[""" +

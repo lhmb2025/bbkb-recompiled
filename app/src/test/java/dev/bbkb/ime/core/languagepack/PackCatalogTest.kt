@@ -13,23 +13,15 @@ import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
 
 /**
- * [PackCatalog] against the **real** `dist/manifest.json`.
- *
- * The merge is pure, so the whole interesting surface — 109 published packs, four of which are
- * regional variants of a shipped language, four more whose region exists only in the catalogue —
- * can be tested by describing a phone in three lines and asserting what the screen would show.
- * A hand-written fixture would lose exactly the cases this feature exists for.
- *
- * Robolectric because [PackFixtures] parses the manifest with the framework's `org.json`,
- * an empty stub on the plain JVM.
+ * [PackCatalog] against the real `dist/manifest.json` (regional variants, catalogue-only regions)
+ * merged with a described phone. Robolectric because [PackFixtures] parses with `org.json`, an
+ * empty stub on the plain JVM.
  */
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [34], manifest = Config.NONE)
 class PackCatalogTest {
 
     private val packs: Packs = PackFixtures.realPacks()
-
-    // ── The catalogue itself ──────────────────────────────────────────────────────────────────
 
     @Test
     fun theRealManifestCarriesEveryPublishedPack() {
@@ -44,8 +36,7 @@ class PackCatalogTest {
 
     @Test
     fun theFourTableLocalePacksArePublishedUnderTheirOwnLocale() {
-        // These are the packs whose region is in the catalogue and NOT in the file name. If they
-        // ever stop being published this way, installing them correctly becomes impossible.
+        // Packs whose region is in the catalogue but not the file name; install depends on it.
         for (locale in PackFixtures.TABLE_LOCALE_PACKS) {
             val entry = packs.forLocale(locale)
             assertNotNull("$locale is not in the catalogue", entry)
@@ -59,14 +50,11 @@ class PackCatalogTest {
         assertEquals(PackFixtures.VARIANTS, variants)
     }
 
-    // ── Merging with an empty phone ───────────────────────────────────────────────────────────
-
     @Test
     fun withNothingInstalledEveryPackIsAvailableAndVariantsAreNested() {
         val catalog = PackCatalog.from(packs, InstalledPacks())
 
-        // One row per language: the four variants are nested under de/fr/it/nl rather than
-        // standing next to them.
+        // One row per language: the four variants nest under de/fr/it/nl.
         assertEquals(PackFixtures.PUBLISHED_ITEM_COUNT - 4, catalog.rows.size)
         assertEquals(PackFixtures.PUBLISHED_ITEM_COUNT, catalog.items.size)
         for ((variant, base) in PackFixtures.VARIANTS) {
@@ -94,7 +82,7 @@ class PackCatalogTest {
         assertEquals("Afrikaans", names.first())
     }
 
-    // ── Merging with the fixture phone: shipped en_US, custom jv, active de_CH ─────────────────
+    // Fixture phone: shipped en_US, custom jv, active de_CH.
 
     private val phone = InstalledPacks(
         shipped = setOf("en_US"),
@@ -150,9 +138,7 @@ class PackCatalogTest {
         val catalog = PackCatalog.from(packs, phone)
         val german = catalog.rows.single { it.locale == "de" }
 
-        // German itself is not installed in this fixture, but its Swiss variant is - so the row
-        // belongs in "Installed" (something of this language is here) and in "Available"
-        // (the base dictionary still is not).
+        // Only the Swiss variant is installed, so German is in both "Installed" and "Available".
         assertTrue(german.hasAnythingInstalled)
         assertTrue(german.hasAnythingAvailable)
         assertTrue(catalog.installedRows.contains(german))
@@ -176,8 +162,6 @@ class PackCatalogTest {
         // Every row except the two whose only pack is installed.
         assertEquals(catalog.rows.size - 2, catalog.availableRows.size)
     }
-
-    // ── Live download state ───────────────────────────────────────────────────────────────────
 
     @Test
     fun downloadStateWinsOverAvailableButNeverOverInstalled() {
@@ -213,8 +197,6 @@ class PackCatalogTest {
         assertEquals(0f, (welsh.base.state as PackState.Downloading).progress, 0.0001f)
     }
 
-    // ── Provenance and the empty case ─────────────────────────────────────────────────────────
-
     @Test
     fun provenanceComesFromTheManifest() {
         val manifest = PackFixtures.realManifest().withProvenance(fromCache = true, fetchedAt = 1_700_000_000_000L)
@@ -234,8 +216,7 @@ class PackCatalogTest {
 
     @Test
     fun aVariantWhoseBaseIsNotPublishedBecomesARowOfItsOwn() {
-        // Not a state the published manifest has ever been in - and exactly why it is asserted:
-        // dropping such an entry would make a pack silently invisible.
+        // Never published, but dropping such an entry would make a pack silently invisible.
         val orphan = PackFixtures.entry("xx_YY", name = "Orphan", group = "xx", size = 10L)
         val withOrphan = packs.copy(items = packs.items + orphan)
 

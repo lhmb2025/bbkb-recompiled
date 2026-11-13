@@ -7,31 +7,21 @@ import kotlin.math.max
 import kotlin.math.min
 
 /**
- * Turns the live CKB MotionEvent stream into completed [GestureTrace]s and detects tap-and-hold,
- * for the new gesture engine. Single-finger: it tracks the first pointer of a contact and ignores
- * the rest.
- *
- * Coordinates are normalized **isotropically** by the larger of the device's X/Y motion ranges, so
- * distances and angles are correct for [GestureClassifier] (the same space the Gesture Lab uses).
- *
- * Step 1 wiring is **observer-only**: [BlackBerryIME][dev.bbkb.ime.core.BlackBerryIME]
- * feeds events here for every CKB contact (the arbiter is the sole CKB engine), and the listener logs the verdict without
- * changing behavior. The recorder never consumes events.
+ * Turns the CKB MotionEvent stream into completed [GestureTrace]s and detects hold. Tracks one
+ * pointer per contact. Coordinates are normalized isotropically by the larger of the device's
+ * X/Y motion ranges. Never consumes events.
  */
 class GestureTraceRecorder(
     private val configProvider: () -> GestureConfig,
     private val listener: Listener,
     handler: Handler? = null,
-    /**
-     * The normalisation reference for a contact whose InputDevice reports no motion ranges: the
-     * touch keypad frame's larger dimension (1080 on the KEY2's pad).
-     */
+    /** Normalization reference when the InputDevice reports no motion ranges (keypad's larger dimension). */
     private val fallbackReference: () -> Float = {
         dev.bbkb.ime.core.device.touch.TouchKeypadGeometry.current().normalizationReference()
     },
 ) {
     interface Listener {
-        /** A completed contact (UP). [previousTap] is the prior completed trace, for double-tap. */
+        /** [previousTap] is the prior completed trace, for double-tap. */
         fun onTraceComplete(trace: GestureTrace, previousTap: GestureTrace?)
 
         /** Fired once mid-contact when a stationary touch passes the hold threshold. */
@@ -45,16 +35,11 @@ class GestureTraceRecorder(
     private var activePointerId = MotionEvent.INVALID_POINTER_ID
     private var holdFired = false
 
-    /** The contact has moved past the tap slop and its hold timer is already cancelled. */
+    /** Moved past the tap slop; hold timer already cancelled. */
     private var holdCancelled = false
     private var prevTrace: GestureTrace? = null
 
-    /**
-     * Audit GD-1: the config snapshot for the current contact. [configProvider] used to be called
-     * on every ACTION_MOVE sample even though the config cannot change mid-stroke; the production
-     * provider reads SharedPreferences, so a swipe cost hundreds of locked map reads and
-     * allocations for one float. Snapshotted at DOWN and reused for the whole contact.
-     */
+    /** Snapshotted at DOWN: the provider reads SharedPreferences, too costly per MOVE sample. */
     private var contactConfig: GestureConfig? = null
 
     private fun cfg(): GestureConfig = contactConfig ?: configProvider().also { contactConfig = it }
@@ -69,10 +54,8 @@ class GestureTraceRecorder(
 
     fun onMotionEvent(event: MotionEvent) {
         when (event.actionMasked) {
-            // A secondary finger landing (POINTER_DOWN) starts a fresh trace on that finger:
-            // chained flicks overlap contacts, and ignoring the new finger recorded its whole
-            // stroke as nothing while the old finger's stub completed as a bogus zero-move Tap.
-            // The in-flight previous trace is deliberately abandoned -- the newest contact wins.
+            // POINTER_DOWN starts a fresh trace (chained flicks overlap contacts); the in-flight
+            // trace is abandoned so the newest contact wins and no bogus zero-move Tap completes.
             MotionEvent.ACTION_DOWN, MotionEvent.ACTION_POINTER_DOWN -> start(event)
             MotionEvent.ACTION_MOVE -> move(event)
             MotionEvent.ACTION_UP -> end(event)
@@ -92,14 +75,9 @@ class GestureTraceRecorder(
         val dev = event.device
         val rx = dev?.getMotionRange(MotionEvent.AXIS_X)?.range ?: 0f
         val ry = dev?.getMotionRange(MotionEvent.AXIS_Y)?.range ?: 0f
-        // Synthetic events (gesture-replay rig) and a null/range-less InputDevice leave the
-        // ranges at 0 — without a real reference the trace stays in raw pad pixels, every
-        // normalized threshold in GestureConfig is trivially cleared, and any straight
-        // word-swipe misclassifies as a ballistic flick (the replay corpus lost every
-        // straight leftward word — of/tea/its/our/poor — to Act(delete_word) this way).
-        // Fall back to the keypad frame's larger dimension (TouchKeypadGeometry: the KEY2's
-        // 1080, or the profile's declared pad range on a Titan whose pad events are
-        // synthesised), which is what a real capacitive keypad's motion range reports anyway.
+        // Synthetic events and range-less devices report 0; without a reference the trace stays
+        // in raw pixels and every straight word-swipe clears the thresholds as a flick. Fall
+        // back to the keypad frame's larger dimension (what a real pad's range reports).
         ref = max(max(rx, ry), 1f)
         if (ref <= 1f) ref = fallbackReference()
         raw.clear()
@@ -115,8 +93,8 @@ class GestureTraceRecorder(
         if (idx < 0) return
         addPoint(event, idx, first = false)
         if (!holdFired && !holdCancelled && excursion() > cfg().tapSlop) {
-            cancelHoldTimer() // moved too far — no longer a hold candidate
-            holdCancelled = true // the excursion only grows: every later sample would cancel again
+            cancelHoldTimer()
+            holdCancelled = true // excursion only grows
         }
     }
 

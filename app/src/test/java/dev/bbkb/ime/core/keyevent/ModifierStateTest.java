@@ -13,20 +13,10 @@ import org.robolectric.RobolectricTestRunner;
 import org.robolectric.annotation.Config;
 
 /**
- * {@link ModifierState}, the one modifier query API (Phase 1b).
- *
- * <p>These are the answers the six former state holders used to give in four different spellings.
- * The cases that matter most are the ones where the spellings disagreed:
- *
- * <ul>
- *   <li>the symbol board's Alt page, which is a {@link KeyCharacterInterpreter.MetaMask} adding
- *       {@code META_ALT_ON} to the interpreted state — right for typing an Alt-layer symbol, and
- *       the reason Sym paging opened the emoji board when a chord read it (KEY2, 2026-09-21);</li>
- *   <li>the two caps-lock bits, {@code 0x100}/{@code 0x800} in the span tracker's encoding and
- *       {@link KeyEvent#META_CAPS_LOCK_ON} (0x100000) in the KeyEvent encoding, which a deleted
- *       {@code MetaState.fromSpans} once silently mixed;</li>
- *   <li>"Alt is held", which has three witnesses that do not always agree.</li>
- * </ul>
+ * {@link ModifierState}, the one modifier query API. Pins the cases where spellings disagree: the
+ * symbol board's Alt page (a {@link KeyCharacterInterpreter.MetaMask} adding {@code META_ALT_ON},
+ * Alt for typing but not for chords), the two caps-lock bits ({@code 0x100}/{@code 0x800} in span
+ * encoding vs {@link KeyEvent#META_CAPS_LOCK_ON}), and the three witnesses to "Alt is held".
  */
 @RunWith(RobolectricTestRunner.class)
 @Config(sdk = 34, manifest = Config.NONE)
@@ -36,8 +26,6 @@ public class ModifierStateTest {
         return new KeyEvent(0L, 0L, KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_A, 0, metaState,
                 /* deviceId */ 0, /* scanCode */ 0, /* flags */ 0, InputDevice.SOURCE_KEYBOARD);
     }
-
-    // ==================== nothing set ====================
 
     @Test
     public void anEmptyStateHasNoModifiers() {
@@ -51,8 +39,6 @@ public class ModifierStateTest {
         assertFalse(state.isAnyKeyHeld());
         assertEquals(0, state.getChordMetaState());
     }
-
-    // ==================== Shift: held / sticky / locked ====================
 
     @Test
     public void aHeldShiftIsHeldAndActiveButNeitherStickyNorLocked() {
@@ -78,9 +64,9 @@ public class ModifierStateTest {
     }
 
     /**
-     * Phase 1h: a Shift key still physically down after being chorded with Alt is CONSUMED. The
-     * span still says Shift, so Shift is active, but the key is neither held (not DOWN) nor released,
-     * it is not sticky until it is let go, and it is not a pending manual shift.
+     * A Shift key still down after being chorded with Alt is consumed: the span says Shift is
+     * active, but the key is neither held nor released, not sticky until let go, and not a
+     * pending manual shift.
      */
     @Test
     public void aConsumedShiftIsActiveButNeitherHeldNorReleasedNorSticky() {
@@ -169,8 +155,6 @@ public class ModifierStateTest {
         assertTrue("tapped and released is a manual shift", unmasked.isManualShiftPending());
     }
 
-    // ==================== Alt: held / sticky / locked ====================
-
     @Test
     public void aHeldAltIsHeldAndActive() {
         ModifierState state = ModifierState.builder()
@@ -220,12 +204,9 @@ public class ModifierStateTest {
         assertFalse(eventOnly.isAltKeyDown());
     }
 
-    // ==================== the chord / character split ====================
-
     /**
-     * The 2026-09-21 regression, pinned on the API itself: the symbol board's Alt page adds
-     * {@code META_ALT_ON} to the <em>interpreted</em> state. That is Alt for typing and not Alt
-     * for chording, and {@link ModifierState} must answer the two questions differently.
+     * The symbol board's Alt page adds {@code META_ALT_ON} to the interpreted state: Alt for
+     * typing, not for chording, and {@link ModifierState} must answer the two differently.
      */
     @Test
     public void theSymbolBoardAltPageIsAltForCharactersAndNotForChords() {
@@ -252,7 +233,7 @@ public class ModifierStateTest {
         assertTrue(heldAlt.isAltActiveForCharacter());
     }
 
-    /** A locked Alt is a chord Alt too — the mask covers the span tracker's 0x200. */
+    /** A locked Alt is a chord Alt too: the mask covers the span tracker's 0x200. */
     @Test
     public void aLockedAltCountsForAChord() {
         ModifierState locked = ModifierState.builder()
@@ -283,15 +264,13 @@ public class ModifierStateTest {
         assertEquals(KeyEvent.META_SHIFT_ON | KeyEvent.META_ALT_ON, both.getChordMetaState());
     }
 
-    // ==================== Sym ====================
-
     @Test
     public void theHeldKeySetAnswersWhetherSymIsHeld() {
         assertTrue(ModifierState.builder().symKeyHeld(true).build().isSymHeld());
         assertFalse(ModifierState.none().isSymHeld());
     }
 
-    /** {@code META_SYM_ON} also means Sym — the KEY2's Sym key just never sets it. */
+    /** {@code META_SYM_ON} also means Sym; the KEY2's Sym key just never sets it. */
     @Test
     public void theEventSymBitAlsoMeansSym() {
         assertTrue(ModifierState.ofEventMeta(KeyEvent.META_SYM_ON).isSymHeld());
@@ -307,8 +286,6 @@ public class ModifierStateTest {
         assertTrue(state.isSymActive());
     }
 
-    // ==================== Ctrl ====================
-
     @Test
     public void ctrlComesFromItsOneOwnerOrFromTheEvent() {
         assertTrue(ModifierState.builder().ctrlActive(true).build().isCtrlActive());
@@ -317,8 +294,8 @@ public class ModifierStateTest {
     }
 
     /**
-     * And the span tracker's "CTRL_SPAN" is not Ctrl: key code 63 is {@code KEYCODE_SYM} and the
-     * flag it sets is {@code META_SYM_ON}. Reading it as Ctrl is the confusion this API ends.
+     * The span tracker's "CTRL_SPAN" is not Ctrl: key code 63 is {@code KEYCODE_SYM} and the flag
+     * it sets is {@code META_SYM_ON}.
      */
     @Test
     public void theSpanTrackersCtrlSpanIsReallySym() {
@@ -329,8 +306,6 @@ public class ModifierStateTest {
         assertFalse(state.isCtrlActive());
     }
 
-    // ==================== held keys ====================
-
     @Test
     public void theHeldKeyCountIsCarriedThrough() {
         ModifierState state = ModifierState.builder().keysHeld(2).build();
@@ -339,8 +314,6 @@ public class ModifierStateTest {
         assertTrue(state.isAnyKeyHeld());
         assertFalse(ModifierState.none().isAnyKeyHeld());
     }
-
-    // ==================== equivalence with the expressions it replaced ====================
 
     /** {@code ModifierState.ofEvent(e).isAltHeld()} is {@code KeyEvent.isAltPressed()}. */
     @Test
@@ -363,8 +336,7 @@ public class ModifierStateTest {
     }
 
     /**
-     * {@code KeyEventConverter.isAltActive} used to read
-     * {@code keyEvent.isAltPressed() || (i & 2) == 2 || (i & 512) == 512}. Same answer, over
+     * Same answer as {@code keyEvent.isAltPressed() || (i & 2) == 2 || (i & 512) == 512} over
      * every combination of the bits either spelling can see.
      */
     @Test
@@ -386,10 +358,8 @@ public class ModifierStateTest {
     }
 
     /**
-     * The one place the new mask is wider than the old literals: a left/right Alt bit with no
-     * {@code META_ALT_ON}. {@link KeyEvent} normalizes its meta state and never delivers that, so
-     * it cannot be reached from a real event — recorded here so the widening is a decision on the
-     * page rather than a surprise later.
+     * The mask is wider than those literals only for a left/right Alt bit without
+     * {@code META_ALT_ON}, which a normalized {@link KeyEvent} never delivers. Recorded deliberately.
      */
     @Test
     public void theWidenedAltMaskOnlyDiffersForAMetaStateKeyEventNeverProduces() {

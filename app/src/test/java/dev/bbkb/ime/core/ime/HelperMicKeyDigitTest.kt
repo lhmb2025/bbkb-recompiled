@@ -6,11 +6,9 @@ import org.junit.Assert.assertTrue
 import org.junit.Test
 
 /**
- * A mic key the BBKB helper caught that doubles as a digit (the Q25's 0 key, as on a BlackBerry)
- * types the digit in a number, phone or date field instead of starting voice input. The ordinary
- * key path has the same rule in `KeyEventConverter` (pinned by `BoardKeyArmingTest`); the helper's
- * own handler had none, which did not matter while the helper only caught a profile's mic key
- * behind the "Unified key mapping" switch.
+ * Pins that a helper-caught mic key that doubles as a digit (the Q25's 0 key) types the digit in a
+ * number, phone or date field instead of starting voice input, as `KeyEventConverter` does on the
+ * ordinary key path (`BoardKeyArmingTest`).
  */
 class HelperMicKeyDigitTest {
 

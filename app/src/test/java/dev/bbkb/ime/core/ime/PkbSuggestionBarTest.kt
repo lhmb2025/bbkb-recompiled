@@ -32,11 +32,10 @@ import org.robolectric.util.ReflectionHelpers
 import java.util.Locale
 
 /**
- * "Show the suggestion bar" (Physical keyboard settings). The one predicate,
- * [SettingsValues.isPkbSuggestionBarHidden], across the device shapes it must and must not apply
- * to; and what it switches off: the effective unified-input-menu setting in both of its readers,
- * and the Latin strip in [InputViewCoordinator], while a Chinese or Japanese candidate strip keeps
- * working. The aux bar's own backstop is covered in `AuxBarManagerTransitionTest`.
+ * Pins [SettingsValues.isPkbSuggestionBarHidden] across device shapes, and what it switches off:
+ * the effective unified-input-menu setting in both readers and the Latin strip in
+ * [InputViewCoordinator], while a CJK candidate strip keeps working. The aux bar's backstop is
+ * in `AuxBarManagerTransitionTest`.
  */
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [34], manifest = Config.NONE)
@@ -61,8 +60,7 @@ class PkbSuggestionBarTest {
         ime = Mockito.mock(BlackBerryIME::class.java)
         coordinator = InputViewCoordinator(ime)
         coordinator.setAuxBarManager(auxBar)
-        // initialize() would also resolve the views through the IME; these two are all the
-        // predicates under test read.
+        // Skips initialize(); these two fields are all the predicates under test read.
         ReflectionHelpers.setField(coordinator, "settingsManager", SettingsManager.getInstance())
         ReflectionHelpers.setField(coordinator, "subtypeManager", SubtypeManager.getInstance())
     }
@@ -70,8 +68,7 @@ class PkbSuggestionBarTest {
     @After
     fun tearDown() {
         SettingsValues.setInputMenuRequestedByKey(false)
-        // As SettingsValuesSnapshotTest: SettingsManager is a process singleton whose preference
-        // listener would otherwise outlive this class.
+        // SettingsManager is a process singleton whose preference listener would outlive this class.
         val manager = SettingsManager.getInstance()
         runCatching { manager.unregisteredListener() }
         listOf("settingsValues", "sharedPreferences", "deviceProfile", "listeners").forEach {
@@ -85,8 +82,6 @@ class PkbSuggestionBarTest {
         DeviceProfile.initialize(null)
     }
 
-    // ── fixtures ────────────────────────────────────────────────────────────
-
     private fun prefs() = PrefsManager.getPrefs(context)
 
     private fun pkbDevice() = DeviceProfile.installForTest(
@@ -98,10 +93,9 @@ class PkbSuggestionBarTest {
     )
 
     /**
-     * Settings for a plain text field. The bar above a physical keyboard's keys hides when
-     * "Show suggestions" and "Enable unified input menu" are both off (the separate "Show the
-     * suggestion bar" switch is gone): [showBar] false turns both off, true turns suggestions
-     * on and leaves the menu setting as the test set it, null leaves both untouched.
+     * Settings for a plain text field. The PKB bar hides when "Show suggestions" and the unified
+     * input menu are both off: [showBar] false turns both off, true turns suggestions on and leaves
+     * the menu setting alone, null leaves both untouched.
      */
     private fun load(showBar: Boolean?, editorLocale: Locale = Locale.US): SettingsValues {
         if (showBar == false) {
@@ -142,8 +136,6 @@ class PkbSuggestionBarTest {
         return handler
     }
 
-    // ── the predicate ───────────────────────────────────────────────────────
-
     @Test
     fun theShippedDefaultLeavesTheBarAndTheMenuAlone() {
         val sv = load(showBar = null)
@@ -164,9 +156,8 @@ class PkbSuggestionBarTest {
     }
 
     /**
-     * Landscape, a per-app or debug forced on-screen keyboard and an open input board all reach
-     * this through refreshOnScreenKeyboardShowing(), which changes without a settings reload: the
-     * same SettingsValues has to follow it.
+     * Landscape, a forced on-screen keyboard and an open input board reach this through
+     * refreshOnScreenKeyboardShowing() without a settings reload; the same SettingsValues must follow.
      */
     @Test
     fun anOnScreenKeyboardBringsTheBarBackWithoutAReload() {
@@ -183,10 +174,9 @@ class PkbSuggestionBarTest {
     }
 
     /**
-     * An input board opened over the physical keys (clipboard, cursor control, number pad)
-     * counts as the on-screen keyboard for everything else, but not here. Otherwise the menu
-     * would come up above the board, and the board shortcut's second press would take the menu's
-     * route instead of the board's own toggle and fail to close it.
+     * An input board over the physical keys counts as the on-screen keyboard elsewhere but not
+     * here; otherwise the menu would come up above the board and the board shortcut's second press
+     * would take the menu's route and fail to close it.
      */
     @Test
     fun anInputBoardOpenOverThePhysicalKeysKeepsTheBarHidden() {
@@ -228,8 +218,6 @@ class PkbSuggestionBarTest {
         assertFalse(SettingsManager.isUimEnabled(context))
     }
 
-    // ── InputViewCoordinator ────────────────────────────────────────────────
-
     @Test
     fun withTheBarShownATextFieldGetsTheLatinStrip() {
         // The control for the next test: the fixture alone does not refuse the strip.
@@ -253,8 +241,7 @@ class PkbSuggestionBarTest {
 
     @Test
     fun withTheBarHiddenAChineseOrJapaneseKeyboardKeepsItsCandidateStrip() {
-        // Suggestions and the menu both off: a Chinese or Japanese keyboard still picks its
-        // words from the candidate strip, which does not answer to "Show suggestions".
+        // A CJK keyboard still needs its candidate strip, which ignores "Show suggestions".
         for (locale in listOf("zh_CN", "ja_JP")) {
             subtype(locale)
             val sv = load(showBar = false, editorLocale = Locale.forLanguageTag(locale.replace('_', '-')))
@@ -284,12 +271,9 @@ class PkbSuggestionBarTest {
         verify(auxBar, never()).showSuggestionStrip(Mockito.any<SuggestedWords>())
     }
 
-    // ── the "Show or hide the input menu" key's override ────────────────────
-
     /**
-     * The key raised the menu over "Show the suggestion bar": both isUimEnabled readers and
-     * shouldShowUim() say on, so the board keys take the menu's route, while the bar setting
-     * itself still reads hidden and keeps the Latin strip away.
+     * The key raises the menu over a hidden bar: both isUimEnabled readers and shouldShowUim() say
+     * on, while the bar setting still reads hidden and keeps the Latin strip away.
      */
     @Test
     fun theKeysMenuCountsAsOnWithTheBarHidden() {
@@ -328,9 +312,8 @@ class PkbSuggestionBarTest {
     }
 
     /**
-     * The window coming up for the very key press that raised the menu starts the input view
-     * after it: the pre-show must not take the menu down again (with the bar hidden) or cover it
-     * with an empty strip (with the bar shown).
+     * The window shown by the key press that raised the menu starts the input view afterwards; the
+     * pre-show must not take the menu down (bar hidden) or cover it with an empty strip (bar shown).
      */
     @Test
     fun startingTheViewWithTheKeysMenuUpLeavesTheBarToIt() {
@@ -390,10 +373,8 @@ class PkbSuggestionBarTest {
     }
 
     /**
-     * With the bar shown, the strip comes back in the menu's place with the words it kept current
-     * behind the menu (owner decision 2026-11-05): any board under the menu closes, the menu comes
-     * down onto the strip, and nothing is emptied or asked for. It used to hide the bar (emptying
-     * the strip), pre-show an empty strip and ask for the words again.
+     * With the bar shown, hiding the menu brings back the strip with the words kept current behind
+     * it: any board under the menu closes, and nothing is emptied or requested again.
      */
     @Test
     fun theKeyHidesTheMenuBackToTheSuggestionStrip() {

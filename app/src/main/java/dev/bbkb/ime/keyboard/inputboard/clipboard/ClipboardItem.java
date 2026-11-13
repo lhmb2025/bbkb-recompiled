@@ -13,12 +13,8 @@ import java.util.List;
 import java.util.Objects;
 
 /**
- * One row of the clipboard board's list: a section header or a clip.
- *
- * <p>Value-typed, because {@link ClipboardAdapter} is a {@code ListAdapter}: DiffUtil decides
- * whether a row is the same row by {@link #getStableId()} and whether it needs rebinding by
- * {@link #equals}. A clip's stable id is its {@link ClipEntry#getId()} (always positive); the two
- * headers have fixed negative ids, so neither can collide with a clip.
+ * One row of the clipboard list: a section header or a clip. Value-typed for DiffUtil. A clip's
+ * stable id is its (positive) entry id; headers have fixed negative ids so they never collide.
  */
 public final class ClipboardItem {
 
@@ -32,11 +28,11 @@ public final class ClipboardItem {
 
     final int viewType;
 
-    /** The clip, for {@link #TYPE_CLIP}; null for a header. */
+    /** Null for a header. */
     @Nullable
     final ClipEntry entry;
 
-    /** The header's title, for {@link #TYPE_HEADER}; 0 for a clip. */
+    /** 0 for a clip. */
     @StringRes
     final int headerTitle;
 
@@ -62,11 +58,7 @@ public final class ClipboardItem {
         return this.stableId;
     }
 
-    /**
-     * The rows for a history: with nothing pinned, the clips alone, as the board always showed
-     * them; with pinned clips, a "Pinned" section and then a "Recent" one (its header only when
-     * there is something under it).
-     */
+    /** Headers only when something is pinned (and "Recent" only when it has rows). */
     static List<ClipboardItem> build(List<ClipEntry> pinned, List<ClipEntry> recent) {
         List<ClipboardItem> items = new ArrayList<>(pinned.size() + recent.size() + 2);
         if (!pinned.isEmpty()) {
@@ -102,10 +94,7 @@ public final class ClipboardItem {
         return Objects.hash(this.viewType, this.stableId, this.headerTitle, this.entry);
     }
 
-    /**
-     * The text of a clip's first item, or null if {@code clipData} is null, has no items, or its
-     * first item has no text. Shared with the FCC board, which reads the live clip through it.
-     */
+    /** The text of a clip's first item, or null. Also used by the FCC board. */
     public static String getTextFromClipData(ClipData clipData) {
         ClipData.Item itemAt;
         CharSequence text;

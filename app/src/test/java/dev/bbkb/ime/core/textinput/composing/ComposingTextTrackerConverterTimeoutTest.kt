@@ -19,9 +19,8 @@ import java.util.concurrent.TimeUnit
 
 /**
  * A converter language (here Korean) shows the engine's composed text, so the tracker waits for
- * it in a bounded engine query (Wave 3 Phase A). When the engine thread is busy past the bound
- * (behind a language load, in production), the unconverted text stays and the feed still reaches
- * the engine afterwards. Runs on the REAL engine looper.
+ * it in a bounded engine query. When the engine thread is busy past the bound (behind a language
+ * load), the unconverted text stays and the feed still reaches the engine. Runs on the real engine looper.
  */
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [34], manifest = Config.NONE, instrumentedPackages = ["com.blackberry.nuanceshim"])

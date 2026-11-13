@@ -50,20 +50,16 @@ public class ContactsLearningManager implements ContactsDataProvider.Listener {
     private volatile Set<String> collectingWords;
     
     /**
-     * What the keyboard last added to the engine, kept across process starts. The names live in
-     * the engine's learned-model file (category 0xFF01, alphadlm.bin), so they are still there
-     * after a restart; re-adding the whole address book on every process start held the engine
-     * lock for one long native call while the first field was starting (P-21). This file is not
-     * in any backup, as the model it describes is not.
+     * What the keyboard last added to the engine, kept across process starts: the names persist in
+     * the learned model (category 0xFF01, alphadlm.bin), and re-adding them holds the engine lock for
+     * one long native call. Not backed up, as the model it describes is not.
      */
     private static final String SYNC_STATE_PREFS = "contacts_learning";
     private static final String KEY_ADDED_FINGERPRINT = "added_fingerprint";
     private static final String KEY_ADDED_AT = "added_at";
     /**
-     * An unchanged address book is still added again after this long, for a model that lost the
-     * names without the address book changing (an imported model, a model reset, a learned-model
-     * file the engine had not saved yet when the process died). A day bounds how long such a
-     * model goes without the names; one add a day is cheap.
+     * An unchanged address book is added again after this long, for a model that lost the names
+     * (an import, a reset, an unsaved model when the process died).
      */
     static final long READD_AFTER_MS = 24L * 60 * 60 * 1000;
 
@@ -72,10 +68,8 @@ public class ContactsLearningManager implements ContactsDataProvider.Listener {
     private final Handler mainHandler = new Handler(Looper.getMainLooper());
 
     /**
-     * {@link #unregister} has run: the owning service is being destroyed. A sync that was still
-     * waiting for the engine, or queued on the executor, used to carry on afterwards and
-     * register the contacts observer on the dead service, which then stayed in memory for the
-     * life of the process and learned every later contacts change a second time.
+     * {@link #unregister} has run. A pending sync must then stop, or it registers the contacts
+     * observer on the dead service, leaking it and learning every later change twice.
      */
     private volatile boolean released;
 
@@ -95,6 +89,10 @@ public class ContactsLearningManager implements ContactsDataProvider.Listener {
         }
         SettingsManager.setHasAskedContactsDictPermission(defaultSharedPreferences, true);
         new PermissionRequestHandler(this.context, new PermissionRequestHandler.Callback() {
+            /**
+             * @param str the permission
+             * @param cVar the user's answer
+             */
             @Override
             public void onPermissionResult(String str, PermissionRequestHandler.Result cVar) {
                 SharedPreferences defaultSharedPreferences2 = PrefsManager.INSTANCE.getPrefs(ContactsLearningManager.this.context);
@@ -115,6 +113,7 @@ public class ContactsLearningManager implements ContactsDataProvider.Listener {
         this.dataProvider.release();
     }
 
+    /** @param z true if the contacts dictionary is on */
     public void setContactsDictEnabled(boolean z) {
         if (this.contactsDictEnabled != z) {
             this.contactsDictEnabled = z;
@@ -135,6 +134,7 @@ public class ContactsLearningManager implements ContactsDataProvider.Listener {
         return this.contactWords.contains(word);
     }
 
+    /** @param bVar which contacts changed */
     @Override
     public void onContactsChanged(ContactsDataProvider.ContactsType bVar) {
         if (this.contactsDictEnabled) {
@@ -149,15 +149,21 @@ public class ContactsLearningManager implements ContactsDataProvider.Listener {
         }
     }
 
+    /**
+     * @param bVar which contacts to sync
+     * @param aVar the listener to register for later changes
+     */
     private void syncContacts(final ContactsDataProvider.ContactsType bVar, final ContactsDataProvider.Listener aVar) {
         m4557aWithRetry(bVar, aVar, 0);
     }
-    
+
+    /**
+     * @param bVar which contacts to sync
+     * @param aVar the listener to register for later changes
+     */
     private void m4557aWithRetry(final ContactsDataProvider.ContactsType bVar, final ContactsDataProvider.Listener aVar, final int retryCount) {
-        // Check if NuanceSDK DLM is ready before syncing contacts. Only the keyboard adds the names
-        // to the engine; the spell checker's sync just collects them (contactWords), so it does not
-        // wait for the keyboard's engine, which is not running while another keyboard is in use.
-        // The published fact, not the engine: this runs on the main thread.
+        // Only the keyboard waits for the DLM: the spell checker's sync just collects contactWords,
+        // and the keyboard's engine may not be running. Reads the published fact: this is main.
         if (this.released) {
             return;
         }
@@ -195,6 +201,7 @@ public class ContactsLearningManager implements ContactsDataProvider.Listener {
         });
     }
 
+    /** @param bVar which contacts to learn */
         void learnAllContacts(ContactsDataProvider.ContactsType bVar) {
         final Set<String> words = ConcurrentHashMap.newKeySet();
         this.collectingWords = words;
@@ -236,9 +243,8 @@ public class ContactsLearningManager implements ContactsDataProvider.Listener {
     }
 
     /**
-     * A digest of everything one sync would add: the words in order, their batch types, and
-     * whether learning is on (with learning off the engine add is dropped, so turning it on must
-     * not look like "already added").
+     * A digest of what one sync would add: the words in order, batch types, and whether learning is
+     * on (an add with learning off is dropped, so turning it on must not look like "already added").
      */
     static String fingerprintOf(List<String[]> batches, List<ContactsDataProvider.ContactsType> types, boolean learningOn) {
         long h = 1125899906842597L;
@@ -260,18 +266,16 @@ public class ContactsLearningManager implements ContactsDataProvider.Listener {
                 || settings.getSettingsValues().isDynamicLearningEnabled;
     }
 
+    /** @param bVar which contacts to collect */
     private void collectContactsFromUri(ContactsDataProvider.ContactsType bVar, Uri uri,
             List<String[]> batches, List<ContactsDataProvider.ContactsType> types) {
         if (!PermissionUtils.checkAllPermissionsGranted(this.context, "android.permission.READ_CONTACTS")) {
-            // Without this return the query below throws SecurityException on the
-            // "Sync Contacts" executor - and SecurityException is not the SQLiteException the
-            // observer catches.
+            // Otherwise the query throws SecurityException, which the observer does not catch.
             Logger.info(TAG, "No permission to read contacts. Not adding to dynamic model");
             return;
         }
         ArrayList<String> arrayList = new ArrayList<>();
-        // WORK contacts are never returned by the data provider, so the WORK arms only ever
-        // collected an empty list.
+        // The data provider never returns WORK contacts.
         if (bVar == ContactsDataProvider.ContactsType.PERSONAL || bVar == ContactsDataProvider.ContactsType.ALL) {
             arrayList.addAll(this.dataProvider.getContactNames(ContactsDataProvider.ContactsType.PERSONAL, uri));
         }
@@ -281,6 +285,7 @@ public class ContactsLearningManager implements ContactsDataProvider.Listener {
         }
     }
 
+    /** @param list contact names or addresses */
     private static String[] splitNames(List<String> list) {
         ArrayList<String> arrayList = new ArrayList<>();
         for (String name : list) {
@@ -289,6 +294,10 @@ public class ContactsLearningManager implements ContactsDataProvider.Listener {
         return arrayList.toArray(new String[0]);
     }
 
+    /**
+     * @param list contact names or addresses
+     * @param bVar the batch's contacts type
+     */
     private void collectWords(List<String> list, ContactsDataProvider.ContactsType bVar,
             List<String[]> batches, List<ContactsDataProvider.ContactsType> types) {
         final String[] words = splitNames(list);
@@ -302,13 +311,18 @@ public class ContactsLearningManager implements ContactsDataProvider.Listener {
         }
     }
 
+    /** @param bVar the batch's contacts type */
     private void addWordsToDynamicModel(String[] words, ContactsDataProvider.ContactsType bVar) {
         if (words.length > 0 && this.context instanceof BlackBerryIME) {
             ((BlackBerryIME) this.context).getDynamicLearningManager().addContactsWords(words, bVar);
         }
     }
 
-    /** Adds the words of {@code list} (names or addresses) to the engine now, unconditionally. */
+    /**
+     * Adds the words of {@code list} (names or addresses) to the engine now, unconditionally.
+     *
+     * @param bVar the contacts type
+     */
     public void addNamesToDynamicModel(List<String> list, ContactsDataProvider.ContactsType bVar) {
         final String[] words = splitNames(list);
         final Set<String> collecting = this.collectingWords;

@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <!-- =================================================================== -->
-    <!-- Subtypes and locales — feeds the runtime subtype_* string lookups -->
-    <!-- =================================================================== -->
+    <!-- Feeds the runtime subtype_* string lookups -->
     <array name="locale_and_extra_value_to_keyboard_layout_set_map">
         <item>en_US:TrySuppressingImeSwitcher,AsciiCapable,SupportTouchPositionCorrection,EmojiCapable</item>
         <item>qwerty</item>
@@ -81,9 +79,6 @@
         <item>zh_HK_cangjie</item>
     </array>
 
-    <!-- =============================== -->
-    <!-- Symbol lists and custom pages -->
-    <!-- =============================== -->
     <string-array name="currency_array">
         <item>$</item>
         <item>¢</item>
@@ -591,12 +586,7 @@
         <item>.</item>
     </string-array>
 
-    <!-- ======================= -->
-    <!-- Settings entry values -->
-    <!-- ======================= -->
-    <!-- Shake-gesture actions. Entries are the user-visible labels; the parallel
-         prefs_shake_action_values array holds the persisted pref values, which are parsed
-         as ints by SettingsValues. Value "2" is deliberately absent: it has no action. -->
+    <!-- Values parallel prefs_shake_action_values (parsed as ints); "2" is absent: it has no action -->
     <string-array name="prefs_shake_action_options">
         <item>No action</item>
         <item>Toggle cursor control mode</item>
@@ -610,9 +600,6 @@
         <item>4</item>
     </string-array>
 
-    <!-- ============================= -->
-    <!-- Device data and corrections -->
-    <!-- ============================= -->
     <array name="touch_position_correction_data_default">
     </array>
     <array name="touch_position_correction_data_holo">
@@ -627,9 +614,6 @@
         <item>0.1522819</item>
     </array>
 
-    <!-- ======================== -->
-    <!-- Notices and decorators -->
-    <!-- ======================== -->
     <array name="text_decorator_add_to_dictionary_indicator_path">
         <item>380</item>
         <item>260</item>

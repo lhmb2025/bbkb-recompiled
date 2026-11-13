@@ -20,17 +20,8 @@ import java.util.Locale;
 import java.util.function.Function;
 
 /**
- * Keyboard data structure for displaying emoji grids.
- *
- * Extends the base Keyboard class to provide:
- * - Dynamic grid layout (auto-calculates columns based on keyboard width)
- * - Key positioning and sizing for emoji display
- * - Recents emoji management (add, remove, persist to SharedPreferences via {@link EmojiRecents})
- * - Template-based key creation from emoji strings
- * - Thread-safe key list management
- *
- * Each EmojiKeyboard represents one page of emojis arranged in a grid layout.
- * The Recents keyboard has special handling for adding/removing frequently used emojis.
+ * One page of emoji laid out as a grid, columns derived from the keyboard width and the two
+ * template keys (codes 48 and 49). The Recents page also persists itself via {@link EmojiRecents}.
  */
 
 
@@ -65,12 +56,16 @@ public final class EmojiKeyboard extends Keyboard {
     private final int keyHeight;
 
     /**
-     * The recents preference as this grid last read or wrote it, or null for a page that is not the
-     * Recents grid. The board keeps the Recents grid across closes, and this tells it whether
-     * something else (a backup restore, a reset) has rewritten the preference meanwhile.
+     * The recents preference as this grid last read or wrote it (null off Recents). The board keeps
+     * the grid across closes; this shows whether a restore or reset rewrote the preference meanwhile.
      */
     private String syncedRecentsJson;
 
+    /**
+     * @param c0965e the template keyboard
+     * @param i the maximum number of keys on the page
+     * @param i2 the category id (0 is Recents)
+     */
     public EmojiKeyboard(SharedPreferences sharedPreferences, Keyboard c0965e, int i, int i2, Locale locale) {
         super(c0965e);
         this.lock = new Object();
@@ -88,6 +83,7 @@ public final class EmojiKeyboard extends Keyboard {
         this.locale = locale;
     }
 
+    /** @param i the template key's code */
     private Key findTemplateKey(int i) {
         List<Key> keys = super.getKeys();
         for (int j = 0; j < keys.size(); j++) {
@@ -99,27 +95,20 @@ public final class EmojiKeyboard extends Keyboard {
         throw new RuntimeException("Can't find template key: code=" + i);
     }
 
-    /**
-     * A recents key for {@code emoji}: an output-text key spec (code -4, the emoji as output) over
-     * the parsed spec, on the left template key. The parse is what rejects a malformed entry.
-     */
+    /** A recents key for {@code emoji} (output-text code -4); the parse rejects a malformed entry. */
     private Key emojiKey(String emoji) {
         return new Key(this.leftTemplateKey, new MoreKeySpec(emoji, 0, -4, emoji),
                 new MoreKeySpec[] { new MoreKeySpec(emoji, false, this.locale) });
     }
 
+    /** @param str the emoji to add on the next processEmojiQueue */
     public void enqueueEmoji(String str) {
         synchronized (this.lock) {
             this.pendingEmojiQueue.addLast(str);
         }
     }
 
-    /**
-     * Applies the queued emoji and writes the grid only if its content changed. This runs on opening
-     * on Recents, leaving Recents and hiding the board, which used to rewrite emoji_recent_keys every
-     * time even with nothing queued. (A queued emoji already writes via addEmojiToRecents; the final
-     * write is kept for the changed case so the stored bytes are exactly the grid, as before.)
-     */
+    /** Applies the queued emoji and writes the grid only if its content changed. */
     public void processEmojiQueue() {
         synchronized (this.lock) {
             final List<Object> before = recentsEntries();
@@ -133,6 +122,7 @@ public final class EmojiKeyboard extends Keyboard {
         }
     }
 
+    /** @param str the emoji to move to the front */
     public void addEmojiToRecents(String str) {
         if (str == null || str.isEmpty()) {
             return;
@@ -159,7 +149,6 @@ public final class EmojiKeyboard extends Keyboard {
                 positionKey(it.next());
             }
 
-            // Fill remaining spaces with blank keys to prevent white background showing
             fillEmptySpacesInternal();
 
             if (this.isRecentsKeyboard) {
@@ -188,9 +177,7 @@ public final class EmojiKeyboard extends Keyboard {
     }
 
     /**
-     * Swaps each key {@code rebuild} returns a new key for into the same grid slot (null keeps the
-     * key). Used when a skin tone is chosen with the board open, so only the keys of that emoji
-     * change and the page itself is kept.
+     * Swaps each key {@code rebuild} returns a new key for into the same slot (null keeps the key).
      *
      * @return whether any key was replaced
      */
@@ -219,6 +206,7 @@ public final class EmojiKeyboard extends Keyboard {
         }
     }
 
+    /** @param aVar the key to place in the next free slot */
     private void positionKey(GridKey aVar) {
         aVar.setPosition(getKeyX(this.nextKeyIndex), getKeyY(this.nextKeyIndex), getKeyRight(this.nextKeyIndex), getKeyBottom(this.nextKeyIndex));
         this.nextKeyIndex++;
@@ -249,10 +237,8 @@ public final class EmojiKeyboard extends Keyboard {
     }
 
     /**
-     * A corrupted stored value must never break the board: malformed JSON loads as no recents, and an
-     * entry the key-spec parser rejects (e.g. {@code "|x"}) is skipped on its own. The grid is always
-     * padded. Nothing is written back, so the stored value is untouched until recents really change.
-     * Pinned by EmojiRecentsPersistenceTest.
+     * Never breaks on a corrupt value: malformed JSON loads as no recents and a rejected entry
+     * (e.g. {@code "|x"}) is skipped. Nothing is written back until recents really change.
      */
     public void loadRecentsFromPreferences() {
         this.syncedRecentsJson = EmojiRecents.stored(this.sharedPreferences);
@@ -271,7 +257,6 @@ public final class EmojiKeyboard extends Keyboard {
             }
             addKey(key);
         }
-        // Fill remaining grid spaces with blank keys to prevent white background showing
         fillEmptySpaces();
     }
 
@@ -287,10 +272,7 @@ public final class EmojiKeyboard extends Keyboard {
         }
     }
 
-    /**
-     * Fill remaining grid spaces with blank keys to prevent white background showing.
-     * Call this after adding all emoji keys to a search results or recents keyboard.
-     */
+    /** Pads the grid with blank keys so no empty background shows; call after adding the keys. */
     public void fillEmptySpaces() {
         synchronized (this.lock) {
             fillEmptySpacesInternal();
@@ -298,27 +280,25 @@ public final class EmojiKeyboard extends Keyboard {
     }
 
     private void fillEmptySpacesInternal() {
-        // This method should only be called when lock is already held
+        // Caller holds the lock.
         int currentKeyCount = this.keyDeque.size();
         if (currentKeyCount < this.maxKeyCount) {
-
-            // Create ClipboardItem blank key with CODE_UNSPECIFIED (-21) that won't trigger any action
+            // CODE_UNSPECIFIED (-21): a blank key that does nothing.
             MoreKeySpec blankSpec = new MoreKeySpec("", 0, -21, "");
 
-            // Fill the remaining slots with blank keys
             while (this.keyDeque.size() < this.maxKeyCount) {
-                // Pass empty array instead of null to avoid NPE in Key constructor
+                // An empty array, not null, avoids an NPE in the Key constructor.
                 Key blankKey = new Key(this.leftTemplateKey, blankSpec, new dev.bbkb.ime.keyboard.internal.MoreKeySpec[0]);
                 GridKey blankKeyWrapper = new GridKey(blankKey);
                 this.keyDeque.addLast(blankKeyWrapper);
                 positionKey(blankKeyWrapper);
             }
 
-            // Clear the cached key list so it gets regenerated with the blank keys
             this.cachedKeyList = null;
         }
     }
 
+    /** @param i the slot index (also for getKeyRight, getKeyY and getKeyBottom) */
     private int getKeyX(int i) {
         return (i % this.columnCount) * this.keyWidth;
     }
@@ -347,12 +327,15 @@ public final class EmojiKeyboard extends Keyboard {
     }
 
     @Override // dev.bbkb.ime.keyboard.Keyboard
+    /**
+     * @param i x coordinate
+     * @param i2 y coordinate
+     */
     public List<Key> getNearestKeys(int i, int i2) {
         return getKeys();
     }
 
-
-    /** A Key with a settable grid position; AOSP calls this DynamicGridKeyboard.GridKey. */
+    /** A Key with a settable grid position. */
     static final class GridKey extends Key {
 
         private int x;
@@ -363,6 +346,7 @@ public final class EmojiKeyboard extends Keyboard {
             super(key);
         }
 
+        /** @param i left, {@code i2} top, {@code i3} right, {@code i4} bottom of the hit box */
         public void setPosition(int i, int i2, int i3, int i4) {
             this.x = i;
             this.y = i2;

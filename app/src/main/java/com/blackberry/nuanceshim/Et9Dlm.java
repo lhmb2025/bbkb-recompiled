@@ -3,11 +3,9 @@ package com.blackberry.nuanceshim;
 import android.util.Log;
 
 /**
- * The engine's own learned-model export and import, through {@code libxt9trace.so}
- * ({@code et9dlm.c}): the blob exports {@code ET9AWDLMExport} and {@code ET9AWDLMImport} but
- * binds neither to Java. Package-private: {@link NuanceSDK#exportDLM()} and
- * {@link NuanceSDK#importDLM(byte[])} are the entry points, because every call into the engine
- * has to hold the engine mutex and the model has to be attached.
+ * Learned-model export and import via {@code libxt9trace.so} ({@code et9dlm.c}): the blob exports
+ * {@code ET9AWDLMExport}/{@code ET9AWDLMImport} but binds neither to Java. Call only through
+ * {@link NuanceSDK#exportDLM()} / {@link NuanceSDK#importDLM(byte[])}, which hold the engine mutex.
  *
  * <p>Results below zero mean this side could not reach the engine; zero and above are the
  * engine's own status codes.

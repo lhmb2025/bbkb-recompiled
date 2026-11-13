@@ -44,14 +44,10 @@ import androidx.compose.ui.res.stringResource
 import dev.bbkb.ime.R
 
 /**
- * The header every settings screen draws, in the shape of the Android Settings app's own
- * (SettingsLib's collapsing toolbar): a 56dp toolbar row with the back arrow, under it a title
- * block that brings the whole header to 179dp, the title in 36sp at 24dp side margins and a 32dp
- * bottom margin. As the list scrolls the block shrinks to nothing and the title crossfades into
- * the toolbar row at 20sp; the scroll behaviour snaps it open or shut.
- *
- * Drawn here rather than with Material's large flexible top app bar because the 1.4.0 release
- * keeps that one internal; the public [TopAppBarScrollBehavior] does all the scroll work.
+ * The settings header, shaped like SettingsLib's collapsing toolbar: a 56dp toolbar row over a
+ * title block (179dp total, 36sp title, 24dp sides, 32dp bottom) that shrinks on scroll while the
+ * title crossfades into the row at 20sp. Hand-drawn because Material 1.4.0 keeps its large
+ * flexible top app bar internal; [TopAppBarScrollBehavior] does the scroll work.
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -63,25 +59,16 @@ fun SettingsTopBar(
     /** The leading icon: the back arrow, or a close cross while a screen is in selection mode. */
     navigationIcon: ImageVector = ImageVector.vectorResource(R.drawable.ic_settings_m_arrow_back),
     navigationContentDescription: String = stringResource(R.string.settings_common_back),
-    /**
-     * While a screen searches, its field: it takes the toolbar row in place of the title and the
-     * actions, after the navigation icon, and the title block folds away so the results start
-     * right under it. Null the rest of the time.
-     */
+    /** Search field shown in place of title and actions while searching; the title block folds away. */
     searchField: (@Composable RowScope.() -> Unit)? = null,
-    /**
-     * False for a screen whose own content names it (About, which leads with the app's icon and
-     * name): the bar is just the toolbar row with the back arrow, it never collapses, and [title]
-     * is kept only as the pane title accessibility services announce.
-     */
+    /** False for a screen whose content names it (About): toolbar row only, [title] is just the pane title. */
     showTitle: Boolean = true,
 ) {
     val density = LocalDensity.current
     val collapseRange = if (!showTitle) 0f else with(density) {
         (SettingsTopBarExpandedHeight - SettingsTopBarCollapsedHeight).toPx()
     }
-    // Tell the behaviour how far this bar can collapse. Its nested-scroll connection then moves
-    // heightOffset between -collapseRange and 0 as the content scrolls under it.
+    // Tell the behaviour how far this bar can collapse (heightOffset moves in -collapseRange..0).
     SideEffect {
         if (scrollBehavior.state.heightOffsetLimit != -collapseRange) {
             scrollBehavior.state.heightOffsetLimit = -collapseRange
@@ -129,8 +116,7 @@ fun SettingsTopBar(
                             .weight(1f)
                             .padding(start = 20.dp, end = 16.dp)
                             .graphicsLayer { alpha = collapsedTitleAlpha }
-                            // The same words as the block title below; one heading in the tree,
-                            // not two, for accessibility and for tests that find a screen by title.
+                            // One heading in the tree, not two, for accessibility and title-finding tests.
                             .clearAndSetSemantics {},
                     )
                     actions()
@@ -161,13 +147,10 @@ fun SettingsTopBar(
 val SettingsTopBarCollapsedHeight = 56.dp
 val SettingsTopBarExpandedHeight = 179.dp
 
-/**
- * Whether a screen opens with the title block collapsed, as the Android 15+ expressive Settings
- * app does, or expanded. One switch for every screen.
- */
+/** Whether every screen opens with the title block collapsed. */
 const val SETTINGS_TOP_BAR_STARTS_COLLAPSED = false
 
-/** The scroll behaviour [SettingsTopBar] collapses with: exit until collapsed, snapping. */
+/** Exit-until-collapsed scroll behaviour for [SettingsTopBar]. */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun rememberSettingsTopBarScrollBehavior(): TopAppBarScrollBehavior {
@@ -181,11 +164,7 @@ fun rememberSettingsTopBarScrollBehavior(): TopAppBarScrollBehavior {
     return TopAppBarDefaults.exitUntilCollapsedScrollBehavior(state)
 }
 
-/**
- * The frame every settings screen shares: a scaffold on the page colour with [SettingsTopBar]
- * wired to the content's scrolling. Hand-written screens that need more of the scaffold (a
- * snackbar host, a floating action button) pass it through; everything else is the content.
- */
+/** The shared settings frame: a scaffold on the page colour with [SettingsTopBar] wired to scrolling. */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SettingsScaffold(
@@ -197,9 +176,7 @@ fun SettingsScaffold(
     floatingActionButton: @Composable () -> Unit = {},
     navigationIcon: ImageVector = ImageVector.vectorResource(R.drawable.ic_settings_m_arrow_back),
     navigationContentDescription: String = stringResource(R.string.settings_common_back),
-    /** See [SettingsTopBar]'s parameter of the same name. */
     searchField: (@Composable RowScope.() -> Unit)? = null,
-    /** See [SettingsTopBar]'s parameter of the same name. */
     showTitle: Boolean = true,
     content: @Composable (PaddingValues) -> Unit,
 ) {

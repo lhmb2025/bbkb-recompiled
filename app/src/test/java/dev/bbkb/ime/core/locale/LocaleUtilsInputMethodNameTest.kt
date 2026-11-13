@@ -5,10 +5,8 @@ import org.junit.Test
 import java.util.Locale
 
 /**
- * The engine's {@code setInputMethod} wants the VARIANT, not the locale string. With
- * "zh_TW_stroke" it stayed in Pinyin and stroke and Zhuyin keyboards produced no candidates on
- * either Chinese pack (KEY2, 2026-09-28). The Cangjie branch reads a setting and is covered on
- * the device.
+ * The engine's `setInputMethod` wants the variant ("stroke"), not the locale string
+ * ("zh_TW_stroke", which leaves it in Pinyin). The Cangjie branch reads a setting; not covered here.
  */
 class LocaleUtilsInputMethodNameTest {
 

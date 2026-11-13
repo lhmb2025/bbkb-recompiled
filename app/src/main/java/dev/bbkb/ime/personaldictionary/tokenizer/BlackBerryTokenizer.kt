@@ -5,11 +5,7 @@ import android.view.textservice.TextInfo
 import java.util.ArrayList
 import java.util.Locale
 
-/**
- * Tokenizes text into words using the ICU BreakIterator.
- *
- * Used by spell-checking and text analysis components.
- */
+/** Splits text into words with the ICU BreakIterator (spell checker). */
 class BlackBerryTokenizer(locale: Locale) {
     private val breakIterator: BreakIterator = BreakIterator.getWordInstance(locale)
 
@@ -29,8 +25,7 @@ class BlackBerryTokenizer(locale: Locale) {
         val hasNext: Boolean
         var current: Int
         var previous = 0
-        // TextInfo.getText() copies the whole text out of a SpannableStringBuilder on every
-        // call, so reading it per token made split quadratic in the text length (P-18).
+        // Read once: TextInfo.getText() copies the whole text on every call.
         val text = textInfo.text
         
         breakIterator.setText(text)

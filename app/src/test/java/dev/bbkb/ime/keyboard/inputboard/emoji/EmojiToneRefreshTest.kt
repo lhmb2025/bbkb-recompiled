@@ -26,12 +26,9 @@ import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
 
 /**
- * A skin tone chosen from the long-press popup recolours the emoji on the open board at once
- * (owner report 2026-11-06: it only did after the board was closed and reopened), in the category
- * page and in the Recents overlay, and a plain tap then inserts it. Only the keys of that emoji are
- * rebuilt: the page and its other keys are kept.
- *
- * Dataset: positions 0 Recents | 1 Smileys (3) | 2 People (3, the first with tones).
+ * A tone picked from the long-press popup recolours that emoji on the open board at once (category page and
+ * Recents overlay), and a tap then inserts it. Only that emoji's keys are rebuilt.
+ * Dataset: 0 Recents | 1 Smileys (3) | 2 People (3, the first with tones).
  */
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [34], qualifiers = "w411dp-h891dp")
@@ -171,7 +168,7 @@ class EmojiToneRefreshTest {
         assertNotSame(key, v.page(PEOPLE_START).keyboard!!.keys[0])
     }
 
-    /** A pick from the popup is a pick: it lands in Recents like a tapped key (owner report 2026-11-06). */
+    /** A pick from the popup is a pick: it lands in Recents like a tapped key. */
     @Test
     fun aPopupPickIsAddedToRecents() {
         val v = openOn(EmojiCategory.PEOPLE_BODY.id)

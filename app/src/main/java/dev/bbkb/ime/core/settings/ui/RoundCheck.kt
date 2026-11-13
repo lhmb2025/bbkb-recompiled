@@ -16,12 +16,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.res.stringResource
 import dev.bbkb.ime.R
 
-/**
- * The mark of Material's list selection pattern: a filled circle with a check on a selected row,
- * and, as these rows have no avatar for the circle to take over, an empty ring on a row that can
- * be selected. The lists that select (Learned words, User dictionary, Text shortcuts) slide the
- * column holding it in when selection starts.
- */
+/** Material list-selection mark: a filled check circle when selected, an empty ring otherwise. */
 @Composable
 fun RoundCheck(selected: Boolean, modifier: Modifier = Modifier) {
     val colors = MaterialTheme.colorScheme

@@ -23,9 +23,8 @@ import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
 
 /**
- * A new field with the same keyboard reuses the parsed layout set and the built keyboards
- * (P-12, D-10), and the keyboard cache neither keeps the app's EditorInfo nor grows without
- * bound (P-14).
+ * A new field with the same keyboard reuses the parsed layout set and built keyboards, and the
+ * keyboard cache neither keeps the app's EditorInfo nor grows without bound.
  */
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [34])

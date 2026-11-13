@@ -8,18 +8,14 @@ import org.robolectric.RobolectricTestRunner
 import org.robolectric.RuntimeEnvironment
 import org.robolectric.annotation.Config
 
-/**
- * Tests for [LanguagePackInstaller]'s pack lookup.
- */
+/** [LanguagePackInstaller]'s pack lookup. */
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [34], manifest = Config.NONE)
 class LanguagePackInstallerTest {
 
     /**
-     * The catalogs spell Indonesian `in` and Hebrew `iw`. A `Locale` built from either spelling
-     * reports `id` / `he` on Java 17 and on Android 15 (apps targeting API 35), and the lookup used
-     * to take that spelling straight to the registry: no pack, no download offer, no engine
-     * language. Two beta reports on Android 15 phones.
+     * The catalogs spell Indonesian `in` and Hebrew `iw`, but a `Locale` reports `id` / `he` on
+     * Java 17 and on Android 15 (targetSdk 35+); the lookup must map them back.
      */
     @Test
     fun retiredLanguageCodesStillFindTheirPack() {

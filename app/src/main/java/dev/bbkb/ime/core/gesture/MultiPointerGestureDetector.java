@@ -56,11 +56,7 @@ public class MultiPointerGestureDetector {
 
     private OnDoubleTapListener doubleTapListener;
 
-    /*
-     * The previous ACTION_MOVE's pointer positions, indexed by pointer id. This used to be a full
-     * MotionEvent.obtain() copy (history included) per move; only these coordinates and the
-     * pointer count were ever read off it.
-     */
+    /* The previous ACTION_MOVE's pointer positions, indexed by pointer id. */
     private static final int MAX_POINTER_ID = 32;
     private final float[] previousMoveX = new float[MAX_POINTER_ID];
     private final float[] previousMoveY = new float[MAX_POINTER_ID];
@@ -95,13 +91,8 @@ public class MultiPointerGestureDetector {
     private int activeDoubleTapPointerId = -1;
 
     /**
-     * The keypad-coordinate rectangle a double-tap must stay inside on a touch-keypad device.
-     *
-     * Audit GD-30: this was a hardcoded {@code new Rect(0, 0, 1080, 450)} with no source and no
-     * scaling — a third, different set of keypad dimensions alongside the device-config
-     * mechanism. It now derives from {@link CkbKeyGrid}, which reads the keypad coordinate-space
-     * size (1080x525 for athena) from the touch keypad's frame, shared with the arbiter and the
-     * Gesture Lab; the old 450 silently excluded the bottom of the pad.
+     * The keypad-coordinate rectangle a double-tap must stay inside on a touch-keypad device,
+     * sized from {@link CkbKeyGrid} (1080x525 on athena), shared with the arbiter and Gesture Lab.
      */
     private final Rect doubleTapRegion = new Rect(
             0, 0,
@@ -121,10 +112,18 @@ public class MultiPointerGestureDetector {
     public interface OnGestureListener {
         void onLongPress(MotionEvent motionEvent);
 
+        /**
+         * @param f x velocity in px/s (the focus x while dragging after a long press)
+         * @param f2 y velocity in px/s (the focus y while dragging after a long press)
+         */
         boolean onFling(MotionEvent motionEvent, MotionEvent motionEvent2, float f, float f2);
 
         boolean onDown(MotionEvent motionEvent);
 
+        /**
+         * @param f focus x of the event
+         * @param f2 focus y of the event
+         */
         boolean onScroll(MotionEvent motionEvent, MotionEvent motionEvent2, float f, float f2);
 
         boolean onSingleTapUp(MotionEvent motionEvent);
@@ -135,6 +134,7 @@ public class MultiPointerGestureDetector {
     
     public static class SimpleOnGestureListener implements OnDoubleTapListener, OnGestureListener {
         public void onLongPress(MotionEvent motionEvent) {
+            // No-op default.
         }
 
         public boolean onFling(MotionEvent motionEvent, MotionEvent motionEvent2, float f, float f2) {
@@ -154,6 +154,7 @@ public class MultiPointerGestureDetector {
         }
 
         public void onShowPress(MotionEvent motionEvent) {
+            // No-op default.
         }
 
         @Override // MultiPointerGestureDetector.OnDoubleTapListener
@@ -175,10 +176,8 @@ public class MultiPointerGestureDetector {
     
     private class GestureHandler extends Handler {
         GestureHandler() {
-            // Audit GD-13: the implicit super() is the deprecated no-arg Handler(), which binds
-            // to whatever Looper the constructing thread happens to have. These are the
-            // long-press / show-press / single-tap-confirm timers for the on-screen keyboard;
-            // they belong on the main thread, explicitly.
+            // The tap and long-press timers belong on the main thread; the no-arg Handler() would
+            // bind to the constructing thread's Looper.
             super(Looper.getMainLooper());
         }
 
@@ -256,6 +255,7 @@ public class MultiPointerGestureDetector {
         this.doubleTapListener = dtListener;
     }
 
+    /** @param z true to detect long presses */
     public void setIsLongpressEnabled(boolean z) {
         this.isLongpressEnabled = z;
     }
@@ -282,8 +282,7 @@ public class MultiPointerGestureDetector {
         int actionMasked = motionEvent.getActionMasked();
         int actionIndex = motionEvent.getActionIndex();
         boolean zMo4683f = false;
-        
-        // Fixed switch case logic based on Smali implementation
+
         if (actionMasked == 1) {
             i = -1;
             pointerId = motionEvent.getPointerId(actionIndex);
@@ -316,8 +315,7 @@ public class MultiPointerGestureDetector {
         float f = i != -1 ? pointerCount - 1 : pointerCount;
         float f2 = x / f;
         float f3 = y / f;
-        
-        // Fixed main switch statement with correct case ordering
+
         switch (actionMasked) {
             case 0:
                 this.hasMovedBeyondSlop = false;
@@ -381,9 +379,8 @@ public class MultiPointerGestureDetector {
                 } else {
                     zM6020c = false;
                 }
-                // onSingleTapUp: must fire on every qualifying UP so that ImeGestureListener
-                // can update previousTapDownTime (tap-down timestamp). Without this call previousTapDownTime stays at 0,
-                // making the double-tap suppression check always true → FCC never activates.
+                // Fires on every qualifying UP: ImeGestureListener needs it to update previousTapDownTime,
+                // or its double-tap suppression check is always true and FCC never activates.
                 zM6020c |= this.gestureListener.onSingleTapUp(motionEvent);
                 if (this.inLongPress && !this.deferConfirmSingleTapByPointer.get(pointerId)) {
                     zM6020c |= this.gestureListener.onScroll(motionEvent, motionEvent, f2, f3);
@@ -398,9 +395,6 @@ public class MultiPointerGestureDetector {
                         zM6020c |= dtListener.onSingleTapConfirmed(motionEvent5);
                     }
                 }
-                // Audit GD-30: the `doubleTapRegion != null` half of this test was a
-                // constant-true decompiler artifact (the field is assigned at declaration and
-                // never nulled) and read as if fling dispatch were gated on the keypad region.
                 if ((velocityTracker = this.velocityTracker) != null) {
                     velocityTracker.computeCurrentVelocity(1000);
                     if (checkFling(motionEvent)) {
@@ -409,17 +403,15 @@ public class MultiPointerGestureDetector {
                 }
                 this.handler.removeMessages(1);
                 this.handler.removeMessages(3);
-                // Keep downEventByPointer[pointerId] (first DOWN) — isConsideredDoubleTap needs it present on the second ACTION_DOWN.
-                // It is recycled naturally in the next ACTION_DOWN at lines 318-322.
-                // Store UP event into upEventByPointer for isConsideredDoubleTap's timing/distance check.
-                // Recycle any previously stored UP first.
+                // Keep the first DOWN (recycled at the next ACTION_DOWN) and store this UP:
+                // isConsideredDoubleTap needs both on the second ACTION_DOWN.
                 MotionEvent prevUp = this.upEventByPointer.get(pointerId);
                 if (prevUp != null) {
                     prevUp.recycle();
                 }
                 this.upEventByPointer.put(pointerId, motionEventObtain2);
-                // Keep alwaysInBiggerTapRegionByPointer[pointerId] — isConsideredDoubleTap checks this flag first and returns false if absent.
-                // It is reset to true in the next ACTION_DOWN at line 324.
+                // Keep alwaysInBiggerTapRegionByPointer: isConsideredDoubleTap checks it first
+                // (reset at the next ACTION_DOWN).
                 this.alwaysInTapRegionByPointer.delete(pointerId);
                 this.stillDownByPointer.delete(pointerId);
                 this.deferConfirmSingleTapByPointer.delete(pointerId);
@@ -432,14 +424,8 @@ public class MultiPointerGestureDetector {
                     int pointerId2 = motionEvent.getPointerId(i4);
                     MotionEvent motionEvent6 = this.downEventByPointer.get(pointerId2);
                     if (motionEvent6 != null) {
-                        // Audit GD-2: this used to MotionEvent.obtain(motionEvent) here and never
-                        // recycle the copy — one leaked pooled event per pointer per ACTION_MOVE,
-                        // draining the recycler pool for the whole input stack. Both callees only
-                        // read getX/getY(index) off it, so the live event serves directly.
+                        // Both callees only read getX/getY(index), so no copy of the live event is needed.
                         updateTapRegions(pointerId2, motionEvent, i4);
-                        // DECOMPILATION FIX: Original Smali checks if BlackBerryIME gesture filter returns true
-                        // Decompiler incorrectly changed this to check if Rect doubleTapRegion is not null
-                        // Lines 1692-1723 in ClipboardItem.smali show the correct logic
                         // The cheap previous-move checks first: shouldHandleGestureEvent reads
                         // the device profile and settings, per pointer per move.
                         if (this.previousMovePointerIds != 0 && i4 < this.previousMovePointerCount
@@ -455,9 +441,7 @@ public class MultiPointerGestureDetector {
                     } else if (this.activeDoubleTapPointerId != -1) {
                         zMo4683f = cancelDoubleTapTracking(motionEvent) | false;
                     }
-                    // else: no double tap is being tracked, so there is nothing to cancel. This
-                    // used to send a synthetic ACTION_CANCEL (a native MotionEvent copy) on every
-                    // move of every drag; AOSP forwards moves only during a double tap.
+                    // else: no double tap is tracked, so nothing to cancel (as in AOSP).
                 }
                 if (this.inLongPress) {
                     MotionEvent motionEvent8 = this.downEventByPointer.get(pointerId);
@@ -465,12 +449,11 @@ public class MultiPointerGestureDetector {
                         zMo4683f |= this.gestureListener.onFling(motionEvent8, motionEvent, f2, f3);
                     }
                 }
-                // FIX: Do NOT update downEventByPointer during ACTION_MOVE!
-                // downEventByPointer should ONLY contain the original ACTION_DOWN event for correct velocity calculation
-                // Store previous motion event for gesture direction detection without overwriting start event
+                // downEventByPointer must keep only the ACTION_DOWN (fling velocity uses it);
+                // move positions are remembered separately for direction detection.
                 MotionEvent previousEvent = this.downEventByPointer.get(pointerId);
                 if (previousEvent != null) {
-                    rememberMovePositions(motionEvent); // Store CURRENT event, not previous
+                    rememberMovePositions(motionEvent);
                 }
                 return zMo4683f;
             case 3:
@@ -485,8 +468,7 @@ public class MultiPointerGestureDetector {
                     if (BuildConfig.DEBUG) Log.w("IMEGestureDetector", "No matching down event for event:" + motionEvent);
                     return false;
                 }
-                // Audit GD-2: the obtained copy that used to stand here was never recycled;
-                // updateTapRegions only reads coordinates, so pass the live event.
+                // updateTapRegions only reads coordinates, so the live event is passed.
                 updateTapRegions(pointerId, motionEvent, actionIndex);
                 int i5 = this.activeDoubleTapPointerId;
                 if (i5 != -1) {
@@ -514,10 +496,13 @@ public class MultiPointerGestureDetector {
         }
     }
 
+    /**
+     * @param f x of the first point
+     * @param f2 y of the first point
+     * @param f3 x of the second point
+     * @param f4 y of the second point
+     */
     private static float distanceSquared(float f, float f2, float f3, float f4) {
-        // Audit GD-14: two Math.pow calls (the double-precision exp/log path) plus
-        // float->double->float conversions to square a float, three times per ACTION_MOVE per
-        // pointer. The sibling updateTapRegions already does it this way.
         final float dx = f - f3;
         final float dy = f2 - f4;
         return (dx * dx) + (dy * dy);
@@ -543,6 +528,10 @@ public class MultiPointerGestureDetector {
                 && (this.previousMovePointerIds & (1 << pointerId)) != 0;
     }
 
+    /**
+     * @param i pointer id
+     * @param i2 the pointer's index in {@code motionEvent}
+     */
     private void updateConfirmSingleTapEligibility(int i, MotionEvent motionEvent, int i2) {
         MotionEvent motionEvent2 = this.downEventByPointer.get(i);
         if (motionEvent2 == null || !this.confirmSingleTapOnUpByPointer.get(i) || this.alwaysInTapRegionByPointer.get(i)) {
@@ -564,6 +553,10 @@ public class MultiPointerGestureDetector {
         this.confirmSingleTapOnUpByPointer.put(i, fM6009a > fM6009a2 && ((double) ((f * f) / (fM6009a * distanceSquared(x2, y2, x3, y3)))) > DIRECTION_COS_SQ_THRESHOLD);
     }
 
+    /**
+     * @param i pointer id
+     * @param i2 the pointer's index in {@code motionEvent}
+     */
     private void updateTapRegions(int i, MotionEvent motionEvent, int i2) {
         MotionEvent motionEvent2;
         if (!this.alwaysInBiggerTapRegionByPointer.get(i) || (motionEvent2 = this.downEventByPointer.get(i)) == null) {
@@ -590,8 +583,7 @@ public class MultiPointerGestureDetector {
 
     private boolean cancelDoubleTapTracking(MotionEvent motionEvent) {
         this.activeDoubleTapPointerId = -1;
-        // The copy is needed here (its action is rewritten to ACTION_CANCEL), but audit GD-2:
-        // it was never recycled. The listener does not retain it, so recycle on the way out.
+        // A copy, since its action is rewritten; the listener does not retain it, so it is recycled.
         MotionEvent cancelEvent = MotionEvent.obtainNoHistory(motionEvent);
         cancelEvent.setAction(MotionEvent.ACTION_CANCEL);
         try {
@@ -664,6 +656,12 @@ public class MultiPointerGestureDetector {
         }
     }
 
+    /**
+     * @param motionEvent the first DOWN
+     * @param motionEvent2 the first UP
+     * @param motionEvent3 the second DOWN
+     * @param i pointer id
+     */
     private boolean isConsideredDoubleTap(MotionEvent motionEvent, MotionEvent motionEvent2, MotionEvent motionEvent3, int i) {
         if (!this.alwaysInBiggerTapRegionByPointer.get(i)) {
             return false;

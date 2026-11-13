@@ -65,27 +65,16 @@ public final class KeyboardState {
 
     private boolean isPkbCustomSymbolPage = false;
 
-    /** Shift-mode state machine (UNSHIFTED / MANUAL_SHIFTED / SHIFT_LOCKED / ...). Nothing to do
-     *  with batch (gesture) input, despite the name the public accessor still carries. */
+    /** Shift-mode state machine (UNSHIFTED / MANUAL_SHIFTED / SHIFT_LOCKED / ...). */
     private VkbShiftModeTracker shiftModeTracker = new VkbShiftModeTracker();
 
     private final SavedKeyboardState savedKeyboardState = new SavedKeyboardState();
 
     /**
-     * "No recapitalize in progress" sentinel for the {@code recapitalizeMode} argument that travels
-     * beside {@code autoCapsFlags} through {@link SwitcherCallbacks#setAlphabetKeyboard(int, int)},
-     * {@link #requestShiftMode(int, int)} and every {@code onCodeInput}/{@code onCodeRelease} entry
-     * point.
-     *
-     * <p><b>It is -1, not 0.</b> Zero is a legitimate recapitalize mode, so a literal {@code 0}
-     * passed where "none" was meant latches {@link #requestedShiftMode} to a real mode and
-     * {@link #onShiftKeyPress()} then refuses to do anything ever again. That is exactly how the
-     * emoji-close path bricked the shift key for the rest of the session; the constant exists so
-     * the two values can no longer be confused at a call site.
-     *
-     * <p>Mirrors the {@code NOT_A_RECAPITALIZE_MODE} of the deleted {@code RecapitalizeStatus}.
-     * The single production source of this argument, {@code InputLogic.getConfigParserResult()},
-     * always returns it — recapitalize is dead code today, which is why the trap went unnoticed.
+     * "No recapitalize" value of the {@code recapitalizeMode} argument passed beside
+     * {@code autoCapsFlags} through the entry points (the {@code i, i2} pairs below). It is -1, not
+     * 0: 0 is a real mode, and passing it latches {@link #requestedShiftMode} so
+     * {@link #onShiftKeyPress()} never acts again. Production always passes this value.
      */
     public static final int RECAPITALIZE_NONE = -1;
 
@@ -108,16 +97,8 @@ public final class KeyboardState {
         boolean isPkbCustomPageFirst();
 
         /**
-         * Whether the hardware Sym key is physically held down right now — the question
-         * {@code ModifierState.isSymHeld()} asks, under its name.
-         *
-         * <p>A PKB symbol board closes itself after the symbol typed on it. Holding Sym is the
-         * way to keep it open for several symbols: while Sym is down the board stays up and
-         * symbols keep going in, and releasing Sym ends the entry.
-         *
-         * <p>Both callers are on the per-keystroke path, so the implementation answers from the
-         * modifier tracker's cheap boolean rather than from a {@code ModifierState} snapshot — see
-         * {@code KeyboardSwitcher.isSymHeld()}.
+         * Whether the hardware Sym key is held now. A PKB symbol board closes after one symbol
+         * unless Sym is held. Per-keystroke path: implementations must answer cheaply.
          */
         boolean isSymHeld();
 
@@ -139,14 +120,26 @@ public final class KeyboardState {
 
         boolean isManualTemporaryUppercase();
 
+        /**
+         * @param i the symbol page index
+         * @param z whether the PKB variant of the page may be used
+         * @param z2 whether the page is the custom symbol page
+         * @param i2 the custom page's shift action (0 none, 1 shift, 2 unshift)
+         */
         void setVkbSymbolsKeyboard(int i, boolean z, boolean z2, int i2);
 
+        /** @param z whether shift is on or locked */
         void updateShiftIndicator(boolean z);
 
         void updateShiftLockedIndicator(boolean locked);
 
+        /** Same parameters as {@link #setVkbSymbolsKeyboard}. */
         void setPkbSymbolsKeyboard(int i, boolean z, boolean z2, int i2);
 
+        /**
+         * @param i the auto-caps flags
+         * @param i2 the recapitalize mode, {@link #RECAPITALIZE_NONE} for none
+         */
         void setAlphabetKeyboard(int i, int i2);
 
         boolean isPkbDevice();
@@ -172,6 +165,7 @@ public final class KeyboardState {
         void onStartShiftLongPress();
     }
 
+    /** @param i the saved shift mode (0 unshifted, 1 manual, 2 automatic) */
     static String getShiftModeString(int i) {
         switch (i) {
             case 0:
@@ -185,10 +179,12 @@ public final class KeyboardState {
         }
     }
 
+    /** @param i the key code */
     private static boolean isWhitespaceOrEnter(int i) {
         return i == 32 || i == 10;
     }
 
+    /** @param i the switch state */
     private static String getSwitchStateString(int i) {
         switch (i) {
             case 0:
@@ -234,6 +230,7 @@ public final class KeyboardState {
         public int savedImeOptions;
 
         SavedKeyboardState() {
+            // Starts invalid; filled by saveKeyboardState.
         }
 
         public String toString() {
@@ -256,10 +253,12 @@ public final class KeyboardState {
         }
     }
 
+    /** @param i the editor's input type, compared with the one saved */
     public boolean hasImeOptionsChanged(int i) {
         return i != this.savedKeyboardState.savedImeOptions;
     }
 
+    /** @param bVar the keyboard switcher */
     public KeyboardState(SwitcherCallbacks bVar) {
         this.switcherCallbacks = bVar;
         this.keyRepeatHandler = this.switcherCallbacks.getKeyRepeatHandler();
@@ -292,6 +291,12 @@ public final class KeyboardState {
         }
     }
 
+    /**
+     * @param i the auto-caps flags
+     * @param i2 the recapitalize mode
+     * @param i3 the editor's input type
+     * @param str the editor's package name
+     */
     public void onStartInput(int i, int i2, Locale locale, int i3, String str) {
         this.shiftModeTracker.setShiftLocked(false);
         this.wasShiftLockedBeforeSymbol = false;
@@ -311,6 +316,7 @@ public final class KeyboardState {
         this.packageName = str;
     }
 
+    /** @param i the editor's input type */
     public void saveKeyboardState(int i) {
         int i2;
         SavedKeyboardState aVar = this.savedKeyboardState;
@@ -335,6 +341,10 @@ public final class KeyboardState {
         aVar.isValid = true;
     }
 
+    /**
+     * @param i the auto-caps flags, {@code i2} the recapitalize mode
+     * @param i3 the editor's input type
+     */
     private void restoreKeyboardState(int i, int i2, int i3) {
         SavedKeyboardState aVar = this.savedKeyboardState;
         if (hasImeOptionsChanged(i3)) {
@@ -370,6 +380,7 @@ public final class KeyboardState {
         }
     }
 
+    /** @param i the shift mode: 0 off, 1 manual, 2 automatic, 4 momentary */
     private void setShiftMode(int i) {
         int i2;
         if (this.shiftModeTracker.isAutomaticShifted()) {
@@ -413,6 +424,7 @@ public final class KeyboardState {
         this.switcherCallbacks.updateShiftLockedIndicator(this.shiftModeTracker.isShiftLocked());
     }
 
+    /** @param z true to lock shift */
     private void setShiftLocked(boolean z) {
         if (this.currentMode == KeyboardModeState.ALPHABET) {
             if (z && ((!this.shiftModeTracker.isShiftLocked() || this.shiftModeTracker.isShiftLockShifted()) && this.currentMode != KeyboardModeState.SYMBOL)) {
@@ -427,6 +439,7 @@ public final class KeyboardState {
         }
     }
 
+    /** @param i the auto-caps flags, {@code i2} the recapitalize mode (likewise below) */
     private void switchToAlphabetFromSymbol(int i, int i2) {
         this.symbolEntryMethod = 1;
         if (this.currentMode == KeyboardModeState.ALPHABET) {
@@ -466,11 +479,8 @@ public final class KeyboardState {
     }
 
     /**
-     * Per-app workaround, inherited from the original app with no recorded rationale:
-     * backspacing out of symbol mode in this app returns to a manually-shifted alphabet
-     * instead of an unshifted one. Nobody has been able to confirm the underlying symptom
-     * still exists, and it stops applying silently if the app changes package name. Any
-     * further per-app quirks belong here alongside it so the set stays visible.
+     * Per-app workaround with no recorded rationale: backspacing out of symbol mode here returns
+     * to a manually shifted alphabet. Keep any further per-app quirks next to it.
      */
     private static final String PKG_BANAMEX = "com.citibanamex.banamexmobile";
 
@@ -497,16 +507,9 @@ public final class KeyboardState {
     }
 
     /**
-     * Ask the switcher to load the alphabet keyboard, then drop the recapitalize latch.
-     *
-     * <p>The clear has to happen <em>after</em> the callback because the callback re-enters:
-     * {@code KeyboardSwitcher.setAlphabetKeyboard(autoCaps, recap)} is implemented as
-     * {@link #requestShiftMode(int, int)}, which assigns {@code requestedShiftMode = recap}. That
-     * loop is how automatic capitalisation is applied, so it cannot simply be removed — but it also
-     * means any assignment made <em>before</em> the callback is immediately overwritten by whatever
-     * the caller passed. Clearing here bounds the latch to the one keyboard load that asked for it:
-     * a wrong argument at a call site can now misbehave once instead of disabling the shift key for
-     * the rest of the session (see {@link #RECAPITALIZE_NONE}).
+     * Loads the alphabet keyboard, then drops the recapitalize latch. The clear must come after:
+     * the callback re-enters {@link #requestShiftMode(int, int)}, which sets the latch, so a bad
+     * argument misbehaves once instead of disabling shift for the session.
      */
     private void loadAlphabetKeyboard(int autoCapsFlags, int recapitalizeMode) {
         this.switcherCallbacks.setAlphabetKeyboard(autoCapsFlags, recapitalizeMode);
@@ -519,7 +522,7 @@ public final class KeyboardState {
         this.currentSymbolPageIndex = 0;
         this.requestedShiftMode = RECAPITALIZE_NONE;
         this.switchState = 0;
-        this.shiftModeTracker.setShifted(false);  // Reset shift tracker to unshifted mode
+        this.shiftModeTracker.setShifted(false);
         loadAlphabetKeyboard(i, i2);
     }
 
@@ -529,7 +532,7 @@ public final class KeyboardState {
         this.currentSymbolPageIndex = 0;
         this.requestedShiftMode = RECAPITALIZE_NONE;
         this.switchState = 0;
-        this.shiftModeTracker.setShifted(false);  // Reset shift tracker to unshifted mode
+        this.shiftModeTracker.setShifted(false);
         loadAlphabetKeyboard(i, i2);
     }
 
@@ -541,6 +544,11 @@ public final class KeyboardState {
         this.shiftModeTracker.setShiftLocked(false);
     }
 
+    /**
+     * @param i the symbol page index
+     * @param z whether the PKB variant of the page may be used
+     * @param z2 whether the page is the custom symbol page (also for setVkbSymbolsKeyboard)
+     */
         void setPkbSymbolsKeyboard(int i, boolean z, boolean z2) {
         Logger.debug(TAG, "setPkbSymbolsKeyboard page=" + i + (z2 ? "-custom" : ""));
         int iM7219l = 0;
@@ -581,6 +589,7 @@ public final class KeyboardState {
         return this.pkbSymbolShiftState != 0 ? this.savedPkbSymbolShiftState == 0 ? 1 : 0 : this.savedPkbSymbolShiftState != 0 ? 2 : 0;
     }
 
+    /** @param i the symbol page index */
     private void setSymbolModeCommon(int i) {
         this.currentMode = KeyboardModeState.SYMBOL;
         this.currentSymbolPageIndex = i;
@@ -596,6 +605,11 @@ public final class KeyboardState {
         this.shiftModeTracker.setShiftLocked(false);
     }
 
+    /**
+     * @param i the key code
+     * @param z true if this is the only active pointer
+     * @param i2 the auto-caps flags, {@code i3} the recapitalize mode
+     */
     public void onCodeInput(int i, boolean z, int i2, int i3) {
         int i4;
         if (i != -1) {
@@ -603,29 +617,25 @@ public final class KeyboardState {
         }
         switch (i) {
             case -16:
-            case -2 /* -2 */:
+            case -2:
                 break;
             case -15:
                 onSymbolPagingKeyPress();
                 break;
             case -9:
-            case -8 /* -8 */:
+            case -8:
                 cycleThroughSymbolPages();
                 break;
-            case -3 /* -3 */:
+            case -3:
                 onSymbolKeyPress(i2, i3);
                 break;
-            case -1 /* -1 */:
+            case -1:
                 onShiftKeyPress();
                 break;
             case -22:
-                // The hardware Sym key's toggle (InputLogic.toggleKeyboardDirection ->
-                // KeyboardSwitcher.onSymbolShiftToggle) also arrives here as a code. It is a
-                // page turn, not a symbol: the default branch below would read it as "a symbol
-                // was typed" and zero symbolEntryMethod, and page 2 then answered
-                // wasSymbolEnteredFromAlphabet() == false - the hinted physical keys stopped
-                // mapping and a held Sym typed the firmware KCM's sym layer (page 1's
-                // characters) instead (KEY2, 2026-09-20). Nothing to do; the toggle handles it.
+                // The hardware Sym toggle (a page turn) also arrives as this code. The default
+                // branch would zero symbolEntryMethod and break the hinted physical keys; the
+                // toggle itself does the work.
                 break;
             default:
                 if (this.switchState == 1 && !isWhitespaceOrEnter(i)) {
@@ -637,15 +647,11 @@ public final class KeyboardState {
                 boolean z2 = false;
                 if (this.currentMode == KeyboardModeState.SYMBOL && ((i4 = this.symbolEntryMethod) == 1 || i4 == 2)) {
                     boolean pkbSymEntry = (i4 == 2) && this.switcherCallbacks.isPkbDevice();
-                    // onCodeInput() runs on key-press (touch-down). For PKB on-screen SYM entry
-                    // (method 2) a tapped character must be COMMITTED before we leave symbol mode:
-                    // switching to the (hidden-on-PKB) alphabet keyboard here closes the symbol
-                    // keyboard before the symbol is committed on touch-up, so the tap is lost.
-                    // Defer the return-to-alphabet for character keys to onSoftwareSymbolCommitted(),
-                    // which fires after the commit. Physical keys are handled symmetrically by
-                    // onHardwareKeyEvent(), which runs on key-up (after the key-down commit).
+                    // This runs on touch-down. For PKB on-screen Sym entry (method 2) leaving symbol
+                    // mode now would lose the tap, which commits on touch-up, so a character key
+                    // returns to the alphabet in onSoftwareSymbolCommitted() instead.
                     if (pkbSymEntry && Constants.isLetterCode(i)) {
-                        // Keep symbolEntryMethod == 2 so the post-commit hook can detect this entry.
+                        // Keep symbolEntryMethod 2 for the post-commit hook.
                     } else {
                         this.symbolEntryMethod = 0;
                         if (pkbSymEntry) {
@@ -669,20 +675,12 @@ public final class KeyboardState {
     }
 
     /**
-     * Completes an on-screen (software) PKB symbol-keyboard entry. After a symbol tapped on the
-     * on-screen SYM keyboard has been committed (on touch-up), return to the alphabet keyboard.
-     * This is the software counterpart to {@link #onHardwareKeyEvent} for physical keys: the
-     * return is deferred from key-press to here so the tapped symbol is not lost (see the note
-     * in {@link #onCodeInput}). No-op unless a PKB SYM entry (method 2) is still pending.
-     *
-     * <p>Only a character ({@code code >= 32}) is a committed symbol. The IME fires this for every
-     * soft key, and a function key must leave the entry alone: the on-screen ABC key (−3) is a
-     * toggle whose release {@link #onSymbolKeyRelease} reads against the CURRENT mode. Ending the
-     * entry here first put the mode on the alphabet, and the release then toggled the other way
-     * — onto the on-screen symbols page instead of the on-screen alphabet the original app shows
-     * (KEY2 report, 2026-10-25). The original closed the board after a character only.
+     * Returns to the alphabet after a symbol tapped on the PKB on-screen Sym board has committed;
+     * no-op unless that entry (method 2) is pending. Only a character ends it: the ABC key (-3)
+     * toggles on release against the current mode, so ending the entry first would toggle wrong.
      *
      * @param code the soft key's code, as given to the IME's onCodeInput
+     * @param i the auto-caps flags, {@code i2} the recapitalize mode
      */
     public void onSoftwareSymbolCommitted(int code, int i, int i2) {
         if (!Constants.isLetterCode(code)) {
@@ -697,6 +695,10 @@ public final class KeyboardState {
         }
     }
 
+    /**
+     * @param i the Android key code
+     * @param i2 the auto-caps flags, {@code i3} the recapitalize mode
+     */
     public void onHardwareKeyEvent(int i, int i2, int i3) {
         switch (i) {
             case 59:
@@ -708,9 +710,8 @@ public final class KeyboardState {
             case 65:
             case 66:
             default:
-                // Reset symbol mode after hardware key character input on PKB — unless Sym is
-                // being held, which is the user asking for the board to stay open (the release
-                // of Sym then ends the entry through case 63 below).
+                // A PKB character leaves symbol mode unless Sym is held (its release, case 63,
+                // ends the entry then).
                 if (this.currentMode == KeyboardModeState.SYMBOL && this.symbolEntryMethod == 2
                         && this.switcherCallbacks.isPkbDevice() && !this.switcherCallbacks.isSymHeld()) {
                     this.symbolEntryMethod = 0;
@@ -745,6 +746,11 @@ public final class KeyboardState {
         }
     }
 
+    /**
+     * @param i the key code
+     * @param z true if released during sliding input
+     * @param i2 the auto-caps flags, {@code i3} the recapitalize mode
+     */
     public void onCodeRelease(int i, boolean z, int i2, int i3) {
         if (i == -15) {
             onSymbolPagingKeyRelease();
@@ -752,13 +758,13 @@ public final class KeyboardState {
         }
         if (i != 32) {
             switch (i) {
-                case -3 /* -3 */:
+                case -3:
                     onSymbolKeyRelease(z, i2, i3);
                     break;
-                case -2 /* -2 */:
+                case -2:
                     setShiftLocked(!this.shiftModeTracker.isShiftLocked() || this.shiftModeTracker.isShiftLockShifted());
                     break;
-                case -1 /* -1 */:
+                case -1:
                     onShiftKeyRelease(z, i2, i3);
                     break;
             }
@@ -767,6 +773,10 @@ public final class KeyboardState {
         onSpaceRelease(z, i2, i3);
     }
 
+    /**
+     * @param z true if released during sliding input (likewise for the other release handlers)
+     * @param i the auto-caps flags, {@code i2} the recapitalize mode
+     */
     private void onSpaceRelease(boolean z, int i, int i2) {
         if (z) {
             return;
@@ -787,44 +797,36 @@ public final class KeyboardState {
     }
 
     /**
-     * SYM key released. {@link #switchToSymbolFromAlphabet} is a <em>toggle</em>, so it must be
-     * called at most once per release.
-     *
-     * <p>Unlike AOSP, {@link #onSymbolKeyPress} does not toggle on key-down — this keyboard enters
-     * symbol mode on the release. So a chorded SYM (held while another key was pressed) has never
-     * left the alphabet, and releasing SYM must leave it there: the chord was the user's whole
-     * intent, they did not ask for the symbol keyboard. Previously the chording branch toggled
-     * <em>into</em> symbol mode and then fell through to a second, unconditional toggle that
-     * immediately switched back out — no {@code else}, no {@code return} — so the symbol keyboard
-     * flashed for one layout pass and the user landed back on the alphabet with the shift lock
-     * dropped and re-applied on the way through.
+     * Sym released. {@link #switchToSymbolFromAlphabet} is a toggle: call it at most once. Symbol
+     * mode is entered on release, so a chorded Sym never left the alphabet and must stay there.
      */
     private void onSymbolKeyRelease(boolean z, int i, int i2) {
         if (this.symbolKeyState.isChording()) {
-            // Stay on the alphabet. Undo the momentary marker onSymbolKeyPress() set, which the
-            // discarded round-trip through switchToAlphabetUnshifted() used to clear.
+            // Stay on the alphabet; undo the marker onSymbolKeyPress() set.
             this.switchState = 0;
             this.symbolKeyState.onRelease();
             return;
         }
         if (!z) {
-            // A plain tap, not a slide off the key: forget the remembered page so symbol mode
-            // opens on page 0 next time.
+            // A plain tap, not a slide: symbol mode opens on page 0 next time.
             this.savedSymbolPageIndex = 0;
         }
         switchToSymbolFromAlphabet(i, i2);
         this.symbolKeyState.onRelease();
     }
 
+    /** @param i the auto-caps flags, {@code i2} the recapitalize mode */
     public void requestShiftMode(int i, int i2) {
         this.requestedShiftMode = i2;
         updateShiftStateOnInput(i, i2);
     }
 
+    /** @param i the auto-caps flags, {@code i2} the recapitalize mode */
     public void onBackspaceInSymbolMode(int i, int i2) {
         onBackspace(i, i2);
     }
 
+    /** @param i the recapitalize mode */
     private void setShiftModeFromRequest(int i) {
         switch (i) {
             case 2:
@@ -848,10 +850,8 @@ public final class KeyboardState {
             if (!this.shiftKeyState.isReleasing() || this.shiftModeTracker.isShiftLocked() || this.shiftKeyState.isIgnoring()) {
                 return;
             }
-            // The guard above already required isReleasing(), so the second !isReleasing()
-            // test was constant-false and the isChording() ternary unreachable (a key cannot
-            // be releasing and chording at once). Chorded shift, if it needs handling here at
-            // all, has to be handled BEFORE that guard.
+            // A chorded shift cannot reach here (the guard requires isReleasing()); handle it
+            // before the guard if ever needed.
             setShiftMode(i == 0 ? 0 : 2);
         }
     }
@@ -892,7 +892,7 @@ public final class KeyboardState {
         return this.shiftKeyState.isPressingOnShifted();
     }
 
-    /** True while the shift key is in the RELEASING (idle) state — see {@link #isShiftKeyPressed()}. */
+    /** True while the shift key is in the RELEASING (idle) state. */
     public boolean isShiftKeyReleasing() {
         return this.shiftKeyState.isReleasing();
     }
@@ -955,6 +955,7 @@ public final class KeyboardState {
         this.shiftKeyState.onRelease();
     }
 
+    /** @param i the auto-caps flags, {@code i2} the recapitalize mode */
     public void onMomentaryStateFinish(int i, int i2) {
         switch (this.switchState) {
             case 4:
@@ -969,6 +970,10 @@ public final class KeyboardState {
         }
     }
 
+    /**
+     * @param i the key code
+     * @param i2 the auto-caps flags, {@code i3} the recapitalize mode
+     */
     public void onInputCodeChanged(int i, int i2, int i3) {
         switch (this.switchState) {
             case 1:
@@ -1071,15 +1076,16 @@ public final class KeyboardState {
         return this.symbolEntryMethod != 0;
     }
 
+    /**
+     * @param i the auto-caps flags, {@code i2} the recapitalize mode
+     * @param z true when triggered by a swipe gesture
+     * @param z2 true for the physical keyboard's symbol pages
+     */
     public void onSymbolShiftToggle(int i, int i2, boolean z, boolean z2) {
         if (this.currentMode != KeyboardModeState.SYMBOL) {
             if (z2) {
-                // The hardware Sym key always enters from the alphabet, so say so: this used to
-                // inherit whatever symbolEntryMethod was left holding, and resetSymbolMode()
-                // (any UIM panel opening over the symbol board) leaves 0. The next Sym press then
-                // showed the board with wasSymbolEnteredFromAlphabet() false, and every hinted
-                // physical key typed its letter instead of its symbol until the next onStartInput
-                // (MP01 report, 2026-09-18; the KEY2 has the same latent path).
+                // The hardware Sym key always enters from the alphabet. Set it explicitly:
+                // resetSymbolMode() leaves 0, which would make hinted keys type letters.
                 this.symbolEntryMethod = 1;
                 setPkbSymbolShiftState(getSymbolShiftStateFromOrder());
                 setPkbSymbolsKeyboard(0, true, isPkbSymbolCustomizationEnabled() && shouldShowPkbCustomPageFirst());
@@ -1114,6 +1120,7 @@ public final class KeyboardState {
         }
     }
 
+    /** @param i the auto-caps flags, {@code i2} the recapitalize mode */
     public void onSymbolKeyLongPress(int i, int i2) {
         int i3 = this.symbolEntryMethod;
         if ((i3 == 2 || i3 == 3) && this.currentMode == KeyboardModeState.SYMBOL) {
@@ -1134,6 +1141,7 @@ public final class KeyboardState {
         return this.shiftModeTracker.isShiftLocked() ? 2 : 0;
     }
 
+    /** @param i 0 unshifted, 1 shifted, 2 locked */
     private void setVkbSymbolShiftState(int i) {
         this.vkbSymbolShiftState = i;
     }
@@ -1142,15 +1150,12 @@ public final class KeyboardState {
         return this.currentMode == KeyboardModeState.SYMBOL;
     }
 
-    /**
-     * Which keyboard the main view is showing. Since Phase 1d this is read as "which typing board
-     * is up" — {@code KeyboardSwitcher.activeBoard()} maps it onto the board keycodes, so the
-     * alphabet, the symbol board and emoji answer the same question the panel boards do.
-     */
+    /** Which typing board is up; {@code KeyboardSwitcher.activeBoard()} maps it to board keycodes. */
     public KeyboardModeState currentMode() {
         return this.currentMode;
     }
 
+    /** @param i the symbol page index */
     public boolean isVkbCustomSymbolPage(int i) {
         if (isVkbSymbolCustomizationEnabled()) {
             return shouldShowVkbCustomPageFirst() ? i == 0 : i == this.maxSymbolPages - 1;
@@ -1158,6 +1163,7 @@ public final class KeyboardState {
         return false;
     }
 
+    /** @param i the symbol page index */
     public boolean isPkbCustomSymbolPage(int i) {
         if (isPkbSymbolCustomizationEnabled()) {
             return shouldShowPkbCustomPageFirst() ? i == 0 : i == this.maxPkbSymbolPages - 1;
@@ -1218,16 +1224,10 @@ public final class KeyboardState {
 
     private void switchFromEmojiMode() {
         this.currentMode = KeyboardModeState.ALPHABET;
-        // Argument 2 is a recapitalize mode, NOT a shift mode: its "none" value is
-        // RECAPITALIZE_NONE (-1). This used to pass a literal 0, which is a real recapitalize
-        // mode, so the re-entrant switcher callback latched requestedShiftMode = 0 and
-        // onShiftKeyPress() -- guarded on `RECAPITALIZE_NONE == requestedShiftMode` -- went
-        // permanently inert: closing the emoji board once killed the shift key for the rest of
-        // the session.
+        // Argument 2 is a recapitalize mode: never pass 0 for none (see RECAPITALIZE_NONE).
         loadAlphabetKeyboard(0, RECAPITALIZE_NONE);
 
         this.emojiEntryMethod = 0;
-        // Call UI callback to hide emoji keyboard
         this.switcherCallbacks.hideEmojiKeyboard();
     }
 
@@ -1235,17 +1235,10 @@ public final class KeyboardState {
         return this.currentMode == KeyboardModeState.EMOJI;
     }
 
-    /**
-     * Reset emoji mode state without triggering UI callbacks.
-     * Called when emoji is hidden externally (e.g., switching to another input board).
-     */
+    /** Leaves emoji mode without UI callbacks, when emoji was hidden from elsewhere. */
     public void resetEmojiMode() {
-        // Only leave EMOJI mode here. This is called indirectly whenever the emoji view is
-        // hidden — including as a side effect of refreshing the suggestion strip after a normal
-        // key commit (hideOtherComponents/hideAllComponents -> hideEmojiKeyboard). Forcing
-        // ALPHABET unconditionally would clobber an active SYMBOL/MENU mode and desync
-        // currentMode from the keyboard actually on screen (e.g. it broke the PKB symbol
-        // keyboard's return-to-alphabet, which keys off currentMode == SYMBOL).
+        // Only from EMOJI: this also runs whenever the emoji view is hidden (even after a normal
+        // commit), and forcing ALPHABET would clobber an active SYMBOL or MENU mode.
         if (this.currentMode == KeyboardModeState.EMOJI) {
             this.currentMode = KeyboardModeState.ALPHABET;
         }
@@ -1253,9 +1246,8 @@ public final class KeyboardState {
     }
 
     /**
-     * Reset symbol mode state without triggering UI callbacks.
-     * Called when a UIM panel opens on a PKB device so the underlying keyboard
-     * view is loaded with the alphabet layout before the panel is dismissed.
+     * Leaves symbol mode without UI callbacks, when a UIM panel opens on a PKB device, so the
+     * keyboard underneath is the alphabet when the panel closes.
      */
     public void resetSymbolMode() {
         this.currentMode = KeyboardModeState.ALPHABET;
@@ -1275,6 +1267,7 @@ public final class KeyboardState {
         return this.vkbSymbolShiftState == 1;
     }
 
+    /** @param i 0 unshifted, 1 shifted, 2 locked */
         void setPkbSymbolShiftState(int i) {
         this.pkbSymbolShiftState = i;
     }

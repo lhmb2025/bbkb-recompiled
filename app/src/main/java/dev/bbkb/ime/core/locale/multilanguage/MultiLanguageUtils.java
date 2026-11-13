@@ -44,6 +44,10 @@ public final class MultiLanguageUtils {
         return new ArrayList<>(Arrays.asList(SubtypeFactory.createSubtypesFromPref(strM5503a)));
     }
 
+    /**
+     * @param c0910y the input method manager to register with
+     * @param arrayList the saved multi-language keyboards
+     */
     public static void registerAdditionalSubtypes(RichInputMethodManager c0910y, Resources resources, ArrayList<MultiLanguageConfig> arrayList) {
         ArrayList<InputMethodSubtype> arrayListM4745a = toSubtypes(arrayList);
         arrayListM4745a.addAll(createPredefinedSubtypes(resources));
@@ -54,6 +58,7 @@ public final class MultiLanguageUtils {
         return toSubtypes(loadConfigs(sharedPreferences));
     }
 
+    /** @param arrayList multi-language keyboards to convert */
     public static ArrayList<InputMethodSubtype> toSubtypes(ArrayList<MultiLanguageConfig> arrayList) {
         ArrayList<InputMethodSubtype> arrayList2 = new ArrayList<>();
         Iterator<MultiLanguageConfig> it = arrayList.iterator();
@@ -79,6 +84,7 @@ public final class MultiLanguageUtils {
         return arrayList;
     }
 
+    /** @param collection every multi-language keyboard; replaces the stored list */
     public static void saveConfigs(SharedPreferences sharedPreferences, Collection<MultiLanguageConfig> collection) {
         StringBuilder sb = new StringBuilder();
         for (MultiLanguageConfig c0710e : collection) {
@@ -90,6 +96,7 @@ public final class MultiLanguageUtils {
         sharedPreferences.edit().putString("multi_lang_input_subtypes", sb.toString()).apply();
     }
 
+    /** @param c0710e the keyboard to append */
     public static boolean appendConfigToPrefs(SharedPreferences sharedPreferences, MultiLanguageConfig c0710e) {
         String string = sharedPreferences.getString("multi_lang_input_subtypes", "");
         StringBuilder sb = new StringBuilder();
@@ -98,12 +105,12 @@ public final class MultiLanguageUtils {
             sb.append(";");
         }
         sb.append(serializeConfig(c0710e));
-        // apply(): this is reached from the subtype-switch path on the main thread and the
-        // caller ignores the result.
+        // apply(): reached on the main thread from the subtype-switch path; the caller ignores the result.
         sharedPreferences.edit().putString("multi_lang_input_subtypes", sb.toString()).apply();
         return true;
     }
 
+    /** @param c0710e the keyboard to write as "primary/extra...:layoutSet" */
     public static String serializeConfig(MultiLanguageConfig c0710e) {
         if (c0710e == null) {
             return "";
@@ -122,6 +129,7 @@ public final class MultiLanguageUtils {
         return sb.toString();
     }
 
+    /** @param str one stored entry, "primary/extra...:layoutSet" */
     public static MultiLanguageConfig parseConfig(String str) {
         if (TextUtils.isEmpty(str)) {
             return null;
@@ -129,9 +137,8 @@ public final class MultiLanguageUtils {
         String[] strArrSplit = str.split(":");
         if (strArrSplit.length > 1) {
             String str2 = strArrSplit[1];
-            // "null": saved by the Compose wizard when its primary language defaulted to a system
-            // language with no Latin layout (e.g. Korean). Such a keyboard types in the device's
-            // fallback layout, not in the language it names, so it is dropped rather than kept.
+            // "null": a primary with no Latin layout (e.g. Korean); it would type in the fallback
+            // layout, not the language it names, so it is dropped.
             if (TextUtils.isEmpty(str2) || str2.equals("null")) {
                 return null;
             }
@@ -150,45 +157,36 @@ public final class MultiLanguageUtils {
     }
 
     public static boolean isUsingSystemLanguages(Context context) {
-        // Android 14+ (API 34+) restricts access to ENABLED_INPUT_METHODS setting
-        // Use InputMethodManager API instead
+        // API 34+ restricts ENABLED_INPUT_METHODS; use InputMethodManager instead.
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
             try {
                 InputMethodManager imm = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
                 if (imm == null) {
                     return false;
                 }
-                
-                // Get enabled input methods
-                // Our own package, whatever it is built as (dev.bbkb.ime, or .debug). This used
-                // to be the literal "com.blackberry.keyboard", which is now a *different*
-                // keyboard - the original BlackBerry app, which may well be installed alongside
-                // this one. Matching it would have read that app's subtype count instead of ours.
+
+                // Our own package (release or .debug), never the BlackBerry keyboard installed alongside.
                 final String ourPackage = context.getPackageName();
                 List<InputMethodInfo> enabledInputMethods = imm.getEnabledInputMethodList();
                 for (InputMethodInfo imi : enabledInputMethods) {
                     if (imi.getPackageName().equals(ourPackage)) {
-                        // Check if this IME has less than 2 subtypes enabled
                         List<InputMethodSubtype> subtypes = imm.getEnabledInputMethodSubtypeList(imi, true);
                         return subtypes.size() < 2;
                     }
                 }
                 return false;
             } catch (Exception e) {
-                // Fallback to false if anything goes wrong
+                // Treated as not using system languages.
                 return false;
             }
         }
-        
-        // Legacy method for API 33 and below
+
         String string = Settings.Secure.getString(context.getContentResolver(), "enabled_input_methods");
         if (string == null) {
             return false;
         }
-        // Entries are "<package>/<class>;<subtypeId>;<subtypeId>...". The old code matched the
-        // bare prefix "com.blackberry.keyboard", which matched both the release and the .debug
-        // build - and now would also match the original BlackBerry Keyboard if it is installed
-        // next to us. Match our own component exactly instead.
+        // Entries are "<package>/<class>;<subtypeId>;...". Match our own package exactly so the
+        // BlackBerry keyboard installed alongside is not counted.
         final String ourPrefix = context.getPackageName() + "/";
         boolean z = false;
         for (String str : string.split(":")) {

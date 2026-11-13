@@ -30,13 +30,6 @@ import dev.bbkb.ime.R
 
 private const val CKB_GESTURES = "ckb_gestures_enabled"
 
-/**
- * Physical Keyboard Settings Screen
- * Categories: Behavior, Capacitive Keyboard Gestures (conditional), Modifiers
- *
- * Note: "Override device meta state" and "BBKB Helper" have moved to
- * Advanced → Device Compatibility.
- */
 @Composable
 fun PhysicalKeyboardScreen(
     onNavigateBack: () -> Unit,
@@ -45,25 +38,22 @@ fun PhysicalKeyboardScreen(
 ) {
     val context = LocalContext.current
     val hasTouchKeypad = remember { DeviceProfile.current()?.hasTouchKeypad() ?: false }
-    // A profile can describe a touch surface whose events cannot reach BBKB yet (Shizuku not set
-    // up, Scroll assistant off): the category still shows, with the one row that leads to setup.
+    // A declared touch surface whose events cannot reach BBKB yet still shows the category, with
+    // the row that leads to setup.
     val touchSurface = rememberTouchSurfaceState()
     val hasPhysicalKeyboard = remember { DeviceProfile.current()?.hasPhysicalKeyboard() ?: false }
-    // The KEY2 (Athena profile) has no key to assign as Ctrl: its Ctrl is the Alt+Sym / multifunction
-    // choice, so the row is hidden there (2026-10-20).
+    // Athena has no key to assign as Ctrl (its Ctrl is the Alt+Sym / multifunction choice).
     val isAthena = remember { DeviceProfile.current()?.deviceMapping?.kdbVariant == "athena" }
     val isChineseLocale = remember { LocaleUtils.isCurrentSubtypeChinese() }
 
-    // Multifunction key action — only for devices whose config declares a MULTIFUNCTION key
-    // (e.g. the Key2 mic key); hidden otherwise.
+    // Only where the device config declares a MULTIFUNCTION key
     val multifunctionKeyMapping = remember {
         DeviceProfile.current()?.getDeviceMapping()?.getMultifunctionKeyMapping()
     }
     val multifunctionDefault = MultifunctionKeyHandler.upgradeLegacyAction(multifunctionKeyMapping?.defaultAction)
         ?.takeIf { it.isNotEmpty() } ?: MultifunctionKeyHandler.DEFAULT_ACTION
 
-    // Four keys are declared in strings.xml rather than inline; they are resolved through the
-    // same resource the rest of the app reads them by.
+    // Keys declared in strings.xml, resolved through the same resource the app reads.
     val modifierStatusIconKey = context.getString(R.string.pref_show_pkb_modifier_status_icon_key)
     val shiftDoubleTapLockKey = context.getString(R.string.pref_shift_double_tap_lock_key)
     val altDoubleTapLockKey = context.getString(R.string.pref_alt_double_tap_lock_key)
@@ -81,8 +71,8 @@ fun PhysicalKeyboardScreen(
             ),
             modifier = Modifier.settingsSearchAnchor("pref_voice_input_key"),
         ),
-        // Typing while the emoji board is open filters it (KeyEventProcessor routes the keys into
-        // the board's search field). Off, the keys type into the editor as before (2026-11-03).
+        // Typing with the emoji board open filters it (KeyEventProcessor routes keys into its
+        // search field); off, keys type into the editor.
         Toggle(
             store = boolPref("pref_pkb_emoji_search", true),
             title = R.string.pref_emoji_search_title,
@@ -97,8 +87,7 @@ fun PhysicalKeyboardScreen(
             options = ::multifunctionActions,
             // Emoji board: the fallback default action.
             fallbackIndex = 1,
-            // Anchor kept as a string literal (== MultifunctionKeyHandler.PREF_KEY) because the
-            // search-index sync test source-scans for literals.
+            // Literal (== MultifunctionKeyHandler.PREF_KEY): the search-index sync test scans for it.
             modifier = Modifier.settingsSearchAnchor("pref_multifunction_key_action"),
             visible = { multifunctionKeyMapping != null },
         ),
@@ -114,8 +103,7 @@ fun PhysicalKeyboardScreen(
             title = R.string.settings_pkb_hold_action_title,
             icon = drawableIcon(R.drawable.ic_settings_hold_action),
             options = ::holdActions,
-            // The row's summary uses a different resource from the dialog's label, so it is
-            // spelled out rather than derived from the options.
+            // Summary uses a different resource from the dialog label.
             summary = ::holdActionSummary,
             modifier = Modifier.settingsSearchAnchor("pref_pkb_hold_auto_commit"),
         ),
@@ -128,9 +116,7 @@ fun PhysicalKeyboardScreen(
             modifier = Modifier.settingsSearchAnchor("control_mode"),
             visible = { !isAthena },
         ),
-        // The keypad's shape, for a model sold in several (the KEY2: QWERTY, QWERTZ and AZERTY
-        // editions): automatic detection, or the user's word for it. A model the device config
-        // lists one shape for has nothing to choose.
+        // Keypad shape for models sold in several: automatic detection or the user's choice.
         Choice(
             store = stringPref(DeviceProfile.PREF_KEYPAD_LAYOUT, ""),
             title = R.string.settings_pkb_keypad_layout_title,
@@ -140,10 +126,8 @@ fun PhysicalKeyboardScreen(
             visible = { hasPhysicalKeyboard && (DeviceProfile.current()?.keypadLayoutOptions?.size ?: 0) > 1 },
         ),
 
-        // ── CAPACITIVE KEYBOARD GESTURES (CKB devices only) ──────────────────────
         Category(R.string.settings_category_ckb_gestures, visible = { hasTouchKeypad || touchSurface.declared }),
-        // Setup lives on Advanced > Device compatibility > Touch surface helper; this is the way
-        // there from where the gestures are, with the same live status line.
+        // Link to the Touch surface helper, with the same live status line.
         Nav(
             title = R.string.touch_surface_link_title,
             icon = drawableIcon(R.drawable.ic_settings_m_touch_app),
@@ -173,8 +157,7 @@ fun PhysicalKeyboardScreen(
             title = R.string.ckb_gestures_configure_title,
             icon = drawableIcon(R.drawable.ic_settings_gesture_ckb_configure),
             summary = R.string.ckb_gestures_configure_summary,
-            // Shown and open while the gestures are off: nothing is hidden because of a switch,
-            // and the assignments can be made before the gestures are turned on.
+            // Enabled while gestures are off so assignments can be made first.
             visible = { hasTouchKeypad },
             onClick = { onNavigateToCkbGestures() },
         ),
@@ -188,8 +171,7 @@ fun PhysicalKeyboardScreen(
             modifier = Modifier.settingsSearchAnchor("pref_show_pkb_modifier_status_icon"),
         ),
 
-        // The three locks under one header that says how they work, so each row is only the
-        // key's name (2026-11-11). They were three rows repeating the same two sentences.
+        // The header explains the locks, so each row is only the key's name.
         Category(R.string.settings_category_press_twice_lock),
         Toggle(
             store = boolPref(shiftDoubleTapLockKey, true),
@@ -233,9 +215,8 @@ private fun multifunctionActions(context: Context) = listOf(
 ) + sharedShortcutActions(context)
 
 /**
- * The actions the multifunction key and the Alt+Sym shortcut both offer, after each one's own
- * first entry (Ctrl for the key, Disabled for the shortcut). The two settings share action ids
- * and labels.
+ * Actions shared by the multifunction key and the Alt+Sym shortcut, after each one's own first
+ * entry (Ctrl for the key, Disabled for the shortcut).
  */
 private fun sharedShortcutActions(context: Context) = listOf(
     MultifunctionKeyHandler.ACTION_EMOJI_BOARD to R.string.settings_pkb_multifunction_action_emoji,

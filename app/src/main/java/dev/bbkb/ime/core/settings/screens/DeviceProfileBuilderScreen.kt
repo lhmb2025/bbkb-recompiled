@@ -50,21 +50,11 @@ import dev.bbkb.ime.R
 import java.io.File
 
 /**
- * Builds a device config from the hardware in front of the user.
- *
- * The screen has three parts and they are in the order the work happens: what the app worked
- * out on its own, the keys the user has to press because nothing else can answer them, and the
- * profile those two produce.
- *
- * The capture half exists because the only reliable description of a bezel key is the one the key
- * itself gives. The Minimal Phone MP01's Sym key is scancode 249 on every ROM and was
- * `KEYCODE_ALT_RIGHT` on one and `KEYCODE_SYM` on the next; a table in the app would have been
- * right for half the fleet. So the user presses the key and the pair is recorded.
- *
- * Key events reach this screen through [HardwareKeyCaptureBus] rather than only through Compose's
- * own key handling, because the interesting keys never get that far: the accessibility service
- * consumes Sym, Emoji and Mic before any window sees them. Both routes end at the same listener,
- * and only one of them delivers any given press.
+ * Builds a device config from the hardware in hand: detected facts, the keys the user must press,
+ * and the resulting profile. Bezel keys are captured because one scancode maps to different key
+ * codes across ROMs, so no built-in table can be right. Keys arrive via [HardwareKeyCaptureBus]
+ * because the accessibility service consumes Sym, Emoji and Mic before any window sees them; each
+ * press is delivered by only one route.
  */
 @Composable
 fun DeviceProfileBuilderScreen(
@@ -72,14 +62,12 @@ fun DeviceProfileBuilderScreen(
 ) {
     val context = LocalContext.current
 
-    // Detection reads InputDevices and pull-parses the shipped configs once; it is the same work
-    // the config manager already does at IME start, and it must not be redone on recomposition.
+    // Detection reads InputDevices and parses the shipped configs: do it once, not per recomposition.
     val facts = remember { DeviceProfileBuilder.detect(context) }
     val capture = remember { GuidedCapture() }
 
-    // GuidedCapture is a mutable object, not snapshot state; this counter is what tells Compose
-    // that it moved. Every producer of key events is on the main thread (the accessibility
-    // service, the IME and this activity all run on it), so no synchronisation is needed.
+    // GuidedCapture is a plain mutable object; this counter tells Compose it moved. All key event
+    // producers (accessibility service, IME, activity) are on the main thread.
     var captureTick by remember { mutableIntStateOf(0) }
     var sawAnyKey by remember { mutableStateOf(false) }
     var profileName by remember { mutableStateOf(facts.suggestedProfileName()) }
@@ -103,8 +91,7 @@ fun DeviceProfileBuilderScreen(
         onDispose { HardwareKeyCaptureBus.unregister(listener) }
     }
 
-    // The route for a device with no accessibility service enabled and no editor bound: ordinary
-    // keys arrive at the focused window like any other app's.
+    // With no accessibility service and no bound editor, keys arrive at the focused window.
     val focusRequester = remember { FocusRequester() }
     LaunchedEffect(Unit) {
         runCatching { focusRequester.requestFocus() }
@@ -127,8 +114,7 @@ fun DeviceProfileBuilderScreen(
                     native.eventTime,
                 )
             },
-        // One primary action. Sharing is a row further down, because a profile can only be shared
-        // after it exists.
+        // Sharing is a row further down: a profile can only be shared after it exists.
         floatingActionButton = {
             ExtendedFloatingActionButton(
                 onClick = {
@@ -140,9 +126,7 @@ fun DeviceProfileBuilderScreen(
         },
     ) { paddingValues ->
 
-        // Each run of rows is one group, composed as one list item: the runs are short and fixed
-        // (the facts, the nine capture steps, the four profile rows), and a group composed whole
-        // gets its corners and inset from PreferenceGroup like every other screen's groups.
+        // Each short, fixed run of rows is one list item so PreferenceGroup gives it corners and inset.
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
@@ -158,8 +142,7 @@ fun DeviceProfileBuilderScreen(
             }
             item {
                 PreferenceGroup {
-                    // Reading captureTick here is what subscribes this row — and the step rows below
-                    // it, which are emitted by the same lambda — to the capture's mutations.
+                    // Reading captureTick here subscribes this row and the step rows below it to capture changes.
                     val answered = captureTick.let { capture.answered() }
                     PreferenceItem(
                         title = if (capture.isComplete()) {
@@ -253,13 +236,12 @@ fun DeviceProfileBuilderScreen(
                 }
             }
 
-            // Keeps the last row clear of the extended FAB, as the configuration list does.
+            // Keeps the last row clear of the extended FAB.
             item { Spacer(modifier = Modifier.height(88.dp)) }
         }
     }
 }
 
-/** The read-only facts, one per row: label as the title, the value as the summary. */
 @Composable
 private fun DetectedRows(facts: DeviceFacts) {
     PreferenceItem(
@@ -336,11 +318,8 @@ private fun DetectedRows(facts: DeviceFacts) {
 }
 
 /**
- * One capture step.
- *
- * The step being asked for carries the same tinted background a selected row gets elsewhere, and
- * the only "Skip" on screen — a skip button on every row would invite skipping a step the capture
- * is not on, which the state machine has no meaning for.
+ * One capture step. Only the current step is tinted and carries "Skip": skipping a step the
+ * capture is not on has no meaning to the state machine.
  */
 @Composable
 private fun CaptureStepRow(
@@ -359,9 +338,8 @@ private fun CaptureStepRow(
                 R.string.device_profile_capture_recorded,
                 captured.scanCode,
                 captured.keyCode,
-                // Not KeyEvent.keyCodeToString: that is a native call and degrades to the bare
-                // number off a device, which would make this row disagree with the config the
-                // same capture writes.
+                // Not KeyEvent.keyCodeToString: off a device that native call degrades to a bare number,
+                // disagreeing with the config this capture writes.
                 KeyCodeNames.of(captured.keyCode) ?: "—",
             )
             val withRepeat = if (captured.hasRepeatCadence()) {
@@ -417,9 +395,8 @@ private fun stepLabel(step: CaptureStep): String = stringResource(
 )
 
 /**
- * Serialises, validates, writes and activates. Returns the written file, or null when the export
- * refused — which it does when the generated XML does not survive a round trip through the config
- * parser, the one check that catches a profile that would load as nothing at all.
+ * Serialises, validates, writes and activates. Returns the file, or null when the generated XML
+ * does not survive a round trip through the config parser.
  */
 private fun saveProfile(
     context: Context,

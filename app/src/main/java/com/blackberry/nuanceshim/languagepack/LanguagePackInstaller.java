@@ -19,20 +19,12 @@ import dev.bbkb.ime.core.shared.Logger;
 import com.blackberry.nuanceshim.NuanceSDK;
 import dev.bbkb.ime.BuildConfig;
 
-/**
- * LanguagePackInstaller - Installation status of the NuanceSDK language pack resolved for one
- * requested locale.
- * Coordinates with LanguagePackRegistry for available language pack metadata.
- */
+/** Installation status of the language pack resolved for one requested locale. */
 public class LanguagePackInstaller {
 
     /**
-     * Process-wide cache, keyed by the REQUESTED language tag (the resolved pack may differ via
-     * registry fallbacks and defaults; the first registry to create an entry wins). It is the only
-     * thing standing between {@code isInstalled()} and a version.txt disk read per call, so it
-     * cannot simply be dropped -- but it is reached from the locale monitor and from
-     * LanguagePackManager's cleanup task, and its callers are not synchronized, so it must be a
-     * concurrent map rather than the raw HashSet-era {@code new HashMap()} it used to be.
+     * Keyed by the requested tag (the resolved pack may differ). Saves a version.txt read per
+     * {@code isInstalled()} call; concurrent because callers are not synchronized.
      */
     private static final ConcurrentMap<String, LanguagePackInstaller> sByLanguageTag = new ConcurrentHashMap<>();
 
@@ -86,11 +78,14 @@ public class LanguagePackInstaller {
     }
 
     public LanguagePackInstaller(Context context, Locale locale, LanguagePackRegistry registry) {
-        // The registry is keyed the way the catalogs spell languages (`in`, `iw`); on Android 15
-        // the Locale says `id` / `he`, and a plain getLanguage() found no pack for either.
+        // The registry uses old codes (`in`, `iw`); Android 15 Locales say `id` / `he`.
         this(context, LocaleUtils.languageCode(locale), locale.getCountry(), registry);
     }
 
+    /**
+     * @param str language code
+     * @param str2 country code, or null/empty for none
+     */
     public LanguagePackInstaller(Context context, String str, String str2, LanguagePackRegistry registry) {
         this.installedVersion = -1.0d;
         this.languagePackInfo = registry.findLanguagePack(str, str2);
@@ -122,6 +117,7 @@ public class LanguagePackInstaller {
         return new Locale(this.languagePackInfo.language, this.languagePackInfo.country);
     }
 
+    /** @param str locale identifier, language or language_COUNTRY */
     public static File getLanguagePackDirectory(Context context, String str) {
         return new File(context.getNoBackupFilesDir().getPath() + File.separator + NuanceSDK.DYNAMIC_MODEL_ABSTRACT_DIR + File.separator + str);
     }
@@ -184,9 +180,8 @@ public class LanguagePackInstaller {
             if (fileM7971j.exists()) {
                 deleteRecursively(fileM7971j);
             }
-            // The cached version pinned isInstalled() to true after the directory was gone, and
-            // the cache keeps this installer alive for the process lifetime. Entries are keyed by
-            // the requested tag, not this installer's resolved locale, so drop them by identity.
+            // The cached version would keep isInstalled() true. Cache keys are requested tags,
+            // so drop this installer by identity.
             this.installedVersion = -1.0d;
             sByLanguageTag.values().removeAll(Collections.singleton(this));
             return;

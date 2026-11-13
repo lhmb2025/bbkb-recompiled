@@ -5,10 +5,8 @@ import org.junit.Assert.assertTrue
 import org.junit.Test
 
 /**
- * Audit DK-22: `isAllLetters` was decompiled as `(c <= 'a' || c >= 'z') && (c <= 'A' || c >= 'Z')`,
- * so the four boundary letters themselves satisfied the reject condition. `isAllLetters` gates the
- * "prefer the user's typed text over the engine's inline word" rule in `RomajiInputProcessor`, so
- * any Romaji word containing an `a` or a `z` silently fell back to the NuanceSDK inline word.
+ * `isAllLetters` accepts the boundary letters a, z, A and Z. It gates `RomajiInputProcessor`'s
+ * "prefer the typed text over the engine's inline word" rule.
  */
 class RomajiIsAllLettersTest {
 

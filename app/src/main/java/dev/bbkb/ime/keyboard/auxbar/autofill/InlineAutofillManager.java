@@ -28,11 +28,7 @@ import java.util.ArrayList;
 import java.util.List;
 import dev.bbkb.ime.BuildConfig;
 
-/**
- * Manager for Android 11+ Inline Autofill suggestions.
- * Replaces the legacy Password Keeper integration with platform autofill API.
- * Implements UnifiedInputBoardComponent for integration with the unified input board system.
- */
+/** Android 11+ inline autofill chips, shown on the aux bar and registered as UIM board {@code -37}. */
 @RequiresApi(api = Build.VERSION_CODES.R)
 public final class InlineAutofillManager implements UnifiedInputBoardComponent {
 
@@ -42,7 +38,7 @@ public final class InlineAutofillManager implements UnifiedInputBoardComponent {
     public static final int KEY_CODE_AUTOFILL = -37;
     private static final int MAX_SUGGESTION_COUNT = 3;
     private static final String PREF_DEBUG_AUTOFILL_LOGGING = "pref_debug_autofill_logging";
-    /** User setting: offer inline autofill chips at all. Default on. */
+    /** Default on. */
     public static final String PREF_INLINE_AUTOFILL_ENABLED = "pref_inline_autofill_enabled";
 
     private static InlineAutofillManager instance = null;
@@ -54,19 +50,14 @@ public final class InlineAutofillManager implements UnifiedInputBoardComponent {
     private int suggestionHeight;
     private int suggestionWidth;
 
-    // The current field, kept for the debug log only
+    // For the debug log only.
     private EditorInfo currentEditorInfo;
 
-    // Unified aux bar system; the sole display path
     private AuxBarManager auxBarManager;
-    
-    // Theme observer for updating styles
+
     private kotlin.jvm.functions.Function0<kotlin.Unit> themeObserver;
 
-    /**
-     * {@code pref_debug_autofill_logging}, cached. This used to be a SharedPreferences read per
-     * log line. Refreshed on each input start.
-     */
+    /** {@code pref_debug_autofill_logging}, cached and refreshed on each input start. */
     private boolean debugLoggingEnabled;
     private boolean styleNeedsRefresh = true;
     private Bundle cachedStyleBundle = null;
@@ -99,15 +90,11 @@ public final class InlineAutofillManager implements UnifiedInputBoardComponent {
         Log.d(DIAG, "[INIT] InlineAutofillManager instance created"
                 + " | API=" + Build.VERSION.SDK_INT);
         }
-        
-        // Register for theme changes
+
         registerThemeObserver();
     }
-    
-    /**
-     * Register observer for theme changes from KeyboardColorManager.
-     * When theme changes, we invalidate the cached style so the next request uses new colors.
-     */
+
+    /** A theme change invalidates the cached style so the next request uses the new colors. */
     private void registerThemeObserver() {
         if (KeyboardColorManager.INSTANCE.isInitialized()) {
             themeObserver = () -> {
@@ -122,10 +109,7 @@ public final class InlineAutofillManager implements UnifiedInputBoardComponent {
             logDebug("KeyboardColorManager not initialized, skipping observer registration");
         }
     }
-    
-    /**
-     * Unregister the theme observer.
-     */
+
     private void unregisterThemeObserver() {
         if (themeObserver != null && KeyboardColorManager.INSTANCE.isInitialized()) {
             KeyboardColorManager.INSTANCE.removeObserver(themeObserver);
@@ -133,14 +117,9 @@ public final class InlineAutofillManager implements UnifiedInputBoardComponent {
             logDebug("Unregistered theme observer");
         }
     }
-    
-    /**
-     * Create a themed style bundle for inline autofill suggestions.
-     * Uses colors from KeyboardColorManager to match the keyboard theme.
-     * Caches the bundle and only rebuilds when theme changes.
-     */
+
+    /** The chip style from the keyboard palette, cached until the theme changes. */
     private Bundle createThemedStyleBundle() {
-        // Return cached bundle if still valid
         if (cachedStyleBundle != null && !styleNeedsRefresh) {
             logDebug("Using cached style bundle");
             return cachedStyleBundle;
@@ -148,8 +127,7 @@ public final class InlineAutofillManager implements UnifiedInputBoardComponent {
         
         try {
             UiVersions.StylesBuilder stylesBuilder = UiVersions.newStylesBuilder();
-            
-            // Get colors from KeyboardColorManager
+
             int backgroundColor;
             int textColor;
             int hintColor;
@@ -162,31 +140,26 @@ public final class InlineAutofillManager implements UnifiedInputBoardComponent {
                         ", text: " + Integer.toHexString(textColor) +
                         ", hint: " + Integer.toHexString(hintColor));
             } else {
-                // Fallback to default colors if KeyboardColorManager not initialized
-                backgroundColor = 0xFF2D2D2D; // Dark gray
-                textColor = 0xFFFFFFFF;       // White
-                hintColor = 0xFFAAAAAA;       // Light gray
+                backgroundColor = 0xFF2D2D2D;
+                textColor = 0xFFFFFFFF;
+                hintColor = 0xFFAAAAAA;
                 logDebug("KeyboardColorManager not initialized, using fallback colors");
             }
-            
-            // Create chip (container) style with background color
+
             ViewStyle chipStyle = new ViewStyle.Builder()
                     .setBackgroundColor(backgroundColor)
                     .build();
-            
-            // Create title text style with primary text color
+
             TextViewStyle titleStyle = new TextViewStyle.Builder()
                     .setTextColor(textColor)
                     .setTextSize(14.0f)
                     .build();
-            
-            // Create subtitle text style with hint color
+
             TextViewStyle subtitleStyle = new TextViewStyle.Builder()
                     .setTextColor(hintColor)
                     .setTextSize(12.0f)
                     .build();
-            
-            // Build the complete style
+
             InlineSuggestionUi.Style style = InlineSuggestionUi.newStyleBuilder()
                     .setChipStyle(chipStyle)
                     .setTitleStyle(titleStyle)
@@ -203,40 +176,28 @@ public final class InlineAutofillManager implements UnifiedInputBoardComponent {
             
         } catch (Exception e) {
             if (BuildConfig.DEBUG) Log.e(TAG, "Failed to create themed style bundle, using default", e);
-            // Fallback to default unstyled bundle
             return UiVersions.newStylesBuilder()
                     .addStyle(InlineSuggestionUi.newStyleBuilder().build())
                     .build();
         }
     }
-    
-    /**
-     * Check if debug autofill logging is enabled
-     */
+
     private boolean isDebugLoggingEnabled() {
         return this.debugLoggingEnabled;
     }
 
-    /** Re-read the debug-logging pref; called on input start, not per log line. */
+    /** Called on input start, not per log line. */
     private void refreshDebugLoggingEnabled() {
         this.debugLoggingEnabled = BuildConfig.DEBUG && PrefsManager.INSTANCE.getPrefs(context)
                 .getBoolean(PREF_DEBUG_AUTOFILL_LOGGING, false);
     }
 
-    /**
-     * Re-read the user setting. {@link #setEnabled} had no caller, so {@code isEnabled} was
-     * permanently true and there was no way to turn inline autofill off; the flag is now backed by
-     * {@code pref_inline_autofill_enabled} (default on) and re-read at the start of every input
-     * session, so the Settings toggle applies without an IME restart.
-     */
+    /** Re-read at every input start, so the setting applies without an IME restart. */
     private void refreshEnabledFromPrefs() {
         setEnabled(PrefsManager.INSTANCE.getPrefs(context)
                 .getBoolean(PREF_INLINE_AUTOFILL_ENABLED, true));
     }
-    
-    /**
-     * Log debug message if debug logging is enabled
-     */
+
     private void logDebug(String message) {
         if (!BuildConfig.DEBUG || !this.debugLoggingEnabled) {
             return;
@@ -244,9 +205,6 @@ public final class InlineAutofillManager implements UnifiedInputBoardComponent {
         Log.d(TAG, message);
     }
 
-    /**
-     * Set the AuxBarManager to use for displaying autofill suggestions.
-     */
     public void setAuxBarManager(AuxBarManager manager) {
         this.auxBarManager = manager;
         if (BuildConfig.DEBUG) {
@@ -255,20 +213,15 @@ public final class InlineAutofillManager implements UnifiedInputBoardComponent {
         }
     }
 
-    /**
-     * Creates an InlineSuggestionsRequest to be returned from onCreateInlineSuggestionsRequest().
-     * This tells autofill services what kind of inline suggestions the keyboard can display.
-     */
+    /** What to return from onCreateInlineSuggestionsRequest(): the chips the keyboard can show. */
     @Nullable
     public InlineSuggestionsRequest createInlineSuggestionsRequest(int maxWidth, int maxHeight) {
         return createInlineSuggestionsRequest(maxWidth, maxHeight, null);
     }
 
     /**
-     * @param editorInfo the field this request is being built for, straight from
-     *     {@code InputMethodService.getCurrentInputEditorInfo()}. The framework delivers
-     *     {@code onCreateInlineSuggestionsRequest} on its own schedule, with no ordering guarantee
-     *     against {@code onStartInput}, so it is recorded here too (debug log only).
+     * @param editorInfo the current field, recorded for the debug log (the request is not ordered
+     *     against {@code onStartInput})
      */
     @Nullable
     public InlineSuggestionsRequest createInlineSuggestionsRequest(int maxWidth, int maxHeight,
@@ -299,7 +252,6 @@ public final class InlineAutofillManager implements UnifiedInputBoardComponent {
             Size minSize = new Size(100, 40);
             Size maxSize = new Size(suggestionWidth, suggestionHeight);
 
-            // Create styled bundle using colors from KeyboardColorManager
             Bundle styleBundle = createThemedStyleBundle();
 
             InlinePresentationSpec spec = new InlinePresentationSpec.Builder(minSize, maxSize)
@@ -310,8 +262,7 @@ public final class InlineAutofillManager implements UnifiedInputBoardComponent {
             InlineSuggestionsRequest.Builder builder =
                     new InlineSuggestionsRequest.Builder(specs)
                             .setMaxSuggestionCount(MAX_SUGGESTION_COUNT);
-            // Android 12+ lets the service attach a tooltip above the chips ("Suggestions from
-            // <service>"). Same themed style as the chips so it does not arrive unstyled.
+            // Android 12+ tooltip above the chips: same style so it does not arrive unstyled.
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
                 builder.setInlineTooltipPresentationSpec(
                         new InlinePresentationSpec.Builder(minSize, maxSize)
@@ -333,10 +284,6 @@ public final class InlineAutofillManager implements UnifiedInputBoardComponent {
         }
     }
 
-    /**
-     * Handles the InlineSuggestionsResponse from the autofill service.
-     * Called from BlackBerryIME.onInlineSuggestionsResponse().
-     */
     public boolean handleResponse(@NonNull InlineSuggestionsResponse response) {
         List<InlineSuggestion> suggestions = response.getInlineSuggestions();
 
@@ -370,9 +317,6 @@ public final class InlineAutofillManager implements UnifiedInputBoardComponent {
         return true;
     }
 
-    /**
-     * Called when input starts on a new text field.
-     */
     public void onInputStarted(EditorInfo editorInfo, boolean restarting) {
         refreshDebugLoggingEnabled();
         refreshEnabledFromPrefs();
@@ -399,9 +343,6 @@ public final class InlineAutofillManager implements UnifiedInputBoardComponent {
         }
     }
 
-    /**
-     * Called when input ends on the current text field.
-     */
     public void onInputFinished() {
         if (BuildConfig.DEBUG) {
         Log.d(DIAG, "[SESSION] onInputFinished()"
@@ -413,11 +354,7 @@ public final class InlineAutofillManager implements UnifiedInputBoardComponent {
         currentEditorInfo = null;
     }
 
-    /**
-     * Called when the user selects an autofill suggestion.
-     * The actual autofill commit is handled by InlineContentView internally;
-     * this method hides the bar and resets state.
-     */
+    /** InlineContentView commits the fill itself; this only hides the bar and resets state. */
     public void onSelectionMade() {
         if (BuildConfig.DEBUG) Log.d(DIAG, "[INTERACTION] onSelectionMade() - hiding bar and clearing state");
         hide();
@@ -432,13 +369,10 @@ public final class InlineAutofillManager implements UnifiedInputBoardComponent {
         currentSuggestions.clear();
         unregisterThemeObserver();
         cachedStyleBundle = null;
-        // The singleton outlives every input view; without this it pins the previous
-        // AuxBarManager -> AuxBarView -> themed Context past each input-view recreation.
+        // The singleton outlives every input view; drop the bar so it does not pin the old one.
         auxBarManager = null;
         currentEditorInfo = null;
     }
-
-    // UnifiedInputBoardComponent implementation
 
     @Override
     public void onRefresh() {
@@ -463,12 +397,8 @@ public final class InlineAutofillManager implements UnifiedInputBoardComponent {
     }
 
     /**
-     * Re-display the suggestions from the last response.
-     *
-     * <p>Arrival is response-driven, but the chips can be dismissed (a board key, a field-type
-     * switch) while the response is still valid, and this manager is registered as board
-     * {@code -37}, so {@code UnifiedInputBoardManager.requestBoard(-37)} routes here. Without this
-     * the chips could not be brought back without re-focusing the field.
+     * Re-show the last response's chips: they can be dismissed while still valid, and
+     * {@code requestBoard(-37)} routes here.
      */
     @Override
     public void show() {

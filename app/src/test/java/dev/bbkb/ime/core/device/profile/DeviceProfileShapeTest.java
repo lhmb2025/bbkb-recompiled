@@ -11,28 +11,19 @@ import org.robolectric.RobolectricTestRunner;
 import org.robolectric.annotation.Config;
 
 /**
- * W3-D: {@link DeviceProfile#current()} is a static singleton fed by a hardware scan, and on a JVM
- * that scan always answers "VKB, no physical keyboard". Every question the app asks about the
- * device shape therefore had exactly one testable answer, which is why the physical-keyboard
- * rendering of the settings screens is untested.
- *
- * <p>{@link DeviceProfile#installForTest(DeviceCapabilities)} is the seam. This pins what it does,
- * and — more importantly — pins the two force-VKB levers behaving the same way over an installed
- * shape as they do over a detected one. {@code debug_force_vkb_mode} and
- * {@code DeviceProfile.setForceVkbMode} are how this project verifies the on-screen keyboard on a
- * Mac emulator; before this they had no unit coverage at all.
+ * Pins {@link DeviceProfile#installForTest(DeviceCapabilities)} (a JVM scan always answers "VKB, no
+ * physical keyboard") and that the two force-VKB levers behave the same over an installed shape as
+ * over a detected one.
  */
 @RunWith(RobolectricTestRunner.class)
 @Config(sdk = 34, manifest = Config.NONE)
 public class DeviceProfileShapeTest {
-
-    /** A KEY2-like handset: physical keyboard with a capacitive overlay over it. */
+    /** A CKB handset: physical keyboard with a capacitive overlay. */
     private static DeviceCapabilities ckbHandset() {
         return DeviceCapabilities.forShape(DeviceCapabilities.DetectedDeviceType.PKB,
                 true, true, true, "qwerty", "4row");
     }
 
-    /** A plain touchscreen handset. */
     private static DeviceCapabilities touchscreenOnly() {
         return DeviceCapabilities.forShape(DeviceCapabilities.DetectedDeviceType.VKB,
                 false, false, false, "qwerty", "none");
@@ -46,8 +37,6 @@ public class DeviceProfileShapeTest {
         DeviceProfile.setOnScreenKeyboardShowing(false);
         DeviceProfile.initialize(null);
     }
-
-    // ── the seam ─────────────────────────────────────────────────────────────
 
     @Test
     public void installedPkbShapeIsWhatCurrentReports() {
@@ -107,21 +96,14 @@ public class DeviceProfileShapeTest {
         assertFalse(DeviceProfile.current().isForcedCkbDevice());
     }
 
-    // ── the force-VKB levers, over an installed physical-keyboard shape ───────
-    //
-    // These two flags are NOT interchangeable, and the difference is easy to lose:
-    //   * setForceVkbMode      — the transient, per-window force behind the show-VKB key. This is
-    //                            the one isPkbDevice() consults, so it changes the device shape.
-    //   * setDebugForceVkbMode — the standing "Force touchscreen-only mode" debug toggle. It is
-    //                            reported by the static DeviceProfile.isForceVkbMode(), which is
-    //                            what the IME and the keyboard switcher read, but isPkbDevice()
-    //                            does NOT look at it, so the profile still reports PKB.
-    // Intentional (FIX-C): the debug toggle shows the on-screen keyboard over PKB hardware, and
-    // the emulator/KEY2 recipe needs the device to stay PKB. onShowInputRequested()'s PKB branch
-    // is what shows the keyboard on an implicit show (e.g. SENDTO auto-focus) without Android's
-    // show_ime_with_hard_keyboard. isOnScreenKeyboardVisible() still honours the toggle, through
-    // refreshOnScreenKeyboardShowing()'s isForceVkbMode() term. The original APK kept device
-    // identity (ad.a()) free of every force flag.
+    // The two force flags differ:
+    //   * setForceVkbMode: transient, per window, behind the show-VKB key. isPkbDevice() consults
+    //     it, so it changes the device shape.
+    //   * setDebugForceVkbMode: the standing "Force touchscreen-only mode" toggle, reported by
+    //     DeviceProfile.isForceVkbMode() (read by the IME and switcher) but not by isPkbDevice(),
+    //     so the profile stays PKB. That is intended: onShowInputRequested()'s PKB branch shows the
+    //     keyboard on an implicit show without show_ime_with_hard_keyboard, and
+    //     isOnScreenKeyboardVisible() still honours the toggle via refreshOnScreenKeyboardShowing().
 
     @Test
     public void transientForceVkbModeTurnsAPkbShapeIntoAVkbOne() {
@@ -167,8 +149,8 @@ public class DeviceProfileShapeTest {
 
     @Test
     public void debugForceVkbModeSurvivesAReinstall() {
-        // The standing debug override lives in DeviceRuntimeState, not in the profile, which is
-        // why flipping it in Debug settings takes effect without an IME restart.
+        // The debug override lives in DeviceRuntimeState, not the profile, so the Debug toggle takes
+        // effect without an IME restart.
         DeviceProfile.setDebugForceVkbMode(true);
         DeviceProfile.installForTest(ckbHandset());
         assertTrue(DeviceProfile.isForceVkbMode());
@@ -176,8 +158,7 @@ public class DeviceProfileShapeTest {
 
     @Test
     public void theTwoForceFlagsAreIndependent() {
-        // The transient flag is cleared on every hideWindow(); the debug one must not be, or the
-        // Debug toggle would only hold for one window after a process restart.
+        // The transient flag is cleared on every hideWindow(); the debug one must not be.
         DeviceProfile.installForTest(ckbHandset());
         DeviceProfile.setDebugForceVkbMode(true);
         DeviceProfile.setForceVkbMode(true);
@@ -189,8 +170,6 @@ public class DeviceProfileShapeTest {
         assertTrue("...and the shape follows the transient flag alone",
                 DeviceProfile.current().isPkbDevice());
     }
-
-    // ── on-screen-keyboard visibility, which reads the shape ─────────────────
 
     @Test
     public void onScreenKeyboardIsAlwaysVisibleOnAVkbShape() {
@@ -212,9 +191,8 @@ public class DeviceProfileShapeTest {
 
     @Test
     public void theTransientForceAlsoMakesTheOnScreenKeyboardVisible() {
-        // isOnScreenKeyboardVisible()'s shape term goes through isVkbDevice(), so it follows the
-        // transient force and is unmoved by the debug toggle. On a device the toggle still
-        // reaches it via the showing flag (refreshOnScreenKeyboardShowing ORs isForceVkbMode()).
+        // The shape term goes through isVkbDevice(): it follows the transient force, not the debug
+        // toggle (which reaches visibility via the showing flag instead).
         DeviceProfile.installForTest(ckbHandset());
         DeviceProfile.setForceVkbMode(true);
         assertTrue(DeviceProfile.isOnScreenKeyboardVisible());
@@ -223,8 +201,6 @@ public class DeviceProfileShapeTest {
         DeviceProfile.setDebugForceVkbMode(true);
         assertFalse(DeviceProfile.isOnScreenKeyboardVisible());
     }
-
-    // ── per-package force list ───────────────────────────────────────────────
 
     @Test
     public void vkbForcedPackagesAreTrackedIndependentlyOfTheShape() {

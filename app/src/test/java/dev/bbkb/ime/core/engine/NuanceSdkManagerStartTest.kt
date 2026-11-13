@@ -21,9 +21,8 @@ import java.util.concurrent.atomic.AtomicInteger
 import java.util.concurrent.atomic.AtomicReference
 
 /**
- * Audit P-6 / F-7: the primary engine is started on the engine loader thread from onCreate and
- * joined by its first user; a failed start is not retried on every call; creation never runs
- * anywhere but on the loader thread.
+ * The primary engine starts on the loader thread from onCreate and is joined by its first user; a
+ * failed start is not retried per call; creation only runs on the loader thread.
  */
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [34], manifest = Config.NONE, instrumentedPackages = ["com.blackberry.nuanceshim"])

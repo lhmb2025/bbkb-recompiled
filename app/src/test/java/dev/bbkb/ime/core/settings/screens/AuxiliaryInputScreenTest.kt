@@ -25,13 +25,8 @@ import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
 
 /**
- * The unified input menu rows on the Auxiliary input screen.
- *
- * "Customize unified input menu" configures the order of a menu that "Enable unified input menu"
- * — the toggle directly above it — can switch off entirely. With the menu off there is nothing
- * for that screen to configure, so the row is disabled rather than opening it; and because the
- * toggle's value lives in the host's state map, switching it back on must re-enable the row
- * without leaving and re-entering the screen.
+ * Pins that "Customize unified input menu" is disabled while "Enable unified input menu" (the
+ * toggle above it) is off, and re-enabled in place when it is switched back on.
  */
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [34], qualifiers = "w411dp-h891dp")

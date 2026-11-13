@@ -19,14 +19,10 @@ import java.io.File
 import java.util.Locale
 
 /**
- * Characterises the language-pack status layer: the process-wide status cache (keyed by the
- * REQUESTED language tag, first registry wins), registry fallbacks and defaults, installed-state
- * reads, the unused-locale cleanup's uninstall/deregister path, and the locale monitor's posts.
- *
- * Every test uses its own made-up language codes because the status cache is process-wide.
- * NuanceSDKManager has no engine in unit tests (no ImeApplication), so a call that reaches
- * `NuanceSDKManager.getInstance().deregisterLdb(...)` surfaces as a NullPointerException; tests
- * use that to observe that the deregister call was reached.
+ * The language-pack status layer: the process-wide status cache (keyed by the requested tag,
+ * first registry wins), registry fallbacks, installed state, the locale monitor's posts, and no
+ * automatic pack removal. Each test uses its own made-up codes because the cache is process-wide.
+ * With no engine in unit tests, reaching `NuanceSDKManager.getInstance().deregisterLdb` throws NPE.
  */
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [34], manifest = Config.NONE)
@@ -53,9 +49,8 @@ class LanguagePackManagerTest {
         val manager = LanguagePackManager(context)
         LanguagePackManager::class.java.getDeclaredField("registry").apply { isAccessible = true }
             .set(manager, registry)
-        // The catalogue is parsed lazily on first read now, so the injection has to claim the
-        // load has already happened -- otherwise the first lookup would replace the injected
-        // registry (including the deliberate null of the degraded mode) with the stock manifest.
+        // The catalogue loads lazily: mark it loaded, or the first lookup replaces the injected
+        // registry (even the degraded-mode null) with the stock manifest.
         LanguagePackManager::class.java.getDeclaredField("registryLoaded")
             .apply { isAccessible = true }.setBoolean(manager, true)
         return manager
@@ -69,8 +64,6 @@ class LanguagePackManagerTest {
         if (ldb) File(dir, "$id.ldb").writeText("x")
         return dir
     }
-
-    // ---- degraded mode ---------------------------------------------------------------------
 
     @Test
     fun nullRegistryIsTheDegradedNoLanguageDatabaseMode() {
@@ -93,8 +86,6 @@ class LanguagePackManagerTest {
         assertTrue(manager.isSupported(Locale("af")))
         assertFalse(manager.isSupported(Locale("zz")))
     }
-
-    // ---- status cache ----------------------------------------------------------------------
 
     @Test
     fun statusIsCachedByRequestedTagAndTheFirstRegistryWins() {
@@ -138,8 +129,6 @@ class LanguagePackManagerTest {
         assertFalse(status.isInstalled)
     }
 
-    // ---- installed state -------------------------------------------------------------------
-
     @Test
     fun installedStateReadsTheVersionFileAndThenPinsIt() {
         val manager = managerWith(registryOf(pack("qe", "AA")))
@@ -180,8 +169,6 @@ class LanguagePackManagerTest {
         assertFalse(installed.contains("qh_CC"))
     }
 
-    // ---- languages -------------------------------------------------------------------------
-
     @Test
     fun setLanguagesRefusesAnyUnsupportedLocaleBeforeTouchingTheEngine() {
         val manager = managerWith(registryOf(pack("qi", "AA")))
@@ -195,8 +182,6 @@ class LanguagePackManagerTest {
             manager.setLanguages(null, arrayOf(Locale("qk", "AA")))
         }
     }
-
-    // ---- cleanup ---------------------------------------------------------------------------
 
     @Test
     fun monitorPostsOneReadyMessagePerInstalledAdditionalLocale() {
@@ -232,17 +217,10 @@ class LanguagePackManagerTest {
         }
     }
 
-    // ── the unused-locale cleanup is GONE (2026-09-16, owner decision) ──────────
-    //
-    // Eight scenarios that characterised it were removed with it. These two replace them: one
-    // pins the behaviour users care about, the other makes reintroducing the feature by accident
-    // a build failure rather than a silent return of data loss.
-
     @Test
     fun bootCompletedDoesNotTouchInstalledPacks() {
-        // The decisive case: a pack for a locale that is NOT an enabled subtype - which is every
-        // side-loaded pack for a language method.xml has no subtype for. The old cleanup deleted
-        // exactly these, within the hour, every time.
+        // A pack for a locale that is not an enabled subtype, like every side-loaded pack with no
+        // method.xml subtype, must survive.
         val dir = installDir("qz")
         val manager = managerWith(null)
         manager.onBootCompleted(context)
@@ -253,9 +231,8 @@ class LanguagePackManagerTest {
 
     @Test
     fun noAutomaticRemovalApiExistsAnyMore() {
-        // A guard against reintroduction: any method whose name suggests periodic locale removal
-        // would have to be justified against the class javadoc, which explains why it went.
-        // uninstall()/deleteRecursively on LanguagePackInstaller remain - those are user-driven.
+        // Guards against reintroducing automatic locale removal (it deleted side-loaded packs).
+        // LanguagePackInstaller.uninstall() stays: it is user-driven.
         val suspicious = LanguagePackManager::class.java.declaredMethods
             .map { it.name }
             .filter { it.contains("UnusedLocale") || it.contains("removeUnused") || it.contains("markLocalesInUse") }

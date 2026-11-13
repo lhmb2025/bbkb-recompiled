@@ -13,15 +13,7 @@ import dev.bbkb.ime.core.settings.ui.Toggle
 import dev.bbkb.ime.core.settings.ui.boolPref
 
 /**
- * Debug settings (debug builds only; the Advanced hub hides the entry in release builds):
- * advanced tuning that a user has no everyday reason to touch, and developer switches.
- *
- * 2026-10-20: the rows nothing read are gone (flow-mode swipe thresholds, slide-to-type preview,
- * persistent symbol page hint, virtual keyboard visibility, mic key voice assistant, cursor
- * control, Korean double consonants, physical special-key and debug-logging toggles). The key
- * long-press delay moved to On-screen keyboard > Behavior, the typed-word accept button to
- * Learning, and the VKB gesture activation delay slider was a duplicate of the one on Advanced
- * gesture thresholds.
+ * Debug settings (debug builds only): advanced tuning and developer switches.
  */
 @Composable
 fun DebugSettingsScreen(
@@ -65,7 +57,7 @@ fun DebugSettingsScreen(
         Toggle(boolPref("pref_debug_autofill_logging", false),
             R.string.prefs_autofill_debug_logging_title,
             RowSummary.Res(R.string.prefs_autofill_debug_logging_summary)),
-        // Hardcoded copy, so it rides the escape hatch rather than inventing a literal-title row.
+        // Hardcoded copy, so it uses the escape hatch rather than a literal-title row.
         Custom(inGroup = true) {
             PreferenceScreen(
                 title = "Gesture Lab (prototype)",
@@ -75,15 +67,12 @@ fun DebugSettingsScreen(
         },
 
         Category(R.string.prefs_category_developer),
-        // The profile builder is half-finished, so DeviceConfigurationScreen hides its whole
-        // "THIS DEVICE" section unless this is on. The route stays live either way — the builder
-        // is still reachable by deep link and by its own tests.
+        // The unfinished profile builder: DeviceConfigurationScreen hides its "THIS DEVICE" section
+        // unless this is on. The route stays live (deep link, tests).
         Toggle(boolPref(PREF_SHOW_DEVICE_PROFILE_BUILDER, false),
             R.string.prefs_show_device_profile_builder_title,
             RowSummary.Res(R.string.prefs_show_device_profile_builder_summary)),
-        // The CKB gesture screen's DEVELOPER category — sensor-map capture and export — is
-        // instrumentation for the decoder, not settings, so it is hidden unless this is on.
-        // Nothing there is deleted; the rest of that screen renders either way.
+        // Shows the CKB gesture screen's DEVELOPER category (sensor-map capture and export).
         Toggle(boolPref(PREF_SHOW_CKB_DEVELOPER_SETTINGS, false),
             R.string.prefs_show_ckb_developer_settings_title,
             RowSummary.Res(R.string.prefs_show_ckb_developer_settings_summary)),

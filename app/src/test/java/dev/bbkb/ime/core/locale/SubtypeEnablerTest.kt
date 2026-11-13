@@ -43,7 +43,7 @@ class SubtypeEnablerTest {
 
     @Test
     fun neverPicksAMultiLanguageKeyboard() {
-        // The keyboard the beta reporter ended up with: "Korean" in name, English in practice.
+        // "Korean" in name, English in practice.
         val all = listOf(multiLanguageKorean, subtype("ko"))
         assertEquals("ko", SubtypeEnabler.pickSubtypeFor("ko", all)?.locale)
         assertNull(SubtypeEnabler.pickSubtypeFor("ko", listOf(multiLanguageKorean)))

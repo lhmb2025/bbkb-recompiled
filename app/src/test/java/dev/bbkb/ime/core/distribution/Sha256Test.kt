@@ -9,10 +9,7 @@ import org.junit.rules.TemporaryFolder
 import java.io.ByteArrayInputStream
 import java.nio.charset.StandardCharsets
 
-/**
- * The hash is one of the two things standing between the user and an APK someone else wrote, so
- * it is checked against known-answer vectors rather than against itself.
- */
+/** Pins the download hash against known-answer vectors rather than against itself. */
 class Sha256Test {
 
     @get:Rule
@@ -34,8 +31,7 @@ class Sha256Test {
 
     @Test
     fun fileStreamAndByteArrayAgreeOverSomethingBiggerThanTheBuffer() {
-        // The streaming loop's buffer is 64 KiB; a payload several buffers long proves the
-        // chunking, which a short input cannot.
+        // Several 64 KiB stream buffers long, to exercise chunking.
         val payload = ByteArray(200_000) { (it % 251).toByte() }
         val file = folder.newFile("payload.bin").apply { writeBytes(payload) }
 
@@ -67,8 +63,8 @@ class Sha256Test {
 
     @Test
     fun noHashIsNotAnyHash() {
-        // The manifest promises a digest; a blank one must never be read as "matches whatever
-        // arrived", or an entry with the field left out would install unverified bytes.
+        // A blank expected digest must never match, or an entry missing it would install
+        // unverified bytes.
         val digest = Sha256.of("abc".toByteArray())
         assertFalse(Sha256.matches(null, digest))
         assertFalse(Sha256.matches("", digest))

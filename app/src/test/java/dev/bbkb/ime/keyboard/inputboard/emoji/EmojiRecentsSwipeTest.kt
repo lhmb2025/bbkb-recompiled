@@ -29,14 +29,9 @@ import org.robolectric.annotation.Config
 import java.time.Duration
 
 /**
- * A swipe on the Recents tab moves on to the first category exactly like a swipe between two
- * categories (owner report 2026-11-06: it never did, because Recents is drawn in an overlay over the
- * category pager and the swipe never reached the pager). The overlay hands the finger to the pager,
- * slides with the Recents page it covers, and the tab strip, page dots and current category follow
- * the pager as for any other page change. The swipe back from the first category is unchanged, and
- * a typed query's results are never paged away.
- *
- * Dataset: positions 0 Recents | 1-2 Smileys (41) | 3 Animals (3).
+ * A swipe on Recents (an overlay over the category pager) moves to the first category like any category swipe:
+ * the overlay hands the finger to the pager and the tabs, dots and category follow. The swipe back is unchanged,
+ * and a typed query's results are never paged away. Dataset: 0 Recents | 1-2 Smileys (41) | 3 Animals (3).
  */
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [34], qualifiers = "w411dp-h891dp")
@@ -159,7 +154,7 @@ class EmojiRecentsSwipeTest {
         assertEquals(EmojiCategory.SMILEYS_EMOTION.id, v.manager().currentCategoryId)
     }
 
-    /** The other way from the first category: back to Recents, as before. */
+    /** The other way from the first category: back to Recents. */
     @Test
     fun theSwipeBackFromTheFirstCategoryReturnsToRecents() {
         val v = openOn(0)

@@ -37,25 +37,9 @@ import java.util.Locale;
 
 /**
  * The PKB modifier status-bar icon: {@link ModifierStatusBarUpdater} driven from the hardware key
- * path, i.e. the "Shift / Alt indicator in the status bar" the owner reported missing on a KEY2
- * (2026-09-22). Nothing covered this class before.
- *
- * <p>Two things here are the bug, and both come from the same assumption — that the status-bar
- * slot stays exactly as the IME last left it:
- *
- * <ul>
- *   <li>The updater posts only when the meta state <em>changes</em>, and {@code forceUpdate} used
- *       to mean nothing more than "skip the physical-keyboard check": it still fell through the
- *       {@code mLastMetaState != metaState} short circuit. So the IME had no way at all to put
- *       the icon back. It is not the IME's slot: {@code InputMethodManagerService} clears the IME
- *       icon on every unbind, and {@code InputMethodService.showStatusIcon} silently returns when
- *       the privileged operations are not attached yet — which on a PKB is exactly the first
- *       modifier press of a session, made while {@code requestShowOnKeyPress()} is still bringing
- *       the window up. After one dropped post the cache said "already showing" forever.</li>
- *   <li>{@code consumeModifiersAfterKey} spends a sticky Shift/Alt without telling the updater,
- *       so the icon outlived the modifier — and then the <em>next</em> press of the same modifier
- *       computed the same meta state as the cache and posted nothing.</li>
- * </ul>
+ * path. The system owns the slot (it clears the IME icon on unbind and drops posts made before the
+ * privileged operations attach), so {@code forceUpdate} must re-post an unchanged state, and a
+ * sticky modifier spent by {@code consumeModifiersAfterKey} must take the icon down.
  */
 @RunWith(RobolectricTestRunner.class)
 @Config(sdk = 34, manifest = Config.NONE)
@@ -136,9 +120,7 @@ public class ModifierStatusIconTest {
         trackerUp(keyCode);
     }
 
-    // ==================== the hardware key path posts the icon ====================
-
-    /** The owner's report, at its narrowest: press Shift on the KEY2, get the Shift icon. */
+    /** Press Shift on the KEY2, get the Shift icon. */
     @Test
     public void aShiftPressOnTheHardwarePathShowsTheShiftIcon() {
         keyDownThroughProcessor(KeyEvent.KEYCODE_SHIFT_LEFT);
@@ -180,8 +162,6 @@ public class ModifierStatusIconTest {
         verify(ime).showStatusIcon(R.drawable.ic_status_alt_shift);
     }
 
-    // ==================== clearing the state takes the icon down ====================
-
     @Test
     public void clearingTheModifierStateHidesTheIcon() {
         trackerDown(KeyEvent.KEYCODE_SHIFT_LEFT);
@@ -206,8 +186,8 @@ public class ModifierStatusIconTest {
     }
 
     /**
-     * The sticky-modifier half of the bug. A tapped Shift is spent by the next character, and
-     * that transition is reported by nobody else — the Shift key's own key-up already ran.
+     * A tapped Shift is spent by the next character, and nobody else reports that transition
+     * (the Shift key's own key-up already ran).
      */
     @Test
     public void spendingAStickyShiftOnACharacterHidesTheIcon() {
@@ -223,9 +203,8 @@ public class ModifierStatusIconTest {
     }
 
     /**
-     * And the consequence of leaving that transition unreported: because the updater posts only
-     * on a change, the NEXT tap of the same modifier computed the same meta state the stale cache
-     * held and posted nothing at all.
+     * Because the updater posts only on a change, leaving that transition unreported would make
+     * the next tap of the same modifier match the stale cache and post nothing.
      */
     @Test
     public void aSecondStickyShiftAfterAConsumedOneIsPostedAgain() {
@@ -238,13 +217,9 @@ public class ModifierStatusIconTest {
         verify(ime).showStatusIcon(R.drawable.ic_status_shift);
     }
 
-    // ==================== the IME can re-assert an icon the system dropped ====================
-
     /**
-     * The system owns the slot: it clears the IME icon on unbind, and drops a post made before
-     * the IME's privileged operations exist. The IME must be able to put the icon back for a
-     * state that has not changed — which is what {@code onWindowShown} / {@code onStartInputView}
-     * now do.
+     * The IME must be able to put the icon back for an unchanged state, as {@code onWindowShown}
+     * and {@code onStartInputView} do, because the system clears or drops it.
      */
     @Test
     public void refreshRePostsTheIconForAnUnchangedState() {
@@ -265,8 +240,6 @@ public class ModifierStatusIconTest {
         verify(ime, never()).showStatusIcon(Mockito.anyInt());
     }
 
-    // ==================== binder traffic: post only on a change ====================
-
     /** One keyboard show (two re-asserts) and one hide (three full resets), as the IME runs them. */
     private void showHideCycle() {
         tracker.refreshModifierStatus();   // onStartInputView
@@ -277,8 +250,8 @@ public class ModifierStatusIconTest {
     }
 
     /**
-     * Each post is an {@code updateStatusIconAsync} binder call; five show/hide cycles with no
-     * modifier used to make 25 of them. A hidden icon is posted once, then never again.
+     * Each post is an {@code updateStatusIconAsync} binder call: a hidden icon is posted once,
+     * then never again across show/hide cycles.
      */
     @Test
     public void showHideCyclesWithNoModifierPostTheHiddenIconOnce() {
@@ -335,8 +308,6 @@ public class ModifierStatusIconTest {
         verify(ime, never()).showStatusIcon(Mockito.anyInt());
     }
 
-    // ==================== the preference still turns it off ====================
-
     @Test
     public void theIconIsNotPostedWhenThePreferenceIsOff() {
         PrefsManager.INSTANCE.getPrefs(context).edit()
@@ -348,8 +319,6 @@ public class ModifierStatusIconTest {
 
         verify(ime, never()).showStatusIcon(Mockito.anyInt());
     }
-
-    // ==================== Ctrl ====================
 
     /** Ctrl's one owner, as the tracker sees it: two switches the test flips. */
     private final boolean[] ctrlActive = {false};
@@ -441,11 +410,9 @@ public class ModifierStatusIconTest {
                 ModifierStatusBarUpdater.getStatusIconDrawable(ModifierStatusBarUpdater.withCtrl(shift, false, false)));
     }
 
-    // ==================== a glyph stays while its key is down ====================
-
     /**
-     * The blink: the second press of a double tap turns the modifier off on its key-down and
-     * locks it on the key-up, and the icon used to go off for the length of that press.
+     * The second press of a double tap turns the modifier off on its key-down and locks it on the
+     * key-up; the icon must not blink off for the length of that press.
      */
     @Test
     public void aDoubleTapGoesFromTheIconToTheLockedIconWithoutHidingInBetween() {

@@ -12,12 +12,8 @@ import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
 
 /**
- * An emoji the phone's font cannot draw is not offered: not on the board, not in search, and not
- * as a skin tone in the long-press popup.
- *
- * The check used to accept an emoji when its first code point had a glyph, so a joined emoji or a
- * flag the font lacked was offered and drawn as its parts (measured: 103 of them on Android 8.0,
- * 29 on Android 14). The fake fonts here are sets of the strings they have a glyph for.
+ * An emoji the font cannot draw as a whole (joined emoji, flags) is not offered: not on the board, in search, or
+ * as a popup skin tone. The fake fonts are sets of the strings they have a glyph for.
  */
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [34])
@@ -32,8 +28,6 @@ class EmojiDrawabilityTest {
     private val raisedHand = "✋"
     private val wave = "👋"
     private val waveTones = (0x1F3FB..0x1F3FF).map { wave + String(Character.toChars(it)) }
-
-    // ── the rule ──────────────────────────────────────────────────────────────
 
     @Test
     fun anEmojiTheFontHas_isDrawable() {
@@ -73,8 +67,6 @@ class EmojiDrawabilityTest {
         assertFalse(EmojibaseDataProvider.canDraw(grin) { calls++; false })
         assertEquals(1, calls)
     }
-
-    // ── the board, search and the popup ───────────────────────────────────────
 
     private fun entry(emoji: String, description: String, order: Int, skins: List<String>? = null) = EmojiData(
         emoji = emoji,

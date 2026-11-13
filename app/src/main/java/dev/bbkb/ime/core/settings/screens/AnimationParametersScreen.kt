@@ -15,13 +15,8 @@ import dev.bbkb.ime.R
 private const val CUSTOM_ANIM = "pref_has_custom_key_preview_animation_params"
 
 /**
- * Animation Parameters Screen
- * Detailed configuration for key preview animation parameters
- *
- * The four scale keys are stored as fractions and edited here as whole percent; [percentPref]
- * carries the conversion. An older version of this screen wrote them with putInt, so the engine's
- * getFloat threw, deleted the key and fell back to the resource fraction — the sliders never took
- * effect and wiped themselves on the next SettingsValues construction.
+ * Key preview animation parameters. The scale keys are stored as fractions (read with getFloat)
+ * and edited as whole percent; [percentPref] converts. Writing them as ints breaks the read.
  */
 @Composable
 fun AnimationParametersScreen(

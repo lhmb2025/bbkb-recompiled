@@ -12,21 +12,13 @@ public final class CurrencyKeyHandler implements KeyCharacterInterpreter {
         return this;
     }
 
-    /**
-     * Audit DK-30: written with three magic values — {@code 11} is {@code KEYCODE_4}, {@code 26} is
-     * {@link Character#CURRENCY_SYMBOL} and {@code 4} is {@link KeyEvent#META_SYM_ON} — so "the 4
-     * key producing a currency symbol" was unreadable. This interpreter sits in the
-     * {@code CompositeKeyCharacterInterpreter} chain evaluated on every hardware key event, so the
-     * doubled {@code getSettingsValues()} hop was per-keystroke too.
-     */
+    /** @param i the meta state; Sym on the 4 key also gives the currency symbol */
     @Override
     public KeyCharacterResult.Interpretation interpretKeyCharacter(KeyEvent keyEvent, int i) {
         if (keyEvent.getKeyCode() != KeyEvent.KEYCODE_4) {
             return null;
         }
-        // On Arabic, Hebrew and Cyrillic keycaps the currency key carries a letter (ط, ת, б), and
-        // the active keyboard's alphabet (or the user's letter layout) claims it before the
-        // currency symbol does.
+        // On Arabic, Hebrew and Cyrillic keycaps this key carries a letter, which wins over currency.
         if (PhysicalKeyResolver.letter(keyEvent, i) != 0) {
             return null;
         }

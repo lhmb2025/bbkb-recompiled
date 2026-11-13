@@ -9,10 +9,9 @@ import org.junit.Assert.assertTrue
 import org.junit.Test
 
 /**
- * [TouchKeypadGeometry]'s precedence — a synthesised source's measured ranges, the pad's InputDevice, then the profile's
- * `<touch-keypad>` ranges, then (Y only, forced CKB) the `<ckb-y-warp>` band, then the KEY2's pad
- * — and the KEY2 identity it must keep: 1080, 525, 144, 610, exactly, wherever the frame is the
- * KEY2's. Pure JVM.
+ * [TouchKeypadGeometry]'s precedence (a synthesised source's measured ranges, the pad's
+ * InputDevice, the profile's `<touch-keypad>`, then for Y with forced CKB the `<ckb-y-warp>` band,
+ * then the KEY2 pad), and the exact KEY2 values 1080, 525, 144, 610 wherever the frame is the KEY2's.
  */
 class TouchKeypadGeometryTest {
 
@@ -28,8 +27,6 @@ class TouchKeypadGeometryTest {
         assertEquals(1080f, g.normalizationReference(), 0f)
         assertEquals(1080f / 525f, g.frameAspect(), 1e-6f)
     }
-
-    // ── the KEY2, byte for byte ──────────────────────────────────────────────
 
     @Test
     fun key2Pad_fromItsInputDevice_isExactlyTheOldConstants() {
@@ -58,9 +55,8 @@ class TouchKeypadGeometryTest {
     }
 
     /**
-     * The W2 emulator posing as a KEY2 (forced CKB, no pad): getTouchKeypadYMax keeps answering
-     * the warp's last breakpoint (450), while everything that scales a frame keeps the KEY2 frame —
-     * the stroke analyser's 144 / 610 and the recorder's 1080 are what they were.
+     * The emulator rig posing as a KEY2 (forced CKB, no pad): getTouchKeypadYMax answers the warp's
+     * last breakpoint (450), while everything that scales a frame keeps the KEY2 frame.
      */
     @Test
     fun forcedCkbRig_warpFeedsYMaxOnly_frameStaysKey2() {
@@ -77,8 +73,6 @@ class TouchKeypadGeometryTest {
         assertEquals(0f, TouchKeypadGeometry.resolve(null, null, null, "garbage", true).sensorYMax(), 0f)
         assertEquals(0f, TouchKeypadGeometry.resolve(null, null, null, null, true).sensorYMax(), 0f)
     }
-
-    // ── precedence ───────────────────────────────────────────────────────────
 
     @Test
     fun measuredRangesBeatTheInputDeviceAndTheProfile() {

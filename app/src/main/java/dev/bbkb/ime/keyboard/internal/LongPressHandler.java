@@ -17,11 +17,12 @@ public class LongPressHandler extends WeakOwnerHandler<LongPressHandler.KeyPrevi
         void dismissAllKeyPreviews();
     }
 
+    /** @param aVar the owner, held weakly */
     public LongPressHandler(KeyPreviewDismisser aVar) {
         super(aVar);
     }
 
-    @Override // android.os.Handler
+    @Override
     public void handleMessage(Message message) {
         KeyPreviewDismisser aVarV = getOwner();
         if (aVarV != null && message.what == 0) {
@@ -29,6 +30,7 @@ public class LongPressHandler extends WeakOwnerHandler<LongPressHandler.KeyPrevi
         }
     }
 
+    /** @param j delay in ms */
     public void postKeyPreviewDismiss(long j, Key key) {
         sendMessageDelayed(obtainMessage(0, key), j);
     }

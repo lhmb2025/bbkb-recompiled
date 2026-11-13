@@ -4,18 +4,9 @@ import android.content.SharedPreferences
 import dev.bbkb.ime.core.device.profile.DeviceProfile
 
 /**
- * Centralized SharedPreferences accessor to avoid repeated 
- * PreferenceManager.getDefaultSharedPreferences() calls throughout the codebase.
- * 
- * This singleton ensures:
- * 1. Single SharedPreferences instance across the app
- * 2. No repeated disk I/O from multiple getDefaultSharedPreferences() calls
- * 3. Opens the same default file the old PreferenceManager.getDefaultSharedPreferences() used
- * 4. A setting the device profile forces reads as its forced value everywhere ([ProfileForcedPrefs])
- * 
- * Usage:
- * - Initialize once in BlackBerryIME.onCreate(): PrefsManager.init(this)
- * - Access anywhere: PrefsManager.getPrefs()
+ * The app-wide SharedPreferences: one instance of the default file, read through
+ * [ProfileForcedPrefs] so profile-forced settings read as forced everywhere.
+ * Call [init] once at startup.
  */
 object PrefsManager {
     
@@ -24,70 +15,43 @@ object PrefsManager {
     
     private val lock = Any()
 
-    /** Suffix of the default preferences file name, after the package name. */
     private const val DEFAULT_PREFS_SUFFIX = "_preferences"
 
-    /**
-     * The app's default SharedPreferences, the file `PreferenceManager.getDefaultSharedPreferences`
-     * opens (`<package>_preferences`, private). Users' settings already live in that file.
-     */
+    /** The stored default file (`<package>_preferences`), without the profile's forced values. */
     @JvmStatic
     fun defaultSharedPreferences(context: Context): SharedPreferences =
         // Never change this name: existing users' settings are stored under it.
         context.getSharedPreferences(context.packageName + DEFAULT_PREFS_SUFFIX, Context.MODE_PRIVATE)
-    
-    /**
-     * Initialize the PrefsManager with application context.
-     * Should be called once during app startup (e.g., in BlackBerryIME.onCreate()).
-     * 
-     * @param context Any context - will be converted to applicationContext internally
-     */
+
+    /** Idempotent; uses the application context. */
     fun init(context: Context) {
         if (prefs == null) {
             synchronized(lock) {
                 if (prefs == null) {
-                    // What every reader gets: the stored file with the device profile's forced
-                    // settings over it. defaultSharedPreferences() stays the stored file itself.
                     prefs = ProfileForcedPrefs(defaultSharedPreferences(context.applicationContext),
                         DeviceProfile::peekSettingOverride)
                 }
             }
         }
     }
-    
-    /**
-     * Get the shared SharedPreferences instance.
-     * 
-     * @return SharedPreferences instance
-     * @throws IllegalStateException if init() was not called first
-     */
+
+    /** @throws IllegalStateException if [init] was not called first */
     fun getPrefs(): SharedPreferences {
         return prefs ?: throw IllegalStateException(
             "PrefsManager not initialized. Call PrefsManager.init(context) first."
         )
     }
-    
-    /**
-     * Check if PrefsManager has been initialized.
-     */
+
     fun isInitialized(): Boolean = prefs != null
-    
-    /**
-     * Get SharedPreferences, initializing if needed with the provided context.
-     * This is a convenience method for cases where you have a context but aren't
-     * sure if PrefsManager was initialized.
-     * 
-     * @param context Context to use for initialization if needed
-     * @return SharedPreferences instance
-     */
+
+    /** [getPrefs], initializing from [context] first if needed. */
     fun getPrefs(context: Context): SharedPreferences {
         if (prefs == null) {
             init(context)
         }
         return getPrefs()
     }
-    
-    // Common preference keys as constants
+
     object Keys {
         const val DEBUG_MODE = "debug_mode"
 
@@ -106,12 +70,8 @@ object PrefsManager {
     }
 
     /**
-     * One-time theme pref migration. pref_keyboard_theme_mode used to carry style
-     * values ("classic", "dynamic") alongside the scheme values; the theme is now
-     * split into style (classic/modern/material) + scheme (light/dark/auto) + a
-     * system-colors toggle. Legacy values map to their visual equivalents so
-     * existing users see no change. Idempotent: once mode holds a scheme value,
-     * both branches are dead.
+     * One-time migration from the old combined theme_mode values ("classic", "dynamic") to
+     * style + scheme + system colors, with the same look. Idempotent.
      */
     fun migrateThemePrefs(prefs: SharedPreferences) {
         if (prefs.contains(Keys.KEYBOARD_THEME_STYLE)) return

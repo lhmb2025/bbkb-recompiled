@@ -1,13 +1,8 @@
 package dev.bbkb.ime.harness
 
 /**
- * Virtual-time task queue emulating the pipeline's deferred work
- * (UIUpdateHandler delayed messages, worker-thread replies).
- *
- * The harness schedules tasks with a tag; `cancel(tag)` mirrors
- * `Handler.removeMessages` (e.g. `cancelPendingSuggestionUpdates`), and
- * [advanceMs] delivers everything that comes due, in time order — making the
- * race scenarios (a reply landing after the world changed) deterministic.
+ * Virtual-time task queue for deferred work: `cancel(tag)` mirrors `Handler.removeMessages`
+ * and [advanceMs] runs due tasks in time order, making race scenarios deterministic.
  */
 class FakeScheduler {
     data class Task(val dueAtMs: Long, val seq: Long, val tag: String, val action: () -> Unit)
@@ -16,7 +11,7 @@ class FakeScheduler {
     private var seq = 0L
     private val tasks = mutableListOf<Task>()
 
-    /** Tags cancelled at least once — lets scenarios assert a cancellation happened. */
+    /** Tags cancelled at least once. */
     val cancelledTags = mutableListOf<String>()
 
     fun nowMs(): Long = nowMs

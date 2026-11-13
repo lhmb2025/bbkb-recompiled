@@ -27,18 +27,9 @@ import java.util.Collections
 import java.util.IdentityHashMap
 
 /**
- * Audit P-16: the emoji board kept nothing across opens. Every close dropped every built page, so
- * each open rebuilt the whole current category, and every page instantiation inflated a page view
- * with its own more-keys KeyboardView. Also the Recents staleness that came with the page drop.
- *
- * The open/close cycle is the one `KeyboardSwitcher` runs: close = GONE, `clearQuery`,
- * `detachPagerAdapter`; open = `attachPagerAdapter`, VISIBLE.
- *
- * Counts on the dataset below (current category People, five pages), measured on the JVM before
- * the change: per open 3 page views and 3 more-keys panels inflated and 8 pages built (Recents,
- * Smileys and People rebuilt), about 5.7 MB allocated; per swipe 1 page view and 1 panel, about
- * 1 MB. After: per open nothing inflated or built, about 20 to 30 KB; one spare page view over a
- * dozen swipes, about 0.1 MB a swipe; the popup only on the first long-press.
+ * The emoji board keeps its built pages across opens: per open nothing is inflated or built, per swipe at most
+ * one spare page view, the popup only on the first long-press. Open/close is `KeyboardSwitcher`'s cycle:
+ * close = GONE, `clearQuery`, `detachPagerAdapter`; open = `attachPagerAdapter`, VISIBLE. Also Recents staleness.
  */
 @RunWith(RobolectricTestRunner::class)
 @Config(
@@ -67,9 +58,7 @@ class EmojiBoardRecyclingTest {
         EmojiTestEnv.uninstall()
     }
 
-    /**
-     * Positions 0 Recents | 1-2 Smileys (41) | 3-7 People (200, five tones each) | 8 Animals (3).
-     */
+    /** Positions 0 Recents | 1-2 Smileys (41) | 3-7 People (200, five tones each) | 8 Animals (3). */
     private fun seedLarge() {
         EmojiTestEnv.seed(
             linkedMapOf(
@@ -81,8 +70,6 @@ class EmojiBoardRecyclingTest {
         EmojiTestEnv.field(EmojibaseDataProvider::class.java, "skinsByEmoji")
             .set(EmojibaseDataProvider.peekShared()!!, (0 until 200).associate { i -> "p$i" to TONES.map { "p$i$it" } })
     }
-
-    // ------------------------------------------------------------------ harness
 
     private fun EmojiPalettesView.pager(): ViewPager2 = findViewById(R.id.emoji_keyboard_pager)
 
@@ -140,15 +127,13 @@ class EmojiBoardRecyclingTest {
         v.pageViews().count { seenViews.add(it) } to cachedPages(v).count { seenPages.add(it) }
 
     /**
-     * Bytes this thread has allocated so far, from HotSpot's ThreadMXBean (by reflection: the
-     * Android compile classpath has no java.lang.management). A JVM figure, not ART's.
+     * Bytes this thread has allocated, from HotSpot's ThreadMXBean by reflection (no java.lang.management
+     * on the Android classpath).
      */
     private fun allocated(): Long {
         val bean = Class.forName("java.lang.management.ManagementFactory").getMethod("getThreadMXBean").invoke(null)
         return Class.forName("com.sun.management.ThreadMXBean").getMethod("getCurrentThreadAllocatedBytes").invoke(bean) as Long
     }
-
-    // ------------------------------------------------------------------ allocation per open and swipe
 
     @Test
     fun reopeningInflatesNothingAndBuildsNoPage() {
@@ -210,8 +195,6 @@ class EmojiBoardRecyclingTest {
         assertEquals(3, v.pageViews().size)
     }
 
-    // ------------------------------------------------------------------ the leave path while closed
-
     /** KeyboardSwitcher runs the leave path on every main-keyboard setKeyboard: closed, it is a no-op. */
     @Test
     fun detachingAClosedBoardAgainChangesNothing() {
@@ -237,8 +220,6 @@ class EmojiBoardRecyclingTest {
         val categories = (read(manager(v), "keyboardCache") as Map<*, *>).keys.map { ((it as Long) ushr 32).toInt() }.toSet()
         assertEquals(setOf(0, 1), categories)
     }
-
-    // ------------------------------------------------------------------ skin tones
 
     @Test
     fun aToneRememberedWhileClosedShowsOnTheKeysAfterReopening() {
@@ -274,12 +255,7 @@ class EmojiBoardRecyclingTest {
         assertEquals("p0" + TONES[4], outputs(v.pageAt(3)).first())
     }
 
-    // ------------------------------------------------------------------ recents staleness
-
-    /**
-     * Was: the adapter kept the Recents grid it was built with, the board dropped and rebuilt the
-     * grid on reopen, and picks then went to the old grid while the Recents page showed the new one.
-     */
+    /** Picks and the Recents page share one grid across a close and reopen. */
     @Test
     fun picksAfterAReopenShowOnTheRecentsPage() {
         prefs.edit().putString(RECENTS_KEY, EmojiTestEnv.padded("a0")).commit()
@@ -324,8 +300,6 @@ class EmojiBoardRecyclingTest {
         open(v)
         assertEquals(emptyList<String>(), outputs(v.pageAt(0)))
     }
-
-    // ------------------------------------------------------------------ the overlay
 
     @Test
     fun theOverlayRebindsItsPageViews() {

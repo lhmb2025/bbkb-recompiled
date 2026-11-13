@@ -11,11 +11,7 @@ import java.util.Map;
 import java.util.Objects;
 import dev.bbkb.ime.BuildConfig;
 
-/**
- * LanguagePackRegistry - Central registry of available NuanceSDK language packs
- * Manages language pack metadata, locale mappings, and installation status.
- * Provides lookup methods to find appropriate language packs for given locales.
- */
+/** Available language packs by language, with country fallbacks for lookup. */
 
 public class LanguagePackRegistry {
 
@@ -27,8 +23,7 @@ public class LanguagePackRegistry {
 
     static {
         LOCALE_FALLBACKS.put("es-MX", "es-419");
-        // The keyboard says GB; the bundled pack is catalogued as UK. Without this bridge the
-        // English (UK) keyboard loaded the generic English dictionary instead.
+        // The keyboard says GB; the bundled pack is catalogued as UK.
         LOCALE_FALLBACKS.put("en-GB", "en-UK");
         LOCALE_FALLBACKS.put("en-NZ", "en-AU");
         LOCALE_FALLBACKS.put("en-SG", "en-UK");
@@ -36,20 +31,24 @@ public class LanguagePackRegistry {
         LOCALE_FALLBACKS.put("en-ZA", "en-UK");
     }
 
-    /**
-     * The tag this registry substitutes for {@code languageTag} before falling back to the
-     * bare language ({@code "en-NZ"} to {@code "en-AU"}), or null when it substitutes nothing.
-     * Hyphenated, as the table is keyed. Lets the download offer name the pack the engine
-     * will actually load.
-     */
+    /** The hyphenated tag substituted for {@code languageTag} ({@code en-NZ} to {@code en-AU}), or null. */
     public static String fallbackFor(String languageTag) {
         return LOCALE_FALLBACKS.get(languageTag);
     }
 
+    /**
+     * @param str language code
+     * @param str2 country code, or null/empty for none
+     */
     public synchronized LanguagePackInfo findLanguagePack(String str, String str2) {
         return findLanguagePackInternal(str, str2, true);
     }
 
+    /**
+     * @param str language code
+     * @param str2 country code, or null/empty for none
+     * @param z true to try the fallback table and the language's default pack
+     */
     private LanguagePackInfo findLanguagePackInternal(String str, String str2, boolean z) {
         if (str2 != null && str2.isEmpty()) {
             str2 = null;
@@ -80,12 +79,7 @@ public class LanguagePackRegistry {
             }
             return result;
         }
-        // A language-only fallback block used to sit here, looking up LOCALE_FALLBACKS by the
-        // bare language code. Every key in that map is a full language-COUNTRY tag (es-MX,
-        // en-NZ, en-SG, en-IE, en-ZA), so the lookup could never hit and the block was
-        // unreachable. Removed rather than left to read as live logic. To add language-only
-        // fallback, put bare-language keys in the map (e.g. "es" -> "es-419"); the
-        // language-COUNTRY branch above already handles them.
+        // For a language-only fallback, add a bare-language key to LOCALE_FALLBACKS.
         if (list != null) {
             for (LanguagePackInfo candidate : list) {
                 if (candidate.isDefault) {

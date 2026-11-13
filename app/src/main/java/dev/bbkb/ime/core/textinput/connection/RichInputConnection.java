@@ -66,10 +66,9 @@ public class RichInputConnection {
     private int mBatchedEditNestLevel = 0;
 
     /**
-     * How short the window on the shrinking side may get before a cursor move re-reads the
-     * editor instead of shifting the cached text. The readers that do not fall back to the
-     * editor when the cache is short (engine context, 146 chars; caps mode; a grapheme scan of
-     * up to 10 steps, 48 chars each) then see the same text a reload would give them.
+     * Below this window on the shrinking side, a cursor move reloads instead of shifting the cache,
+     * so readers that never fall back to the editor (engine context 146 chars, caps mode, a
+     * 10 x 48 char grapheme scan) see what a reload would give them.
      */
     static final int MIN_LOCAL_SHIFT_WINDOW = 512;
 
@@ -77,17 +76,15 @@ public class RichInputConnection {
     private static final int MAX_PENDING_ECHOES = 16;
 
     /**
-     * The most text kept before the cursor. A load reads {@code MAX_CONTEXT_LENGTH} characters
-     * and every commit appends, so in a long session with no cursor move the buffer grew
-     * without limit, and the readers that walk or copy all of it (caps mode, the quote check)
-     * grew with it. Past this size the front is dropped back to the load size.
+     * Cap on the before-cursor cache: commits append without bound and caps mode / the quote check
+     * walk all of it. Past this size the front is dropped back to the load size.
      */
     static final int MAX_TEXT_BEFORE_CURSOR = NuanceSDK.MAX_CONTEXT_LENGTH * 2;
 
     /**
-     * True while both text caches come from the last successful load plus this class's own
-     * edits since. False after a failed load, invalidateConnection, or a key that can move the
-     * editor's cursor unseen. A cursor move shifts the caches instead of reloading only while true.
+     * Both caches are the last successful load plus our own edits. False after a failed load,
+     * invalidateConnection, or a key that can move the cursor unseen; only while true does a
+     * cursor move shift the caches instead of reloading.
      */
     private boolean mTextCacheLoaded = false;
 
@@ -95,10 +92,9 @@ public class RichInputConnection {
     private boolean mTextAfterReachesEnd = false;
 
     /**
-     * Collapsed cursor moves sent by {@link #setSelection} whose onUpdateSelection has not come
-     * back yet, as {from, to} pairs in send order. A keypad drag sends one per frame, so reports
-     * trail the cache; on a direction reversal the trailing report points the "wrong" way and
-     * used to read as an external move (a reload plus an engine reset per reversal).
+     * Collapsed {@link #setSelection} moves not yet echoed by onUpdateSelection, {from, to} in send
+     * order. A keypad drag sends one per frame, so on a direction reversal a trailing report points
+     * the "wrong" way and must not be read as an external move.
      */
     private final java.util.ArrayDeque<int[]> mPendingEchoes = new java.util.ArrayDeque<>();
 
@@ -106,11 +102,7 @@ public class RichInputConnection {
         this.mImeService = inputMethodService;
     }
 
-    /**
-     * Keeps {@link #mTextBeforeCursor} within {@link #MAX_TEXT_BEFORE_CURSOR} after an append.
-     * What is left is what a fresh load would hold, so every reader behaves as it does right
-     * after one: a request for more than the cache holds goes to the editor.
-     */
+    /** Trims to what a fresh load would hold, so readers asking for more go to the editor as after a load. */
     private void trimTextBeforeCursor() {
         final int length = this.mTextBeforeCursor.length();
         if (length <= MAX_TEXT_BEFORE_CURSOR) {
@@ -124,11 +116,7 @@ public class RichInputConnection {
         this.mTextBeforeCursor.delete(0, cut);
     }
 
-    /**
-     * Begins a batch edit on the current input connection, refreshing the connection reference
-     * from the IME service on the first nesting level. Batch edits must be balanced with
-     * {@link #endBatchEdit()} calls. Nesting beyond level 1 logs an error but does not throw.
-     */
+    /** Refreshes the connection from the service at nest level 1; deeper nesting only logs. */
     public void beginBatchEdit() {
         int i = this.mBatchedEditNestLevel + 1;
         this.mBatchedEditNestLevel = i;
@@ -144,11 +132,6 @@ public class RichInputConnection {
         if (BuildConfig.DEBUG) Log.e(TAG, "Nest level too deep : " + this.mBatchedEditNestLevel);
     }
 
-    /**
-     * Ends the current batch edit. If the nesting level returns to zero, the batch edit is
-     * flushed to the underlying {@link android.view.inputmethod.InputConnection}. Calling this
-     * without a matching {@link #beginBatchEdit()} logs an error.
-     */
     public void endBatchEdit() {
         InputConnection inputConnection;
         if (this.mBatchedEditNestLevel <= 0) {
@@ -163,15 +146,11 @@ public class RichInputConnection {
     }
 
     /**
-     * Resets the connection state to the given cursor position, reloads the text context
-     * from the editor, and optionally finishes any active composing region. Called when
-     * {@code onUpdateSelection} fires or when the IME reconnects to the editor.
-     *
-     * @param i  the new cursor start position
+     * Moves to [i, i2] and reloads the text context; {@code z} also finishes composing.
+     * @param i the new cursor start position
      * @param i2 the new cursor end position
-     * @param z  if {@code true}, also calls {@link #finishComposingText()} on the connection
-     * @return {@code true} if the text context was loaded successfully; {@code false} if the
-     *         editor is unavailable
+     * @param z if {@code true}, also calls {@link #finishComposingText()} on the connection
+     * @return false if the editor is unavailable
      */
     public boolean resetConnection(int i, int i2, boolean z) {
         if (BuildConfig.DEBUG) Log.d("TEXT_EDIT_DEBUG", "RIC.resetConnection: newPos=[" + i + "," + i2 + "] finishComposing=" + z + " composingText='" + mComposingText + "' composingLen=" + mComposingRegionLength);
@@ -200,8 +179,7 @@ public class RichInputConnection {
         this.mTextBeforeCursor.setLength(0);
         this.mInputConnection = this.mImeService.getCurrentInputConnection();
         InputConnection inputConnection = this.mInputConnection;
-        // Flags 0, not GET_TEXT_WITH_STYLES: the text lands in a plain StringBuilder, so the
-        // spans the editor would otherwise collect and parcel are thrown away.
+        // Flags 0, not GET_TEXT_WITH_STYLES: spans would be parceled only to be dropped here.
         CharSequence textBeforeCursor = inputConnection == null ? null : inputConnection.getTextBeforeCursor(NuanceSDK.MAX_CONTEXT_LENGTH, 0);
         if (textBeforeCursor == null) {
             this.mCursorStart = -1;
@@ -214,11 +192,7 @@ public class RichInputConnection {
         return this.mTextCacheLoaded;
     }
 
-    /**
-     * Clears the cached input connection, cursor position, and text buffers. Called when the
-     * IME loses its connection to the editor (e.g., on {@code onFinishInput}). Subsequent
-     * calls to text-reading methods will return {@code null} until the connection is restored.
-     */
+    /** Drops the connection and all caches; text reads return null until the next reset. */
     public void invalidateConnection() {
         this.mInputConnection = null;
         this.mCachedCapsText = null;
@@ -251,22 +225,11 @@ public class RichInputConnection {
         return true;
     }
 
-    /**
-     * Returns {@code true} if the internal composing text buffer length matches the length
-     * of the composing region tracked by the editor. A mismatch indicates the editor has
-     * modified the composing text from underneath the IME.
-     *
-     * @return {@code true} if composing buffer and region length are in sync
-     */
+    /** False when the editor changed the composing text underneath us. */
     public boolean isComposingRegionSynced() {
         return this.mComposingText.length() == this.mComposingRegionLength;
     }
 
-    /**
-     * Commits the current composing text as final (non-composing) text. Updates internal
-     * buffers and notifies listeners, then calls
-     * {@link android.view.inputmethod.InputConnection#finishComposingText()} on the editor.
-     */
     public void finishComposingText() {
         if (BuildConfig.DEBUG) Log.d("TEXT_EDIT_DEBUG", "RIC.finishComposingText: composingText='" + mComposingText + "' composingLen=" + mComposingRegionLength + " cursorStart=" + mCursorStart);
         if (!isComposingRegionSynced()) {
@@ -284,36 +247,25 @@ public class RichInputConnection {
     }
 
     /**
-     * Commits the given text to the editor, replacing any active composing region.
-     * Delegates to {@link #commitTextWithHighlight} with no highlight color.
-     *
-     * @param charSequence the text to commit
-     * @param i            cursor position after commit (typically 1 = after text)
+     * @param i cursor position after commit (typically 1 = after text)
      */
     public void commitText(CharSequence charSequence, int i) {
         commitTextWithHighlight(charSequence, i, 0, charSequence.length());
     }
 
     /**
-     * Commits the given text to the editor, optionally applying a background highlight color
-     * to the committed span (used for auto-correction and add-to-dictionary indicators).
-     *
-     * @param charSequence the text to commit
-     * @param i            cursor position after commit (typically 1 = after text)
-     * @param i2           highlight background color, or 0 for no highlight
-     * @param i3           end index of the highlight span within {@code charSequence}
+     * Commits text, highlighting [0, i3) with background color {@code i2} (0 = none), as used
+     * for autocorrect and add-to-dictionary marks. {@code i} is the newCursorPosition.
+     * @param i cursor position after commit (typically 1 = after text)
+     * @param i2 highlight background color, or 0 for no highlight
+     * @param i3 end index of the highlight span within {@code charSequence}
      */
     public void commitTextWithHighlight(CharSequence charSequence, int i, int i2, int i3) {
         this.mTextBeforeCursor.append(charSequence);
         trimTextBeforeCursor();
         this.mCursorStart += charSequence.length() - this.mComposingText.length();
-        // Audit SS-3: the cache advanced as if the cursor always lands immediately after the
-        // committed text, ignoring newCursorPosition. The manual-pick path commits with i==2
-        // (skip the separator already sitting after the cursor, see CommitController's
-        // mShouldAppendSpace), so the cache trailed the editor by one until onUpdateSelection
-        // healed it — and anything reading the cursor in between (word ranges, recorrection)
-        // saw the wrong position. InputConnection semantics: i>0 places the cursor i-1
-        // characters past the end of the inserted text.
+        // newCursorPosition i > 0 lands i-1 chars past the text; the manual-pick path uses i == 2
+        // to skip the separator already after the cursor.
         if (i > 1) {
             this.mCursorStart += i - 1;
         }
@@ -335,32 +287,21 @@ public class RichInputConnection {
         }
     }
 
-    /**
-     * Removes any lingering background highlight spans by calling
-     * {@link #finishComposingText()} when a background span is present. Should only be called
-     * when there is no active composing text.
-     */
+    /** Finishes a lingering highlight span; call only with no composing text. */
     public void clearBackgroundSpans() {
         if (this.mHasBackgroundSpan) {
             if (this.mComposingText.length() > 0) {
                 if (BuildConfig.DEBUG) Log.e(TAG, "clearSpansWithComposingFlags should be called when composing text is empty.");
             } else {
                 finishComposingText();
-                // The highlight was committed with Spanned.SPAN_COMPOSING (flag 289), so the
-                // editor treated the word as still being edited and its spell checker skipped
-                // it; the parser never returns to a word once typing has moved past it, so the
-                // red underline never came (KEY2 report, 2026-09-20). Now that the span is
-                // finished, ask for the check the editor missed.
+                // The highlight carried SPAN_COMPOSING (flags 289), so the editor's spell checker
+                // skipped the word and never revisits it: ask for the check now.
                 requestSpellCheck();
             }
         }
     }
 
-    /**
-     * Asks the editor to spell-check its content (API 31+; a no-op below). Used after text the
-     * IME had marked as composing becomes ordinary text, which the editor's own spell-check
-     * parser does not revisit on its own.
-     */
+    /** API 31+ only. For text that was composing, which the editor's spell checker does not revisit. */
     public void requestSpellCheck() {
         if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.S) {
             return;
@@ -372,11 +313,7 @@ public class RichInputConnection {
     }
 
     /**
-     * Returns the text currently selected in the editor, or {@code null} if no connection
-     * is available.
-     *
      * @param i flags passed to {@link android.view.inputmethod.InputConnection#getSelectedText}
-     * @return the selected text, or {@code null}
      */
     public CharSequence getSelectedText(int i) {
         InputConnection inputConnection = this.mInputConnection;
@@ -386,25 +323,16 @@ public class RichInputConnection {
         return inputConnection.getSelectedText(i);
     }
 
-    /**
-     * Returns {@code true} if the cursor position is known and greater than zero.
-     * A position of -1 means the connection is not established.
-     *
-     * @return {@code true} if cursor start is positive
-     */
+    /** Cursor known and past 0 (-1 means not connected). */
     public boolean hasCursorPosition() {
         return this.mCursorStart > 0;
     }
 
     /**
-     * Returns the auto-capitalization mode for the current cursor position based on the text
-     * context before the cursor. Results are cached per (flags, locale, text) triple.
-     *
-     * @param i      input type flags from {@link android.view.inputmethod.EditorInfo#inputType}
+     * Caps mode at the cursor, cached per (inputType flags {@code i}, {@code z}, text).
+     * @param i input type flags from {@link android.view.inputmethod.EditorInfo#inputType}
      * @param c0806f spacing and punctuation rules for the current language
-     * @param z      {@code true} to restrict to non-CJK caps modes
-     * @return a bitmask of caps mode flags (see {@link android.text.method.TextKeyListener}),
-     *         or 0 if caps are not applicable
+     * @param z {@code true} to restrict to non-CJK caps modes
      */
     public int getCapsMode(int i, SpacingAndPunctuation c0806f, boolean z) {
         CharSequence charSequence;
@@ -433,11 +361,7 @@ public class RichInputConnection {
         }
     }
 
-    /**
-     * Returns the Unicode code point immediately before the cursor, using the cached text buffer.
-     *
-     * @return the code point before the cursor, or -1 if nothing precedes it
-     */
+    /** From the cache; -1 if nothing precedes the cursor. */
     public int getCodePointBeforeCursor() {
         int length = this.mTextBeforeCursor.length();
         if (length < 1) {
@@ -446,12 +370,7 @@ public class RichInputConnection {
         return Character.codePointBefore(this.mTextBeforeCursor, length);
     }
 
-    /**
-     * Returns the Unicode code point immediately after the cursor by fetching one character
-     * from the editor's after-cursor text.
-     *
-     * @return the code point after the cursor, or -1 if nothing follows it
-     */
+    /** -1 if nothing follows the cursor. */
     public int getCodePointAfterCursor() {
         CharSequence charSequenceM5830b = getTextAfterCursor(2, 0);
         if (charSequenceM5830b != null && charSequenceM5830b.length() >= 1) {
@@ -461,12 +380,9 @@ public class RichInputConnection {
     }
 
     /**
-     * Returns up to {@code i} characters of text before the cursor. Uses the cached buffer
-     * when available and falls back to the live editor connection if the cache is insufficient.
-     *
-     * @param i  maximum number of characters to return
+     * Up to {@code i} chars from the cache (including composing), else from the editor; null if disconnected.
+     * @param i maximum number of characters to return
      * @param i2 flags (e.g., {@link android.view.inputmethod.InputConnection#GET_TEXT_WITH_STYLES})
-     * @return text before cursor, or {@code null} if disconnected
      */
     public CharSequence getTextBeforeCursor(int i, int i2) {
         final int beforeLen = this.mTextBeforeCursor.length();
@@ -474,9 +390,7 @@ public class RichInputConnection {
         int length = beforeLen + composingLen;
         int i3 = this.mCursorStart;
         if (-1 != i3 && (length >= i || length >= i3)) {
-            // TI-22: only the last `i` characters are ever returned, so build just those instead of
-            // copying both buffers in full (plus a String copy of the composing text) and then
-            // deleting the front. Most callers on the keystroke path ask for 1, 2 or 48 chars.
+            // Copy only the last `i` chars: keystroke-path callers ask for 1, 2 or 48.
             final int skip = Math.max(0, length - i);
             StringBuilder sb = new StringBuilder(length - skip);
             if (skip < beforeLen) {
@@ -496,12 +410,9 @@ public class RichInputConnection {
     }
 
     /**
-     * Returns up to {@code i} characters of text after the cursor. Uses the cached buffer
-     * when available and falls back to the live editor connection if the cache is insufficient.
-     *
-     * @param i  maximum number of characters to return
+     * Up to {@code i} chars from the cache while the cursor is known, else from the editor.
+     * @param i maximum number of characters to return
      * @param i2 flags (e.g., {@link android.view.inputmethod.InputConnection#GET_TEXT_WITH_STYLES})
-     * @return text after cursor, or {@code null} if disconnected
      */
     public CharSequence getTextAfterCursor(int i, int i2) {
         if (-1 != this.mCursorStart) {
@@ -519,10 +430,7 @@ public class RichInputConnection {
     }
 
     /**
-     * Deletes {@code i} characters before the cursor and {@code i2} characters after it,
-     * updating all internal buffers and notifying listeners before forwarding to the editor.
-     *
-     * @param i  number of characters to delete before the cursor
+     * @param i number of characters to delete before the cursor
      * @param i2 number of characters to delete after the cursor
      */
     public void deleteSurroundingText(int i, int i2) {
@@ -554,9 +462,6 @@ public class RichInputConnection {
     }
 
     /**
-     * Performs the IME action with the given action code on the current editor connection.
-     * Refreshes the connection reference first.
-     *
      * @param i the action code (e.g., {@link android.view.inputmethod.EditorInfo#IME_ACTION_DONE})
      */
     public void performEditorAction(int i) {
@@ -567,12 +472,7 @@ public class RichInputConnection {
         }
     }
 
-    /**
-     * Sends a {@link KeyEvent} to the editor, updating internal text and cursor buffers for
-     * ENTER, BACKSPACE, and printable key events before forwarding to the connection.
-     *
-     * @param keyEvent the key event to dispatch
-     */
+    /** Mirrors Enter, Backspace and printable keys into the cache before forwarding. */
     public void sendKeyEvent(KeyEvent keyEvent) {
         if (keyEvent.getAction() == 0) {
             int keyCode = keyEvent.getKeyCode();
@@ -585,9 +485,7 @@ public class RichInputConnection {
                         this.mCursorEnd = this.mCursorStart;
                         break;
                     case 67: {
-                        // Delete one CODE POINT from the cache mirrors, not one char —
-                        // a char-sized delete leaves a lone surrogate behind when the
-                        // last character is an emoji or other supplementary code point.
+                        // Delete one code point, not one char, or an emoji leaves a lone surrogate.
                         int deletedChars = 1;
                         if (this.mComposingText.length() == 0) {
                             int len = this.mTextBeforeCursor.length();
@@ -636,10 +534,8 @@ public class RichInputConnection {
     }
 
     /**
-     * Marks the region {@code [i, i2)} in the editor as the active composing region,
-     * updating internal buffers to reflect what text is now under composition.
-     *
-     * @param i  start of the composing region (inclusive, in editor coordinates)
+     * Marks editor range [i, i2) as composing and moves that text into the composing buffer.
+     * @param i start of the composing region (inclusive, in editor coordinates)
      * @param i2 end of the composing region (exclusive, in editor coordinates)
      */
     public void setComposingRegion(int i, int i2) {
@@ -664,11 +560,7 @@ public class RichInputConnection {
     }
 
     /**
-     * Sets the active composing text in the editor, replacing any previous composing text.
-     * Updates internal cursor and buffer state, then forwards to the editor connection.
-     *
-     * @param charSequence the new composing text
-     * @param i            cursor position relative to the composing text (1 = end)
+     * @param i cursor position relative to the composing text (1 = end)
      */
     public void setComposingText(CharSequence charSequence, int i) {
         if (BuildConfig.DEBUG) Log.d("TEXT_EDIT_DEBUG", "RIC.setComposingText: newText='" + charSequence + "' cursorPos=" + i + " cursorStart=" + mCursorStart + " prevComposing='" + mComposingText + "'");
@@ -684,16 +576,11 @@ public class RichInputConnection {
     }
 
     /**
-     * Moves the editor selection to {@code [i, i2)}, brings the text buffers to the new
-     * position, and updates the internal cursor position. Both positions must be non-negative.
-     *
-     * <p>A collapsed move with no composing text, inside the cached window, shifts the cached
-     * text across the cursor instead of re-reading it (see {@link #shiftCachedText}); anything
-     * else reloads from the editor.
-     *
-     * @param i  the new selection start
+     * Selects [i, i2). A collapsed move with no composing text inside the cached window shifts
+     * the cache ({@link #shiftCachedText}); anything else reloads.
+     * @param i the new selection start
      * @param i2 the new selection end
-     * @return {@code true} if the text context is in place for the new position
+     * @return true if the text context is in place for the new position
      */
     public boolean setSelection(int i, int i2) {
         if (BuildConfig.DEBUG) Log.d("TEXT_EDIT_DEBUG", "RIC.setSelection: [" + i + "," + i2 + "] prevCursor=[" + mCursorStart + "," + mCursorEnd + "] composing='" + mComposingText + "'");
@@ -703,8 +590,7 @@ public class RichInputConnection {
         final int fromStart = this.mCursorStart;
         final int fromEnd = this.mCursorEnd;
         final boolean canShift = canShiftCachedText(i, i2);
-        // Only a plain caret move is matched against its echo; anything else keeps the
-        // editor-report heuristics it always had.
+        // Only a plain caret move is matched against its echo.
         final boolean caretMove = fromStart >= 0 && fromStart == fromEnd && i == i2
                 && this.mComposingText.length() == 0 && this.mComposingRegionLength == 0;
         this.mCursorStart = i;
@@ -724,14 +610,12 @@ public class RichInputConnection {
     }
 
     /**
-     * Whether a move from the cached cursor to {@code [i, i2]} can shift the cached text
-     * instead of reloading it (P-17: a keypad cursor drag used to make two 1024-char
-     * synchronous reads per step). Requires a collapsed cursor before and after, no composing
-     * text (whose cache layout {@link #setSelectionWithinComposing} adjusts after a reload), a
-     * cache that came from a successful load, and a target inside the window that leaves the
-     * shrinking side at least {@link #MIN_LOCAL_SHIFT_WINDOW} chars, or all of it when the
-     * window already runs to that end of the text. A move of zero reloads: it is what a drag
-     * pressing against either end sends, and the reload picks up text the app added there.
+     * Needs collapsed carets, no composing text ({@link #setSelectionWithinComposing} fixes that
+     * layout after a reload), a loaded cache, and a target leaving the shrinking side at least
+     * {@link #MIN_LOCAL_SHIFT_WINDOW} chars or reaching the text's end. A zero move (a drag pressing
+     * an end) reloads, picking up text the app added there.
+     * @param i the new selection start
+     * @param i2 the new selection end
      */
     private boolean canShiftCachedText(int i, int i2) {
         final int from = this.mCursorStart;
@@ -745,8 +629,7 @@ public class RichInputConnection {
             if (-delta > before) {
                 return false;
             }
-            // The window holds everything back to the start of the text when its length is
-            // the cursor's offset.
+            // before == from: the window already reaches the start of the text.
             return before == from || before + delta >= MIN_LOCAL_SHIFT_WINDOW;
         }
         final int after = this.mTextAfterCursor.length();
@@ -756,11 +639,7 @@ public class RichInputConnection {
         return this.mTextAfterReachesEnd || after - delta >= MIN_LOCAL_SHIFT_WINDOW;
     }
 
-    /**
-     * Moves {@code delta} chars across the cursor between the two caches (positive: from the
-     * after cache to the before cache) and trims the growing side to what a reload would
-     * return, so the caches match a fresh load at the new position.
-     */
+    /** Moves {@code delta} chars across the cursor (positive: after to before) and trims the growing side to load size. */
     private void shiftCachedText(int delta) {
         final StringBuilder before = this.mTextBeforeCursor;
         final StringBuilder after = this.mTextAfterCursor;
@@ -793,9 +672,8 @@ public class RichInputConnection {
     }
 
     /**
-     * Whether a selection report is the editor's echo of a caret move this class sent: the
-     * report's old and new carets are a recorded {from, to} pair. Drops that pair and every
-     * earlier one (reports arrive in send order, so their echoes were folded or lost).
+     * True if the report matches a recorded {from, to} caret move. Drops it and every earlier
+     * pair, since reports arrive in send order and those echoes were folded or lost.
      */
     private boolean consumePendingEcho(int oldStart, int newStart, int oldEnd, int newEnd) {
         if (this.mPendingEchoes.isEmpty() || oldStart != oldEnd || newStart != newEnd) {
@@ -815,22 +693,9 @@ public class RichInputConnection {
     }
 
     /**
-     * Moves the editor cursor to a position <em>inside</em> the active composing region while
-     * keeping this class's text-model invariant intact: {@link #mTextBeforeCursor} must hold
-     * only <em>committed</em> text before the composing region, never any part of the
-     * composing text itself.
-     *
-     * <p>A plain {@link #setSelection} reloads {@link #mTextBeforeCursor} from the editor,
-     * and with the cursor mid-region the editor reports text <em>up to the cursor</em> —
-     * which includes the composing prefix. Since {@link #mComposingText} still holds the
-     * full composing word, {@link #getTextBeforeCursor} would then double-count the prefix
-     * (and {@link #getCodePointBeforeCursor} would return a character from inside the
-     * word). This method trims the composing prefix back off after the reload so all
-     * readers see the same semantics as the normal cursor-at-end composing state.
-     *
-     * @param newPos         the new cursor position (must lie inside the composing region)
-     * @param composingStart editor position where the composing region begins
-     * @return {@code true} if the selection was applied and the text context reloaded
+     * Moves the caret inside the composing region. {@link #mTextBeforeCursor} must hold only text
+     * before the region, but the reload returns text up to the caret, so the composing prefix is
+     * trimmed back off (otherwise readers double-count it).
      */
     public boolean setSelectionWithinComposing(int newPos, int composingStart) {
         if (!setSelection(newPos, newPos)) {
@@ -844,12 +709,6 @@ public class RichInputConnection {
         return true;
     }
 
-    /**
-     * Submits a correction notification to the editor. Used after auto-correction to allow
-     * the editor to update undo history and word-error highlights.
-     *
-     * @param correctionInfo describes the original and corrected text
-     */
     public void commitCorrection(CorrectionInfo correctionInfo) {
         InputConnection inputConnection = this.mInputConnection;
         if (inputConnection != null) {
@@ -857,13 +716,6 @@ public class RichInputConnection {
         }
     }
 
-    /**
-     * Commits an application-provided completion to the editor (e.g., from
-     * {@link android.view.inputmethod.EditorInfo#TYPE_CLASS_TEXT} with application completions).
-     * Updates internal buffers to reflect the committed text.
-     *
-     * @param completionInfo the completion to commit
-     */
     public void commitCompletion(CompletionInfo completionInfo) {
         CharSequence text = completionInfo.getText();
         if (text == null) {
@@ -882,37 +734,28 @@ public class RichInputConnection {
     }
 
     /**
-     * Builds and returns a {@link PrevWordsInfo} context object from the text before and after
-     * the cursor. Used to provide bigram context to the dictionary and learning system.
-     *
-     * <p>TI-2: this used to take {@code PrevWordsInfo.EMPTY_PREV_WORDS_INFO} - a
-     * {@code public static final} singleton - write the current context into it, and return it.
-     * There was therefore exactly ONE PrevWordsInfo in the process: every
-     * {@code CommitEventRecord.prevWordsInfo} "snapshot" taken at commit time aliased it and was
-     * silently rewritten by the next keystroke, and the suggestion worker read the same fields off
-     * the main thread while the main thread wrote them. Each call now returns a fresh instance.
-     *
+     * Returns a fresh instance every call: commit snapshots keep it and the suggestion worker
+     * reads it off the main thread, so it must never be shared. Both parameters are unused.
      * @param c0806f spacing and punctuation rules (unused in current implementation)
-     * @param i      context depth hint (unused in current implementation)
-     * @return a freshly allocated, populated {@link PrevWordsInfo}
+     * @param i context depth hint (unused in current implementation)
      */
     public PrevWordsInfo getPrevWordsInfo(SpacingAndPunctuation c0806f, int i) {
         return new PrevWordsInfo(PrevWordsInfo.WordInfo.EMPTY_WORD_INFO, getTextContextBefore());
     }
 
+    /**
+     * @param i the code point to test
+     * @param c0806f spacing and punctuation rules for word boundary detection
+     * @param i2 the script id the word is in
+     */
     private static boolean isPartOfWord(int i, SpacingAndPunctuation c0806f, int i2) {
         return c0806f.isWordConnector(i) || (!c0806f.isWordSeparator(i) && ScriptUtils.isLetterPartOfScript(i, i2));
     }
 
     /**
-     * Returns a {@link CursorWordRange} describing the word at the cursor, optionally anchored to
-     * the given {@code charSequence} if it matches the text immediately before the cursor.
-     * Falls back to {@link #getWordRangeAtCursor} for the general case.
-     *
-     * @param charSequence an optional text anchor (e.g., the just-committed gesture word)
-     * @param c0806f       spacing and punctuation rules for word boundary detection
-     * @param i            locale flags for word character classification
-     * @return a {@link CursorWordRange} for the word at cursor, or {@code null} if unavailable
+     * Uses {@code charSequence} as the word when it is exactly the text before the cursor, else {@link #getWordRangeAtCursor}.
+     * @param c0806f spacing and punctuation rules for word boundary detection
+     * @param i locale flags for word character classification
      */
     public CursorWordRange getWordAtCursor(CharSequence charSequence, SpacingAndPunctuation c0806f, int i) {
         if (charSequence == null) {
@@ -926,13 +769,9 @@ public class RichInputConnection {
     }
 
     /**
-     * Finds the word range surrounding the current cursor position by scanning backwards
-     * and forwards through the text for word boundaries. Handles CJK (no-space) locales,
-     * supplementary code points, URL/email detection, and word-connector characters.
-     *
+     * Word around the cursor; no-space languages use the tokenizer. {@code i} is the script id. Null if unavailable.
      * @param c0806f spacing and punctuation rules for word boundary detection
-     * @param i      locale flags for word character classification
-     * @return a {@link CursorWordRange} describing the word range, or {@code null} if not in a word
+     * @param i locale flags for word character classification
      */
     public CursorWordRange getWordRangeAtCursor(SpacingAndPunctuation c0806f, int i) {
         int i2;
@@ -1033,19 +872,14 @@ public class RichInputConnection {
     }
 
     /**
-     * Returns {@code true} if there is a word character immediately before the cursor (or
-     * before a trailing word-connector character). Also returns {@code true} when a word
-     * character exists after the cursor, to support mid-word cursor placement detection.
-     *
+     * A word char before the cursor (skipping one trailing connector), or any word char after it.
      * @param c0806f spacing and punctuation rules
-     * @return {@code true} if a word character precedes the cursor
      */
     public boolean hasWordBeforeCursor(SpacingAndPunctuation c0806f) {
         if (hasWordAfterCursor(c0806f)) {
             return true;
         }
-        // Read the last one or two code points in place: this runs at the first letter of every
-        // word, and a copy of the whole buffer for two characters was the cost of it.
+        // Read in place: this runs at the first letter of every word.
         final StringBuilder before = this.mTextBeforeCursor;
         int length = before.length();
         int iCodePointBefore = length == 0 ? -1 : Character.codePointBefore(before, length);
@@ -1057,11 +891,7 @@ public class RichInputConnection {
     }
 
     /**
-     * Returns {@code true} if the character immediately after the cursor is a word character
-     * (not a word separator or word connector).
-     *
      * @param c0806f spacing and punctuation rules
-     * @return {@code true} if the character after the cursor begins a word
      */
     public boolean hasWordAfterCursor(SpacingAndPunctuation c0806f) {
         CharSequence charSequenceM5830b = getTextAfterCursor(1, 0);
@@ -1073,11 +903,8 @@ public class RichInputConnection {
     }
 
     /**
-     * Returns {@code true} if the character immediately after the cursor is contained in
-     * the given set string. Used to determine whether auto-spacing should be suppressed.
-     *
-     * @param str a string whose code points form the membership set; {@code null} means empty set
-     * @return {@code true} if the after-cursor character is in {@code str}
+     * {@code str} null means the empty set.
+     * @param str a string whose code points form the membership set
      */
     public boolean isCharAfterCursorInSet(String str) {
         CharSequence charSequenceM5830b = getTextAfterCursor(1, 0);
@@ -1087,34 +914,17 @@ public class RichInputConnection {
         return (str == null || str.indexOf(Character.codePointAt(charSequenceM5830b, 0)) == -1) ? false : true;
     }
 
-    /**
-     * Deletes the single space character immediately before the cursor, if one is present.
-     * Used to remove auto-appended spaces before punctuation.
-     */
     public void deleteTrailingSpace() {
         if (32 == getCodePointBeforeCursor()) {
             deleteSurroundingText(1, 0);
         }
     }
 
-    /**
-     * Returns {@code true} if the text immediately before the cursor equals {@code charSequence}.
-     * Used to verify that a specific string is still present before performing a revert.
-     *
-     * @param charSequence the text to match against the text before the cursor
-     * @return {@code true} if the before-cursor text ends with {@code charSequence}
-     */
     public boolean isTextBeforeCursor(CharSequence charSequence) {
         return TextUtils.equals(charSequence, getTextBeforeCursor(charSequence.length(), 0));
     }
 
-    /**
-     * Reverts a double-space-to-period substitution by replacing the {@code ". "} sequence
-     * immediately before the cursor with a single space. Logs and returns {@code false} if
-     * the expected sequence is not found.
-     *
-     * @return {@code true} if the revert was performed; {@code false} otherwise
-     */
+    /** Replaces {@code ". "} before the cursor with a space; false if it is not there. */
     public boolean revertDoubleSpacePeriod() {
         if (!TextUtils.equals(". ", getTextBeforeCursor(2, 0))) {
             if (BuildConfig.DEBUG) Log.d(TAG, "Tried to revert double-space combo but we didn't find \". \" just before the cursor.");
@@ -1125,18 +935,10 @@ public class RichInputConnection {
         return true;
     }
 
-    /**
-     * Reverts a space-before-punctuation swap by exchanging the space and punctuation characters
-     * in the two-character sequence immediately before the cursor. Logs and returns {@code false}
-     * if the expected {@code "x "} pattern is not found.
-     *
-     * @return {@code true} if the revert was performed; {@code false} otherwise
-     */
+    /** Turns {@code "x "} before the cursor into {@code " x"}; false if the pattern is not there. */
     public boolean revertSwapPunctuation() {
         CharSequence charSequenceM5815a = getTextBeforeCursor(2, 0);
-        // TI-35: isEmpty() only rules out length 0, but charAt(1) needs length 2. With the cursor
-        // one character into the field getTextBeforeCursor(2, 0) legitimately returns one char,
-        // and this threw StringIndexOutOfBoundsException off the backspace path.
+        // Length check: one char into the field this returns a single char.
         if (charSequenceM5815a == null || charSequenceM5815a.length() < 2 || ' ' != charSequenceM5815a.charAt(1)) {
             if (BuildConfig.DEBUG) Log.d(TAG, "Tried to revert a swap of punctuation but we didn't find a space just before the cursor.");
             return false;
@@ -1147,32 +949,24 @@ public class RichInputConnection {
     }
 
     /**
-     * Returns {@code true} if the selection described by the old values {@code (i, i3)} and
-     * new values {@code (i2, i4)} has not meaningfully changed relative to the internally
-     * tracked cursor position. Used by {@code onUpdateSelection} to avoid redundant resets.
-     *
-     * @param i  old selection start
+     * Whether a report (old i..i3, new i2..i4) tells us nothing new, so onUpdateSelection can skip a reset.
+     * @param i old selection start
      * @param i2 new selection start
      * @param i3 old selection end
      * @param i4 new selection end
-     * @return {@code true} if the selection change can be considered a no-op
      */
     public boolean isSelectionUnchanged(int i, int i2, int i3, int i4) {
         final boolean echo = consumePendingEcho(i, i2, i3, i4);
         if (this.mCursorStart == i2 && this.mCursorEnd == i4) {
             return true;
         }
-        // The report of a move this class sent while later moves have already updated the
-        // cache: nothing the IME does not know. Without this a drag that reversed direction
-        // read the trailing report as an external move and reset to a stale position.
+        // A trailing echo of our own move: later moves already updated the cache. Otherwise a
+        // reversing drag resets to a stale position.
         if (echo && this.mCursorStart >= 0 && this.mCursorStart == this.mCursorEnd) {
             return true;
         }
-        // With the cursor unknown (invalidateConnection, e.g. right after a hardware Enter was
-        // handed to the app) the monotonic-move test below multiplies through -1 and calls a
-        // genuine jump such as [5,5] -> [0,0] - the app emptying the field - "unchanged", so the
-        // clear was ignored. Unknown means the editor's report is the only position we have:
-        // take it unless it says nothing moved.
+        // Cursor unknown: the test below would multiply through -1 and call a real jump (the app
+        // clearing the field) unchanged. Take the report unless it says nothing moved.
         if (this.mCursorStart < 0 || this.mCursorEnd < 0) {
             return i == i2 && i3 == i4;
         }
@@ -1180,11 +974,8 @@ public class RichInputConnection {
     }
 
     /**
-     * Asks the editor, not the cache, whether it holds no text at all on either side of the
-     * cursor. An unreachable editor (null answers) is not "empty": the caller must not act on
-     * what it cannot see. Two round-trips, so callers reserve it for rare events.
-     *
-     * @return {@code true} only when the editor answered and both sides are empty
+     * Asks the editor, not the cache. True only when it answered and both sides are empty (an
+     * unreachable editor is not empty). Two round-trips: rare events only.
      */
     public boolean isEditorEmpty() {
         this.mInputConnection = this.mImeService.getCurrentInputConnection();
@@ -1198,14 +989,9 @@ public class RichInputConnection {
     }
 
     /**
-     * Asks the editor, not the cache, whether the text right around the cursor is still
-     * {@code before} followed by {@code after}. The composing word's two halves are what a caller
-     * passes: an app can change the text without moving the cursor (an undo-then-redo empties the
-     * field with the cursor staying at 0), and then no selection update ever arrives to say the
-     * word is gone. An unreachable editor (null answers) counts as a match: the caller must not
-     * act on what it cannot see. Two round-trips, so callers reserve it for rare events.
-     *
-     * @return {@code false} only when the editor answered and disagrees
+     * Asks the editor whether the composing word's halves still surround the cursor: an app can
+     * change text without moving it, so no selection update arrives. False only when the editor
+     * answered and disagrees. Two round-trips: rare events only.
      */
     public boolean editorHasTextAroundCursor(String before, String after) {
         this.mInputConnection = this.mImeService.getCurrentInputConnection();
@@ -1221,32 +1007,16 @@ public class RichInputConnection {
         return before.contentEquals(actualBefore) && after.contentEquals(actualAfter);
     }
 
-    /**
-     * Returns {@code true} if the text currently before the cursor appears to be part of a URL.
-     * Used to suppress auto-spacing after word commits in URL fields.
-     *
-     * @return {@code true} if text before cursor looks like a URL
-     */
     public boolean looksLikeURL() {
         return StringHelper.looksLikeURL(this.mTextBeforeCursor);
     }
 
-    /**
-     * Returns {@code true} if the text before the cursor ends with a quote character that
-     * immediately follows a digit (e.g., feet/inches notation like {@code 6'}). Used to
-     * suppress quote swap punctuation in those cases.
-     *
-     * @return {@code true} if text ends with a quote after a digit
-     */
+    /** Feet/inches like {@code 6'}: suppresses quote swap punctuation. */
     public boolean endsWithQuoteAfterDigit() {
         return StringHelper.endsWithQuoteAfterDigit(this.mTextBeforeCursor);
     }
 
-    /**
-     * Re-measures the cursor start position by counting characters in the text returned by
-     * the editor. Corrects drift that can occur when the editor updates text outside of IME
-     * control. Also adjusts the cursor end position to keep start ≤ end.
-     */
+    /** Re-measures the cursor from the before-cursor text length when near the start, fixing drift. */
     public void recalibrateCursorPosition() {
         CharSequence charSequenceM5815a = getTextBeforeCursor(NuanceSDK.MAX_CONTEXT_LENGTH, 0);
         if (charSequenceM5815a == null) {
@@ -1267,54 +1037,28 @@ public class RichInputConnection {
         }
     }
 
-    /**
-     * Returns the cached cursor start (selection anchor) position in the editor, or -1
-     * if the connection is not established.
-     *
-     * @return cursor start position
-     */
+    /** -1 when not connected. */
     public int getCursorStart() {
         return this.mCursorStart;
     }
 
-    /**
-     * Returns the cached cursor end (selection focus) position in the editor, or -1
-     * if the connection is not established.
-     *
-     * @return cursor end position
-     */
+    /** -1 when not connected. */
     public int getCursorEnd() {
         return this.mCursorEnd;
     }
 
-    /**
-     * Returns {@code true} if the editor has a non-collapsed selection
-     * (i.e., cursor start and end differ).
-     *
-     * @return {@code true} if text is currently selected
-     */
     public boolean hasSelection() {
         return this.mCursorEnd != this.mCursorStart;
     }
 
-    /**
-     * Returns {@code true} if the connection to the editor is established
-     * (cursor start is not -1).
-     *
-     * @return {@code true} if the editor connection is active
-     */
     public boolean isConnected() {
         return -1 != this.mCursorStart;
     }
 
     /**
-     * Requests cursor anchor info updates from the editor. When monitoring is enabled,
-     * the IME receives {@code onUpdateCursorAnchorInfo} callbacks for smooth floating
-     * cursor and more-keys panel positioning.
-     *
-     * @param z  {@code true} to enable monitoring mode (continuous updates)
+     * {@code z}: CURSOR_UPDATE_MONITOR, {@code z2}: CURSOR_UPDATE_IMMEDIATE. Returns whether the editor accepted.
+     * @param z {@code true} to enable monitoring mode (continuous updates)
      * @param z2 {@code true} to request an immediate one-shot update
-     * @return {@code true} if the editor accepted the request
      */
     public boolean requestCursorUpdates(boolean z, boolean z2) {
         this.mInputConnection = this.mImeService.getCurrentInputConnection();
@@ -1329,26 +1073,12 @@ public class RichInputConnection {
         return requested;
     }
 
-    /**
-     * Returns {@code true} if monitoring mode was successfully enabled via
-     * {@link #requestCursorUpdates}.
-     *
-     * @return {@code true} if cursor anchor info monitoring is active
-     */
     public boolean isMonitoringCursorUpdates() {
         return this.mMonitorCursorUpdates;
     }
 
-    /**
-     * Returns up to 146 characters of text before the cursor from the internal buffer,
-     * suitable for use as NuanceSDK context. Returns {@code null} if the buffer is empty.
-     *
-     * @return context string (at most 146 chars), or {@code null} if empty
-     */
+    /** Last 146 chars before the cursor (engine context), or null if empty. Runs twice per keystroke. */
     public String getTextContextBefore() {
-        // TI-11: this used to make a String copy of the whole buffer, copy that into a new
-        // StringBuilder, and then usually substring it - three copies of up to MAX_CONTEXT_LENGTH
-        // chars to return at most 146. It is called at least twice per keystroke.
         int length = this.mTextBeforeCursor.length();
         if (length <= 0) {
             return null;

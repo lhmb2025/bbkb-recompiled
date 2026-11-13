@@ -20,23 +20,11 @@ import org.robolectric.annotation.Config
 import java.util.Locale
 
 /**
- * Characterisation of the emoji recents preference — `emoji_recent_keys`, user data that survives
- * upgrades — pinned byte for byte, before anything consolidates its two readers.
- *
- * ## The format, as it actually is
- * A compact JSON array written from `EmojiKeyboard`'s whole key grid, newest first (until 2026-11
- * by a default-configured `Gson`, whose HTML-safe escapes must still read back). The grid is
- * always padded to its 40-key page with blank filler keys, and a blank key's output text is `""`, so the stored array is almost always exactly 40 entries with a tail of
- * `""`. Readers skip empty strings and anything that is not a string.
- *
- * ## Two readers that are not the same reader
- *  - `EmojiKeyboard.loadRecentsFromPreferences` (the Recents page) builds keys, caps at the grid's
- *    40 via `addKey`, pads with blanks, reads malformed JSON as no recents, and skips a string the
- *    key spec parser rejects (see [keyboardLoaderSkipsAnEntryTheKeySpecParserRejects]).
- *  - `EmojiCategoryManager.getRecentEmojis()` (the search/recents overlay) returns at most 30, and
- *    catches everything — the same rejected entry comes back as a string (the overlay's page
- *    builder, `EmojiKeyboardFactory.createRecentsKeyboards`, then skips it).
- * A shared helper has to keep both policies; this file is what says so.
+ * Pins the `emoji_recent_keys` format (user data that survives upgrades) byte for byte: a compact JSON array
+ * of `EmojiKeyboard`'s whole grid, newest first, padded to 40 with `""`; Gson's HTML-safe escapes still read.
+ * Two readers with different policies: `EmojiKeyboard.loadRecentsFromPreferences` caps at 40, pads, and skips
+ * entries the key-spec parser rejects; `EmojiCategoryManager.getRecentEmojis()` returns at most 30 and keeps
+ * them as strings. A shared helper must keep both.
  */
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [34], qualifiers = "w411dp-h891dp")
@@ -82,8 +70,6 @@ class EmojiRecentsPersistenceTest {
             attrs.recycle()
         }
     }
-
-    // ------------------------------------------------------------------ EmojiKeyboard: read
 
     @Test
     fun loadKeepsNonEmptyStringsInOrderAndSkipsEverythingElse() {
@@ -138,8 +124,6 @@ class EmojiRecentsPersistenceTest {
         assertEquals(PAGE_KEYS, k.keys.size)
     }
 
-    // ------------------------------------------------------------------ EmojiKeyboard: write
-
     @Test
     fun addWritesTheWholeGridNewestFirstPaddedWithEmptyStrings() {
         store("[\"😀\",\"😁\"]")
@@ -161,7 +145,7 @@ class EmojiRecentsPersistenceTest {
         assertEquals(jsonArray(listOf("new") + (0 until PAGE_KEYS - 1).map { "e$it" }), stored())
     }
 
-    /** The old build's Gson escaped these; JsonWriter does not, and either form reads the same. */
+    /** Gson escaped these; JsonWriter does not, and either form reads the same. */
     @Test
     fun writeLeavesHtmlCharactersUnescaped() {
         recentsKeyboard().addEmojiToRecents("a=b'<>&/")
@@ -176,7 +160,7 @@ class EmojiRecentsPersistenceTest {
         assertEquals("rewritten unescaped", padded("😁", "a=b'<>&", "😀"), stored())
     }
 
-    /** Gson read an empty or null value as no recents, and refused anything after the array. */
+    /** An empty or null value reads as no recents, and anything after the array is refused. */
     @Test
     fun anEmptyOrNullValueIsNoRecentsAndTrailingContentIsMalformed() {
         val ecm = categoryManager()
@@ -244,8 +228,6 @@ class EmojiRecentsPersistenceTest {
         reloaded.processEmojiQueue()
         assertEquals(written, stored())
     }
-
-    // ------------------------------------------------------------------ EmojiCategoryManager: read
 
     @Test
     fun categoryManagerReturnsTheFirstThirtyNonEmptyStrings() {

@@ -2,55 +2,41 @@ package dev.bbkb.ime.core.device.touch;
 
 import androidx.annotation.NonNull;
 
-/**
- * Where one keypad touch source stands, with the reason, in a form a settings screen can show
- * as-is. Immutable; sources publish a new one through {@link KeypadTouchSource.StatusListener}.
- */
+/** Immutable state + reason of one keypad touch source, shown as-is by settings screens. */
 public final class TouchSourceStatus {
-
-    /** The coarse state. */
     public enum State {
-        /** The source is running: pad events can reach the gesture pipeline through it. */
         ACTIVE,
-        /** The source applies to this device but is not running right now (window hidden). */
+        /** Applies but not running right now (window hidden). */
         IDLE,
-        /** The source does not apply to this device; {@link Reason} says why. */
         NOT_APPLICABLE,
-        /** The source would apply but cannot run yet; {@link Reason} says why. */
+        /** Would apply but cannot run yet. */
         UNAVAILABLE
     }
 
-    /** Why the source is in its state. */
     public enum Reason {
-        /** Running, or ready to run on the next window show. */
+        /** Running, or ready on the next window show. */
         OK,
-        /** The device profile declares no touch keypad. */
         NO_TOUCH_KEYPAD_DECLARED,
-        /** The OS does not deliver the pad to an IME on this Android version. */
         OS_DOES_NOT_DELIVER_PAD,
-        /** The OS delivers the pad only once it enumerates it, and it has not (OEM switch off). */
+        /** Delivered only once enumerated, and it is not (OEM switch off). */
         PAD_NOT_ENUMERATED,
-        /** The profile pins the privileged reader ({@code source="shizuku"}). */
         PROFILE_PINS_SHIZUKU,
-        /** The profile forbids the privileged reader ({@code source="native"}). */
         PROFILE_PINS_NATIVE,
-        /** The Shizuku that is running predates v11, which the reader needs. */
+        /** Running Shizuku predates v11. */
         SHIZUKU_OUTDATED,
-        /** The Shizuku app is not installed. */
         SHIZUKU_NOT_INSTALLED,
-        /** Shizuku is installed but not running (it stops at every reboot). */
+        /** Shizuku stops at every reboot. */
         SHIZUKU_NOT_RUNNING,
-        /** Shizuku runs, but BBKB has not been given access yet. */
         SHIZUKU_NOT_GRANTED,
-        /** The user refused BBKB in Shizuku for good; only the Shizuku app can allow it now. */
+        /** Refused for good; only the Shizuku app can allow it now. */
         SHIZUKU_DENIED,
-        /** The profile names no input device for the pad, so the reader has nothing to open. */
+        /** No {@code <input-device>} named for the pad. */
         PAD_NOT_NAMED,
-        /** Shizuku runs, but no input device has the pad's name (yet); the reader keeps looking. */
+        /** No input device has the pad's name yet; the reader keeps looking. */
         PAD_NOT_FOUND,
-        /** Shizuku runs, but the reader could not start or could not read the pad; it retries. */
+        /** The reader could not start or read the pad; it retries. */
         READER_FAILED,
-        /** The source was stopped (the IME is going away). */
+        /** The IME is going away. */
         STOPPED
     }
 

@@ -161,11 +161,7 @@ class BlackBerryIME : InputMethodService(),
         /** How long the keyboard stays hidden before the emoji dataset is dropped (onTrimMemory). */
         private const val EMOJI_RELEASE_AFTER_HIDDEN_MS = 15L * 60L * 1000L
 
-        /**
-         * How long after a hide the allocator's free pages go back to the kernel. Short enough to
-         * matter between two fields, long enough that a hide-and-show while switching apps does
-         * not pay the page faults for nothing.
-         */
+        /** Delay after a hide before free heap pages go back to the kernel; skips app-switch flicker. */
         private const val HEAP_PURGE_AFTER_HIDDEN_MS = 3_000L
         @JvmField
         val ASSERTIONS_DISABLED: Boolean = !BlackBerryIME::class.java.desiredAssertionStatus()
@@ -173,57 +169,31 @@ class BlackBerryIME : InputMethodService(),
         @JvmField
         val LOG_TAG: String = BlackBerryIME::class.java.simpleName
 
-        /**
-         * The two [PhysicalKeyboardStateTracker.getSymbolPageOrder] values that mean "a symbol
-         * page is showing" (audit CT-22: these were bare 1/3 literals here and in
-         * KeyEventProcessor).
-         */
+        /** The two [PhysicalKeyboardStateTracker.getSymbolPageOrder] values that mean a symbol page is showing. */
         const val SYMBOL_PAGE_ORDER_FIRST = 1
         const val SYMBOL_PAGE_ORDER_SECOND = 3
     }
 
-    // ==================== Startup timing (debug builds) ====================
-    //
-    // Audit P-6: the cold-start anchor sits here, the first thing the service constructor runs,
-    // so the logged cold start covers the property initialisers below (the engine used to be
-    // built among them, before onCreate, and no timing ever saw it). The phases, all in
-    // STARTUP_TIMING:
-    //   ime.constructor.start @ N ms  - since the process started (fork, content providers,
-    //                                   ImeApplication.onCreate)
-    //   --- anchor: ime.service ---   - the reference point for every later mark
-    //   ime.constructor = N ms        - property initialisers plus the framework's attach,
-    //                                   up to the first line of onCreate
-    //   ime.onCreate.* = N ms         - onCreate's own steps, unchanged
-    //   engine.primaryInit = N ms     - native library load + engine init, now on ImeStartup
-    //   ime.engine.join = N ms        - how long onCreate's first engine user waited for it
-    //                                   (logged only when it waited 1 ms or more)
-    // Must stay the first instance initialiser in this class.
+    // Cold-start anchor (debug STARTUP_TIMING). Must stay the first instance initialiser so the
+    // logged cold start covers the property initialisers below. Phases:
+    //   ime.constructor.start @ N ms  since process start
+    //   anchor ime.service            reference point for every later mark
+    //   ime.constructor = N ms        property initialisers + framework attach, up to onCreate
+    //   ime.onCreate.* = N ms         onCreate's own steps
+    //   engine.primaryInit = N ms     native library load + engine init (ImeStartup)
+    //   ime.engine.join = N ms        wait of onCreate's first engine user (logged when >= 1 ms)
     private val constructorTiming: Long = StartupTiming.begin().also {
         StartupTiming.markSinceProcessStart("ime.constructor.start")
         StartupTiming.anchor("ime.service")
     }
 
-    // ==================== Fields: framework / window ====================
-
-    /* Track current night mode for real-time theme switching */
     private var mCurrentNightMode: Int = -1
 
-    /* Preference change listener for theme changes */
     private var themeChangeListener: SharedPreferences.OnSharedPreferenceChangeListener? = null
 
     /**
-     * ISSUE 2 (modern back) — Android 13+ predictive back callback.
-     *
-     * On `targetSdk = 33+` IMEs that want correct predictive-back gesture animations
-     * must register an `OnBackInvokedCallback` rather than rely on the legacy
-     * `KEYCODE_BACK` dispatch. We hold the callback as a field so we can unregister
-     * it in `onWindowHidden()`.
-     *
-     * The field is declared as `Any?` so the source file remains compilable on
-     * Android Studio configurations that strip API-33 stubs from the boot classpath.
-     * The actual registration / unregistration helpers below cast it to the
-     * `android.window.OnBackInvokedCallback` shape behind a `Build.VERSION.SDK_INT`
-     * gate.
+     * Android 13+ `OnBackInvokedCallback`, kept to unregister in `onWindowHidden()`. Typed `Any?`
+     * so the file compiles without API-33 stubs; the helpers cast it behind an SDK_INT gate.
      */
     private var backInvokedCallback: Any? = null
 
@@ -239,8 +209,6 @@ class BlackBerryIME : InputMethodService(),
     var isShowingWindow: Boolean = false
 
     var currentAlertDialog: AlertDialog? = null
-
-    // ==================== Fields: input-session state ====================
 
     var isInputActive: Boolean = false
 
@@ -266,8 +234,7 @@ class BlackBerryIME : InputMethodService(),
 
     private var lastBatchUpdateRequestTime = 0L
 
-    // ==================== Fields: views (assigned by InputViewCoordinator) ====================
-
+    // Views below are assigned by InputViewCoordinator.
     var rootInputView: View? = null
 
 
@@ -283,8 +250,6 @@ class BlackBerryIME : InputMethodService(),
 
     var unifiedInputBoardHandler: UnifiedInputBoardHandler? = null
 
-    // ==================== Fields: input-board / panel controllers ====================
-
     var fccController: FccController? = null
 
     var clipboardController: ClipboardController? = null
@@ -296,8 +261,6 @@ class BlackBerryIME : InputMethodService(),
     var quickPhrasesController: QuickPhrasesController? = null
 
     var numericSubpanelController: NumericSubpanelController? = null
-
-    // ==================== Fields: singletons and managers ====================
 
     private val settingsManager: SettingsManager = SettingsManager.getInstance()
 
@@ -318,8 +281,6 @@ class BlackBerryIME : InputMethodService(),
 
     var shakeGestureHandler: ShakeGestureHandler? = null
 
-    /* Input handler for device-specific logic (PKB vs VKB) */
-
     private val currencyKeyHandler: CurrencyKeyHandler = CurrencyKeyHandler()
 
     private val subtypeState: SubtypeState = SubtypeState()
@@ -333,7 +294,7 @@ class BlackBerryIME : InputMethodService(),
 
     var gestureDetector: MultiPointerGestureDetector? = null
 
-    // ==================== Fields: collaborators built on this service (initialiser order matters: later ones may read earlier fields) ====================
+    // Initialiser order matters below: later collaborators may read earlier fields.
 
     private val physicalKeyboardStateTracker: PhysicalKeyboardStateTracker = PhysicalKeyboardStateTracker(ModifierStatusBarUpdater(this))
 
@@ -342,7 +303,7 @@ class BlackBerryIME : InputMethodService(),
     @JvmField
     val uiUpdateHandler: UIUpdateHandler = UIUpdateHandler(this)
 
-    /** W6a façade: the single funnel for all suggestion-strip update requests. */
+    /** The single funnel for all suggestion-strip update requests. */
     @JvmField
     val suggestionUpdater: SuggestionUpdater = SuggestionUpdater(this)
 
@@ -384,16 +345,12 @@ class BlackBerryIME : InputMethodService(),
         override fun sendKeyDownWithMeta(keyCode: Int, metaState: Int) = inputLogic.sendKeyDownWithMeta(keyCode, metaState)
         override fun sendKeyUpWithMeta(keyCode: Int, metaState: Int) = inputLogic.sendKeyUpWithMeta(keyCode, metaState)
         override fun showControlModeUi() {
-            // The original hid the suggestion strip and the input bar here to make room for its
-            // "Ctrl is on" notice bar. That bar is gone (its view forced itself GONE), so hiding
-            // them only took the suggestions and the bar away; the ?123 label and the status icon
-            // show Ctrl now, and both stay.
+            // Suggestions and the bar stay visible; the ?123 label and status icon show Ctrl.
             sweepBoardsWhenUimBarIsOff()
             enableCursorMode(false)
         }
         override fun hideControlModeUi() {
-            // Was hideControlModeNotice(), whose body was unreachable: it returned early on
-            // isControlModeShowing(), which the GONE-forcing view made permanently false.
+            // Nothing to restore: showControlModeUi hides nothing.
         }
     })
 
@@ -404,9 +361,8 @@ class BlackBerryIME : InputMethodService(),
     private val ckbGestures = CkbGestureBridge(this)
 
     /**
-     * The touch keypad delivered to this window's decor view (Titan 2 / Elite on Android 16 with
-     * the OEM Scroll assistant on). Inert unless the device profile's `<touch-keypad>` selects it:
-     * on the KEY2, the MP01 and the emulators it never touches the window.
+     * Touch keypad delivered to this window's decor view (Titan 2 / Elite on Android 16 with the
+     * OEM Scroll assistant on). Inert unless the device profile's `<touch-keypad>` selects it.
      */
     private val nativeTouch = NativeTouchSource(object : NativeTouchSource.Host {
         override fun decorView(): View? = window?.window?.decorView
@@ -417,10 +373,9 @@ class BlackBerryIME : InputMethodService(),
     })
 
     /**
-     * The touch keypad read through Shizuku (Titan 2 on Android 15, a Titan whose pad the OS does
-     * not enumerate). Inert unless the profile's `<touch-keypad>` selects it: the engine is never
-     * started anywhere else. Started on the first window show, kept for the IME's life, grabbing
-     * the pad only while the window is shown.
+     * Touch keypad read through Shizuku (a Titan whose pad the OS does not enumerate). Inert unless
+     * the profile's `<touch-keypad>` selects it. Started on first show, kept for the IME's life,
+     * grabbing the pad only while the window is shown.
      */
     private val shizukuTouch = ShizukuTouchSource(object : ShizukuTouchSource.Host {
         override fun context(): Context = this@BlackBerryIME
@@ -431,13 +386,7 @@ class BlackBerryIME : InputMethodService(),
         override fun touchKeypad(): TouchKeypadConfig? = DeviceProfile.current().touchKeypadConfig
     }, KeypadTouchSources.shizukuEngine())
 
-    /**
-     * Audit CT-27: the bounded worker pool for cold-start warmups. These used to be four raw
-     * `Thread(...).start()` calls that nothing could join, cancel or bound — three of them racing
-     * the first `onStartInputView`, one of them (`NuanceSDKPrewarm`) calling `sdk.clear()` on the
-     * shared native engine. One pool, shut down in `releaseResources`, gives the same overlap
-     * with a cancellation point.
-     */
+    /** Bounded worker pool for cold-start warmups; shut down in `releaseResources`. */
     private val startupExecutor: java.util.concurrent.ExecutorService =
         java.util.concurrent.Executors.newFixedThreadPool(2) { r ->
             Thread(r, "ImeStartup").apply { isDaemon = true }
@@ -484,26 +433,19 @@ class BlackBerryIME : InputMethodService(),
 
     private val keyEventProcessor = KeyEventProcessor(this)
 
-    // ==================== Service lifecycle ====================
-
     @Throws(Resources.NotFoundException::class)
     override fun onCreate() {
-        // Audit P-6: first, before super.onCreate(): start the engine (native library load,
-        // nativeInit, the engine's own init) on the engine loader thread so it overlaps
-        // everything below. It needs only the Application context. The first engine user joins
-        // it, bounded, in NuanceSDKManager.getInstance(). Not on startupExecutor: that pool is
-        // shut down with the service, and the engine must only be called from threads that
-        // never exit (EngineThreads).
+        // First, before super.onCreate(): start the engine on its loader thread so it overlaps
+        // everything below; NuanceSDKManager.getInstance() joins it. Not on startupExecutor: the
+        // engine must only be called from threads that never exit (EngineThreads).
         NuanceSDKManager.startPrimaryAsync()
         StartupTiming.end("ime.constructor", constructorTiming)
         val onCreateToken = StartupTiming.begin()
         initializeStrictMode()
         InAppEventBus.getInstance().subscribe(LanguageVariantStore.ACTION_LANGUAGE_PACK_CHANGED, languagePackChangedListener)
 
-        // First-load: getDefaultSharedPreferences() only *starts* an async file load;
-        // the first read blocks until it finishes. Force both prefs files to finish
-        // loading on a worker so the parse overlaps the service/singleton init below
-        // instead of stalling the first main-thread pref read (~190 ms measured).
+        // Prefs only start an async load and the first read blocks; finish both files on a
+        // worker so the parse overlaps init below instead of stalling the main thread.
         PrefsManager.init(applicationContext)
         startupExecutor.execute {
             try {
@@ -512,51 +454,36 @@ class BlackBerryIME : InputMethodService(),
             } catch (_: Throwable) {}
         }
 
-        // Step 1: Initialize components that MUST run before the service is created.
+        // Must run before super.onCreate().
         var t = StartupTiming.begin()
         SettingsManager.initialize(applicationContext)
         StartupTiming.end("ime.onCreate.settingsManagerInitialize", t)
         PhysicalKeyResolver.init(applicationContext)
-        // The engine's key letters follow the active letter layout; off the main thread, and
-        // decided again once the device profile has applied its KDB variant.
+        // Engine key letters follow the letter layout; re-decided after the profile's KDB variant.
         startupExecutor.execute { dev.bbkb.ime.core.layout.LetterLayoutEngineSync.start(applicationContext) }
         settingsManager.addOnSettingsChangeListener(this)
         t = StartupTiming.begin()
         KeyboardSwitcher.initialize(this, uiCoordinator)
         StartupTiming.end("ime.onCreate.keyboardSwitcherInitialize", t)
 
-        // Step 2: Call super.onCreate() ONCE to create the base service.
         t = StartupTiming.begin()
         super.onCreate()
         StartupTiming.end("ime.onCreate.superOnCreate", t)
 
-        // W1 (debug): load + self-check the OWNED ET9KDB module (libxt9kdb.so). Inert w.r.t. the
-        // live keyboard — parses a KDB asset through the owned Load_XmlKDB and logs the model.
-        // Runs off-thread: the ~100 ms asset parse doesn't need to block cold start.
+        // Debug self-check of libxt9kdb.so: parses a KDB asset and logs the model. Inert.
         if (BuildConfig.DEBUG) {
             startupExecutor.execute {
                 try { com.blackberry.nuanceshim.Xt9Kdb.selfCheck(this, "athena") } catch (_: Throwable) {}
             }
         }
 
-        // W2 replay doorway (debug builds only; master plan W2, owner-approved 2026-08-15):
-        // replays a recorded or synthetic CKB gesture trace into onGenericMotionEvent — the
-        // exact entry the capacitive pad's hardware events use — with original coordinates and
-        // inter-sample timing. Events carry the profile's touchKeypadDeviceId so the
-        // isFromTouchKeypad gate passes identically to hardware (the emulator poses as a KEY2
-        // via the device-config screen's athena config, whose CKB device-type forces
-        // hasTouchKeypad). Release builds register nothing.
+        // Debug only: replays CKB gesture traces into onGenericMotionEvent with original timing,
+        // tagged with touchKeypadDeviceId so the isFromTouchKeypad gate passes as on hardware.
         if (BuildConfig.DEBUG) gestureReplay = GestureReplayReceiver(this).also { it.register() }
 
-        // ISSUE 2 FIX: Explicitly declare back-handling disposition. Without this
-        // the platform falls back to OEM-specific heuristics for whether the
-        // navigation bar's Back button should reach the IME or the foreground
-        // activity. BACK_DISPOSITION_DEFAULT lets the framework hide the IME on
-        // back press whenever the input window is visible, which is exactly what
-        // we want.
+        // Explicit, or OEM heuristics decide whether Back reaches the IME or the activity.
         setBackDisposition(InputMethodService.BACK_DISPOSITION_DEFAULT)
 
-        // Step 3: Now that the service exists, set up night-mode tracking and the rest.
         t = StartupTiming.begin()
         initializeNightModeTracking()
         StartupTiming.end("ime.onCreate.nightMode", t)
@@ -570,23 +497,10 @@ class BlackBerryIME : InputMethodService(),
         initializeLearningManagers()
         StartupTiming.end("ime.onCreate.learningManagers", t)
 
-        // ISSUE 1 FIX: Defer non-critical onCreate work off the cold-start path.
-        //
-        // - registerNonCriticalReceivers(): broadcast filters for connectivity, ringer,
-        //   screen-off, learning-model-save, locale-changed. None of these are needed
-        //   for the first onCreateInputView / onStartInputView cycle.
-        // - initializeKeyInterceptor(): only relevant for PKB devices, and the IME
-        //   processes its first physical-key event tens of ms after onCreate at the
-        //   earliest. We can register the AccessibilityService callback after the
-        //   first frame without risking a missed key.
-        //
-        // initializeControllers() and initializeBackgroundPreloading() stay on the
-        // critical path: controllers (FCC, clipboard, voice) are needed by
-        // setInputView()'s wiring, and the preload-thread spawn itself is cheap.
-        // Audit CT-24/CT-27: post through the IME's own handler with a token instead of a
-        // throwaway Handler nothing could cancel. Without the token, a service destroyed inside
-        // the 150 ms window ran registerNonCriticalReceivers() AFTER releaseResources() had
-        // already unregistered, leaving three process-scoped receivers holding the dead service.
+        // Receivers are not needed for the first input cycle, so they wait past cold start. The
+        // token lets releaseResources cancel it: a service destroyed inside the window must not
+        // register receivers that would hold the dead service. Controllers stay on the critical
+        // path (setInputView's wiring needs them).
         uiUpdateHandler.postTokenized(deferredInitToken, 150L) { registerNonCriticalReceivers() }
         // Build every enabled keyboard's engine KDBs ahead of its first use (kept on storage).
         uiUpdateHandler.postTokenized(deferredInitToken, dev.bbkb.ime.keyboard.KdbPrebuilder.START_DELAY_MS) {
@@ -622,7 +536,6 @@ class BlackBerryIME : InputMethodService(),
     private fun initializeNightModeTracking() {
         if (BuildConfig.DEBUG) Log.i(LOG_TAG, "onCreate()")
 
-        // Initialize night mode tracking for real-time theme switching
         val config = resources.configuration
         mCurrentNightMode = config.uiMode and Configuration.UI_MODE_NIGHT_MASK
     }
@@ -642,9 +555,7 @@ class BlackBerryIME : InputMethodService(),
         uiUpdateHandler.initializeDelays()
         StartupTiming.end("ime.singletons.audioHelperDictHandler", t)
 
-        // Initialize unified DeviceProfile with device-specific overrides.
-        // The heavy part (config XML parse + hardware scan) runs on startupExecutor; this call
-        // only publishes the ticket. See DeviceProfile.startInitialize / awaitInitialized.
+        // The XML parse and hardware scan run on startupExecutor; this only publishes the ticket.
         t = StartupTiming.begin()
         DeviceProfile.startInitialize(applicationContext, resources.configuration)
         StartupTiming.end("ime.singletons.deviceProfileStart", t)
@@ -653,7 +564,6 @@ class BlackBerryIME : InputMethodService(),
     }
 
     private fun initializeColorManager() {
-        // Initialize PrefsManager singleton for centralized SharedPreferences access
         PrefsManager.init(this)
         val prefs = PrefsManager.getPrefs()
         PrefsManager.migrateThemePrefs(prefs)
@@ -666,37 +576,22 @@ class BlackBerryIME : InputMethodService(),
             prefs.getBoolean(PrefsManager.Keys.KEYBOARD_USE_SYSTEM_COLORS, false),
         )
 
-        // Register preference listener for theme changes
         themeChangeListener = ThemePrefsListener(this)
         prefs.registerOnSharedPreferenceChangeListener(themeChangeListener)
     }
 
     private fun initializeLearningManagers() {
-        // The first engine user on the main thread (its constructor registers the learner with
-        // the engine): this is where onCreate joins the background engine start, if it is still
-        // running. Timed so the wait shows up next to engine.primaryInit.
+        // First main-thread engine user: onCreate joins the background engine start here.
         val joinToken = StartupTiming.begin()
         dynamicLearningManager = DynamicLearningManager(applicationContext)
         StartupTiming.endIfOver("ime.engine.join", joinToken, 1L)
         languagePackLocaleMonitor = LanguagePackLocaleMonitor(applicationContext, uiUpdateHandler)
         contactsLearningManager = ContactsLearningManager(this)
-        // loadSettings() must stay on the critical path — settingsManager.getSettingsValues()
-        // is dereferenced (with !!) from many subsequent code paths.
+        // Must stay on the critical path: many later paths dereference getSettingsValues()!!.
         loadSettings()
-        // The profile must be readable before anything reads a keyboard shape off it, and
-        // SettingsManager.loadSettings -> DeviceProfile.fromSettings has just done so. Log what
-        // the background load cost the main thread here, where the first join actually happened.
+        // loadSettings -> DeviceProfile.fromSettings has just joined the profile load.
         Logger.info(LOG_TAG, "DeviceProfile initialized: ${DeviceProfile.current()}")
-        // ISSUE 1 FIX: reloadDictionaryForSubtype() kicks off dictionary initialization, which is
-        // already internally async (loadDictionaryAsync posts to a worker thread),
-        // but still does synchronous setup on the main thread (locale-monitor
-        // bookkeeping, language notification, personalized dictionary attach).
-        // None of that needs to happen before onCreateInputView is allowed to run,
-        // so we post it to the front of the main-thread queue. It will fire after
-        // onCreate returns and the framework has had a chance to call
-        // onCreateInputView for the first editor.
-        // Audit CT-27: the IME already owns a main-thread handler; use it (and its cancel token)
-        // instead of allocating a throwaway Handler for one post.
+        // Its main-thread setup is not needed before onCreateInputView, so it runs after onCreate.
         uiUpdateHandler.postTokenized(deferredInitToken, 0L) { reloadDictionaryForSubtype() }
     }
 
@@ -714,12 +609,8 @@ class BlackBerryIME : InputMethodService(),
     }
 
     private fun initializeBackgroundPreloading() {
-        // Audit DK-18: KeyEventConverter is constructed lazily on the key path and its
-        // initializeAltMappingsIfNeeded() does a synchronous XmlResourceParser walk (plus, on a
-        // miss, a second attempt through DeviceInputResolver) on the calling thread — so the whole
-        // load used to land on the FIRST KEYSTROKE after IME start, on the main thread. Warm the
-        // cache here instead; AltMappingsParser.getCachedMappings is synchronized, so the per-event call
-        // then only ever hits the cache.
+        // Warm the alt-mappings cache so the first keystroke does not pay the synchronous XML
+        // parse on the main thread; AltMappingsParser.getCachedMappings is synchronized.
         startupExecutor.execute {
             try {
                 val profile = DeviceProfile.current()
@@ -729,9 +620,7 @@ class BlackBerryIME : InputMethodService(),
             }
         }
 
-        // The language-pack catalogue (ldb/manifest.json, 105 entries, plus the side-loaded
-        // pack registry file) is parsed lazily now; nothing reads it before the first dictionary
-        // load, which is itself posted off onCreate. Warm it here so that load finds it done.
+        // Warm the lazily parsed language-pack catalogue before the first dictionary load.
         startupExecutor.execute {
             try {
                 com.blackberry.nuanceshim.languagepack.LanguagePackManager
@@ -740,16 +629,8 @@ class BlackBerryIME : InputMethodService(),
                 Logger.warn(LOG_TAG, "Language-pack registry prewarm failed: ${e.message}")
             }
         }
-        // No keyboard prebuild and no engine "prewarm" here any more: the unified-input-menu
-        // keyboard built ahead of time was never cached (KeyboardId.isTypingKeyboard() is false
-        // for it, so the bar built its own), and the prewarm only called clear() on an engine
-        // that already existed. The engine itself is started at the top of onCreate (audit P-6).
     }
 
-    /**
-     * Register non-critical broadcast receivers.
-     * Called after CommitType delay from onCreate() to move work off the critical startup path.
-     */
     private fun registerNonCriticalReceivers() {
         try {
             registerNotExported(connectivityAndScreenReceiver,
@@ -757,9 +638,7 @@ class BlackBerryIME : InputMethodService(),
             registerNotExported(learningModelSaveReceiver,
                 "android.intent.action.SCREEN_OFF", "android.intent.action.ACTION_POWER_CONNECTED")
             registerNotExported(localeChangeReceiver, "android.intent.action.LOCALE_CHANGED")
-            // Audit CT-24: record that registration actually happened, so releaseResources
-            // does not construct the `by lazy` receivers (and swallow IllegalArgumentException)
-            // for a registration that never ran.
+            // So releaseResources does not build the lazy receivers for a registration that never ran.
             nonCriticalReceiversRegistered = true
             Logger.debug(LOG_TAG, "Non-critical receivers registered")
         } catch (e: Exception) {
@@ -773,19 +652,13 @@ class BlackBerryIME : InputMethodService(),
     }
 
     /**
-     * IB-26: the emojibase dataset (a 735 KB asset parsed into ~3700 EmojiData objects plus its
-     * category and skin-tone indexes) lives in a process-lifetime static with no eviction hook.
-     * Drop it under memory pressure, in the background, or after the keyboard has been hidden
-     * for a long while; it is re-parsed lazily the next time the strip, the emoji board or the
-     * custom symbol page asks for it.
+     * Drops the process-static emojibase dataset (735 KB asset, ~3700 objects) under memory
+     * pressure, in the background, or after a long hide; it is re-parsed lazily on next use.
      */
     override fun onTrimMemory(level: Int) {
         super.onTrimMemory(level)
-        // TRIM_MEMORY_UI_HIDDEN arrives on every keyboard hide (Android 13 delivers it each
-        // time), and releasing on it meant the 735 KB parse ran again on every show: 38% of
-        // all allocation across show/hide cycles on the emulator. Release at once only under
-        // real memory pressure or once the process is backgrounded; a plain hide starts a timer
-        // that releases the dataset after a long idle instead, and every show cancels it.
+        // UI_HIDDEN arrives on every hide, so it only starts a long timer (each show cancels it);
+        // releasing at once would re-parse the dataset on every show.
         uiUpdateHandler.removeCallbacksAndMessages(emojiReleaseToken)
         when {
             level == TRIM_MEMORY_RUNNING_LOW || level == TRIM_MEMORY_RUNNING_CRITICAL
@@ -799,18 +672,14 @@ class BlackBerryIME : InputMethodService(),
     }
 
     /**
-     * onDestroy has begun. The framework's own onDestroy, which runs last here, still calls
-     * onFinishInputView and onFinishInput when a field was active (an IME switch does not finish
-     * input first), and those ran against controllers and views that were just released: the
-     * inline-autofill singleton destroyed a few lines earlier was built again, and anything
-     * added to the finish path could quietly undo the teardown. They return at once now.
+     * onDestroy has begun. super.onDestroy still calls onFinishInputView/onFinishInput on an
+     * active field; those return at once so they cannot rebuild what teardown just released.
      */
     private var teardownStarted = false
 
     override fun onDestroy() {
         teardownStarted = true
         InAppEventBus.getInstance().unsubscribe(LanguageVariantStore.ACTION_LANGUAGE_PACK_CHANGED, languagePackChangedListener)
-        // Unregister theme change listener
         if (themeChangeListener != null) {
             val prefs = PrefsManager.getPrefs()
             prefs.unregisterOnSharedPreferenceChangeListener(themeChangeListener)
@@ -818,10 +687,8 @@ class BlackBerryIME : InputMethodService(),
 
         gestureReplay?.unregister()
         gestureReplay = null
-        // Quits the suggestion worker's HandlerThread. Each service instance starts one in the
-        // InputLogic constructor, and until now nothing quit it: 21 were alive after 20 IME
-        // switches on the emulator. Before releaseResources() so no new request reaches an
-        // engine that is being disposed.
+        // Quits the per-instance suggestion HandlerThread; before releaseResources() so no new
+        // request reaches the engine during teardown.
         inputLogic.shutdown()
         releaseResources()
         DictionaryManager.getInstance().shutdown()
@@ -833,14 +700,11 @@ class BlackBerryIME : InputMethodService(),
     private fun releaseResources() {
         settingsManager.removeOnSettingsChangeListener(this)
         settingsManager.unregisteredListener()
-        // Audit CT-24: drop any still-pending deferred startup work FIRST, so a service torn
-        // down inside the 150 ms window cannot register receivers after this point. The
-        // registered flag then keeps the unregister calls (and the `by lazy` receiver
-        // construction they force) from running for a registration that never happened.
+        // First, so deferred startup work cannot register receivers after this point.
         uiUpdateHandler.removeCallbacksAndMessages(deferredInitToken)
         uiUpdateHandler.removeCallbacksAndMessages(emojiReleaseToken)
         uiUpdateHandler.removeCallbacksAndMessages(heapPurgeToken)
-        // Audit CT-27: stop accepting new warmup work; in-flight tasks are allowed to finish.
+        // In-flight warmups may finish.
         startupExecutor.shutdown()
         ckbGestures.release()
         nativeTouch.stop()
@@ -851,10 +715,8 @@ class BlackBerryIME : InputMethodService(),
             try { unregisterReceiver(learningModelSaveReceiver) } catch (ignored: IllegalArgumentException) {}
             try { unregisterReceiver(localeChangeReceiver) } catch (ignored: IllegalArgumentException) {}
         }
-        // Both interceptor callbacks, not just the special-key one: the all-keys callback is what
-        // lets KeyInterceptorService's Alt bleed-through block consume hardware Alt, so leaving it
-        // installed past this point would keep every hardware Alt consumed system-wide with a dead
-        // IME behind it (and retain that IME via a static field).
+        // Both callbacks: a leftover all-keys callback keeps hardware Alt consumed system-wide
+        // with a dead IME behind it (and leaks it through a static field).
         hardwareKeys.unregisterInterceptorCallbacks()
         physicalKeyboardStateTracker.onModifierListenerReset()
         languagePackLocaleMonitor!!.cleanup()
@@ -880,12 +742,12 @@ class BlackBerryIME : InputMethodService(),
         quickPhrasesController = null
         numericSubpanelController?.refresh()
         numericSubpanelController = null
-        // The engine is not disposed: it lives for the process and the next service instance
-        // reuses it (NuanceSDKManager.resetForTests documents the crash that disposing causes).
+        // The engine is not disposed: it lives for the process and the next instance reuses it
+        // (see NuanceSDKManager.resetForTests for the crash disposing causes).
     }
 
     override fun onConfigurationChanged(configuration: Configuration) {
-        // UIM-07 fix: Deterministically close all boards before any config change handling.
+        // Close all boards before any config change handling.
         uiCoordinator.hideAllInputUi()
 
         controlMode.resetAll()
@@ -895,7 +757,6 @@ class BlackBerryIME : InputMethodService(),
         val zM4990a = SettingsManager.hasHardwareKeyboard(configuration)
         vkbGestureListener?.clearLastKeyEventTime()
 
-        // Real-time theme switching: Detect system theme change
         val newNightMode = configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
         if (mCurrentNightMode != -1 && mCurrentNightMode != newNightMode) {
             val prefs = PrefsManager.getPrefs()
@@ -905,15 +766,9 @@ class BlackBerryIME : InputMethodService(),
                 Logger.debug(LOG_TAG, "System theme changed (night mode: $newNightMode), reloading keyboard theme")
                 loadSettings()
 
-                // method.xml declares android:configChanges="uiMode", so on Android 13 and later
-                // the system no longer resets and re-inflates the input view for this change
-                // (and no longer throws away the work done here first). The keyboard view, the
-                // aux bar and the strip repaint through KeyboardColorManager's observers, but the
-                // boards (voice, cursor, clipboard, emoji search, slideboard divider) take their
-                // colours once at inflate time, so the palette is reloaded and the input view
-                // recreated the way a theme change in Settings does (ThemePrefsListener). Only
-                // the "auto" theme pays for a night flip; a fixed theme keeps its views as they
-                // are. Rotation is not declared and still goes through the system's reset.
+                // configChanges="uiMode" means Android 13+ no longer re-inflates the input view,
+                // and the boards take their colours at inflate time, so recreate it as a Settings
+                // theme change does (ThemePrefsListener).
                 KeyboardColorManager.onConfigurationChanged()
                 keyboardSwitcher.forceRecreateInputView()
             }
@@ -926,8 +781,7 @@ class BlackBerryIME : InputMethodService(),
             keyboardSwitcher.getSlideboardManager()?.hide()
             uiUpdateHandler.prepareForOrientationChange()
             inputLogic.commitComposingOrReset(settingsManager.getSettingsValues())
-            // The orientation change rebuilds the keyboard, and with it the meta mask the old one
-            // installed — which is the ALL-scope reason this reset has always been.
+            // The rebuilt keyboard replaces the meta mask the old one installed.
             physicalKeyboardStateTracker.resetModifiers(ModifierResetReason.KEYBOARD_RELOADED)
             updatePhysicalKeyboardFilter()
         }
@@ -936,16 +790,18 @@ class BlackBerryIME : InputMethodService(),
             onKeyboardConfigurationChanged(zM4990a, configuration.orientation)
         }
 
-        // Update color manager for theme changes (dark mode toggle, wallpaper changes)
         KeyboardColorManager.onConfigurationChanged()
 
-        // Re-apply nav-bar insets after a config/orientation change so the keyboard stays
-        // positioned above the nav bar in the new configuration (§1).
+        // Keeps the keyboard above the nav bar in the new configuration.
         rootInputView?.let { androidx.core.view.ViewCompat.requestApplyInsets(it) }
 
         super.onConfigurationChanged(configuration)
     }
 
+    /**
+     * @param z true if a hardware keyboard is now attached
+     * @param i the new [Configuration.orientation]
+     */
     fun onKeyboardConfigurationChanged(z: Boolean, i: Int) {
         Logger.info(LOG_TAG, "Updating keyboard configuration settings")
         if (!z && i == 2 && !isInputViewShown() && hasActiveInputConnection() && !wasBackPressed) {
@@ -960,20 +816,12 @@ class BlackBerryIME : InputMethodService(),
         Logger.info(LOG_TAG, "Done updating keyboard configuration settings")
     }
 
-    // No getSystemService override handing out a themed inflater, deliberately. With gesture
-    // navigation (API 33+) Android builds the keyboard's own navigation bar with
-    // LayoutInflater.from(this), and its Back button, the hide-keyboard chevron, only acts when
-    // its context is this service. A themed inflater here left that button dead. Views that need
-    // a theme wrap their own context (KeyboardSwitcher's themeContext, a ContextThemeWrapper).
-    // Pinned by ImeInflaterContextTest.
-
-    // ==================== View lifecycle and window ====================
+    // No getSystemService override handing out a themed inflater: in gesture navigation (API 33+)
+    // the IME nav bar's Back chevron only acts when its inflater context is this service. Themed
+    // views wrap their own context. Pinned by ImeInflaterContextTest.
 
     override fun onCreateInputView(): View {
         Logger.debug(LOG_TAG, "onCreateInputView() - Creating keyboard view")
-        // The custom keyboard views never opted into a hardware layer (the historical reflective
-        // lookup of the hidden enableHardwareAcceleration() always returned null); the IME window
-        // itself is hardware-accelerated by the framework regardless.
         return keyboardSwitcher.createInputView(false)
     }
 
@@ -1005,11 +853,9 @@ class BlackBerryIME : InputMethodService(),
     private var extractTextObserver: ViewTreeObserver? = null
 
     /**
-     * Takes [extractTextPreDrawListener] off wherever it is. Removing it through the old view
-     * alone missed it after a configuration change: that view is detached by then and hands out
-     * a new, empty observer, while the listener lives on the window's own, where a view's
-     * listeners are moved when it is attached. The new view then added a second copy, and the
-     * extracted text was recomputed once per copy on every frame of full-screen entry.
+     * Takes [extractTextPreDrawListener] off every observer it may be on. After a config change
+     * the old view is detached and hands out a new, empty observer, while the listener has moved
+     * to the window's; missing it there stacks a copy per change.
      */
     private fun removeExtractTextPreDrawListener(previous: TextView?) {
         fun remove(observer: ViewTreeObserver?) {
@@ -1030,29 +876,9 @@ class BlackBerryIME : InputMethodService(),
     }
 
     /**
-     * Returns whether the soft input view should be shown.
-     *
-     * IMPORTANT — PKB vs VKB distinction:
-     *
-     * On a PKB (physical-keyboard) device the IME's "input view" is the suggestion
-     * strip / Unified Input Menu (UIM), NOT a full on-screen keyboard. The hardware
-     * keyboard handles typing, but the IME must still display its suggestion strip.
-     * The framework's `super.onEvaluateInputViewShown()` returns `false` whenever a
-     * hardware keyboard is connected (it is trying to suppress the soft VKB), so we
-     * must NOT defer to super on PKB devices — doing so hides the suggestion strip /
-     * UIM entirely (regression observed after the lifecycle audit). PKB devices
-     * therefore preserve the original semantics: show the input view, except when the
-     * device has been rotated out of its natural orientation into a non-landscape
-     * configuration (the legacy `isLandscapeOrientation()` heuristic).
-     *
-     * On a VKB (touchscreen-only) device we defer to `super.onEvaluateInputViewShown()`
-     * so the soft keyboard hides correctly when there is no editor (e.g., on the home
-     * screen) or when an external hardware keyboard is attached. This is the modern
-     * lifecycle fix for Issue 3 (IME staying visible after returning home).
-     *
-     * The PKB home-screen hiding behavior is handled separately by the binding gate in
-     * `onShowInputRequested()` and the state clearing in `onWindowHidden()`, so PKB
-     * devices do not need to suppress the input view here.
+     * On PKB the input view is the suggestion strip / UIM, and super returns false whenever a
+     * hardware keyboard is present, so PKB never defers to super (home-screen hiding is done in
+     * `onShowInputRequested` and `onWindowHidden`). VKB defers so the keyboard hides with no editor.
      */
     override fun onEvaluateInputViewShown(): Boolean {
         if (isShowingWindow) return true
@@ -1060,13 +886,10 @@ class BlackBerryIME : InputMethodService(),
             return true
         }
         if (DeviceProfile.isPkb()) {
-            // PKB: the suggestion strip / UIM is the input view and must show even
-            // when a hardware keyboard is present (where super would return false).
             val rotation = getDisplayRotation()
             if (rotation != 0) return isLandscapeOrientation()
             return true
         }
-        // VKB: defer to the framework so the IME hides when there is no editor.
         return super.onEvaluateInputViewShown()
     }
 
@@ -1098,26 +921,15 @@ class BlackBerryIME : InputMethodService(),
     }
 
     /**
-     * Returns whether the IME wants to be shown in response to a `showSoftInput`
-     * request from the application.
+     * PKB forces a show past super only with an editor bound and [onEvaluateInputViewShown]
+     * agreeing, so transient show requests do not bring the IME up on the home screen.
      *
-     * Prior to the audit, this override unconditionally returned `true` for any
-     * PKB device, which caused the IME to re-appear on the home screen whenever
-     * the system issued a transient show request during a window transition.
-     *
-     * The fix:
-     *   - Defer to `super.onShowInputRequested(...)` first.
-     *   - Only force `true` for PKB devices when there is genuinely an editor
-     *     waiting for input (a non-null `getCurrentInputBinding()` *and*
-     *     `onEvaluateInputViewShown()` agrees the view should be shown).
-     *   - Preserve the legacy non-PKB-device fallback for the `flags & 1 == 0`
-     *     (explicit-show) case.
+     * @param i the show flags (bit 0 = implicit)
+     * @param z true if this is for a configuration change
      */
     override fun onShowInputRequested(i: Int, z: Boolean): Boolean {
         var zOnShowInputRequested = super.onShowInputRequested(i, z)
         if (!zOnShowInputRequested && DeviceProfile.current().isPkbDevice()) {
-            // PKB devices may want to show even when super says no — but only
-            // when there is actually an editor bound and the view-shown predicate agrees.
             if (getCurrentInputBinding() != null && onEvaluateInputViewShown()) {
                 zOnShowInputRequested = true
             }
@@ -1129,10 +941,6 @@ class BlackBerryIME : InputMethodService(),
     }
 
     override fun onEvaluateFullscreenMode(): Boolean {
-        // Was InputHandler.shouldUseFullscreenMode(). The PKB arm returned false outright; the
-        // VKB arm was "fullscreen enabled in settings AND not IME_FLAG_NO_FULLSCREEN", which the
-        // next two lines already test (super.onEvaluateFullscreenMode() is where AOSP honours
-        // that flag). Only the device-type half carried information.
         if (DeviceProfile.current().isPkbDevice()) return false
         val zM5010d = SettingsManager.isFullscreenModeEnabled(resources)
         if (!super.onEvaluateFullscreenMode() || !zM5010d) {
@@ -1177,30 +985,26 @@ class BlackBerryIME : InputMethodService(),
     }
 
     /**
-     * The two layout syncs a show posts. Held as fields so that a repeated showWindow replaces
-     * the pending pair instead of queueing another: the framework calls showWindow twice per
-     * show, and each sync is an op on the engine thread.
+     * The two layout syncs a show posts. Fields so the framework's second showWindow per show
+     * replaces the pending pair instead of queueing more engine-thread ops.
      */
     private val syncLayoutAfterShow = Runnable { keyboardSwitcher.syncKeyboardLayout() }
     private val syncLayoutAfterShowSettled = Runnable { keyboardSwitcher.syncKeyboardLayout() }
 
+    /** @param z true to show the input view */
     override fun showWindow(z: Boolean) {
         if (BuildConfig.DEBUG) android.util.Log.d("KBD_LIFECYCLE", "showWindow(): showInput=$z")
         Logger.debug(LOG_TAG, "showWindow(): showInput=$z")
         super.showWindow(z)
         if (z) {
-            // Surface-classification follow-up (2026-08-29): syncKeyboardLayout decides the
-            // engine frame from "MainKeyboardView actually displayed", but the sync that runs
-            // during startInput happens BEFORE the view is laid out (isShown/height still
-            // false/0), so an appearing on-screen keyboard was left on the PKB frame until some
-            // later sync. Re-sync after this window is up, posted so the view has real layout.
+            // The startInput sync runs before the view is laid out, and syncKeyboardLayout picks
+            // the engine frame from whether MainKeyboardView is displayed; re-sync after layout.
             keyboardSwitcher.getMainKeyboardView()?.let { v ->
                 v.removeCallbacks(syncLayoutAfterShow)
                 v.removeCallbacks(syncLayoutAfterShowSettled)
                 v.post(syncLayoutAfterShow)
-                // Second pass after the window settles: the immediate post can still read a
-                // transient view state (e.g. the keyboard view measured before the pad-mode
-                // collapse) and a wrong frame would otherwise stick until the next layout event.
+                // Second pass after settling: the first can read a transient state (e.g. before
+                // the pad-mode collapse), and a wrong frame would stick until the next layout.
                 v.postDelayed(syncLayoutAfterShowSettled, 600)
             }
         }
@@ -1209,7 +1013,6 @@ class BlackBerryIME : InputMethodService(),
     override fun hideWindow() {
         if (BuildConfig.DEBUG) android.util.Log.d("KBD_LIFECYCLE", "hideWindow() called")
         Logger.debug(LOG_TAG, "hideWindow()")
-        // Restored to match original smali bytecode.
         keyboardSwitcher.cancelKeyTimers()
         DeviceProfile.setForceVkbMode(false)
         if (isAlertDialogShowing()) {
@@ -1230,17 +1033,12 @@ class BlackBerryIME : InputMethodService(),
         // The keyboard is back: keep the emoji dataset (see onTrimMemory) and the heap pages.
         uiUpdateHandler.removeCallbacksAndMessages(emojiReleaseToken)
         uiUpdateHandler.removeCallbacksAndMessages(heapPurgeToken)
-        // Re-request inset application on every show so the keyboard is positioned above the
-        // nav bar deterministically, including after an IME switch-away-and-back (§0/§1).
+        // Every show, so the keyboard sits above the nav bar after an IME switch-away-and-back.
         rootInputView?.let { androidx.core.view.ViewCompat.requestApplyInsets(it) }
-        // ISSUE 2 FIX: clear the back-press latch on each fresh show so we cannot
-        // inherit a stale `wasBackPressed = true` from a previous session, which
-        // would suppress the auto-show-on-key-press path until a full editor reset.
+        // A stale latch would suppress auto-show-on-key-press until a full editor reset.
         wasBackPressed = false
-        // Put the PKB modifier status icon back. The status-bar slot is the system's, and it is
-        // cleared whenever the IME unbinds; a post we made while the window was down may also
-        // have been dropped before the privileged operations were attached. The updater only
-        // posts on a CHANGE, so without this re-assert an icon the system dropped never returns.
+        // Re-assert the PKB modifier status icon: the system clears it on unbind or drops early
+        // posts, and the updater only posts on a change.
         physicalKeyboardStateTracker.refreshModifierStatus()
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             registerBackInvokedCallback()
@@ -1251,9 +1049,8 @@ class BlackBerryIME : InputMethodService(),
 
     override fun onWindowHidden() {
         super.onWindowHidden()
-        // The native heap keeps the pages freed by closed boards, popups and language switches
-        // (42 to 60 MB after a session, none of it returned on its own). Give them back once the
-        // keyboard has been down for a moment; onWindowShown cancels this.
+        // The native heap never returns pages freed by boards, popups and language switches
+        // (tens of MB); purge once the keyboard has been down a moment. onWindowShown cancels it.
         uiUpdateHandler.removeCallbacksAndMessages(heapPurgeToken)
         uiUpdateHandler.postTokenized(heapPurgeToken, HEAP_PURGE_AFTER_HIDDEN_MS) {
             val purged = com.blackberry.nuanceshim.Xt9KdbVariant.purgeHeap()
@@ -1264,28 +1061,19 @@ class BlackBerryIME : InputMethodService(),
         resetUiState()
         fccController?.dismiss()
         clipboardController?.dismiss()
-        // ISSUE 3 FIX: clear auto-show latches so a stale key press cannot re-summon
-        // the IME after the user returns to the home screen.
+        // So a stale key press cannot re-summon the IME on the home screen.
         shouldShowOnFirstKeypress = false
         wasBackPressed = false
         isInputActive = false
         lastCursorAnchorInfo = null
-        // ISSUE 2 (modern back): pair with the registerBackInvokedCallback() call in
-        // onWindowShown() so we don't leak a callback after the window is gone.
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             unregisterBackInvokedCallback()
         }
     }
 
     /**
-     * ISSUE 2 (modern back) — register an OnBackInvokedCallback on API 33+.
-     *
-     * The IME's window (not the Service itself) owns the dispatcher, so we have to
-     * look it up via `window.window.onBackInvokedDispatcher`. The callback dismisses
-     * the IME the same way `dismissKeyboard()` does — resetting UI state and then
-     * calling `requestHideSelf(0)`.
-     *
-     * Manifest opt-in: `android:enableOnBackInvokedCallback="true"` on `<application>`.
+     * The IME window, not the service, owns the dispatcher. Needs the manifest's
+     * `android:enableOnBackInvokedCallback="true"`.
      */
     @androidx.annotation.RequiresApi(Build.VERSION_CODES.TIRAMISU)
     private fun registerBackInvokedCallback() {
@@ -1322,17 +1110,14 @@ class BlackBerryIME : InputMethodService(),
         super.onExtractedCursorMovement(i, i2)
     }
 
-    // ==================== Input session ====================
-
     override fun onCreateInputMethodInterface(): AbstractInputMethodService.AbstractInputMethodImpl {
         inputMethodImpl = super.onCreateInputMethodInterface()
         return inputMethodImpl!!
     }
 
     /**
-     * Publishes whether the current keyboard's language asked for the on-screen keyboard
-     * ([OnScreenKeyboardChoice]) and has the input view evaluated again, so the keyboard appears
-     * or goes as the choice says. From the keyboard changing and from a change of the choice.
+     * Publishes whether the current keyboard's language asks for the on-screen keyboard
+     * ([OnScreenKeyboardChoice]) and re-evaluates the input view.
      */
     fun refreshLanguageOnScreenKeyboard() {
         val forced = dev.bbkb.ime.core.layout.OnScreenKeyboardChoice.isOnForCurrentKeyboard(this)
@@ -1344,23 +1129,20 @@ class BlackBerryIME : InputMethodService(),
         }
     }
 
+    /** @param z true if the same editor is restarting */
     override fun onStartInput(editorInfo: EditorInfo?, z: Boolean) {
         DeviceProfile.setLanguageForceVkbMode(dev.bbkb.ime.core.layout.OnScreenKeyboardChoice.isOnForCurrentKeyboard(this))
         Logger.info(LOG_TAG, "onStartInput(): restarting=$z, editorInfo=${if (editorInfo == null) "NULL" else "valid"}")
-        // Investigation hook (debug only, opt-in via `setprop debug.et9.probe 1`): dump the ET9
-        // engine's live ranking/adaptation configuration. onStartInput (not ...View) because PKB
-        // sessions never create an input view. Opt-in because it can SIGSEGV on a cold start —
-        // see Et9Probe.isProbeEnabled and docs/et9-ranking-documentation.md.
+        // Debug probe (`setprop debug.et9.probe 1`) dumping the engine's ranking config. Here, not
+        // in ...View, because PKB sessions create no input view; opt-in since it can SIGSEGV cold.
         if (BuildConfig.DEBUG) {
-            // On the engine thread: the probe calls the engine, which the main thread never does.
+            // The main thread never calls the engine.
             EngineThreads.post { com.blackberry.nuanceshim.Et9Probe.probe(NuanceSDKManager.getInstance()) }
         }
         if (BuildConfig.DEBUG) sensorVizOverlay.syncActiveFromPrefs()
         if (BuildConfig.DEBUG) android.util.Log.d("KBD_LIFECYCLE", "onStartInput(): restarting=$z isInputViewShown=${isInputViewShown()} pkg=${editorInfo?.packageName ?: "null"}")
 
-        // ISSUE 2 FIX: clear the back-press latch on every onStartInput. The prior
-        // logic only reset it in onStartInputViewInternal's `shouldInit` branch, which
-        // left it stuck when the framework restarted the same editor.
+        // Every start, including a restart of the same editor.
         wasBackPressed = false
 
         if (editorInfo == null) {
@@ -1380,18 +1162,16 @@ class BlackBerryIME : InputMethodService(),
         physicalKeyboardStateTracker.resetModifiers(ModifierResetReason.EDITOR_SWITCHED)
 
         sweepBoardsWhenUimBarIsOff()
-        // Expire clipboard history past its retention at every input start, including the
-        // physical-keyboard sessions that never show the board.
+        // Every input start, including PKB sessions that never show the board.
         clipboardController?.onStartInput()
         if (str != null && (str == "com.blackberry.help" || str == "com.blackberry.retaildemo")) {
             z2 = true
         }
         isBlackBerryApp = z2
         if (LocaleUtils.isCurrentSubtypeKorean() && str != null && str.lowercase(Locale.ROOT).startsWith("com.skmc.okcashbag")) {
-            // OK Cashbag workaround (original app): implicitly show the input view on a PKB-only device
-            // when the field asks for NAVIGATE_NEXT or has either of action bits 0/2 set.
+            // OK Cashbag workaround: implicitly show the input view on a PKB-only device when the
+            // field asks for NAVIGATE_NEXT or has either of action bits 0/2 set.
             val opts = editorInfo!!.imeOptions
-            // Audit CT-22: 5 == IME_ACTION_NONE (1) | IME_ACTION_SEARCH (4).
             val wantsNextOrAction = (opts and EditorInfo.IME_FLAG_NAVIGATE_NEXT) != 0 ||
                 (opts and (EditorInfo.IME_ACTION_NONE or EditorInfo.IME_ACTION_SEARCH)) != 0
             if (wantsNextOrAction && DeviceProfile.current().isPkbWithoutAlphabeticKeyboard()) {
@@ -1404,28 +1184,24 @@ class BlackBerryIME : InputMethodService(),
         }
     }
 
+    /** @param z true if the same editor is restarting */
     @Throws(Resources.NotFoundException::class)
     override fun onStartInputView(editorInfo: EditorInfo?, z: Boolean) {
-        // A field change under the language-chip bar: the bar goes with the field it was for.
+        // The language-chip bar goes with the field it was for.
         auxBarManager?.hideLanguageChips()
         Logger.info(LOG_TAG, "onStartInputView()")
-        // Window re-show for a still-bound editor delivers onStartInputView WITHOUT a
-        // preceding onStartInput, leaving isInputActive stale-false after
-        // onWindowHidden cleared it (Aliucord/Fossify dead-autocomplete/SYM bug).
+        // A re-show for a still-bound editor skips onStartInput, so heal the flag here.
         refreshInputActive()
-        // Re-read the log.tag.XT9Input sysprop so input-path diagnostics can be
-        // toggled via setprop without killing the IME process.
+        // Re-reads log.tag.XT9Input so diagnostics toggle via setprop without a restart.
         if (BuildConfig.DEBUG) InputPathDebug.refresh()
         uiUpdateHandler.handleStartInputView(editorInfo, z)
-        // Same reason as in onWindowShown(): re-assert the modifier status icon now that this
-        // input session really is up, since the system clears the IME's status-bar slot between
-        // sessions and the updater posts only on a change.
+        // As in onWindowShown(): the system clears the status-bar slot between sessions.
         physicalKeyboardStateTracker.refreshModifierStatus()
-        // Re-attached on every input-view start as well as window show: the decor view's focus
-        // and listener do not survive every window re-creation.
+        // Also on window show: the decor view's focus and listener do not survive every re-creation.
         nativeTouch.attach()
     }
 
+    /** @param z true if input is finishing too */
     override fun onFinishInputView(z: Boolean) {
         if (teardownStarted) {
             Logger.info(LOG_TAG, "onFinishInputView() after teardown: ignored")
@@ -1445,8 +1221,7 @@ class BlackBerryIME : InputMethodService(),
         uiUpdateHandler.handleFinishInput()
         physicalKeyboardStateTracker.resetModifiers(ModifierResetReason.FINISH_INPUT)
         isInputActive = false
-        // The phone-backup bundle is rewritten about once a day, here because the engine is up
-        // and its learned words can be read; the call returns at once the rest of the time.
+        // About once a day, here because the engine is up to read learned words; no-op otherwise.
         dev.bbkb.ime.core.settings.backup.AutoBackup.refreshIfStale(this)
 
         if (InlineAutofillManager.isSupported()) {
@@ -1454,10 +1229,12 @@ class BlackBerryIME : InputMethodService(),
         }
     }
 
+    /** @param z true if the same editor is restarting */
     fun startInputInternal(editorInfo: EditorInfo?, z: Boolean) {
         inputSessionCoordinator.onStartInputInternal(editorInfo, z)
     }
 
+    /** @param z true if the same editor is restarting */
     @Throws(Resources.NotFoundException::class)
     fun startInputViewInternal(editorInfo: EditorInfo?, z: Boolean) {
         inputSessionCoordinator.onStartInputViewInternal(editorInfo, z)
@@ -1467,19 +1244,15 @@ class BlackBerryIME : InputMethodService(),
         inputSessionCoordinator.onFinishInputInternal()
     }
 
+    /** @param z true if input is finishing too */
     fun finishInputViewInternal(z: Boolean) {
         inputSessionCoordinator.onFinishInputViewInternal(z)
     }
 
     /**
-     * Re-derive [isInputActive] from live connection state (the same expression
-     * onStartInput uses). The flag is cleared in onWindowHidden and onFinishInput, but
-     * the framework does NOT call onStartInput when re-showing the window for a
-     * still-bound editor (only onStartInputView) — so any path that can run before a
-     * view (re)start must heal the flag here or every hardware key fails the
-     * KeyEventProcessor master gate (dead autocomplete + dead SYM key; regression
-     * from d95a44af). Safe against the deliberate onFinishInput clear:
-     * getCurrentInputStarted() is false in that window, so this cannot resurrect it.
+     * Re-derives [isInputActive] from the live connection. A re-show for a still-bound editor
+     * skips onStartInput, and a stale false fails every hardware key at KeyEventProcessor's
+     * gate. Cannot undo the onFinishInput clear: getCurrentInputStarted() is false then.
      */
     fun refreshInputActive() {
         isInputActive = hasActiveInputConnection()
@@ -1495,35 +1268,23 @@ class BlackBerryIME : InputMethodService(),
     fun cleanupKeyboard() {
         keyboardSwitcher.cleanup()
         uiUpdateHandler.cancelPendingSuggestionUpdates()
-        // Teardown is the one place a queued commit or batch result must go too (a per-update
-        // cancel no longer drops them).
+        // Teardown is the one place queued commits and batch results are dropped too.
         uiUpdateHandler.cancelPendingTextCommits()
         inputLogic.cancelInput()
-        // Audit DW-4: multitap state and MSG_MULTITAP_TIMEOUT had no lifecycle reset at all —
-        // removeMultitapTimeout's only callers were the two commitMultitap methods. This is the
-        // seam every finishInputView route passes through, including the deferred-cleanup flush.
+        // Every finishInputView route passes here, including the deferred-cleanup flush.
         multitapEventHandler.resetMultitapState()
         softwareMultitapHandler.resetMultitapState()
     }
 
-    /**
-     * Consolidated UI state reset. Idempotent — safe to call from multiple lifecycle paths.
-     */
+    /** Idempotent UI state reset shared by the lifecycle paths. */
     fun resetUiState() {
         keyboardSwitcher.getMainKeyboardView()?.closing()
         uiCoordinator.hideAllInputUi()
         enableCursorMode(false)
-        // Reached from onWindowHidden, dismissKeyboard, onFinishInputView and onFinishInput — four
-        // ways for the window to go away, all of them ALL-scope. WINDOW_HIDDEN names the one this
-        // method is about; the other three name themselves at their own reset sites.
         physicalKeyboardStateTracker.resetModifiers(ModifierResetReason.WINDOW_HIDDEN)
         shakeGestureHandler!!.stop()
     }
 
-    /**
-     * Canonical keyboard dismiss method. Performs complete cleanup and requests
-     * the framework to hide the IME window.
-     */
     fun dismissKeyboard() {
         Logger.info(LOG_TAG, "dismissKeyboard()")
         resetUiState()
@@ -1532,6 +1293,14 @@ class BlackBerryIME : InputMethodService(),
         requestHideSelf(0)
     }
 
+    /**
+     * @param i old selection start
+     * @param i2 old selection end
+     * @param i3 new selection start
+     * @param i4 new selection end
+     * @param i5 composing span start
+     * @param i6 composing span end
+     */
     override fun onUpdateSelection(i: Int, i2: Int, i3: Int, i4: Int, i5: Int, i6: Int) {
         super.onUpdateSelection(i, i2, i3, i4, i5, i6)
 
@@ -1589,6 +1358,7 @@ class BlackBerryIME : InputMethodService(),
         }
     }
 
+    /** @param z true if the click moved focus */
     override fun onViewClicked(z: Boolean) {
         Logger.debug(LOG_TAG, "onViewClicked, focusChanged=$z")
         super.onViewClicked(z)
@@ -1604,9 +1374,6 @@ class BlackBerryIME : InputMethodService(),
         }
     }
 
-    /**
-     * Called by the system to create an inline suggestions request (Android 11+).
-     */
     override fun onCreateInlineSuggestionsRequest(uiExtras: Bundle): InlineSuggestionsRequest? {
         if (!InlineAutofillManager.isSupported()) {
             return null
@@ -1618,7 +1385,7 @@ class BlackBerryIME : InputMethodService(),
         var maxHeight = ResourceConfigManager.getSuggestionsStripHeight(resources)
 
         if (maxHeight <= 0) {
-            // InlinePresentationSpec sizes are pixels, so convert the 44dp fallback
+            // InlinePresentationSpec sizes are pixels.
             maxHeight = (44 * resources.displayMetrics.density).toInt()
         }
 
@@ -1628,11 +1395,7 @@ class BlackBerryIME : InputMethodService(),
             .createInlineSuggestionsRequest(maxWidth, maxHeight, currentInputEditorInfo)
     }
 
-    /**
-     * Called by the system when inline suggestions are available from an autofill service (Android 11+).
-     */
     override fun onInlineSuggestionsResponse(response: InlineSuggestionsResponse): Boolean {
-        // Audit CT-23: `response == null` was a constant-false test against a non-null type.
         if (!InlineAutofillManager.isSupported()) {
             return false
         }
@@ -1667,8 +1430,7 @@ class BlackBerryIME : InputMethodService(),
     fun refreshSubtypeSwitcher() {
         val c0664aaM4239a = SubtypeManager.getInstance()
         if (!c0664aaM4239a.isInitialized()) return
-        // The cached list: the uncached form made a binder call on every onStartInput, and the
-        // cache is now invalidated by subtype, locale, package and system-settings changes.
+        // Cached: the uncached form is a binder call per onStartInput.
         val listM4860a = RichInputMethodManager.getInstance().getMyEnabledInputMethodSubtypeList(true)
         if (listM4860a == null || listM4860a.size <= 0) return
         val localeM4259h = c0664aaM4239a.getCurrentSubtypeLocale()
@@ -1686,12 +1448,11 @@ class BlackBerryIME : InputMethodService(),
         onCurrentInputMethodSubtypeChanged(listM4860a[0])
     }
 
-    // ==================== Settings, dictionary, subtype ====================
-
     fun getSettingsValues(): SettingsValues {
         return settingsManager.getSettingsValues()
     }
 
+    /** @param c0804d the new settings */
     override fun onSettingsValuesChanged(c0804d: SettingsValues) {
     }
 
@@ -1704,7 +1465,6 @@ class BlackBerryIME : InputMethodService(),
                 isFullscreenMode(),
                 packageName,
                 localeM4259h,
-                // Audit CT-17: route through PrefsManager, the project's single prefs accessor.
                 SettingsManager.isForceSuggestionsEnabled(PrefsManager.getPrefs())
             )
         )
@@ -1718,32 +1478,23 @@ class BlackBerryIME : InputMethodService(),
             DictionaryManager.getInstance().ensureEnglishCapitalISubstitution(localeM4259h)
         }
         contactsLearningManager?.setContactsDictEnabled(settingsValues.useContactsDicts)
-        // "Suggest learned words": read by the suggestion engine, which leaves the words the
-        // keyboard learned out of the strip when it is off.
+        // "Suggest learned words": off leaves learned words out of the strip.
         inputLogic.mSuggestionEngine.setSuggestLearnedWords(settingsValues.usePersonalizedDicts)
-        // Re-apply the KeyInterceptor toggle. Registration used to happen only once, from the
-        // deferred-init token in onCreate(), so turning "Enable special key support" on in
-        // Settings had no effect until the IME process restarted. The call is idempotent, and
-        // clears the callbacks when the toggle is off.
+        // Re-applies "Enable special key support" without a restart; idempotent, clears when off.
         hardwareKeys.registerInterceptorCallbacks()
         fccController?.hideIfDisabled()
-        // One op on the engine thread (Wave 3): the main thread neither joins the engine start
-        // nor calls the engine. The value is read here.
+        // The main thread never calls the engine; read the value here, apply on the engine thread.
         val useContactsDicts = settingsValues.useContactsDicts
         EngineOps.post("loadSettings.engineOptions") { sdk ->
-            // Off for good: the strip's emoji comes from emojibase now (EmojibaseStripSuggestion),
-            // and the Emoji suggestions switch governs that lookup instead of the engine's.
+            // Always off: strip emoji come from emojibase (EmojibaseStripSuggestion).
             sdk.setEmojiPredictionEnabled(false)
-            // The engine half of "Suggest from contacts": the contacts manager above only starts
-            // or stops the address-book sync, and the names already learned stayed active in the
-            // engine until its contacts category is switched off (as the original app did).
+            // The engine half of "Suggest from contacts": the manager above only runs the sync,
+            // and learned names stay active until the engine's contacts category is off.
             sdk.setContactsCategoryState(useContactsDicts)
         }
         if (settingsValues.isEmojiPredictionsEnabled) {
-            // Parse the emojibase dataset off the UI thread now, so the first word typed already
-            // has its emoji instead of the first strip update paying for the 735 KB parse. On the
-            // startup executor: loadSettings runs on every field focus, and this used to start a
-            // thread each time even though the parse is a no-op once the data is loaded.
+            // Parse off the UI thread so the first strip update does not pay for it; on the
+            // executor because loadSettings runs on every field focus.
             EmojibaseDataProvider.preloadAsync(this, startupExecutor)
         }
     }
@@ -1759,6 +1510,7 @@ class BlackBerryIME : InputMethodService(),
         }
     }
 
+    /** @param c0804d the current settings */
     fun applyAutoCorrectionSettings(c0804d: SettingsValues) {
         val isPkb = DeviceProfile.current().hasShiftedSymbolKeyboard()
         val acMode = if (!isPkb) 1 else 0
@@ -1781,25 +1533,20 @@ class BlackBerryIME : InputMethodService(),
         } else {
             Logger.warn(LOG_TAG, "Current subtype is null; skipping updateLanguagePacksForCurrentSubtype()")
         }
-        // Posted in FIFO order; the load op re-applies the latest layout at the front of the
-        // engine queue when it ends (KeyboardSwitcher.resyncLayoutAfterLanguageLoad), in case
-        // this one reached the engine before the load did.
+        // FIFO; the load op re-applies the latest layout when it ends
+        // (KeyboardSwitcher.resyncLayoutAfterLanguageLoad) in case this ran first.
         KeyboardSwitcher.getInstance().syncKeyboardLayout()
     }
 
     fun updateLanguagePacksForSubtype(inputMethodSubtype: InputMethodSubtype) {
-        // The extra value is a slash-joined list ("de/es", "fr_CA"). One Locale built from the
-        // whole string made the engine refuse the entire set as soon as a keyboard had two extras
-        // or a regional one; parse it the way the subtype manager does.
+        // The extra value is a slash-joined list ("de/es", "fr_CA"); a single Locale from it
+        // makes the engine refuse the whole set.
         val locales = ResourceLocaleUtils.getKeyboardLocales(
             ResourceLocaleUtils.getSubtypeLocale(inputMethodSubtype),
             ResourceLocaleUtils.getAdditionalLocales(inputMethodSubtype),
         )
-        // On the loader thread (Wave 3): the full LDB + DLM load is a long hold, and the main
-        // thread never waits for it. Nothing waits on the future either. When the load has ended,
-        // the latest keyboard layout is re-applied ahead of everything queued on the engine
-        // thread, since the load re-creates the engine core and a sync posted meanwhile may have
-        // run before it.
+        // On the loader thread; nothing waits for it. The load re-creates the engine core, so the
+        // latest layout is re-applied at the front of the engine queue when it ends.
         val packs = LanguagePackManager.getInstance(applicationContext)
         val localeArray = locales.toTypedArray()
         EngineOps.load("updateLanguagePacksForSubtype") { sdk ->
@@ -1810,20 +1557,13 @@ class BlackBerryIME : InputMethodService(),
     }
 
     /**
-     * Re-read the dictionary after the Language packs screen swapped the file behind the active
-     * locale.
-     *
-     * <p>The engine enumerates `no_backup/nuance/` when it starts; a pack that appears later is
-     * handed to it by `PackInstallService` (`registerLdb`), and nothing changes for the keyboard
-     * until something asks for the language again. Settings runs in this same process but is a
-     * different component, so the bus is how it reaches a LIVE service; when the IME is not running
-     * there is no subscriber and the new file is simply picked up on the next start, which is
-     * equally correct.
+     * Re-reads the dictionary after the Language packs screen swapped the file behind the active
+     * locale. The engine only sees a new pack when asked for the language again; with no live
+     * service there is no subscriber and the next start picks the file up.
      */
     private val languagePackChangedListener = InAppEventBus.EventListener { _, _ ->
         if (BuildConfig.DEBUG) Log.i(LOG_TAG, "Language pack changed; reloading the dictionary")
-        // Forced: the locale has not changed, so an ordinary init keeps the dictionary it has and
-        // never asks the engine for the language again (KEY2, 2026-09-28).
+        // Forced: the locale is unchanged, so an ordinary init would keep the old dictionary.
         reloadDictionaryForSubtype(forceReload = true)
     }
 
@@ -1833,8 +1573,6 @@ class BlackBerryIME : InputMethodService(),
         var localeM4259h = subtypeManager.getCurrentSubtypeLocale()
         if (TextUtils.isEmpty(localeM4259h.toString())) {
             if (BuildConfig.DEBUG) Log.e(LOG_TAG, "System is reporting no current subtype.")
-            // Audit CT-15: Configuration.locale is deprecated (API 24) and ignores the user's
-            // ordered locale list; LocaleUtils.getConfigurationLocale is the project's shim.
             localeM4259h = LocaleUtils.getConfigurationLocale(resources)
             setM4260i = null
         } else {
@@ -1843,8 +1581,7 @@ class BlackBerryIME : InputMethodService(),
         languagePackLocaleMonitor!!.onLocaleChanged(localeM4259h, setM4260i)
         initDictionaryForLocale(localeM4259h, forceReload)
         multitapEventHandler.refreshAltMultitapSupport()
-        // Every language the keyboard types in, not just the layout language: shortcuts and
-        // personal words saved for an extra language are as much the user's as the primary's.
+        // Every language the keyboard types in, so extra languages' shortcuts and words load too.
         DictionaryManager.getInstance().initialiseOrSwitchLanguages(applicationContext,
             ResourceLocaleUtils.getKeyboardLocales(localeM4259h, setM4260i))
     }
@@ -1873,11 +1610,11 @@ class BlackBerryIME : InputMethodService(),
         }
     }
 
+    /** @param z true if the main dictionary loaded */
     override fun onDictionaryInitialized(z: Boolean) {
         keyboardSwitcher.getMainKeyboardView()?.setMainDictionaryAvailability(z)
         if (z) uiUpdateHandler.postDictionaryLoaded()
-        // Words from a bundle Android restored wait for this moment: the dictionary and the
-        // engine's model are what they are written into.
+        // Restored words wait for the dictionary and engine model they are written into.
         if (z) dev.bbkb.ime.core.settings.backup.AutoBackup.applyPendingWordsIfReady(this)
         val hadTimeout = uiUpdateHandler.hasDictionaryLoadTimeout()
         if (hadTimeout) uiUpdateHandler.removeDictionaryLoadTimeout()
@@ -1898,9 +1635,9 @@ class BlackBerryIME : InputMethodService(),
     }
 
     /**
-     * "Change language": the language-chip bar on the suggestion strip, this keyboard's enabled
-     * languages with the current one first and bold, then the most recently used. Nothing with
-     * one language. ("Spacebar swipe gesture" governs the swipe only, not this.)
+     * "Change language": toggles the language-chip bar on the strip. Nothing with one language.
+     *
+     * @param enumC0690f where the request came from
      */
     fun switchToNextSubtype(enumC0690f: InputSource): Boolean {
         if (!richInputMethodManager!!.hasMultipleEnabledSubtypesInThisIme(false)) {
@@ -1927,8 +1664,7 @@ class BlackBerryIME : InputMethodService(),
             if (recent != null && recent in enabled) ordered += recent
         }
         ordered += enabled
-        // The language's name only ("English (US)"), not the subtype's, which appends the
-        // on-screen layout where it is not the default one.
+        // The language's name only, not the subtype's (which may append the layout).
         return ordered.map { dev.bbkb.ime.keyboard.auxbar.LanguageChip(ResourceLocaleUtils.getSubtypeLocaleDisplayName(it.locale), it, it == current) }
     }
 
@@ -1943,6 +1679,7 @@ class BlackBerryIME : InputMethodService(),
         startActivity(intent)
     }
 
+    /** @param enumC0690f where the request came from */
     fun updateSuggestionsFromSubtype(enumC0690f: InputSource): Boolean {
         if (!RichInputMethodManager.isInitialized()) {
             RichInputMethodManager.init(applicationContext)
@@ -1950,8 +1687,6 @@ class BlackBerryIME : InputMethodService(),
         if (!ASSERTIONS_DISABLED && window.window == null) {
             throw AssertionError()
         }
-        // CT-16: no window token needed — RichInputMethodManager takes this InputMethodService and
-        // uses the token-free switchInputMethod/switchToNextInputMethod on API 28+.
         subtypeState.switchSubtype(this, richInputMethodManager)
         return true
     }
@@ -1960,25 +1695,16 @@ class BlackBerryIME : InputMethodService(),
         return subtypeManager.getCurrentSubtypeLocale()
     }
 
-    /**
-     * Audit CT-8: this used to render the locale's own display name (an ICU lookup that allocates
-     * a String) and inspect the bidi class of its first character — on every VKB fling, via
-     * [VkbGestureListener.isBackwardSwipe], which decides delete-word vs. language-switch. The
-     * heuristic was also wrong for locales whose endonym starts with a Latin letter or digit.
-     */
+    /** Asked on every VKB fling ([VkbGestureListener.isBackwardSwipe]), so it must stay cheap. */
     fun isCurrentLanguageRtl(): Boolean =
         TextUtils.getLayoutDirectionFromLocale(subtypeManager.getCurrentSubtypeLocale()) ==
             View.LAYOUT_DIRECTION_RTL
 
-    // One cached answer per input-method generation (RichInputMethodManager): this used to make
-    // a binder call per field, after first computing hasMultipleEnabledInputMethodsOrSubtypes()
-    // and throwing it away on API 28+. The manager keeps the token-free API 28+ form, the pre-P
-    // token form and the no-window fallback.
+    // Cached per input-method generation in RichInputMethodManager.
     fun shouldShowLanguageSwitchKey(): Boolean =
         richInputMethodManager!!.shouldOfferSwitchingToNextInputMethod(this)
 
-    // ==================== Hardware key entry (KeyEventProcessor does the work) ====================
-
+    /** @param i the key code */
     override fun onKeyDown(i: Int, keyEvent: KeyEvent): Boolean {
         if (InputPathDebug.on()) Logger.info("CKB_SWIPE_TYPE_DEBUG", "BlackBerryIME.onKeyDown: keyCode=$i deviceId=${keyEvent.deviceId} source=0x${Integer.toHexString(keyEvent.source)} scanCode=${keyEvent.scanCode} flags=0x${Integer.toHexString(keyEvent.flags)}")
         // A firmware-synthesised swipe key (the Titan 2's 322 / 404) is a gesture, not typing:
@@ -1988,6 +1714,7 @@ class BlackBerryIME : InputMethodService(),
         return keyEventProcessor.onKeyDownInternal(i, keyEvent)
     }
 
+    /** @param i the key code */
     override fun onKeyUp(i: Int, keyEvent: KeyEvent): Boolean {
         if (InputPathDebug.on()) Logger.info("CKB_SWIPE_TYPE_DEBUG", "BlackBerryIME.onKeyUp: keyCode=$i deviceId=${keyEvent.deviceId} source=0x${Integer.toHexString(keyEvent.source)} scanCode=${keyEvent.scanCode} flags=0x${Integer.toHexString(keyEvent.flags)}")
         if (ckbGestures.handleFirmwareGestureKey(keyEvent)) return true
@@ -1995,38 +1722,39 @@ class BlackBerryIME : InputMethodService(),
         return keyEventProcessor.onKeyUpInternal(i, keyEvent)
     }
 
-    /**
-     * Process CommitType key event for state updates only (shift, alt, symbol mode).
-     * Called by the accessibility service when pre-processing keys without an active text field.
-     */
+    /** Modifier/symbol state updates only, for keys the accessibility service sees with no field. */
     fun processKeyEventForState(event: KeyEvent) {
         keyEventProcessor.processKeyEventForState(event)
     }
 
     /**
-     * Summon the IME window for a physical key press that arrived while it was hidden; returns
-     * whether the input view is showing afterwards. Used by [HardwareKeyBridge] for the SYM key,
-     * which has to open a board in that window. The caller must already know the press came from
-     * a physical keyboard.
+     * Summons the hidden IME window for a physical key press (the SYM key's board needs it);
+     * returns whether the input view is showing. The caller must know the press is physical.
      */
     fun requestShowOnKeyPress(): Boolean = keyEventProcessor.requestShowOnKeyPress()
 
+    /**
+     * @param i the code point
+     * @param i2 the key code
+     * @param z true if this is a key repeat
+     */
     fun processHardwareKeyPress(i: Int, i2: Int, z: Boolean) {
         val event = InputEvent.createHardwareKeyPress(i, i2, null, z, -1L)
         applyPostEventUpdates(inputLogic.processInputEvent(settingsManager.getSettingsValues(), event, physicalKeyboardStateTracker, InputSource.UNKNOWN, keyboardSwitcher.getKeyboardElementId(), uiUpdateHandler), true)
-        // A physical key press (AuxBarChoice: typing brings the strip back).
+        // Typing brings the strip back (AuxBarChoice).
         if (event.editsText()) uiCoordinator.onUserTyped(true)
     }
 
+    /** @param i the original key code */
     fun remapKeyEvent(i: Int, ev: KeyEvent): KeyEvent {
-        // All three remaps belong to ControlModeController: it owns Ctrl, including the
-        // multifunction key's "held as Ctrl" latch, which used to be a field here (Phase 1f), and
-        // a config-declared Ctrl-like modifier (the Titan 2's Fn).
+        // ControlModeController owns Ctrl, the multifunction key's "held as Ctrl" latch and a
+        // config-declared Ctrl-like modifier (the Titan 2's Fn).
         val profileRemapped = controlMode.remapProfileCtrlKey(ev)
         val mfRemapped = controlMode.remapMultifunctionCtrlKey(profileRemapped)
         return controlMode.remapModifierKeyEvent(mfRemapped.keyCode, mfRemapped)
     }
 
+    /** @param i the input device id */
     fun getOrCreateKeyEventConverter(i: Int): KeyEventConverter {
         val interfaceC0916c = keyEventConverters.get(i)
         if (interfaceC0916c != null) return interfaceC0916c
@@ -2055,26 +1783,20 @@ class BlackBerryIME : InputMethodService(),
     }
 
     /**
-     * Text-key board dismissal (was misnamed onSelectionChangedForFcc): a text key
-     * went down, so any open board should close. Runs the close through the board
-     * coordinator so its active-board state stays truthful — previously this hid
-     * views behind the coordinator's back and the next board-key press was a dead
-     * press. Board keys never reach here (KeyEventProcessor exempts them), so this
-     * can no longer fight a board key's own key-up toggle.
+     * A text key went down: close open boards through the coordinator so its active-board state
+     * stays true (hiding views behind its back makes the next board key a dead press). Board keys
+     * never reach here (KeyEventProcessor exempts them).
      */
     fun dismissBoardsForTextKey() {
         val uim = KeyboardSwitcher.getInstance().getUnifiedInputBoardManager()
         val sv = SettingsManager.getInstance().getSettingsValues()
         val coordinator = uim?.getBoardCoordinator()
 
-        // The emoji board's own text keys never get here: KeyEventProcessor routes a printable
-        // key or Backspace typed while the board is up into its search query first
-        // (EmojiQueryKeyRouting, 2026-11-02), which retired owner ruling R3(c).
+        // Emoji board text keys never get here: they go to its search query (EmojiQueryKeyRouting).
         val cursorBoard = CrossAxisRules.CURSOR_BOARD_KEY_CODE
 
         fccController?.let { fcc ->
-            // FCC keeps its legacy dismissal with the mid-toggle exemption; reconcile
-            // the coordinator only when FCC actually hid.
+            // FCC has its own mid-toggle exemption; reconcile the coordinator only if it hid.
             fcc.hideUnlessToggling()
             if (coordinator != null && coordinator.activeBoard() == cursorBoard && !fcc.isViewActive()) {
                 coordinator.notifyBoardClosed()
@@ -2082,16 +1804,13 @@ class BlackBerryIME : InputMethodService(),
         }
 
         if (uim != null && sv != null && sv.isUimEnabled) {
-            // Primary: close the active board via the coordinator (per-board close
-            // semantics + state cleared) — unless the table says this board survives a text
-            // key. FCC was handled above with its own mid-toggle exemption; R3(b) added the
-            // number pad, because typing a letter must not close a board typed FROM.
+            // Unless the table says the board survives a text key (e.g. the number pad, which
+            // is typed from).
             val openBoard = coordinator?.activeBoard() ?: UnifiedBoardCoordinator.NO_BOARD
             if (coordinator != null && !CrossAxisRules.boardSurvivesTextKey(openBoard)) {
                 coordinator.onTextKeyPressed()
             }
-            // Defense-in-depth sweep for components showing outside coordinator
-            // tracking (e.g. auto-shown autofill). Spares the same set.
+            // Sweeps components shown outside coordinator tracking (e.g. autofill); same exemptions.
             uim.hideComponentsExcept(CrossAxisRules.boardsExemptFromTextKey())
             uim.refresh()
         }
@@ -2100,21 +1819,15 @@ class BlackBerryIME : InputMethodService(),
     }
 
     /**
-     * The on-screen Shift key is releasing and every physical Shift key is RELEASED. A physical
-     * Shift that is still down after being chorded with Alt is CONSUMED, not released, so it does
-     * not count (`ModifierState.isShiftReleased()`, pinned by `ShiftLifecycleTest`). The snapshot
-     * is only built when the first half is true.
+     * The on-screen Shift is releasing and every physical Shift is released. A Shift still down
+     * after an Alt chord is consumed, not released (pinned by `ShiftLifecycleTest`).
      */
     fun isShiftChording(): Boolean =
         keyboardSwitcher.isShiftKeyReleasing() && physicalKeyboardStateTracker.getModifierState().isShiftReleased()
 
     fun isMetaKeyActive(): Boolean {
-        // The three terms of the modifier snapshot, !isShiftReleased() && isShiftLockedForLayout()
-        // && !isAltUsedWithKey(), answered by the tracker without building one: the capacitive
-        // keypad asks this on every touch sample. hasMetaFlag(256 == MetaKeyKeyListener
-        // .META_CAP_LOCKED) is the span encoding's shift-lock bit run through the keyboard's meta
-        // mask, which is exactly isShiftLockedForLayout() (audit CT-22). The first term counts a
-        // down-but-consumed Shift as not released, as the tracker always did.
+        // !isShiftReleased() && isShiftLockedForLayout() && !isAltUsedWithKey(), answered without
+        // building a snapshot: the capacitive keypad asks on every touch sample.
         return physicalKeyboardStateTracker.isShiftHeldAndLockedForLayout()
     }
 
@@ -2122,6 +1835,7 @@ class BlackBerryIME : InputMethodService(),
         return if (DeviceProfile.current().hasShiftedSymbolKeyboard()) physicalKeyboardStateTracker else keyboardSwitcher
     }
 
+    /** @param z true to leave the symbol shift alone */
     fun updateSymbolShift(z: Boolean) {
         if (z) return
         if (isInputViewShown()) {
@@ -2134,8 +1848,13 @@ class BlackBerryIME : InputMethodService(),
         cjkSuggestionGridView?.setVisible(false)
     }
 
-    // ==================== Soft key entry (KeyboardActionListenerInterface) ====================
-
+    /**
+     * @param i the key code
+     * @param i2 touch x
+     * @param i3 touch y
+     * @param j event time
+     * @param z true if this is a key repeat
+     */
     override fun onCodeInput(i: Int, i2: Int, i3: Int, j: Long, z: Boolean) {
         vkbGestureListener?.setLastKeyEventTime(j)
         when (i) {
@@ -2145,10 +1864,7 @@ class BlackBerryIME : InputMethodService(),
                 return
             }
             -27, -7 -> {
-                // Bug #4 fix: do NOT gate voice input on isUimEnabled(). The voice input view is
-                // an independent ViewStub in input_view, not part of the unified input bar, so
-                // requiring UIM caused the on-screen mic key (code -27) to fall through to the
-                // IME switcher whenever the user had UIM disabled.
+                // Not gated on isUimEnabled(): the voice view is its own ViewStub, not part of the UIM.
                 val voice = voiceInputController
                 if (voice != null) voice.show() else InputMethodHelper.getInstance().switchToVoiceIme(this)
                 return
@@ -2159,8 +1875,7 @@ class BlackBerryIME : InputMethodService(),
         val keyY = mainKeyboardView.getKeyY(i3)
         // Shift on a non-alphabet keyboard means "symbol shift" (-13).
         val code = if (i == -1 && keyboardSwitcher.getCurrentKeyboard()?.mId?.isAlphabetKeyboard() != true) -13 else i
-        // On-screen Ctrl on: the letter, Enter or Delete already went to the app as a Ctrl chord
-        // when it was pressed, so it must not be typed as well.
+        // With on-screen Ctrl on, the key already went to the app as a chord on press.
         val shouldProcessKey = !controlMode.suppressesSoftCodeInput(i) && ((i < 0) || (i > 0 && isInputViewShown()))
         if (shouldProcessKey) {
             val interpretation = softwareMultitapHandler.interpretCodePoint(code)
@@ -2174,37 +1889,47 @@ class BlackBerryIME : InputMethodService(),
             // Typing brings the strip back over a menu the user raised (AuxBarChoice).
             if (event.editsText()) uiCoordinator.onUserTyped(false)
             keyboardSwitcher.onInputCodeChanged(code, getCurrentInputType(), getCurrentImeOptions())
-            // For an on-screen PKB SYM keyboard tap, return to the alphabet AFTER the symbol has
-            // been committed above. The state machine defers this from key-press so the tap isn't
-            // lost (see KeyboardState.onCodeInput). No-op unless a PKB SYM entry is pending and
-            // the code is a character: a function key such as ABC (-3) is not a committed symbol.
+            // A PKB SYM board tap returns to the alphabet only after the commit above (see
+            // KeyboardState.onCodeInput). No-op for function keys such as ABC (-3).
             keyboardSwitcher.onSoftwareSymbolCommitted(code, getCurrentInputType(), getCurrentImeOptions())
         }
-        // Not for the ABC / ?123 key (-3): it is a toggle, and its release (onSymbolKeyRelease)
-        // reads the CURRENT mode. Ending a PKB Sym entry here first put the mode on the alphabet,
-        // so ABC on the physical-keyboard Sym board then opened the on-screen symbols page instead
-        // of the on-screen alphabet (KEY2, 2026-10-25). The original only called this from
-        // physical-key paths.
+        // Not for ABC / ?123 (-3): its release (onSymbolKeyRelease) reads the current mode, and
+        // ending the PKB Sym entry first would open the symbols page instead of the alphabet.
         if (!Constants.isLetterCode(code) && code != -3) handleSymbolKeyLongPress()
     }
 
     /** A key code <= 0 is a function key (no code point); > 0 is a code point with no key code. */
     private fun splitCode(i: Int): Pair<Int, Int> = if (i <= 0) Pair(-1, i) else Pair(i, 0)
 
+    /**
+     * @param i key code (<= 0) or code point
+     * @param i2 touch x
+     * @param i3 touch y
+     * @param j event time
+     * @param z true if this is a key repeat
+     */
     fun createKeyPressEvent(i: Int, i2: Int, i3: Int, j: Long, z: Boolean): InputEvent {
         val (codePoint, keyCode) = splitCode(i)
         return InputEvent.createKeyPress(codePoint, keyCode, i2, i3, j, z)
     }
 
+    /**
+     * Modifier key press; other params as above.
+     *
+     * @param z2 true if Shift is locked
+     */
     fun createKeyPressEvent(i: Int, i2: Int, i3: Int, j: Long, z: Boolean, z2: Boolean): InputEvent {
         val (codePoint, keyCode) = splitCode(i)
         return InputEvent.createModifierKeyPress(codePoint, keyCode, i2, i3, j, z, z2)
     }
 
+    /**
+     * @param str the text to commit
+     * @param j event time
+     */
     override fun onTextInput(str: String, j: Long) {
         var z = false
         val strM4443a0 = inputLogic.stripLeadingDot(str)
-        // Audit CT-22: 16384 == TYPE_TEXT_FLAG_CAP_SENTENCES (== TextUtils.CAP_MODE_SENTENCES).
         val strM4443a = if (getCurrentInputType() == android.text.InputType.TYPE_TEXT_FLAG_CAP_SENTENCES) capitalizeFirstCodePoint(strM4443a0, getCurrentLocale()) else strM4443a0
         val length = strM4443a.length
         val iArr = IntArray(length)
@@ -2218,13 +1943,12 @@ class BlackBerryIME : InputMethodService(),
         }
         val settingsValues = settingsManager.getSettingsValues()
         for (i2 in 0 until i) {
-            // Audit CT-22: 28 == Character.OTHER_SYMBOL.
             if (settingsValues.isWordSeparator(iArr[i2]) || Character.getType(iArr[i2]) == Character.OTHER_SYMBOL.toInt()) {
                 z = true
                 break
             }
         }
-        // CRITICAL FIX: Detect emoji sequences with skin tone modifiers
+        // Emoji sequences with skin tone modifiers, hair components, ZWJ or VS16.
         if (!z && i > 1) {
             for (i2 in 0 until i) {
                 val codepoint = iArr[i2]
@@ -2254,6 +1978,11 @@ class BlackBerryIME : InputMethodService(),
         keyboardSwitcher.onInputCodeChanged(-4, getCurrentInputType(), getCurrentImeOptions())
     }
 
+    /**
+     * @param i the key code
+     * @param i2 repeat count (0 for the first press)
+     * @param z true if this is the only active pointer
+     */
     override fun onPressKey(i: Int, i2: Int, z: Boolean) {
         if (controlMode.handleSoftKeyDown(i)) return
         if (swipeToDeleteAnimatorView?.isAnimating() == true) {
@@ -2270,14 +1999,17 @@ class BlackBerryIME : InputMethodService(),
         if (i == -1) {
             inputLogic.sendKeyDown(KeyEvent.KEYCODE_SHIFT_LEFT)
         }
-        // The disable-then-restore cycle guards the UIM bar against accidental taps
-        // WHILE TYPING. Shift/caps-lock toggles aren't typing — running the cycle for
-        // them flashed the emoji/voice keys into their disabled icons on every toggle.
+        // The disable-then-restore cycle guards the UIM bar while typing; Shift toggles are not
+        // typing and would flash the emoji/voice keys disabled.
         if (i != -1 && i != -2) {
             unifiedInputBoardHandler?.scheduleKeyStateRestore()
         }
     }
 
+    /**
+     * @param i the key code
+     * @param z true if released during sliding input
+     */
     override fun onReleaseKey(i: Int, z: Boolean) {
         if (controlMode.handleSoftKeyUp(i)) return
         keyboardSwitcher.onCodeRelease(i, z, getCurrentInputType(), getCurrentImeOptions())
@@ -2290,14 +2022,10 @@ class BlackBerryIME : InputMethodService(),
     override fun onStartBatchInput() {
         val typedWord = if (inputLogic.mComposingTracker.isComposing()) inputLogic.mComposingTracker.getComposingText() else ""
         inputLogic.commitTypedWord(settingsManager.getSettingsValues(), "", InputSource.INTERNAL)
-        // A keypad flick-up starts out as a swipe; if it ends as one, its pick replaces this word.
         if (typedWord.isNotEmpty()) ckbGestures.onSwipeStartCommittedTypedWord(typedWord)
-        // Reset ET9's gesture/active-input buffer at the start of each swipe so accumulated
-        // stray edge-touches and the previous word don't bleed into this gesture. Without
-        // this the trace record ring (traceObj+0x49000) and composing-start index (+0x39c)
-        // never advance per word, causing "my" -> "how are you" / "good" -> "void".
-        // Posted: FIFO keeps it in the same place among this swipe's touch samples as the
-        // direct call had (after the ones already sent, before the rest).
+        // Reset ET9's active-input buffer per swipe, or the trace record ring (traceObj+0x49000)
+        // and composing-start index (+0x39c) never advance and earlier touches bleed in
+        // ("my" -> "how are you"). FIFO keeps it between this swipe's sent and later samples.
         EngineOps.post("onStartBatchInput.clear") { it.clear() }
         inputLogic.onSuggestionStripUpdate(settingsManager.getSettingsValues(), getSymbolPageProvider().getSymbolPageOrder(), uiUpdateHandler)
         val c0919fM4047Z = physicalKeyboardStateTracker
@@ -2306,25 +2034,19 @@ class BlackBerryIME : InputMethodService(),
     }
 
     override fun onUpdateBatchInput() {
-        // Throttle: this callback can arrive per touch event during a gesture (dozens
-        // of times per second). Every request rewrites the engine's context buffer and
-        // rebuilds the selection list — besides the CPU burn, the repeated context
-        // writes multiply the engine's adaptive-language learning, which is how the
-        // DLM got poisoned into ranking recent commits above trace shape. Stock
-        // throttles gesture-preview updates to ~100ms; match that.
-        // These mid-swipe lookups are what shows the word the engine is converging on while the
-        // finger is still down (the strip updates live on the KEY2 keypad). Skipping them with
-        // the owned decoder (2026-11-04) made the strip go blank during a swipe, so they stay,
-        // under the throttle below.
+        // Throttled: arrives per touch event, and each request rewrites the engine's context
+        // buffer; unthrottled writes poison the DLM into ranking recent commits above trace
+        // shape. Not skipped: these lookups show the converging word while the finger is down.
         val now = android.os.SystemClock.uptimeMillis()
         if (now - lastBatchUpdateRequestTime < 120) return
         lastBatchUpdateRequestTime = now
         suggestionUpdater.requestSuggestionsNow()
     }
 
+    /** @param enumC0690f HARDWARE for a keypad swipe, SOFTWARE for an on-screen one */
     override fun onEndBatchInput(enumC0690f: InputSource) {
         suggestionUpdater.requestPredictionsNow(enumC0690f)
-        // A swipe is typing (AuxBarChoice); a keypad swipe reports HARDWARE, an on-screen one SOFTWARE.
+        // A swipe is typing (AuxBarChoice).
         uiCoordinator.onUserTyped(enumC0690f == InputSource.HARDWARE)
     }
 
@@ -2336,6 +2058,7 @@ class BlackBerryIME : InputMethodService(),
         keyboardSwitcher.onMomentaryStateFinish(getCurrentInputType(), getCurrentImeOptions())
     }
 
+    /** @param i the request code (1 = switch language) */
     override fun onCustomRequest(i: Int): Boolean {
         if (!isAlertDialogShowing() && i == 1) {
             return switchToNextSubtype(InputSource.SOFTWARE)
@@ -2350,6 +2073,10 @@ class BlackBerryIME : InputMethodService(),
     override fun onCancelInput() {
     }
 
+    /**
+     * @param c0920g the result of processing the event
+     * @param z true to post the suggestion update delayed instead of now
+     */
     fun applyPostEventUpdates(c0920g: InputEventContext, z: Boolean) {
         when (c0920g.getUiUpdateMode()) {
             1 -> resetKeyboardState()
@@ -2374,6 +2101,10 @@ class BlackBerryIME : InputMethodService(),
         }
     }
 
+    /**
+     * @param i the key code
+     * @param i2 repeat count
+     */
     fun playKeyFeedback(i: Int, i2: Int) {
         val mainKeyboardViewM6790T = keyboardSwitcher.getMainKeyboardView()
         if (mainKeyboardViewM6790T == null || !mainKeyboardViewM6790T.isInDraggingFinger()) {
@@ -2404,19 +2135,16 @@ class BlackBerryIME : InputMethodService(),
         return inputLogic.getConfigParserResult()
     }
 
+    /** @param iArr code points to locate on the current keyboard */
     fun getKeyCoordinates(iArr: IntArray): IntArray {
         val c0965eM6834l = keyboardSwitcher.getCurrentKeyboard()
             ?: return CoordinateUtils.newCoordinateArray(iArr.size, -1, -1)
         return c0965eM6834l.getCoordinatesForCodes(iArr)
     }
 
-    // ==================== Touch and gesture entry ====================
-
     override fun onGenericMotionEvent(motionEvent: MotionEvent): Boolean {
-        // With the native touch source attached, one pad event can arrive twice: through its
-        // decor-view listener and through this entry. The second arrival gets the first one's
-        // answer. Both calls are no-ops while the source is not attached (every device without a
-        // `<touch-keypad>` that selects it), so nothing changes there.
+        // With the native touch source attached one pad event can arrive twice (decor-view
+        // listener and here); the second gets the first's answer. No-ops when not attached.
         nativeTouch.duplicateResult(motionEvent)?.let { return it }
         val handled = handleGenericMotionEvent(motionEvent)
         nativeTouch.recordResult(motionEvent, handled)
@@ -2440,9 +2168,8 @@ class BlackBerryIME : InputMethodService(),
                 if (InputPathDebug.on()) Logger.info("CKB_SWIPE_TYPE_DEBUG", "onGenericMotionEvent: inputView NOT shown, returning false")
                 return false
             }
-            // CALIBRATION: the RAW CONTINUOUS sensor point, straight from the touchpad stream — the same
-            // source the visualizer reads, UNSNAPPED (the touchStart path is fed grid-snapped coords on a
-            // firm key press). Use LIGHT touches so events route here. View: adb logcat -s XT9RAW:I
+            // Calibration: the raw unsnapped sensor point (touchStart gets grid-snapped coords on a
+            // firm press). Use light touches; view with adb logcat -s XT9RAW:I
             if (InputPathDebug.on()) {
                 val a = motionEvent.actionMasked
                 if (a == MotionEvent.ACTION_DOWN || a == MotionEvent.ACTION_POINTER_DOWN) {
@@ -2452,8 +2179,7 @@ class BlackBerryIME : InputMethodService(),
                     android.util.Log.i("XT9RAW", "move raw=(%.1f, %.1f)".format(motionEvent.x, motionEvent.y))
                 }
             }
-            // Debug sensor visualizer: when active it swallows every raw keypad sample upstream of
-            // the engine (so it works even when the KDB fails to load).
+            // Debug visualizer swallows raw samples before the engine (works without a KDB).
             if (BuildConfig.DEBUG && sensorVizOverlay.forwardIfActive(motionEvent)) return true
             if (motionEvent.actionMasked == MotionEvent.ACTION_DOWN ||
                 motionEvent.actionMasked == MotionEvent.ACTION_POINTER_DOWN) {
@@ -2462,22 +2188,16 @@ class BlackBerryIME : InputMethodService(),
             val pointerId = motionEvent.getPointerId(motionEvent.actionIndex)
             val gestureProcessor = GestureEventProcessor.getGestureEventProcessor(pointerId)
             if (isCursorModeEnabled) {
-                // Cursor (FCC) mode active: drag moves the cursor continuously; a tap exits.
-                // Always consume (no typing/flow while in cursor mode).
-                // Once per contact: nothing feeds the engine or the trackers in cursor mode, so
-                // only the contact's first cursor-mode sample has tracking to cancel (every
-                // sample used to take the engine lock for a touchCancel).
+                // Cursor (FCC) mode: drag moves the cursor, a tap exits, always consumed. Only a
+                // contact's first sample has engine tracking to cancel.
                 if (ckbGestures.cancelEngineTrackingOncePerContact(motionEvent)) gestureProcessor.cancelTracking()
                 ckbGestures.handleCursorModeDrag(motionEvent)
                 return true
             }
-            // The gesture arbiter drives all CKB gestures. On a consumed contact, cancel any
-            // in-progress flow and swallow the event; otherwise (Tap / FlowTrace / pre-UP) fall
-            // through to the shared key/flow path.
+            // The gesture arbiter drives all CKB gestures; a consumed contact cancels any flow,
+            // anything else (Tap / FlowTrace / pre-UP) falls through to the key/flow path.
             if (ckbGestures.feed(motionEvent)) {
-                // Once per contact, as in cursor mode above: after the first consumed sample
-                // nothing feeds the engine or the trackers, so the later samples of a held or
-                // dragged contact have nothing left to cancel.
+                // Once per contact, as in cursor mode above.
                 if (ckbGestures.cancelEngineTrackingOncePerContact(motionEvent)) gestureProcessor.cancelTracking()
                 return true
             }
@@ -2498,8 +2218,7 @@ class BlackBerryIME : InputMethodService(),
             }
             if (!isMove && InputPathDebug.on()) Logger.info("CKB_SWIPE_TYPE_DEBUG", "onGenericMotionEvent: PASS — dispatching to KeyDetector.processMotionEvent action=" + motionEvent.action + " x=" + motionEvent.x + " y=" + motionEvent.y)
             gestureProcessor.processMotionEvent(motionEvent)
-            // FIX 2: Update last key time so noise-filtering in KeyDetector.onDownEvent
-            // does not reject this motion event based on a stale hardware key timestamp.
+            // So KeyDetector.onDownEvent's noise filter does not judge by a stale key timestamp.
             GestureEventProcessor.updateLastKeyTime(motionEvent.eventTime)
             return true
         } else {
@@ -2512,8 +2231,6 @@ class BlackBerryIME : InputMethodService(),
 
     /** Lazy getter for the (forked, multi-pointer) GestureDetector shared by the VKB views. */
     fun getOrCreateGestureDetector(): MultiPointerGestureDetector? {
-        // Audit CT-23: `settingsManager != null` was constant-true (it is a non-null val) and
-        // read as if the detector were only built once settings existed.
         if (gestureDetector == null) {
             vkbGestureListener = VkbGestureListener(this, settingsManager.getSettingsValues())
             gestureDetector = MultiPointerGestureDetector(this, vkbGestureListener, null, this)
@@ -2522,6 +2239,7 @@ class BlackBerryIME : InputMethodService(),
         return gestureDetector
     }
 
+    /** @param i the swipe code: -18 delete, -19 down, -17 prediction pick */
     fun handleSwipeGesture(i: Int, motionEvent: MotionEvent, motionEvent2: MotionEvent) {
         val actionIndex = motionEvent.actionIndex
         var str = ""
@@ -2576,8 +2294,7 @@ class BlackBerryIME : InputMethodService(),
 
     fun onSwipeDelete(): Boolean {
         if (!inputLogic.mComposingTracker.isComposing() && inputLogic.mEventDispatcher.isRevertEligible()) {
-            // Synthesized backspace whose x/y carry COORD_SWIPE_DELETE_REVERT so the
-            // backspace revert path treats this swipe-delete as always revert-eligible.
+            // COORD_SWIPE_DELETE_REVERT makes the backspace revert path treat it as revert-eligible.
             onCodeInput(-5, InputEvent.COORD_SWIPE_DELETE_REVERT, InputEvent.COORD_SWIPE_DELETE_REVERT, -1L, false)
             return false
         }
@@ -2589,12 +2306,7 @@ class BlackBerryIME : InputMethodService(),
         return zM4481b
     }
 
-    /**
-     * The physical keyboard's swipe-delete: the original ran the same handler as the on-screen
-     * one and fed the keypad event's raw X straight into the animation, which lined up with the
-     * screen only because the KEY2 pad and screen are both 1080 units wide. The gesture arbiter
-     * hands over X as a fraction of the pad width, so scale it to the keyboard view here.
-     */
+    /** Keypad swipe-delete; the arbiter gives X as a fraction of the pad width, scaled to the view here. */
     fun onCkbSwipeDelete(startXFraction: Float, endXFraction: Float): Boolean {
         if (inputLogic.hasSelectionOrCursor()) {
             val width = animationWidth()
@@ -2609,14 +2321,17 @@ class BlackBerryIME : InputMethodService(),
         return if (keyboardWidth > 0) keyboardWidth else (rootInputView?.width ?: 0)
     }
 
+    /**
+     * @param f start x
+     * @param f2 y
+     * @param f3 end x
+     */
     fun updateSwipeToDelete(f: Float, f2: Float, f3: Float) {
         val mainKeyboardView = keyboardSwitcher.getMainKeyboardView()
         swipeToDeleteAnimatorView?.setCurrentKeyboardHeight(mainKeyboardView?.height ?: 0)
         val auxBarShown = auxBarManager != null && auxBarManager!!.getAuxBarView() != null && (auxBarManager!!.getAuxBarView()?.isShowing() ?: false)
         swipeToDeleteAnimatorView?.setSuggestionStripShown(auxBarShown)
         swipeToDeleteAnimatorView?.setCurrentKeyboardWidth(animationWidth())
-        // Audit CT-33: the icon comes from android:src in main_keyboard_frame.xml, resolved once
-        // at inflate; it was being re-resolved on every swipe-delete.
         swipeToDeleteAnimatorView?.startSwipeAnimation(f, f2, f3)
     }
 
@@ -2630,7 +2345,7 @@ class BlackBerryIME : InputMethodService(),
         val mainKeyboardViewM6790T = keyboardSwitcher.getMainKeyboardView()
         val mkvNonNull = mainKeyboardViewM6790T != null
         val mkvC = mainKeyboardViewM6790T?.isGestureKeyboard() ?: false
-        // One read of the current locale for both tests; this runs on every touch sample.
+        // One locale read: this runs on every touch sample.
         val locale = SubtypeManager.getInstance().getCurrentSubtypeLocale()
         val notLocaleA = !LocaleUtils.isChinese(locale)
         val notLocaleD = !LocaleUtils.isJapanese(locale)
@@ -2651,33 +2366,35 @@ class BlackBerryIME : InputMethodService(),
         return mainKeyboardViewM6790T != null && mainKeyboardViewM6790T.isGestureHandlingActive()
     }
 
+    /** @param str the private command action */
     fun sendPrivateCommand(str: String, bundle: Bundle?) {
         if (!isBlackBerryApp) return
         val currentInputConnection = getCurrentInputConnection() ?: return
-        // Audit CT-23: `str == null` was constant-false; `str` is a non-null String.
         currentInputConnection.performPrivateCommand(str, bundle)
     }
 
-    // ==================== Cursor mode (CursorMovementListener + arrow bar) ====================
-
+    /** @param i number of steps */
     override fun moveRight(i: Int) {
         clearStuckMetaState()
         inputLogic.moveCursorRight(settingsManager.getSettingsValues(), i, isMetaKeyActive())
         sendPrivateCommand("dev.bbkb.ime.MOVE_RIGHT_CKB", null)
     }
 
+    /** @param i number of steps */
     override fun moveLeft(i: Int) {
         clearStuckMetaState()
         inputLogic.moveCursorLeft(settingsManager.getSettingsValues(), i, isMetaKeyActive())
         sendPrivateCommand("dev.bbkb.ime.MOVE_LEFT_CKB", null)
     }
 
+    /** @param i number of steps */
     override fun moveUp(i: Int) {
         clearStuckMetaState()
         inputLogic.moveCursorUp(i, isMetaKeyActive())
         sendPrivateCommand("dev.bbkb.ime.MOVE_UP_CKB", null)
     }
 
+    /** @param i number of steps */
     override fun moveDown(i: Int) {
         clearStuckMetaState()
         inputLogic.moveCursorDown(i, isMetaKeyActive())
@@ -2693,6 +2410,7 @@ class BlackBerryIME : InputMethodService(),
         scheduleCursorModeDisable()
     }
 
+    /** @param z true to enable cursor mode */
     fun enableCursorMode(z: Boolean) {
         applyCursorModeState(z, true, false)
     }
@@ -2703,16 +2421,19 @@ class BlackBerryIME : InputMethodService(),
         applyCursorModeState(z, true, false)
     }
 
+    /**
+     * @param z true to enable cursor mode
+     * @param z2 on exit, true to re-derive the shift state
+     * @param z3 true for a forced entry (FCC reconciling a state it already arranged)
+     */
     fun applyCursorModeState(z: Boolean, z2: Boolean, z3: Boolean) {
         if (BuildConfig.DEBUG) Logger.debug("ARROW_BAR_DIAG", "applyCursorModeState: enable=$z z3=$z3 isUnifiedInputBoardShowing()=${isUnifiedInputBoardShowing()} → will proceed=${z3 || !isUnifiedInputBoardShowing()}")
         if (z3 || !isUnifiedInputBoardShowing()) {
             if (z) {
                 if (isCursorModeEnabled) return
                 Logger.debug("IMEGesture", "Cursor mode enabled")
-                // The cursor axis moving, and what that does to the board and bar axes, is one row
-                // of CrossAxisRules now: mode on, then the arrow bar replaces the open boards and
-                // the suggestion views. A forced entry (z3) is FCC reconciling a state it has
-                // already arranged on screen, so the table leaves the other axes alone there.
+                // A CrossAxisRules row: the arrow bar replaces open boards and suggestion views,
+                // except on a forced entry (z3), where the table leaves the other axes alone.
                 keyboardSwitcher.transitions().apply(KeyboardTransition.enterCursorMode(z3))
                 val currentInputConnection = getCurrentInputConnection()
                 if (currentInputConnection != null && lastCursorAnchorInfo != null && !isMetaKeyActive() && (!z3 || !inputLogic.mRichInputConnection.hasSelection())) {
@@ -2731,9 +2452,8 @@ class BlackBerryIME : InputMethodService(),
             }
             if (isCursorModeEnabled) {
                 Logger.debug("IMEGesture", "Cursor mode disabled")
-                // Mode off, then the arrow bar comes down and the strip comes back — the
-                // EXIT_CURSOR_MODE row. The cursor window and the auto-disable timer below are
-                // cursor-axis internals, not cross-axis rules, so they stay here.
+                // The EXIT_CURSOR_MODE row; the cursor window and auto-disable timer are
+                // cursor-axis internals and stay here.
                 keyboardSwitcher.transitions().apply(KeyboardTransition.exitCursorMode(z2))
                 cursorTracker.hide()
                 uiUpdateHandler.removeCallbacks(disableCursorModeRunnable)
@@ -2742,24 +2462,19 @@ class BlackBerryIME : InputMethodService(),
         }
     }
 
-    // ── the cursor axis' mechanism, as KeyboardStateCoordinator.Axes reaches it ──────────────
+    // The cursor axis' mechanism, as KeyboardStateCoordinator.Axes reaches it.
 
-    /** Cursor (FCC) mode on: tell FCC, then set the flag. Order matters — FCC reads the flag. */
+    /** Cursor (FCC) mode on: tell FCC, then set the flag (order matters: FCC reads the flag). */
     fun cursorModeOn(forced: Boolean) {
         fccController?.onFccEnabled(forced)
         isCursorModeEnabled = true
     }
 
-    /** Cursor (FCC) mode off: the flag only. */
     fun cursorModeOff() {
         isCursorModeEnabled = false
     }
 
-    /**
-     * Whether the arrow bar can go up at all. The guard spans the whole `ENTER_CURSOR_MODE`
-     * bar+board effect — with the bar already showing, none of the three steps runs — so the funnel
-     * asks it once rather than each step carrying it.
-     */
+    /** Guards the whole `ENTER_CURSOR_MODE` bar+board effect: with the bar showing no step runs. */
     fun canRaiseArrowBar(): Boolean {
         val arrowBar = arrowBarController
         Logger.debug("ARROW_BAR_DIAG", "canRaiseArrowBar: arrowBarController=" +
@@ -2768,9 +2483,8 @@ class BlackBerryIME : InputMethodService(),
     }
 
     /**
-     * The step before the arrow bar goes up: retire the composing word and take the suggestion
-     * views down. The composing-word cancel is the text pipeline, which the cross-axis table
-     * deliberately does not carry; it travels here because production runs the two back to back.
+     * Before the arrow bar goes up: cancel the composing word (text pipeline, not in the
+     * cross-axis table) and hide the suggestion views.
      */
     fun prepareForArrowBar() {
         inputLogic.cancelComposingAndTouchEvent()
@@ -2778,12 +2492,9 @@ class BlackBerryIME : InputMethodService(),
     }
 
     /**
-     * `ENTER_CURSOR_MODE`'s board column, `CLOSE_ALL`: every board goes, exemptions included.
-     *
-     * Taking the menu down this way would also end a menu the user raised, but the arrow bar only
-     * covers the bar for the length of cursor mode (owner decision 2026-11-05): the choice is kept
-     * across it, so the bar the cursor-mode exit restores (`showSuggestionStripOrUim`, which asks
-     * `shouldShowUim()`) is that menu again. The show-menu key's override is kept with it.
+     * `ENTER_CURSOR_MODE`'s board column, `CLOSE_ALL`: every board goes, exemptions included. A
+     * user-raised menu choice (and the show-menu key's override) survives, so the cursor-mode
+     * exit restores that menu.
      */
     fun sweepAllBoardsClosed() {
         // getBarChoice() is a Java getter (platform type); the JVM harnesses mock the coordinator.
@@ -2801,7 +2512,6 @@ class BlackBerryIME : InputMethodService(),
         arrowBarController?.show()
     }
 
-    /** The bar column of `EXIT_CURSOR_MODE`. */
     fun lowerArrowBarRestoringStrip(requestShiftUpdate: Boolean) = hideArrowBar(requestShiftUpdate)
 
     /** The `RESTORE_STRIP_OR_UIM` bar effect: whichever of the two this editor gets. */
@@ -2810,29 +2520,10 @@ class BlackBerryIME : InputMethodService(),
     }
 
     /**
-     * Re-evaluate the suggestion strip for wherever the cursor ended up, on **every** cursor-mode
-     * exit — the second double tap, the 4 s auto-disable, a key press, [onViewClicked].
-     *
-     * Entering cursor mode cancels the composing word and hides the aux bar
-     * ([prepareForArrowBar]), and `RecorrectionController.performRecorrection` returns immediately
-     * while [isCursorModeEnabled] is set, so none of the `onUpdateSelection` callbacks the arrow
-     * keys generate ever reach it. The only re-evaluation on the way out was
-     * [restoreSuggestionStrip]'s `postUpdateShiftState(false, false)`, and that `false` is
-     * `performRecorrection`'s "do not offer the word under the cursor" flag: with it the word
-     * list it builds is empty unless the word happens to carry suggestion spans, so the result
-     * is `SuggestedWords.EMPTY` -> `setNeutralSuggestionStrip()`, which on Latin draws nothing.
-     * The strip came back on screen blank (KEY2 owner report).
-     *
-     * This is the identical request `InputLogic.onUpdateSelection` makes at the end of the
-     * editor-tap path — `postUpdateShiftState(true, true)` -> `MSG_UPDATE_SHIFT_MODE` ->
-     * `performRecorrection(values, true, elementId)` — so the cursor's word gets its
-     * recorrection suggestions and a cursor after a space gets next-word predictions, exactly as
-     * if the user had tapped there. It re-composes only the word the cursor is actually on;
-     * nothing resurrects the word cancelled on entry.
-     *
-     * [postUpdateShiftState] itself is gated on `isSuggestionStripActive()`; the
-     * [isInputActive] check keeps the teardown exits ([onDestroy], [resetUiState]) from queuing
-     * work for an editor that is going away.
+     * On every cursor-mode exit, makes the same request an editor tap does
+     * (`postUpdateShiftState(true, true)`), since performRecorrection ignores selection updates
+     * while in cursor mode and `(false, false)` alone leaves the strip blank. The [isInputActive]
+     * check keeps teardown exits from queuing work.
      */
     private fun requestSuggestionsForCursorPosition() {
         if (!isInputActive) return
@@ -2845,6 +2536,7 @@ class BlackBerryIME : InputMethodService(),
         uiUpdateHandler.postDelayed(disableCursorModeRunnable, 4000L)
     }
 
+    /** @param z true to re-derive the shift state after the strip returns */
     private fun hideArrowBar(z: Boolean) {
         val arrowBar = arrowBarController
         if (arrowBar == null || !arrowBar.isShowing()) return
@@ -2854,31 +2546,36 @@ class BlackBerryIME : InputMethodService(),
         }
     }
 
+    /**
+     * @param z unused
+     * @param z2 true to re-derive the shift state (skipped with a selection)
+     */
     fun restoreSuggestionStrip(z: Boolean, z2: Boolean) {
-        // The bar axis' one entry point with a decision in it (UIM bar or suggestion strip?), so
-        // the one that earns a row: RESTORE_BAR / RESTORE_STRIP_OR_UIM. The shift re-derivation
-        // below is the text pipeline and stays here.
+        // RESTORE_BAR row; the shift re-derivation is the text pipeline and stays here.
         keyboardSwitcher.transitions().apply(KeyboardTransition.restoreBar())
         if (!z2 || inputLogic.mRichInputConnection.hasSelection()) return
         uiUpdateHandler.postUpdateShiftState(false, false)
     }
 
-    // ==================== Suggestions (SuggestionStripListener, CJK / flick listeners) ====================
-
+    /** @param i the update reason code ([SuggestionUpdater.Reason.legacyCode]) */
     fun requestSuggestionUpdateSync(i: Int) {
         uiUpdateHandler.cancelPendingSuggestionUpdates()
         inputLogic.updateSuggestionsSync(settingsManager.getSettingsValues(), i)
     }
 
+    /** @param i the update reason code */
     fun requestSuggestionUpdateAsync(i: Int) {
         uiUpdateHandler.cancelPendingSuggestionUpdates()
         inputLogic.updateSuggestionsAsync(settingsManager.getSettingsValues(), i)
     }
 
+    /**
+     * @param i the update reason code
+     * @param aVar receives the suggestions
+     */
     fun runSuggestionRequest(i: Int, aVar: SuggestionEngine.SuggestionCallback) {
-        // A request sent from the main thread carries its keyboard's proximity grid in its
-        // snapshot, so the worker reads no keyboard state here; the symbol page order is unused
-        // with a snapshot (the shift state was captured with it).
+        // A main-thread request carries its proximity grid (and shift state) in its snapshot,
+        // so the worker reads no keyboard state.
         val snapshotGrid = InputLogic.snapshotProximityGrid(aVar)
         if (snapshotGrid != null) {
             inputLogic.requestSuggestionsWithContext(this, settingsManager.getSettingsValues(), snapshotGrid, 0, i, aVar)
@@ -2896,8 +2593,13 @@ class BlackBerryIME : InputMethodService(),
     /** Display side of the suggestion pipeline (the request side is [suggestionUpdater]). */
     private val suggestionStrip = SuggestionStripPresenter(this)
 
+    /** @param c0666ac the words to show */
     override fun showSuggestionStrip(c0666ac: SuggestedWords) = suggestionStrip.showOrNeutral(c0666ac)
 
+    /**
+     * @param c0666ac the words to show
+     * @param z true if the words come from a gesture
+     */
     fun displaySuggestions(c0666ac: SuggestedWords, z: Boolean) = suggestionStrip.display(c0666ac, z)
 
     fun updateFlickMetrics() = suggestionStrip.updateFlickMetrics()
@@ -2915,22 +2617,21 @@ class BlackBerryIME : InputMethodService(),
 
     override fun setNeutralSuggestionStrip() = suggestionStrip.showNeutral()
 
+    /** @param str the word to offer */
     override fun showAddToDictionaryHint(str: String) {
         flickSuggestionView?.clearSuggestions(str)
     }
 
-    // SuggestionStripListener interface methods
     override fun isShowingMoreSuggestions(): Boolean {
         return false
     }
 
     override fun dismissMoreSuggestions() {
-        // AuxBarView handles this now - dismiss more suggestions panel
+        // AuxBarView handles this.
     }
 
     override fun onSuggestionPicked(suggestedWordInfoVar: SuggestedWords.SuggestedWordInfo, enumC0690f: InputSource) {
         if (suggestedWordInfoVar.isKind(EmojibaseStripSuggestion.KIND_EMOJI) && !keyboardSwitcher.isNoPersonalizedLearning()) {
-            // The strip's emoji slot, or a tone from its long-press popup: remember the tone.
             EmojiToneMemory.onEmojiPicked(PrefsManager.getPrefs(this), suggestedWordInfoVar.word)
         }
         applyPostEventUpdates(inputLogic.handleManualPick(settingsManager.getSettingsValues(), suggestedWordInfoVar, getSymbolPageProvider(), keyboardSwitcher.getKeyboardElementId(), uiUpdateHandler, enumC0690f), true)
@@ -2956,17 +2657,16 @@ class BlackBerryIME : InputMethodService(),
         return multitapEventHandler.isAltMultitapSupported()
     }
 
+    /** @param z true to commit the next text input as one string */
     fun setInsertAsString(z: Boolean) {
         shouldInsertAsString = z
     }
 
     /**
-     * The plus on the add-to-dictionary highlight: one tap adds the word to the personal
-     * dictionary, which also teaches the engine's DLM and syncs the system user dictionary
-     * ([DictionaryManager.addWordSubstitution] -> `PersonalDictionaryUtil.add`), then asks the
-     * editor to re-run its spell check so the red underline the word may carry goes away. When the
-     * add is refused (dictionary not loaded, word already there) BBKB's own add-word dialog takes
-     * over; it used to be the system's, in the system's colours.
+     * The add-to-dictionary plus: adds the word (also teaching the DLM and the system user
+     * dictionary) and re-runs the editor's spell check; if refused, opens BBKB's add-word dialog.
+     *
+     * @param str the word to add
      */
     fun addWordToUserDictionary(str: String) {
         val added = OneTapAddWord.add(DictionaryManager.getInstance(), str, dictionaryLoader.getLocale())
@@ -2977,8 +2677,6 @@ class BlackBerryIME : InputMethodService(),
         }
         inputLogic.dismissMoreKeys()
     }
-
-    // ==================== UIM, boards, dialogs and UI helpers ====================
 
     fun isOnScreenKeyboardVisible(): Boolean {
         return DeviceProfile.isOnScreenKeyboardVisible()
@@ -2994,9 +2692,7 @@ class BlackBerryIME : InputMethodService(),
     override fun shouldShowUim(): Boolean = uiCoordinator.shouldShowUim()
 
     private fun isUimVisible(): Boolean {
-        // A view question, so it asks the view: isPalettesVisible() is EmojiPalettesView's own
-        // renamed isShowing(). "Is the emoji board open" is a different question and belongs to
-        // EmojiBoardController / the KeyboardState machine (§5.6 item 4).
+        // A view question: whether the emoji board is open belongs to EmojiBoardController.
         return !(!isUnifiedInputBoardShowing() || keyboardSwitcher.peekEmojiPalettesView()?.isPalettesVisible() == true)
     }
 
@@ -3004,18 +2700,7 @@ class BlackBerryIME : InputMethodService(),
         uiCoordinator.hideUnifiedInputBoard()
     }
 
-    /**
-     * Sweep the open boards away **when the UIM bar is switched off** — owner ruling R4's naming
-     * fix. This was called `hideUnifiedInputBoard()`, and its body has always been
-     * `if (uim == null || isUimEnabled()) return`: it does nothing whenever the UIM *is* enabled,
-     * which is the opposite of what the name said. It is not "hide the board", it is "with no bar
-     * to sit in, an open board has to go".
-     *
-     * <p>`showArrowBar()` called this and then `hideInputBoard()`, which closes everything
-     * unconditionally — two closes where the first could only ever add a `refresh()` pass. R4
-     * deleted that call; the three remaining callers (control-mode entry, `onStartInput`,
-     * `loadKeyboard`) are the ones that actually mean this.
-     */
+    /** With the UIM bar switched off, open boards have no bar to sit in, so they go. No-op when on. */
     fun sweepBoardsWhenUimBarIsOff() {
         if (keyboardSwitcher.getUnifiedInputBoardManager() == null || isUimEnabled()) return
         keyboardSwitcher.transitions().apply(KeyboardTransition.sweepBoards())
@@ -3028,6 +2713,7 @@ class BlackBerryIME : InputMethodService(),
         c1011iM6838p.refresh()
     }
 
+    /** @param handlerC1013k the UIM board handler */
     fun attachInputBoardHandler(handlerC1013k: UnifiedInputBoardHandler) {
         unifiedInputBoardHandler = handlerC1013k
     }
@@ -3092,7 +2778,6 @@ class BlackBerryIME : InputMethodService(),
         attributes.token = windowToken
         attributes.type = WindowManager.LayoutParams.TYPE_APPLICATION_ATTACHED_DIALOG
         window.attributes = attributes
-        // Audit CT-22: 131072 == WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM.
         window.addFlags(WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM)
         currentAlertDialog = alertDialog
         alertDialog.show()
@@ -3125,10 +2810,6 @@ class BlackBerryIME : InputMethodService(),
         startActivity(intent)
     }
 
-    // ==================== AuxBarManager.AuxBarEventListener ====================
-
-    // Audit CT-23: both parameters are declared non-null, so the guards were constant-true and
-    // sent a reader debugging a dropped suggestion chasing a null that cannot occur.
     override fun onSuggestionSelected(wordInfo: SuggestedWords.SuggestedWordInfo, inputSource: InputSource) {
         onSuggestionPicked(wordInfo, inputSource)
     }
@@ -3146,7 +2827,6 @@ class BlackBerryIME : InputMethodService(),
     }
 
     override fun onHamburgerMenuClicked() {
-        // Audit CT-23: uiCoordinator is a non-null val; the safe call was a no-op.
         uiCoordinator.showUnifiedInputMenuFromSuggestionStrip()
     }
 
@@ -3166,7 +2846,6 @@ class BlackBerryIME : InputMethodService(),
     }
 
     override fun onAccentSelected(accentChar: String) {
-        // Audit CT-23: accentChar is non-null; only the emptiness half of the test is real.
         if (accentChar.isNotEmpty()) {
             inputLogic.replaceLastCharWithAccent(accentChar)
             Logger.debug(LOG_TAG, "Accent committed: $accentChar")
@@ -3188,7 +2867,7 @@ class BlackBerryIME : InputMethodService(),
         return hardwareKeys.auxCharacterResolver()
     }
 
-    // ==================== Accessors and super bridges for the Java collaborators ====================
+    // Accessors and super bridges for the Java collaborators.
 
     fun getSettingsManager(): SettingsManager = settingsManager
 
@@ -3224,15 +2903,16 @@ class BlackBerryIME : InputMethodService(),
 
     fun superOnStartInputView(ei: EditorInfo, r: Boolean) { super.onStartInputView(ei, r) }
 
+    /** @param f true if input is finishing too */
     fun superOnFinishInputView(f: Boolean) { super.onFinishInputView(f) }
 
     fun superOnFinishInput() { super.onFinishInput() }
 
+    /** @param i the key code */
     fun superOnKeyDown(i: Int, ev: KeyEvent): Boolean = super.onKeyDown(i, ev)
 
+    /** @param i the key code */
     fun superOnKeyUp(i: Int, ev: KeyEvent): Boolean = super.onKeyUp(i, ev)
-
-    // ==================== Debug dump ====================
 
     override fun dump(fileDescriptor: FileDescriptor, printWriter: PrintWriter, strArr: Array<String>) {
         super.dump(fileDescriptor, printWriter, strArr)
@@ -3240,7 +2920,6 @@ class BlackBerryIME : InputMethodService(),
         printWriterPrinter.println("BlackBerryIME state :")
         try {
             val packageInfo = packageManager.getPackageInfo(packageName, 0)
-            // Audit CT-35: versionCode truncates to the low 32 bits of longVersionCode (API 28+).
             printWriterPrinter.println("  VersionCode = ${androidx.core.content.pm.PackageInfoCompat.getLongVersionCode(packageInfo)}")
             printWriterPrinter.println("  VersionName = ${packageInfo.versionName}")
         } catch (e: android.content.pm.PackageManager.NameNotFoundException) {

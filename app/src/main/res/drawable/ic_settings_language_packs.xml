@@ -1,10 +1,8 @@
-<!-- Language packs row on the Language screen. Converted from the owner's SVG (2026-10-01); tinted by the row, so the fill colour is a placeholder. -->
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
     android:width="24dp"
     android:height="24dp"
     android:viewportWidth="960"
     android:viewportHeight="960">
-  <!-- The source viewBox is "0 -960 960 960" (Material Symbols); the group shifts it into view. -->
   <group android:translateY="960">
     <path
         android:fillColor="#FF000000"

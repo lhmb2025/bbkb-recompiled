@@ -20,19 +20,10 @@ import org.robolectric.annotation.Config
 import java.util.Locale
 
 /**
- * The touch keypad's type-by-swiping gate, `SettingsValues.isCkbGestureInputEnabledForLocale`,
- * with a custom physical layout switched on: it stays as the user set it whatever the layout
- * changes. It used to switch off while a layout changed a letter, because the swipe decoder read
- * the engine's key letters and those were the keypad's old ones; the engine's letters now follow
- * the active layout (`LetterLayoutEngineSync`, tested in `LetterLayoutEngineSyncTest`).
- *
- * Every caller that decides whether a keypad swipe types a word reads this one method — the
- * subtype switch and start-of-input refresh of `MainKeyboardView`'s CKB flag, and
- * `BlackBerryIME.shouldHandleGestureEvent` per motion event — so pinning it pins them all.
- *
- * The typing path's sources are pointed at the layout, so the layout really does drive the keys
- * while the gate is asked. Set up and torn down the way `SettingsValuesSnapshotTest` does, for the
- * reasons it gives.
+ * The touch keypad's swipe gate, `SettingsValues.isCkbGestureInputEnabledForLocale`, stays as the
+ * user set it whatever a custom physical layout changes (the engine's letters follow the layout via
+ * `LetterLayoutEngineSync`). Every caller deciding whether a keypad swipe types reads this method.
+ * Set up and torn down as in `SettingsValuesSnapshotTest`.
  */
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [34], manifest = Config.NONE)
@@ -110,8 +101,8 @@ class CustomLayoutSwipeGateTest {
     @Test
     fun aLayoutThatReplacesEveryLetter_leavesSwipeTypingOn() {
         val settings = swipeTypingOn()
-        // Cyrillic on every letter key of an English keyboard: as far from the engine's own
-        // letters as a layout can get.
+        // Cyrillic on every letter key of an English keyboard: as far from the engine's letters as
+        // a layout can get.
         val cyrillic = "йцукенгшщзфывапролдячсмить"
         val qwerty = "QWERTYUIOPASDFGHJKLZXCVBNM"
         activeMap = map(qwerty.indices.joinToString("") { """<key code="KEYCODE_${qwerty[it]}" keySpec="${cyrillic[it]}"/>""" })

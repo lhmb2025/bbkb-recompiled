@@ -18,10 +18,9 @@ public final class KeyboardId {
     public final InputMethodSubtype mSubtype;
 
     /**
-     * The layout set the keyboard is built from ({@code qwerty}, {@code colemak}), or null when its
-     * builder named none. Usually the subtype's own; a letter layout chosen for the language
-     * (AZERTY, Colemak…) can stand in for it, which is why it is part of the keyboard's identity:
-     * the same subtype then builds a different keyboard.
+     * Layout set the keyboard is built from ({@code qwerty}, {@code colemak}), or null if the
+     * builder named none. Part of the identity because a chosen letter layout makes the same
+     * subtype build a different keyboard.
      */
     public final String mKeyboardLayoutSet;
 
@@ -57,14 +56,10 @@ public final class KeyboardId {
     private static final int PKB = 4;
 
     /**
-     * Every named element as {id, family flags, name}. The ids are the {@code elementName} enum
-     * values in res/values/attrs.xml and are referenced from XML and code as raw literals; the
-     * names are XML-facing — they are what {@code <case latin:keyboardLayoutSetElement="…">}
-     * matches against in {@code KeyboardXMLParser.matchTypedValue}. An id not listed here (the
-     * 13..34 and 112..134 holes, 38) has no name and belongs to no family.
-     *
-     * <p>Family quirks kept as found: 35..37 (uri/password/postal) count as ALPHABET; only the
-     * PKB alphabet ids count as PKB, so the PKB symbols/phone/number ids belong to no family.
+     * Named elements as {id, family flags, name}. Ids are the {@code elementName} enum in attrs.xml
+     * (used as raw literals); names are what {@code <case latin:keyboardLayoutSetElement>} matches.
+     * Unlisted ids (13..34, 112..134, 38) have no name or family. 35..37 count as ALPHABET; only
+     * the PKB alphabet ids count as PKB.
      */
     private static final Object[] ELEMENTS = {
             0, ALPHABET, "alphabet",
@@ -128,15 +123,21 @@ public final class KeyboardId {
         return row >= 0 && ((Integer) ELEMENTS[row + 1] & family) != 0;
     }
 
+    /** @param i element id */
     public static String elementIdToName(int i) {
         int row = elementRow(i);
         return row < 0 ? null : (String) ELEMENTS[row + 2];
     }
 
+    /** @param i keyboard mode */
     public static String modeName(int i) {
         return i >= 0 && i < MODE_NAMES.length ? MODE_NAMES[i] : null;
     }
 
+    /**
+     * @param i element id
+     * @param dVar builder params supplying the rest of the identity
+     */
     public KeyboardId(int i, KeyboardBuilder.Params dVar) {
         this.mSubtype = dVar.mSubtype;
         this.mKeyboardLayoutSet = dVar.keyboardLayoutSet();
@@ -160,10 +161,8 @@ public final class KeyboardId {
     }
 
     /**
-     * The layout set {@code <case latin:keyboardLayoutSet>} matches against: the one the keyboard
-     * is built from, so a Dvorak keyboard takes the bottom row's {@code dvorak} cases (q and z on
-     * the comma and period keys) whatever its subtype says; the subtype's own for a keyboard
-     * whose builder named none.
+     * Layout set {@code <case latin:keyboardLayoutSet>} matches against: the built one (so Dvorak
+     * gets its {@code dvorak} bottom-row cases whatever the subtype says), else the subtype's.
      */
     public String keyboardLayoutSet() {
         return this.mKeyboardLayoutSet != null ? this.mKeyboardLayoutSet : ResourceLocaleUtils.getKeyboardLayoutSetName(this.mSubtype);
@@ -259,11 +258,9 @@ public final class KeyboardId {
     }
 
     /**
-     * True when the two EditorInfos describe the *same editor instance*, not merely two editors
-     * that would produce the same keyboard. {@link #equivalentEditorInfo} answers the latter —
-     * which is the right question for "do I need to rebuild the layout?" but the wrong one for
-     * "may I discard this input-lifecycle callback?": two different fields with identical
-     * inputType/imeOptions are equivalent yet must not be conflated (audit LC-2).
+     * True when both describe the same editor instance. {@link #equivalentEditorInfo} only answers
+     * "same keyboard?"; two fields with identical options must not be conflated when deciding
+     * whether an input-lifecycle callback can be discarded.
      */
     public static boolean sameEditor(EditorInfo editorInfo, EditorInfo editorInfo2) {
         if (editorInfo == null && editorInfo2 == null) {
@@ -275,6 +272,7 @@ public final class KeyboardId {
                 && TextUtils.equals(editorInfo.packageName, editorInfo2.packageName);
     }
 
+    /** @param i IME action, or 256 for a custom action label */
     public static String actionName(int i) {
         return i == 256 ? "actionCustomLabel" : imeActionName(i);
     }

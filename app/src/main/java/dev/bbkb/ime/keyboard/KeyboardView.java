@@ -73,14 +73,7 @@ public class KeyboardView extends View {
 
     private SharedPreferences sharedPreferences;
 
-    /**
-     * Per-key draw state, rebuilt whenever the keyboard or the palette changes.
-     *
-     * <p>Both used to be recomputed inside {@code drawKey}/{@code drawKeyContent}: a
-     * {@code Character.toString(code)} plus a HashMap lookup plus a formatter copy per key per
-     * frame, and a regex {@code split()} per multiline-hint key per frame. The inputs - key
-     * style data, key height, hint label - only change when the keyboard is swapped.
-     */
+    /** Per-key draw state, rebuilt whenever the keyboard or the palette changes. */
     private final HashMap<Key, KeyDrawParams> keyFormatters = new HashMap<>();
 
     private final HashMap<Key, String[]> multilineHintLines = new HashMap<>();
@@ -90,7 +83,7 @@ public class KeyboardView extends View {
 
     private static final int[] EMPTY_ROW_EXTENTS = new int[0];
 
-    /** Row tops/bottoms of the current keyboard, ascending - see drawFrets. */
+    /** Row tops/bottoms of the current keyboard, ascending; see drawFrets. */
     private int[] rowTops = EMPTY_ROW_EXTENTS;
 
     private int[] rowBottoms = EMPTY_ROW_EXTENTS;
@@ -98,7 +91,7 @@ public class KeyboardView extends View {
     /** Display density, cached: it cannot change without the view being recreated. */
     private final float density;
 
-    /** Reusable per-key background scratch state - see drawKeyBackground and its cap painters. */
+    /** Reusable per-key background scratch state for drawKeyBackground and the cap painters. */
     private final Paint backgroundPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
 
     private final Paint dividerPaint = new Paint();
@@ -147,17 +140,10 @@ public class KeyboardView extends View {
     private final HashSet<Key> keyboardKeys = new HashSet<>();
 
     /**
-     * Per-key layers for keys whose look changes on every tap (pressed keys, the spacebar's
-     * word), API 29+ on a hardware canvas, for views that opt in ({@link #usesKeyLayers}).
-     *
-     * <p>A hardware-accelerated View re-records its whole display list on any invalidate, and
-     * HWUI damages the whole view whenever its display list changes: every press, release and
-     * suggestion re-recorded every key and repainted the full keyboard rectangle, which on an
-     * e-ink panel is a full-keyboard refresh several times per tap. Instead the view's own display
-     * list draws the keys at rest and then one RenderNode per changing key. A press re-records
-     * only that small node, so only the key's rectangle is damaged. Each node repaints the
-     * background and frets under its key before the key itself, so the result is the pixels a full
-     * redraw would give (that needs an opaque background; otherwise the layers stay off).
+     * Per-key RenderNodes for keys whose look changes per tap (API 29+, hardware canvas, opt-in via
+     * {@link #usesKeyLayers}). HWUI damages the whole view when its display list changes, which on
+     * e-ink is a full-keyboard refresh per tap; a press re-records only its node instead. Each node
+     * repaints the background and frets under its key, so this needs an opaque background.
      */
     private KeyLayers keyLayers;
 
@@ -167,12 +153,11 @@ public class KeyboardView extends View {
     /** Recording the at-rest keyboard: no pressed states, no per-tap content. */
     private boolean drawingRestingKeys;
 
-    /** {@link #drawHintLabelOrIcon} scratch; it ran a {@code new Rect()} per hinted key per draw. */
+    /** {@link #drawHintLabelOrIcon} scratch. */
     private final Rect hintBounds = new Rect();
 
     private final int hintIconSize;
 
-    // Color observer for runtime theme changes
     private final kotlin.jvm.functions.Function0<kotlin.Unit> colorObserver = new kotlin.jvm.functions.Function0<kotlin.Unit>() {
         @Override
         public kotlin.Unit invoke() {
@@ -205,9 +190,6 @@ public class KeyboardView extends View {
         this.fontMetrics = new Paint.FontMetrics();
         TypedArray typedArrayObtainStyledAttributes = context.obtainStyledAttributes(attributeSet, R.styleable.KeyboardView, defStyleAttr, R.style.KeyboardView);
         try {
-            // Key backgrounds are painted as flat fills from KeyboardColorManager (see
-            // drawKeyBackground); the keyBackground/functionalKeyBackground/... theme
-            // attributes and their shape drawables are gone.
             this.spacebarIconWidth = typedArrayObtainStyledAttributes.getFloat(R.styleable.KeyboardView_spacebarIconWidthRatio, 1.0f);
             this.hintLetterPadding = typedArrayObtainStyledAttributes.getDimension(R.styleable.KeyboardView_keyHintLetterPadding, 0.0f);
             this.multilineHintLabelPadding = typedArrayObtainStyledAttributes.getDimension(R.styleable.KeyboardView_keyMultilineHintLabelPadding, 0.0f);
@@ -237,8 +219,6 @@ public class KeyboardView extends View {
         this.context = context;
         this.sharedPreferences = PrefsManager.INSTANCE.getPrefs(this.context);
 
-        // Set keyboard background programmatically from KeyboardColorManager
-        // This establishes KeyboardColorManager as the single source of truth for colors
         updateKeyboardBackground();
     }
 
@@ -246,11 +226,6 @@ public class KeyboardView extends View {
         return this.defaultKeyStyleData;
     }
 
-    /**
-     * Update keyboard background color from KeyboardColorManager.
-     * Uses GradientDrawable instead of setBackgroundColor() to avoid overlay issues.
-     * Reuses the GradientDrawable instance to avoid allocations.
-     */
     private void updateKeyboardBackground() {
         setBackground(KeyboardColorManager.fill(keyboardBackgroundColor()));
     }
@@ -293,9 +268,8 @@ public class KeyboardView extends View {
         this.textFormatter.applyKeyStyleData(keyboardHeight, this.defaultKeyStyleData);
         this.textFormatter.applyKeyStyleData(keyboardHeight, keyboard.mMoreKeySpec);
         invalidateAllKeys();
-        // A shift or symbol-page swap keeps the keyboard's size, and onMeasure reads nothing else,
-        // so a layout pass would re-measure the whole input-view chain for nothing. Emoji pages
-        // measure from their key rows, so they always relayout.
+        // Relayout only on a size change (onMeasure reads nothing else); emoji pages measure from
+        // their key rows, so they always relayout.
         if (previous == null || previous.mOccupiedWidth != keyboard.mOccupiedWidth
                 || previous.mOccupiedHeight != keyboard.mOccupiedHeight
                 || keyboard instanceof EmojiKeyboard || previous instanceof EmojiKeyboard) {
@@ -305,9 +279,8 @@ public class KeyboardView extends View {
     }
 
     /**
-     * Rebuilds {@link #keyFormatters}, {@link #multilineHintLines} and the fret row extents for
-     * the current keyboard. Must run after anything that changes the base formatter (a keyboard
-     * swap, a palette change, {@link #applyDefaultKeyStyle}) - the cached formatters are copies.
+     * Must run after anything that changes the base formatter (keyboard swap, palette change,
+     * {@link #applyDefaultKeyStyle}): the cached formatters are copies.
      */
     private void rebuildPerKeyDrawState() {
         this.keyFormatters.clear();
@@ -319,9 +292,8 @@ public class KeyboardView extends View {
             this.rowBottoms = EMPTY_ROW_EXTENTS;
             return;
         }
-        // Style data is registered per key identifier, not per key instance: a key without its
-        // own KeyVisualAttributes still picks up the style of a same-code key in the SAME keyboard. The map
-        // is rebuilt per keyboard, so styles can no longer leak across layout switches.
+        // Style data is keyed by key identifier: a key without its own KeyVisualAttributes picks
+        // up the style of a same-code key in the same keyboard (never across keyboards).
         HashMap<String, KeyVisualAttributes> styleByIdentifier = new HashMap<>();
         for (Key key : this.keyboard.getKeys()) {
             KeyVisualAttributes styleData = key.getKeyData();
@@ -396,8 +368,7 @@ public class KeyboardView extends View {
         super.onDraw(canvas);
         if (canvas.isHardwareAccelerated()) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && canUseKeyLayers()) {
-                // The at-rest keys, then the per-key layers on top. A press or release after this
-                // re-records only its layer (invalidateKeyState), not this display list.
+                // At-rest keys, then the key layers; a later press re-records only its layer.
                 this.drawingRestingKeys = true;
                 try {
                     drawKeyboard(canvas);
@@ -434,10 +405,8 @@ public class KeyboardView extends View {
             return false;
         }
         releaseBitmap();
-        // Deliberately NOT pooled across views: the bitmap is recycled in releaseBitmap(), and a
-        // process-wide pool keyed only by pixel size hands the same buffer to two same-sized
-        // views (aux strip / arrow bar), so one erases or recycles the other's backing store.
-        // The size check above already covers the only case a pool could serve.
+        // Not pooled across views: a size-keyed pool would hand one buffer to two same-sized views
+        // (aux strip / arrow bar), and one would erase or recycle the other's.
         this.cachedKeyboardBitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
         return true;
     }
@@ -464,8 +433,7 @@ public class KeyboardView extends View {
         if (shouldDrawAll || isHardwareAccelerated) {
             this.invalidatedRegion.set(0, 0, width, height);
         } else {
-            // Membership is resolved ONCE: Keyboard.hasKey is a linear scan on a miss, and this
-            // used to be called again for the same key in the draw loop below.
+            // Resolve membership once: Keyboard.hasKey is a linear scan on a miss.
             this.invalidatedRegion.setEmpty();
             this.drawList.clear();
             Iterator<Key> it = this.invalidatedKeys.iterator();
@@ -488,11 +456,8 @@ public class KeyboardView extends View {
                 background.draw(canvas);
             }
         }
-        // Frets repaint on EVERY pass, not just full redraws: a partial redraw's
-        // clip is the invalidated keys' bounding Rect, which can span the row gap
-        // between two invalidated keys (e.g. shift + a letter) — the background
-        // repaint above would wipe that fret slice and only keys are redrawn after.
-        // The canvas is already clipped, so this only touches affected pixels.
+        // Frets repaint on every pass: a partial redraw's clip can span the row gap between two
+        // invalidated keys, and the background repaint above would wipe that fret slice.
         if (drawsFrets() && KeyboardColorManager.styleSpec().getFretHeightDp() > 0f) {
             drawFrets(canvas);
         }
@@ -532,30 +497,11 @@ public class KeyboardView extends View {
     }
 
     /**
-     * Whether the page-switch key ({@code -15}, KeyboardCodesSet {@code key_symbols_page_switch})
-     * should show the symbol-page dot row instead of its own label - i.e. whether the element
-     * currently set is one of the symbol pages the key cycles through.
-     *
-     * <p>DEFECT 23. {@link #maxVkbSymbolPage} / {@link #maxPkbSymbolPage} carry two meanings at
-     * once, and this predicate used to conflate them. They are a DOT COUNT ({@code max - first + 1}),
-     * so {@link #setKeyboard} bumps them by one when the custom symbol page is enabled - but the
-     * custom page's element id is always symbolsCustom (8) / symbolsPkbCustom (108), never
-     * "last base page + 1". Those two only coincide for Chinese, which has three base symbol
-     * pages (5,6,7) so that the custom page really is 7+1; every other locale has two (5,6) and
-     * the custom page sits a gap away at 8. Using the bumped bound as an element-id RANGE is what
-     * produced both pinned failures:
-     * <ul>
-     *   <li>Chinese + custom pages: {@code maxPkbSymbolPage} is 108, so phonePkb (109) satisfied
-     *       {@code elementId == maxPkbSymbolPage + 1} and the phone keyboard drew a dot row.
-     *       (The VKB half of that clause carried a {@code !isChinese} guard; the PKB half did
-     *       not.) The active index then landed past the last dot, so no dot was painted active.
-     *   <li>Any other locale + custom pages: {@code maxVkbSymbolPage} is 7, so symbols2 (7) /
-     *       symbols2Pkb (107) fell INSIDE the range even though those elements are Chinese-only.
-     *       With custom-page-first they mapped to index 3 of 3 dots - again no active dot.
-     * </ul>
-     *
-     * <p>So strip the custom-page bump back off before using the bound as a range, and admit the
-     * custom page by its own element id. Both cases fall out; see {@code SymbolPageIndicatorTest}.
+     * Whether the page-switch key ({@code -15}) shows the symbol-page dot row: the current element
+     * is one of the pages it cycles. {@link #maxVkbSymbolPage} / {@link #maxPkbSymbolPage} are dot
+     * counts, bumped by one for the custom page, whose element id is always 8 / 108 (contiguous
+     * with the base pages only for Chinese, which has pages 5 to 7). So the bump is stripped before
+     * using the bound as a range, and the custom page is matched by id.
      */
     private boolean shouldDrawPageIndicator(Key key) {
         if (key.getCode() != -15) {
@@ -570,8 +516,6 @@ public class KeyboardView extends View {
         if (elementId >= 105 && elementId <= lastPkbBasePage) {
             return true;
         }
-        // The custom page is not contiguous with the base pages outside Chinese, so it is matched
-        // by id rather than by range.
         return (getIsCustomSymbolPageEnabled() && elementId == 8)
                 || (getIsPkbCustomSymbolPageEnabled() && elementId == 108);
     }
@@ -603,17 +547,8 @@ public class KeyboardView extends View {
     }
 
     /**
-     * Which dot is painted active, as an index into the dot row {@link #drawPageIndicator} lays
-     * out. Both families are a plain offset from their first symbol page - symbols0 (5) /
-     * symbols0Pkb (105) - then shifted by {@link #adjustPageIndexForCustomPage} to account for
-     * where the custom page sits in the cycle.
-     *
-     * <p>DEFECT 23. This used to take a second {@code basePageIndex} parameter and, on the PKB
-     * side, choose between {@code elementId - 105} and {@code elementId - basePageIndex} on
-     * {@code elementId >= basePageIndex}. Its only caller passed {@code elementId - 105}, so the
-     * condition read {@code elementId >= elementId - 105}: always true, second arm unreachable,
-     * and the parameter unused on the VKB side as well. Both are gone; every element still gets
-     * the value the live arm gave it.
+     * The active dot: offset from the family's first symbol page (5 / 105), shifted by
+     * {@link #adjustPageIndexForCustomPage} for where the custom page sits in the cycle.
      */
     private int getActivePageIndex(boolean isPkb) {
         int pageIndex = isPkb
@@ -626,19 +561,13 @@ public class KeyboardView extends View {
     }
 
     /**
-     * Shifts a dot index to account for where the custom page sits in the cycle. Called only when
-     * the caller's own family has custom pages enabled.
+     * Shifts a dot index for where the custom page sits in the cycle; called only when the
+     * caller's family has custom pages enabled.
      *
-     * <p>TRAP: every clause below tests {@code basePageIndex} against BOTH families' bounds, even
-     * though {@code basePageIndex} belongs to exactly one of them. That was harmless while
-     * {@link #maxVkbSymbolPage} and {@link #maxPkbSymbolPage} were bumped by the same preference;
-     * since DEFECT 24 gave each family its own preference the two bounds can differ, so the
-     * other family's bound is a live foreign value here. It stays benign only because the index
-     * it would wrongly match always corresponds to an element id that this family cannot reach in
-     * this locale - symbols2 (7) / symbols2Pkb (107) exist for Chinese only, and Chinese takes the
-     * {@code isRightToLeft} arm before the foreign bound is consulted. Do not widen the element
-     * range without collapsing this onto a single per-family bound; Wave 3's PKB/VKB collapse is
-     * where that belongs.
+     * <p>Trap: each clause tests {@code basePageIndex} against both families' bounds, which can
+     * differ (separate preferences). Benign only because the foreign match is an element id this
+     * family cannot reach here (7 / 107 are Chinese-only, and Chinese takes the
+     * {@code isRightToLeft} arm first). Do not widen the element range without a per-family bound.
      */
     private int adjustPageIndexForCustomPage(boolean isPkb, int basePageIndex, boolean customPageFirst) {
         boolean isRightToLeft = LocaleUtils.isChinese(this.keyboard.mId.mLocale);
@@ -651,19 +580,16 @@ public class KeyboardView extends View {
         return 0;
     }
 
-    /** KeyboardCodesSet "key_enter" — the enter/action key ('\n'). */
+    /** The enter/action key ('\n'). */
     private static final int CODE_ENTER = 10;
 
     /**
-     * Medium-weight (500) key labels where the platform supports typeface weights
-     * (P+), bold below that. Applied when the active {@link StyleSpec} sets
-     * mediumKeyTypeface; also used by KeyPreviewView and FlickSuggestionView so the
-     * preview bubble and on-key predictions match the key face.
+     * Weight-500 face (bold below API 28) for {@link StyleSpec} mediumKeyTypeface; also used by
+     * KeyPreviewView and FlickSuggestionView so previews match the key face.
      */
     public static Typeface mediumWeightTypeface(Typeface base) {
         Typeface resolved = base != null ? base : Typeface.DEFAULT;
-        // Memoised: this ran a synchronized Typeface.create per labelled key per frame. Only a
-        // handful of base faces ever reach it, and a Typeface is immutable.
+        // Memoised: it runs per labelled key per frame, and Typeface.create is synchronized.
         synchronized (MEDIUM_WEIGHT_TYPEFACES) {
             Typeface medium = MEDIUM_WEIGHT_TYPEFACES.get(resolved);
             if (medium == null) {
@@ -698,7 +624,7 @@ public class KeyboardView extends View {
                 : KeyboardColorManager.INSTANCE.getPressedStateLayer();
     }
 
-    /** The key-surface color for a key's backgroundType (shared by both render paths). */
+    /** The key-surface color for a key's backgroundType. */
     private static int keyBackgroundColorFor(Key key) {
         switch (key.backgroundType) {
             case 8: // slide (number pad)
@@ -732,71 +658,48 @@ public class KeyboardView extends View {
         int keyWidth = key.getDrawWidth();
         int keyHeight = key.getHeight();
 
-        // Get the appropriate background color based on key type
         int backgroundColor = keyBackgroundColorFor(key);
 
-        // backgroundType 0 ("empty") paints no key surface at all — the container's own
-        // background shows through. That is what lets the arrow bar match the flat
-        // suggestion strip it replaces (its container is painted backgroundColor by
-        // updateKeyboardBackground). Emoji recents also use "empty"; their viewPager is
-        // painted keyColor, which is exactly what they were being filled with before, so
-        // they are unaffected.
+        // backgroundType 0 ("empty") paints no surface, so the container shows through (the arrow
+        // bar then matches the flat suggestion strip it replaces).
         if (key.backgroundType != 0) {
-            // Draw base background programmatically
             this.backgroundPaint.setColor(backgroundColor);
 
-            // Draw rectangle for all keys (no rounded corners)
             canvas.drawRect(0, 0, keyWidth, keyHeight, this.backgroundPaint);
         }
 
-        // Draw pressed state overlay if key is pressed
         if (isKeyDrawnPressed(key)) {
             this.backgroundPaint.setColor(keyPressedColorFor(key));
 
-            // Draw pressed overlay
             canvas.drawRect(0, 0, keyWidth, keyHeight, this.backgroundPaint);
         }
 
-        // Draw vertical divider lines on left and right edges of normal keys and emoji keys
-        // backgroundType: 1=normal, 2=functional, 3=stickyOff, 4=stickyOn, 5=action, 6=spacebar, 0=default (emoji)
-        if (key.backgroundType == 1 || key.backgroundType == 0 || isSlideKey(key)) { // normal, emoji, slide
+        // Hairline dividers on the left and right edges of normal, empty (emoji) and slide keys.
+        if (key.backgroundType == 1 || key.backgroundType == 0 || isSlideKey(key)) {
             final float density = this.density;
             final Paint dividerPaint = this.dividerPaint;
             dividerPaint.setColor(isSlideKey(key)
                     ? KeyboardColorManager.INSTANCE.getSlideSeparatorColor()
                     : KeyboardColorManager.INSTANCE.getBackgroundColor());
-            float dividerWidth = 0.5f * density; // 0.5dp
-            float topPadding = keyHeight * 0.08f; // 8% padding top
-            float bottomPadding = keyHeight * 0.05f; // 5% padding bottom
-            // Left edge divider
+            float dividerWidth = 0.5f * density;
+            float topPadding = keyHeight * 0.08f;
+            float bottomPadding = keyHeight * 0.05f;
             canvas.drawRect(0, topPadding, dividerWidth, keyHeight - bottomPadding, dividerPaint);
-            // Right edge divider
             canvas.drawRect(keyWidth - dividerWidth, topPadding, keyWidth, keyHeight - bottomPadding, dividerPaint);
         }
     }
 
     /**
-     * Whether the cap painters draw caps for backgroundType 0 ("empty") keys.
-     * Default false (empty keys stay surfaceless — aux bars, arrow bar); the emoji
-     * pages override to true so each emoji floats on its own cap.
+     * Whether the cap painters draw caps for backgroundType 0 ("empty") keys. False keeps aux bars
+     * and the arrow bar surfaceless; emoji pages say true so each emoji floats on its own cap.
      */
     protected boolean capPainterDrawsEmptyKeys() {
         return false;
     }
 
     /**
-     * Inset-cap key rendering (introduced as K1-K4 of the 2026-08 UI audit): floating
-     * rounded caps with gaps instead of full-bleed rects with hairline dividers, a
-     * translucent state layer instead of the opaque pressed fill, and — when the spec
-     * sets accentEnterKey — the enter/action key as an accent-filled pill. Geometry
-     * comes from the spec. backgroundType 0 ("empty") paints no key surface (unless
-     * [capPainterDrawsEmptyKeys]), but a pressed empty key still gets the state
-     * layer so presses stay visible.
-     */
-    /**
-     * The visible cap rectangle of {@code key} in key-local coordinates, filled into the shared
-     * {@link #capRect}. Single derivation for both cap painters (and the geometry the fret
-     * placement and the corner-hint padding re-derive from the same spec insets).
+     * Fills {@link #capRect} with the visible cap of {@code key} in key-local coordinates, for both
+     * cap painters (fret placement and corner-hint padding use the same spec insets).
      *
      * @return false when the cap is degenerate and nothing should be drawn
      */
@@ -807,6 +710,10 @@ public class KeyboardView extends View {
         return !this.capRect.isEmpty();
     }
 
+    /**
+     * Rounded inset caps with a translucent pressed state layer; the enter key becomes an accent
+     * pill when the spec sets accentEnterKey. A pressed empty key still gets the state layer.
+     */
     private void drawCapKeyBackground(Key key, Canvas canvas, StyleSpec spec) {
         if (!fillCapRect(key, spec)) {
             return;
@@ -827,21 +734,12 @@ public class KeyboardView extends View {
         }
     }
 
-    /**
-     * Whether this view draws the style's fret bars ([StyleSpec.fretHeightDp]).
-     * Default false; the main board opts in. Popups, aux bars, and emoji pages
-     * stay fretless — a fret across a one-row popup or a flat aux surface reads
-     * as clutter, not structure.
-     */
+    /** Whether this view draws the style's fret bars; only the main board opts in. */
     protected boolean drawsFrets() {
         return false;
     }
 
-    /**
-     * Fret finish, relative to the palette's fret color: crisp ~1dp specular rims
-     * on the top and bottom edges over a light-to-dark body gradient — the 3D
-     * metal-bar look.
-     */
+    /** Fret finish relative to the fret color: ~1dp rims over a light-to-dark body gradient. */
     private static final float FRET_RIM_TOP_LIGHTEN = 0.55f;
     private static final float FRET_RIM_BOTTOM_LIGHTEN = 0.40f;
     private static final float FRET_BODY_TOP_LIGHTEN = 0.30f;
@@ -849,16 +747,12 @@ public class KeyboardView extends View {
     private static final float FRET_RIM_DP = 1f;
 
     /**
-     * Fret fill paints keyed by (color, height) — the top fret can be shorter than
-     * the interior ones, so a single slot would thrash. Shaders live in fret-local
-     * coordinates. Cleared on palette change.
+     * Fret fill paints keyed by (color, height), since fret heights can differ. Shaders are in
+     * fret-local coordinates. Cleared on palette change.
      */
     private final android.util.LongSparseArray<Paint> fretFillCache = new android.util.LongSparseArray<>();
 
-    /**
-     * (color, size) cache key. The size half is the raw float bits, not a truncating cast: two
-     * heights that differ only fractionally must not share a gradient built for the other span.
-     */
+    /** (color, size) cache key; raw float bits so fractionally different heights do not collide. */
     private static long paintCacheKey(int base, float sizePx) {
         return (((long) base) << 32) | (Float.floatToIntBits(sizePx) & 0xFFFFFFFFL);
     }
@@ -890,23 +784,15 @@ public class KeyboardView extends View {
     }
 
     /**
-     * BB10 frets: full-width horizontal metal bars between key rows, plus one
-     * hugging the board's top edge. Each interior fret is centered in the VISIBLE
-     * band between the cap above and the cap below (computed from the actual key
-     * rects plus the symmetric cap insets — NOT from mVerticalGap, whose size the
-     * fret can exceed), and its height is clamped so a dark seam always survives
-     * on both sides: caps can never overlap a fret. The top fret anchors its
-     * bottom edge one seam above the first row's caps and clips at the view top.
-     * Drawn after the background and before the keys; the shader lives in
-     * fret-local coordinates (canvas translated per bar) so one paint serves all.
+     * BB10 frets: full-width bars between key rows plus one at the top edge, placed from the
+     * visible cap bands (key rects plus cap insets, not mVerticalGap) so a seam always survives
+     * and caps never overlap a fret. Drawn after the background, before the keys.
      */
     private void drawFrets(Canvas canvas) {
         StyleSpec spec = KeyboardColorManager.styleSpec();
         final float density = this.density;
         float fretH = spec.getFretHeightDp() * density;
         float insetV = spec.getKeyInsetVDp() * density;
-        // Row extents are fixed for the life of the Keyboard; they are computed once per
-        // keyboard in rebuildPerKeyDrawState instead of rebuilt on every draw pass.
         final int[] rowTops = this.rowTops;
         final int[] rowBottoms = this.rowBottoms;
         if (rowTops.length == 0) {
@@ -916,12 +802,9 @@ public class KeyboardView extends View {
         int paddingTop = getPaddingTop();
         float minSeam = 0.5f * density;
 
-        // Uniform placement: every fret — top and interior alike — is FULL height
-        // and bottom-anchored the same seam S above the caps of the row below it,
-        // with whatever slack remains sitting above the bar. S is the symmetric
-        // interior seam, capped by what the top fret can achieve without clipping
-        // at the view top (bottom-anchoring to a seam the top fret can't reach
-        // would leave it visibly lower than the rest — the mismatch this fixes).
+        // Every fret is full height and bottom-anchored the same seam above the caps below it.
+        // The seam is the symmetric interior one, capped by what the top fret can reach without
+        // clipping, so the top fret does not sit visibly lower than the rest.
         float firstCapTop = rowTops[0] + paddingTop + insetV;
         float seam = firstCapTop - fretH;
         if (rowTops.length > 1) {
@@ -938,8 +821,7 @@ public class KeyboardView extends View {
             float capBottomAbove = rowBottoms[row - 1] + paddingTop - insetV;
             float capTopBelow = rowTops[row] + paddingTop + insetV;
             float top = capTopBelow - seam - fretH;
-            // Degenerate bands only: keep full height, never overlap the caps
-            // above; the below-seam absorbs the shortfall.
+            // Degenerate bands: never overlap the caps above; the seam below absorbs the shortfall.
             top = Math.max(top, capBottomAbove + minSeam);
             drawFretBar(canvas, width, top, fretH);
         }
@@ -959,12 +841,7 @@ public class KeyboardView extends View {
     private static final int SCULPT_HIGHLIGHT_ALPHA = 165;
     private static final float SCULPT_BORDER_DARKEN = 0.18f;
 
-    /**
-     * Sculpted cap fill paints, keyed by (base color, cap height). The gradient
-     * shader is what makes a per-key-per-frame Paint too expensive on the
-     * software/bitmap render path, and caps only vary by key color and row height,
-     * so the cache stays tiny. Cleared on palette change.
-     */
+    /** Sculpted cap fill paints keyed by (base color, cap height). Cleared on palette change. */
     private final android.util.LongSparseArray<Paint> sculptedFillCache = new android.util.LongSparseArray<>();
 
     private Paint sculptedFillPaint(int base, RectF cap) {
@@ -984,13 +861,9 @@ public class KeyboardView extends View {
     }
 
     /**
-     * BB10-style sculpted caps: the same inset-cap geometry as
-     * [drawCapKeyBackground], finished with a top-lit vertical gradient and a thin
-     * top inner highlight — both derived from the key's base color, so functional
-     * keys (keyAlt) and the pressed state sculpt consistently. No border stroke:
-     * key separation is the board background showing through the gaps, as on the
-     * original. Pressed keys re-derive from keyPressed (the BB10 opaque blue
-     * press) instead of overlaying a translucent state layer.
+     * BB10 sculpted caps: the {@link #drawCapKeyBackground} geometry with a top-lit gradient and a
+     * top inner highlight, both derived from the base color. Pressed keys re-derive from
+     * keyPressed (opaque) instead of a state layer. No border: the gaps separate keys.
      */
     private void drawSculptedKeyBackground(Key key, Canvas canvas, StyleSpec spec) {
         if (!fillCapRect(key, spec)) {
@@ -1013,12 +886,11 @@ public class KeyboardView extends View {
                 : keyBackgroundColorFor(key);
         canvas.drawRoundRect(cap, radius, radius, sculptedFillPaint(base, cap));
 
-        float strokeWidth = density; // 1dp
+        float strokeWidth = density;
         final Paint stroke = this.capStrokePaint;
         stroke.setStrokeWidth(strokeWidth);
 
-        // Top inner highlight: the cap outline hugging the cap edge, clipped to the
-        // top so only the lit rim (and its corners) shows.
+        // Top inner highlight: the cap outline clipped to the top, so only the lit rim shows.
         final RectF highlightRect = this.capHighlightRect;
         highlightRect.set(cap);
         highlightRect.inset(strokeWidth / 2f, strokeWidth / 2f);
@@ -1038,9 +910,8 @@ public class KeyboardView extends View {
     }
 
     /**
-     * @param suppressLabel do not paint the key's label or its icon - something has already been
-     *     painted over the key face (MainKeyboardView paints the autocorrect word on the
-     *     spacebar). Named for that role: it is NOT "this is a key preview".
+     * @param suppressLabel do not paint the label or icon: something else is painted over the face
+     *     (the autocorrect word on the spacebar). Not "this is a key preview".
      */
     protected void drawKeyContent(Key key, Canvas canvas, Paint paint, KeyDrawParams formatter, boolean suppressLabel) {
         String label;
@@ -1162,25 +1033,21 @@ public class KeyboardView extends View {
         if (label == null && iconDrawable != null) {
             if (key.getCode() == 32) {
                 if (iconDrawable instanceof NinePatchDrawable) {
-                    // NinePatch drawables stretch to fill - use 90% of key width
                     iconWidth = (int) (keyWidthFloat * this.spacebarIconWidth);
                 } else {
-                    // For vector/layer-list drawables, use 35% of key width
                     iconWidth = (int) (keyWidthFloat * 0.35f);
                 }
             } else {
                 iconWidth = Math.min(iconDrawable.getIntrinsicWidth(), keyWidth);
             }
             int intrinsicHeight = iconDrawable.getIntrinsicHeight();
-            // For spacebar, use 6dp height; otherwise use intrinsic height
             int iconHeight;
             if (key.getCode() == 32) {
-                iconHeight = (int) (6 * this.density); // 6dp
+                iconHeight = (int) (6 * this.density);
             } else {
                 iconHeight = intrinsicHeight;
             }
             int iconY = key.isAlignIconToBottom() ? keyHeight - iconHeight : (keyHeight - iconHeight) / 2;
-            // Offset spacebar icon 6dp lower
             if (key.getCode() == 32) {
                 iconY += (int) (8 * this.density);
             }
@@ -1188,8 +1055,6 @@ public class KeyboardView extends View {
             if (!suppressLabel && !shouldSkipSpacebarIcon(key)) {
                 drawDrawable(canvas, iconDrawable, iconX, iconY, iconWidth, iconHeight);
             }
-            
-            // Shift indicator bar is drawn by MainKeyboardView using actual shift state flag
         }
         if (key.hasLongPressKey()) {
             drawPopupHint(key, canvas, paint, formatter);
@@ -1201,19 +1066,16 @@ public class KeyboardView extends View {
     }
 
     /**
-     * Cap-styled spacebars are plain — the legacy bar icon reads as clutter between
-     * rounded caps (Gboard draws none). A normal-width space key that needs the glyph
-     * to be recognizable as space (the number pad's utility column) overrides this.
+     * Cap-styled spacebars are plain. A normal-width space key that needs the glyph to read as
+     * space (the number pad's utility column) overrides this.
      */
     protected boolean shouldSkipSpacebarIcon(Key key) {
         return key.getCode() == 32 && !KeyboardColorManager.styleSpec().getDrawSpacebarIcon();
     }
 
     /**
-     * Whether a hint icon on an icon key is anchored to the key's main icon as a badge instead of
-     * the key's corner. The aux bar's wide icon keys say yes (their cell corner floats far from
-     * the perceived button); the typing keyboard's keys say no, so the mic on the quick-switch
-     * globe, the globe on the space bar and the comma on the period key all sit in the corner.
+     * Whether a hint icon anchors to the key's main icon as a badge instead of the corner. The aux
+     * bar's wide icon keys say yes; typing keys keep corner hints.
      */
     protected boolean anchorsHintToMainIcon() {
         return false;
@@ -1221,8 +1083,7 @@ public class KeyboardView extends View {
 
     protected void applyIconTint(Key key, Drawable iconDrawable) {
         if (KeyboardColorManager.styleSpec().getAccentEnterKey() && key.getCode() == CODE_ENTER) {
-            // Icon on the accent-filled action key (K4): keyboard background color
-            // for contrast against the accent, matching the M3 action-key idiom.
+            // Background color for contrast on the accent-filled action key.
             KeyboardColorManager.INSTANCE.tint(
                     iconDrawable, KeyboardColorManager.INSTANCE.getBackgroundColor());
             return;
@@ -1237,11 +1098,11 @@ public class KeyboardView extends View {
         accessibilityNodeInfo.getExtras().putBoolean("bbry.inputmethod.MappedMode", this.mappedMode);
     }
 
+    /** @param str the hint label, or null to draw {@code drawable} */
     protected void drawHintLabelOrIcon(Key key, String str, Drawable drawable, KeyHintPosition mode, Canvas canvas, Paint paint, KeyDrawParams source) {
         float hintX;
         float hintY;
         if (str == null && drawable == null) {
-            // Skip rendering keys with no label or icon (can happen with legacy theme references)
             if (BuildConfig.DEBUG) Log.w("KeyboardView", "Skipping key render: no label or icon (possible legacy theme reference)");
             return;
         }
@@ -1259,8 +1120,7 @@ public class KeyboardView extends View {
                 paint.setTextAlign(Paint.Align.LEFT);
                 paint.getTextBounds(str, 0, str.length(), rect);
             } else if (hasIcon) {
-                // Every hint icon at the one hint size, so the globe on the space bar (the
-                // language key's 24dp icon) sits like the 16dp mic on the comma key.
+                // Every hint icon at the one hint size, whatever its intrinsic size.
                 int hintSize = this.hintIconSize;
                 int iconW = drawable.getIntrinsicWidth();
                 int iconH = drawable.getIntrinsicHeight();
@@ -1271,19 +1131,13 @@ public class KeyboardView extends View {
                 }
                 rect.set(0, 0, iconW, iconH);
             }
-            // Corner hints are positioned from the key bounds; on cap styles the
-            // visible cap is inset from those bounds, so pad by the cap insets (0 for
-            // full-bleed styles) to keep the hint inside the cap instead of on (or
-            // past) its edge.
+            // Pad corner hints by the cap insets (0 when flat) to keep them inside the cap.
             StyleSpec spec = KeyboardColorManager.styleSpec();
             boolean insetCaps = spec.getKeyCap() != KeyCap.FLAT;
             final float density = this.density;
             float capInsetH = spec.getKeyInsetHDp() * density;
             float capInsetV = spec.getKeyInsetVDp() * density;
-            // Cap styles: an icon hint on an icon-content key (e.g. the settings gear
-            // on the UIM show-keyboard key) anchors to the key's main icon as a badge.
-            // On wide icon-row keys the cell corner floats far outside the perceived
-            // button. Clamped so partial redraws (which clip to key bounds) keep it.
+            // Badge anchoring; clamped so partial redraws (clipped to key bounds) keep it.
             if (insetCaps && hasIcon && mode == KeyHintPosition.TOP_RIGHT_CORNER && anchorsHintToMainIcon()) {
                 Drawable mainIcon = key.getIcon(this.keyboard.mIconsSet, 255);
                 if (mainIcon != null && mainIcon.getIntrinsicWidth() > 0) {
@@ -1340,10 +1194,12 @@ public class KeyboardView extends View {
         }
     }
 
+    /** @param c1061t the key's draw params */
     protected void drawPopupHint(Key key, Canvas canvas, Paint paint, KeyDrawParams c1061t) {
         drawHintLabelOrIcon(key, key.getLongPressLabel(), key.getIcon(this.keyboard.mIconsSet), key.getLongPressKeyHintPosition(), canvas, paint, c1061t);
     }
 
+    /** @param c1061t the key's draw params */
     protected void drawPopupHintLetter(Key key, Canvas canvas, Paint paint, KeyDrawParams c1061t) {
         if (TextUtils.isEmpty(this.popupHintLetter)) {
             return;
@@ -1389,9 +1245,8 @@ public class KeyboardView extends View {
     }
 
     /**
-     * Repaints a key whose per-tap state changed ({@link #hasPerTapContent}: pressed, or a
-     * subclass's per-tap content) and nothing else about it. With key layers in the display list
-     * only that key's layer is re-recorded; otherwise this is {@link #invalidateKey}.
+     * Repaints a key whose per-tap state ({@link #hasPerTapContent}) changed: only its layer when
+     * key layers are in the display list, otherwise {@link #invalidateKey}.
      */
     protected void invalidateKeyState(Key key) {
         if (key == null) {
@@ -1406,8 +1261,7 @@ public class KeyboardView extends View {
             return;
         }
         if (!this.keyboardKeys.contains(key)) {
-            // Not this keyboard's key (PointerTracker routes input-board keys through the main
-            // view); a full redraw would not have drawn it either.
+            // Not this keyboard's key (PointerTracker routes input-board keys through the main view).
             return;
         }
         if (!updateKeyLayer(key)) {
@@ -1419,19 +1273,14 @@ public class KeyboardView extends View {
     }
 
     /**
-     * Gets the changed key layers onto the screen. A frame picks up a re-recorded RenderNode
-     * wherever it sits in the tree, so all that is needed is a frame that does not re-record (and
-     * so damage) this whole view. This default does re-record it; MainKeyboardView asks its
-     * preview placer for a damage-free frame instead.
+     * Gets changed key layers on screen: any frame that does not re-record this view will do.
+     * This default does re-record; MainKeyboardView requests a damage-free frame instead.
      */
     protected void requestKeyLayerFrame() {
         invalidate();
     }
 
-    /**
-     * Whether {@code key} currently shows something the at-rest keyboard does not: its pressed
-     * state, by default. Such keys are drawn in their own layer. Subclasses add per-tap content.
-     */
+    /** Whether {@code key} shows something the at-rest keyboard does not (pressed, by default). */
     protected boolean hasPerTapContent(Key key) {
         return key.isPressed() && !suppressesPressedState();
     }
@@ -1460,8 +1309,7 @@ public class KeyboardView extends View {
         if (!usesKeyLayers() || this.keyboard == null) {
             return false;
         }
-        // A layer repaints the background under its key; over a translucent background that
-        // would double it, so the layers need an opaque one.
+        // A layer repaints the background under its key, which would double a translucent one.
         Drawable background = getBackground();
         return background != null && background.getOpacity() == PixelFormat.OPAQUE;
     }
@@ -1490,8 +1338,7 @@ public class KeyboardView extends View {
             layers = new KeyLayers();
             this.keyLayers = layers;
         }
-        // Bring every layer up to date: the palette or the keyboard may have changed, and keys
-        // may have been pressed or released while this view was waiting for this re-record.
+        // Bring every layer up to date: palette, keyboard or pressed keys may have changed.
         layers.beginSync();
         for (Key key : this.keyboard.getKeys()) {
             if (hasPerTapContent(key)) {
@@ -1546,10 +1393,7 @@ public class KeyboardView extends View {
         }
     }
 
-    /**
-     * Software rendering of what the layered hardware path composites: the at-rest keyboard, then
-     * each key with per-tap content repainted in its own region. For the pixel-identity tests.
-     */
+    /** Software rendering of what the layered hardware path composites, for pixel-identity tests. */
     @VisibleForTesting
     void drawLayeredForTest(Canvas canvas) {
         invalidateAllKeys();
@@ -1566,7 +1410,7 @@ public class KeyboardView extends View {
         }
     }
 
-    /** The software full redraw (background, frets, every key as it is now). For the same tests. */
+    /** The software full redraw, for the same tests. */
     @VisibleForTesting
     void drawFullForTest(Canvas canvas) {
         invalidateAllKeys();
@@ -1574,8 +1418,8 @@ public class KeyboardView extends View {
     }
 
     /**
-     * The per-key RenderNodes and the key each one shows (null when free). Every RenderNode call
-     * lives in here, so the view's own methods verify on releases before API 29.
+     * The per-key RenderNodes and the key each shows (null when free). All RenderNode calls live
+     * here so the view's own methods verify before API 29.
      */
     @RequiresApi(Build.VERSION_CODES.Q)
     private static final class KeyLayers {
@@ -1668,8 +1512,7 @@ public class KeyboardView extends View {
 
         void release(int index) {
             this.keys.set(index, null);
-            // Dropping the content damages the layer's last rectangle, which uncovers the
-            // at-rest key underneath.
+            // Dropping the content damages the layer's rectangle, uncovering the at-rest key.
             this.nodes.get(index).discardDisplayList();
         }
 
@@ -1685,51 +1528,25 @@ public class KeyboardView extends View {
     @Override // android.view.View
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
-        // Register for color change notifications
         KeyboardColorManager.INSTANCE.addObserver(colorObserver);
     }
 
     @Override // android.view.View
     protected void onDetachedFromWindow() {
-        // Unregister from color change notifications
         KeyboardColorManager.INSTANCE.removeObserver(colorObserver);
         super.onDetachedFromWindow();
         releaseBitmap();
         releaseKeyLayers();
     }
 
-    // ---------------------------------------------------------------------------------------
-    // Custom-symbol-page preferences. THE TWO FAMILIES READ DIFFERENT KEYS, ON PURPOSE.
-    //
-    // The on-screen keyboard and the physical keyboard each have their own custom-symbol-page
-    // setting, stored under its own pair of preference keys:
-    //     VKB: "enable_symbol_customization_vkb" / "vkb_custom_page_first"
-    //     PKB: "enable_symbol_customization_pkb" / "pkb_custom_page_first"
-    // The getIsPkb* pair below is therefore NOT a redundant copy of its non-Pkb twin. Where each
-    // key is written and read:
-    //   - SymbolCustomizationScreen writes them, and on a device WITH a physical keyboard it
-    //     writes ONLY the "_pkb" pair; the "_vkb" keys are never written on such a device.
-    //   - KeyboardSwitcher.isPkbSymbolCustomizationEnabled() / isPkbCustomPageFirst() and
-    //     KeyboardSwitcher.setPkbSymbolsKeyboard() read the "_pkb" keys, and KeyboardState sizes
-    //     and orders the PKB symbol-page cycle from them.
-    //
-    // DEFECT 24. Until Wave 2.5 the getIsPkb* pair read the "_vkb" keys - aliases of their twins.
-    // On a KEY2 that meant this view's dot row was derived from a preference nothing on the device
-    // ever wrote, so it disagreed with the very page cycle it annotates: with the custom symbol
-    // page enabled, KeyboardState cycles three PKB pages (105, 106, 108) while the dot row drew
-    // two dots and symbolsPkbCustom (108) drew no indicator at all. Aligning the accessors on the
-    // "_pkb" keys was chosen over the alternative - retiring the "_pkb" setting in favour of one
-    // shared preference - because the "_pkb" keys are live on-disk settings on every physical-
-    // keyboard device, and dropping them would silently discard what users have already toggled.
-    // Pinned by SymbolPageIndicatorTest, which asserts each accessor reads its OWN family's key
-    // and is not moved by the other family's; that is what stops the alias coming back.
-    // ---------------------------------------------------------------------------------------
+    // Custom symbol page preferences: each family reads its own keys, on purpose. The getIsPkb*
+    // pair is not a copy of its twin: on a device with a physical keyboard only the "_pkb" keys
+    // are written, and KeyboardState sizes the PKB page cycle from them (SymbolPageIndicatorTest).
 
     protected boolean getIsCustomSymbolPageEnabled() {
         return this.sharedPreferences.getBoolean("enable_symbol_customization_vkb", false);
     }
 
-    /** The physical keyboard's own setting - see the block comment above. Not an alias. */
     protected boolean getIsPkbCustomSymbolPageEnabled() {
         return this.sharedPreferences.getBoolean("enable_symbol_customization_pkb", false);
     }
@@ -1738,7 +1555,6 @@ public class KeyboardView extends View {
         return this.sharedPreferences.getBoolean("vkb_custom_page_first", false);
     }
 
-    /** The physical keyboard's own setting - see the block comment above. Not an alias. */
     protected boolean getIsPkbCustomSymbolPageFirst() {
         return this.sharedPreferences.getBoolean("pkb_custom_page_first", false);
     }

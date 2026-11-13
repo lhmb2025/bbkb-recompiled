@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Material split of ic_inputboard_fcc_control: the two concentric ring strokes,
-     white so a plain SRC_IN tint colors them independently of the disc. -->
+<!-- Rings of ic_inputboard_fcc_control, white so they take a tint separate from the disc -->
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
     android:width="62dp"
     android:height="62dp"

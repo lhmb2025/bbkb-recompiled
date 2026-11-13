@@ -8,12 +8,7 @@ import java.io.FileOutputStream
 import java.io.IOException
 import java.nio.charset.Charset
 
-/**
- * File I/O utilities for the Personal Dictionary subsystem.
- *
- * Provides safe file read/write operations; writes go through [AtomicFile] (synced, then renamed
- * into place) for persistence.
- */
+/** Personal dictionary file I/O; writes go through [AtomicFile]. */
 object FileUtils {
     @Throws(IOException::class)
     fun readAndroidAssetToString(context: Context, path: String): String {
@@ -39,10 +34,8 @@ object FileUtils {
     }
 
     /**
-     * Replaces [directory]/[filename] with [content] through [AtomicFile]: the text goes to
-     * `<filename>.new`, is synced to disk and is then renamed over the file, so a reader (and the
-     * next load) sees the whole old file or the whole new one, even after a crash or a power cut.
-     * The `.new` file gets the process's default mode, which for an app process is owner-only.
+     * Replaces [directory]/[filename] with [content] atomically (`.new`, synced, renamed), so a
+     * reader sees the whole old file or the whole new one even after a crash.
      */
     @Throws(Exception::class, IOException::class)
     fun writeStringToFile(filename: String, content: String, directory: File) {

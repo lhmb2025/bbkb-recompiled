@@ -31,12 +31,7 @@ import java.util.Locale;
 import java.util.concurrent.locks.ReentrantLock;
 import dev.bbkb.ime.BuildConfig;
 
-/**
- * Singleton manager for keyboard settings and preferences.
- * Loads and caches SettingsValues, manages SharedPreferences listeners,
- * and provides static utility methods for accessing individual settings.
- * Thread-safe using ReentrantLock for concurrent access.
- */
+/** Loads and caches {@link SettingsValues}, listens for preference changes, and reads single settings. */
 
 
 
@@ -44,7 +39,7 @@ public final class SettingsManager implements SharedPreferences.OnSharedPreferen
 
     private static final String TAG = "SettingsManager";
 
-    @android.annotation.SuppressLint("StaticFieldLeak") // Uses applicationContext (lines 113, 167), safe for static
+    @android.annotation.SuppressLint("StaticFieldLeak") // Holds only the application context
     private static final SettingsManager instance;
 
     private static final String DEFAULT_INT_VALUE_STRING;
@@ -57,7 +52,6 @@ public final class SettingsManager implements SharedPreferences.OnSharedPreferen
 
     private SettingsValues settingsValues;
 
-    /* Device profile for centralized device capability detection */
     private DeviceProfile deviceProfile;
 
     private ArrayList<OnSettingsChangeListener> listeners;
@@ -65,40 +59,34 @@ public final class SettingsManager implements SharedPreferences.OnSharedPreferen
     private final ReentrantLock lock = new ReentrantLock();
 
     /**
-     * A preference changed since {@link #settingsValues} was built. Restore and reset write many
-     * keys in one apply(), and the framework then calls the listener once per changed key, back
-     * to back on the main thread; each call used to rebuild the whole settings object (about 150
-     * preference reads and a PackageManager query). Now a change only marks it stale, one
-     * rebuild is posted for the burst, and a main-thread read before that rebuild runs builds it
-     * on the spot, so code that writes a preference and reads the settings straight after still
-     * sees its write (P-22).
+     * A preference changed since {@link #settingsValues} was built. A burst of changes (restore,
+     * reset) posts one rebuild; a main-thread read before it runs rebuilds on the spot, so a
+     * write followed by a read still sees the write.
      */
     private volatile boolean rebuildPending;
 
     private Handler mainHandler;
 
     /**
-     * What {@link #settingsValues}' stored and resource-derived fields were built for: the
-     * keyboard locale and the application's configuration. A load for the same pair, with no
-     * preference change since, reuses them and only redoes the per-editor fields.
+     * The locale and configuration {@link #settingsValues} was built for; a load for the same pair
+     * with no preference change only redoes the per-editor fields.
      */
     private Locale snapshotLocale;
 
     private Configuration snapshotConfiguration;
 
-    /**
-     * The change listener is registered, so {@link #rebuildPending} reports every write. Without
-     * it a write cannot be seen, and every load reads the preferences again.
-     */
+    /** The change listener is registered; without it every load re-reads the preferences. */
     private volatile boolean listeningForChanges;
 
     private final Runnable coalescedRebuild = this::runCoalescedRebuild;
 
     
     public interface OnSettingsChangeListener {
+        /** @param c0804d the rebuilt settings */
         void onSettingsValuesChanged(SettingsValues c0804d);
     }
 
+    /** @param i a resource id */
     public static boolean isResourceNonZero(int i, Resources resources) {
         return i != 0;
     }
@@ -121,7 +109,6 @@ public final class SettingsManager implements SharedPreferences.OnSharedPreferen
 
     private void initializeInternal(Context context) {
         final long token = StartupTiming.begin();
-        // Use applicationContext to prevent memory leaks in static singleton
         this.context = context.getApplicationContext();
         this.resources = context.getResources();
         this.listeners = new ArrayList<>();
@@ -130,19 +117,13 @@ public final class SettingsManager implements SharedPreferences.OnSharedPreferen
         this.listeningForChanges = true;
         // A new preferences instance: nothing built from the old one is reused.
         this.snapshotConfiguration = null;
-        // First-load: contains() blocks until the prefs file finishes its async load,
-        // and this runs first thing in onCreate — do the migration (and the blocking
-        // wait behind it) off the main thread. The removed keys are legacy-only, so
-        // nothing on the critical path observes them.
+        // contains() blocks until the prefs file loads and this runs first in onCreate, so migrate
+        // off the main thread; nothing on the critical path reads the legacy keys.
         new Thread(this::migrateLegacyPreferences, "PrefsMigrate").start();
         StartupTiming.end("settings.initializeInternal", token);
     }
 
-    /**
-     * Whether settings built for {@code builtLocale} under {@code builtConfiguration} still hold
-     * for {@code locale} under {@code configuration}. Any configuration difference counts: the
-     * resource defaults, the orientation and the hardware-keyboard state come from it.
-     */
+    /** Whether settings built for the first locale/configuration still hold for the second; any configuration diff counts. */
     static boolean isSnapshotFor(Locale builtLocale, Configuration builtConfiguration,
             Locale locale, Configuration configuration) {
         return builtConfiguration != null
@@ -155,21 +136,11 @@ public final class SettingsManager implements SharedPreferences.OnSharedPreferen
         this.sharedPreferences.unregisterOnSharedPreferenceChangeListener(this);
     }
 
-    /**
-     * Keys written during normal typing that no {@link SettingsValues} field reads. Rebuilding
-     * the whole settings object for them (~150 preference reads, a new SpacingAndPunctuation, a
-     * RunInLocale configuration swap, a DeviceProfile rebuild, plus a notification to every
-     * listener) happened on the main thread on every emoji insertion and every emoji category
-     * swipe.
-     */
+    /** Keys written during typing that no {@link SettingsValues} field reads, so they skip the rebuild. */
     private static final java.util.Set<String> KEYS_NOT_IN_SETTINGS_VALUES =
             new java.util.HashSet<>(Arrays.asList("emoji_recent_keys", "last_shown_emoji_category_id", "emoji_tone_memory"));
 
-    /**
-     * Key families no {@link SettingsValues} field reads, checked by where the keys are read:
-     * the update checker's state (only UpdateChecker, UpdateJobService, the Updates screen and the
-     * settings backup touch it), which the daily check rewrites in the background.
-     */
+    /** Key prefixes no {@link SettingsValues} field reads: the update checker's background state. */
     private static final String[] KEY_PREFIXES_NOT_IN_SETTINGS_VALUES = {"pref_update_"};
 
     static boolean isReadBySettingsValues(String key) {
@@ -187,7 +158,8 @@ public final class SettingsManager implements SharedPreferences.OnSharedPreferen
         return true;
     }
 
-    @Override // android.content.SharedPreferences.OnSharedPreferenceChangeListener
+    /** @param str the changed key, null after clear() */
+    @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String str) {
         if (!isReadBySettingsValues(str) || this.settingsValues == null) {
             return;
@@ -222,11 +194,7 @@ public final class SettingsManager implements SharedPreferences.OnSharedPreferen
         }
     }
 
-    /**
-     * Rebuilds the settings now if a preference changed since the last build. Reads on the main
-     * thread do this themselves; a reader on another thread that must see a write it just made
-     * can call it.
-     */
+    /** Rebuilds now if a preference changed; for off-main readers that must see their own write. */
     public void reload() {
         if (!this.rebuildPending) {
             return;
@@ -248,6 +216,7 @@ public final class SettingsManager implements SharedPreferences.OnSharedPreferen
         }
     }
 
+    /** @param aVar the listener to add */
     public void addOnSettingsChangeListener(OnSettingsChangeListener aVar) {
         this.lock.lock();
         try {
@@ -257,6 +226,7 @@ public final class SettingsManager implements SharedPreferences.OnSharedPreferen
         }
     }
 
+    /** @param aVar the listener to remove */
     public void removeOnSettingsChangeListener(OnSettingsChangeListener aVar) {
         this.lock.lock();
         try {
@@ -266,10 +236,10 @@ public final class SettingsManager implements SharedPreferences.OnSharedPreferen
         }
     }
 
+    /** @param c0696l the focused editor's capabilities */
     public void loadSettings(final Context context, Locale locale, final EditorCapabilities c0696l) {
         final long token = StartupTiming.begin();
         this.lock.lock();
-        // Use applicationContext to prevent memory leaks in static singleton
         this.context = context.getApplicationContext();
         try {
             // Cleared before the build, so a write made while building marks it stale again.
@@ -280,10 +250,7 @@ public final class SettingsManager implements SharedPreferences.OnSharedPreferen
             final SettingsValues previous = this.settingsValues;
             if (previous != null && !preferencesChanged && this.listeningForChanges
                     && isSnapshotFor(this.snapshotLocale, this.snapshotConfiguration, locale, configuration)) {
-                // A new field with nothing else changed: only the per-editor fields are worked
-                // out again (P-12). This ran a full rebuild on every field focus: about 120
-                // preference reads, 60 resource reads and, for a keyboard language other than
-                // the system's, a configuration context.
+                // A new field with nothing else changed: only the per-editor fields are redone.
                 this.settingsValues = previous.forEditor(this.context, c0696l);
             } else {
                 this.settingsValues = new RunInLocale<SettingsValues>() {
@@ -295,21 +262,17 @@ public final class SettingsManager implements SharedPreferences.OnSharedPreferen
                 this.snapshotLocale = locale;
                 this.snapshotConfiguration = new Configuration(configuration);
             }
-            // Create/update device profile based on current configuration
             this.deviceProfile = DeviceProfile.fromSettings(context, this.settingsValues);
         } finally {
             this.lock.unlock();
-            // The occurrence counter in the log line is the point: this is the ~191 ms unit the
-            // tracker records, and how many times it runs before the first frame is the question.
+            // The log's occurrence counter shows how often this ~191 ms unit runs before first frame.
             StartupTiming.end("settings.loadSettings", token);
         }
     }
 
     /**
-     * One-shot preference migrations. These used to run from inside the {@link SettingsValues}
-     * constructor: writing preferences there
-     * dispatched {@link #onSharedPreferenceChanged} synchronously on the calling thread, which
-     * re-entered {@link #loadSettings} and notified every listener with the inner value first.
+     * One-shot preference migrations. Never run them from the {@link SettingsValues} constructor:
+     * a write there re-enters {@link #loadSettings} through the change listener.
      */
     private void migrateLegacyPreferences() {
         final SharedPreferences prefs = this.sharedPreferences;
@@ -348,27 +311,16 @@ public final class SettingsManager implements SharedPreferences.OnSharedPreferen
         return this.settingsValues;
     }
 
-    /**
-     * Get the current device profile.
-     * DeviceProfile centralizes device capability detection (PKB vs VKB, touch keypad, etc.)
-     * 
-     * @return The current DeviceProfile, or null if not yet initialized
-     */
+    /** The current device profile, or null before the first load. */
     public DeviceProfile getDeviceProfile() {
         reloadIfStaleOnMainThread();
         return this.deviceProfile;
     }
 
-    /**
-     * @return true if this is a physical keyboard device
-     */
     public boolean isPkbDevice() {
         return deviceProfile != null && deviceProfile.isPkbDevice();
     }
 
-    /**
-     * @return true if this is a virtual keyboard (touchscreen-only) device
-     */
     public boolean isVkbDevice() {
         return deviceProfile == null || deviceProfile.isVkbDevice();
     }
@@ -386,12 +338,8 @@ public final class SettingsManager implements SharedPreferences.OnSharedPreferen
     }
 
     /**
-     * The height scale applied to the keyboard's base height. The same factor in both
-     * orientations: landscape gets its own base from res/values-land (the original keyboard's
-     * landscape sizing), and the user's height mode scales that base by the same relative
-     * amount it scales the portrait one. Landscape used to be forced to extra-compact
-     * instead, which with the portrait minimum-height clamp (a share of the screen width)
-     * still left the board filling most of a wide screen.
+     * The height scale for the keyboard's base height, the same in both orientations: landscape
+     * has its own base in res/values-land.
      */
     public static float getEffectiveKeyboardHeightScale(Resources resources) {
         return getKeyboardHeightScale();
@@ -450,6 +398,7 @@ public final class SettingsManager implements SharedPreferences.OnSharedPreferen
         return sharedPreferences.getString("custom_input_styles", strM5503a);
     }
 
+    /** @param i the Cangjie mode to store */
     public static void setCangjieMode(SharedPreferences sharedPreferences, int i) {
         sharedPreferences.edit().putInt("cangjie_mode", i).apply();
     }
@@ -459,11 +408,8 @@ public final class SettingsManager implements SharedPreferences.OnSharedPreferen
     }
 
     public static float getKeypressSoundVolume(SharedPreferences sharedPreferences, Resources resources) {
-        // Two on-disk forms exist. The original APK's seek bar wrote putFloat as a 0..1 fraction,
-        // which is what SoundPool.play takes. The Compose KeyPressFeedbackScreen writes putInt as a
-        // 10..100 percent. SharedPreferences is typed, so a bare getFloat threw ClassCastException
-        // on the int form out of every SettingsValues rebuild. Read whichever is stored; -1 in
-        // either type (or no entry) means the resource default.
+        // Two stored forms: a float 0..1 fraction (what SoundPool.play takes) or an int 10..100
+        // percent from KeyPressFeedbackScreen; getFloat throws on the int. -1 means the default.
         float f;
         try {
             f = sharedPreferences.getFloat("pref_keypress_sound_volume", -1.0f);
@@ -478,11 +424,16 @@ public final class SettingsManager implements SharedPreferences.OnSharedPreferen
         return resources.getFraction(R.fraction.config_default_keypress_sound_volume, 1, 1);
     }
 
+    /**
+     * @param str the preference key
+     * @param i the integer resource id of the default, used when the stored value is -1 or absent
+     */
     public static int getIntPref(SharedPreferences sharedPreferences, Resources resources, String str, int i) {
         int i2 = sharedPreferences.getInt(str, -1);
         return i2 != -1 ? i2 : getIntResource(resources, i);
     }
 
+    /** @param i an integer resource id */
     private static int getIntResource(Resources resources, int i) {
         return resources.getInteger(i);
     }
@@ -496,6 +447,10 @@ public final class SettingsManager implements SharedPreferences.OnSharedPreferen
         return Integer.parseInt(DEFAULT_INT_VALUE_STRING);
     }
 
+    /**
+     * @param str the preference key
+     * @param i the default when the stored value is -1 or absent
+     */
     public static int getIntPrefOrDefault(SharedPreferences sharedPreferences, String str, int i) {
         int i2 = sharedPreferences.getInt(str, -1);
         return i2 != -1 ? i2 : i;
@@ -510,14 +465,12 @@ public final class SettingsManager implements SharedPreferences.OnSharedPreferen
     }
 
     public static boolean isInternalBuild(Context context, SharedPreferences sharedPreferences) {
-        // Was: (isDiagnosticsEnabled() || "alpha".equals("production")) && a Settings.Global probe.
-        // Both operands of the || were constant false (the second compares two string literals),
-        // so the whole condition, and the content-resolver query behind it, were dead.
         final boolean defaultValue = BuildConfig.DEBUG
                 && Settings.Global.getInt(context.getContentResolver(), "development_settings_enabled", 0) != 0;
         return sharedPreferences.getBoolean("pref_key_is_internal", defaultValue);
     }
 
+    /** @param str the serialized recent-emoji list */
     public static void setEmojiRecentKeys(SharedPreferences sharedPreferences, String str) {
         sharedPreferences.edit().putString("emoji_recent_keys", str).apply();
     }
@@ -526,10 +479,12 @@ public final class SettingsManager implements SharedPreferences.OnSharedPreferen
         return sharedPreferences.getString("emoji_recent_keys", "");
     }
 
+    /** @param i the emoji category id */
     public static void setLastShownEmojiCategory(SharedPreferences sharedPreferences, int i) {
         sharedPreferences.edit().putInt("last_shown_emoji_category_id", i).apply();
     }
 
+    /** @param i the category id to return when none is stored */
     public static int getLastShownEmojiCategory(SharedPreferences sharedPreferences, int i) {
         return sharedPreferences.getInt("last_shown_emoji_category_id", i);
     }
@@ -618,20 +573,26 @@ public final class SettingsManager implements SharedPreferences.OnSharedPreferen
         return sharedPreferences.getInt("pref_in_letter_max_swipe_to_word_distance", resources.getInteger(R.integer.config_default_in_letter_max_swipe_to_word_distance));
     }
 
+    /**
+     * @param str the preference key
+     * @param i the integer resource id of the default
+     */
     public static int getIntPrefWithResourceDefault(SharedPreferences sharedPreferences, Resources resources, String str, int i) {
         int i2 = sharedPreferences.getInt(str, -1);
         return i2 != -1 ? i2 : resources.getInteger(i);
     }
 
+    /**
+     * @param str the preference key
+     * @param i the fraction resource id of the default
+     */
     public static float getFloatPrefWithResourceDefault(SharedPreferences sharedPreferences, Resources resources, String str, int i) {
         float f;
         try {
             f = sharedPreferences.getFloat(str, -1.0f);
         } catch (ClassCastException e) {
-            // An older Advanced Gesture Parameters screen wrote the cursor tap-region scales with
-            // putInt. SharedPreferences is typed, so getFloat throws on such an entry and every
-            // SettingsValues construction after the user touched one of those sliders died here.
-            // Drop the bad value and fall back to the resource default.
+            // Some cursor tap-region scales may be stored as ints, on which getFloat throws: drop
+            // the bad value and use the resource default.
             sharedPreferences.edit().remove(str).apply();
             f = -1.0f;
         }
@@ -678,6 +639,10 @@ public final class SettingsManager implements SharedPreferences.OnSharedPreferen
         return sharedPreferences.getBoolean("pref_key_swipe_suppression_timeout_applies_to_end", resources.getBoolean(R.bool.config_default_apply_swipe_suppression_timeout_to_swipe_end));
     }
 
+    /**
+     * @param str the preference key
+     * @param i the string resource id of the default
+     */
     public static int getStringAsInt(SharedPreferences sharedPreferences, Resources resources, String str, int i) {
         String string = sharedPreferences.getString(str, resources.getString(i));
         try {
@@ -688,6 +653,10 @@ public final class SettingsManager implements SharedPreferences.OnSharedPreferen
         }
     }
 
+    /**
+     * @param str the preference key
+     * @param i the string resource id of the default
+     */
     public static String getStringPref(SharedPreferences sharedPreferences, Resources resources, String str, int i) {
         return sharedPreferences.getString(str, resources.getString(i));
     }
@@ -696,10 +665,7 @@ public final class SettingsManager implements SharedPreferences.OnSharedPreferen
         return sharedPreferences.getBoolean("pref_korean_double_consonant_resolution", false);
     }
 
-    /**
-     * The original APK's literal. It had an {@code R.integer} for this too, but that resource did not
-     * survive into this tree; DebugSettingsScreen reads this constant rather than a second literal.
-     */
+    /** Also read by DebugSettingsScreen. */
     public static final int DEFAULT_KOREAN_DOUBLE_CONSONANT_RESOLUTION_DELAY_MS = 350;
 
     public static int getKoreanDoubleConsonantResolutionDelay(SharedPreferences sharedPreferences, Resources resources) {
@@ -723,6 +689,7 @@ public final class SettingsManager implements SharedPreferences.OnSharedPreferen
         return sharedPreferences.getBoolean("pref_key_has_asked_contacts_dict_permission", false);
     }
 
+    /** @param z true once the contacts permission has been asked for */
     public static void setHasAskedContactsDictPermission(SharedPreferences sharedPreferences, boolean z) {
         SharedPreferences.Editor editorEdit = sharedPreferences.edit();
         editorEdit.putBoolean("pref_key_has_asked_contacts_dict_permission", z);
@@ -735,14 +702,11 @@ public final class SettingsManager implements SharedPreferences.OnSharedPreferen
 
     public static boolean isUimEnabled(Context context) {
         SharedPreferences prefs = PrefsManager.INSTANCE.getPrefs(context);
-        // The menu is on when its setting says so, or while the "Show or hide the input menu"
-        // key has asked for it. (It used to go with the physical keyboard's "Show the
-        // suggestion bar" switch; that switch is gone -- the bar hides itself when neither
-        // suggestions nor the menu would be on it, see SettingsValues.isPkbSuggestionBarHidden.)
+        // On by its setting, or while the "Show or hide the input menu" key has asked for it.
         return SettingsValues.isInputMenuRequestedByKey() || prefs.getBoolean("pref_uim_enabled", true);
     }
 
-    /** Correction settings: "Enable auto-correction", the switch over the two strength choices. */
+    /** "Enable auto-correction", the switch over the two strength choices. */
     public static final String PREF_AUTO_CORRECTION_ENABLED = "auto_correction_enabled";
 
     public static boolean isAutoCorrectionSwitchedOn(SharedPreferences sharedPreferences) {
@@ -750,9 +714,8 @@ public final class SettingsManager implements SharedPreferences.OnSharedPreferen
     }
 
     /**
-     * Whether the bar above a physical keyboard's keys has anything to show: suggestions or the
-     * unified input menu, each by its own setting. Read from the preferences, for the listener
-     * that reacts before SettingsValues reloads.
+     * Whether the bar above the physical keys has suggestions or the input menu to show. Read
+     * from the preferences, for the listener that reacts before SettingsValues reloads.
      */
     public static boolean pkbBarHasContent(SharedPreferences sharedPreferences, Resources resources) {
         return sharedPreferences.getBoolean("show_predictions", resources.getBoolean(R.bool.config_default_show_predictions))
@@ -772,11 +735,8 @@ public final class SettingsManager implements SharedPreferences.OnSharedPreferen
     }
 
     /**
-     * Bug #3 escape hatch: when enabled, the keyboard overrides an editor's "no suggestions"
-     * declaration and shows the suggestion strip anyway for normal text fields. Some apps
-     * (e.g. Google Keep's note editor) declare their field in a way that suppresses
-     * suggestions; this lets the user force them on. Defaults to off so default behavior
-     * (honoring the editor) is unchanged.
+     * Shows suggestions in normal text fields even when the editor declares "no suggestions"
+     * (Google Keep's note editor does). Off by default.
      */
     public static boolean isForceSuggestionsEnabled(SharedPreferences sharedPreferences) {
         return sharedPreferences.getBoolean("pref_force_suggestions", false);
@@ -790,34 +750,23 @@ public final class SettingsManager implements SharedPreferences.OnSharedPreferen
         return sharedPreferences.getBoolean("voice_input_prefer_offline", true);
     }
 
-    /**
-     * Voice input settings: "Show words as you speak". On, dictation's partial results appear in
-     * the editor as composing text until the final result replaces them; off, nothing appears until
-     * the final result is committed.
-     */
+    /** "Show words as you speak": partial results appear as composing text until the final one. */
     public static boolean isVoiceInputShowPartialResults(SharedPreferences sharedPreferences) {
         return sharedPreferences.getBoolean("voice_input_show_partial_results", true);
     }
 
-    /**
-     * A BCP-47 language tag, the form {@code RecognizerIntent.EXTRA_LANGUAGE} documents and the form
-     * the voice language picker stores (the recognizer's own supported-language codes). Both voice
-     * settings screens read this constant.
-     */
+    /** A BCP-47 tag, the form {@code RecognizerIntent.EXTRA_LANGUAGE} takes and the picker stores. */
     public static final String DEFAULT_VOICE_INPUT_LANGUAGE = "en-US";
 
     public static String getVoiceInputLanguageList(SharedPreferences sharedPreferences) {
-        // The original default was "en_US" (a Java locale string) while everything stored is a
-        // hyphenated tag, so the default and a stored value were not comparable. Normalise to the
-        // tag form so an underscore value, whoever wrote it, still reaches the recognizer correctly.
+        // Normalise any underscore locale string ("en_US") to the tag form the recognizer takes.
         String language = sharedPreferences.getString("voice_input_language_list", DEFAULT_VOICE_INPUT_LANGUAGE);
         return language == null ? DEFAULT_VOICE_INPUT_LANGUAGE : language.replace('_', '-');
     }
 
     /**
-     * "Stop listening when you pause" (default on: today's one-utterance dictation). Off keeps the
-     * session going through pauses until the mic is tapped or the recogniser hears nothing for a
-     * long while — see VoiceRecognitionManager's continuous mode.
+     * "Stop listening when you pause" (default on). Off keeps the session going until the mic is
+     * tapped or a long silence; see VoiceRecognitionManager's continuous mode.
      */
     public static boolean isVoiceInputStopOnPause(SharedPreferences sharedPreferences) {
         return sharedPreferences.getBoolean("voice_input_stop_on_pause", true);
@@ -828,23 +777,20 @@ public final class SettingsManager implements SharedPreferences.OnSharedPreferen
     }
 
     /**
-     * Voice input settings: "Speech recognizer". Empty for the phone's default recognition service,
-     * {@code "ondevice"} for the platform's on-device recogniser, otherwise the flattened component
-     * of the chosen app's service. {@code VoiceRecognizerChoice} resolves it against what is
-     * installed. Read straight from the preferences rather than from {@link SettingsValues}: the
-     * voice settings screens and the voice-input gate need it outside the keyboard too.
+     * "Speech recognizer": empty for the default service, {@code "ondevice"}, or a flattened
+     * service component ({@code VoiceRecognizerChoice} resolves it). Read from the preferences
+     * because the voice screens need it outside the keyboard too.
      */
     public static String getVoiceInputRecognizer(SharedPreferences sharedPreferences) {
         final String recognizer = sharedPreferences.getString("voice_input_recognizer", "");
         return recognizer == null ? "" : recognizer;
     }
 
-    // REMOVED: Tutorial-related methods - Tutorial system eliminated
-    // - getOnBoardNotification()
-    // - setOnBoardNotification()
-    // - hasSeenOnBoardTutorial()
-    // - setOnBoardTutorialSeen()
-
+    /**
+     * Stores the list joined by U+0378, an unassigned code point.
+     *
+     * @param str the preference key
+     */
     public static void setStringListPref(SharedPreferences sharedPreferences, String str, List<String> list) {
         StringBuilder sb = new StringBuilder();
         Iterator<String> it = list.iterator();
@@ -855,10 +801,11 @@ public final class SettingsManager implements SharedPreferences.OnSharedPreferen
         sharedPreferences.edit().putString(str, sb.toString()).apply();
     }
 
+    /** @param str the preference key */
     public static List<String> getStringListPref(SharedPreferences sharedPreferences, String str) {
         String savedString = sharedPreferences.getString(str, "");
         if (savedString.isEmpty()) {
-            return new ArrayList<>();  // Return empty list for empty string
+            return new ArrayList<>();
         }
         return Arrays.asList(savedString.split("\u0378"));
     }
@@ -870,9 +817,7 @@ public final class SettingsManager implements SharedPreferences.OnSharedPreferen
     }
 
     public static boolean isEmojiDynamicSearchEnabled(SharedPreferences sharedPreferences) {
-        // Migrated from the legacy "pref_emoji_search_mode" multi-option setting
-        // (none / search_bar / dynamic). Only the old "dynamic" value maps to enabled;
-        // "search_bar" and "none" map to disabled.
+        // Falls back to the legacy "pref_emoji_search_mode": only "dynamic" maps to enabled.
         if (sharedPreferences.contains("pref_emoji_dynamic_search")) {
             return sharedPreferences.getBoolean("pref_emoji_dynamic_search", false);
         }
@@ -884,9 +829,8 @@ public final class SettingsManager implements SharedPreferences.OnSharedPreferen
     }
 
     /**
-     * "Enable emoji search" under Physical keyboard: while the emoji board is open, the keys type
-     * into its search field. Off, they type into the editor as they always did (and a text key
-     * closes the board, as any other board). The on-screen switch above is a different setting.
+     * Physical keyboard "Enable emoji search": keys type into the emoji board's search field. Off,
+     * they type into the editor and a text key closes the board. Not the on-screen switch.
      */
     public static boolean isPkbEmojiSearchEnabled(SharedPreferences sharedPreferences) {
         return sharedPreferences.getBoolean("pref_pkb_emoji_search", true);

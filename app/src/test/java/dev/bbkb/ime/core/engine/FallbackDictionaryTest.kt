@@ -14,11 +14,9 @@ import org.robolectric.annotation.Config
 import java.util.Locale
 
 /**
- * CHARACTERISATION of [FallbackDictionary] — Wave 3b package G1.
- *
- * Expected rows were computed by an independent re-implementation over the literal word array, not
- * copied from the class. Each row is (word, score, kind): kind 8 = prediction (empty input),
- * 0 = exact, 2 = prefix, 1 = contains-only. Score = matchCount - position.
+ * [FallbackDictionary]. Expected rows come from an independent re-implementation over the word array.
+ * Row = (word, score, kind): kind 8 = prediction (empty input), 0 = exact, 2 = prefix,
+ * 1 = contains-only. Score = matchCount - position.
  */
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [34], manifest = Config.NONE)

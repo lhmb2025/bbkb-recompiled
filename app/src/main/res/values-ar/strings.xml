@@ -721,7 +721,6 @@
     <string name="device_config_import_unreadable">هذا الملف ليس تكوين جهاز</string>
     <string name="device_config_import_failed">تعذّر استيراد ذلك الملف</string>
 
-    <!-- OTA app updates -->
     <string name="settings_updates_title">التحديثات</string>
     <string name="settings_updates_summary">البحث عن إصدار جديد من BBKB</string>
     <string name="settings_update_installed_version_title">الإصدار المثبت</string>
@@ -755,7 +754,6 @@
     <string name="settings_update_ready_title">جاهز للتثبيت</string>
     <string name="settings_update_version_details">تفاصيل الإصدار</string>
     <string name="settings_update_unknown_sources_title">هل تريد السماح لتطبيق BBKB بتثبيت التحديثات؟</string>
-    <!-- Downloadable language packs (core/languagepack) -->
     <string name="language_packs_installed_header">مثبَّت</string>
     <string name="language_packs_available_header">متاح للتنزيل</string>
     <string name="language_packs_download">تنزيل</string>
@@ -877,7 +875,6 @@
     <string name="settings_voice_stop_on_pause_summary_off">يستمر الاستماع خلال فترات التوقف إلى أن تضغط على الميكروفون، أو بعد نصف دقيقة من الصمت</string>
     <string name="voice_status_listening_tap_to_stop">جارٍ الاستماع&#8230; اضغط على الميكروفون للإيقاف</string>
 
-    <!-- Settings text moved out of the code (2026-11) -->
     <string name="settings_common_save">حفظ</string>
     <string name="settings_common_edit">تعديل</string>
     <string name="settings_common_back">رجوع</string>

@@ -8,19 +8,7 @@ import dev.bbkb.ime.R;
 import dev.bbkb.ime.core.device.ResourceConfigManager;
 import dev.bbkb.ime.keyboard.inputboard.BoardHeightPolicy;
 
-/**
- * Layout parameters calculator for the emoji picker view.
- * 
- * Computes all necessary dimensions for emoji picker layout:
- * - Total emoji palettes height (accounting for suggestion strip)
- * - ViewPager height for emoji pages
- * - Category tab strip height
- * - Individual emoji key dimensions
- * - Padding and gap values (horizontal/vertical)
- * 
- * All dimensions are calculated from device resources and screen metrics
- * to ensure proper emoji picker sizing across different devices.
- */
+/** Emoji board dimensions (palettes, pager, tab strip, keys, gaps) from resources and screen metrics. */
 
 
 final class EmojiPalettesLayoutParams {
@@ -49,9 +37,8 @@ final class EmojiPalettesLayoutParams {
         this.categoryTabHeight = (int) resources.getDimension(R.dimen.config_emoji_category_page_id_height);
         this.keyboardHeight = BoardHeightPolicy.fallbackHeight(resources);
         this.emojiPalettesHeight = (iM5592b - ResourceConfigManager.getSuggestionsStripHeight(resources)) - this.categoryTabHeight;
-        // IB-19: pagerHeight used to be (emojiPalettesHeight - bottomMargin) - 0 with
-        // bottomMargin fixed at 0, and that 0 was then applied as a layout bottomMargin below.
-        this.pagerHeight = this.emojiPalettesHeight;
+        this.pagerHeight
+ = this.emojiPalettesHeight;
         this.keyboardBottomPadding = (int) resources.getFraction(R.fraction.config_keyboard_bottom_padding_holo, iM5592b, iM5592b);
         this.keyboardTopPadding = (int) resources.getFraction(R.fraction.config_keyboard_top_padding_holo, iM5592b, iM5592b);
         this.horizontalGap = (int) resources.getFraction(R.fraction.config_key_horizontal_gap_holo, iM5585a, iM5585a);

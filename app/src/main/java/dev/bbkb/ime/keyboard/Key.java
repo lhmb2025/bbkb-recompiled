@@ -89,6 +89,10 @@ public class Key implements Comparable<Key> {
 
     private boolean isHighlighted;
 
+    /**
+     * @param i the key's label flags
+     * @param i2 the keyboard's element id
+     */
     private static boolean shouldPreserveCase(int i, int i2) {
         if ((i & 65536) != 0) {
             return false;
@@ -122,6 +126,16 @@ public class Key implements Comparable<Key> {
 
         public final int visualInsetsRight;
 
+        /**
+         * @param c1065x long-press key spec
+         * @param enumC0963c hint position
+         * @param i long-press code
+         * @param i2 active icon id
+         * @param i3 disabled icon id
+         * @param iArr background icon ids
+         * @param i4 left visual inset
+         * @param i5 right visual inset
+         */
         private LongPressKeyData(MoreKeySpec c1065x, KeyHintPosition enumC0963c, int i, int i2, int i3, int[] iArr, int i4, int i5) {
             this.longPressKeySpec = c1065x;
             this.longPressKeyHintPosition = enumC0963c;
@@ -135,6 +149,16 @@ public class Key implements Comparable<Key> {
             this.visualInsetsRight = i5;
         }
 
+        /**
+         * @param c1065x long-press key spec
+         * @param enumC0963c hint position
+         * @param i long-press code
+         * @param i2 active icon id
+         * @param i3 disabled icon id
+         * @param iArr background icon ids
+         * @param i4 left visual inset
+         * @param i5 right visual inset
+         */
         public static LongPressKeyData create(MoreKeySpec c1065x, KeyHintPosition enumC0963c, int i, int i2, int i3, int[] iArr, int i4, int i5) {
             if ((c1065x == null || c1065x.equals(MoreKeySpec.getEmpty())) && enumC0963c == KeyHintPosition.HIDDEN) {
                 if (i == -21 && i2 == 0 && i4 == 0 && i5 == 0) {
@@ -153,6 +177,26 @@ public class Key implements Comparable<Key> {
         }
     }
 
+    /**
+     * @param c1065x key spec
+     * @param c1065x2 long-press key spec
+     * @param enumC0963c hint position
+     * @param str hint label
+     * @param i label flags
+     * @param i2 background type
+     * @param i3 x
+     * @param i4 y
+     * @param i5 width including the horizontal gap
+     * @param i6 height including the vertical gap
+     * @param i7 horizontal gap
+     * @param i8 vertical gap
+     * @param str2 output text
+     * @param c1034aqArr more keys
+     * @param strArr key label set
+     * @param i9 more-keys flags
+     * @param i10 action flags
+     * @param i11 scan code, -1 for none
+     */
     public Key(MoreKeySpec c1065x, MoreKeySpec c1065x2, KeyHintPosition enumC0963c, String str, int i, int i2, int i3, int i4, int i5, int i6, int i7, int i8, String str2, MoreKeySpec[] c1034aqArr, String[] strArr, int i9, int i10, int i11) {
         int i12;
         this.hitBox = new Rect();
@@ -195,6 +239,14 @@ public class Key implements Comparable<Key> {
         this.hashCode = calculateHashCode(this);
     }
 
+    /**
+     * @param str key spec
+     * @param str2 long-press key spec, or null
+     * @param enumC0963c hint position
+     * @param abstractC1067z the key style
+     * @param c1025ah the keyboard params
+     * @param c1027aj the row
+     */
     public Key(String str, String str2, KeyHintPosition enumC0963c, TypedArray typedArray, KeyStyle abstractC1067z, KeyboardParams c1025ah, KeyboardRow c1027aj) throws NumberFormatException {
         int iCodePointAt;
         String strM6198T;
@@ -230,11 +282,8 @@ public class Key implements Comparable<Key> {
         this.labelFlags = c1027aj.getDefaultKeyLabelFlags() | abstractC1067z.getFlags(typedArray, R.styleable.Keyboard_Key_keyLabelFlags);
         boolean zM6177c = shouldPreserveCase(this.labelFlags, c1025ah.mId.mElementId);
         Locale locale = c1025ah.mId.mLocale;
-        // Named rather than positional: these two were passed to LongPressKeyData.create() in the
-        // wrong order, so activeIconId held the DISABLED icon and disabledIconId held the ACTIVE
-        // one. getIcon() draws disabledIconId when a key is inactive, so a disabled key rendered
-        // its ACTIVE icon — looking normal, or brighter than normal, while being untappable. That
-        // is why a disabled emoji/voice key in a URL bar was indistinguishable from a working one.
+        // Named locals: create() takes activeIconId before disabledIconId, and swapping them makes
+        // disabled keys draw their active icon.
         final int disabledIconId = KeySpecParser.getIconId(abstractC1067z.getString(typedArray, R.styleable.Keyboard_Key_keyIconDisabled));
         final int activeIconId = KeySpecParser.getIconId(abstractC1067z.getString(typedArray, R.styleable.Keyboard_Key_keyIconActive));
         String str3 = (this.labelFlags & 262144) != 0 ? c1025ah.mId.mCustomActionLabel : null;
@@ -309,7 +358,6 @@ public class Key implements Comparable<Key> {
             iMo7101c |= 8;
             c1065x = new MoreKeySpec(str2, zM6177c, locale);
         }
-        // create(..., int activeIconId, int disabledIconId, ...) — order matters, see above.
         this.longPressData = LongPressKeyData.create(c1065x, enumC0963c, iM5459a, activeIconId, disabledIconId, iArrM7451a, iRound2, iRound3);
         this.keyData = KeyVisualAttributes.createIfHasStyleAttributes(typedArray);
         this.actionFlags = iMo7101c;
@@ -347,10 +395,8 @@ public class Key implements Comparable<Key> {
     }
 
     /**
-     * Clones {@code prototype} (spec, code, icons, moreKeys, flags) onto the position and
-     * size of {@code slot}. Used by the UIM bar to reorder its toggle keys: prototypes are
-     * parsed from XML — the only way a key keeps its keyIconActive/keyIconDisabled pair —
-     * and only the geometry is taken from the slot being filled.
+     * Clones {@code prototype} onto the geometry of {@code slot}. The UIM bar reorders keys this way
+     * because only XML-parsed keys keep their keyIconActive/keyIconDisabled pair.
      */
     public Key(Key prototype, Key slot) {
         this.hitBox = new Rect();
@@ -377,6 +423,10 @@ public class Key implements Comparable<Key> {
         this.hashCode = calculateHashCode(this);
     }
 
+    /**
+     * @param c1065x the new key spec
+     * @param c1034aqArr the new more keys
+     */
     public Key(Key key, MoreKeySpec c1065x, MoreKeySpec[] c1034aqArr) {
         this.hitBox = new Rect();
         this.isEnabled = true;
@@ -522,18 +572,22 @@ public class Key implements Comparable<Key> {
         return null;
     }
 
+    /** @param c1025ah the keyboard params */
     public void setLeftEdge(KeyboardParams c1025ah) {
         this.hitBox.left = c1025ah.mLeftPadding;
     }
 
+    /** @param c1025ah the keyboard params */
     public void setRightEdge(KeyboardParams c1025ah) {
         this.hitBox.right = c1025ah.mOccupiedWidth - c1025ah.mRightPadding;
     }
 
+    /** @param c1025ah the keyboard params */
     public void setTopEdge(KeyboardParams c1025ah) {
         this.hitBox.top = c1025ah.mTopPadding;
     }
 
+    /** @param c1025ah the keyboard params */
     public void setBottomEdge(KeyboardParams c1025ah) {
         this.hitBox.bottom = c1025ah.mOccupiedHeight + c1025ah.mBottomPadding;
     }
@@ -587,6 +641,7 @@ public class Key implements Comparable<Key> {
         return this.keyData;
     }
 
+    /** @param c1061t the draw params */
     public final Typeface getTypeface(KeyDrawParams c1061t) {
         int i = this.labelFlags & 48;
         if (i == 16) {
@@ -598,6 +653,7 @@ public class Key implements Comparable<Key> {
         return c1061t.typeface;
     }
 
+    /** @param c1061t the draw params */
     public final int getLabelSize(KeyDrawParams c1061t) {
         int i = this.labelFlags & 448;
         if (i == 64) {
@@ -615,6 +671,7 @@ public class Key implements Comparable<Key> {
         return c1061t.hintLabelSizePixels;
     }
 
+    /** @param c1061t the draw params */
     public final int getLabelColor(KeyDrawParams c1061t) {
         if ((this.labelFlags & 524288) != 0) {
             return c1061t.getFunctionalTextColor();
@@ -622,6 +679,7 @@ public class Key implements Comparable<Key> {
         return isShiftedLetterActivated() ? c1061t.getTextInactivatedColor() : c1061t.getTextColor();
     }
 
+    /** @param c1061t the draw params */
     public final int resolveHintLabelSize(KeyDrawParams c1061t) {
         if (hasHintLabel()) {
             return c1061t.hintLabelSizePixels;
@@ -635,6 +693,7 @@ public class Key implements Comparable<Key> {
         return c1061t.hintLetterSizePixels;
     }
 
+    /** @param c1061t the draw params */
     public final int resolveHintLabelColor(KeyDrawParams c1061t) {
         if (hasHintLabel()) {
             return c1061t.getHintLabelColor();
@@ -653,6 +712,7 @@ public class Key implements Comparable<Key> {
         return (this.labelFlags & 128) != 0 || getVisibleLabel().codePointCount(0, getVisibleLabel().length()) == 1;
     }
 
+    /** @param c1061t the draw params */
     public final int getLetterSize(KeyDrawParams c1061t) {
         if (hasSingleLetterVisibleLabel()) {
             return c1061t.previewTextSizePixels;
@@ -660,6 +720,7 @@ public class Key implements Comparable<Key> {
         return c1061t.letterSizePixels;
     }
 
+    /** @param c1061t the draw params */
     public Typeface getLetterTypeface(KeyDrawParams c1061t) {
         if (hasSingleLetterVisibleLabel()) {
             return getTypeface(c1061t);
@@ -667,6 +728,7 @@ public class Key implements Comparable<Key> {
         return Typeface.DEFAULT_BOLD;
     }
 
+    /** @param i the keyboard's default label flags */
     public final boolean isAlignHintLabelToBottom(int i) {
         return ((i | this.labelFlags) & 2) != 0;
     }
@@ -777,15 +839,19 @@ public class Key implements Comparable<Key> {
         return 0;
     }
 
+    /** @param c1024ag the icon set */
     public Drawable getIcon(KeyboardIconSet c1024ag) {
         return c1024ag.getIconDrawable(getLongPressIconId());
     }
 
+    /**
+     * @param c1024ag the icon set
+     * @param i alpha to apply
+     */
     public Drawable getIcon(KeyboardIconSet c1024ag, int i) {
         LongPressKeyData c0942b = this.longPressData;
-        // Enabled: always the default icon — the active/inactive distinction is opacity
-        // (see applyIconTint), never a different icon. Disabled: the disabled variant.
-        // activeIconId is deliberately NOT read here; see the note on the constructor.
+        // Enabled keys always draw the default icon (active/inactive is opacity, see applyIconTint);
+        // activeIconId is intentionally not read.
         int iconId = this.isActive ? getIconId() : (c0942b != null ? c0942b.disabledIconId : 0);
         Drawable drawableM7165b = c1024ag.getIconDrawable(iconId);
         if (drawableM7165b != null) {
@@ -794,6 +860,11 @@ public class Key implements Comparable<Key> {
         return drawableM7165b;
     }
 
+    /**
+     * @param c1024ag the icon set
+     * @param i alpha for the fallback icon
+     * @param i2 background type index
+     */
     public Drawable getBackgroundIcon(KeyboardIconSet c1024ag, int i, int i2) {
         LongPressKeyData c0942b = this.longPressData;
         if (c0942b != null && c0942b.backgroundIconIds[i2] != 0) {
@@ -802,19 +873,15 @@ public class Key implements Comparable<Key> {
         return getIcon(c1024ag, i);
     }
 
+    /** @param c1024ag the icon set */
     public Drawable getPreviewIcon(KeyboardIconSet c1024ag) {
         return c1024ag.getIconDrawable(getIconId());
     }
     
     /**
-     * Apply icon tint based on active/inactive state.
-     * 
-     * This method tints whichever icon is displayed (default or disabled).
-     * Disabled icons are always shown at 60% opacity.
-     * Active/inactive input board state is shown via opacity for enabled icons.
-     * 
-     * @param c1024ag KeyboardIconSet containing the icon
-     * @param isActive true if this is the active tab (100% opacity), false for inactive (60% opacity)
+     * Tints the displayed icon: full color when enabled and active, the 60% secondary color otherwise.
+     * @param c1024ag icon set holding the icon
+     * @param isActive true if this is the active tab
      */
     public void applyIconTint(KeyboardIconSet c1024ag, boolean isActive) {
         if (!KeyboardColorManager.INSTANCE.isInitialized()) {
@@ -825,60 +892,41 @@ public class Key implements Comparable<Key> {
     }
 
     /**
-     * Apply icon tint with pre-computed color values for better performance.
-     * Phase 1 Optimization: Accepts cached color to avoid repeated KeyboardColorManager calls.
-     * 
-     * This method is identical to applyIconTint but accepts ClipboardItem pre-computed inactiveColor
-     * to avoid calling KeyboardColorManager.getIconColor(ALPHA_SECONDARY) for every key.
-     * 
-     * @param c1024ag KeyboardIconSet containing the icon
-     * @param isActive true if this is the active tab (100% opacity), false for inactive (60% opacity)
-     * @param inactiveColor Pre-computed color for inactive state (from KeyboardColorManager)
+     * {@link #applyIconTint} with a precomputed inactive color, so callers skip a lookup per key.
+     * @param c1024ag icon set holding the icon
      */
     public void applyIconTintWithColor(KeyboardIconSet c1024ag, boolean isActive, int inactiveColor) {
         if (!KeyboardColorManager.INSTANCE.isInitialized()) {
             return;
         }
-        
-        // Determine which icon is actually being displayed
+
         int iconId;
         LongPressKeyData c0942b = this.longPressData;
         
         if (!this.isActive && c0942b != null && c0942b.disabledIconId != 0) {
-            // Key is disabled: tint the disabled icon
             iconId = c0942b.disabledIconId;
         } else {
-            // Key is enabled: tint the default icon
             iconId = getIconId();
         }
         
         if (iconId == 0) {
-            return;  // No icon to tint
+            return;
         }
         
         Drawable icon = c1024ag.getIconDrawable(iconId);
         if (icon == null) {
             return;
         }
-        
-        // Apply color with appropriate opacity using pre-computed values
-        // Note: Drawables are already mutated in KeyboardIconSet.loadIcons()
-        // Disabled keys always get 60% opacity
-        // Enabled keys get 100% if active, 60% if inactive
+
+        // Drawables are already mutated in KeyboardIconSet.loadIcons().
         if (!this.isActive || !isActive) {
-            // Disabled OR inactive: use pre-computed inactive color
             KeyboardColorManager.INSTANCE.tint(icon, inactiveColor);
         } else {
-            // Enabled AND active: 100% opacity (bright, selected)
             KeyboardColorManager.INSTANCE.tint(icon);
         }
     }
 
-    /**
-     * The physical-keyboard scan code this key is mapped to ({@code keyMapScanCode}), or -1.
-     * NOT a more-keys column: the field was called {@code maxMoreKeysColumn} as decompilation
-     * residue, while the real max-more-keys-column value is folded into {@link #moreKeysFlags}.
-     */
+    /** The physical-keyboard scan code this key is mapped to ({@code keyMapScanCode}), or -1. */
     public final int getScanCode() {
         return this.scanCode;
     }
@@ -930,10 +978,12 @@ public class Key implements Comparable<Key> {
         return this.isPressed;
     }
 
+    /** @param z true if the key is active (tappable) */
     public void setActive(boolean z) {
         this.isActive = z;
     }
 
+    /** @param z true to highlight */
     public void setHighlighted(boolean z) {
         this.isHighlighted = z;
     }
@@ -946,10 +996,18 @@ public class Key implements Comparable<Key> {
         return this.hitBox;
     }
 
+    /**
+     * @param i x
+     * @param i2 y
+     */
     public boolean isOnKey(int i, int i2) {
         return this.hitBox.contains(i, i2);
     }
 
+    /**
+     * @param i x
+     * @param i2 y
+     */
     public int squaredDistanceToEdge(int i, int i2) {
         int iMo6216ab = getX();
         int i3 = this.width + iMo6216ab;
@@ -969,12 +1027,24 @@ public class Key implements Comparable<Key> {
     
 
     public static class SpacerKey extends Key {
+        /**
+         * @param abstractC1067z the key style
+         * @param c1025ah the keyboard params
+         * @param c1027aj the row
+         */
         public SpacerKey(TypedArray typedArray, KeyStyle abstractC1067z, KeyboardParams c1025ah, KeyboardRow c1027aj) {
             super(null, null, KeyHintPosition.HIDDEN, typedArray, abstractC1067z, c1025ah, c1027aj);
             this.backgroundType = abstractC1067z.getInt(typedArray, R.styleable.Keyboard_Key_backgroundType, 0);
             this.isEnabled = this.backgroundType != 0;
         }
 
+        /**
+         * @param c1025ah the keyboard params
+         * @param i x
+         * @param i2 y
+         * @param i3 width
+         * @param i4 height
+         */
         protected SpacerKey(KeyboardParams c1025ah, int i, int i2, int i3, int i4) {
             super(MoreKeySpec.getEmpty(), MoreKeySpec.getEmpty(), KeyHintPosition.HIDDEN, null, 0, 0, i, i2, i3, i4, c1025ah.mHorizontalGap, c1025ah.mVerticalGap, null, null, null, 0, 2, -1);
         }
@@ -997,6 +1067,11 @@ public class Key implements Comparable<Key> {
         }
     }
 
+    /**
+     * @param str the label
+     * @param z true to lower-case instead
+     * @param str2 the key spec (Greek final sigma stays)
+     */
     private String toUpperCaseLabel(String str, boolean z, Locale locale, String str2) {
         String upperCase;
         if (str == null) {

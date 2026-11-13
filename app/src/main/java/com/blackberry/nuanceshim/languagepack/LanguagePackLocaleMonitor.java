@@ -11,11 +11,7 @@ import java.util.Locale;
 import java.util.Objects;
 import java.util.Set;
 
-/**
- * LanguagePackLocaleMonitor - Monitors locale changes and manages language pack availability.
- * Coordinates with LanguagePackManager for installation status.
- * Note: Network downloads are disabled - language packs are installed locally.
- */
+/** Checks language pack support on locale changes and signals when additional locales are ready. */
 public class LanguagePackLocaleMonitor {
 
     private Locale currentLocale;
@@ -34,11 +30,8 @@ public class LanguagePackLocaleMonitor {
         this.languagePackManager = LanguagePackManager.getInstance(context);
     }
 
-    /**
-     * No-op. Kept because BlackBerryIME.onDestroy calls it; the monitor holds no registration
-     * to tear down (it stopped registering with a coordinator when downloads were removed).
-     */
     public void cleanup() {
+        // Nothing registered to tear down; BlackBerryIME.onDestroy still calls this.
     }
 
     public void onLocaleChanged(Locale locale, Set<Locale> set) {

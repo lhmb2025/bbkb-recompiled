@@ -24,9 +24,9 @@ import org.robolectric.annotation.Config
 import java.time.Duration
 
 /**
- * P-17: the keypad cursor drag queues its steps and moves once per frame, and a sample that
- * starts a new direction or axis, a key, the finger lifting or a new contact first moves what is
- * queued, so the cursor lands where the step-by-step moves would have put it.
+ * Pins that the keypad cursor drag queues steps and moves once per frame, flushing the queue first
+ * on a new direction or axis, a key, finger lift or new contact, so the cursor lands where
+ * step-by-step moves would have put it.
  */
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [34], manifest = Config.NONE)
@@ -39,8 +39,8 @@ class CkbCursorDragCoalescingTest {
 
     @Before
     fun setUp() {
-        // The code under test still calls the engine from the main thread; until those callers
-        // move onto EngineThreads, run engine ops inline so the debug thread assertions pass.
+        // The code under test calls the engine from the main thread; run engine ops inline so
+        // the debug thread assertions pass.
         dev.bbkb.ime.core.engine.EngineThreads.setInlineForTests(true)
         val sv = allocate(SettingsValues::class.java)
         // One step per 10 px, no speed multiplier: each 10 px sample below is exactly one step.

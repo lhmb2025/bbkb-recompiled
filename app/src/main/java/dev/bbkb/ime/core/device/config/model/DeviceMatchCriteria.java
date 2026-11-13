@@ -8,29 +8,16 @@ import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
 /**
- * The {@code <match>} block of a device config: a set of constraints, ANDed together, with an
- * unset constraint meaning "don't care".
- *
- * <p>Audit W3-D: this was five parallel {@code MatchRule} fields, five near-identical checks in
- * {@link #matches}, two special-cased case-insensitive comparisons and a hand-rolled
- * {@code toString} with {@code first} bookkeeping. The fields differ only in where the value to
- * compare comes from and whether an EXACT rule ignores case, so they are one {@link Field} table
- * over an {@link EnumMap}. {@link Field#of} also gives the parser its element-name lookup,
- * replacing per-field copies of the same exact/regex attribute block.
- *
- * <p>The Build-derived fields read {@link android.os.Build}'s static fields at match time, so a
- * test fakes a device by setting those fields (Robolectric's {@code ReflectionHelpers} or
- * {@code ShadowBuild}) exactly as it already did for {@code build-device}.
+ * The {@code <match>} block of a device config: constraints ANDed together, unset meaning "don't
+ * care". Build-derived fields read {@link android.os.Build} at match time, so tests fake a device
+ * by setting those static fields ({@code ReflectionHelpers} or {@code ShadowBuild}).
  */
 public class DeviceMatchCriteria {
 
     /** What a {@code <match>} child element constrains. */
     public enum Field {
         DEVICE_NAME("device-name", false),
-        /**
-         * The keyboard InputDevice's vendor id, written as {@link #inputDeviceId hex}
-         * ({@code "0x2533"}). An EXACT rule ignores case so {@code 0x25AB} and {@code 0x25ab} agree.
-         */
+        /** The keyboard's vendor id as {@link #inputDeviceId hex} ({@code "0x2533"}); exact rules ignore case. */
         VENDOR_ID("vendor-id", true),
         /** The keyboard InputDevice's product id, in the same form as {@link #VENDOR_ID}. */
         PRODUCT_ID("product-id", true),
@@ -38,10 +25,7 @@ public class DeviceMatchCriteria {
         BRAND("brand", true),
         /** Compared against {@link android.os.Build#DEVICE} (e.g. "athena" for the KEY2). */
         BUILD_DEVICE("build-device", true),
-        /**
-         * Compared against {@link android.os.Build#BOARD}. The Titan 2 and the Titan 2 Elite share
-         * every other Build id and differ here (G71BoardV1 vs G72BoardV1).
-         */
+        /** {@link android.os.Build#BOARD}: the only id separating Titan 2 (G71BoardV1) from Titan 2 Elite (G72BoardV1). */
         BOARD("board", true),
         /** Compared against {@link android.os.Build#DISPLAY}, the ROM's display build id. */
         DISPLAY("display", true),
@@ -51,10 +35,7 @@ public class DeviceMatchCriteria {
         MANUFACTURER("manufacturer", true);
 
         private final String tag;
-        /**
-         * EXACT rules on the Build-derived fields and the hex ids compare case-insensitively;
-         * {@code device-name} does not.
-         */
+        /** Exact rules ignore case for every field except {@code device-name}. */
         private final boolean ignoreCaseWhenExact;
 
         Field(String tag, boolean ignoreCaseWhenExact) {
@@ -88,11 +69,7 @@ public class DeviceMatchCriteria {
             return ignoreCaseWhenExact ? pattern.equalsIgnoreCase(value) : pattern.equals(value);
         }
 
-        /**
-         * Case-sensitive form, for rules that name an InputDevice outside a {@code <match>} block
-         * (the {@code <touch-keypad>}'s {@code <input-device>}): device names are matched exactly
-         * as {@code device-name} matches them.
-         */
+        /** Case-sensitive form for InputDevice names outside {@code <match>} (the touch keypad's {@code <input-device>}). */
         public boolean matches(String value) {
             return matches(value, false);
         }
@@ -113,11 +90,7 @@ public class DeviceMatchCriteria {
         }
     }
 
-    /**
-     * A pattern that matches nothing, standing in for a {@code regex="..."} that would not
-     * compile — which used to be represented by a null compiled pattern plus a null branch in the
-     * matcher. Either way an unparseable regex matches no device.
-     */
+    /** Matches nothing: stands in for a {@code regex="..."} that does not compile. */
     private static final Pattern NEVER = Pattern.compile("(?!)");
 
     public static Rule exact(String pattern) {
@@ -140,22 +113,16 @@ public class DeviceMatchCriteria {
         rules.put(field, rule);
     }
 
-    /**
-     * The form {@code vendor-id} / {@code product-id} rules are written in and compared against:
-     * lower-case hex with a {@code 0x} prefix and at least four digits ({@code 0x2533}).
-     */
+    /** The form vendor-id and product-id rules use: lower-case {@code 0x} hex, at least four digits. */
     public static String inputDeviceId(int id) {
         return String.format(java.util.Locale.ROOT, "0x%04x", id);
     }
 
     /**
-     * Returns true if every specified criterion matches (AND logic); unspecified criteria are
-     * ignored.
+     * True if every set criterion matches.
      *
-     * @param deviceName Device name to check
-     * @param vendorId Vendor ID to check (hex format, e.g., "0x1234"; see {@link #inputDeviceId}),
-     *        or null when the caller has no InputDevice in hand — a set vendor-id rule then fails
-     * @param productId Product ID to check (hex format, e.g., "0x5678"), or null likewise
+     * @param vendorId {@link #inputDeviceId} form, or null with no InputDevice (a vendor-id rule then fails)
+     * @param productId same form as vendorId, or null likewise
      */
     public boolean matches(String deviceName, String vendorId, String productId) {
         for (Map.Entry<Field, Rule> entry : rules.entrySet()) {
@@ -176,25 +143,20 @@ public class DeviceMatchCriteria {
         return true;
     }
 
-    /**
-     * True when a rule names the keyboard itself (device name, vendor id or product id) rather
-     * than only the phone it is built into.
-     */
+    /** True when a rule names the keyboard itself (name, vendor or product id), not only the phone. */
     public boolean hasInputDeviceCriteria() {
         return rules.containsKey(Field.DEVICE_NAME) || rules.containsKey(Field.VENDOR_ID)
                 || rules.containsKey(Field.PRODUCT_ID);
     }
 
     /**
-     * True when a rule identifies the keyboard by its USB or Bluetooth ids (vendor id or product
-     * id). Such a profile describes a keyboard that is plugged in, not the phone, so it applies
-     * only while that keyboard is attached, even when the user chose it by hand.
+     * True for a vendor or product id rule: the profile describes a plugged-in keyboard, so it applies
+     * only while that keyboard is attached, even when chosen by hand.
      */
     public boolean hasVendorOrProductRule() {
         return rules.containsKey(Field.VENDOR_ID) || rules.containsKey(Field.PRODUCT_ID);
     }
 
-    /** Check if at least one matching criterion is defined. */
     public boolean hasAnyCriteria() {
         return !rules.isEmpty();
     }

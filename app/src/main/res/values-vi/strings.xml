@@ -721,7 +721,6 @@
     <string name="device_config_import_unreadable">Tệp đó không phải là cấu hình thiết bị</string>
     <string name="device_config_import_failed">Không nhập được tệp đó</string>
 
-    <!-- OTA app updates -->
     <string name="settings_updates_title">Bản cập nhật</string>
     <string name="settings_updates_summary">Kiểm tra phiên bản mới của BBKB</string>
     <string name="settings_update_installed_version_title">Phiên bản đã cài</string>
@@ -755,7 +754,6 @@
     <string name="settings_update_ready_title">Sẵn sàng cài đặt</string>
     <string name="settings_update_version_details">Chi tiết phiên bản</string>
     <string name="settings_update_unknown_sources_title">Cho phép BBKB cài đặt bản cập nhật?</string>
-    <!-- Downloadable language packs (core/languagepack) -->
     <string name="language_packs_installed_header">Đã cài đặt</string>
     <string name="language_packs_available_header">Có thể tải xuống</string>
     <string name="language_packs_download">Tải xuống</string>
@@ -877,7 +875,6 @@
     <string name="settings_voice_stop_on_pause_summary_off">Tiếp tục nghe qua các khoảng dừng cho đến khi bạn chạm vào micrô hoặc sau nửa phút im lặng</string>
     <string name="voice_status_listening_tap_to_stop">Đang nghe&#8230; Chạm vào micrô để dừng</string>
 
-    <!-- Settings text moved out of the code (2026-11) -->
     <string name="settings_common_save">Lưu</string>
     <string name="settings_common_edit">Chỉnh sửa</string>
     <string name="settings_common_back">Quay lại</string>

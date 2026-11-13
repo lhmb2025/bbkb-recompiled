@@ -19,12 +19,9 @@ import java.util.Iterator;
 
 /**
  * Places, shows and dismisses the key-press preview bubbles in the full-window preview placer.
- *
- * <p>A preview view, once added, stays a VISIBLE child of the placer for good: showing and hiding
- * it is an alpha change and moving it is a translation change. Both are RenderNode properties, so
- * a press damages only the bubble's own rectangle. Toggling the child's visibility (and moving it
- * by layout margins) instead made the parent re-record the whole placer's display list on every
- * press and release, which on the MP01's e-ink panel is a large refresh per keystroke.
+ * A preview stays a VISIBLE child for good: show/hide is alpha and moving is translation, so a
+ * press damages only the bubble. Visibility or margin changes would re-record the whole placer
+ * (a large refresh per keystroke on e-ink).
  */
 public final class KeyPreviewChoreographer {
 
@@ -48,8 +45,7 @@ public final class KeyPreviewChoreographer {
         KeyPreviewView c1064wPoll = this.mFreeKeyPreviewViews.poll();
         if (c1064wPoll != null) {
             if (c1064wPoll.getParent() != viewGroup) {
-                // The placer dropped its children (MainKeyboardView.onDetachedFromWindow calls
-                // removeAllViews), so a pooled view may no longer be attached.
+                // The placer drops its children on detach, so a pooled view may be unattached.
                 if (c1064wPoll.getParent() instanceof ViewGroup) {
                     ((ViewGroup) c1064wPoll.getParent()).removeView(c1064wPoll);
                 }
@@ -71,6 +67,7 @@ public final class KeyPreviewChoreographer {
         }
     }
 
+    /** @param z true to animate the dismissal */
     public void dismissKeyPreview(Key key, boolean z) {
         KeyPreviewView c1064w;
         if (key == null || (c1064w = this.mShowingKeyPreviewViews.get(key)) == null) {
@@ -90,6 +87,11 @@ public final class KeyPreviewChoreographer {
         this.mFreeKeyPreviewViews.add(c1064w);
     }
 
+    /**
+     * @param i width of the area the preview must stay inside
+     * @param iArr origin of the keyboard view in the placer
+     * @param z true to animate the show-up
+     */
     public void placeAndShowKeyPreview(Key key, KeyboardIconSet c1024ag, KeyDrawParams c1061t, int i, int[] iArr, ViewGroup viewGroup, boolean z) {
         KeyPreviewView c1064wM7424a = getKeyPreviewView(key, viewGroup);
         placeKeyPreview(key, c1064wM7424a, c1024ag, c1061t, i, iArr);
@@ -99,8 +101,8 @@ public final class KeyPreviewChoreographer {
     private void placeKeyPreview(Key key, KeyPreviewView c1064w, KeyboardIconSet c1024ag, KeyDrawParams c1061t, int i, int[] iArr) {
         int i2;
         c1064w.setPreviewVisual(key, c1024ag, c1061t);
-        
-        // Set preview dimensions: width = key width, height = 2× key height
+
+        // Width = key width, height = 2x key height.
         int keyWidth = key.getWidth();
         int keyHeight = key.getHeight();
         c1064w.setPreviewDimensions(keyWidth, keyHeight * 2);
@@ -123,18 +125,14 @@ public final class KeyPreviewChoreographer {
             }
         }
         c1064w.setPreviewBackground(key.getMoreKeys() != null, i4);
-        // Position preview so its bottom aligns with the bottom of the key
+        // Bottom aligns with the key's bottom.
         int yPos = (key.getY() + key.getHeight() - measuredHeight) + CoordinateUtils.y(iArr);
         placePreviewAt(c1064w, i2, yPos, measuredWidth, measuredHeight);
         c1064w.setPivotX(measuredWidth / 2.0f);
         c1064w.setPivotY(measuredHeight);
     }
 
-    /**
-     * Sizes the preview by layout (only when the size changes, e.g. a wider key) and positions it
-     * by translation from the placer's origin, so a move costs no layout pass and no re-record of
-     * the placer.
-     */
+    /** Sizes by layout only when the size changes and positions by translation, so a move costs no layout pass. */
     private static void placePreviewAt(View view, int x, int y, int width, int height) {
         ViewGroup.LayoutParams params = view.getLayoutParams();
         if (params instanceof ViewGroup.MarginLayoutParams) {
@@ -151,6 +149,7 @@ public final class KeyPreviewChoreographer {
         view.setTranslationY(y);
     }
 
+    /** @param z true to animate the show-up */
     public void showKeyPreview(Key key, KeyPreviewView c1064w, boolean z) {
         if (!z) {
             c1064w.setPreviewShown(true);
@@ -165,7 +164,7 @@ public final class KeyPreviewChoreographer {
     public Animator createShowUpAnimator(final Key key, final KeyPreviewView c1064w) throws Resources.NotFoundException {
         Animator animatorM7436b = this.mParams.createShowUpAnimator(c1064w);
         animatorM7436b.addListener(new AnimatorListenerAdapter() {
-            @Override // android.animation.AnimatorListenerAdapter, android.animation.Animator.AnimatorListener
+            @Override
             public void onAnimationStart(Animator animator) {
                 KeyPreviewChoreographer.this.showKeyPreview(key, c1064w, false);
             }
@@ -176,7 +175,7 @@ public final class KeyPreviewChoreographer {
     private Animator createDismissAnimator(final Key key, KeyPreviewView c1064w) throws Resources.NotFoundException {
         Animator animatorM7438c = this.mParams.createDismissAnimator(c1064w);
         animatorM7438c.addListener(new AnimatorListenerAdapter() {
-            @Override // android.animation.AnimatorListenerAdapter, android.animation.Animator.AnimatorListener
+            @Override
             public void onAnimationEnd(Animator animator) {
                 KeyPreviewChoreographer.this.dismissKeyPreview(key, false);
             }
@@ -207,7 +206,7 @@ public final class KeyPreviewChoreographer {
             }
         }
 
-        @Override // android.animation.AnimatorListenerAdapter, android.animation.Animator.AnimatorListener
+        @Override
         public void onAnimationEnd(Animator animator) {
             this.mDismissAnimator.start();
         }

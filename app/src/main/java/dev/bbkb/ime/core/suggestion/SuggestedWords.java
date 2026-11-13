@@ -207,11 +207,8 @@ public class SuggestedWords {
             if (!suggestedWordInfoVar.isKind(0)) {
                 arrayList.add(suggestedWordInfoVar);
             } else if (str == null) {
-                // A second typed-word entry is expected, not an error: the bridge adds the typed
-                // word twice when it is also the engine's first candidate (the Latin strip shows
-                // both). The original guarded this with `assert`, which never runs on Android; the
-                // de-obfuscated IllegalStateException crashed the keyboard on the first Chinese
-                // stroke (KEY2, 2026-09-28), where "一" is both the typed text and a character.
+                // A second typed-word entry is expected (the typed word is also the engine's first
+                // candidate, e.g. a Chinese stroke); never throw here.
                 str = suggestedWordInfoVar.word;
             }
         }

@@ -40,17 +40,10 @@ import org.robolectric.annotation.Config;
 import java.util.Locale;
 
 /**
- * The third reason "Alt+Sym does nothing": the accessibility entry point detected the chord
- * correctly and then dispatched it into a window that was not up yet.
- *
- * <p>{@code HardwareKeyBridge.install()} wired the board actions behind a bare
- * {@code if (ime.isInputViewShown())}. On a physical-keyboard device the IME window is down for
- * most of the time the user is typing, and the SYM entry point deals with that by calling
- * {@code requestShowOnKeyPress()} — which only <em>asks</em> for the window
- * ({@code showSoftInputFromInputMethod} is asynchronous), so {@code isInputViewShown()} is still
- * false a microsecond later when the action runs. The action was therefore thrown away in
- * silence, while the plain-Sym fallback ({@code onSymbolShiftToggle}, which never had that gate)
- * went on working: precisely "Sym works, Alt+Sym does nothing".
+ * The accessibility Alt+Sym entry point must not gate board actions on
+ * {@code isInputViewShown()}: on a PKB the window is usually down, and
+ * {@code requestShowOnKeyPress()} only asks for it asynchronously, so the gate would drop the
+ * action while plain Sym kept working.
  */
 @RunWith(RobolectricTestRunner.class)
 @Config(sdk = 34, manifest = Config.NONE)
@@ -75,8 +68,7 @@ public class AltSymShortcutBoardGateTest {
         when(ime.getCurrentInputType()).thenReturn(0);
         when(ime.getCurrentImeOptions()).thenReturn(0);
         when(ime.isUimEnabled()).thenReturn(false);
-        // The state the owner's KEY2 is in while typing on the hardware keyboard: window down,
-        // show-on-keypress willing to raise it.
+        // A KEY2 typing on the hardware keyboard: window down, show-on-keypress willing to raise it.
         when(ime.isInputViewShown()).thenReturn(false);
         when(ime.requestShowOnKeyPress()).thenReturn(true);
 
@@ -123,9 +115,8 @@ public class AltSymShortcutBoardGateTest {
     }
 
     /**
-     * When show-on-keypress declines — no editor bound, or the user set the mode to never —
-     * there is nothing to open a board into, and the action stays a no-op rather than throwing a
-     * board at a window that will never appear.
+     * When show-on-keypress declines (no editor bound, or mode set to never) there is no window
+     * to open a board into, and the action is a no-op rather than throwing.
      */
     @Test
     public void theEmojiActionStaysQuietWhenNoWindowCanBeShown() {
@@ -139,9 +130,8 @@ public class AltSymShortcutBoardGateTest {
 
     /**
      * Cursor control and the number pad, with the input menu off (or hidden with "Show the
-     * suggestion bar"): they used to do nothing there, as UIM-only boards. They now open on their
-     * own, like the clipboard and emoji boards, and the second chord closes them through the
-     * board's own toggle.
+     * suggestion bar"), open on their own like the clipboard and emoji boards; the second chord
+     * closes them through the board's own toggle.
      */
     @Test
     public void cursorControlAndTheNumberPadOpenWithoutTheInputMenu() {
@@ -186,8 +176,6 @@ public class AltSymShortcutBoardGateTest {
         verify(numberPad, never()).toggle();
     }
 
-    // ── "Show or hide the input menu" ────────────────────────────────────────
-
     /** The menu bar as far as the toggle can see it: up or not. */
     private static final class FakeMenu {
         boolean up;
@@ -197,10 +185,9 @@ public class AltSymShortcutBoardGateTest {
     private FccController fcc;
 
     /**
-     * The chord configured to {@code action} on a KEY2 with "Show the suggestion bar" off; the
-     * IME's menu setting answered by the real SettingsValues (all the production
-     * {@code isUimEnabled()} reads), the real InputViewCoordinator behind the action, and a menu
-     * bar the board manager mock raises and lowers.
+     * The chord configured to {@code action} on a KEY2 with "Show the suggestion bar" off: real
+     * SettingsValues (the only input to {@code isUimEnabled()}), the real InputViewCoordinator,
+     * and a menu bar the board manager mock raises and lowers.
      */
     private FakeMenu chordWithTheBarHidden(String action) {
         PrefsManager.INSTANCE.getPrefs(context).edit().clear()
@@ -237,9 +224,8 @@ public class AltSymShortcutBoardGateTest {
     }
 
     /**
-     * With "Show the suggestion bar" off there is no hamburger button: the chord raises the menu
-     * anyway, and while it is up the board chords take its route; the next chord hides it and the
-     * board chords go back to their own toggles. The preferences are never written.
+     * With no hamburger button the chord raises the menu anyway, board chords take its route while
+     * it is up, and the next chord hides it. The preferences are never written.
      */
     @Test
     public void theInputMenuChordRaisesTheHiddenMenuAndTheNextOneHidesIt() {

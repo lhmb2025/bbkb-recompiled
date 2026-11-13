@@ -8,49 +8,30 @@ import dev.bbkb.ime.core.device.detection.TouchKeypadInfo;
 import dev.bbkb.ime.core.device.profile.DeviceProfile;
 
 /**
- * The touch keypad's coordinate frame: the one answer to "how big is the pad, in the units its
- * MotionEvents carry", which the gesture arbiter, swipe typing's stroke analyser, the Gesture Lab
- * and the touch thresholds in {@code SettingsValues} all used to answer for themselves with KEY2
- * literals (1080 / 525 / 144 / 610).
- *
- * <p>Each axis is resolved on its own, first source that knows wins:
+ * The touch keypad's coordinate frame (pad size in MotionEvent units). Each axis takes the first
+ * source that knows:
  * <ol>
- *   <li>{@link Source#MEASURED} — the ranges a running synthetic source measured on the pad's
- *       evdev node ({@link SyntheticTouchSources#measuredPad()}: the Shizuku reader's EVIOCGABS).
- *       The same fact an InputDevice motion range gives, and the frame of the coordinates that
- *       source delivers, so a synthesised stream never falls back to the profile's or the KEY2's
- *       numbers while real ones are known;</li>
- *   <li>{@link Source#INPUT_DEVICE} — the pad InputDevice's motion ranges (a real KEY2 reports
- *       0..1080 by 0..525, so it lands here and every derived value is exactly what it was);</li>
- *   <li>{@link Source#PROFILE} — the device config's {@code <touch-keypad range-x range-y>}, for a
- *       pad the OS does not enumerate with ranges, or a synthesised source that has no device;</li>
- *   <li>{@link Source#LEGACY_Y_WARP} — Y only, and only on a forced-CKB config with no pad of its
- *       own: the last sensor breakpoint of its {@code <ckb-y-warp>} ("0:0,450:324" gives 450).
- *       That is the emulator posing as a KEY2; the value describes the warp's letter band, not a
- *       pad, so it feeds {@link #sensorYMax()} and nothing that scales a frame (see
- *       {@link #frameHeight()});</li>
- *   <li>{@link Source#KEY2_DEFAULT} — the KEY2's pad, 1080 by 525.</li>
+ *   <li>{@link Source#MEASURED}: ranges a running synthetic source read from the evdev node
+ *       (EVIOCGABS), so a synthesised stream always uses its own frame;</li>
+ *   <li>{@link Source#INPUT_DEVICE}: the pad InputDevice's motion ranges;</li>
+ *   <li>{@link Source#PROFILE}: the config's {@code <touch-keypad range-x range-y>};</li>
+ *   <li>{@link Source#LEGACY_Y_WARP}: Y only, forced-CKB config with no pad: the last sensor
+ *       breakpoint of {@code <ckb-y-warp>}. It is a letter band, not a pad, so it feeds
+ *       {@link #sensorYMax()} but never {@link #frameHeight()};</li>
+ *   <li>{@link Source#KEY2_DEFAULT}: 1080 by 525.</li>
  * </ol>
- *
- * <p>The stroke analyser's two numbers ({@link #strokeKeyWidth()}, {@link #strokeBoardHeight()})
- * are the original app's KEY2 literals 144 and 610 scaled by the frame against the KEY2 frame, so
- * they are exactly 144 and 610 whenever the frame is the KEY2's.
+ * Stroke key width and board height are 144 and 610 on the KEY2 frame, scaled with the frame.
  */
 public final class TouchKeypadGeometry {
-
-    /** Where one axis of the frame came from. */
     public enum Source { MEASURED, INPUT_DEVICE, PROFILE, LEGACY_Y_WARP, KEY2_DEFAULT }
 
-    /** The KEY2's pad width in sensor units (athena {@code touch_keypad} ABS_MT_POSITION_X). */
+    /** KEY2 pad ABS_MT_POSITION_X / Y ranges in sensor units. */
     public static final int KEY2_WIDTH = 1080;
-    /** The KEY2's pad height in sensor units (ABS_MT_POSITION_Y). */
     public static final int KEY2_HEIGHT = 525;
-    /** The stroke analyser's key width on the KEY2 frame (the original app's literal). */
     public static final int KEY2_STROKE_KEY_WIDTH = 144;
-    /** The stroke analyser's board height on the KEY2 frame (the original app's literal). */
     public static final int KEY2_STROKE_BOARD_HEIGHT = 610;
 
-    /** The KEY2 frame with nothing measured: what a device with no pad at all resolves to. */
+    /** What a device with no pad resolves to. */
     public static final TouchKeypadGeometry KEY2_DEFAULT = new TouchKeypadGeometry(
             KEY2_WIDTH, KEY2_HEIGHT, 0f, Source.KEY2_DEFAULT, Source.KEY2_DEFAULT);
 
@@ -70,13 +51,11 @@ public final class TouchKeypadGeometry {
     }
 
     /**
-     * Resolve the frame from what is known about the pad.
-     *
      * @param measured the ranges a running synthetic source measured, or null
      * @param device the scanned pad, or null when the OS enumerates none
      * @param declared the config's {@code <touch-keypad>}, or null
      * @param ckbYWarp the config's {@code <ckb-y-warp>}, or null
-     * @param forcedCkb whether the config forces device-type CKB (the only case the warp counts)
+     * @param forcedCkb whether the config forces device-type CKB (only then the warp counts)
      */
     @NonNull
     public static TouchKeypadGeometry resolve(@Nullable TouchKeypadInfo measured,
@@ -124,11 +103,7 @@ public final class TouchKeypadGeometry {
         return new TouchKeypadGeometry(w, h, resolution, xs, ys);
     }
 
-    /**
-     * The sensor coordinate of a {@code <ckb-y-warp>}'s last breakpoint ("0:0,450:324" gives 450),
-     * or 0 when the spec is absent or unreadable. Moved here, unchanged, from
-     * {@code DeviceProfile.getTouchKeypadYMax}.
-     */
+    /** Sensor coordinate of a {@code <ckb-y-warp>}'s last breakpoint ("0:0,450:324" gives 450), or 0. */
     static float lastWarpBreakpoint(@Nullable String ckbYWarp) {
         if (ckbYWarp == null) return 0f;
         try {
@@ -147,13 +122,12 @@ public final class TouchKeypadGeometry {
         return DeviceProfile.current().getTouchKeypadGeometry();
     }
 
-    /** Pad width in sensor units, as resolved. */
     public float width() { return width; }
 
-    /** Pad height in sensor units, as resolved (the warp's band on the emulator rig). */
+    /** Includes the warp's band on the emulator rig. */
     public float height() { return height; }
 
-    /** The pad's reported resolution, or 0 when no InputDevice reported one. */
+    /** 0 when no InputDevice reported one. */
     public float resolution() { return resolution; }
 
     public Source xSource() { return xSource; }
@@ -169,46 +143,33 @@ public final class TouchKeypadGeometry {
         return s == Source.MEASURED || s == Source.INPUT_DEVICE || s == Source.PROFILE;
     }
 
-    /**
-     * The Y extent {@code DeviceProfile.getTouchKeypadYMax()} reports: the resolved height, or 0
-     * when nothing but the KEY2 default stands behind it (the "no pad" answer callers test for).
-     */
+    /** Resolved height, or 0 (the "no pad" answer callers test for) when only the KEY2 default backs it. */
     public float sensorYMax() {
         return ySource == Source.KEY2_DEFAULT ? 0f : height;
     }
 
-    /** The pad frame's width, in whole sensor units. */
     public int frameWidth() {
         return Math.round(width);
     }
 
-    /**
-     * The pad frame's height, in whole sensor units. The legacy warp tier is the forced-CKB rig's
-     * letter band, not a pad, so the frame stays the KEY2's there.
-     */
+    /** The warp tier is a letter band, not a pad, so the frame stays the KEY2's there. */
     public int frameHeight() {
         return ySource == Source.LEGACY_Y_WARP ? KEY2_HEIGHT : Math.round(height);
     }
 
-    /** Width over height of the frame (the Gesture Lab letterboxes the pad with it). */
     public float frameAspect() {
         return frameWidth() / (float) frameHeight();
     }
 
-    /**
-     * The isotropic reference the gesture recorder divides by when an event's own InputDevice
-     * reports no ranges: the larger frame dimension (1080 on the KEY2 frame).
-     */
+    /** What the gesture recorder divides by when an event's InputDevice reports no ranges. */
     public float normalizationReference() {
         return Math.max(frameWidth(), frameHeight());
     }
 
-    /** The stroke analyser's key width: 144 on the KEY2 frame, scaled with the frame's width. */
     public int strokeKeyWidth() {
         return Math.round(KEY2_STROKE_KEY_WIDTH * (frameWidth() / (float) KEY2_WIDTH));
     }
 
-    /** The stroke analyser's board height: 610 on the KEY2 frame, scaled with the frame's height. */
     public int strokeBoardHeight() {
         return Math.round(KEY2_STROKE_BOARD_HEIGHT * (frameHeight() / (float) KEY2_HEIGHT));
     }

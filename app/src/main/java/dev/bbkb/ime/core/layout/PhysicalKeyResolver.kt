@@ -19,51 +19,22 @@ import java.util.Locale
 import java.util.WeakHashMap
 
 /**
- * Every question the typing path asks about a physical key, answered in one place: what it types
- * (with and without Shift), what holding it for a capital types, what a double tap cycles
- * through, what holding it offers, and what it types under Alt.
- *
- * Each answer walks the same stack:
- *
- *  1. the user's letter layout, while it is bound to the current keyboard and this phone's keypad:
- *     the layout chosen for the keyboard's language on the Language screen ([LetterLayoutChoice],
- *     when it is for the physical keys), see [userLayout];
- *  2. the built-in document for the current keyboard's language, keypad, keypad type and layout
- *     set (`assets/letter_layouts/`), unless the language's choice is the keypad's own letters
- *     ([LetterLayoutChoice.KEYPAD_LETTERS]), which turns the built-in document off for it;
- *  3. for Alt only, the device's own Alt tables, which stay in `AuxCharacterResolver` as the tier
- *     under this one (it asks [alt] first);
- *  4. the firmware key map: 0 or null here, and the caller asks the key map as before.
- *
- * A key the user layout names wins outright; a key it does not name falls through to the built-in
- * document, and one neither names to the key map. A list the user layout leaves empty falls through
- * the same way.
- *
- * Three rules keep the built-in documents typing exactly what the old tables and engine layouts
- * typed (attic plan §11.1):
- *
- *  1. A `KEYCODE_4` entry without a `scanCode` applies only while the event's character is a
- *     currency symbol: the KEY2's `$` key, which carries a letter on Arabic, Hebrew and Cyrillic
- *     keycaps. A Titan's 4 key sends the same key code and stays a digit.
- *  2. A built-in document's Latin letter is left to the firmware key map, so AZERTY/QWERTZ key
- *     maps and dead keys keep deciding what a Latin key types; the document still supplies the
- *     key's lists. A user layout's letter always applies: the user said what the key types.
- *  3. The lists for an upper-case letter are the key's lists upper-cased with the keyboard
- *     language's own rules (ß becomes SS, a Turkish i becomes İ, Greek keeps its tonos), less any
- *     entry that comes out equal to the letter itself, as the old tables built them.
- *
- * The currency key keeps the lists the old tables gave the currency symbols (`$` offers € ¥ £ ₱ ¢,
- * and so on), on every keyboard, rearranged around the "Default currency" setting as before.
- *
- * Everything the stack depends on — the active user layout, the built-in documents, the keyboard's
- * locale, layout set and extra languages, the keypad, the switch, the currency setting — comes in
- * through a source that tests replace; [init] points them at the running keyboard.
+ * Answers every typing-path question about a physical key (letter, Shift, hold, double tap, more keys,
+ * Alt) from one stack, first hit wins per key or list:
+ *  1. the user's letter layout chosen for the language, when for the physical keys and bound here ([userLayout]);
+ *  2. the built-in document (`assets/letter_layouts/`), unless the language chose [LetterLayoutChoice.KEYPAD_LETTERS];
+ *  3. Alt only: the device Alt tables in `AuxCharacterResolver`;
+ *  4. the firmware key map (0 or null here).
+ * Rules: (1) a `KEYCODE_4` entry without `scanCode` applies only while the event's character is a
+ * currency symbol (KEY2 `$` key; a Titan's 4 stays a digit). (2) A built-in Latin letter is left to the
+ * key map (AZERTY/QWERTZ, dead keys); a user layout's letter always applies. (3) Upper-case lists are
+ * upper-cased by the keyboard language's rules, minus entries equal to the letter. Sources are swappable for tests.
  */
 object PhysicalKeyResolver {
 
     private const val TAG = "PhysicalKeys"
 
-    /** The built-in documents, as the resolver needs them. [init] hands it the registry's. */
+    /** The built-in documents; [init] hands it the registry's. */
     interface BuiltIns {
         /** The document for a keyboard, as [LetterLayoutRegistry.builtIn] selects it, or null. */
         fun select(language: String, keypad: String?, keypadType: String?, layoutSet: String?): LetterLayout?
@@ -80,10 +51,7 @@ object PhysicalKeyResolver {
         override fun all(): List<LetterLayout> = registry.builtInIds().mapNotNull { registry.builtIn(it) }
     }
 
-    /**
-     * Points the sources at the running keyboard: each language's chosen layout, whether it chose
-     * the keypad's own letters, and the shipped documents.
-     */
+    /** Points the sources at the running keyboard. */
     @JvmStatic
     fun init(context: Context) {
         val app = context.applicationContext
@@ -92,26 +60,15 @@ object PhysicalKeyResolver {
         builtIns = RegistryBuiltIns(LetterLayoutRegistry(app))
     }
 
-    // ── sources ──────────────────────────────────────────────────────────────
-
-    /**
-     * The layout chosen for a keyboard language on the Language screen ([LetterLayoutChoice]),
-     * whatever it is for. Set by [init]; tests replace it.
-     */
+    /** The layout chosen for a keyboard language ([LetterLayoutChoice]), whatever it is for. */
     @Volatile
     internal var chosenLayoutSource: (language: String?) -> LetterLayout? = { null }
 
-    /**
-     * Whether a language chose the keypad's own letters ([LetterLayoutChoice.KEYPAD_LETTERS]),
-     * which leaves its built-in document out. Set by [init]; tests replace it.
-     */
+    /** Whether a language chose the keypad's own letters, which leaves its built-in document out. */
     @Volatile
     internal var keypadLettersSource: (language: String?) -> Boolean = { false }
 
-    /**
-     * The built-in documents for the typing path; null (no built-in tier) until [init]. Tests
-     * replace it. The Language screen's [supportsLocale] reaches the app's documents without it.
-     */
+    /** Null (no built-in tier) until [init]. [supportsLocale] reaches the app's documents without it. */
     @Volatile
     internal var builtIns: BuiltIns? = null
 
@@ -190,20 +147,13 @@ object PhysicalKeyResolver {
 
     private fun language(locale: Locale?): String? = locale?.let { LocaleUtils.languageCode(it) }
 
-    // ── the two layout tiers ─────────────────────────────────────────────────
-
     /** The last layout [userLayout] trimmed to the character keys, and the trimmed copy. */
     @Volatile
     private var typingCopy: Pair<LetterLayout, LetterLayout>? = null
 
     /**
-     * The user's letter layout when it drives the physical keys right now, else null: bound to the
-     * current keyboard's language (or to none), its layout set and this phone's keypad. Only its
-     * character keys: the typing path never lets a document take Space, Enter or a modifier.
-     *
-     * The layout chosen for the keyboard's language on the Language screen ([LetterLayoutChoice])
-     * when it is for the physical keys (`pkb` in its targets) and fits. A chosen layout is a user
-     * layout even when it is a built-in document: its letters apply instead of the key map's.
+     * The chosen layout's character keys when it drives the physical keys now (for `pkb` and bound to
+     * this language, layout set and keypad), else null. Built-in documents chosen here count as user layouts.
      */
     @JvmStatic
     fun userLayout(): LetterLayout? {
@@ -217,8 +167,7 @@ object PhysicalKeyResolver {
 
     /** Whether [layout]'s binding fits the current keyboard in [language] on a [keypad] keypad. */
     private fun fits(layout: LetterLayout, language: String?, keypad: String?): Boolean {
-        // Almost every layout is for any keypad type and any layout set; only ask the device
-        // profile and the subtype when the binding names one.
+        // Only ask the profile and subtype when the binding names a value.
         val keypadType = if (layout.binding.keypadType == LetterLayout.ANY) null else ask(keypadTypeSource, null)
         val layoutSet = if (layout.binding.layoutSet == LetterLayout.ANY) null else ask(layoutSetSource, null)
         return layout.appliesTo(language, keypad, keypadType, layoutSet)
@@ -238,9 +187,8 @@ object PhysicalKeyResolver {
     private var lastBuiltIn: BuiltInChoice? = null
 
     /**
-     * The built-in document for the current keyboard, unless its language chose the keypad's own
-     * letters ([keypadLettersSource]); null then. The registry caches its selection; the last one
-     * is kept here as well, because the typing path asks several times per keystroke.
+     * The current keyboard's built-in document, null if its language chose the keypad's letters.
+     * The last selection is cached here because the typing path asks several times per keystroke.
      */
     @JvmStatic
     fun builtInLayout(): LetterLayout? {
@@ -271,10 +219,7 @@ object PhysicalKeyResolver {
     /** A key one of the two tiers names for an event, and whether it came from a built-in document. */
     private class Resolved(val key: LetterLayout.Key, val builtIn: Boolean)
 
-    /**
-     * The key the stack names for [event], or null when neither tier does. Rule 1 (the currency
-     * key) applies to both tiers; rule 2 (Latin letters stay the key map's) to the built-in one.
-     */
+    /** The key the stack names for [event], or null; rule 1 for both tiers, rule 2 for the built-in. */
     private fun keyFor(event: KeyEvent, currencyCharacter: () -> Int): Resolved? {
         val keyCode = event.keyCode
         val scanCode = event.scanCode
@@ -293,23 +238,13 @@ object PhysicalKeyResolver {
         key.keyCode != KeyEvent.KEYCODE_4 || key.scanCode >= 0 ||
             Character.getType(currencyCharacter()) == Character.CURRENCY_SYMBOL.toInt()
 
-    // ── letters ──────────────────────────────────────────────────────────────
-
     /**
-     * The letter [event] types under the user's layout or the built-in document, or 0 when
-     * neither names the key, a modifier other than Shift is active, the physical symbol page is
-     * mapping the keys, or the event is not from a physical keyboard — every case in which the
-     * caller should ask the system key map as before. [interpretedMeta] is the meta state the
-     * caller interprets characters against.
-     *
-     * Shift gives a built-in key's upper case where its script has one, else the document's
-     * Shift legend (`characterMapKeys`: ص→ض, the Hebrew finals, Korean doubled consonants, which
-     * the generator also fills with the engine layout's second letter where the tables had none);
-     * a user key gives its own legend, else the upper case.
+     * The letter [event] types from the layouts, or 0 to ask the key map: unnamed key, a modifier other than
+     * Shift, the symbol page mapping keys, or not physical. With Shift, a built-in key gives its upper case
+     * else its Shift legend (ص→ض); a user key gives its legend else the upper case.
      */
     @JvmStatic
     fun letter(event: KeyEvent, interpretedMeta: Int): Int {
-        // Rule 1 reads the character the event itself carries, as the old extra-key rule did.
         val resolved = keyFor(event) { event.unicodeChar } ?: return 0
         if (!KeyEventDeviceClassifier.getInstance().isPhysicalKeyboardEvent(event)) return skipped("not a physical keyboard event")
         val switcher = KeyboardSwitcher.getInstance()
@@ -341,10 +276,8 @@ object PhysicalKeyResolver {
     }
 
     /**
-     * What holding a key down types when "hold for capital" is on: the letter Shift gives on that
-     * key (Й, or ض on the ص key). 0 when no layout names the key, or Shift gives nothing
-     * different (most Arabic keys carry one letter). The hold handlers used to read the system key
-     * map here, so holding ص replaced it with a Latin "Q" (beta report, 2026-10).
+     * The letter Shift gives on the key, for "hold for capital" (Й, or ض on ص); 0 when unnamed or Shift
+     * gives nothing different. Not the key map: holding ص must not give a Latin "Q".
      */
     @JvmStatic
     fun heldLetter(event: KeyEvent): Int {
@@ -359,12 +292,9 @@ object PhysicalKeyResolver {
         return 0
     }
 
-    // ── Alt ──────────────────────────────────────────────────────────────────
-
     /**
-     * The Alt character the layouts give the key [keyCode] (with [scanCode], -1 when unknown), or
-     * 0 for "ask the device's Alt tables, then the key map". Without an event, rule 1 cannot be
-     * checked: a `KEYCODE_4` entry is taken as the currency key's.
+     * The layouts' Alt character for [keyCode] ([scanCode] -1 if unknown), or 0 for the device tables then the
+     * key map. Without an event, rule 1 cannot be checked: a `KEYCODE_4` entry counts as the currency key's.
      */
     @JvmStatic
     fun alt(keyCode: Int, scanCode: Int): Int {
@@ -385,9 +315,8 @@ object PhysicalKeyResolver {
     }
 
     /**
-     * [alt] for an event, and only while Alt is what decides the character. The multitap
-     * interpreter runs before `AuxCharacterResolver` and asks the system key map for the Alt
-     * character itself; this is what makes the layout's Alt character the one it starts from.
+     * [alt], only while Alt decides the character: the multitap interpreter runs before
+     * `AuxCharacterResolver`, so it uses this to start from the layout's Alt character.
      */
     @JvmStatic
     fun altFor(event: KeyEvent, interpretedMeta: Int): Int {
@@ -398,13 +327,9 @@ object PhysicalKeyResolver {
         return if (modifiers.isAltActiveForCharacter) alt else 0
     }
 
-    // ── double tap, hold, Shift legend ───────────────────────────────────────
-
     /**
-     * The double-tap sequence for a typed [letter]: the user layout's `multitapKeys` for the key
-     * that typed it, else the built-in document's (the engine layout's doubled keycaps on a cased
-     * script: й twice gives ё). Null when neither has one, which is also what tells the multitap
-     * interpreter the key does not cycle.
+     * The double-tap sequence for [letter] (user `multitapKeys`, else built-in, e.g. й twice gives ё).
+     * Null tells the multitap interpreter the key does not cycle.
      */
     @JvmStatic
     fun multitap(letter: String?): Array<String>? {
@@ -416,10 +341,8 @@ object PhysicalKeyResolver {
     }
 
     /**
-     * What holding the key that typed [letter] offers: the user layout's `moreKeys`, else the
-     * built-in document's — joined, on a multi-language keyboard, with the same letter's list in
-     * each extra language's document, as the old tables joined their locales' texts — else, for
-     * a currency symbol, the currency key's list.
+     * Hold list for [letter]: user `moreKeys`, else built-in joined with each extra language's list on a
+     * multi-language keyboard, else the currency list for a currency symbol.
      */
     @JvmStatic
     fun moreKeys(letter: String?): Array<String>? {
@@ -431,11 +354,7 @@ object PhysicalKeyResolver {
         return currencyMoreKeys(label)
     }
 
-    /**
-     * The Shift legend the layouts give the key that types [letter] unshifted (`characterMapKeys`),
-     * or null when they name none and Shift types the upper case. [letter] itself already answers
-     * with it under Shift; this is for anything that has only the letter.
-     */
+    /** The Shift legend (`characterMapKeys`) of the key typing [letter] unshifted, or null for plain upper case. */
     @JvmStatic
     fun shiftLegend(letter: String?): String? {
         if (!isOneCodePoint(letter)) return null
@@ -444,10 +363,7 @@ object PhysicalKeyResolver {
         return builtInLayout()?.keyForLetter(codePoint)?.shift?.takeIf { it != 0 }?.let { LetterLayout.string(it) }
     }
 
-    /**
-     * Every double-tap sequence the physical keys have right now, by the letter that starts it
-     * (both cases): what [multitap] answers, all at once.
-     */
+    /** Every current double-tap sequence by starting letter (both cases). */
     @JvmStatic
     fun multitapTable(): Map<String, Array<String>> {
         val locale = locale()
@@ -473,9 +389,7 @@ object PhysicalKeyResolver {
         val (key, upper) = keyForLabel(primary, label, locale) ?: return null
         val lists = ArrayList<Array<String>>()
         lists.add(key.moreKeys)
-        // A multi-language keyboard's lists join its extra languages' lists for the same letter,
-        // duplicates once, in the order the keyboard lists its languages: what the old tables did
-        // by resolving each list in every language's text table.
+        // Extra languages' lists for the same letter join in keyboard order, duplicates once.
         val extras = ask(additionalLocalesSource, null)
         if (!extras.isNullOrEmpty()) {
             val primaryLanguage = language(locale)
@@ -491,10 +405,8 @@ object PhysicalKeyResolver {
     }
 
     /**
-     * The key of [layout] that typed [label]: by its unshifted letter, else — when [label] is the
-     * keyboard language's upper case of a key's letter — that key, with `true` for "upper-case
-     * the lists". A Shift legend is a letter of its own (ض is not the capital of ص) and finds
-     * nothing here, as in the old tables.
+     * The key that typed [label]: by unshifted letter, else by the language's upper case (`true`: upper-case
+     * the lists). A Shift legend is its own letter (ض is not the capital of ص) and finds nothing.
      */
     private fun keyForLabel(layout: LetterLayout, label: String, locale: Locale?): Pair<LetterLayout.Key, Boolean>? {
         layout.keyForLetter(label.codePointAt(0))?.let { return it to false }
@@ -545,13 +457,7 @@ object PhysicalKeyResolver {
     private fun isOneCodePoint(text: String?): Boolean =
         !text.isNullOrEmpty() && Character.charCount(text.codePointAt(0)) == text.length
 
-    // ── the currency key ─────────────────────────────────────────────────────
-
-    /**
-     * What holding a currency symbol offers: the other common currencies. The lists the old
-     * physical-key tables gave the symbols their keyboards' currency keys type (`$` on the KEY2,
-     * or what "Default currency" puts there), now the same on every keyboard.
-     */
+    /** Hold lists of the currency symbols, the same on every keyboard. */
     private val CURRENCY_LISTS: Map<String, Array<String>> = mapOf(
         "$" to arrayOf("€", "¥", "£", "₱", "¢"),
         "£" to arrayOf("$", "€", "¥", "₱", "¢"),
@@ -572,10 +478,8 @@ object PhysicalKeyResolver {
     }
 
     /**
-     * The currency key's list around the "Default currency" [setting], as the old table arranged
-     * it: the setting's own symbol leaves the list (the key already types it), and a symbol typed
-     * some other way leads its own list. A list that begins with the 0 key's character is left
-     * alone unless the key types the setting's symbol.
+     * The currency list around the "Default currency" [setting]: the setting's symbol leaves the list, a
+     * symbol typed otherwise leads it. A list starting with the 0 key's character stays unless it is the setting.
      */
     @JvmStatic
     internal fun arrangeCurrencyList(label: String, list: Array<String>, setting: String, zeroKey: String?): Array<String> {
@@ -588,12 +492,7 @@ object PhysicalKeyResolver {
         return out.toTypedArray()
     }
 
-    // ── what the rest of the app asks about the layouts ──────────────────────
-
-    /**
-     * True while a built-in document in a script of its own (Arabic, Cyrillic, Hebrew, Greek,
-     * Hangul) drives the physical keys: what the old `HardwareScriptLayouts.isActive` answered.
-     */
+    /** True while a built-in document in a non-Latin script drives the physical keys. */
     @JvmStatic
     fun isScriptLayoutActive(): Boolean = builtInLayout()?.let { isScriptDocument(it) } ?: false
 
@@ -611,9 +510,8 @@ object PhysicalKeyResolver {
     }
 
     /**
-     * Whether a keyboard locale (`ar`, `ru`, `iw_IL`, either spelling of Hebrew) has an alphabet
-     * of its own on the physical keys: a built-in document for its language types a script letter.
-     * The Language screen offers the [PREF_KEY] switch only when one of the enabled keyboards does.
+     * Whether a keyboard locale has its own alphabet on the physical keys (a built-in document types a
+     * script letter); the Language screen offers the [PREF_KEY] switch only then.
      */
     @JvmStatic
     fun supportsLocale(locale: String?): Boolean {

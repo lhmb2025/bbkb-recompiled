@@ -20,31 +20,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Builds a device config for the handset the app is running on.
+ * Builds a device config for this handset: {@link #detect} reads what the hardware reports,
+ * {@link #draft} adds the keys the user captured, since a bezel key's scancode/keycode pair can
+ * only be observed (keycodes change between ROMs).
  *
- * <p>Two halves, and the split matters. {@link #detect} works out everything the hardware will
- * tell us without being asked — the {@code Build} identifiers, every physical keyboard
- * {@code InputDevice} with its vendor/product ids and sources, whether a touch keypad exists,
- * what {@code KeypadLayoutDetector} makes of the keypad and from which source, and whether a
- * shipped config already claims this device. {@link #draft} then folds those facts together with
- * what the user captured by pressing keys, because the one thing detection cannot produce is the
- * scancode/keycode pair of a bezel key: on the Minimal Phone MP01 the Sym key's scancode is 249
- * on every ROM but its keycode changed between two 2025/2026 ROMs, so it has to be observed.
- *
- * <p>The kernel keylayout and keychar files ({@code /vendor/usr/keylayout/*.kl}) are deliberately
- * not read. They are the authoritative answer, and on the KEY2 they are even world-readable, but
- * on a ROM that falls back to {@code Generic.kl} — the MP01 does, because its {@code .idc} names
- * a {@code .kl} that is not on the filesystem — the file that is <em>present</em> is not the file
- * in <em>use</em>, so it would confidently describe a mapping the device does not have. What the
- * key actually sent is the only evidence that cannot be wrong.
+ * <p>Keylayout files ({@code /vendor/usr/keylayout/*.kl}) are not read: on a ROM that falls back
+ * to {@code Generic.kl}, the file present is not the file in use.
  */
 public final class DeviceProfileBuilder {
 
     private static final String TAG = "DeviceProfileBuilder";
 
-    private DeviceProfileBuilder() {} // No instantiation
-
-    // ── detection ────────────────────────────────────────────────────────────
+    private DeviceProfileBuilder() {}
 
     /** Reads everything detectable about this handset. Safe to call off the main thread. */
     @NonNull
@@ -62,8 +49,7 @@ public final class DeviceProfileBuilder {
             }
         }
 
-        // The detector's own live answer if it has one; otherwise run it now, which is the case
-        // in Settings on a device whose IME has not started this boot.
+        // Run the detector now if the IME has not started this boot.
         KeypadLayoutDetector.Detection detection = KeypadLayoutDetector.last();
         if (detection == null) {
             detection = KeypadLayoutDetector.detectLive(
@@ -100,13 +86,9 @@ public final class DeviceProfileBuilder {
     }
 
     /**
-     * Every non-virtual {@code SOURCE_KEYBOARD} device, in device-id order.
-     *
-     * <p>{@code KeyboardDeviceScanner} is not used for this: it keeps only the devices that pass
-     * {@code isPhysicalKeyboard()} and exposes neither vendor/product ids nor the sources mask,
-     * and an unknown handset whose keypad reports a type this app does not expect is exactly the
-     * device someone is building a profile for. Everything with a keyboard source is listed, and
-     * the screen shows the lot.
+     * Every non-virtual {@code SOURCE_KEYBOARD} device, in id order. Not via
+     * {@code KeyboardDeviceScanner}, whose {@code isPhysicalKeyboard()} filter would drop the
+     * unexpected keypads profiles are built for, and which hides vendor/product ids and sources.
      */
     @NonNull
     private static List<DeviceFacts.Keyboard> scanKeyboards() {
@@ -145,14 +127,8 @@ public final class DeviceProfileBuilder {
     }
 
     /**
-     * The keyboard a config should key on: the first named alphabetic one, else the first named
-     * one at all.
-     *
-     * <p>There is no public way to ask whether an {@code InputDevice} is built in — {@code
-     * isExternal()} is {@code @hide} — so "alphabetic first, then device-id order" is the whole
-     * rule. It picks the handset's own keypad on both reference devices ({@code aw9523b-key} on
-     * the MP01, {@code stmpe_keypad} on the KEY2), and if a Bluetooth keyboard is paired at
-     * capture time the user can see which name was chosen on the screen's detected rows.
+     * The keyboard a config keys on: first named alphabetic one, else first named. Built-in cannot
+     * be asked ({@code isExternal()} is {@code @hide}); the screen shows which name was chosen.
      */
     @Nullable
     private static DeviceFacts.Keyboard pickPrimary(@NonNull List<DeviceFacts.Keyboard> keyboards) {
@@ -170,12 +146,8 @@ public final class DeviceProfileBuilder {
     }
 
     /**
-     * The shipped config whose {@code <match>} already claims {@code deviceName}, or null.
-     *
-     * <p>Same order as {@code CustomDeviceConfigManager.findMatchingPreloadedConfig}: the
-     * available-configs list is sorted by display name and the first match wins, so this reports
-     * the config that would actually be auto-selected rather than some other one that also
-     * matches.
+     * The shipped config claiming {@code deviceName}, or null. Same first-match order as
+     * {@code findMatchingPreloadedConfig}, so it reports the config that would be auto-selected.
      */
     @Nullable
     private static CustomDeviceConfigManager.ConfigInfo findMatchingShippedConfig(
@@ -210,11 +182,7 @@ public final class DeviceProfileBuilder {
         return value != null ? value : "";
     }
 
-    // ── draft assembly ───────────────────────────────────────────────────────
-
     /**
-     * Folds detected facts and captured keys into the draft the exporter serialises.
-     *
      * @param profileName the display name the config carries; blank falls back to
      *                    {@link DeviceFacts#suggestedProfileName()}
      */

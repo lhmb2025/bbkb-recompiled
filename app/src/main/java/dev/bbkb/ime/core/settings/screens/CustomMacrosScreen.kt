@@ -26,10 +26,7 @@ import dev.bbkb.ime.core.settings.ui.SettingsScaffold
 import dev.bbkb.ime.personaldictionary.macro.CustomMacro
 import dev.bbkb.ime.personaldictionary.macro.CustomMacroRepository
 
-/**
- * Screen for managing user-defined custom macros.
- * Allows users to create their own %x placeholders for use in text shortcuts.
- */
+/** User-defined %x placeholders for text shortcuts. */
 @Composable
 fun CustomMacrosScreen(
     onNavigateBack: () -> Unit
@@ -49,8 +46,6 @@ fun CustomMacrosScreen(
     SettingsScaffold(
         title = context.getString(R.string.settings_custom_macros_title),
         onNavigateBack = onNavigateBack,
-        // One naming of one action. The screen used to offer adding a macro twice — a bare + in
-        // the app bar and an unlabelled round FAB — and neither said what it would add.
         floatingActionButton = {
             ExtendedFloatingActionButton(
                 onClick = { showAddDialog = true },
@@ -64,17 +59,14 @@ fun CustomMacrosScreen(
                 .fillMaxSize()
                 .padding(padding)
         ) {
-            // What the screen is for. Was a tinted card with an Info glyph — decoration around a
-            // sentence, and a tint that made an explanation look like a warning.
             PreferenceInfo(
                 text = stringResource(R.string.settings_custom_macros_intro),
                 detail = stringResource(R.string.settings_macros_reserved_tags),
-                // The characters ARE the content here: %D and %d are different macros.
+                // %D and %d are different macros.
                 monospaceDetail = true,
             )
 
             if (macros.isEmpty()) {
-                // Empty state
                 Box(
                     modifier = Modifier
                         .fillMaxSize()
@@ -98,7 +90,6 @@ fun CustomMacrosScreen(
                         )
                         Spacer(Modifier.height(8.dp))
                         Text(
-                            // Names the button it means, now that the button says what it does.
                             stringResource(R.string.settings_macros_empty_hint),
                             style = MaterialTheme.typography.bodyMedium,
                             color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f)
@@ -110,8 +101,7 @@ fun CustomMacrosScreen(
                 CompositionLocalProvider(LocalInGroup provides true) {
                     LazyColumn(
                         modifier = Modifier.fillMaxSize(),
-                        // The rows are one group: inset from the screen edge like every group; the
-                        // bottom inset keeps the last one clear of the extended FAB.
+                        // Bottom inset keeps the last row clear of the extended FAB.
                         contentPadding = PaddingValues(
                             start = spacing.groupInset,
                             end = spacing.groupInset,
@@ -133,8 +123,7 @@ fun CustomMacrosScreen(
             }
         }
     }
-    
-    // Add dialog
+
     if (showAddDialog) {
         CustomMacroDialog(
             macro = null,
@@ -147,8 +136,7 @@ fun CustomMacrosScreen(
             }
         )
     }
-    
-    // Edit dialog
+
     editingMacro?.let { macro ->
         CustomMacroDialog(
             macro = macro,
@@ -161,8 +149,7 @@ fun CustomMacrosScreen(
             }
         )
     }
-    
-    // Delete confirmation
+
     showDeleteConfirm?.let { macro ->
         AlertDialog(
             onDismissRequest = { showDeleteConfirm = null },
@@ -194,12 +181,8 @@ fun CustomMacrosScreen(
 }
 
 /**
- * One macro, on the app's own [PreferenceItem] rather than an elevated card.
- *
- * A card per row turned a list of six macros into six floating objects with a gutter between them,
- * at a left edge 16dp further in than every other settings list. The tag goes in the leading slot,
- * where the icon of an icon-bearing row would be, so the name lines up with the titles on the
- * screen the user navigated here from; the overflow menu takes the trailing slot.
+ * One macro row: the tag in the leading (icon) slot so names align with other settings titles,
+ * the overflow menu trailing.
  */
 @Composable
 private fun MacroListItem(
@@ -273,8 +256,7 @@ private fun CustomMacroDialog(
     var tag by remember { mutableStateOf(macro?.tag ?: "") }
     var name by remember { mutableStateOf(macro?.name ?: "") }
     var value by remember { mutableStateOf(macro?.value ?: "") }
-    
-    // Validation
+
     val tagError = when {
         tag.isEmpty() -> null
         tag.length > 1 -> stringResource(R.string.settings_macros_tag_single)
@@ -298,7 +280,6 @@ private fun CustomMacroDialog(
                 modifier = Modifier.fillMaxWidth(),
                 verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
-                // Tag field
                 OutlinedTextField(
                     value = tag,
                     onValueChange = { 
@@ -324,8 +305,7 @@ private fun CustomMacroDialog(
                         }
                     }
                 )
-                
-                // Name field
+
                 OutlinedTextField(
                     value = name,
                     onValueChange = { name = it },
@@ -334,8 +314,7 @@ private fun CustomMacroDialog(
                     modifier = Modifier.fillMaxWidth(),
                     singleLine = true
                 )
-                
-                // Value field
+
                 OutlinedTextField(
                     value = value,
                     onValueChange = { value = it },
@@ -347,8 +326,7 @@ private fun CustomMacroDialog(
                     minLines = 3,
                     maxLines = 5
                 )
-                
-                // Preview
+
                 if (tag.isNotEmpty() && value.isNotEmpty()) {
                     Card(
                         colors = CardDefaults.cardColors(

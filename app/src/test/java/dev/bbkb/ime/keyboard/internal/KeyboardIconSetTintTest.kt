@@ -14,8 +14,8 @@ import org.robolectric.annotation.Config
 import org.robolectric.util.ReflectionHelpers
 
 /**
- * P-13: applyColorTint tints the set's own drawables in place, and only when the palette's icon
- * color changed since the last call.
+ * applyColorTint tints the set's own drawables in place, and only when the palette's icon color
+ * changed since the last call.
  */
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [34])

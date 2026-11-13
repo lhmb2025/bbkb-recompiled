@@ -7,11 +7,8 @@ import org.junit.Test
 
 /**
  * Characterises [PointerTrackerQueue], the FIFO of live pointers shared by `PointerTracker` (VKB)
- * and `GestureEventProcessor` (CKB). Every public operation is pinned, including the duplicate
- * handling (a pointer re-added without an intervening remove) and what an `onPhantomUpEvent`
- * callback observes while a release scan is still running — `PointerTracker.onPhantomUpEvent`
- * reaches the keyboard action listener, which reads `size()` through
- * `getActivePointerTrackerCount()`.
+ * and `GestureEventProcessor` (CKB): every public operation, duplicate adds, and what an
+ * `onPhantomUpEvent` callback sees mid-scan (the listener reads `size()` from inside it).
  */
 class PointerTrackerQueueTest {
 
@@ -37,8 +34,6 @@ class PointerTrackerQueueTest {
     }
 
     private fun queueOf(vararg es: E) = PointerTrackerQueue().apply { es.forEach { add(it) } }
-
-    // ---- add / size / remove / toString ------------------------------------------------------
 
     @Test
     fun emptyQueue() {
@@ -99,8 +94,6 @@ class PointerTrackerQueueTest {
         assertEquals("[c d a]", q.toString())
     }
 
-    // ---- releaseAllPointersExcept / releaseAllPointers ----------------------------------------
-
     @Test
     fun releaseAllPointersPhantomsEveryoneInOrder() {
         val a = E("a"); val b = E("b", modifier = true); val c = E("c")
@@ -146,8 +139,6 @@ class PointerTrackerQueueTest {
         assertEquals(listOf("a.phantom(4)", "a.phantom(4)"), log)
         assertEquals("[k]", q.toString())
     }
-
-    // ---- releaseAllPointersOlderThan ---------------------------------------------------------
 
     @Test
     fun releaseOlderThanPhantomsOnlyOlderNonModifiers() {
@@ -196,8 +187,6 @@ class PointerTrackerQueueTest {
         assertEquals(listOf("a.phantom(1)"), log)
         assertEquals("[m p]", q.toString())
     }
-
-    // ---- predicates / broadcast --------------------------------------------------------------
 
     @Test
     fun hasModifierKeyOlderThan() {
@@ -269,8 +258,6 @@ class PointerTrackerQueueTest {
         assertEquals(listOf("s.shiftTap"), log)
         assertEquals("[a b]", q.toString())
     }
-
-    // ---- what a phantom-up callback observes mid-scan ----------------------------------------
 
     @Test
     fun phantomCallbackSeesPreReleaseSizeDuringExceptScan() {

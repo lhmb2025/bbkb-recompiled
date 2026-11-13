@@ -23,12 +23,8 @@ public class InputEvent {
     private static final int COORD_VIRTUAL         = -2;
     private static final int COORD_NO_COORDINATES  = -4;
     /**
-     * Marker coordinate carried in {@link #mX}/{@link #mY} by the backspace event that
-     * {@code BlackBerryIME.onSwipeDelete()} synthesizes for the swipe-to-delete gesture. The
-     * backspace revert path treats such an event as always revert-eligible (swiping to
-     * delete right after an auto-correction reverts the correction regardless of the
-     * character before the cursor). Verified against the original smali — this is original
-     * behavior, not a reconstruction artifact.
+     * Marker in {@link #mX}/{@link #mY} on the backspace synthesized by swipe-to-delete: the revert path
+     * treats it as always revert-eligible, so the swipe undoes an auto-correction whatever precedes the cursor.
      */
     public static final int COORD_SWIPE_DELETE_REVERT = -5;
 
@@ -54,6 +50,17 @@ public class InputEvent {
 
     private final int mFlags;
 
+    /**
+     * @param i event type (EVENT_*)
+     * @param i2 code point, or -1 for none
+     * @param i3 key code
+     * @param i4 x coordinate or a COORD_* marker
+     * @param i5 y coordinate or a COORD_* marker
+     * @param i6 FLAG_* bits
+     * @param c0914a next event in the chain, or null
+     * @param j timestamp, or -1
+     * @param z true if from a switched keyboard
+     */
     private InputEvent(int i, CharSequence charSequence, int i2, int i3, int i4, int i5, SuggestedWords.SuggestedWordInfo suggestedWordInfoVar, int i6, InputEvent c0914a, long j, boolean z) {
         this.mEventType = i;
         this.mText = charSequence;
@@ -75,38 +82,103 @@ public class InputEvent {
         }
     }
 
+    /**
+     * @param i code point
+     * @param i2 key code
+     * @param i3 x coordinate
+     * @param i4 y coordinate
+     * @param j timestamp
+     * @param z true for a key repeat
+     */
     public static InputEvent createKeyPress(int i, int i2, int i3, int i4, long j, boolean z) {
-        return new InputEvent(EVENT_KEY_PRESS, null, i, i2, i3, i4, null, z ? FLAG_KEY_REPEAT : 0, null, j, false); // createKeyPress
+        return new InputEvent(EVENT_KEY_PRESS, null, i, i2, i3, i4, null, z ? FLAG_KEY_REPEAT : 0, null, j, false);
     }
 
+    /**
+     * @param i code point
+     * @param i2 key code
+     * @param c0914a next event, or null
+     * @param z true for a key repeat
+     * @param j timestamp
+     * @param z2 true if from a switched keyboard
+     */
     public static InputEvent createHardwareKeyPressEx(int i, int i2, InputEvent c0914a, boolean z, long j, boolean z2) {
         return new InputEvent(EVENT_KEY_PRESS, null, i, i2, COORD_NO_COORDINATES, COORD_NO_COORDINATES, null, z ? FLAG_KEY_REPEAT : 0, c0914a, j, z2);
     }
 
+    /**
+     * @param i code point
+     * @param i2 key code
+     * @param c0914a next event, or null
+     * @param z true for a key repeat
+     * @param j timestamp
+     * @param z2 true if from a switched keyboard
+     */
     public static InputEvent createTextEvent(int i, CharSequence charSequence, int i2, InputEvent c0914a, boolean z, long j, boolean z2) {
         return new InputEvent(EVENT_TEXT_INPUT, charSequence, i, i2, COORD_NO_COORDINATES, COORD_NO_COORDINATES, null, z ? FLAG_KEY_REPEAT : 0, c0914a, j, z2);
     }
 
+    /**
+     * @param i code point
+     * @param i2 key code
+     * @param c0914a next event, or null
+     * @param z true for a key repeat
+     * @param j timestamp
+     */
     public static InputEvent createHardwareKeyPress(int i, int i2, InputEvent c0914a, boolean z, long j) {
         return createHardwareKeyPressEx(i, i2, c0914a, z, j, false);
     }
 
+    /**
+     * @param i code point
+     * @param i2 key code
+     * @param c0914a next event, or null
+     * @param z true for a key repeat
+     * @param z2 true if Shift is locked
+     * @param j timestamp
+     */
     public static InputEvent createModifierKeyEvent(int i, int i2, InputEvent c0914a, boolean z, boolean z2, long j) {
         return new InputEvent(EVENT_KEY_PRESS, null, i, i2, COORD_NO_COORDINATES, COORD_NO_COORDINATES, null, (z ? FLAG_KEY_REPEAT : 0) | FLAG_MODIFIER_KEY | (z2 ? FLAG_SHIFT_LOCKED : 0), c0914a, j, false);
     }
 
+    /**
+     * @param i code point
+     * @param i2 key code
+     * @param c0914a next event, or null
+     */
     public static InputEvent createFunctionalKeyEvent(int i, int i2, InputEvent c0914a) {
         return new InputEvent(EVENT_KEY_PRESS, null, i, i2, COORD_NO_COORDINATES, COORD_NO_COORDINATES, null, FLAG_FUNCTIONAL_KEY, c0914a, -1L, false);
     }
 
+    /**
+     * @param i code point
+     * @param i2 key code
+     * @param j timestamp
+     * @param c0914a next event, or null
+     */
     public static InputEvent createHardwareKeyEvent(int i, int i2, long j, InputEvent c0914a) {
         return new InputEvent(EVENT_KEY_PRESS, null, i, i2, COORD_UNKNOWN, COORD_UNKNOWN, null, 0, c0914a, j, false);
     }
 
+    /**
+     * @param i code point
+     * @param i2 key code
+     * @param i3 x coordinate
+     * @param i4 y coordinate
+     * @param j timestamp
+     * @param z true for a key repeat
+     * @param z2 true if Shift is locked
+     */
     public static InputEvent createModifierKeyPress(int i, int i2, int i3, int i4, long j, boolean z, boolean z2) {
         return new InputEvent(EVENT_KEY_PRESS, null, i, i2, i3, i4, null, (z ? FLAG_KEY_REPEAT : 0) | FLAG_MODIFIER_KEY | (z2 ? FLAG_SHIFT_LOCKED : 0), null, j, false);
     }
 
+    /**
+     * @param i code point
+     * @param i2 x coordinate
+     * @param i3 y coordinate
+     * @param z true if from a switched keyboard
+     */
     public static InputEvent createTouchEvent(int i, int i2, int i3, boolean z) {
         return new InputEvent(EVENT_KEY_PRESS, null, i, 0, i2, i3, null, 0, null, -1L, z);
     }
@@ -115,6 +187,7 @@ public class InputEvent {
         return new InputEvent(EVENT_SUGGESTION_PICKED, suggestedWordInfoVar.word, -1, 0, COORD_VIRTUAL, COORD_VIRTUAL, suggestedWordInfoVar, 0, null, -1L, false);
     }
 
+    /** @param i key code */
     public static InputEvent createTextInputEvent(CharSequence charSequence, int i) {
         return new InputEvent(EVENT_TEXT_INPUT, charSequence, -1, i, COORD_UNKNOWN, COORD_UNKNOWN, null, 0, null, -1L, false);
     }
@@ -123,6 +196,7 @@ public class InputEvent {
         return new InputEvent(EVENT_SUGGESTION_PICKED, suggestedWordInfoVar.word, suggestedWordInfoVar.word.charAt(0), 0, COORD_VIRTUAL, COORD_VIRTUAL, suggestedWordInfoVar, 0, null, -1L, false);
     }
 
+    /** @param c0914a the event to copy */
     public static InputEvent createGestureEndCopy(InputEvent c0914a) {
         return new InputEvent(c0914a.mEventType, c0914a.mText, c0914a.mCodePoint, c0914a.mKeyCode, c0914a.mX, c0914a.mY, c0914a.mSuggestedWordInfo, c0914a.mFlags | FLAG_GESTURE_END, c0914a.mNextEvent, c0914a.mTimestamp, false);
     }
@@ -135,14 +209,7 @@ public class InputEvent {
         return this.mTimestamp;
     }
 
-    /**
-     * Return a copy of the {@code head} chain with {@code tail} appended after its last node.
-     *
-     * <p>Audit DK-44: this used to walk the chain to measure it, allocate an array, fill it, then
-     * rebuild every node — 2n+1 allocations to append one node to an n-length list, on the
-     * punctuation/auto-space path (i.e. during ordinary typing). Rebuilding recursively gives the
-     * same immutability in n allocations with no array.
-     */
+    /** Copy of the {@code head} chain with {@code tail} appended after its last node. */
     public static InputEvent appendEventToChain(InputEvent head, InputEvent tail) {
         InputEvent rebuiltNext = (head.mNextEvent == null) ? tail : appendEventToChain(head.mNextEvent, tail);
         return withNext(head, rebuiltNext);
@@ -192,10 +259,8 @@ public class InputEvent {
     }
 
     /**
-     * Whether this event is the user typing: a character (space and Enter included), a run of text,
-     * a swipe, or Delete (key code -5). Modifiers (Shift, Alt, Sym) and the other functional keys
-     * (mode switches, board keys) are not, and neither is a picked suggestion. What brings the
-     * suggestion strip back over a menu the user raised (owner decision 2026-11-05, AuxBarChoice).
+     * Whether this is the user typing: a character (space and Enter included), text, a swipe, or Delete
+     * (-5). Not modifiers, other functional keys or a picked suggestion. Brings the strip back over a menu.
      */
     public boolean editsText() {
         if (!hasData() || isModifierKey() || isSuggestionPicked()) {
@@ -225,7 +290,6 @@ public class InputEvent {
             case EVENT_UNKNOWN_3:
                 return "";
             case EVENT_KEY_PRESS:
-                // Guard against invalid Unicode code points (e.g., -1 / 0xFFFFFFFF)
                 if (this.mCodePoint < 0 || !Character.isValidCodePoint(this.mCodePoint)) {
                     if (BuildConfig.DEBUG) {
                     android.util.Log.w("InputEvent", "Invalid Unicode code point: 0x" + 
@@ -233,9 +297,7 @@ public class InputEvent {
                     }
                     return "";
                 }
-                // Audit DK-43: getOutputText() runs on the commit path for every typed character.
-                // new String(Character.toChars(cp)) allocates a char[] AND a String; for the BMP
-                // case (every ASCII/Latin keystroke on a KEY2) one of the two is avoidable.
+                // Avoids the char[] for BMP code points; this runs for every typed character.
                 return Character.isBmpCodePoint(this.mCodePoint)
                         ? String.valueOf((char) this.mCodePoint)
                         : new String(Character.toChars(this.mCodePoint));
@@ -248,6 +310,7 @@ public class InputEvent {
         }
     }
 
+    /** @param c0914a the event to copy */
     public static InputEvent createFromSwitchedKeyboard(InputEvent c0914a) {
         return new InputEvent(c0914a.mEventType, c0914a.mText, c0914a.mCodePoint, c0914a.mKeyCode, c0914a.mX, c0914a.mY, c0914a.mSuggestedWordInfo, c0914a.mFlags, c0914a.mNextEvent, c0914a.mTimestamp, true);
     }

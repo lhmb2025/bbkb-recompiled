@@ -8,23 +8,10 @@ import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
 
 /**
- * Pins the **unit conversion** applied to the Y coordinate that the CKB gesture path hands the
- * native engine — the `scaleEngineY(i2)` in every `NuanceSDKManager.touchStart/touchMove/touchEnd`
- * call in [GestureEventProcessor] (onDownEvent, onMoveEvent, onUpEvent).
- *
- * Why this is worth a test rather than a comment: the Y argument of the touch ABI is the single
- * most confusable value in the whole pipeline. Three different spaces are in play — raw capacitive
- * sensor Y, the KDB's authored Y, and the on-screen view Y — and the mapping between the first two
- * lives HERE, in Java, for the CKB, while for the VKB it lives in the engine
- * (`SetKeyboardSize` stretch). Applying both is the documented "double warp" that turned a
- * known-good replayed trace into a word one row up. The X coordinate is passed through untouched.
- *
- * COVERAGE LIMIT, stated plainly: this pins `warpY`'s ARITHMETIC, not that the three call sites
- * use it. `warpY`/`scaleEngineY` are private, so the test reaches them reflectively; deleting the
- * `scaleEngineY(...)` wrapper from one of the call sites would leave this green. The protection
- * against that is the call sites reading `scaleEngineY(i2)` next to a bare `i` for X.
- *
- * See docs/2026-09_kdb-touch-abi_audit.md §1 (TouchStart/TouchMove/TouchEnd — units).
+ * Pins the arithmetic of `warpY`/`scaleEngineY`, the sensor-to-authored Y conversion the CKB gesture
+ * path in [GestureEventProcessor] applies before every touchStart/Move/End (X passes through). The
+ * VKB gets this mapping from the engine's `SetKeyboardSize` stretch, so applying both warps a trace
+ * a row up. Reached reflectively: it does not prove the call sites use it.
  */
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [34], manifest = Config.NONE)
@@ -84,9 +71,8 @@ class EngineYWarpTest {
         // Below the first breakpoint: engine[0] + (y - sensor[0]).
         assertEquals(-10, warp(90))
         assertEquals(0, warp(100))
-        // Above the last: engine[last] + (y - sensor[last]). Deliberately NOT a scaled
-        // extrapolation — a touch below the letter grid must land off the grid, not be
-        // squeezed back onto the bottom row.
+        // Above the last: engine[last] + (y - sensor[last]). Deliberately not a scaled extrapolation:
+        // a touch below the letter grid must land off the grid, not on the bottom row.
         assertEquals(300, warp(400))
         assertEquals(350, warp(450))
     }

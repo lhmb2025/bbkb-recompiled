@@ -13,64 +13,25 @@ import java.util.Locale
 import java.util.concurrent.ConcurrentHashMap
 
 /**
- * The letter layouts each keyboard language uses: the "On-screen keyboard" and "Physical keyboard"
- * rows of a keyboard on the Language screen. Two preferences per language, one per keyboard
- * ([prefKey]: [PREF_PREFIX]`vkb_<language>` and [PREF_PREFIX]`pkb_<language>`, the language as
- * [LocaleUtils.languageCode] spells it: `en`, `iw`), each holding a layout id; empty or absent
- * means the keyboard's default. Every keyboard of that language shares the choices.
- *
- *  - **On screen** ([Target.VKB]), the keyboard is built from the layout set named after the
- *    chosen layout ([keyboardLayoutSet]) when the layout is one the app ships for the on-screen
- *    keyboard and a `keyboard_layout_set_<id>.xml` exists for it: QWERTY, AZERTY, QWERTZ, Colemak
- *    and Dvorak. A custom document cannot draw the on-screen keyboard yet, because its rows would
- *    have to be built while the app runs, which is a later step.
- *  - **On the physical keys** ([Target.PKB]; [PhysicalKeyResolver.userLayout]) and in the engine's
- *    KDBs ([LetterLayoutEngineSync]), the chosen layout drives the keys when it is for the
- *    physical keyboard and its binding fits this keyboard and keypad. The choice may instead be
- *    [KEYPAD_LETTERS]: the keys type what the keypad's own key map says (Latin on a Latin keypad),
- *    and the language's own alphabet document is not applied.
- *
- * ## Precedence on the physical keys
- *
- * 1. the per-language physical choice, when it names a layout that drives the physical keys;
- * 2. else, unless the choice is [KEYPAD_LETTERS], the built-in document for the keyboard's
- *    language, keypad and layout set (never one marked opt-in: those are offered here and
- *    applied only when chosen);
+ * Per-language letter layout choices, one preference per keyboard ([prefKey], language as
+ * [LocaleUtils.languageCode] spells it); empty means the default. On screen ([Target.VKB]) only
+ * built-in layouts with a shipped layout set can draw ([drawsOnScreen]). An id resolves to the
+ * user's layout first, else the built-in. Physical-key precedence:
+ * 1. the physical choice, when it names a layout that drives the physical keys (letters always apply);
+ * 2. else, unless [KEYPAD_LETTERS], the language's built-in document (never an opt-in one);
  * 3. else the firmware key map.
- *
- * A layout chosen here is followed with the user tier's rules even when it is a built-in document:
- * its letters always apply, where a language's own built-in document leaves Latin letters to the
- * firmware key map.
- *
- * ## What came before
- *
- * [migrate] carries three older settings into these choices, once per process: one preference
- * per language ([PREF_PREFIX]`<language>`) that applied to whichever keyboards its layout was for;
- * the one custom layout switched on for every language in Physical keyboard > Physical layouts
- * ([LetterLayoutRegistry.PREF_ACTIVE_LAYOUT]), which becomes the physical choice of the languages
- * it is bound to; and the "Use active language's alphabet for physical keyboard" switch
- * ([LEGACY_ALPHABET_PREF]), which, when it was off, becomes [KEYPAD_LETTERS] for every enabled
- * language that has an alphabet document.
- *
- * An id names the user's layout of that id (`files/layouts/letter/<id>.xml`) first, else the
- * built-in one: a built-in saved as a file and imported again, perhaps edited, stands in for it.
  */
 object LetterLayoutChoice {
-
-    /** Followed by the keyboard and the language: `pref_letter_layout_vkb_en`, `pref_letter_layout_pkb_en`. */
+    /** As in `pref_letter_layout_vkb_en`, `pref_letter_layout_pkb_en`. */
     const val PREF_PREFIX: String = "pref_letter_layout_"
 
-    /** The preference that holds [language]'s choice for [target]. */
     @JvmStatic
     fun prefKey(language: String, target: Target): String = PREF_PREFIX + target.token + "_" + language
 
     /** The one preference a language had before the choices were separate. */
     private fun legacyPrefKey(language: String): String = PREF_PREFIX + language
 
-    /**
-     * The physical choice that says the keys type the keypad's own letters: no layout, and not the
-     * language's alphabet document either. Not a layout id (an id cannot contain `:`).
-     */
+    /** Physical choice: the keypad's own letters, not even the alphabet document. Cannot clash with an id (no `:`). */
     const val KEYPAD_LETTERS: String = ":keypad"
 
     /** "Use active language's alphabet for physical keyboard", the switch [migrate] retires. */
@@ -94,11 +55,7 @@ object LetterLayoutChoice {
     fun chosenId(prefs: SharedPreferences, language: String?, target: Target): String =
         if (language.isNullOrEmpty()) "" else prefs.getString(prefKey(language, target), "") ?: ""
 
-    /**
-     * Chooses [id] for [language]'s [target] keyboard (`""`: back to its default). The typing path
-     * and the engine pick it up on the next key; the keyboard's preference listener rebuilds the
-     * on-screen keyboard.
-     */
+    /** Chooses [id] (`""` for the default); takes effect on the next key, the preference listener rebuilds the on-screen keyboard. */
     @JvmStatic
     fun choose(context: Context, language: String, target: Target, id: String) {
         val editor = PrefsManager.getPrefs(context).edit()
@@ -109,19 +66,10 @@ object LetterLayoutChoice {
     }
 
     /**
-     * Carries the older settings into the per-keyboard choices, once per process, from the first
-     * read of the choices (see the class doc):
-     *
-     *  - a legacy single choice ([PREF_PREFIX]`<language>`) becomes the on-screen choice when its
-     *    layout draws the on-screen keyboard and the physical one when it is for the physical
-     *    keys; one whose layout is gone is dropped;
-     *  - the custom layout switched on for every language becomes the physical choice of each
-     *    enabled language its binding names (every enabled language, for one bound to none) that
-     *    has no physical choice yet;
-     *  - the alphabet switch, when off, becomes [KEYPAD_LETTERS] for every enabled language whose
-     *    document types another script (Arabic, Cyrillic, …) and that has no physical choice yet.
-     *
-     * The enabled languages are [enabledLanguages]'s; the tests replace it.
+     * Once per process, carries retired settings into the per-keyboard choices: a single
+     * [PREF_PREFIX]`<language>` choice splits by target; [LetterLayoutRegistry.PREF_ACTIVE_LAYOUT]
+     * becomes the physical choice of each enabled language it binds; [LEGACY_ALPHABET_PREF] off
+     * becomes [KEYPAD_LETTERS] for enabled languages with a non-Latin document. Existing choices win.
      */
     @JvmStatic
     fun migrate(context: Context) {
@@ -163,8 +111,7 @@ object LetterLayoutChoice {
         }
         editor.remove(LetterLayoutRegistry.PREF_ACTIVE_LAYOUT)
         if (alphabetOff) {
-            // Only a language with a document that types another script: a Latin document leaves
-            // its letters to the key map anyway, so the switch never changed it.
+            // Only non-Latin documents: a Latin one leaves letters to the key map, so the switch never changed it.
             val scriptDocuments = registry.builtInIds().mapNotNull { registry.builtIn(it) }
                 .filter { !it.optIn && it.binding.isLanguageBound && PhysicalKeyResolver.isScriptDocument(it) }
             for (language in languages) {
@@ -188,10 +135,7 @@ object LetterLayoutChoice {
             .distinct()
     }
 
-    /**
-     * Whether [language]'s physical choice is [KEYPAD_LETTERS]: the keys type the keypad's own
-     * letters, and the language's alphabet document is not applied.
-     */
+    /** Whether [language]'s physical choice is [KEYPAD_LETTERS]. */
     @JvmStatic
     fun keypadLettersChosen(context: Context, language: String?): Boolean {
         if (language.isNullOrEmpty()) return false
@@ -215,30 +159,26 @@ object LetterLayoutChoice {
         return registry.get(id) ?: registry.builtIn(id)
     }
 
-    // ── for the typing path ──────────────────────────────────────────────────
-
     /** A choice's id when last read, and the layout it named (null for none or unreadable). */
     private class Snapshot(val id: String, val layout: LetterLayout?)
 
-    /** By target, then language: no key string is built per keystroke. */
+    /** By target, then language, so no key string is built per keystroke. */
     private val snapshots = Array(Target.entries.size) { ConcurrentHashMap<String, Snapshot>() }
 
     /**
-     * The chosen ids as last read from the preferences, by target, then language. A letter key
-     * asks several times over (the resolver, the hold handler, multitap), and each ask used to be
-     * a preference read under its lock plus two string joins. The preferences say when a choice
-     * changes ([prefsWatcher]), and [invalidate] clears as well.
+     * Cached chosen ids by target, then language: a letter key asks several times (resolver, hold,
+     * multitap). Cleared by [prefsWatcher] and [invalidate].
      */
     private val chosenIds = Array(Target.entries.size) { ConcurrentHashMap<String, String>() }
     private val chosenIdsLock = Any()
     private var chosenIdsGeneration = 0
 
-    /** The preferences [prefsWatcher] is registered on; they hold listeners weakly, we hold it. */
+    /** The preferences [prefsWatcher] is registered on (they hold listeners weakly, so we keep a reference). */
     @Volatile
     private var watchedPrefs: SharedPreferences? = null
 
     private val prefsWatcher = SharedPreferences.OnSharedPreferenceChangeListener { _, key ->
-        // null: clear(), everything changed.
+        // null key: clear(), everything changed.
         if (key == null || isPrefKey(key)) forgetChosenIds()
     }
 
@@ -265,19 +205,14 @@ object LetterLayoutChoice {
         byLanguage[language]?.let { return it }
         val generation = synchronized(chosenIdsLock) { chosenIdsGeneration }
         val id = chosenId(prefs, language, target)
-        // Kept only if nothing changed while it was read: a value read before a change must not
-        // be stored after the change's clear.
+        // Store only if no change happened during the read, or a stale value outlives the clear.
         synchronized(chosenIdsLock) {
             if (generation == chosenIdsGeneration) byLanguage[language] = id
         }
         return id
     }
 
-    /**
-     * The layout chosen for [language]'s [target] keyboard, parsed once per change, so a keystroke
-     * never reads a file or a preference: the copy is keyed by the chosen id ([typingChosenId]),
-     * and [LetterLayoutRegistry.invalidate] drops it.
-     */
+    /** The chosen layout, parsed once per change and keyed by chosen id, so a keystroke reads no file or preference. */
     @JvmStatic
     fun chosen(context: Context, language: String?, target: Target): LetterLayout? {
         if (language.isNullOrEmpty()) return null
@@ -290,24 +225,16 @@ object LetterLayoutChoice {
         return layout
     }
 
-    /** The layout chosen for [language]'s physical keys ([chosen] for [Target.PKB]). */
     @JvmStatic
     fun forTyping(context: Context, language: String?): LetterLayout? = chosen(context, language, Target.PKB)
 
-    /** Forgets the typing path's copies. Called by [LetterLayoutRegistry.invalidate]. */
     @JvmStatic
     fun invalidate() {
         snapshots.forEach { it.clear() }
         forgetChosenIds()
     }
 
-    // ── the on-screen keyboard ───────────────────────────────────────────────
-
-    /**
-     * The layout set the on-screen keyboard for [subtype] is built from: the id of the layout
-     * chosen for its language's on-screen keyboard when that layout draws it ([drawsOnScreen]),
-     * else the subtype's own ([ResourceLocaleUtils.getKeyboardLayoutSetName]).
-     */
+    /** The on-screen layout set for [subtype]: the chosen layout's id when it [drawsOnScreen], else the subtype's own. */
     @JvmStatic
     fun keyboardLayoutSet(context: Context, subtype: InputMethodSubtype): String =
         onScreenLayout(context, languageOf(subtype))?.id ?: ResourceLocaleUtils.getKeyboardLayoutSetName(subtype)
@@ -318,11 +245,9 @@ object LetterLayoutChoice {
         chosen(context, language, Target.VKB)?.takeIf { drawsOnScreen(context, it) }
 
     /**
-     * Whether [layout] can draw the on-screen keyboard: a built-in document for the on-screen
-     * keyboard, with a rows template, whose rows the app ships as `keyboard_layout_set_<id>.xml`
-     * (generated from the document by `letter_layouts_gen.py`, or the app's own rows for QWERTY,
-     * AZERTY and QWERTZ, which the generator checks against the document). A user's file of the
-     * same id is a different document and does not: the shipped rows would not be its letters.
+     * Whether [layout] can draw the on-screen keyboard: a built-in VKB document with a rows template
+     * and a shipped `keyboard_layout_set_<id>.xml` (from `letter_layouts_gen.py`). A user file with
+     * the same id does not: the shipped rows would not be its letters.
      */
     @JvmStatic
     fun drawsOnScreen(context: Context, layout: LetterLayout): Boolean =
@@ -339,40 +264,20 @@ object LetterLayoutChoice {
     fun hasLayoutSet(context: Context, id: String): Boolean = layoutSets.getOrPut(id) {
         if (!RESOURCE_NAME.matches(id)) return@getOrPut false
         val resources = context.resources
-        // The package the layout sets are compiled under, as KeyboardBuilder finds them: the
-        // installed package name differs between build types.
+        // Resource package, not the installed package name, which differs between build types.
         val packageName = resources.getResourcePackageName(R.xml.keyboard_layout_set_qwerty)
         resources.getIdentifier("keyboard_layout_set_$id", "xml", packageName) != 0
     }
 
-    // ── what the Language screen offers ──────────────────────────────────────
-
-    /**
-     * One entry of a keyboard's layout list: [layout] null is the keyboard's default (id `""`) or,
-     * on the physical keys, the keypad's own letters ([KEYPAD_LETTERS]).
-     */
+    /** One entry of a layout list; [layout] null is the default (`""`) or [KEYPAD_LETTERS]. */
     class Option(val id: String, val layout: LetterLayout?)
 
     /**
-     * What a keyboard in [language] may choose for its [target] keyboard, in order. Each group by
-     * name (case-insensitive, ties by id). A user's layout with a built-in's id replaces the
-     * built-in, as [resolve] does.
-     *
-     * For the on-screen keyboard: its default first, then the shipped layouts bound to no language
-     * that draw it ([drawsOnScreen]), on a keyboard written in the Latin alphabet ([latin]), less
-     * the one that is the keyboard's own layout set ([ownLayoutSet]: a French keyboard's default
-     * is AZERTY already).
-     *
-     * For the physical keys, every row is explicit: the keypad's own letters ([KEYPAD_LETTERS])
-     * first; then the language's own alphabet document ([languageDocument], the one the registry
-     * selects for the keyboard). A document that types Latin letters (English's, French's) leaves
-     * them to the keypad's key map and only adds lists, so on its keyboard it stands in for the
-     * keypad's letters and that row is left out. Then the shipped layouts for the
-     * physical keys that are bound to no language (on a Latin keyboard) or marked opt-in for this
-     * language and the keyboard's layout set ([LetterLayout.optIn]: the layouts of the etched
-     * keypad editions); then the user's layouts for the physical keys whose binding names
-     * [language] or no language. The default (choice `""`) is the alphabet document when there is
-     * one, else the keypad's letters ([defaultPhysicalId]).
+     * The Language screen's choices for [language]'s [target] keyboard, groups sorted by name; a user
+     * layout with a built-in's id replaces it.
+     * VKB: default, then unbound shipped layouts that draw (Latin keyboards only), minus [ownLayoutSet].
+     * PKB: [KEYPAD_LETTERS] (omitted when [languageDocument] is Latin, since it stands in for it), the
+     * language document, unbound shipped layouts (Latin only) or matching opt-ins, then user layouts.
      */
     @JvmStatic
     fun options(
@@ -410,7 +315,7 @@ object LetterLayoutChoice {
         return first + (shipped + own).map { Option(it.id, it) }
     }
 
-    /** The row the physical list shows chosen for choice `""`: the alphabet document's, else the keypad's letters. */
+    /** The physical row shown as chosen for `""`: the alphabet document, else [KEYPAD_LETTERS]. */
     @JvmStatic
     fun defaultPhysicalId(languageDocument: LetterLayout?): String = languageDocument?.id ?: KEYPAD_LETTERS
 }

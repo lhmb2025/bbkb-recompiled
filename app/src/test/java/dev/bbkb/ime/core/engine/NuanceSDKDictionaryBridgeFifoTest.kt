@@ -28,10 +28,8 @@ import java.util.concurrent.CountDownLatch
 import java.util.concurrent.TimeUnit
 
 /**
- * Wave 3 Phase A: FIFO on the engine thread is the ordering model between the main thread's key
- * feeds and the suggestion requests. These run on the REAL engine looper (not inline): the
- * tracker posts its feeds there, the request is posted after them, and the mock engine records
- * the order in which the engine thread called it.
+ * FIFO on the engine thread orders the main thread's key feeds against suggestion requests. Runs on
+ * the real engine looper; the mock engine records the order the engine thread called it.
  */
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [34], manifest = Config.NONE, instrumentedPackages = ["com.blackberry.nuanceshim"])
@@ -121,15 +119,13 @@ class NuanceSDKDictionaryBridgeFifoTest {
         }
         idleEngine()
 
-        // The request replays its own snapshot ("he") before the build and nothing after it: the
-        // old tail replay re-fed the live text ("hel") after the read, so 'l' reached the engine
-        // twice, once from the request and once from its own feed.
+        // The request replays its own snapshot ("he") before the build and nothing after it, so
+        // 'l' reaches the engine once.
         verify(sdk, times(1)).processKeyBySymbol('l')
         val order = inOrder(sdk)
         order.verify(sdk).buildSelectionList()
         order.verify(sdk).processKeyBySymbol('l')
-        // Two clears: the first key's, and the request's own before its replay. The tail replay
-        // added a third after the read.
+        // Two clears: the first key's, and the request's own before its replay.
         verify(sdk, times(2)).clear()
         // h and e: one feed each from typing, one each from the request's pre-build replay.
         verify(sdk, times(2)).processKeyBySymbol('h')

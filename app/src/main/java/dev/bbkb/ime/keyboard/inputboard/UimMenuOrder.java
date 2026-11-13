@@ -8,16 +8,10 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * Single source of truth for the user-orderable Unified Input Menu toggles.
- *
- * The bar shows {@link #SHOWN_COUNT} toggles around the fixed center keyboard/settings
- * key — positions (1)(2) [keyboard] (3)(4). Items past position 4 exist only in the
- * Customize Menu settings screen and are not shown on the keyboard.
- *
- * The order is stored in {@link #PREF_KEY} as a comma-separated list of the ids below.
- * {@link #getOrder} always returns a complete, sane list: unknown ids are dropped,
- * duplicates removed, and missing ids appended in default order, so adding a new
- * toggle in a future version automatically surfaces it at the end of the list.
+ * Order of the user-orderable input menu toggles. The bar shows {@link #SHOWN_COUNT} around the
+ * fixed centre key: (1)(2) [keyboard] (3)(4); the rest appear only in the customize screen.
+ * Stored in {@link #PREF_KEY} as comma-separated ids; {@link #getOrder} drops unknown ids and
+ * duplicates and appends missing ones, so a new toggle surfaces at the end.
  */
 public final class UimMenuOrder {
 
@@ -35,6 +29,7 @@ public final class UimMenuOrder {
             Arrays.asList(VOICE, EMOJI, FCC, CLIPBOARD, NUMBER_PAD));
 
     private UimMenuOrder() {
+        // Static utility.
     }
 
     public static List<String> defaultOrder() {

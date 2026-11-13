@@ -1,4 +1,4 @@
-<!-- "Use less often" on a learned word: the increase-rank glyph turned upside down (the arrow drops out of the list), 24-unit grid; tinted by the row. -->
+<!-- ic_settings_increase_rank turned upside down -->
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
     android:width="24dp"
     android:height="24dp"

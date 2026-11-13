@@ -7,8 +7,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <!-- Legacy layout (Classic/Modern): nub joystick + corner action glyphs.
-         FccView hides this group and shows fcc_material_group under Material. -->
+    <!-- Classic/Modern layout; FccView swaps it for fcc_material_group under Material -->
     <RelativeLayout
         android:id="@+id/fcc_legacy_group"
         android:layout_width="match_parent"
@@ -92,8 +91,7 @@
             android:layout_alignParentBottom="true"/>
     </RelativeLayout>
 
-    <!-- Material layout: trackpad surface, word-jump keys, labeled action chips.
-         All colors/backgrounds are applied in FccView.setupMaterialGroup(). -->
+    <!-- Material layout; colours applied in FccView.setupMaterialGroup() -->
     <LinearLayout
         android:id="@+id/fcc_material_group"
         android:layout_width="match_parent"
@@ -123,8 +121,7 @@
                 android:layout_weight="1"
                 android:layout_marginStart="10dp"
                 android:layout_marginEnd="10dp">
-                <!-- The crosshair sits exactly at the trackpad center; the hint hangs
-                     below it via translationY so it never shifts the crosshair. -->
+                <!-- The hint hangs below via translationY so it never shifts the crosshair -->
                 <ImageView
                     android:id="@+id/fcc_trackpad_icon"
                     android:layout_width="30dp"

@@ -721,7 +721,6 @@
     <string name="device_config_import_unreadable">Bu dosya bir cihaz yapılandırması değil</string>
     <string name="device_config_import_failed">Bu dosya içe aktarılamadı</string>
 
-    <!-- OTA app updates -->
     <string name="settings_updates_title">Güncellemeler</string>
     <string name="settings_updates_summary">BBKB\'nin yeni bir sürümünü denetle</string>
     <string name="settings_update_installed_version_title">Kurulu sürüm</string>
@@ -755,7 +754,6 @@
     <string name="settings_update_ready_title">Kurulmaya hazır</string>
     <string name="settings_update_version_details">Sürüm ayrıntıları</string>
     <string name="settings_update_unknown_sources_title">BBKB\'nin güncelleme kurmasına izin verilsin mi?</string>
-    <!-- Downloadable language packs (core/languagepack) -->
     <string name="language_packs_installed_header">Yüklü</string>
     <string name="language_packs_available_header">İndirilebilir</string>
     <string name="language_packs_download">İndir</string>
@@ -877,7 +875,6 @@
     <string name="settings_voice_stop_on_pause_summary_off">Mikrofona dokunana ya da yarım dakika sessizlik olana kadar duraklamalarda da dinlemeye devam eder</string>
     <string name="voice_status_listening_tap_to_stop">Dinleniyor&#8230; Durdurmak için mikrofona dokunun</string>
 
-    <!-- Settings text moved out of the code (2026-11) -->
     <string name="settings_common_save">Kaydet</string>
     <string name="settings_common_edit">Düzenle</string>
     <string name="settings_common_back">Geri</string>

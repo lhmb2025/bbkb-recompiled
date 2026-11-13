@@ -19,9 +19,9 @@ import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
 
 /**
- * Key previews are shown, hidden and moved by RenderNode properties (alpha, translation) on a
- * child that stays attached and VISIBLE, so a press does not make the full-window placer
- * re-record its display list (a large refresh per keystroke on the MP01's e-ink panel).
+ * Key previews are shown, hidden and moved by RenderNode properties (alpha, translation) on a child
+ * that stays attached and VISIBLE, so a press does not make the full-window placer re-record its
+ * display list (a large refresh per keystroke on an e-ink panel).
  */
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [34], manifest = Config.NONE)

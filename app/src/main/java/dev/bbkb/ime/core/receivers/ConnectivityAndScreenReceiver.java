@@ -10,10 +10,7 @@ import dev.bbkb.ime.core.AudioAndHapticFeedbackManager;
 import dev.bbkb.ime.core.device.state.PhysicalKeyboardStateTracker;
 import dev.bbkb.ime.core.keyevent.ModifierResetReason;
 
-/**
- * BroadcastReceiver for handling connectivity changes, ringer mode changes, and screen off events.
- * Extracted from BlackBerryIME to improve separation of concerns.
- */
+/** Handles connectivity changes, ringer mode changes and screen off for the IME. */
 public class ConnectivityAndScreenReceiver extends BroadcastReceiver {
     
     private final BlackBerryIME ime;

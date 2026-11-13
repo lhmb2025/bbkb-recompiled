@@ -15,17 +15,7 @@ import androidx.appcompat.widget.AppCompatImageView;
 import dev.bbkb.ime.R;
 import dev.bbkb.ime.core.device.ResourceConfigManager;
 
-
-/**
- * The swipe-to-delete icon overlay (main_keyboard_frame.xml / {@code delete_animation_view}).
- *
- * <p>Audit CT-33: this extended {@code AppCompatTextView} and faked {@code ImageView}'s API with a
- * {@code setImageResource} shim that pushed the icon into the <em>background</em> drawable — which
- * is stretched to the view bounds and drawn behind padding, so it interacted differently with the
- * animator's scaleX/scaleY than a real image would. The layout already declares
- * {@code android:src="@drawable/ic_key_delete"} (inert on a TextView), so the icon is now supplied
- * once at inflate and no text machinery is measured on every layout pass.
- */
+/** The swipe-to-delete icon overlay ({@code delete_animation_view}); the icon comes from the layout's {@code android:src}. */
 public class SwipeToDeleteAnimatorView extends AppCompatImageView implements Animator.AnimatorListener {
 
     private static final String TAG = "SwipeToDeleteAnimatorView";
@@ -62,11 +52,11 @@ public class SwipeToDeleteAnimatorView extends AppCompatImageView implements Ani
 
     private boolean suggestionStripShown;
 
-    @Override // android.animation.Animator.AnimatorListener
+    @Override
     public void onAnimationCancel(Animator animator) {
     }
 
-    @Override // android.animation.Animator.AnimatorListener
+    @Override
     public void onAnimationRepeat(Animator animator) {
     }
 
@@ -88,6 +78,11 @@ public class SwipeToDeleteAnimatorView extends AppCompatImageView implements Ani
         this.suggestionsStripHeight = ResourceConfigManager.getSuggestionsStripHeight(resources);
     }
 
+    /**
+     * @param f start x of the sweep
+     * @param f2 start y of the touch
+     * @param f3 end x of the sweep
+     */
     public void startSwipeAnimation(float f, float f2, float f3) {
         float f4;
         if (this.keyboardHeight > this.suggestionsStripHeight || this.suggestionStripShown) {
@@ -142,24 +137,27 @@ public class SwipeToDeleteAnimatorView extends AppCompatImageView implements Ani
         }
     }
 
+    /** @param i keyboard height in px */
     public void setCurrentKeyboardHeight(int i) {
         this.keyboardHeight = i;
     }
 
+    /** @param z true if the suggestion strip is shown */
     public void setSuggestionStripShown(boolean z) {
         this.suggestionStripShown = z;
     }
 
+    /** @param i keyboard width in px */
     public void setCurrentKeyboardWidth(int i) {
         this.keyboardWidth = i;
     }
-    
-    @Override // android.animation.Animator.AnimatorListener
+
+    @Override
     public void onAnimationStart(Animator animator) {
         setVisibility(View.VISIBLE);
     }
 
-    @Override // android.animation.Animator.AnimatorListener
+    @Override
     public void onAnimationEnd(Animator animator) {
         setVisibility(View.INVISIBLE);
         AnimatorSet animatorSet = this.animatorSet;
@@ -178,13 +176,14 @@ public class SwipeToDeleteAnimatorView extends AppCompatImageView implements Ani
 
         final float fadeInEndFraction;
 
+        /** @param f fraction of the animation spent fading in */
         FadeInOutInterpolator(float f) {
             this.fadeInEndFraction = f;
             this.fadeInSlope = 1.0f / f;
             this.fadeOutSlope = 1.0f / (1.0f - SwipeToDeleteAnimatorView.this.fadeInRatio);
         }
 
-        @Override // android.animation.TimeInterpolator
+        @Override
         public float getInterpolation(float f) {
             float f2 = this.fadeInEndFraction;
             if (f2 >= 1.0f || f2 == 0.0f) {

@@ -3,11 +3,9 @@ package dev.bbkb.ime.personaldictionary
 import java.util.Locale
 
 /**
- * One-tap "add to dictionary": the word goes into the personal dictionary as a plain word
- * (shortcut == word, case not fixed), the same entry the settings editor writes, so the engine's
- * DLM learns it (`PersonalDictionaryUtil.addToBasl` -> `NuanceSDK.addWord`) and the system user
- * dictionary is synced. Returns false when the dictionary is not loaded or the add is refused
- * (already defined), so the caller can fall back.
+ * One-tap "add to dictionary": a plain word (shortcut == word, case not fixed), so the engine
+ * learns it and AUD is synced. Returns false when not loaded or already defined, so the caller
+ * can fall back.
  */
 object OneTapAddWord {
     @JvmStatic

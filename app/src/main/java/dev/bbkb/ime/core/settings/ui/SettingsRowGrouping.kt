@@ -8,13 +8,8 @@ sealed interface RowBlock {
 }
 
 /**
- * Splits a screen's visible rows into the blocks of the grouped layout. Every run of item rows
- * becomes one group; a [Category] ends the run and labels the next group; a [Custom] block ends
- * the run and sits at page level, unless it is marked [Custom.inGroup], in which case it is an
- * item like any other. Rows before the first category form a group with no label; a category
- * followed by nothing visible produces no empty group.
- *
- * Pure, so the rule is testable without composing anything.
+ * Splits visible rows into blocks: each run of item rows is a group; a [Category] or a page-level
+ * [Custom] (not [Custom.inGroup]) ends the run. Empty runs produce no group.
  */
 fun groupRows(rows: List<SettingsRow>): List<RowBlock> {
     val blocks = mutableListOf<RowBlock>()

@@ -721,7 +721,6 @@
     <string name="device_config_import_unreadable">קובץ זה אינו תצורת מכשיר</string>
     <string name="device_config_import_failed">לא ניתן לייבא קובץ זה</string>
 
-    <!-- OTA app updates -->
     <string name="settings_updates_title">עדכונים</string>
     <string name="settings_updates_summary">בדיקת גרסה חדשה של BBKB</string>
     <string name="settings_update_installed_version_title">הגרסה המותקנת</string>
@@ -755,7 +754,6 @@
     <string name="settings_update_ready_title">מוכן להתקנה</string>
     <string name="settings_update_version_details">פרטי הגרסה</string>
     <string name="settings_update_unknown_sources_title">לאפשר ל-BBKB להתקין עדכונים?</string>
-    <!-- Downloadable language packs (core/languagepack) -->
     <string name="language_packs_installed_header">מותקן</string>
     <string name="language_packs_available_header">זמין להורדה</string>
     <string name="language_packs_download">הורדה</string>
@@ -877,7 +875,6 @@
     <string name="settings_voice_stop_on_pause_summary_off">ממשיך להאזין גם בהפסקות עד שתקיש על המיקרופון, או אחרי חצי דקה של שקט</string>
     <string name="voice_status_listening_tap_to_stop">מאזין&#8230; הקש על המיקרופון כדי לעצור</string>
 
-    <!-- Settings text moved out of the code (2026-11) -->
     <string name="settings_common_save">שמירה</string>
     <string name="settings_common_edit">עריכה</string>
     <string name="settings_common_back">חזרה</string>

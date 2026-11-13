@@ -1,21 +1,11 @@
 package dev.bbkb.ime.keyboard.inputboard.emoji;
 
 /**
- * The one owner of the emoji board's search query.
- *
- * <p>Two things can put text here, and the board treats them differently:
- * <ul>
- *   <li>{@link Origin#TYPED_IN_BOARD}: hardware keys typed while the board is open
- *       ({@code KeyEventProcessor} routes them to {@link EmojiPalettesView#appendToQuery}). The
- *       tab row becomes a search field, results show whatever tab was current, and a pick leaves
- *       the query alone. Backspace on the last character ends the query.</li>
- *   <li>{@link Origin#FROM_EDITOR}: the word being composed when the board was opened from the
- *       on-screen keyboard with Dynamic Search on. Today's behaviour, untouched: results show on
- *       the Recents tab only and a pick replaces or appends the composing word.</li>
- * </ul>
- *
- * <p>Pure state: no views, no threads. {@link #generation()} is bumped on every change so a search
- * that finishes for an older query can be dropped.
+ * The emoji board's search query, pure state. {@link Origin#TYPED_IN_BOARD}: hardware keys typed
+ * with the board open; the tab row becomes a search field and a pick keeps the query.
+ * {@link Origin#FROM_EDITOR}: the composing word when opened from the on-screen keyboard with
+ * Dynamic Search on; results show on Recents and a pick replaces the word. {@link #generation()}
+ * is bumped on every change so a search finishing for an older query can be dropped.
  */
 public final class EmojiSearchQuery {
 
@@ -68,8 +58,7 @@ public final class EmojiSearchQuery {
     }
 
     /**
-     * Appends typed characters. A query that was not typed in the board (none yet, or one seeded
-     * from the editor) starts over as a typed one.
+     * Appends typed characters; a query not typed in the board starts over as a typed one.
      *
      * @param currentCategoryId the category current now, remembered so the board can return to it
      * @return true when this call started a typed query (the search field should appear)
@@ -102,10 +91,8 @@ public final class EmojiSearchQuery {
         return true;
     }
 
-    /**
-     * Replaces the query with the editor's composing word: the on-screen dynamic-search path.
-     * Null or empty text leaves a from-editor query that is not searchable.
-     */
+    /** Replaces the query with the editor's composing word; null or empty is not searchable. */
+
     public void setFromEditor(String composing) {
         text.setLength(0);
         if (composing != null) {

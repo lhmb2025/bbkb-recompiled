@@ -17,13 +17,9 @@ import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
 
 /**
- * Characterisation of the page builders in `EmojiKeyboardFactory` and of emoji search ranking in
- * `EmojibaseDataProvider` / `EmojiData`, before the three builders become one and match+rank fold.
- *
- * The three builders differ in exactly three things, all pinned here:
- *  - category pages are NOT padded with blank keys; search-result and recents pages are;
- *  - recents is a single page of at most 40, search results chunk into pages of 40;
- *  - none of the three is the Recents keyboard (category id 0), so none writes the recents preference.
+ * Characterisation of `EmojiKeyboardFactory`'s page builders and `EmojibaseDataProvider`/`EmojiData` search
+ * ranking. Category pages are not padded, search and recents pages are; recents is one page of at most 40,
+ * search results chunk by 40; none is the Recents keyboard (id 0), so none writes the recents preference.
  */
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [34], qualifiers = "w411dp-h891dp")
@@ -62,8 +58,6 @@ class EmojiKeyboardFactoryCharacterisationTest {
 
     private fun moreKeyLabels(key: Key): List<String?> = key.moreKeys.map { it.label }
 
-    // ------------------------------------------------------------------ category pages
-
     @Test
     fun categoryPagesChunkByFortyAndAreNotPadded() {
         val pages = factory.createEmojiKeyboards(EmojiCategory.SMILEYS_EMOTION)
@@ -95,8 +89,6 @@ class EmojiKeyboardFactoryCharacterisationTest {
         assertEquals(1, factory.getPageCount(EmojiCategory.ANIMALS_NATURE))
     }
 
-    // ------------------------------------------------------------------ search and recents pages
-
     @Test
     fun searchResultPagesChunkByFortyAndArePadded() {
         val pages = factory.createSearchResultsKeyboards(smileys)
@@ -122,7 +114,10 @@ class EmojiKeyboardFactoryCharacterisationTest {
         assertEquals(emptyList<EmojiKeyboard>(), factory.createRecentsKeyboards(emptyList()))
     }
 
-    /** Recents come from a stored value that may be corrupted: an entry the key-spec parser rejects is skipped. */
+    /**
+     * Recents come from a stored value that may be corrupted: an entry the key-spec parser rejects is
+     * skipped.
+     */
     @Test
     fun recentsSkipsAnEntryTheKeySpecParserRejects() {
         val pages = factory.createRecentsKeyboards(listOf("|x", "r0"))
@@ -143,8 +138,6 @@ class EmojiKeyboardFactoryCharacterisationTest {
         factory.createRecentsKeyboards(listOf("r0"))[0].addEmojiToRecents("x3")
         assertFalse(prefs.contains(RECENTS_KEY))
     }
-
-    // ------------------------------------------------------------------ search ranking
 
     private fun provider(vararg data: EmojiData): EmojibaseDataProvider {
         val p = EmojibaseDataProvider(EmojiTestEnv.app)
@@ -171,7 +164,8 @@ class EmojiKeyboardFactoryCharacterisationTest {
 
     @Test
     fun searchRanksDescriptionThenTagThenAliasMatches() {
-        // e2 desc-startsWith 50; e5 desc-startsWith 50 + tag-startsWith 20; e1 tag-exact 40; e3 alias-contains 5
+        // e2 desc-startsWith 50; e5 desc-startsWith 50 + tag-startsWith 20; e1 tag-exact 40; e3 alias-
+        // contains 5
         assertEquals(listOf("e5", "e2", "e1", "e3"), search("smile"))
     }
 

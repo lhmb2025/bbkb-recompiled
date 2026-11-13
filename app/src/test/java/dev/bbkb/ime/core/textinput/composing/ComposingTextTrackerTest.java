@@ -26,16 +26,9 @@ import org.robolectric.RobolectricTestRunner;
 import org.robolectric.annotation.Config;
 
 /**
- * Unit tests for {@link ComposingTextTracker}, the single source of truth for the
- * in-progress composing word.
- *
- * <p>The tracker's backing buffer is an {@code android.text.SpannableStringBuilder}, so the
- * tests run under Robolectric (which provides real Android class implementations on the JVM).
- * The tracker's hard dependency, {@code NuanceSDK}, loads a native library in a static
- * initializer; Robolectric instruments {@code com.blackberry.nuanceshim} (see
- * {@code instrumentedPackages} below) so that {@code System.loadLibrary} and native calls
- * become no-ops, allowing the class to load. The instance itself is a Mockito mock, so no
- * native engine is exercised — these tests cover the tracker's own string/cursor arithmetic.
+ * {@link ComposingTextTracker}'s own string and cursor arithmetic. Robolectric for the
+ * SpannableStringBuilder buffer; {@code instrumentedPackages} makes NuanceSDK's static
+ * {@code System.loadLibrary} a no-op so the class loads, and the instance is a Mockito mock.
  */
 @RunWith(RobolectricTestRunner.class)
 @Config(sdk = 34, manifest = Config.NONE, instrumentedPackages = {"com.blackberry.nuanceshim"})
@@ -90,7 +83,7 @@ public class ComposingTextTrackerTest {
 
         mTracker.insertCodePointAtCursor('a');
 
-        // Regression guard for docs/archived/2026-05_composing-and-ckb-gestures/2026-05_composing-spec-and-tests_reference.md #6: trailing "stin" must survive.
+        // Trailing "stin" must survive.
         assertEquals("Teastin", mTracker.getComposingText());
         assertEquals(3, mTracker.getComposingCursorPos());
         assertEquals(7, mTracker.getCodePointCount());
@@ -137,7 +130,7 @@ public class ComposingTextTrackerTest {
         seed("ab");
         mTracker.moveCursorByCharCount(-1); // between 'a' and 'b' (position 1)
 
-        int emoji = 0x1F600; // 😀 — a surrogate pair (two UTF-16 chars, one code point)
+        int emoji = 0x1F600; // 😀, a surrogate pair (two UTF-16 chars, one code point)
         mTracker.insertCodePointAtCursor(emoji);
 
         String expected = "a" + new String(Character.toChars(emoji)) + "b";
@@ -145,8 +138,6 @@ public class ComposingTextTrackerTest {
         assertEquals(2, mTracker.getComposingCursorPos());
         assertEquals(3, mTracker.getCodePointCount());
     }
-
-    // --- F2: mid-word insert must recount digit/uppercase stats ---
 
     @Test
     public void insertDigitMidWordUpdatesStats() {
@@ -172,8 +163,6 @@ public class ComposingTextTrackerTest {
         assertTrue("uppercase count must include the inserted capital",
                 mTracker.hasMultipleUpperCase());
     }
-
-    // --- F3: mid-word edits must clear the pending auto-correction ---
 
     @Test
     public void insertClearsPendingAutoCorrection() {
@@ -232,8 +221,6 @@ public class ComposingTextTrackerTest {
         assertTrue(mTracker.hasAutoCorrectionForComposingText());
     }
 
-    // --- H1: shift state set while idle must reach the engine ---
-
     @Test
     public void setShiftStateIfNotComposingPropagatesToEngine() {
         mTracker.setShiftStateIfNotComposing(1); // manual shift → engine SHIFT (1)
@@ -248,13 +235,10 @@ public class ComposingTextTrackerTest {
         verify(mNuance, never()).setShiftState(1);
     }
 
-    // --- F4: a successful cursor move that lands on position 0 must report success ---
-
     @Test
     public void moveCursorToStartReportsSuccess() {
         seed("Test");
-        // Previously returned false at position 0, which made onUpdateSelection treat the
-        // move as a failure and commit the word. See docs/archived/2026-06_fable-audits-and-gesture-rebuild/2026-06_composition-pipeline_audit.md F4.
+        // A false here makes onUpdateSelection treat the move as failed and commit the word.
         assertTrue(mTracker.moveCursorByCharCount(-4));
         assertEquals(0, mTracker.getComposingCursorPos());
         assertTrue(mTracker.isComposing());
@@ -267,8 +251,6 @@ public class ComposingTextTrackerTest {
         assertFalse("moving beyond the start of composing is not satisfiable",
                 mTracker.moveCursorByCharCount(-5));
     }
-
-    // --- H2: mid-word edits rebuild the engine buffer via clear + ordered re-feed ---
 
     @Test
     public void insertRebuildsEngineByClearAndRefeed() {
@@ -285,17 +267,11 @@ public class ComposingTextTrackerTest {
         order.verify(mNuance).processKeyBySymbol('b');
     }
 
-    // Note: clearAll() is intentionally not covered here. It reaches into the NuanceSDKManager
-    // static singleton (NuanceSDKManager.getInstance().setShiftState(0)) instead of the injected
-    // NuanceSDK, so it NPEs under test without static mocking. That global-state coupling is a
-    // candidate for the W7 dependency-injection cleanup; until then it isn't unit-testable here.
+    // clearAll() is not covered: it calls the NuanceSDKManager singleton instead of the injected
+    // NuanceSDK, so it NPEs here without static mocking.
 
-    // ── Converter-aware rebuild (mid-buffer edits) ────────────────────────────────────────────
-    //
-    // The Hangul and Telex converters feed the engine jamo, or base letters plus explicit
-    // accents, never the composed characters. A mid-word edit clears and re-feeds the engine
-    // from the composing text, and used to feed "한" as one symbol; the engine then could not
-    // attach the next jamo (KEY2, 2026-09-28).
+    // Hangul and Telex feed the engine jamo, or base letters plus accents, never composed
+    // characters, so a mid-word rebuild must re-feed decomposed or the next jamo cannot attach.
 
     @Test
     public void rebuildWithTheHangulConverterFeedsJamoNotSyllables() {

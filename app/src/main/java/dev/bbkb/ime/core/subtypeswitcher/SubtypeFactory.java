@@ -15,11 +15,7 @@ import java.util.Arrays;
 import java.util.Iterator;
 import dev.bbkb.ime.BuildConfig;
 
-/**
- * Factory for creating InputMethodSubtype instances.
- * Renamed from HardwareDetector — this class has nothing to do with hardware detection.
- * It creates and serializes InputMethodSubtype objects for the IME framework.
- */
+/** Creates and serializes InputMethodSubtype objects for the IME framework. */
 public final class SubtypeFactory {
 
     private static final String TAG = "SubtypeFactory";
@@ -27,6 +23,7 @@ public final class SubtypeFactory {
     private static final InputMethodSubtype[] EMPTY_SUBTYPES = new InputMethodSubtype[0];
 
     private SubtypeFactory() {
+        // Static utility, no instances.
     }
 
 
@@ -34,14 +31,25 @@ public final class SubtypeFactory {
         return inputMethodSubtype.containsExtraValueKey("isAdditionalSubtype");
     }
 
+    /**
+     * @param str locale
+     * @param str2 keyboard layout set name
+     * @param z true if ASCII capable
+     * @param z2 true if emoji capable
+     */
     private static InputMethodSubtype createSubtype(String str, String str2, boolean z, boolean z2) {
         return InputMethodSubtypeCompat.newInputMethodSubtype(ResourceLocaleUtils.getSubtypeNameResId(str, str2), R.drawable.ic_ime_switcher, str, "keyboard", buildExtraValue(str, str2, z, z2), false, false, computeSubtypeHash(str, str2, z, z2));
     }
 
+    /**
+     * @param str locale
+     * @param str2 keyboard layout set name
+     */
     public static InputMethodSubtype createSubtype(String str, String str2) {
         return createSubtype(str, str2, false, false);
     }
 
+    /** @param str {@code ;}-separated {@code locale:layout[:AsciiCapable]} specs */
     public static InputMethodSubtype[] createSubtypesFromPref(String str) {
         if (TextUtils.isEmpty(str)) {
             return EMPTY_SUBTYPES;
@@ -54,11 +62,8 @@ public final class SubtypeFactory {
                 if (BuildConfig.DEBUG) Log.w(TAG, "Unknown additional subtype specified: " + str2 + " in " + str);
             } else {
                 InputMethodSubtype inputMethodSubtype = createSubtype(strArrSplit2[0], strArrSplit2[1], strArrSplit2.length == 3 ? "AsciiCapable".equals(strArrSplit2[2]) : false, true);
-                // A name of plain subtype_generic ("%s") means the layout has no
-                // subtype_generic_<layout> string. For a corrupt spec that is the signal to drop
-                // it; for the non-Latin layouts a side-loaded pack can bring (bengali, hindi,
-                // farsi, arabic, ...) it is simply how they are named, and dropping them meant
-                // twelve downloadable languages never became a keyboard.
+                // Plain subtype_generic means no subtype_generic_<layout> string: drop a corrupt
+                // spec, but keep the side-loaded non-Latin layouts, which are named that way.
                 if (inputMethodSubtype.getNameResId() != R.string.subtype_generic || SideloadedSubtypes.isSideloadLayout(strArrSplit2[1])) {
                     arrayList.add(inputMethodSubtype);
                 }
@@ -67,6 +72,7 @@ public final class SubtypeFactory {
         return (InputMethodSubtype[]) arrayList.toArray(new InputMethodSubtype[arrayList.size()]);
     }
 
+    /** @param strArr subtype specs to join with {@code ;} */
     public static String createPrefSubtypes(String[] strArr) {
         if (strArr == null || strArr.length == 0) {
             return "";
@@ -82,13 +88,13 @@ public final class SubtypeFactory {
     }
 
     /**
-     * FROZEN. Every token here feeds {@link #computeSubtypeHash}, which is the subtype's identity to
-     * the framework -- change one character and the framework sees a different subtype, so the
-     * user's enabled-language selection for the affected locales silently empties on upgrade.
+     * Frozen: this feeds {@link #computeSubtypeHash}, the subtype's identity, so any change empties
+     * users' enabled languages on upgrade. {@code SubtypeFactoryExtraValueGoldenTest} pins it.
      *
-     * <p>That is why the known defect below is deliberately NOT fixed. Pinned by
-     * {@code SubtypeFactoryExtraValueGoldenTest}, which asserts these strings character for
-     * character: a failure there means a compatibility break, not a bug in the test.
+     * @param str locale
+     * @param str2 keyboard layout set name
+     * @param z true if ASCII capable
+     * @param z2 true if emoji capable
      */
     private static String buildExtraValue(String str, String str2, boolean z, boolean z2) {
         ArrayList arrayList = new ArrayList();
@@ -97,13 +103,8 @@ public final class SubtypeFactory {
             arrayList.add("AsciiCapable");
         }
         if (ResourceLocaleUtils.isExceptionalLocale(str)) {
-            // KNOWN DEFECT, FROZEN (Wave 2, defect 21). getKeyboardLayoutSetDisplayName() returns
-            // null for the three exceptional locales whose layout is not a predefined one --
-            // es_US (spanish), zh_CN_pinyin (pinyin), zh_HK_cangjie (cangjie) -- so this
-            // concatenates the literal text "null" and bakes it into their subtype ids.
-            // Correcting it would change those three hashes; product decision 2026-09-08 is to
-            // leave it rather than drop those languages from users' enabled list on upgrade.
-            // If it is ever fixed, it needs a subtype migration, not just a string change.
+            // Known defect, frozen: this is "null" for es_US, zh_CN_pinyin and zh_HK_cangjie and is
+            // baked into their subtype ids. Fixing it needs a subtype migration.
             arrayList.add("UntranslatableReplacementStringInSubtypeName=" + ResourceLocaleUtils.getKeyboardLayoutSetDisplayName(str2));
         }
         if (z2) {
@@ -114,22 +115,32 @@ public final class SubtypeFactory {
     }
 
     /**
-     * Must hash exactly the extra-value string {@link #buildExtraValue} produces: the two used to
-     * be duplicated line for line, and any drift between them silently breaks InputMethodSubtype
-     * identity (subtypes stop comparing equal across getAdditionalSubtypes/indexOf).
+     * Must hash exactly what {@link #buildExtraValue} produces, or subtypes stop comparing equal.
+     *
+     * @param str locale
+     * @param str2 keyboard layout set name
+     * @param z true if ASCII capable
+     * @param z2 true if emoji capable
      */
     private static int computeSubtypeHash(String str, String str2, boolean z, boolean z2) {
         return Arrays.hashCode(new Object[]{str, "keyboard", buildExtraValue(str, str2, z, z2), false, false});
     }
 
+    /**
+     * @param str primary locale
+     * @param arrayList the combined keyboard's locales
+     * @param str2 keyboard layout set name
+     */
     public static InputMethodSubtype createLanguageSubtype(String str, ArrayList<String> arrayList, String str2) {
         return createLanguageSubtype(str, arrayList, str2, true);
     }
 
     /**
-     * @param asciiCapable whether the combined keyboard types on Latin keys. Latin keyboards keep
-     *     {@code true}, byte-for-byte as before (their ids are frozen); a combined keyboard on a
-     *     Cyrillic, Devanagari or Arabic layout passes {@code false}.
+     * @param str primary locale
+     * @param arrayList the combined keyboard's locales
+     * @param str2 keyboard layout set name
+     * @param asciiCapable whether the keyboard types on Latin keys; Latin keyboards keep {@code true}
+     *     (their ids are frozen)
      */
     public static InputMethodSubtype createLanguageSubtype(String str, ArrayList<String> arrayList, String str2, boolean asciiCapable) {
         if (TextUtils.isEmpty(str) || arrayList.isEmpty()) {

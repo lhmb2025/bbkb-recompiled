@@ -9,12 +9,9 @@ import android.net.Uri
 import android.provider.UserDictionary
 
 /**
- * An in-memory stand-in for `com.android.providers.userdictionary`, good enough for the
- * `AudWrapper` surface: insert (including through `applyBatch`), delete by the four selections
- * `AudWrapper.DictionaryWordSelectionArgument` can produce, and a full-table query.
- *
- * Every mutation notifies `content://user_dictionary/words`, which is what
- * `AudContentObserver` is registered on.
+ * In-memory `user_dictionary` provider covering the `AudWrapper` surface: insert (also via
+ * `applyBatch`), delete by its four selections, and query. Every mutation notifies
+ * `content://user_dictionary/words`, where `AudContentObserver` listens.
  */
 class FakeUserDictionaryProvider : ContentProvider() {
 
@@ -90,10 +87,7 @@ class FakeUserDictionaryProvider : ContentProvider() {
         context?.contentResolver?.notifyChange(UserDictionary.Words.CONTENT_URI, null)
     }
 
-    /**
-     * Only the selections `AudWrapper` builds, plus "everything" for a null selection - an
-     * unrecognised selection is a test bug, not a row that silently fails to match.
-     */
+    /** Only `AudWrapper`'s selections (null = all); anything else throws rather than silently not matching. */
     private fun matches(row: Row, selection: String?, args: Array<out String>?): Boolean {
         if (selection == null) return true
         val a = args ?: emptyArray()

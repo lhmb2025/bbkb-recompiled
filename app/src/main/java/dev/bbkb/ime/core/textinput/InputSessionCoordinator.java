@@ -23,13 +23,7 @@ import dev.bbkb.ime.keyboard.auxbar.suggestions.CJKSuggestionGridView;
 import java.util.Locale;
 import dev.bbkb.ime.BuildConfig;
 
-/**
- * Coordinates input session lifecycle events extracted from BlackBerryIME.
- * Handles onStartInput, onStartInputView, onFinishInputView, onFinishInput internal logic.
- *
- * This class reduces BlackBerryIME's responsibility count by encapsulating
- * the input session state machine into a focused coordinator.
- */
+/** BlackBerryIME's onStartInput / onStartInputView / onFinishInputView / onFinishInput bodies. */
 public class InputSessionCoordinator {
 
     private static final String TAG = "InputSessionCoord";
@@ -40,23 +34,15 @@ public class InputSessionCoordinator {
         this.ime = ime;
     }
 
-    /**
-     * Internal handler for onStartInput lifecycle event.
-     * Extracted from BlackBerryIME.startInputInternal().
-     */
     public void onStartInputInternal(EditorInfo editorInfo, boolean restarting) {
         Logger.debug(TAG, "onStartInputInternal(): restarting=" + restarting);
-        // An input menu the "Show or hide the input menu" key raised was for the last field (or
-        // the last session of this one): it goes, with any board open under it, and the user's
-        // menu and suggestion-bar settings decide again. Taken down through the menu manager
-        // (whose hide() also ends the override) so its board bookkeeping stays true, and before
-        // BlackBerryIME.onStartInput's board sweep, which reads those settings.
+        // A key-raised input menu belonged to the last field. Hide it through the menu manager
+        // (keeps board bookkeeping true) and before BlackBerryIME.onStartInput's board sweep.
         if (SettingsValues.isInputMenuRequestedByKey()) {
             ime.getUiCoordinator().hideUnifiedInputBoard();
             SettingsValues.setInputMenuRequestedByKey(false);
         }
-        // A menu the hamburger raised was for the last field too: the new field starts from its
-        // own bar (AuxBarChoice).
+        // A hamburger-raised menu too: the new field starts from its own bar (AuxBarChoice).
         if (ime.getUiCoordinator() != null) {
             ime.getUiCoordinator().onMenuTakenDown();
         }
@@ -66,19 +52,13 @@ public class InputSessionCoordinator {
         }
     }
 
-    /**
-     * Internal handler for onStartInputView lifecycle event.
-     * Extracted from BlackBerryIME.startInputViewInternal().
-     */
     public void onStartInputViewInternal(EditorInfo editorInfo, boolean restarting) throws Resources.NotFoundException {
         Logger.debug(TAG, "onStartInputViewInternal(): restarting=" + restarting);
         boolean z2 = false;
         ime.setNeedsKeyboardReload(false);
         ime.superOnStartInputView(editorInfo, restarting);
-        // The input-method caches used to be cleared here, so every field focus asked
-        // system_server for the same lists again (about a dozen binder calls). They are dropped
-        // on the events that change them now (see RichInputMethodManager's invalidation matrix);
-        // this only catches a system locale change and ages them out.
+        // Do not clear the IME caches per focus (a dozen binder calls); they are invalidated on
+        // change. This only catches a system locale change and ages them out.
         ime.getRichInputMethodManager().onInputViewStarted();
         InputMethodHelper.onEditorStarted(editorInfo);
         KeyboardSwitcher ks = ime.getKeyboardSwitcher();
@@ -134,10 +114,8 @@ public class InputSessionCoordinator {
             }
         } else {
             inputLogic.clearComposingText(true);
-            // Audit LC-7: this PKB branch skips resetInputState, so mCommitType survived the field
-            // switch. Value 4 is the "phantom auto-space" state — the next word typed in the NEW
-            // field would get an auto-space it never earned. resetInputState zeroes it
-            // (InputLogic.java:206); do the same here for the branch that bypasses it.
+            // This branch skips resetInputState, so zero mCommitType here: a leftover 4 gives the
+            // new field's first word an unearned auto-space.
             inputLogic.mCommitType = 0;
             if (!inputLogic.mRichInputConnection.resetConnection(editorInfo.initialSelStart, editorInfo.initialSelEnd, true)) {
                 ime.getUiUpdateHandler().postUpdateSwitchKeyboard(shouldInit, 5);
@@ -146,27 +124,17 @@ public class InputSessionCoordinator {
                 inputLogic.mRichInputConnection.recalibrateCursorPosition();
                 ime.getUiUpdateHandler().postUpdateShiftState(true, true);
             }
-            // Audit LC-1: updateDynamicLearningState() lived only in the VKB branch, so on a
-            // KEY2 dynamicLearningEnabled went stale across every
-            // field switch — a password or no-suggestions field could leave learning disabled for
-            // the next ordinary field, or vice versa. Its internal mLastInputType short-circuit
-            // (InputLogic:1761) makes the call cheap when nothing changed.
+            // Needed per field (a password field must not leave learning off); cheap when the
+            // input type is unchanged.
             inputLogic.updateDynamicLearningState();
-            // Audit LC-8: requestCursorUpdates was issued from exactly one place —
-            // InputLogic.resetInputState — which this PKB branch skips. So on a KEY2 no editor
-            // reached through the start-input path ever got cursor-anchor monitoring, and
-            // mMonitorCursorUpdates sat stale (typically FALSE), silently disabling
-            // shouldShowAddToDictionary and starving the FCC cursor tracker and commit indicator.
-            // Issue it per editor, against the connection we just reset.
+            // resetInputState normally requests this; without it the cursor tracker, commit
+            // indicator and add-to-dictionary get no cursor-anchor updates.
             inputLogic.mRichInputConnection.requestCursorUpdates(true, true);
         }
         SettingsValues updatedSettings = ime.getSettingsManager().getSettingsValues();
         if (shouldInit) {
             mainKeyboardView.closing();
-            // The settings for THIS editor come first: the keyboard built below reads them (the
-            // mic key and its hint follow the field's microphone allowance), and loading them
-            // after the build left the first keyboard of a new field drawn for the previous
-            // field — the mic hint missing until the next rebuild.
+            // Load this editor's settings before building the keyboard (the mic key reads them).
             ime.loadSettings();
             updatedSettings = ime.getSettingsManager().getSettingsValues();
             ime.applyAutoCorrectionSettings(updatedSettings);
@@ -204,20 +172,12 @@ public class InputSessionCoordinator {
         }
     }
 
-    /**
-     * Internal handler for onFinishInputView lifecycle event.
-     * Extracted from BlackBerryIME.finishInputViewInternal().
-     */
     public void onFinishInputViewInternal(boolean finishingInput) {
         ime.superOnFinishInputView(finishingInput);
         ime.cleanupKeyboard();
         ime.resetUiState();
     }
 
-    /**
-     * Internal handler for onFinishInput lifecycle event.
-     * Extracted from BlackBerryIME.finishInputInternal().
-     */
     public void onFinishInputInternal() {
         InputLogic inputLogic = ime.getInputLogic();
         inputLogic.mRichInputConnection.finishComposingText();

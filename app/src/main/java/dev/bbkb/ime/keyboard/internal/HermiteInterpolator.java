@@ -32,6 +32,12 @@ public final class HermiteInterpolator {
 
     private int mMaxPos;
 
+    /**
+     * @param iArr x coordinates
+     * @param iArr2 y coordinates
+     * @param i first valid index
+     * @param i2 end index (exclusive)
+     */
     public void reset(int[] iArr, int[] iArr2, int i, int i2) {
         this.mXCoords = iArr;
         this.mYCoords = iArr2;
@@ -39,6 +45,13 @@ public final class HermiteInterpolator {
         this.mMaxPos = i2;
     }
 
+    /**
+     * Sets the segment P1 to P2 with neighbors P0 and P3, given as indices.
+     * @param i P0
+     * @param i2 P1
+     * @param i3 P2
+     * @param i4 P3
+     */
     public void setInterval(int i, int i2, int i3, int i4) {
         int[] iArr = this.mXCoords;
         this.mP1X = iArr[i2];
@@ -49,11 +62,7 @@ public final class HermiteInterpolator {
         int i5 = this.mP2X - this.mP1X;
         int i6 = this.mP2Y - this.mP1Y;
         if (i >= this.mMinPos) {
-            // Tangent at P1 is half of the vector P0 -> P2 (mirrors the P2 branch at the
-            // bottom of this method). The decompiled source substituted the delta local
-            // (i5 = P2X - P1X) where the endpoint P2X belongs, which scaled the tangent by
-            // -mP1X / -mP1Y and made the drawn gesture trail diverge from the finger the
-            // further right / further down the keyboard the stroke ran.
+            // Tangent at P1 is half of the vector P0 -> P2 (the endpoint, not the delta i5).
             this.mSlope1X = (this.mP2X - iArr[i]) / 2.0f;
             this.mSlope1Y = (this.mP2Y - iArr2[i]) / 2.0f;
         } else if (i4 < this.mMaxPos) {
@@ -92,6 +101,7 @@ public final class HermiteInterpolator {
         this.mSlope2Y = i6;
     }
 
+    /** @param f position on the segment, 0 at P1 to 1 at P2 */
     public void interpolate(float f) {
         float f2 = 1.0f - f;
         float f3 = 2.0f * f;

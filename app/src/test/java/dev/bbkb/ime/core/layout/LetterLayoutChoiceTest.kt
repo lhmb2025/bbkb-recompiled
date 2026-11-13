@@ -70,8 +70,6 @@ class LetterLayoutChoiceTest {
             .setIsAsciiCapable(true)
             .build()
 
-    // ── the preference ───────────────────────────────────────────────────────
-
     @Test
     fun twoKeysPerLanguage_emptyMeaningTheKeyboardsDefault() {
         assertEquals("pref_letter_layout_vkb_en", LetterLayoutChoice.prefKey("en", Target.VKB))
@@ -172,8 +170,6 @@ class LetterLayoutChoiceTest {
         assertNull(LetterLayoutChoice.languageOf(null as Locale?))
     }
 
-    // ── what an id names ─────────────────────────────────────────────────────
-
     @Test
     fun anIdNamesTheUsersLayoutFirst_thenTheBuiltInOne() {
         val registry = LetterLayoutRegistry(context)
@@ -207,8 +203,6 @@ class LetterLayoutChoiceTest {
         prefs.edit().putString("pref_letter_layout_pkb_en", "gone").commit()
         assertNull(LetterLayoutChoice.forTyping(context, "en"))
     }
-
-    // ── the on-screen keyboard ───────────────────────────────────────────────
 
     @Test
     fun onlyAShippedLayoutWithRowsOfItsOwnDrawsTheOnScreenKeyboard() {
@@ -257,8 +251,6 @@ class LetterLayoutChoiceTest {
         assertNull(LetterLayoutChoice.onScreenLayout(context, "en"))
         assertEquals("dvorak", LetterLayoutChoice.onScreenLayout(context, "fr")!!.id)
     }
-
-    // ── what the Language screen offers ──────────────────────────────────────
 
     @Test
     fun theOnScreenList_isTheShippedLayoutsThatDrawIt_onALatinKeyboard() {
@@ -346,9 +338,8 @@ class LetterLayoutChoiceTest {
     }
 
     /**
-     * The chosen id is kept between keystrokes instead of being read from the preferences on
-     * each one. A change made behind the typing path's back, a settings restore writing the
-     * preference directly, must still be seen on the next key, with no call to invalidate.
+     * The chosen id is cached between keystrokes, yet a preference written directly (a settings
+     * restore) must be seen on the next key with no invalidate call.
      */
     @Test
     fun aChoiceWrittenStraightToThePreferencesIsSeenOnTheNextKey() {

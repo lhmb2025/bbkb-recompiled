@@ -11,33 +11,13 @@ import java.util.concurrent.Executors
 import java.util.concurrent.atomic.AtomicInteger
 
 /**
- * A real HTTP/1.1 server on a real loopback socket, spoken directly over [ServerSocket].
- *
- * The network code in this package exists to cope with things a mock cannot express — a
- * cross-host `302` that `HttpURLConnection` would silently drop, an `ETag` round trip, a body
- * that stops arriving halfway through. A stubbed `HttpURLConnection` would only ever prove that
- * the stub behaves like the stub, so these tests talk to an actual socket and everything
- * [Downloader] and [ManifestSource] do to it is the same thing they do to GitHub.
- *
- * It is written on raw sockets rather than on the JDK's own
- * `com.sun.net.httpserver.HttpServer` because that class lives in the `jdk.httpserver` module,
- * which is **not** on an Android unit test's compile classpath: the compiler sees `android.jar`
- * plus `java.base` and nothing else, so importing it fails to compile even though it would be
- * there at runtime under Robolectric. Fifty lines of HTTP/1.1 is a smaller price than teaching
- * the build to add a JDK module to one source set.
- *
- * Every response closes its connection (`Connection: close`), which keeps the implementation
- * honest about content length and keeps keep-alive out of the picture. Requests are counted and
- * their headers recorded — that is how "did not go to the network at all" and "sent
- * If-None-Match" are asserted.
+ * A real HTTP/1.1 server on a loopback socket, so cross-host redirects, ETag round trips and
+ * truncated bodies are exercised for real. Raw sockets because `com.sun.net.httpserver` (module
+ * `jdk.httpserver`) is not on the Android unit test compile classpath. Every response sends
+ * `Connection: close`; requests and their headers are recorded for assertions.
  */
 class LocalHttpServer : AutoCloseable {
-
-    /**
-     * Bound to the wildcard address, not to `127.0.0.1`, so the server answers on *both*
-     * `127.0.0.1` and `localhost`. That is what makes [crossHostUrl] a genuine change of host
-     * from the client's point of view.
-     */
+    /** Bound to the wildcard address so both `127.0.0.1` and `localhost` work ([crossHostUrl]). */
     private val socket = ServerSocket(0)
     private val pool: ExecutorService = Executors.newCachedThreadPool()
     private val counter = AtomicInteger(0)
@@ -93,8 +73,7 @@ class LocalHttpServer : AutoCloseable {
                 handler(Exchange(method, path, headers, it.getOutputStream()))
             }
         } catch (ignored: Throwable) {
-            // A client that hangs up mid-body (the cancellation test) makes the write throw.
-            // That is the scenario under test, not a failure of the server.
+            // A client hanging up mid-body (the cancellation test) makes the write throw.
         }
     }
 
@@ -111,7 +90,6 @@ class LocalHttpServer : AutoCloseable {
 
     val port: Int get() = socket.localPort
 
-    /** How many requests have reached the server. */
     val requestCount: Int get() = counter.get()
 
     /** The request paths seen, oldest first. */
@@ -130,7 +108,6 @@ class LocalHttpServer : AutoCloseable {
         userAgents.clear()
     }
 
-    /** Install the response behaviour for subsequent requests. */
     fun respondWith(handler: (Exchange) -> Unit) {
         this.handler = handler
     }
@@ -139,9 +116,8 @@ class LocalHttpServer : AutoCloseable {
     fun url(path: String): String = "http://127.0.0.1:$port$path"
 
     /**
-     * The same server under a *different host name*. `HttpURLConnection` refuses to follow a
-     * redirect that changes the host, which is exactly what a GitHub release asset does, so a
-     * redirect from [url] to this is the cross-host case in miniature.
+     * The same server under a different host name. `HttpURLConnection` will not follow a
+     * host-changing redirect, which is what a GitHub release asset does.
      */
     fun crossHostUrl(path: String): String = "http://localhost:$port$path"
 
@@ -161,14 +137,12 @@ class LocalHttpServer : AutoCloseable {
         /** A request header, case-insensitively; `null` when absent. */
         fun header(name: String): String? = headers[name.lowercase()]
 
-        /** Send [body] with [status] and any [extra] headers. */
         fun reply(status: Int, body: ByteArray, extra: Map<String, String> = emptyMap()) {
             writeHead(status, extra + mapOf("Content-Length" to body.size.toString()))
             out.write(body)
             out.flush()
         }
 
-        /** Send [body] as UTF-8 with [status]. */
         fun replyText(status: Int, body: String, extra: Map<String, String> = emptyMap()) =
             reply(status, body.toByteArray(StandardCharsets.UTF_8), extra)
 
@@ -184,10 +158,7 @@ class LocalHttpServer : AutoCloseable {
             out.flush()
         }
 
-        /**
-         * Announce [total] bytes, then dribble them out in [chunkSize] pieces with [pauseMs]
-         * between — long enough for a test to cancel the download mid-stream.
-         */
+        /** Announces [total] bytes and sends them slowly enough for a test to cancel mid-stream. */
         fun replySlowly(total: Int, chunkSize: Int = 1024, pauseMs: Long = 40L) {
             writeHead(200, mapOf("Content-Length" to total.toString()))
             val chunk = ByteArray(chunkSize) { 'x'.code.toByte() }
@@ -223,11 +194,7 @@ class LocalHttpServer : AutoCloseable {
     }
 
     companion object {
-        /**
-         * A port with nothing listening on it, for the connection-refused tests. Bound and
-         * released, so in principle something else could take it; in practice a just-freed
-         * ephemeral port is not reused this quickly.
-         */
+        /** A just-released port with nothing listening, for connection-refused tests. */
         fun closedPort(): Int = ServerSocket(0).use { it.localPort }
     }
 }

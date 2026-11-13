@@ -15,29 +15,17 @@ import java.util.Locale
 import java.util.concurrent.ConcurrentHashMap
 
 /**
- * Every letter layout on the phone: the ones the app ships, read from
- * `assets/letter_layouts/<id>.xml` when first asked for, and the ones the user imported, one file
- * each under `files/layouts/letter/<id>.xml`. The id of the layout the physical keys follow is in
- * [PREF_ACTIVE_LAYOUT] (`""` for none).
+ * Every letter layout: built-in (`assets/letter_layouts/<id>.xml`, parsed lazily) and user-imported
+ * (`files/layouts/letter/<id>.xml`). The typing path goes through [LetterLayoutChoice], which caches
+ * parsed layouts; [save] and [delete] [invalidate] that cache because a re-import keeps the id.
+ * A document that does not parse is skipped and logged, never half-applied.
  *
- * The settings screens and the importer use an instance; the typing path asks [LetterLayoutChoice],
- * which keeps the parsed active layout so a keystroke never reads a file. That copy is keyed by
- * the active id, read from preferences on each call, so switching layouts (here, or by any other
- * write to the preference) takes effect on the next key; [save] and [delete] drop it as well,
- * because re-importing a layout under the same id changes the file and not the id.
- *
- * A document that does not parse is skipped and logged, never half-applied: a user file stays on
- * disk for the user to fix or delete, and a built-in one is simply not offered.
- *
- * @param builtInDocuments where the built-in documents come from; the app's assets when null.
- *   Tests hand in their own so selection can be checked without shipping documents.
+ * @param builtInDocuments source of built-in documents (the app's assets when null; tests pass their own)
  */
 class LetterLayoutRegistry @JvmOverloads constructor(
     context: Context,
     builtInDocuments: BuiltInDocuments? = null,
 ) {
-
-    /** The built-in documents, by id. */
     interface BuiltInDocuments {
         /** The id of every built-in document: its file name without `.xml`. */
         fun ids(): List<String>
@@ -54,8 +42,6 @@ class LetterLayoutRegistry @JvmOverloads constructor(
     init {
     }
 
-    // ── the user's layouts ───────────────────────────────────────────────────
-
     /** `files/layouts/letter`. Shared through the app's FileProvider (`res/xml/file_paths.xml`). */
     val directory: File get() = directoryOf(appContext)
 
@@ -69,19 +55,15 @@ class LetterLayoutRegistry @JvmOverloads constructor(
     /** The user layout with [id], or null when there is none or it does not parse. */
     fun get(id: String): LetterLayout? = if (LetterLayout.isValidId(id)) read(fileFor(id)) else null
 
-    /** The file a layout with [id] lives in. [id] must be a valid id; it is what keeps this in [directory]. */
+    /** The file for [id]; the id check is what keeps the path inside [directory]. */
     fun fileFor(id: String): File {
         require(LetterLayout.isValidId(id)) { "invalid layout id $id" }
         return File(directory, id + LetterLayoutXml.FILE_SUFFIX)
     }
 
     /**
-     * Writes [layout], replacing any user layout with its id. Through [AtomicFile], as
-     * `DeviceProfileExporter` writes device configs: the document goes to `<id>.xml.new`, is
-     * synced to disk and is then renamed over `<id>.xml`, so the file [list] reads is always the
-     * whole old document or the whole new one, even after a crash or a power cut. A half-written
-     * file here is one [list] would skip and the keys would stop following. [list] only reads
-     * `*.xml`, so a `.new` a crash left behind is never offered; the next save replaces it.
+     * Writes [layout], replacing any user layout with its id, through [AtomicFile] so [list] always
+     * sees a whole document even after a crash. A leftover `.new` is never listed (only `*.xml` is).
      */
     @Throws(IOException::class)
     fun save(layout: LetterLayout) {
@@ -125,8 +107,7 @@ class LetterLayoutRegistry @JvmOverloads constructor(
             Logger.warn(TAG, "Skipping ${file.name}: larger than ${LetterLayoutXml.MAX_BYTES / 1024} KB")
             return null
         }
-        // The file name is the id this registry addresses it by; a file copied in by hand under
-        // another name keeps the name it has.
+        // The file name is the id; a file copied in by hand under another name keeps its name.
         val stem = file.name.removeSuffix(LetterLayoutXml.FILE_SUFFIX)
         val validStem = LetterLayout.isValidId(stem)
         return try {
@@ -143,8 +124,6 @@ class LetterLayoutRegistry @JvmOverloads constructor(
         }
     }
 
-    // ── the built-in layouts ─────────────────────────────────────────────────
-
     /** The id of every built-in document, whether or not it parses. */
     fun builtInIds(): List<String> = builtIns.ids
 
@@ -152,19 +131,10 @@ class LetterLayoutRegistry @JvmOverloads constructor(
     fun builtIn(id: String): LetterLayout? = builtIns.get(id)
 
     /**
-     * The built-in layout for a keyboard in [language] (the app's spelling: `iw`, not `he`) on a
-     * [keypad] keypad (`qwerty`/`qwertz`/`azerty`) of [keypadType] (`3row`, or what the device
-     * profile reports), built from the layout set [layoutSet] (the subtype's `KeyboardLayoutSet`:
-     * `east_slavic`, `translit`, `qwerty`, …), or null when none is bound to that keyboard.
-     *
-     * Only documents for the physical keys (`pkb` among their targets) and bound to a language take
-     * part: one bound to none, or marked opt-in ([LetterLayout.optIn]), is a layout to choose, not
-     * a language's default. Among those that
-     * match, the most specific binding wins — a named keypad beats `any`, then a named keypad type,
-     * then a named layout set, then the document bound to fewer languages, then the one whose id is
-     * the language code — and a document bound to a keypad, keypad type or layout set is chosen
-     * only when the keyboard's is known and is that one. Remaining ties go to the lowest id, so the
-     * answer never depends on the order the files are listed in.
+     * The default built-in layout for [language] (app spelling: `iw`, not `he`), [keypad], [keypadType]
+     * and [layoutSet] (the subtype's `KeyboardLayoutSet`), or null. Only language-bound, non-opt-in
+     * `pkb` documents qualify; a bound keypad, type or layout set must be known and equal. Ties break
+     * by specificity (keypad, type, layout set, fewer languages), then id == language, then lowest id.
      */
     fun builtIn(language: String?, keypad: String?, keypadType: String?, layoutSet: String?): LetterLayout? =
         builtIns.select(
@@ -196,10 +166,8 @@ class LetterLayoutRegistry @JvmOverloads constructor(
         private val bindings = ConcurrentHashMap<String, Any>()
 
         /**
-         * Whether the document [id] could be [language]'s. False only when its own `<bind>` rules
-         * it out, read without the rest of the document; when that cannot be read the answer is
-         * true and the full parse decides, as it always did. The first selection used to parse
-         * every built-in document to find the one or two bound to the language.
+         * Whether document [id] could serve [language], from its `<bind>` alone so selection need not
+         * parse every document. True when the binding cannot be read; the full parse decides then.
          */
         private fun mayServe(id: String, language: String): Boolean {
             if (byId.containsKey(id)) return true // parsed already, nothing to save
@@ -265,10 +233,7 @@ class LetterLayoutRegistry @JvmOverloads constructor(
         private companion object {
             val NONE = Any()
 
-            /**
-             * Most specific first: a named keypad, a named keypad type, a named layout set, then
-             * fewer languages.
-             */
+            /** Most specific first: named keypad, keypad type, layout set, then fewer languages. */
             val SPECIFICITY: Comparator<LetterLayout> =
                 compareByDescending<LetterLayout> { it.binding.keypad != LetterLayout.ANY }
                     .thenByDescending { it.binding.keypadType != LetterLayout.ANY }
@@ -277,7 +242,6 @@ class LetterLayoutRegistry @JvmOverloads constructor(
         }
     }
 
-    /** The app's assets as [BuiltInDocuments]. */
     private class AssetDocuments(private val assets: AssetManager) : BuiltInDocuments {
         override fun ids(): List<String> =
             assets.list(ASSET_DIRECTORY).orEmpty()
@@ -292,11 +256,10 @@ class LetterLayoutRegistry @JvmOverloads constructor(
     }
 
     companion object {
-        /** The active layout's id; `""` (or absent) means the keys type their own letters. */
-        /** Retired: the one layout the keys followed for every language; see [LetterLayoutChoice.migrate]. */
+        /** Retired: the one layout for every language; read only by [LetterLayoutChoice.migrate]. */
         const val PREF_ACTIVE_LAYOUT: String = "pref_pkb_active_layout"
 
-        /** Where the active id was kept before layouts were XML; read once, then removed. */
+        /** Retired predecessor of [PREF_ACTIVE_LAYOUT]; read once, then removed. */
         const val LEGACY_PREF_ACTIVE_LETTER_MAP: String = "pref_pkb_active_letter_map"
 
         /** Under the app's files directory. */
@@ -319,12 +282,7 @@ class LetterLayoutRegistry @JvmOverloads constructor(
                 assetBuiltIns ?: BuiltIns(AssetDocuments(assets)).also { assetBuiltIns = it }
             }
 
-        /**
-         * Moves the active id from [LEGACY_PREF_ACTIVE_LETTER_MAP] to [PREF_ACTIVE_LAYOUT], once:
-         * only while the new key is absent and the old one present. Both are retired keys now,
-         * read only by [LetterLayoutChoice.migrate], which carries the one active layout into the
-         * per-language choices.
-         */
+        /** Moves [LEGACY_PREF_ACTIVE_LETTER_MAP] to [PREF_ACTIVE_LAYOUT] once, for [LetterLayoutChoice.migrate]. */
         @JvmStatic
         fun migrateActivePreference(prefs: SharedPreferences) {
             if (prefs.contains(PREF_ACTIVE_LAYOUT) || !prefs.contains(LEGACY_PREF_ACTIVE_LETTER_MAP)) return
@@ -335,11 +293,7 @@ class LetterLayoutRegistry @JvmOverloads constructor(
                 .apply()
         }
 
-        /**
-         * Drops the typing path's copies of each language's chosen layout ([LetterLayoutChoice])
-         * so the next key reads them again, and has the engine's key letters decided again
-         * ([LetterLayoutEngineSync]).
-         */
+        /** Drops [LetterLayoutChoice]'s cached layouts and re-decides the engine's key letters ([LetterLayoutEngineSync]). */
         @JvmStatic
         fun invalidate() {
             LetterLayoutChoice.invalidate()

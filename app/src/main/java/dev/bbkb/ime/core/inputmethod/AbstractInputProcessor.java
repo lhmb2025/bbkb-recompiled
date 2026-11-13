@@ -18,22 +18,11 @@ public abstract class AbstractInputProcessor implements InputMethodCallback {
     protected abstract CharSequence convertText(CharSequence charSequence, NuanceSDK nuanceSDK);
 
     /**
-     * Convert {@code source} through {@link #convertText} and re-align the per-character touch
-     * coordinates onto the converted text.
-     *
-     * <p>This is the coordinate-realignment step that keeps {@link TouchPointerCoordTracker} in
-     * sync with converted text for Vietnamese / Hangul / Romaji — i.e. it produces the gesture
-     * coordinates the decoder later consumes. The two strings are walked in lock-step by code
-     * point: while they agree, each output code point inherits the source's coordinates; at the
-     * first divergence the result's {@code codePointCount}/{@code charCount} are truncated to the
-     * common prefix and every code point from there on is emitted with no coordinates.
-     *
-     * <p>Audit DK-39: this was raw jadx output — ten pre-declared loop temporaries named
-     * {@code i}..{@code i8} plus {@code i9}/{@code i10}/{@code i11}/{@code z2}, and array locals
-     * carrying the original obfuscated method suffixes. Renamed and scoped; the control flow is
-     * unchanged.
+     * Converts through {@link #convertText} and re-aligns touch coordinates onto the result,
+     * walking both strings by code point: aligned code points keep the source coordinates; from
+     * the first divergence the counts are truncated to the common prefix and coordinates dropped.
      */
-    @Override // dev.bbkb.ime.core.inputmethod.InputMethodCallback
+    @Override
     public InputMethodCallback.ConversionResult convert(CharSequence charSequence, TouchPointerCoordTracker sourceTracker, NuanceSDK nuanceSDK) {
         InputMethodCallback.ConversionResult result = new InputMethodCallback.ConversionResult();
         result.text = convertText(charSequence, nuanceSDK);
@@ -132,16 +121,10 @@ public abstract class AbstractInputProcessor implements InputMethodCallback {
     }
 
     /**
-     * Pop the last conversion and return the one before it.
-     *
-     * <p>Audit DK-39 asked why this boundary is {@code size <= 0} while {@code TextComposer}'s
-     * override uses {@code size >= 0}. They are not the same predicate on the same state: here
-     * the result is read from {@code lastIndex - 1}, so there must be a *previous* entry — with a
-     * single entry there is nothing to revert to. {@code TextComposer} seeds {@code textHistory}
-     * from the composing text when it is empty and substitutes {@code ""} for
-     * {@code lastIndex == 0}, so index 0 is a valid state to revert to there.
+     * Pops the last conversion and returns the one before it. Needs a previous entry, hence
+     * {@code lastIndex <= 0}; TextComposer's {@code >= 0} differs because it reverts to "".
      */
-    @Override // dev.bbkb.ime.core.inputmethod.InputMethodCallback
+    @Override
     public InputMethodCallback.ConversionResult revertLastConversion(CharSequence charSequence, TouchPointerCoordTracker sourceTracker, NuanceSDK nuanceSDK) {
         if (!this.historyEnabled) {
             return null;
@@ -159,14 +142,14 @@ public abstract class AbstractInputProcessor implements InputMethodCallback {
         return result;
     }
 
-    @Override // dev.bbkb.ime.core.inputmethod.InputMethodCallback
+    @Override
     public void reset() {
         this.historyEnabled = false;
         this.textHistory.clear();
         this.trackerHistory.clear();
     }
 
-    @Override // dev.bbkb.ime.core.inputmethod.InputMethodCallback
+    @Override
     public InputMethodCallback.ConverterType getConverterType() {
         return InputMethodCallback.ConverterType.NOT_DEFINED;
     }

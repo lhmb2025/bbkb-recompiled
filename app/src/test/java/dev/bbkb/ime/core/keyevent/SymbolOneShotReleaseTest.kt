@@ -31,15 +31,10 @@ import org.robolectric.annotation.Config
 import java.util.Locale
 
 /**
- * A hinted physical key released on the PKB symbol board ends a one-shot symbol entry (tap Sym,
- * type one symbol, back to letters) through [KeyEventProcessor.onKeyUpInternal] ->
- * `KeyboardSwitcher.onSymbolKeyLongPress`.
- *
- * <p>That is now the only behaviour — the "Close symbol keyboard after symbol" setting is gone
- * (owner decision, 2026-09-22). Holding Sym is what keeps the board open instead, so the hold is
- * the one thing this path has to suppress it. `KeyEvent.isSymPressed()` is not that test: it
- * reads META_SYM_ON, which the KEY2's Sym key does not set, so the held state comes from
- * `PhysicalKeyboardStateTracker.isSymKeyHeld()`.
+ * A hinted physical key released on the PKB symbol board ends a one-shot symbol entry through
+ * [KeyEventProcessor.onKeyUpInternal] -> `KeyboardSwitcher.onSymbolKeyLongPress`, unless Sym is
+ * held (which keeps the board open). Held Sym comes from the tracker, not `META_SYM_ON`, which the
+ * KEY2's Sym key does not set.
  */
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [34], manifest = Config.NONE)
@@ -85,9 +80,7 @@ class SymbolOneShotReleaseTest {
         `when`(ime.getInputLogic().isKeyTracked(anyArg())).thenReturn(true)
         `when`(ime.getKeyboardSwitcher().getKeyByPhysicalScanCode(anyInt(), anyBoolean())).thenReturn(null)
         `when`(ime.getPhysicalKeyboardStateTracker().getSymbolPageOrder()).thenReturn(0)
-        // Phase 1b: the branch asks the one modifier query API rather than the tracker's
-        // isSymKeyHeld() plus the event's META_SYM_ON. ModifierState.isSymHeld() is the OR of
-        // exactly those two, so the intent of these cases is unchanged.
+        // ModifierState.isSymHeld() is the tracker's isSymKeyHeld() OR the event's META_SYM_ON.
         `when`(ime.getPhysicalKeyboardStateTracker().getModifierState(anyArg<KeyEvent>()))
             .thenReturn(ModifierState.builder().symKeyHeld(false).build())
         `when`(ime.superOnKeyUp(anyInt(), anyArg())).thenReturn(false)

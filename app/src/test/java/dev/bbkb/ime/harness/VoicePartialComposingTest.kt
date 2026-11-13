@@ -34,9 +34,8 @@ import org.robolectric.shadows.ShadowSpeechRecognizer
 import java.util.Locale
 
 /**
- * Dictation partial results in the editor: shown as composing text while the user speaks,
- * replaced by the final result's commit, and left as plain text when the session ends without one.
- * Before this the partials were only logged, and the text appeared all at once at the end.
+ * Dictation partials show as composing text, are replaced by the final result's commit, and are
+ * left as plain text when the session ends without one.
  */
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [34], manifest = Config.NONE, instrumentedPackages = ["com.blackberry.nuanceshim"])
@@ -128,10 +127,7 @@ class VoicePartialComposingTest {
         assertFalse(h.editor.hasComposingRegion())
     }
 
-    /**
-     * A word being typed owns the composing region; the first partial commits it rather than
-     * overwriting it, the way a final result with no partials before it always has.
-     */
+    /** The first partial commits a word being typed rather than overwriting its region. */
     @Test
     fun aTypedWordIsCommittedBeforeTheFirstPartial() {
         val s = settings()
@@ -147,8 +143,6 @@ class VoicePartialComposingTest {
         assertFalse("the typed word is no longer composing", h.inputLogic.mComposingTracker.isComposing())
     }
 
-    // ── "Show words as you speak", through the real dictation path ───────────
-
     /** Hand SettingsManager back as it was found; see VoiceDictationOffensiveWordsTest. */
     private fun resetSettingsManager() {
         val settings = SettingsManager.getInstance()
@@ -160,11 +154,9 @@ class VoicePartialComposingTest {
     }
 
     /**
-     * A dictation session started through a real [VoiceInputController] on the harness IME, so a
-     * partial travels the production route: Robolectric's recogniser -> [VoiceRecognitionManager]
-     * (where the setting is read) -> the controller -> the real UIUpdateHandler -> InputLogic -> the
-     * editor. The final result's MSG_COMMIT_TEXT reaches the mocked onTextInput, which is wired to
-     * [commitFinal] the way the real IME's onTextInput reaches commitVoiceInput.
+     * A dictation session through a real [VoiceInputController], so partials take the production
+     * route (recogniser, [VoiceRecognitionManager] reading the setting, UIUpdateHandler, InputLogic).
+     * The mocked onTextInput is wired to [commitFinal], as the real one reaches commitVoiceInput.
      */
     private fun dictation(showPartialResults: Boolean): ShadowSpeechRecognizer {
         val context = RuntimeEnvironment.getApplication()
@@ -198,8 +190,8 @@ class VoicePartialComposingTest {
     private fun idle() = shadowOf(Looper.getMainLooper()).idle()
 
     /**
-     * Runs only the final result's queued MSG_COMMIT_TEXT. A full idle would go on to run the
-     * suggestion update the commit queues, which this harness's mocked IME cannot service.
+     * Runs only the final result's MSG_COMMIT_TEXT; a full idle would also run the queued suggestion
+     * update, which the mocked IME cannot service.
      */
     private fun deliverFinalCommit() = shadowOf(Looper.getMainLooper()).runOneTask()
 

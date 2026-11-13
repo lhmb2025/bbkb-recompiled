@@ -20,18 +20,10 @@ import java.util.function.Predicate;
 import dev.bbkb.ime.BuildConfig;
 
 /**
- * Orchestrates suggestion generation — retrieves raw suggestions from the
- * dictionary, applies case transforms, determines auto-correction eligibility,
- * and delivers results via callback.
- * ----------
- * Word Kind Constants
- * 0:   TYPED_WORD — the exact word the user typed
- * 1:   COMPLETION — SuggestedWordInfo completion of the typed prefix
- * 2:   CORRECTION — SuggestedWordInfo spelling correction
- * 3:   SHORTCUT — SuggestedWordInfo shortcut expansion
- * 6:   APP_COMPLETION — application-provided completion
- * 7:   PREDICTION — SuggestedWordInfo next-word prediction
- * 8:   BATCH_INPUT — from gesture/batch input
+ * Builds suggestions from the dictionary, applies case, decides auto-correction, delivers via callback.
+ *
+ * Word kinds: 0 TYPED_WORD, 1 COMPLETION, 2 CORRECTION, 3 SHORTCUT, 6 APP_COMPLETION,
+ * 7 PREDICTION (also a substitution macro at index 1), 8 BATCH_INPUT, 11 emoji.
  */
 
 public final class SuggestionEngine {
@@ -94,13 +86,9 @@ public final class SuggestionEngine {
     }
 
     /**
-     * "Suggest learned words" off: drops the candidates the engine took from its learned model
-     * (the source the bridge read with the list, {@link com.blackberry.nuanceshim.WordInfo#fromLearnedModel}), except the
-     * words of the personal dictionary, which the model holds too but which were added on
-     * purpose. Before the case transform; a candidate the engine capitalised for the shift state
-     * is matched against the personal dictionary in lower case too. The typed word itself stays,
-     * at index 0 and as the bridge's duplicate of it at index 1: the setting is about what is
-     * offered, not about what the user wrote, and the heuristic needs the duplicate to stand down.
+     * "Suggest learned words" off: drops {@link com.blackberry.nuanceshim.WordInfo#fromLearnedModel}
+     * candidates except personal-dictionary words (also tried lower-cased). The typed word stays,
+     * including its index-1 duplicate, which the auto-correct heuristic needs.
      */
     private void dropLearnedOnlyWords(ArrayList<SuggestedWords.SuggestedWordInfo> suggestions, String typedWord, Locale locale) {
         if (this.mSuggestLearnedWords || suggestions.isEmpty()) {
@@ -120,18 +108,14 @@ public final class SuggestionEngine {
         }
     }
 
-    /**
-     * The tracker form, for callers on the tracker's own thread (tests); it reads the tracker once
-     * into a {@link ComposingSnapshot} and runs the snapshot form.
-     */
+    /** For callers on the tracker's own thread (tests): snapshots the tracker once. */
     public void getSuggestedWords(Context context, ComposingTextTracker composingTracker, PrevWordsInfo prevWordsInfo, ProximityGrid proximityGrid, SuggestionStripSettings stripSettings, boolean autoCorrectEnabled, int suggestionType, SuggestionCallback callback) {
         getSuggestedWords(context, ComposingSnapshot.of(composingTracker), prevWordsInfo, proximityGrid, stripSettings, autoCorrectEnabled, suggestionType, callback);
     }
 
     /**
-     * Builds the suggestions for {@code composingTracker}, the composing state the request was
-     * made for (taken on the main thread; this runs on the engine thread and never reads the
-     * tracker itself, Wave 3 Phase A).
+     * Runs on the engine thread against a snapshot taken on the main thread; never reads the
+     * tracker itself.
      */
     public void getSuggestedWords(Context context, ComposingSnapshot composingTracker, PrevWordsInfo prevWordsInfo, ProximityGrid proximityGrid, SuggestionStripSettings stripSettings, boolean autoCorrectEnabled, int suggestionType, SuggestionCallback callback) {
         if (composingTracker.isPredictionMode) {
@@ -146,9 +130,7 @@ public final class SuggestionEngine {
         boolean firstCaps = composingTracker.shouldCapitalizeFirstLetter; // first letter caps (start of sentence)
         ArrayList<SuggestedWords.SuggestedWordInfo> suggestions = perfLogger.getSuggestions();
         int size = suggestions.size();
-        // Case is only ever raised, never lowered, as in the original (ab.java): a word the
-        // dictionary spells with a capital (BlackBerry, a personal-dictionary name) keeps it.
-        // transformCase returns its argument unchanged when there is nothing to transform (UT-2).
+        // Case is only raised, never lowered: a dictionary capital (BlackBerry) is kept.
         for (int i = 0; i < size; i++) {
             suggestions.set(i, transformCase(suggestions.get(i), perfLogger.locale, allCaps, firstCaps, trailingApostrophes));
         }
@@ -159,10 +141,8 @@ public final class SuggestionEngine {
         boolean shouldAutoCorrect;
         int finalSuggestionType;
         int trailingApostrophes = countTrailingApostrophes((CharSequence) composingTracker.text);
-        // Typed-word guard (2026-10-12): is what the user typed a word the dictionary knows? Asked
-        // BEFORE the list is built, so whatever the lookup does inside the engine is undone by the
-        // bridge's own clear-and-replay of the composing text, and only when the answer can
-        // matter: auto-correct on and a word of two or more letters being composed.
+        // Typed-word guard: ask before the list is built, so the bridge's clear-and-replay undoes
+        // any engine side effect of the lookup; only when auto-correct is on and length > 1.
         final String composingText = composingTracker.text;
         final boolean typedWordIsValid = autoCorrectEnabled && composingTracker.isComposing
                 && composingText != null && composingText.length() > 1
@@ -172,8 +152,7 @@ public final class SuggestionEngine {
         ArrayList<SuggestedWords.SuggestedWordInfo> suggestions = applyCaseTransform(composingTracker, perfLogger, trailingApostrophes);
         boolean isPrediction = !composingTracker.isComposing;
         boolean hasGoodCorrection = shouldAutoCorrect(composingTracker, suggestions, typedWordIsValid, perfLogger.locale);
-        
-        // Corrected control flow logic to match Smali bytecode
+
         boolean cond_acEnabled = autoCorrectEnabled;
         boolean cond_hasGood = hasGoodCorrection;
         boolean cond_notPred = !isPrediction;
@@ -204,23 +183,13 @@ public final class SuggestionEngine {
         } else {
             shouldAutoCorrect = false;
         }
-        
-        // FIX-MACRO / D-4: the substitution LOOKUP is deliberately NOT gated on
-        // autoCorrectEnabled. NuanceSDKDictionaryBridge.shouldAutoCorrect is the macro channel,
-        // not the spelling heuristic: it asks the personal dictionary for a substitution of the
-        // typed word (a user macro, or a shipped one from assets/substitution_macros — i→I,
-        // bb→BlackBerry, alot→a lot, the %D/%T date macros) and inserts it at index 1 with
-        // kind 7. The original ORs that answer into willAutoCorrect with no setting term:
-        // sources/dev/bbkb/ime/core/ab.java:108-119 — `r24` (autoCorrectEnabled)
-        // appears only at ab.java:84, guarding the heuristic above. A previous "Issue 1 fix"
-        // added `autoCorrectEnabled &&` here, which silently disabled every macro whenever the
-        // user switched auto-correct off. The kind-7 escape at the commit sites
-        // (CommitController.shouldCommitAutoCorrectCandidate) is the other half of this.
-        //
-        // Ordering is load-bearing and matches the original: hasGoodCorrection above is computed
-        // from the pre-substitution list (ab.java:81 before ab.java:118), so a kind-7 entry never
-        // feeds the sugg[1] heuristic; and cond_notKind7 above disables the heuristic outright
-        // when candidate 0 is already a substitution (ab.java:98-101).
+
+        // Not gated on autoCorrectEnabled: bridge.shouldAutoCorrect is the substitution-macro
+        // channel (user or assets/substitution_macros, e.g. i->I, %D), inserted at index 1 as kind
+        // 7, and macros must work with auto-correct off (see the kind-7 escape in
+        // CommitController.shouldCommitAutoCorrectCandidate). Order matters: hasGoodCorrection
+        // uses the pre-substitution list, and cond_notKind7 disables the heuristic when
+        // candidate 0 is already a substitution.
         boolean willAutoCorrect;
         if (this.mSkipNuanceCheck || !this.mDictionaryLoader.isDictionaryReady()) {
             willAutoCorrect = shouldAutoCorrect;
@@ -234,13 +203,11 @@ public final class SuggestionEngine {
                 willAutoCorrect = shouldAutoCorrect;
             }
         }
-        
-        // The strip's emoji comes from emojibase, not the engine (owner requirement 2026-11-02):
-        // the engine's own emoji entries are dropped and, with Emoji suggestions on, the top
-        // emojibase hit for the word is appended (EmojibaseStripSuggestion).
+
+        // Strip emoji come from emojibase: engine emoji dropped, top emojibase hit appended.
         EmojibaseStripSuggestion.apply(context, suggestions, composingText, perfLogger.locale);
 
-        // Emojis should appear as suggestions but never as autocorrection targets
+        // Emoji are suggestions, never auto-correction targets.
         if (willAutoCorrect) {
             int acIdx = SuggestedWords.getMinSuggestionsIndex();
             if (acIdx < suggestions.size() && suggestions.get(acIdx).isKind(11)) {
@@ -260,8 +227,7 @@ public final class SuggestionEngine {
         SuggestionResult perfLogger = this.mDictionaryLoader.generateSuggestions(composingTracker, prevWordsInfo, proximityGrid, stripSettings, 1);
         dropLearnedOnlyWords(perfLogger.getSuggestions(), null, perfLogger.locale);
         ArrayList<SuggestedWords.SuggestedWordInfo> predictions = perfLogger.getSuggestions();
-        // The engine's emoji prediction is switched off, but an entry that slips through has no
-        // place in the strip: its emoji is the emojibase hit for the word being composed.
+        // Drop any engine emoji that slips through; strip emoji come from emojibase.
         EmojibaseStripSuggestion.dropEngineEmoji(predictions);
         int size = predictions.size();
         boolean isStartOfSentence = composingTracker.isStartOfSentence;
@@ -285,10 +251,8 @@ public final class SuggestionEngine {
     }
 
     static SuggestedWords.SuggestedWordInfo transformCase(SuggestedWords.SuggestedWordInfo suggestedWordInfoVar, Locale locale, boolean allCaps, boolean firstCaps, int trailingApostrophes) {
-        // UT-2 (hot path): this runs for every entry of every suggestion request. When no case
-        // change and no apostrophe fix-up applies, the body below rebuilds a byte-identical
-        // SuggestedWordInfo; return the input instead. `completionInfo` is part of the guard
-        // because the copying constructor drops it, so the copy is only identical when it is null.
+        // Hot path: return the input when nothing changes. `completionInfo` is in the guard
+        // because the copying constructor drops it.
         if (!allCaps && !firstCaps && trailingApostrophes == 0
                 && suggestedWordInfoVar.completionInfo == null) {
             return suggestedWordInfoVar;
@@ -310,9 +274,8 @@ public final class SuggestionEngine {
     /**
      * The spelling heuristic: does {@code suggestions[1]} replace the typed word on space?
      *
-     * @param typedWordIsValid the dictionary knows the typed word. Then the answer is no unless
-     *                         the correction is the same word in different dress
-     *                         ({@link TypedWordGuard}); see the comment at the guard below.
+     * @param typedWordIsValid the dictionary knows the typed word; then only a same-word
+     *                         correction ({@link TypedWordGuard}) is allowed
      */
     private boolean shouldAutoCorrect(ComposingSnapshot composingTracker, ArrayList<SuggestedWords.SuggestedWordInfo> suggestions,
             boolean typedWordIsValid, Locale locale) {
@@ -327,8 +290,7 @@ public final class SuggestionEngine {
         if (length <= 1) {
             if (length == 1) {
                 SuggestedWords.SuggestedWordInfo suggestion = suggestions.get(1);
-                // FIX 2025-03-29: Changed isKind(1) to isKind(2) to match kind-swap in NuanceDictionary.
-                // Genuine single-char corrections now use kind 2 (CORRECTION) not kind 1 (COMPLETION).
+                // Single-char corrections are kind 2 (CORRECTION).
                 boolean result = suggestion.isKind(2) && suggestion.word.length() == 1 && typedWord.length() == 1 &&
                        !suggestion.word.toLowerCase(java.util.Locale.getDefault()).equals(typedWord.toLowerCase(java.util.Locale.getDefault()));
                 return result;
@@ -342,22 +304,12 @@ public final class SuggestionEngine {
             + " isKind2=" + suggestedWordInfoVar.isKind(2)
             + " acMode=" + this.mAutoCorrectMode + " acThresh=" + this.mAutoCorrectThreshold);
         }
-        // Parity restoration 2026-08-13 (Phase A): decision shape verified against the original
-        // APK's bytecode (ab.smali, a(Lag;Ljava/util/ArrayList;)Z — remediation log §7).
-        // Original: AC = (completion ? lengthGate : false) || correction || whitelist,
-        // then && !url && !email. Our kind numbering is SWAPPED vs the original APK
-        // (ours: 1=COMPLETION, 2=CORRECTION; original, AOSP-style: 1=CORRECTION, 2=COMPLETION —
-        // see the bridge's kind assignment), so isKind(1)/isKind(2) here are intentionally
-        // transposed relative to the original source. Corrections auto-correct at ANY length;
-        // the length/threshold gate is word-completion-point logic and applies only to
-        // completions. Valid typed words have two guards. The original's: the bridge duplicates
-        // the typed word into sugg[1] when the engine's default-word index is 0, which trips
-        // typedEqualsCorrection below. And ours, at the end: when the dictionary knows the typed
-        // word, a correction that changes its letters is refused even if the engine ranked it
-        // first — the engine's default moves off a valid word once the learned model has boosted
-        // a neighbour (about -> bout, this -> his, 2026-10-12), and the duplicate alone cannot
-        // tell that from a genuine misspelling. The owner's rule: space corrects a misspelled
-        // word, never a word the dictionary has.
+        // AC = (completion ? lengthGate : false) || correction || shortcut, then !url && !email.
+        // Corrections apply at any length; the gate is for completions only. A valid typed word
+        // is guarded twice: the bridge duplicates it into sugg[1] when the engine's default index
+        // is 0 (typedEqualsCorrection), and TypedWordGuard refuses letter-changing corrections,
+        // since a learned-model boost can move the default off a valid word. Space corrects
+        // misspellings, never a dictionary word.
         if (!suggestedWordInfoVar.isKind(1)) {
             meetsThreshold = false;
         } else if (this.mAutoCorrectMode == 0) {

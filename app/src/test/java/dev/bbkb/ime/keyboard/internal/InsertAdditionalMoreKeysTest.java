@@ -10,13 +10,8 @@ import org.robolectric.annotation.Config;
 
 /**
  * Pins {@code KeySpecParser.insertAdditionalMoreKeys}, which merges a locale's
- * {@code additional_morekeys_*} entries into a key's {@code %}-marked more-keys slots.
- *
- * <p>The overflow branch — more additional keys than {@code %} markers, which is the only reason
- * that branch exists — declared a loop variable and then indexed with the loop-INVARIANT
- * {@code additionalIndex}, so the tail was appended as N copies of the same character. On a locale
- * with surplus additional more-keys the accent popup showed one character repeated instead of the
- * distinct remainder.
+ * {@code additional_morekeys_*} entries into a key's {@code %}-marked slots. Surplus additional
+ * keys are appended as the distinct remainder, not as copies of one character.
  */
 @RunWith(RobolectricTestRunner.class)
 @Config(sdk = 34, manifest = Config.NONE)

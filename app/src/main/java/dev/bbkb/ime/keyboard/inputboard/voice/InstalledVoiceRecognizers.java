@@ -67,7 +67,6 @@ public final class InstalledVoiceRecognizers {
         }
     }
 
-    /** The setting as stored. */
     public static String setting(Context context) {
         return SettingsManager.getVoiceInputRecognizer(PrefsManager.INSTANCE.getPrefs(context));
     }
@@ -91,7 +90,6 @@ public final class InstalledVoiceRecognizers {
         return selection;
     }
 
-    /** A new recogniser for {@code selection}. */
     public static SpeechRecognizer create(Context context, VoiceRecognizerChoice.Selection selection) {
         if (selection != null && selection.kind == VoiceRecognizerChoice.Kind.COMPONENT) {
             final ComponentName component = ComponentName.unflattenFromString(selection.component);

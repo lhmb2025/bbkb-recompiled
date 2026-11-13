@@ -6,19 +6,11 @@ import dev.bbkb.ime.core.shared.StringHelper;
 /**
  * The composing state a suggestion request was made for, taken on the main thread when the
  * request is sent ({@code InputLogic.captureRequestContext}) and read on the engine thread when it
- * runs. Wave 3 Phase A: the engine thread never reads the IME's {@link ComposingTextTracker}, whose
- * methods are synchronized and which the main thread may hold while it waits for an engine query
- * (a converter's composed text); a read from the engine thread there would deadlock until the
- * query timed out.
+ * runs. The engine thread must never read the IME's synchronized {@link ComposingTextTracker}: the
+ * main thread may hold it while waiting on an engine query, which would deadlock.
  *
- * <p>Under FIFO the snapshot also describes what the typing path has fed the engine: every feed
- * for this text was posted to the engine thread before the request, and every feed for later text
- * after it. The engine's buffer itself can differ by the time the request runs (the typed-word
- * guard's dictionary lookup overwrites it), which is why the bridge still replays this text
- * before it builds.
- *
- * <p>Immutable. Everything a request reads from the tracker is here: the text and the counts and
- * flags the case transform and the auto-correct decision use.
+ * <p>The engine buffer can differ by the time the request runs (the typed-word guard's lookup
+ * overwrites it), so the bridge still replays this text before it builds. Immutable.
  */
 public final class ComposingSnapshot {
 
@@ -69,16 +61,14 @@ public final class ComposingSnapshot {
     }
 
     /**
-     * A snapshot of {@code tracker}, read on the calling thread in one hold of its monitor. For
-     * the spell checker's tracker (read inside its own engine op) and the request fallback; the
-     * IME's requests take theirs on the main thread. A null tracker gives {@link #EMPTY}.
+     * A snapshot of {@code tracker} read in one hold of its monitor (spell checker and request
+     * fallback; the IME's requests take theirs on the main thread). Null gives {@link #EMPTY}.
      */
     public static ComposingSnapshot of(ComposingTextTracker tracker) {
         if (tracker == null) {
             return EMPTY;
         }
-        // The tracker's getters are synchronized on the tracker, so holding its monitor across
-        // them reads one consistent state (re-entrant), through the public API a test can stub.
+        // One consistent state through the public getters (re-entrant), which a test can stub.
         synchronized (tracker) {
             return new ComposingSnapshot(tracker.getComposingText(), tracker.isComposing(),
                     tracker.isPredictionMode(), tracker.isGestureInput(), tracker.hasDigits(),

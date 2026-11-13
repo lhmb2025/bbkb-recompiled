@@ -20,27 +20,11 @@ import org.robolectric.annotation.Config
 import org.robolectric.util.ReflectionHelpers
 
 /**
- * The suggestion strip after **cursor mode** (the CKB double-tap keyboard cursor control) closes.
- *
- * Owner report, KEY2: "the double-tap cursor control mode opens, but after ending it by double
- * tapping again, the suggestion strip is blanked out, rather than showing suggestions from the
- * current cursor position."
- *
- * Entering the mode cancels the composing word and hides the aux bar, and
- * `RecorrectionController.performRecorrection` returns immediately while `isCursorModeEnabled` is
- * set — so every `onUpdateSelection` the arrow keys generate is swallowed. The only re-evaluation
- * on the way out was `restoreSuggestionStrip`'s `postUpdateShiftState(false, false)`, whose
- * `false` tells `performRecorrection` not to offer the word under the cursor: the list it builds
- * comes back empty and the strip goes neutral, i.e. blank on Latin.
- *
- * What is pinned here is that every exit makes the SAME request the editor-tap path makes at the
- * end of `InputLogic.onUpdateSelection` — `postUpdateShiftState(true, true)` — so the word the
- * cursor landed on gets its recorrection suggestions.
- *
- * The subject is a real [BlackBerryIME] whose constructor never ran (`CALLS_REAL_METHODS` under
- * the inline mock maker), with the handful of collaborators the cursor-mode exit touches injected.
- * `toggleCursorMode` / `enableCursorMode` / `applyCursorModeState` / `hideArrowBar` /
- * `restoreSuggestionStrip` are all real production code here.
+ * Every cursor-mode exit makes the editor-tap request `postUpdateShiftState(true, true)`, so the
+ * word under the cursor gets recorrection suggestions. `performRecorrection` ignores selection
+ * updates while the mode is on, and `restoreSuggestionStrip`'s own `(false, false)` would blank the
+ * strip. Subject: a real [BlackBerryIME] (`CALLS_REAL_METHODS`, constructor never ran) with the
+ * exit's collaborators injected.
  */
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [34], manifest = Config.NONE)
@@ -67,8 +51,7 @@ class CursorModeExitSuggestionsTest {
         arrowBar = Mockito.mock(ArrowBarController::class.java)
         Mockito.`when`(arrowBar.isShowing()).thenReturn(true)
 
-        // hasAuxBarView() == true: the KEY2 always has the aux bar inflated, so the exit really
-        // does go through restoreSuggestionStrip().
+        // hasAuxBarView() == true, so the exit really goes through restoreSuggestionStrip().
         auxBarManager = Mockito.mock(AuxBarManager::class.java)
         Mockito.`when`(auxBarManager.getAuxBarView()).thenReturn(Mockito.mock(AuxBarView::class.java))
 
@@ -79,9 +62,8 @@ class CursorModeExitSuggestionsTest {
 
         disableCursorModeRunnable = Runnable { ime.enableCursorMode(false) }
 
-        // The cursor-mode exit is a KeyboardStateCoordinator transition now, and the funnel lives
-        // on the switcher. The switcher is real (CALLS_REAL_METHODS) so the production Axes runs;
-        // it only needs to know which IME to call back into.
+        // The exit is a KeyboardStateCoordinator transition on the switcher; a real switcher
+        // (CALLS_REAL_METHODS) runs the production Axes and only needs the IME to call back.
         val keyboardSwitcher =
             Mockito.mock(KeyboardSwitcher::class.java, Mockito.CALLS_REAL_METHODS)
         ReflectionHelpers.setField(
@@ -104,7 +86,7 @@ class CursorModeExitSuggestionsTest {
         Mockito.doReturn(false).`when`(ime).isUnifiedInputBoardShowing()
     }
 
-    /** The reported case: the second double tap on the CKB. */
+    /** The second double tap on the CKB. */
     @Test
     fun secondDoubleTapReEvaluatesSuggestionsAtTheCursor() {
         ime.toggleCursorMode()
@@ -120,7 +102,7 @@ class CursorModeExitSuggestionsTest {
         verify(uiUpdateHandler).postUpdateShiftState(true, true)
     }
 
-    /** Every other exit site goes through enableCursorMode(false) — onViewClicked, key input. */
+    /** Every other exit site (onViewClicked, key input) goes through enableCursorMode(false). */
     @Test
     fun enableCursorModeFalseReEvaluatesSuggestionsAtTheCursor() {
         ime.enableCursorMode(false)
@@ -128,11 +110,7 @@ class CursorModeExitSuggestionsTest {
         verify(uiUpdateHandler).postUpdateShiftState(true, true)
     }
 
-    /**
-     * The strip is still put back on screen, and the request that fills it is the editor-tap one:
-     * `restoreSuggestionStrip`'s own `postUpdateShiftState(false, false)` — the blank-strip
-     * request — must not be the last word.
-     */
+    /** The strip is restored, and the editor-tap request, not restoreSuggestionStrip's `(false, false)`, comes last. */
     @Test
     fun exitRestoresTheStripAndDoesNotLeaveTheBlankingRequestAsTheOnlyOne() {
         ime.toggleCursorMode()
@@ -164,9 +142,8 @@ class CursorModeExitSuggestionsTest {
     }
 
     /**
-     * Teardown exits (onDestroy, resetUiState) must not queue work for an editor that is gone.
-     * `restoreSuggestionStrip`'s own `(false, false)` is untouched — it is gated downstream by
-     * `isSuggestionStripActive()`; what must not be added is the recorrection request.
+     * Teardown exits (onDestroy, resetUiState) must not queue a recorrection request for a gone
+     * editor; restoreSuggestionStrip's `(false, false)` is gated downstream by `isSuggestionStripActive()`.
      */
     @Test
     fun exitWithNoActiveInputRequestsNothing() {

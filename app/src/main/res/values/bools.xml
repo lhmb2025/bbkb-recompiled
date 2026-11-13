@@ -1,9 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <!-- ========================================== -->
-    <!-- Feature defaults (user-visible settings) -->
-    <!-- ========================================== -->
     <bool name="config_default_allow_batched_cursor_move">true</bool>
     <bool name="config_default_apply_swipe_suppression_timeout_to_swipe_end">true</bool>
     <bool name="config_default_dynamic_learning_enabled">true</bool>
@@ -19,34 +16,20 @@
     <bool name="config_default_uim_enabled">true</bool>
     <bool name="config_default_vibration_enabled">true</bool>
 
-    <!-- ============================== -->
-    <!-- Build-config gesture toggles -->
-    <!-- ============================== -->
     <bool name="config_ckb_type_by_swiping_enabled_by_build_config">false</bool>
     <bool name="config_vkb_swipe_gestures_enabled_by_build_config">false</bool>
     <bool name="config_vkb_type_by_swiping_enabled_by_build_config">false</bool>
 
-    <!-- ==================== -->
-    <!-- Keyboard behaviour -->
-    <!-- ==================== -->
-    <!-- Off by default: dictation returns what was actually said unless the user asks for it to
-         be masked. Read by SettingsManager.isBlockOffensiveEnabled and by the voice settings row
-         (pref_key_block_potentially_offensive), so this one value is the default everywhere. -->
+    <!-- The one default for offensive-word masking in dictation (SettingsManager and the voice settings row) -->
     <bool name="config_block_potentially_offensive">false</bool>
     <bool name="config_enable_show_key_preview_popup_option">true</bool>
     <bool name="config_key_selection_by_dragging_finger">true</bool>
     <bool name="config_show_more_keys_keyboard_at_touched_point">false</bool>
     <bool name="config_use_fullscreen_mode">false</bool>
 
-    <!-- =============================== -->
-    <!-- Current-language capabilities -->
-    <!-- =============================== -->
     <bool name="current_language_has_spaces">true</bool>
     <bool name="current_language_supports_double_space_period">true</bool>
 
-    <!-- ======================== -->
-    <!-- Settings and IME state -->
-    <!-- ======================== -->
     <bool name="im_is_default">false</bool>
     <bool name="lower_right_corner_is_enter">false</bool>
     <bool name="settings_light_status_bar">true</bool>

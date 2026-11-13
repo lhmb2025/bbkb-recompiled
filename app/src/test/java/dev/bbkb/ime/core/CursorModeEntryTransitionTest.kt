@@ -26,16 +26,10 @@ import org.robolectric.annotation.Config
 import org.robolectric.util.ReflectionHelpers
 
 /**
- * Characterisation of the **cursor axis' cross-axis edge on the way IN**.
- *
- * `CursorModeExitSuggestionsTest` pins the way out. This file pins what entering cursor mode does
- * to the other three axes, which before Phase 1a was written as an inline sweep inside
- * `showArrowBar()`: close the boards, hide the suggestion views, close the boards again, raise the
- * arrow bar. The order is load-bearing (the mode flag goes on first, because `FccController` reads
- * it from inside that teardown) and the forced entry deliberately skips the whole sweep.
- *
- * The subject is a real [BlackBerryIME] whose constructor never ran, with the collaborators the
- * entry path touches injected — the same harness `CursorModeExitSuggestionsTest` uses.
+ * What entering cursor mode does to the other axes (`CursorModeExitSuggestionsTest` pins the exit):
+ * close boards, hide suggestion views, raise the arrow bar. The mode flag goes on first because
+ * `FccController` reads it during teardown; the forced entry skips the sweep. Same real-[BlackBerryIME]
+ * harness as the exit test.
  */
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [34], manifest = Config.NONE)
@@ -66,9 +60,8 @@ class CursorModeEntryTransitionTest {
 
         fcc = Mockito.mock(FccController::class.java)
 
-        // The board axis, as BlackBerryIME reaches it: keyboardSwitcher -> the UIM. The switcher
-        // is real (CALLS_REAL_METHODS) so the cursor transitions really do run through
-        // KeyboardStateCoordinator and its production Axes, not a stub of them.
+        // keyboardSwitcher -> UIM. A real switcher (CALLS_REAL_METHODS) so the transitions run
+        // through KeyboardStateCoordinator's production Axes.
         uim = Mockito.mock(UnifiedInputBoardManager::class.java)
         val keyboardSwitcher =
             Mockito.mock(KeyboardSwitcher::class.java, Mockito.CALLS_REAL_METHODS)
@@ -79,8 +72,7 @@ class CursorModeEntryTransitionTest {
             KeyboardSwitcher::class.java, keyboardSwitcher, "blackberryIme", ime,
         )
         ReflectionHelpers.setField(ime, "keyboardSwitcher", keyboardSwitcher)
-        // getModifierState() is stubbed because isMetaKeyActive() reads the snapshot, and an
-        // unstubbed mock hands back null rather than "nothing is active".
+        // Stubbed because isMetaKeyActive() reads the snapshot and a bare mock returns null.
         val tracker = Mockito.mock(PhysicalKeyboardStateTracker::class.java)
         Mockito.`when`(tracker.getModifierState()).thenReturn(ModifierState.none())
         ReflectionHelpers.setField(ime, "physicalKeyboardStateTracker", tracker)
@@ -102,8 +94,6 @@ class CursorModeEntryTransitionTest {
         ime.fccController = fcc
     }
 
-    // ═══════════════════════════════════════════════ the unforced entry
-
     @Test
     fun enteringTurnsTheModeOn() {
         ime.enableCursorMode(true)
@@ -111,7 +101,7 @@ class CursorModeEntryTransitionTest {
         assertTrue(ime.isCursorModeEnabled)
     }
 
-    /** FCC is told BEFORE the flag goes on, and it is told this is not a forced entry. */
+    /** FCC is told before the flag goes on, and that this is not a forced entry. */
     @Test
     fun enteringTellsFccFirstAndUnforced() {
         ime.enableCursorMode(true)
@@ -119,10 +109,7 @@ class CursorModeEntryTransitionTest {
         verify(fcc).onFccEnabled(false)
     }
 
-    /**
-     * The board axis: entering closes every board. Unlike a layout change, there is no exemption —
-     * the arrow bar takes the space the board was using.
-     */
+    /** Entering closes every board with no exemption: the arrow bar takes their space. */
     @Test
     fun enteringClosesTheBoards() {
         ime.enableCursorMode(true)
@@ -141,11 +128,7 @@ class CursorModeEntryTransitionTest {
         inOrder.verify(arrowBar).show()
     }
 
-    /**
-     * The text pipeline, the fifth thing the cross-axis table deliberately does not carry: the
-     * composing word is cancelled on the way in, which is why the way out has to re-request
-     * suggestions.
-     */
+    /** The composing word is cancelled on the way in (outside the cross-axis table), hence the exit's re-request. */
     @Test
     fun enteringCancelsTheComposingWord() {
         ime.enableCursorMode(true)
@@ -177,12 +160,7 @@ class CursorModeEntryTransitionTest {
         verify(uiCoordinator, never()).hideUnifiedInputBoard()
     }
 
-    // ═══════════════════════════════════════════════════ the board gate
-
-    /**
-     * A board being open wins over an unforced cursor-mode request: `applyCursorModeState`
-     * short-circuits entirely. This is the board→cursor precedence rule.
-     */
+    /** An open board wins over an unforced request: `applyCursorModeState` short-circuits (board over cursor). */
     @Test
     fun aBoardBeingOpenBlocksAnUnforcedEntry() {
         Mockito.doReturn(true).`when`(ime).isUnifiedInputBoardShowing()
@@ -194,12 +172,9 @@ class CursorModeEntryTransitionTest {
         verify(arrowBar, never()).show()
     }
 
-    // ══════════════════════════════════════════════════ the forced entry
-
     /**
-     * The forced entry is FCC reconciling a state it has already arranged on screen: the mode goes
-     * on and NOTHING else moves — no board sweep, no suggestion-view teardown, no arrow bar.
-     * Sweeping there would take down the board the caller just put up.
+     * The forced entry is FCC reconciling a state it already arranged: the mode goes on and nothing
+     * else moves, or the sweep would take down the board the caller just put up.
      */
     @Test
     fun aForcedEntryTurnsTheModeOnAndTouchesNoOtherAxis() {
@@ -213,7 +188,7 @@ class CursorModeEntryTransitionTest {
         verify(inputLogic, never()).cancelComposingAndTouchEvent()
     }
 
-    /** And a forced entry works even with a board open — that is what "forced" means. */
+    /** A forced entry works even with a board open. */
     @Test
     fun aForcedEntryIsNotBlockedByAnOpenBoard() {
         Mockito.doReturn(true).`when`(ime).isUnifiedInputBoardShowing()

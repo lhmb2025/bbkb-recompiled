@@ -20,9 +20,8 @@ import dev.bbkb.ime.core.device.touch.TouchSourceStatus.State
 import dev.bbkb.ime.core.device.touch.shizuku.ShizukuTouchEngine
 
 /**
- * One reading of [KeypadTouchSources], in the terms the Touch surface helper and its two link rows
- * (Device compatibility, Physical keyboard) show. Nothing here decides anything about the sources;
- * it only picks the words for what they report.
+ * One reading of [KeypadTouchSources], worded for the Touch surface helper and its two link rows.
+ * Decides nothing about the sources.
  */
 data class TouchSurfaceState(
     /** The profile describes a touch surface over its keys: the rows exist at all. */
@@ -39,9 +38,8 @@ data class TouchSurfaceState(
 ) {
 
     /**
-     * The one-line status the helper's header and both link rows show. A phone whose profile
-     * declares no touch surface reads "not required": there is nothing for the helper to do there,
-     * which is different from a declared pad stuck in a state no other line names ("unavailable").
+     * The one-line status for the helper's header and both link rows. No declared surface reads
+     * "not required"; a declared pad in an unnamed state reads "unavailable".
      */
     @get:StringRes
     val statusLine: Int
@@ -116,11 +114,9 @@ data class TouchSurfaceState(
 }
 
 /**
- * The [TouchSurfaceState] for a screen, read again on every resume (after [KeypadTouchSources.refresh]
- * has re-scanned for the pad and re-read Shizuku: coming back from the Scroll assistant settings,
- * or from the Shizuku app, sends no event) and on every Shizuku status change while the screen is
- * up (the answer to Grant access arrives that way). On a device whose profile declares no pad this
- * only reads a cached selection: Shizuku is never touched.
+ * The [TouchSurfaceState] for a screen, re-read on every resume (after [KeypadTouchSources.refresh];
+ * returning from settings sends no event) and on every Shizuku status change. Without a declared
+ * pad it only reads a cached selection and never touches Shizuku.
  */
 @Composable
 fun rememberTouchSurfaceState(): TouchSurfaceState {
@@ -128,8 +124,7 @@ fun rememberTouchSurfaceState(): TouchSurfaceState {
     val lifecycleOwner = LocalLifecycleOwner.current
     var state by remember { mutableStateOf(TouchSurfaceState.read()) }
 
-    // Read before the resume refresh below can change it: whether to listen is decided by the
-    // state the screen first showed.
+    // Read before the resume refresh can change it: the first state decides whether to listen.
     val listening = state.showShizuku
     LifecycleEventEffect(Lifecycle.Event.ON_RESUME) {
         KeypadTouchSources.refresh(context)

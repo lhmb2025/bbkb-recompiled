@@ -7,7 +7,7 @@ import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Test
 
-/** An unchanged address book is not added to the engine again at every process start (P-21). */
+/** An unchanged address book is not added to the engine again at every process start. */
 class ContactsAddedFingerprintTest {
 
     private fun fp(vararg batches: Array<String>, learning: Boolean = true) =

@@ -1,17 +1,8 @@
 #!/usr/bin/env bash
-# getkeys_probe.sh — the §4.3 experiment, offline: does reading `getKeys` during a gesture
-# perturb anything?
-#
-# Replays the W6 sitting-1 corpus (240 labeled real KEY2 swipes, SENSOR space) through the real
-# touch ABI with N getKeys-equivalent reads interleaved between every pair of gesture stages, for
-# N in {0, 1, 20}, and compares the arms. Then runs a negative control (--drop=4, every fourth
-# TouchMove skipped — the shape the timing hypothesis predicts) to prove the metrics can move.
-#
-# PASS means: the three N arms are identical in every number AND in the per-gesture digest, and
-# the negative control is not. FAIL means a getKeys read perturbs the engine — in which case do
-# NOT remove the one-shot capture latch from CkbKeyGridCapture / KeyboardSwitcher.
-#
-# Run standalone, or as the run_tests.sh stage "getKeys probe (one-shot capture rule, audit §4.3)".
+# Does reading `getKeys` during a gesture perturb the engine? Replays 240 labeled swipes (sensor
+# space) through the touch ABI with N getKeys reads between gesture stages, N in {0, 1, 20}, plus a
+# negative control (--drop=4) that must move the digest. PASS: the three arms are byte-identical.
+# FAIL: keep the one-shot capture latch in CkbKeyGridCapture / KeyboardSwitcher.
 set -o pipefail
 cd "$(dirname "$0")/.."                                   # -> cpp/
 
@@ -22,8 +13,7 @@ CC="${CC:-cc}"
 OUT="$(mktemp -d)"
 trap 'rm -rf "$OUT"' EXIT
 
-# The shipped decoder and ranker (kdb_decode.c + kdb_rank.c), without the superseded first-cut
-# decoder that run_tests.sh's shared SRC list also carries.
+# The shipped decoder and ranker, without run_tests.sh's legacy decoder.
 SRC="src/kdb_geometry.c src/kdb_load_xml.c src/kdb_state.c src/kdb_tap.c src/kdb_trace.c
      src/kdb_nkl.c src/kdb_decode.c src/kdb_rank.c"
 # shellcheck disable=SC2086  # $SRC is a deliberate word-split list

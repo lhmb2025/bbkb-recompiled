@@ -10,17 +10,8 @@ import org.robolectric.annotation.Config
 import java.util.Locale
 
 /**
- * Regression tests for audit finding UT-2.
- *
- * The case-transform guard in [SuggestionEngine.applyCaseTransform] was a tautology
- * (`firstCaps || allCaps || (!firstCaps && !allCaps)`), so the loop always ran and
- * [SuggestionEngine.transformCase] allocated a StringBuilder, a String and a fresh
- * SuggestedWordInfo for every entry of every suggestion request — up to 18 entries per
- * keystroke, 150 for CJK — even when the case was already correct.
- *
- * `transformCase` now returns its argument unchanged when nothing needs transforming.
- * These tests pin BOTH halves: the identity fast path, and that every case that does need
- * a transform still produces exactly what it produced before.
+ * [SuggestionEngine.transformCase] returns its argument unchanged when the case is already right
+ * (no allocation per entry), and every case that needs a transform still produces the same output.
  */
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [34], manifest = Config.NONE)
@@ -38,8 +29,6 @@ class SuggestionEngineCaseTransformTest {
         trailingApostrophes: Int = 0,
     ) = SuggestionEngine.transformCase(info(word), en, allCaps, firstCaps, trailingApostrophes)
 
-    // ── the fast path: nothing to do, so nothing is allocated ────────────────
-
     @Test
     fun noFlagsAtAll_returnsTheSameInstance() {
         val input = info("hello")
@@ -52,19 +41,14 @@ class SuggestionEngineCaseTransformTest {
         assertSame(input, SuggestionEngine.transformCase(input, en, false, false, 0))
     }
 
-    // ── a capital the dictionary spells is never lowered ──────────────────────
-
     @Test
     fun capitalizedWord_midSentence_keepsItsCapitals() {
-        // Bug report 2026-11-02: BlackBerry was committed as blackBerry, and personal-dictionary
-        // names lost their capital, because a forceLowercase step lowered the first letter.
+        // A capital the dictionary spells (BlackBerry, personal-dictionary names) is never lowered.
         val input = info("BlackBerry")
         val out = SuggestionEngine.transformCase(input, en, false, false, 0)
         assertSame(input, out)
         assertEquals("BlackBerry", out.word)
     }
-
-    // ── every branch that DOES transform still transforms ────────────────────
 
     @Test
     fun allCaps_stillUppercases() {
@@ -80,9 +64,8 @@ class SuggestionEngineCaseTransformTest {
 
     @Test
     fun trailingApostrophes_areStillAppended() {
-        // The apostrophe loop counts down from
-        // `trailingApostrophes - (word already contains one ? 1 : 0) - 1`, so two trailing
-        // apostrophes on a word without one appends two.
+        // The apostrophe loop counts down from `trailingApostrophes - (has one ? 1 : 0) - 1`, so two
+        // trailing apostrophes on a word without one appends two.
         val out = transform("dont", trailingApostrophes = 2)
         assertEquals("dont''", out.word)
     }

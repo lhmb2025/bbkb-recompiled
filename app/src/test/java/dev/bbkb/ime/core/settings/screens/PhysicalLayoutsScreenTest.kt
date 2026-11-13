@@ -52,8 +52,6 @@ class PhysicalLayoutsScreenTest {
     private fun summary(layout: LetterLayout, phoneKeypad: String? = null, phoneKeypadType: String? = null) =
         layoutSummary(context, layout, phoneKeypad, phoneKeypadType) { names[it] ?: it }
 
-    // ── order ────────────────────────────────────────────────────────────────
-
     @Test
     fun theKeyboardsLanguageComesFirstWithTheDocumentItWouldUseAtTheTop() {
         val all = listOf(
@@ -111,8 +109,6 @@ class PhysicalLayoutsScreenTest {
         assertEquals(listOf("a", "b", "c"), ids(orderBuiltInLayouts(all, keyboardLocale = null, chosenId = null)))
     }
 
-    // ── summary ──────────────────────────────────────────────────────────────
-
     /** The row's title is the name, so a second line that opens with the same word says it twice. */
     @Test
     fun aLayoutNamedForItsOneLanguageDoesNotRepeatTheName() {
@@ -169,8 +165,6 @@ class PhysicalLayoutsScreenTest {
         assertEquals("All keyboards · AZERTY keypad · three-row keypad · 6 keys", summary(both, "azerty", "3row"))
     }
 
-    // ── keypad rows ──────────────────────────────────────────────────────────
-
     private fun codes(letters: String) = letters.map { KeyEvent.KEYCODE_A + (it - 'A') }
 
     private fun document(keys: String) = LetterLayoutXml.parse(
@@ -215,8 +209,6 @@ class PhysicalLayoutsScreenTest {
         val taa = keyCapLegends(doc.keys.getValue(KeyEvent.KEYCODE_4))
         assertEquals("ط", taa.letter); assertEquals("ى", taa.shift); assertEquals("5", taa.alt)
     }
-
-    // ── rename ───────────────────────────────────────────────────────────────
 
     @Test
     fun aNameMustBeOneADocumentCanCarry() {

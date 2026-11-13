@@ -33,14 +33,8 @@ import dev.bbkb.ime.keyboard.internal.EngineTouch
 internal const val STRIP_SLOT_COUNT = 3
 
 /**
- * The suggestion a flick-up commits: [normalizedX] is the flick's start across the keypad
- * (0..1, already mirrored for RTL) and [suggestionCount] how many words the strip holds.
- *
- * A slot maps straight onto the list index, exactly as the on-screen strip's own swipe-up
- * does. A flick over an empty slot commits the last visible word rather than dead-ending, and a
- * lone word is index 0 whichever slot the flick crosses. (It used to be read as the centre
- * slot, index 1, which a one-word list does not have: IndexOutOfBoundsException on every
- * flick-up while a single suggestion was showing.) Returns -1 when there is nothing to commit.
+ * Index a flick-up commits: [normalizedX] is the flick start across the keypad (0..1, RTL-mirrored).
+ * Slot maps straight to index; an empty slot commits the last visible word. -1 when nothing to commit.
  */
 internal fun flickCommitIndex(normalizedX: Float, suggestionCount: Int): Int {
     if (suggestionCount <= 0) return -1
@@ -50,14 +44,10 @@ internal fun flickCommitIndex(normalizedX: Float, suggestionCount: Int): Int {
 }
 
 /**
- * The capacitive-keypad (CKB) gesture arbiter's connection to the IME: feeds each contact to the
- * [GestureTraceRecorder], classifies it, resolves the user's slot assignments through
- * [GesturePolicy], and executes the resulting [GestureAction] against the IME. Also owns the
- * cursor-mode drag (continuous drag-to-move-cursor while the arrow bar is up).
- *
- * [BlackBerryIME.onGenericMotionEvent] remains the gate: it decides whether an event is a keypad
- * event at all, calls [onContactStart] on every (pointer) DOWN, and then either routes the contact
- * to [handleCursorModeDrag] (cursor mode) or to [feed] (everything else).
+ * Capacitive-keypad gesture arbiter to IME: records and classifies each contact, resolves it via
+ * [GesturePolicy] and executes the [GestureAction]. Also owns the cursor-mode drag.
+ * [BlackBerryIME.onGenericMotionEvent] gates keypad events, calls [onContactStart] on every
+ * (pointer) DOWN, then routes to [handleCursorModeDrag] or [feed].
  */
 class CkbGestureBridge(private val ime: BlackBerryIME) {
 
@@ -71,29 +61,20 @@ class CkbGestureBridge(private val ime: BlackBerryIME) {
     private var contactConsumed = false
 
     /**
-     * Suggestions as they were when the contact began. A flick-up's own DOWN/MOVE feed the flow
-     * pipeline (touchStart/touchMove) before we classify it as a swipe at UP, which can clear the
-     * live suggestions — so commit from this snapshot to commit what was actually displayed.
+     * Suggestions when the contact began. A flick's DOWN/MOVE feed the flow pipeline before it is
+     * classified at UP, which can clear the live list; commit from this snapshot.
      */
     private var startSuggestions: SuggestedWords? = null
 
     /**
-     * The composing word this contact's own samples committed. A flick-up's DOWN/MOVE also feed
-     * the swipe-typing path, and once its stroke is long enough that path starts a swipe
-     * ([BlackBerryIME.onStartBatchInput]), which commits the word being typed as it stands. The
-     * flick is only recognised at UP, by which time the word is no longer composing, so the pick
-     * would be inserted after it instead of replacing it. Null when nothing was committed.
+     * The composing word this contact's samples committed by starting a swipe ([BlackBerryIME.onStartBatchInput]).
+     * The flick is recognised only at UP, so the pick must take it back to replace it. Null when none.
      */
     private var wordCommittedBySwipeStart: String? = null
 
-    /** Pure policy that maps a classified gesture + mode + assignments to an outcome. */
     private val policy = GesturePolicy()
 
-    /**
-     * The original's typing windows, re-homed in the arbiter. The noise window is the same
-     * resource the key detector's DOWN filter reads; the suppression window and its anchor are
-     * the two preferences the legacy listener consulted (still on the gesture-timing screens).
-     */
+    /** Typing windows: the noise window shares the key detector's DOWN-filter resource. */
     private val keyGuard = KeyTypingGuard(
         noiseWindowMs = { ime.resources.getInteger(R.integer.config_ckb_touch_noise_threshold_time).toLong() },
         suppressionWindowMs = { ime.getSettingsManager().getSettingsValues().ckbGestureSuppressionTimeout.toLong() },
@@ -110,10 +91,7 @@ class CkbGestureBridge(private val ime: BlackBerryIME) {
                     val verdict = GestureClassifier(gestureConfig()).classify(trace, previousTap)
                     val keyTiming = keyGuard.keyTiming(trace.end.t)
                     val outcome = policy.resolve(verdict, currentModeState(keyTiming), gestureAssignments())
-                    // Audit CT-7: build the message only when the per-gesture gate is open.
-                    // Logger.info evaluates its argument first and consults BuildConfig.DEBUG
-                    // last, so an unguarded call site pays three String.format calls plus the
-                    // interpolation on every completed contact, in release too.
+                    // Guarded: Logger.info builds its argument before checking DEBUG.
                     if (InputPathDebug.perGesture()) {
                         Logger.info(
                             TAG,
@@ -146,13 +124,10 @@ class CkbGestureBridge(private val ime: BlackBerryIME) {
     }
 
     /**
-     * A new contact (DOWN, and POINTER_DOWN too: chained flicks overlap contacts, and the recorder
-     * starts a fresh trace on the new finger — its consumed flag and suggestion snapshot must
-     * reset with it or the second flick is swallowed / commits stale words). Snapshot the strip
-     * before this contact's events can disturb the flow pipeline.
+     * DOWN and POINTER_DOWN: chained flicks overlap, and the recorder starts a fresh trace per
+     * finger, so the consumed flag and suggestion snapshot must reset here too.
      */
     fun onContactStart(eventTime: Long) {
-        // Steps the last contact queued land before anything this one does.
         flushCursorSteps()
         engineTrackingCancelled = false
         contactConsumed = false
@@ -161,38 +136,26 @@ class CkbGestureBridge(private val ime: BlackBerryIME) {
         wordCommittedBySwipeStart = null
     }
 
-    /** [BlackBerryIME.onStartBatchInput] committed [word], the word being typed, to start a swipe. */
     fun onSwipeStartCommittedTypedWord(word: String) {
         wordCommittedBySwipeStart = word
     }
 
-    /**
-     * A hardware key went down or up. Fed from the IME's key entry points for every key, so the
-     * guard sees typing whether or not the input view or gesture input is ready — the original's
-     * windows were keyed the same way.
-     */
+    /** Every hardware key down/up, so the guard sees typing whether or not the input view is ready. */
     fun onHardwareKey(eventTime: Long) {
         // A key typed mid-drag must land where the drag has already put the cursor.
         flushCursorSteps()
         keyGuard.onKeyEvent(eventTime)
     }
 
-    /**
-     * Feed the recorder; its listener acts synchronously. Returns true when the contact has been
-     * consumed by an arbiter action (the caller cancels any in-progress flow and swallows the
-     * event); false means Tap / FlowTrace / pre-UP, to fall through to the shared key/flow path.
-     */
+    /** True when an arbiter action consumed the contact (caller cancels flow, swallows the event); false falls through. */
     fun feed(event: MotionEvent): Boolean {
         recorder.onMotionEvent(event)
         return contactConsumed
     }
 
     /**
-     * A key the device's firmware synthesised from a swipe across the keys — its config gives it
-     * a gesture role ([FirmwareGestureKeys]; the Titan 2's keycodes 322 and 404). The press runs
-     * the user's swipe-left slot through the policy, as a pad swipe left would; the press, its
-     * repeats and its release are all consumed, so the key is never typed and never reaches the
-     * system. Returns false, touching nothing, for every other key.
+     * A firmware-synthesised swipe key with a gesture role ([FirmwareGestureKeys]; Titan 2 keycodes
+     * 322 and 404) runs the swipe-left slot; press, repeats and release are all consumed.
      */
     fun handleFirmwareGestureKey(event: KeyEvent): Boolean {
         val mapping = DeviceInputResolver.keyRole(event.scanCode, event.keyCode, event.deviceId)
@@ -210,9 +173,7 @@ class CkbGestureBridge(private val ime: BlackBerryIME) {
         return true
     }
 
-    // ------------------------------------------------------------------ cursor-mode drag
-    // Raw device coords (thresholds are device-px).
-
+    // Cursor-mode drag, in raw device px.
     private var dragLastX = 0f
     private var dragLastY = 0f
     private var downX = 0f
@@ -224,16 +185,11 @@ class CkbGestureBridge(private val ime: BlackBerryIME) {
     private var dragMoved = false
     private var dragInitialized = false
 
-    /**
-     * Set once this contact's first cursor-mode or arbiter-consumed sample has cancelled the
-     * engine's tracking; reset on DOWN.
-     */
     private var engineTrackingCancelled = false
 
     /**
-     * Cursor steps queued since the last frame (positive: left / up, as the scroll distances
-     * read). One axis and one direction at a time: a change of either flushes first, so
-     * clamping at either end of the text works out as it did step by step.
+     * Cursor steps queued for the next frame (positive: left/up). One axis and direction at a time:
+     * a change flushes first, so clamping at the text ends matches step-by-step moves.
      */
     private var pendingHorizontalSteps = 0
     private var pendingVerticalSteps = 0
@@ -244,27 +200,21 @@ class CkbGestureBridge(private val ime: BlackBerryIME) {
     }
 
     /**
-     * Cancels the engine's gesture tracking for this contact once, on its first sample in
-     * cursor mode or after the arbiter has consumed it, and says whether it did (the caller
-     * then cancels its own tracking too). It used to run on every such sample, while nothing
-     * feeds the engine once the contact is in either state. The cancel names every pointer of
-     * the event, for cursor mode entered mid-contact and for a second finger on the keys; the
-     * engine is asked once, for whichever of them owns its swipe session.
+     * Cancel the engine's tracking once per contact (first cursor-mode or consumed sample); true when
+     * it did. Names every pointer, since cursor mode can start mid-contact or with a second finger.
      */
     fun cancelEngineTrackingOncePerContact(event: MotionEvent): Boolean {
         if (engineTrackingCancelled) return false
         engineTrackingCancelled = true
-        // The ids are read here, on the main thread: the MotionEvent is recycled after dispatch.
+        // Read here on the main thread: the MotionEvent is recycled after dispatch.
         val pointerIds = LongArray(event.pointerCount) { event.getPointerId(it).toLong() }
         EngineTouch.cancelAll("ckbContact.touchCancel", pointerIds)
         return true
     }
 
     /**
-     * Continuous drag-to-move-cursor while cursor (FCC) mode is active, replicating the legacy
-     * onScroll feel (velocity-scaled accumulation → CursorMovementListener). A stationary tap
-     * exits cursor mode. Handles entering cursor mode mid-contact (initializes on the first move
-     * so the cursor doesn't jump).
+     * Drag-to-move-cursor in cursor (FCC) mode with velocity-scaled accumulation. A stationary tap
+     * exits cursor mode; entered mid-contact, it initialises on the first move so the cursor does not jump.
      */
     fun handleCursorModeDrag(event: MotionEvent) {
         val idx = event.actionIndex
@@ -284,7 +234,6 @@ class CkbGestureBridge(private val ime: BlackBerryIME) {
             }
             MotionEvent.ACTION_UP -> {
                 flushCursorSteps()
-                // A tap (no real movement) in cursor mode exits it.
                 if (dragInitialized && !dragMoved) ime.toggleCursorMode()
                 dragInitialized = false
             }
@@ -326,7 +275,6 @@ class CkbGestureBridge(private val ime: BlackBerryIME) {
             if (jMax > 0) dMin = Math.min(maxMult.toDouble(), Math.max(1.0, ((Math.abs(distanceY * 1000f / jMax) * maxMult) / sv.velocityForMaxCursorMoveSpeed).toDouble()))
             accumY += (pointerCount * distanceY * dMin).toFloat()
             val ei = ime.currentInputEditorInfo
-            // Audit CT-22: 0x40000 / 0x20000 are TYPE_TEXT_FLAG_IME_MULTI_LINE / TYPE_TEXT_FLAG_MULTI_LINE.
             val singleLine = ei != null &&
                 (ei.inputType and android.text.InputType.TYPE_TEXT_FLAG_IME_MULTI_LINE) == 0 &&
                 (ei.inputType and android.text.InputType.TYPE_TEXT_FLAG_MULTI_LINE) == 0
@@ -341,11 +289,7 @@ class CkbGestureBridge(private val ime: BlackBerryIME) {
         }
     }
 
-    /**
-     * Queues [steps] for the next frame instead of moving now (P-17): each move is an editor
-     * round-trip, and the pad can deliver several samples a frame. Same-direction steps add up,
-     * which lands where the separate moves would have.
-     */
+    /** Queue [steps] for the next frame: each move is an editor round-trip and the pad sends several samples a frame. */
     private fun queueCursorSteps(steps: Int, horizontal: Boolean) {
         val pending = if (horizontal) pendingHorizontalSteps else pendingVerticalSteps
         val otherAxisPending = if (horizontal) pendingVerticalSteps else pendingHorizontalSteps
@@ -357,7 +301,6 @@ class CkbGestureBridge(private val ime: BlackBerryIME) {
         }
     }
 
-    /** Issues the queued steps as one move; a no-op with nothing queued. */
     private fun flushCursorSteps() {
         if (flushPosted) {
             flushPosted = false
@@ -371,17 +314,8 @@ class CkbGestureBridge(private val ime: BlackBerryIME) {
         if (v > 0) ime.moveUp(v) else if (v < 0) ime.moveDown(-v)
     }
 
-    // ------------------------------------------------------------------ policy inputs
-    //
-    // Audit CT-1/CT-17/GD-1: these three used to call
-    // PreferenceManager.getDefaultSharedPreferences(ime) on every invocation, and
-    // gestureConfig() is the recorder's configProvider — so it ran on EVERY ACTION_MOVE
-    // sample (13 locked pref reads plus two GestureConfig allocations per sample, to read
-    // one float). They are now snapshotted on first use and invalidated by an
-    // OnSharedPreferenceChangeListener, so Gesture Lab tuning still takes effect without an
-    // IME restart while a whole stroke costs no pref reads at all. Access goes through
-    // PrefsManager, the project's single prefs accessor.
-
+    // Policy inputs, cached because gestureConfig() runs on every ACTION_MOVE; any pref change
+    // invalidates them so Gesture Lab tuning applies without a restart.
     private var cachedConfig: GestureConfig? = null
     private var cachedAssignments: GestureAssignments? = null
     private var cachedGesturesEnabled: Boolean? = null
@@ -393,11 +327,7 @@ class CkbGestureBridge(private val ime: BlackBerryIME) {
     }
     private var prefsListenerRegistered = false
 
-    /**
-     * The shared prefs, registering the invalidation listener on first use. Deferred rather than
-     * registered in an initializer because this bridge is constructed during BlackBerryIME's
-     * field initialization, before `PrefsManager.init()` runs in `onCreate`.
-     */
+    /** Registers the listener lazily: this bridge is built during IME field init, before `PrefsManager.init()`. */
     private fun prefs(): SharedPreferences {
         val p = PrefsManager.getPrefs(ime)
         if (!prefsListenerRegistered) {
@@ -407,7 +337,6 @@ class CkbGestureBridge(private val ime: BlackBerryIME) {
         return p
     }
 
-    /** Drop the preference listener and cached snapshots; called from the IME's teardown. */
     fun release() {
         if (flushPosted) {
             flushPosted = false
@@ -424,7 +353,6 @@ class CkbGestureBridge(private val ime: BlackBerryIME) {
         cachedGesturesEnabled = null
     }
 
-    /** Snapshot of the mode state the policy needs, from settings + runtime. */
     private fun currentModeState(keyTiming: KeyTiming): ModeState {
         val gesturesEnabled = cachedGesturesEnabled
             ?: prefs().getBoolean("ckb_gestures_enabled", true).also { cachedGesturesEnabled = it }
@@ -437,44 +365,29 @@ class CkbGestureBridge(private val ime: BlackBerryIME) {
         )
     }
 
-    /**
-     * Current user gesture-slot assignments from prefs, an unset slot reading as this device's
-     * default (the profile's `default-value`, e.g. double-tap: none on the Titans) or the
-     * app-wide one.
-     */
+    /** An unset slot reads as the device profile's `default-value`, else the app-wide default. */
     private fun gestureAssignments(): GestureAssignments =
         cachedAssignments ?: GestureAssignments.fromPrefs(prefs(), GestureAssignments.deviceDefaults())
             .also { cachedAssignments = it }
 
-    /** Classifier config, sourced from prefs (tuned in the Gesture Lab), defaulting to the tuned defaults. */
     private fun gestureConfig(): GestureConfig =
         cachedConfig ?: GestureConfig.fromPrefs(prefs()).also { cachedConfig = it }
 
-    // ------------------------------------------------------------------ actions
-
-    /** Map a resolved action onto existing IME calls. [trace] provides positional context (suggestion slot for commit). */
+    /** [trace] gives the position (suggestion slot, delete sweep). */
     private fun executeGestureAction(action: GestureAction, trace: GestureTrace) {
         if (InputPathDebug.perGesture()) Logger.info(TAG, "execute ${action.key}")
         when (action) {
             GestureAction.NONE -> {}
             GestureAction.COMMIT_SUGGESTION -> commitSuggestionAt(trace.start.x)
-            // The IME's own swipe-delete: it deletes a live composing word FROM the composing
-            // tracker (finishing the region first), reverts a fresh auto-correction, unlearns
-            // the word, and refreshes the strip. A plain deleteSurroundingText(wordLength) is
-            // wrong here: the editor leaves the composing region alone and deletes AROUND it,
-            // so a word re-opened by backspacing into it stayed put while the word before it
-            // vanished.
-            // The backspace icon sweeps with the finger; a firmware gesture key has no trace, so
-            // it gets a fixed right-to-left sweep across the middle of the keyboard.
+            // Not deleteSurroundingText: the editor deletes around a composing region, not it.
+            // A firmware key has no trace, so it gets a fixed right-to-left sweep.
             GestureAction.DELETE_WORD ->
                 if (trace.isDegenerate) ime.onCkbSwipeDelete(0.75f, 0.25f)
                 else ime.onCkbSwipeDelete(trace.start.x, trace.end.x)
-            // Toggle the arrow-bar cursor mode — the same control the original double-tap used.
             GestureAction.ENTER_CURSOR_MODE -> ime.toggleCursorMode()
             GestureAction.NEXT_LANGUAGE -> ime.updateSuggestionsFromSubtype(InputSource.SOFTWARE)
             GestureAction.CYCLE_SYMBOLS -> {
-                // Paging away from the Alt page: the Alt span and the per-key Alt state go, Shift
-                // and the held-key set stay. That scope is what ALT_PAGE_LEFT names.
+                // Leaving the Alt page clears Alt state only; Shift and held keys stay.
                 ime.getPhysicalKeyboardStateTracker()
                     .resetModifiers(dev.bbkb.ime.core.keyevent.ModifierResetReason.ALT_PAGE_LEFT)
                 ime.getKeyboardSwitcher().onSymbolShiftToggle(ime.getCurrentInputType(), ime.getCurrentImeOptions(), true, true)
@@ -485,10 +398,7 @@ class CkbGestureBridge(private val ime: BlackBerryIME) {
         }
     }
 
-    /** Commit the suggestion under the flick's normalized X (0..1 across the strip's 3 slots). */
     private fun commitSuggestionAt(normalizedXraw: Float): Boolean {
-        // Commit from the gesture-start snapshot (what was displayed), not the live suggestions,
-        // which this gesture's own flow-feed may have cleared by now.
         val suggestions = startSuggestions ?: ime.getInputLogic().mCurrentSuggestions
         if (suggestions.isEmpty() || suggestions.size() == 0) {
             if (InputPathDebug.perGesture()) Logger.info(TAG, "commit_suggestion NO-OP: empty suggestions (snapshotWasNull=${startSuggestions == null})")
@@ -503,8 +413,7 @@ class CkbGestureBridge(private val ime: BlackBerryIME) {
             return false
         }
         if (InputPathDebug.perGesture()) Logger.info(TAG, "commit_suggestion OK: slot=$slot of ${suggestions.size()}")
-        // The pick replaces the word being typed, even when this flick's own samples started a
-        // swipe that committed it: take that word back out first.
+        // The pick replaces the typed word even if this flick's swipe start committed it.
         val committed = wordCommittedBySwipeStart
         wordCommittedBySwipeStart = null
         if (committed != null) ime.getInputLogic().takeBackWordCommittedForSwipe(committed)

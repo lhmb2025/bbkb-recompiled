@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- The quick-switch globe on the comma key's slot: the language key's globe at 20dp, so it clears the mic hint in the key's corner. -->
-<!-- Material Symbols Outlined "language", weight 400, FILL 0, optical size 24.
-     Straight export from fonts.google.com/icons; only the tint attribute is the keyboard's own. -->
+<!-- Material Symbols Outlined "language", wght 400; 20dp so it clears the mic hint in the comma slot -->
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
     android:width="20dp"
     android:height="20dp"

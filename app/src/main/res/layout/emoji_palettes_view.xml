@@ -10,20 +10,17 @@
     android:layoutDirection="locale"
     style="?attr/emojiPalettesViewStyle">
 
-    <!-- FrameLayout to stack ViewPager and search overlay -->
     <FrameLayout
         android:id="@+id/emoji_pager_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <!-- Main emoji category pager (static categories); always pages left to right, set up
-             in EmojiPagerAdapter.configure -->
+        <!-- Always pages left to right (EmojiPagerAdapter.configure) -->
         <androidx.viewpager2.widget.ViewPager2
             android:id="@+id/emoji_keyboard_pager"
             android:layout_width="match_parent"
             android:layout_height="match_parent"/>
 
-        <!-- Search/Recents overlay (sits on top, shown when in search mode) -->
         <dev.bbkb.ime.keyboard.inputboard.emoji.EmojiSearchOverlayView
             android:id="@+id/emoji_search_overlay"
             android:layout_width="match_parent"
@@ -36,18 +33,12 @@
         android:layout_width="match_parent"
         android:layout_height="8dp"/>
 
-    <!-- The tab row: category icons and the delete key. Hidden while a typed query is active. -->
     <LinearLayout
         android:id="@+id/emoji_tab_row"
         android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="@dimen/config_suggestions_strip_height">
-        <!-- The category icons: a standalone TabLayout kept in step with the pager by
-             EmojiPalettesView (one tab spans several pages, so no setupWithViewPager). It needs an
-             AppCompat theme, which the IME's inflation context does not carry; android:theme
-             supplies it for this view only. Plain Design style with every default that would add
-             to the old TabWidget row switched off: no indicator, ripple, animation, padding or
-             tint (EmojiPalettesView tints from KeyboardColorManager). -->
+        <!-- Synced by EmojiPalettesView (a tab spans pages); android:theme supplies the AppCompat theme the IME context lacks -->
         <com.google.android.material.tabs.TabLayout
             android:id="@+id/emoji_category_tabhost"
             style="@style/Widget.Design.TabLayout"
@@ -82,9 +73,7 @@
             android:hapticFeedbackEnabled="false"/>
     </LinearLayout>
 
-    <!-- The search field that takes the tab row's place while a query is typed on a physical
-         keyboard: the search icon where Recents was, the query, and a clear button where the
-         delete key was. Same height and the same column split as the row it replaces. -->
+    <!-- Replaces the tab row while a physical-keyboard query is typed; same height and column split -->
     <LinearLayout
         android:id="@+id/emoji_search_field"
         android:orientation="horizontal"

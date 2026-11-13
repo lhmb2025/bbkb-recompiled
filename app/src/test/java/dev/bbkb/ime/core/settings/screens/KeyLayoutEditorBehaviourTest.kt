@@ -36,30 +36,11 @@ import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
 
 /**
- * CHARACTERISATION TEST — the two tap-to-swap key-layout grid editors,
- * [CustomSymbolPageScreen] (PKB and VKB) and [CustomizeSlideBoardScreen].
- *
- * `SettingsScreenRenderTest` pins what these screens *draw* on a fresh install. It does not touch
- * them, so nothing pinned what they *do*: selecting a cell, swapping two cells, clearing one,
- * applying a reset preset, and — the part that matters most — the byte layout each editor writes
- * to SharedPreferences.
- *
- * That last one is the sharp edge. Both editors sit behind a permutation between the position a
- * key occupies on screen and the index it occupies in storage, because `KeyboardBuilder` reads the
- * stored list in an order its key sorting produces rather than in visual order:
- *
- *  * the VKB symbol page permutes in `CustomSymbolRepository.load/saveLayout`,
- *  * the PKB symbol page does not permute at all,
- *  * the slideboard numpad permutes in `CustomizeSlideBoardScreen`'s own `NUMPAD_KEYBOARD_READ_ORDER`.
- *
- * Get any of those backwards and every existing user's customised layout is silently scrambled,
- * with no crash and no failing render test. So each editor is pinned from both directions:
- * [slideboardRendersStoredSymbolsInKeyboardReadOrder] and its two siblings seed storage with
- * distinguishable tokens and assert the on-screen order, and the swap/clear/reset cases assert the
- * exact list written back.
- *
- * Everything here asserts through the public composable, so it survives the screens being merged
- * into one renderer.
+ * Pins what the two tap-to-swap grid editors, [CustomSymbolPageScreen] (PKB and VKB) and
+ * [CustomizeSlideBoardScreen], do: select, swap, clear, reset, and the exact list each writes.
+ * Storage order differs from screen order (VKB permutes in `CustomSymbolRepository`, PKB not at
+ * all, the numpad via `NUMPAD_KEYBOARD_READ_ORDER`); getting one backwards silently scrambles
+ * every user's layout, so each is pinned from storage to screen and back.
  */
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [34], qualifiers = "w411dp-h891dp")
@@ -71,17 +52,14 @@ class KeyLayoutEditorBehaviourTest {
     /** `CustomSymbolRepository.DELIMITER` / `SettingsManager`'s list separator. */
     private val delimiter = "\u0378"
 
-    /** `CustomSymbolRepository.NULL_MARKER` — an empty slot. */
+    /** `CustomSymbolRepository.NULL_MARKER`: an empty slot. */
     private val nul = "\u0000"
 
     private val context: Context get() = ApplicationProvider.getApplicationContext()
 
     /**
-     * The screens read through [PrefsManager], whose instance is a process-wide singleton bound to
-     * whichever context first asked for it — Robolectric hands each test method a fresh
-     * `Application`, but the singleton outlives them, so going through `PreferenceManager` here
-     * would address a *different* file from the one under test. Ask the singleton instead, and
-     * clear it per method so nothing leaks between cases.
+     * The screens read through the [PrefsManager] singleton, bound to whichever context asked first
+     * and outliving Robolectric's per-test `Application`, so ask it rather than `PreferenceManager`.
      */
     private val prefs get() = PrefsManager.getPrefs(context)
 
@@ -91,18 +69,13 @@ class KeyLayoutEditorBehaviourTest {
     }
 
     /**
-     * That same singleton outlives this class, and `SettingsScreenRenderTest` records every screen
-     * in the state a fresh install produces — so a layout left behind here reappears there as a
-     * grid full of `t0`…`t27` (`t26` on the physical page). Leave the file the way it was found.
+     * Leave prefs as found: the singleton outlives this class, and a leftover layout would show up
+     * in `SettingsScreenRenderTest`'s fresh-install cases.
      */
     @After
     fun clearPreferencesAgain() {
         prefs.edit().clear().commit()
     }
-
-    // ========================================================================
-    // Storage helpers
-    // ========================================================================
 
     private fun storedList(key: String): List<String> =
         prefs.getString(key, null)?.split(delimiter)?.let {
@@ -128,11 +101,7 @@ class KeyLayoutEditorBehaviourTest {
         composeRule.waitForIdle()
     }
 
-    /**
-     * The editor draws its board with the keyboard's own view, so the keys are not Compose text
-     * nodes: find that view. It appears once the board has been built, which happens off the main
-     * thread.
-     */
+    /** The board is the keyboard's own view, not Compose text, and appears once built off the main thread. */
     private fun preview(): KeyEditorPreviewView {
         var found: KeyEditorPreviewView? = null
         composeRule.waitUntil(10_000) {
@@ -154,7 +123,6 @@ class KeyLayoutEditorBehaviourTest {
     /** What the board's editable keys show, in reading order. */
     private fun keyLabels(): List<String> = preview().slotLabels()
 
-    /** Taps the key showing [label]. */
     private fun tapKey(label: String) {
         val board = preview()
         val slot = board.slotLabels().indexOf(label)
@@ -162,10 +130,6 @@ class KeyLayoutEditorBehaviourTest {
         board.tapSlot(slot)
         composeRule.waitForIdle()
     }
-
-    // ========================================================================
-    // The persisted layout format — storage order, read back on screen
-    // ========================================================================
 
     @Test
     fun pkbSymbolPageRendersStoredSymbolsInStorageOrder() {
@@ -215,10 +179,6 @@ class KeyLayoutEditorBehaviourTest {
         assertEquals(readOrder.map { stored[it] }, keyLabels())
     }
 
-    // ========================================================================
-    // The keyboard draws what the editor saved
-    // ========================================================================
-
     /** The custom symbol page as the keyboard builds it from storage: its editable keys, in reading order. */
     private fun keyboardCustomPage(pkb: Boolean): List<String> {
         SubtypeManager.ensureInitialized(context)
@@ -231,11 +191,7 @@ class KeyLayoutEditorBehaviourTest {
         return keyboard.keys.filter { it.outputText == "customSymbolKeyStyle" }.map { it.label.orEmpty() }
     }
 
-    /**
-     * The on-screen page is stored in an order that is neither the editor's nor the keyboard's key
-     * order, and the two used to disagree about it: a page arranged in the editor came out
-     * shuffled on the keyboard. Both go through one table now.
-     */
+    /** The editor and the keyboard read the stored on-screen page through one order table. */
     @Test
     fun theKeyboardDrawsTheOnScreenPageAsTheEditorSavedIt() {
         val page = List(26) { "s$it" }
@@ -251,10 +207,6 @@ class KeyLayoutEditorBehaviourTest {
 
         assertEquals(page, keyboardCustomPage(pkb = true))
     }
-
-    // ========================================================================
-    // Swapping two cells — and what that writes
-    // ========================================================================
 
     @Test
     fun pkbSwapWritesTheSwappedPairInStorageOrder() {
@@ -307,10 +259,6 @@ class KeyLayoutEditorBehaviourTest {
         val expected = stored.toMutableList().also { it[15] = "t16"; it[16] = "t15" }
         assertEquals(expected, storedList("custom_slideboard_symbols"))
     }
-
-    // ========================================================================
-    // Selecting, deselecting, clearing
-    // ========================================================================
 
     @Test
     fun tappingAKeyTwiceDeselectsItAndWritesNothing() {
@@ -390,10 +338,6 @@ class KeyLayoutEditorBehaviourTest {
         assertEquals(stored.toMutableList().also { it[4] = nul }, storedList("custom_slideboard_symbols"))
     }
 
-    // ========================================================================
-    // Assigning a symbol from the palette
-    // ========================================================================
-
     @Test
     fun tappingAPaletteSymbolThenAKeyAssignsIt() {
         val stored = tokens(27)
@@ -427,10 +371,6 @@ class KeyLayoutEditorBehaviourTest {
 
         assertEquals(stored.toMutableList().also { it[2] = "b" }, storedList("pref_pkb_symbol_page_layout"))
     }
-
-    // ========================================================================
-    // Reset presets
-    // ========================================================================
 
     @Test
     fun resetToPageTwoWritesThePageTwoDefaults() {
@@ -508,10 +448,6 @@ class KeyLayoutEditorBehaviourTest {
 
         assertEquals(List(20) { nul }, storedList("custom_slideboard_symbols"))
     }
-
-    // ========================================================================
-    // Defaults on a fresh install
-    // ========================================================================
 
     @Test
     fun aFreshSlideboardShowsTheDefaultNumpadInVisualOrder() {

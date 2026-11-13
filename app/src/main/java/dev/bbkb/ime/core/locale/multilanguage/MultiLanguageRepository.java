@@ -31,24 +31,20 @@ public class MultiLanguageRepository {
 
     private final TreeMap<LocaleItem, String> localeToLayoutSet = new TreeMap<>(LocaleItem.DISPLAY_NAME_COMPARATOR);
 
-    /** The Latin-script subset, which the old wizard and dialog still list as primaries. */
+    /** The Latin-script subset, listed as primaries. */
     private final TreeSet<LocaleItem> asciiLocales = new TreeSet<>(LocaleItem.DISPLAY_NAME_COMPARATOR);
 
     private final TreeSet<MultiLanguageConfig> configs = new TreeSet<>();
 
     MultiLanguageRepository(Context context, InputMethodInfo inputMethodInfo) {
-        // Use applicationContext to prevent memory leaks in static singleton
         this.context = context.getApplicationContext();
         loadAvailableLocales(inputMethodInfo);
     }
 
     /**
-     * Defect 1: {@link RichInputMethodManager#getInputMethodInfoOfThisIme()} returns null while
-     * this IME is installed but not yet enabled in system settings, and again briefly during a
-     * package update. The repository copes (see {@link #loadAvailableLocales}), but an instance
-     * built in that state has an empty locale list forever, so it is deliberately NOT memoised:
-     * the next caller retries, and picks up the real subtype list once the framework knows us.
-     * Only the fully-populated instance is cached.
+     * {@link RichInputMethodManager#getInputMethodInfoOfThisIme()} is null while this IME is not yet
+     * enabled or mid package-update; an instance built then has no locales, so it is not cached
+     * and the next caller retries.
      */
     public static MultiLanguageRepository getInstance(Context context) {
         if (sInstance == null) {
@@ -68,10 +64,7 @@ public class MultiLanguageRepository {
     }
 
     private void loadAvailableLocales(InputMethodInfo inputMethodInfo) {
-        // Defect 1: null when the framework has no InputMethodInfo for us — installed but not yet
-        // enabled in system settings, or mid package-update. This used to NPE and take out both
-        // MultiLanguageWizardScreen and whatever else was on the way to it. An IME the framework
-        // does not know about has no subtypes, so the honest answer is an empty locale list.
+        // Null when not yet enabled or mid package-update: no subtypes, so an empty locale list.
         if (inputMethodInfo == null) {
             Logger.warn(TAG, "No InputMethodInfo for this IME (not enabled yet, or mid-update);"
                     + " no multi-language locales are available.");
@@ -84,10 +77,7 @@ public class MultiLanguageRepository {
             if (locale.equals("zz") || SubtypeFactory.isAdditionalSubtype(subtypeAt)) {
                 continue;
             }
-            // Every declared keyboard is known here. Which of them can share a keyboard is decided
-            // per primary language by script (see canCombine): until 2026-09-28 only ASCII-capable
-            // subtypes were listed, so Russian could not add Ukrainian nor Hindi Marathi, though
-            // they share a layout.
+            // Every declared keyboard is listed; which can share a keyboard is decided by script (canCombine).
             this.localeToLayoutSet.put(new LocaleItem(locale), ResourceLocaleUtils.getKeyboardLayoutSetName(subtypeAt));
             if (InputMethodSubtypeCompat.isAsciiCapable(subtypeAt)) {
                 this.asciiLocales.add(new LocaleItem(locale));
@@ -95,11 +85,12 @@ public class MultiLanguageRepository {
         }
     }
 
+    /** @param c0711f the keyboard language */
     public String getLayoutSetFor(LocaleItem c0711f) {
         return this.localeToLayoutSet.get(c0711f);
     }
 
-    /** The Latin-script keyboards, as the old wizard lists them. Extras for a given keyboard come from {@link #getAvailableLocalesFor}. */
+    /** The Latin-script keyboards, the only valid primaries. Extras come from {@link #getAvailableLocalesFor}. */
     public ArrayList<LocaleItem> getAvailableLocales() {
         return new ArrayList<>(this.asciiLocales);
     }
@@ -154,11 +145,6 @@ public class MultiLanguageRepository {
      * The primary language a new multi-language keyboard starts on: the system language when it
      * is one of {@link #getAvailableLocales()}, else another keyboard for the same language, else
      * the first in the list. Null only when nothing is available.
-     *
-     * <p>The Compose wizard used to start on {@code Locale.getDefault()} unconditionally, so with
-     * a Korean system language it showed "Korean" as primary although only Latin-script languages
-     * can be one, and saved a keyboard with no layout that typed English. The original app's
-     * spinner only pre-selected the system language when the list held it.
      */
     public LocaleItem getDefaultPrimaryLocale(String systemLocale) {
         return pickDefaultPrimaryLocale(getAvailableLocales(), systemLocale);
@@ -183,12 +169,8 @@ public class MultiLanguageRepository {
     }
 
     /**
-     * Re-reads the persisted list. {@code configs} used to be filled only by this instance's own
-     * mutations, so on a fresh process the first addConfig/removeConfig saved a list holding just
-     * that one entry, wiping every stored config (the original APK had the same gap). Reloading on
-     * every read and mutation also picks up any code that appends to the pref directly.
-     * The stored format is read as-is by MultiLanguageUtils.loadConfigs; unparseable entries
-     * (null) are skipped because TreeSet cannot hold them.
+     * Re-reads the persisted list before every read and mutation, so a save never drops stored
+     * configs this instance has not seen. Unparseable (null) entries are skipped: TreeSet cannot hold them.
      */
     private void reloadConfigs(SharedPreferences prefs) {
         this.configs.clear();
@@ -204,6 +186,7 @@ public class MultiLanguageRepository {
         return new ArrayList<>(this.configs);
     }
 
+    /** @param c0710e the keyboard config to add */
     public boolean addConfig(MultiLanguageConfig c0710e) {
         if (c0710e == null) {
             return false;
@@ -215,6 +198,7 @@ public class MultiLanguageRepository {
         return zAdd;
     }
 
+    /** @param c0710e the keyboard config to remove */
     public boolean removeConfig(MultiLanguageConfig c0710e) {
         if (c0710e == null) {
             return false;

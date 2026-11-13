@@ -721,7 +721,6 @@
     <string name="device_config_import_unreadable">Tento soubor není konfigurací zařízení</string>
     <string name="device_config_import_failed">Tento soubor se nepodařilo importovat</string>
 
-    <!-- OTA app updates -->
     <string name="settings_updates_title">Aktualizace</string>
     <string name="settings_updates_summary">Zkontrolovat novou verzi BBKB</string>
     <string name="settings_update_installed_version_title">Nainstalovaná verze</string>
@@ -755,7 +754,6 @@
     <string name="settings_update_ready_title">Připraveno k instalaci</string>
     <string name="settings_update_version_details">Podrobnosti o verzi</string>
     <string name="settings_update_unknown_sources_title">Povolit aplikaci BBKB instalovat aktualizace?</string>
-    <!-- Downloadable language packs (core/languagepack) -->
     <string name="language_packs_installed_header">Nainstalováno</string>
     <string name="language_packs_available_header">Ke stažení</string>
     <string name="language_packs_download">Stáhnout</string>
@@ -877,7 +875,6 @@
     <string name="settings_voice_stop_on_pause_summary_off">Poslouchá i během pauz, dokud neklepnete na mikrofon nebo dokud nenastane půl minuty ticha</string>
     <string name="voice_status_listening_tap_to_stop">Poslouchám&#8230; Klepnutím na mikrofon poslech ukončíte</string>
 
-    <!-- Settings text moved out of the code (2026-11) -->
     <string name="settings_common_save">Uložit</string>
     <string name="settings_common_edit">Upravit</string>
     <string name="settings_common_back">Zpět</string>

@@ -13,15 +13,9 @@ import org.robolectric.annotation.Config
 import java.util.Locale
 
 /**
- * `LanguagePackManager` used to parse `ldb/manifest.json` (105 entries) plus the side-loaded pack
- * registry file in its constructor — and its constructor runs from
- * `LanguagePackLocaleMonitor`'s, which runs from `BlackBerryIME.onCreate`. So that parse sat on
- * the IME's cold-start main thread, ahead of the first keyboard frame, for a catalogue nothing
- * reads until the first dictionary load.
- *
- * It is parsed on first read now, and prewarmed on a worker. The contract that has to survive is
- * that a lazily-loaded manager answers exactly as an eagerly-loaded one did, whichever order the
- * prewarm and the first reader arrive in.
+ * `LanguagePackManager` parses the pack catalogue on first read (prewarmed on a worker) to keep it
+ * off the IME's cold-start main thread. A lazily loaded manager must answer exactly as an eager
+ * one, whichever of the prewarm and the first reader arrives first.
  */
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [34], manifest = Config.NONE)
@@ -41,12 +35,8 @@ class LanguagePackRegistryLazyLoadTest {
     }
 
     /**
-     * These tests have to query the *stock* manifest — that is the whole comparison — so unlike
-     * the rest of the suite they cannot use made-up language codes to stay out of
-     * `LanguagePackInstaller`'s process-wide, first-registry-wins status cache. Robolectric
-     * shares its sandbox classloader between test classes, so a warm cache left here changes
-     * what `LanguagePacksScreen` has finished loading by the time `SettingsScreenRenderTest`
-     * takes its snapshot. Leave it as cold as it was found.
+     * These tests must query the stock manifest, so they warm `LanguagePackInstaller`'s
+     * process-wide status cache; Robolectric shares it with `SettingsScreenRenderTest`. Leave it cold.
      */
     @After
     fun tearDown() {
@@ -93,8 +83,7 @@ class LanguagePackRegistryLazyLoadTest {
     fun theStockManifestStillResolvesAfterALazyLoad() {
         val manager = LanguagePackManager(context)
 
-        // First read triggers the parse; the assertions are the ones LanguagePackManagerTest
-        // makes of the eagerly-loaded manager.
+        // First read triggers the parse; same assertions LanguagePackManagerTest makes.
         assertNotNull(manager.getStatus(Locale.US))
         assertEquals("en_US", manager.getStatus(Locale.US)!!.localeIdentifier)
         assertEquals("en_UK", manager.getStatus(Locale.UK)!!.localeIdentifier)

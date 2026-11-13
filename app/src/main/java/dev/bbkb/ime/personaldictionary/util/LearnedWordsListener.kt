@@ -1,8 +1,6 @@
 package dev.bbkb.ime.personaldictionary.util
 
-/**
- * Callback interface for asynchronous learned words retrieval.
- */
+/** Receives the learned words asynchronously. */
 interface LearnedWordsListener {
     fun complete(words: List<String>)
 }

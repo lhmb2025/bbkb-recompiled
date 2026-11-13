@@ -18,6 +18,7 @@ public final class DictionaryFactory {
     private DictionaryFactory() {
     }
 
+    /** @param z true for the spell checker's (secondary) engine */
     public static Dictionary createDictionary(Context context, Locale locale, boolean z) {
         if (BuildConfig.DEBUG) Log.i(TAG, "=== Dictionary Factory ===");
         if (BuildConfig.DEBUG) Log.i(TAG, "Requested locale: " + locale);
@@ -28,10 +29,8 @@ public final class DictionaryFactory {
             try {
                 if (BuildConfig.DEBUG) Log.i(TAG, "Getting " + (z ? "secondary" : "primary") + " NuanceSDK instance...");
                 NuanceSDK engine = z ? NuanceSDKManager.getSecondary() : NuanceSDKManager.getInstance();
-                // Audit §6 defect 9: NuanceSDKManager swallows the engine's load failure
-                // (IllegalStateException, UnsatisfiedLinkError, ...) and returns null, so a failed load
-                // arrives here as a null engine, not as the exception below. A bridge over null NPEs as
-                // soon as a supported language pack is found; use the fallback instead.
+                // A failed load arrives as a null engine (NuanceSDKManager swallows the error); a
+                // bridge over null would NPE, so use the fallback.
                 if (engine != null) {
                     dictionary = new NuanceSDKDictionaryBridge(engine, context, locale, !z);
                     if (BuildConfig.DEBUG) Log.i(TAG, "NuanceSDK dictionary created successfully: " + dictionary);

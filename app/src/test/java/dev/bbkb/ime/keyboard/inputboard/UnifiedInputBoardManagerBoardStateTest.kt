@@ -24,37 +24,11 @@ import org.robolectric.util.ReflectionHelpers
 import java.util.concurrent.ConcurrentHashMap
 
 /**
- * Tests for board open/close state reconciliation between [UnifiedBoardCoordinator] — which owns
- * the only copy of "which board is open" — and the view state each component reports.
- *
- * `UnifiedBoardCoordinatorTest` already pins the coordinator's toggle core against a trivial host.
- * This file pins the part that file cannot reach: **the real host**. A board-key press runs
- * `handleKeyEvent → coordinator.requestBoard → host.openBoard → openBoardFromExternalKey →
- * dispatchBoardAction`.
- *
- * `dispatchBoardAction` used to re-decide open-versus-close from `component.isShowing()` — the
- * exact "derive it from clobberable view state" pattern the coordinator was introduced to remove —
- * which cost the user a press whenever the two halves disagreed (defect 8, the board "dead press").
- * It is now the OPEN path only: the coordinator makes the decision, and where the view disagrees it
- * is repaired to match rather than allowed to overrule. The tests below construct both directions
- * of coordinator/view disagreement and pin the corrected outcome.
- *
- * ### How the subject is instantiated
- *
- * `UnifiedInputBoardManager`'s constructor needs a live `AuxBarView`, a themed `Context` and a real
- * `BlackBerryIME`, none of which exist on the JVM. The instance here is created without running
- * that constructor (`Mockito.CALLS_REAL_METHODS`, which under the inline mock maker yields the real
- * class) and the handful of collaborators the board-state paths actually touch are injected. Every
- * method under test then runs **real production code** — no dispatch logic is reimplemented here.
- * The collaborators are stubbed so that:
- *  - `isShowing()` answers true (no `AuxBarManager`, `keyboardView` VISIBLE — the legacy fallback),
- *    so `openBoardFromExternalKey` skips `show()` and goes straight to the dispatcher;
- *  - `keyboardView.getKeyboard()` is null, so `refresh()` / `updateKeyHighlightedStates` /
- *    `updateAlphabetKeyForSlideboard` short-circuit and no key rendering is involved — except in
- *    section 7, which installs a bar keyboard precisely so that painting pass runs.
- *
- * The boards are real [AbstractBoardController] subclasses, so their `show`/`hide` carry the
- * production "am I already in that state" guard.
+ * Pins board open/close reconciliation between [UnifiedBoardCoordinator], the only owner of "which
+ * board is open", and component view state, through the real host path (`handleKeyEvent →
+ * requestBoard → dispatchBoardAction`). The manager is built with `CALLS_REAL_METHODS` (no
+ * constructor); `isShowing()` answers true via the legacy fallback and a null
+ * `keyboardView.getKeyboard()` skips key painting, except where a test installs a bar keyboard.
  */
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [34], manifest = Config.NONE)
@@ -65,21 +39,15 @@ class UnifiedInputBoardManagerBoardStateTest {
         var viewIsUp = false
         var enabled = true
 
-        /**
-         * The board refuses to raise its view when asked, the way `FccController.showFcc()` does
-         * while a physical key is still counted as held (and the way any board whose `ViewStub`
-         * has not been inflated does silently).
-         */
+        /** Refuses to raise its view, like `FccController.showFcc()` while a key is held, or an uninflated `ViewStub`. */
         var refuseToOpen = false
         var onShowCalls = 0
         var onHideCalls = 0
         var refreshCalls = 0
 
         /**
-         * Times `hide()` was *asked for*, as opposed to `onHideCalls` (times the guard let it
-         * through). The two differ exactly when the view is already down — which is the case
-         * `VoiceInputController` cares about, since it overrides `hide()` to run unconditionally
-         * so a recognizer session that outlived its view still releases the microphone.
+         * Times `hide()` was requested, versus `onHideCalls` (times the guard let it through). They differ
+         * when the view is already down, which matters for `VoiceInputController`'s unconditional `hide()`.
          */
         var hideRequests = 0
 
@@ -91,7 +59,7 @@ class UnifiedInputBoardManagerBoardStateTest {
         override fun onRefresh() { refreshCalls++; super.onRefresh() }
         override fun hide() { hideRequests++; super.hide() }
 
-        /** A side effect hid the view behind the controller's back (the on-device regression). */
+        /** A side effect hid the view behind the controller's back. */
         fun clobberViewClosed() { viewIsUp = false }
 
         /** The view is up although nothing told the coordinator. */
@@ -161,8 +129,6 @@ class UnifiedInputBoardManagerBoardStateTest {
         return key
     }
 
-    // ── assertions (every test routes through one of these) ───────────────────
-
     private fun assertEq(message: String, expected: Any?, actual: Any?) =
         assertEquals(message, expected, actual)
 
@@ -172,10 +138,6 @@ class UnifiedInputBoardManagerBoardStateTest {
 
     private fun assertActiveBoard(expected: Int) =
         assertEq("coordinator activeBoard", expected, coordinator.activeBoard())
-
-    // ═══════════════════════════════════════════════════════════════════════
-    // 1. Coordinator versus view — both directions of disagreement
-    // ═══════════════════════════════════════════════════════════════════════
 
     @Test
     fun bothAgreeClosed_pressOpensTheBoard() {
@@ -198,14 +160,8 @@ class UnifiedInputBoardManagerBoardStateTest {
     }
 
     /**
-     * The desync the coordinator exists to survive: a key-down side effect hid the view between
-     * the board key's down and its up, so the component reports closed while the coordinator still
-     * says open.
-     *
-     * Today the press CLOSES — the coordinator's own state decides, `closeBoard` runs, and the
-     * component's guarded `hide()` is a no-op because the view is already down. Wave 3's proposed
-     * reconcile would instead notice the disagreement and leave the board open, i.e. re-show it.
-     * This test is what will make that flip visible.
+     * A key-down side effect hid the view between the board key's down and up, so the component says
+     * closed while the coordinator says open. The coordinator decides: the press closes.
      */
     @Test
     fun coordinatorOpenViewClosed_pressClosesAndDoesNotReopen() {
@@ -221,16 +177,8 @@ class UnifiedInputBoardManagerBoardStateTest {
     }
 
     /**
-     * CORRECT (defect 8, the board "dead press"): the reverse desync no longer costs a press.
-     *
-     * The coordinator says nothing is open, so `requestBoard` takes the OPEN path, and
-     * `dispatchBoardAction` now honours that instead of re-deriving from `component.isShowing()`.
-     * It used to see the view up and CLOSE the board — a press whose whole purpose was to open one
-     * closed it, and only the second press opened it.
-     *
-     * The disagreement is repaired rather than ignored: the guarded `show()` leaves an already-up
-     * view up (so no second `onShow`), and the report that follows brings the coordinator into
-     * line. Both halves end the press agreeing the board is open.
+     * Reverse desync (coordinator says nothing open, view is up): the press opens instead of closing,
+     * the guarded `show()` adds no second `onShow`, and the report brings the coordinator into line.
      */
     @Test
     fun coordinatorClosedViewOpen_pressLeavesTheBoardOpenAndRepairsTheCoordinator() {
@@ -244,11 +192,7 @@ class UnifiedInputBoardManagerBoardStateTest {
         assertActiveBoard(CLIPBOARD)
     }
 
-    /**
-     * CORRECT (defect 8): with the first press no longer wasted, the next press is an ordinary
-     * second press — it closes. Previously the first press was the dead one and this was where the
-     * board finally opened.
-     */
+    /** With the first press not wasted, the next press is an ordinary toggle and closes. */
     @Test
     fun coordinatorClosedViewOpen_theNextPressClosesLikeAnyOtherSecondPress() {
         clipboard.clobberViewOpen()
@@ -262,10 +206,6 @@ class UnifiedInputBoardManagerBoardStateTest {
         assertActiveBoard(UnifiedBoardCoordinator.NO_BOARD)
     }
 
-    // ═══════════════════════════════════════════════════════════════════════
-    // 2. Exclusive open
-    // ═══════════════════════════════════════════════════════════════════════
-
     @Test
     fun switchingBoardsClosesThePreviousActiveFirst() {
         uim.requestBoard(CLIPBOARD)
@@ -278,19 +218,9 @@ class UnifiedInputBoardManagerBoardStateTest {
     }
 
     /**
-     * CORRECT (defect 8): switching to a board whose view is already up leaves it up and makes it
-     * the active board.
-     *
-     * The exclusive-open guard used to be gated on `previousActive.isShowing()` as well, so when
-     * the previous active board's view had been clobbered down the guard did nothing — and then
-     * the target board's own `isShowing()` re-check closed it. The user asked to switch to a board
-     * and ended up with nothing open. The guard now fires on the coordinator's answer alone, and
-     * the target is opened unconditionally.
-     *
-     * The previous board's `hide()` is still *requested* even though its view is already down —
-     * that is the point of dropping the gate, not an accident: for boards whose `hide()` runs
-     * unconditionally (voice, releasing the microphone) the view being down does not mean the
-     * board is finished.
+     * Switching to a board whose view is already up leaves it up and active. The exclusive-open guard
+     * uses the coordinator's answer alone, so the previous board's `hide()` is still requested with its
+     * view down: boards with an unconditional `hide()` (voice releasing the mic) need that.
      */
     @Test
     fun switchingToABoardWhoseViewIsAlreadyUpKeepsItUpAndMakesItActive() {
@@ -322,17 +252,9 @@ class UnifiedInputBoardManagerBoardStateTest {
         assertActiveBoard(CLIPBOARD)
     }
 
-    // ═══════════════════════════════════════════════════════════════════════
-    // 3. The hides that bypass the components' normal close paths
-    // ═══════════════════════════════════════════════════════════════════════
-
     /**
-     * CORRECT (defect 8, third finding): `hideOtherComponents` reaches straight into each
-     * component's `hide()`, bypassing the normal close paths. It used to report nothing, so the
-     * coordinator kept claiming the board was open and `getActiveComponent()` handed back a board
-     * whose view was down — the UIM manufacturing the very desync the toggle has to survive. The
-     * sweep now reports the close when it takes down the active board, which is what the explicit
-     * reconcile in `hideKeyboardOnKeyboardStateChange` used to have to do after the fact.
+     * `hideOtherComponents` bypasses the components' close paths, so it must report the close when it
+     * takes down the active board; otherwise `getActiveComponent()` returns a board whose view is down.
      */
     @Test
     fun hideOtherComponentsHidesEveryOtherBoardAndReportsTheActiveOneClosed() {
@@ -393,18 +315,9 @@ class UnifiedInputBoardManagerBoardStateTest {
     }
 
     /**
-     * REGRESSION (owner report, KEY2, 2026-09-21): the voice panel closed itself as soon as a
-     * dictation result was committed.
-     *
-     * `VoiceRecognitionManager.onResults` commits the recognised text — `postCommitText` →
-     * `BlackBerryIME.onTextInput` → `InputLogic.commitVoiceInput`, which asks for UI update mode 1
-     * — and mode 1 is `resetKeyboardState()`, i.e. `KeyboardSwitcher.setAlphabetKeyboard(caps,
-     * recap)` → `KeyboardState.requestShiftMode` → `requestShiftOff`/`requestAutomaticShift` →
-     * the private `setAlphabetKeyboard(int)`, whose first act is to call this method. Voice was
-     * not on the exemption list, so the sweep reached `VoiceInputController.hide()` — which is
-     * unconditional and cancels the recognizer — and the user's own dictated words closed the
-     * panel. Only the listening session should end; the panel returns to "tap to speak" and waits
-     * for the user to close it.
+     * Committing a dictation result runs the keyboard-state chain (`resetKeyboardState` →
+     * `setAlphabetKeyboard`), which calls this sweep. Voice is exempt so its unconditional `hide()`
+     * does not close the panel; only the listening session ends.
      */
     @Test
     fun hideKeyboardOnKeyboardStateChangeExemptsVoiceSoADictationCommitLeavesThePanelUp() {
@@ -455,12 +368,9 @@ class UnifiedInputBoardManagerBoardStateTest {
         assertActiveBoard(UnifiedBoardCoordinator.NO_BOARD)
     }
 
-    // ── the exemption's predicate, now read by the cross-axis table ────────────
-
     /**
-     * Phase 1a: the exempt list moved to `CrossAxisRules`, which probes it through this predicate
-     * instead of the manager keeping a second copy of the list. Every board answers for its own
-     * view, exempt or not, and an unregistered keycode answers false.
+     * `CrossAxisRules` probes the exempt list through this predicate. Every board answers for its own
+     * view; an unregistered keycode answers false.
      */
     @Test
     fun isBoardViewShowingAnswersForEachBoardsOwnView() {
@@ -474,7 +384,7 @@ class UnifiedInputBoardManagerBoardStateTest {
         assertNo("NO_BOARD is never up", uim.isBoardViewShowing(UnifiedBoardCoordinator.NO_BOARD))
     }
 
-    /** The predicate follows the view, not the coordinator — that is what the exemption needs. */
+    /** The predicate follows the view, not the coordinator: that is what the exemption needs. */
     @Test
     fun isBoardViewShowingFollowsTheViewNotTheCoordinator() {
         uim.requestBoard(CLIPBOARD)
@@ -514,10 +424,6 @@ class UnifiedInputBoardManagerBoardStateTest {
         assertActiveBoard(UnifiedBoardCoordinator.NO_BOARD)
     }
 
-    // ═══════════════════════════════════════════════════════════════════════
-    // 4. notifyBoardOpened / notifyBoardClosed — the bookkeeping funnel
-    // ═══════════════════════════════════════════════════════════════════════
-
     @Test
     fun setActiveComponentReportsAnOpenAndANullReportsAClose() {
         uim.setActiveComponent(clipboard)
@@ -538,8 +444,8 @@ class UnifiedInputBoardManagerBoardStateTest {
 
     @Test
     fun setActiveComponentByKeyCodeIsASilentNoOpForAnUnregisteredKeycode() {
-        // CHARACTERISED BUG: an outside-driven open of a board that is not in the component map
-        // leaves the coordinator claiming nothing is open, with no diagnostic.
+        // Known bug: an outside-driven open of a board not in the component map leaves the coordinator
+        // claiming nothing is open, with no diagnostic.
         uim.setActiveComponentByKeyCode(UNREGISTERED)
 
         assertActiveBoard(UnifiedBoardCoordinator.NO_BOARD)
@@ -576,10 +482,6 @@ class UnifiedInputBoardManagerBoardStateTest {
         assertEq("the guarded hide() never fired", 0, clipboard.onHideCalls)
         assertActiveBoard(UnifiedBoardCoordinator.NO_BOARD)
     }
-
-    // ═══════════════════════════════════════════════════════════════════════
-    // 5. The bar-tap chain: onKeyUp -> handleKeyEvent -> coordinator
-    // ═══════════════════════════════════════════════════════════════════════
 
     @Test
     fun aBarTapOnABoardKeyGoesThroughTheCoordinator() {
@@ -624,8 +526,8 @@ class UnifiedInputBoardManagerBoardStateTest {
 
     @Test
     fun onlyTheLastBarTapDuringAnAnimationIsReplayed() {
-        // CHARACTERISED BUG: the pending-key slot holds one key, so a second tap during the same
-        // animation silently discards the first.
+        // Known bug: the pending-key slot holds one key, so a second tap during the same animation
+        // silently discards the first.
         uim.setAnimating(true)
         uim.onKeyUp(barKey(CLIPBOARD), true)
         uim.onKeyUp(barKey(EMOJI), true)
@@ -645,16 +547,10 @@ class UnifiedInputBoardManagerBoardStateTest {
         assertActiveBoard(EMOJI)
     }
 
-    // ═══════════════════════════════════════════════════════════════════════
-    // 6. Per-board asymmetries in the dispatcher
-    // ═══════════════════════════════════════════════════════════════════════
-
     @Test
     fun openingVoiceWithANonVoiceControllerRegisteredIsASilentNoOp() {
-        // CHARACTERISED BUG: dispatchBoardAction's voice branch is gated on
-        // `instanceof VoiceInputController`, so a component registered under -27 that is not one
-        // is never shown and never reported — while closeBoard(-27) falls back to a plain hide().
-        // The two halves of the toggle disagree about what -27 means.
+        // Known bug: the voice branch is gated on `instanceof VoiceInputController`, so a non-voice
+        // component under -27 is never shown or reported, while closeBoard(-27) falls back to hide().
         val voice = register(VOICE)
 
         uim.requestBoard(VOICE)
@@ -692,27 +588,13 @@ class UnifiedInputBoardManagerBoardStateTest {
         assertYes("every board was refreshed", clipboard.refreshCalls > 0 && emoji.refreshCalls > 0)
     }
 
-    // ═══════════════════════════════════════════════════════════════════════
-    // 7. Toggles the user has moved off the bar (pref_uim_menu_order)
-    // ═══════════════════════════════════════════════════════════════════════
-    //
-    // Customize Menu lets the user replace any of the four bar toggles with another — the number
-    // pad in voice's slot, say. The board itself stays reachable: the physical mic key and the
-    // multifunction key's board actions open it through the coordinator exactly like a bar tap,
-    // and every open path reports through `setActiveComponent → updateKeyHighlightedStates`.
-    //
-    // That pass used to decide "is a board open" from whether the board's KEY was on the bar. A
-    // board whose toggle had been moved off was skipped, the pass concluded nothing was open, and
-    // its `hideOtherComponents(-37)` sweep closed the board the press had just opened — voice lost
-    // its recognizer and panel on every mic press once the number pad took its slot. These tests
-    // install a real bar keyboard (the other sections leave it null) so that pass runs.
+    // Boards whose bar toggle the user moved off (pref_uim_menu_order) stay reachable through the mic
+    // and multifunction keys. The highlight pass must not treat an off-bar board as closed and sweep it
+    // with `hideOtherComponents(-37)`. These tests install a real bar keyboard so that pass runs.
 
     /**
-     * The dispatcher's `-27` branch is typed on [VoiceInputController], so the voice board here is
-     * a Mockito mock of the real class carrying just the state that branch and the close path read.
-     * `toggleVoiceInput` / `hide` / `cancelVoiceInput` move the state the way the production
-     * controller does (`hide()` is unconditional there — it always cancels, which is why a sweep
-     * that reaches it costs the user the recognizer).
+     * The `-27` branch is typed on [VoiceInputController], so voice here is a Mockito mock of the real
+     * class; `hide()` is unconditional and cancels, as in production.
      */
     private inner class FakeVoice {
         var inVoiceMode = false
@@ -746,7 +628,7 @@ class UnifiedInputBoardManagerBoardStateTest {
     }
 
     /**
-     * Give the harness a bar keyboard holding the centre alphabet key plus exactly [toggles] — the
+     * Give the harness a bar keyboard holding the centre alphabet key plus exactly [toggles], the
      * four slots as `applyMenuOrder` would have filled them. Anything else is "not on the bar".
      */
     private fun installBar(vararg toggles: Int): Map<Int, Key> {
@@ -790,11 +672,7 @@ class UnifiedInputBoardManagerBoardStateTest {
         assertActiveBoard(UnifiedBoardCoordinator.NO_BOARD)
     }
 
-    /**
-     * No recognition service (KEY2, 2026-10-06): the toggle refuses to open. The open used to be
-     * reported regardless, so the coordinator held voice "open" and spent the next press closing a
-     * board that was never there.
-     */
+    /** No recognition service: the toggle refuses to open, so the open must not be reported. */
     @Test
     fun micKey_refusedVoiceOpen_isReportedClosedSoTheNextPressTriesToOpenAgain() {
         val voice = registerVoice()
@@ -862,24 +740,11 @@ class UnifiedInputBoardManagerBoardStateTest {
         assertNo("the board is down", clipboard.viewIsUp)
     }
 
-    // ═══════════════════════════════════════════════════════════════════════
-    // 8. A close report names the board it closed (the Key2 mic-key regression)
-    // ═══════════════════════════════════════════════════════════════════════
-    //
-    // `setActiveComponent(null)` means "NO board is open", and the coordinator's activeBoard is the
-    // only copy of that state — so a close path that calls it while a DIFFERENT board is open
-    // makes the coordinator forget a board that is still on screen, and that board's key then
-    // finds NO_BOARD and takes the OPEN path. That is what the physical mic key hit on the Key2:
-    // `KeyboardSwitcher.setKeyboard` calls `hideEmojiKeyboard()` on EVERY keyboard rebuild, and it
-    // ended in an unscoped `setActiveComponent(null)`. Voice is the board the user keeps open
-    // while text is committed (a dictation result runs `onTextInput` → `onInputCodeChanged` → the
-    // shift chain → `setAlphabetKeyboard` → `setKeyboard`), so the first dictated word left the
-    // panel up and the coordinator empty, and the next mic press re-opened instead of closing.
-    //
-    // `reportBoardClosed(keyCode)` is the scoped form those paths use now: it clears the state
-    // only when the board it names is the one the coordinator is holding, and repaints either way.
+    // `setActiveComponent(null)` means no board is open, so close paths use the scoped
+    // `reportBoardClosed(keyCode)`: it clears state only when it names the board the coordinator holds,
+    // and repaints either way. Every keyboard rebuild (each dictated word) reports emoji closed.
 
-    /** What a keyboard rebuild does today: emoji's close report, while voice is the open board. */
+    /** A keyboard rebuild: emoji's close report while voice is the open board. */
     private fun keyboardRebuild() = uim.reportBoardClosed(EMOJI)
 
     @Test
@@ -900,7 +765,7 @@ class UnifiedInputBoardManagerBoardStateTest {
         val voice = registerVoice()
         installBar(VOICE, EMOJI, FCC, CLIPBOARD)
         uim.requestBoard(VOICE)
-        keyboardRebuild() // the dictated word that used to eat the next press
+        keyboardRebuild() // a dictated word
 
         uim.requestBoard(VOICE)
 
@@ -912,9 +777,8 @@ class UnifiedInputBoardManagerBoardStateTest {
     }
 
     /**
-     * The regression itself, kept as a characterisation of the unscoped report: with the
-     * coordinator told "nothing is open" the press reaches the OPEN half, which finds the
-     * recognizer already running and leaves it running — the press is eaten and the panel stays up.
+     * Characterises the unscoped report: told nothing is open, the press reaches the OPEN half, finds
+     * the recognizer running and leaves it, so the press is eaten and the panel stays up.
      */
     @Test
     fun theUnscopedCloseReport_isWhatAteTheSecondMicPress() {
@@ -922,7 +786,7 @@ class UnifiedInputBoardManagerBoardStateTest {
         installBar(VOICE, EMOJI, FCC, CLIPBOARD)
         uim.requestBoard(VOICE)
 
-        uim.setActiveComponent(null) // what hideEmojiKeyboard used to do on every rebuild
+        uim.setActiveComponent(null) // the unscoped report
         uim.requestBoard(VOICE)
 
         assertEq("the press never reached the close path", 0, voice.cancelCalls)
@@ -930,7 +794,7 @@ class UnifiedInputBoardManagerBoardStateTest {
         assertActiveBoard(VOICE)
     }
 
-    /** The number pad is the other board typed from, so every digit used to cost it its state. */
+    /** The number pad is also typed from, so a digit must not cost it its state. */
     @Test
     fun keyboardRebuildWhileTheNumberPadIsOpen_doesNotForgetIt() {
         installBar(VOICE, EMOJI, FCC, NUMBER_PAD)
@@ -956,9 +820,8 @@ class UnifiedInputBoardManagerBoardStateTest {
     }
 
     /**
-     * The emoji key never had voice's defect — a rebuild takes the palettes down WITH the state,
-     * so the two stay in step and a second press legitimately re-opens. Pinned so the scoping
-     * cannot silently turn a real emoji close into a stale "still open".
+     * A rebuild takes the emoji palettes down with the state, so a second press legitimately re-opens.
+     * Pinned so the scoping cannot turn a real emoji close into a stale open.
      */
     @Test
     fun emojiKey_secondPressClosesTheBoard() {
@@ -985,16 +848,9 @@ class UnifiedInputBoardManagerBoardStateTest {
         assertActiveBoard(CLIPBOARD)
     }
 
-    // ═══════════════════════════════════════════════════════════════════════
-    // 8. A board that REFUSES to open (the FCC "icon sometimes does nothing")
-    // ═══════════════════════════════════════════════════════════════════════
-
     /**
-     * `dispatchBoardAction` used to call `setActiveComponent(component)` unconditionally after
-     * `show()`, so a board that refused was recorded as open. The coordinator then held `-42`
-     * with nothing on screen, and the user's next tap took `requestBoard`'s CLOSE branch: one
-     * refusal cost two taps. The `BoardHost` contract already said the opposite in as many words
-     * ("a failed open leaves the coordinator truthful instead of assuming success").
+     * A board that refuses to open must not be recorded open, or the next tap takes the CLOSE branch
+     * and one refusal costs two taps (see the `BoardHost` contract).
      */
     @Test
     fun aRefusedOpenIsNotReportedAsOpen() {
@@ -1043,23 +899,16 @@ class UnifiedInputBoardManagerBoardStateTest {
         assertActiveBoard(UnifiedBoardCoordinator.NO_BOARD)
     }
 
-    // ═══════════════════════════════════════════════════════════════════════
-    // 9. A close that did not come through the coordinator
-    // ═══════════════════════════════════════════════════════════════════════
-
     /**
-     * FCC closes itself from a dozen places that never touch the UIM (`hideIfDisabled` on a
-     * settings reload, `onSelectionUpdate`, the configuration-change path…). Each left the
-     * coordinator claiming `-42` with the board gone, so the next icon tap was a dead close.
-     * `FccController.hideFcc()` now reports through `reportBoardClosed`; this pins what that
-     * report has to achieve at the manager level.
+     * FCC closes itself from paths that bypass the UIM (`hideIfDisabled`, `onSelectionUpdate`,
+     * configuration change), so `FccController.hideFcc()` reports through `reportBoardClosed`.
      */
     @Test
     fun aSelfClosedBoardThatReportsIsOpenedAgainByTheNextTap() {
         installBar(VOICE, EMOJI, FCC, CLIPBOARD)
         uim.requestBoard(FCC)
 
-        // The board takes itself down and reports it, exactly as hideFcc() now does.
+        // The board takes itself down and reports it, as hideFcc() does.
         fcc.clobberViewClosed()
         uim.reportBoardClosed(FCC)
         assertActiveBoard(UnifiedBoardCoordinator.NO_BOARD)
@@ -1070,7 +919,7 @@ class UnifiedInputBoardManagerBoardStateTest {
         assertActiveBoard(FCC)
     }
 
-    /** Negative control — without the report, the same tap is the dead press we are fixing. */
+    /** Negative control: without the report the next tap is a dead press. */
     @Test
     fun aSelfClosedBoardThatDoesNotReportCostsATap() {
         installBar(VOICE, EMOJI, FCC, CLIPBOARD)
@@ -1082,10 +931,6 @@ class UnifiedInputBoardManagerBoardStateTest {
 
         assertNo("this is the dead press the report exists to prevent", fcc.viewIsUp)
     }
-
-    // ═══════════════════════════════════════════════════════════════════════
-    // 10. The bar after the last board closes (AuxBarChoice, owner decision 2026-11-05)
-    // ═══════════════════════════════════════════════════════════════════════
 
     /** Runs the main looper past the next frame, where the uncover is scheduled. */
     private fun idle() = org.robolectric.Shadows.shadowOf(Looper.getMainLooper())

@@ -17,15 +17,9 @@ import org.robolectric.annotation.Config
 import java.io.File
 
 /**
- * [ManifestSource] against a real HTTP server, with the clock and the connectivity check
- * injected so freshness and offline behaviour are decided rather than waited for.
- *
- * Two properties are load-bearing and every case here exists to pin one of them:
- *
- *  - **provenance is never hidden** — a manifest that came off disk says so, and one that was
- *    just parsed off the wire says that;
- *  - **a bad response never costs you a good cache** — the cache is the only offline answer to
- *    "what packs exist", so a 500 or a truncated body must leave it alone.
+ * [ManifestSource] against a real HTTP server with an injected clock and connectivity check. Pins
+ * that provenance (cache vs network) is always reported, and that a bad response (500, truncated
+ * body) never replaces a good cache, the only offline answer to "what packs exist".
  */
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [34], manifest = Config.NONE)
@@ -88,8 +82,6 @@ class ManifestSourceTest {
 
     private val sixHours = DistributionConfig.CACHE_MAX_AGE_MS
 
-    // ── Fetching ──────────────────────────────────────────────────────────────────────────────
-
     @Test
     fun fetchesParsesAndStampsFreshProvenance() = runBlocking {
         serveManifest()
@@ -125,9 +117,8 @@ class ManifestSourceTest {
 
     @Test
     fun metadataTheGsonBuildWroteIsStillHonoured() = runBlocking {
-        // The exact bytes Gson's JsonObject.toString wrote before the switch to org.json: compact,
-        // url then fetchedAt as a plain integer then etag, the ETag's quotes escaped. The cache
-        // is young and the stored ETag must go out as If-None-Match once it is stale.
+        // Metadata exactly as the older Gson-based writer produced it (compact, ETag quotes
+        // escaped). The cache is young; the stored ETag goes out as If-None-Match once stale.
         cacheFile().parentFile!!.mkdirs()
         cacheFile().writeText(manifestJson(versionCode = 1429))
         metaFile().writeText("""{"url":"$url","fetchedAt":${now - 1_000},"etag":"\"v1\""}""")
@@ -197,8 +188,6 @@ class ManifestSourceTest {
         assertEquals(1430, manifest.appFor("release")!!.versionCode)
         assertEquals(2, server.requestCount)
     }
-
-    // ── Cache freshness ───────────────────────────────────────────────────────────────────────
 
     @Test
     fun aCacheYoungerThanSixHoursIsServedWithoutAnyNetworkCall() = runBlocking {
@@ -289,8 +278,6 @@ class ManifestSourceTest {
         assertNull(source.cached())
     }
 
-    // ── ETag ──────────────────────────────────────────────────────────────────────────────────
-
     @Test
     fun revalidatesWithIfNoneMatchAndHonoursA304() = runBlocking {
         serveManifest(etag = "\"v1\"")
@@ -345,14 +332,9 @@ class ManifestSourceTest {
 
     @Test
     fun a304WithAnUnreadableCacheRefetchesTheWholeThing() = runBlocking {
-        // The ETag we sent was stale state: the server says "unchanged" but what we hold cannot
-        // be read, so there is nothing to be unchanged from. Asking again without the header is
-        // the only way out of that corner.
-        //
-        // Note the cache file is corrupted, not deleted: the stored metadata is deliberately
-        // ignored when the cache file is missing, so a deleted cache sends no ETag in the first
-        // place (see aDeletedCacheSendsNoEtagAtAll). A file that is present but unparseable is
-        // the state that actually reaches this branch.
+        // A 304 for an unreadable cache leaves nothing to be unchanged from, so the source must
+        // ask again without If-None-Match. Corrupted, not deleted: a missing cache file sends no
+        // ETag at all (aDeletedCacheSendsNoEtagAtAll).
         serveManifest(etag = "\"v1\"")
         val source = source()
         source.fetch(force = false).getOrThrow()
@@ -375,9 +357,8 @@ class ManifestSourceTest {
 
     @Test
     fun aDeletedCacheSendsNoEtagAtAll() = runBlocking {
-        // Negative control for the test above, and the reason it corrupts rather than deletes:
-        // the stored ETag is only ever sent alongside a cache file that still exists, so losing
-        // the cache cannot produce a 304 the app has nothing to satisfy.
+        // The stored ETag is only sent alongside an existing cache file, so a lost cache cannot
+        // produce an unsatisfiable 304.
         serveManifest(etag = "\"v1\"")
         val source = source()
         source.fetch(force = false).getOrThrow()
@@ -391,8 +372,6 @@ class ManifestSourceTest {
         assertEquals(listOf<String?>(null), server.ifNoneMatchHeaders())
         assertEquals(1451, manifest.appFor("release")!!.versionCode)
     }
-
-    // ── Offline ───────────────────────────────────────────────────────────────────────────────
 
     @Test
     fun offlineServesTheCacheAtAnyAge() = runBlocking {
@@ -420,12 +399,9 @@ class ManifestSourceTest {
         assertEquals(0, server.requestCount)
     }
 
-    // ── A bad response never costs a good cache ───────────────────────────────────────────────
-
     @Test
     fun anHttpErrorIsReportedAndNotPapieredOverWithTheCache() = runBlocking {
-        // The caller asked to go to the network; it deserves to hear that it failed. `cached()`
-        // stays available for a caller that wants the fallback explicitly.
+        // A network fetch reports its failure; `cached()` is there for callers wanting the fallback.
         serveManifest()
         val source = source()
         source.fetch(force = false).getOrThrow()
@@ -469,8 +445,7 @@ class ManifestSourceTest {
 
     @Test
     fun aCacheThisBuildCannotParseIsTreatedAsNoCache() = runBlocking {
-        // Guards a lock-out: a cache file from a newer schema must not make every offline call
-        // fail forever.
+        // A cache file from a newer schema must not make every offline call fail forever.
         serveManifest()
         val source = source()
         source.fetch(force = false).getOrThrow()
@@ -501,12 +476,9 @@ class ManifestSourceTest {
         assertTrue("got $failure", failure is InsecureUrlException)
     }
 
-    // ── The cache is keyed by URL ─────────────────────────────────────────────────────────────
-
     @Test
     fun pointingAtADifferentUrlInvalidatesTheCache() = runBlocking {
-        // Flipping the debug manifest-URL override must not serve a local test manifest as
-        // though it had come from the production URL, or the reverse.
+        // Flipping the debug manifest-URL override must not serve one URL's manifest for the other.
         serveManifest()
         val source = source()
         source.fetch(force = false).getOrThrow()

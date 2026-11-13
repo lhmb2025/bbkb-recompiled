@@ -29,11 +29,7 @@ public final class DeviceRuntimeState {
 
     private DeviceRuntimeState() {}
 
-    /**
-     * {@link #onScreenKeyboardShowing} without the input boards: true for an on-screen keyboard
-     * (landscape, a forced one, no usable hardware keyboard), false when the only thing up over
-     * the physical keys is a board such as the clipboard or cursor control.
-     */
+    /** {@link #onScreenKeyboardShowing} not counting input boards (clipboard, cursor control). */
     private volatile boolean onScreenTypingKeyboardShowing = false;
 
     public boolean isOnScreenKeyboardShowing() { return onScreenKeyboardShowing; }
@@ -50,20 +46,15 @@ public final class DeviceRuntimeState {
     public boolean isForceVkbMode() { return forceVkbMode; }
     public void setForceVkbMode(boolean force) { this.forceVkbMode = force; }
 
-    /** Standing debug override ("Force touchscreen-only mode"). Kept SEPARATE from the transient
-     *  forceVkbMode: the original clears that on every hideWindow() (its force came from the
-     *  show-VKB key and is per-window by design), which silently erased the debug toggle on the
-     *  first field switch — the pref then only ever worked for one window after a process
-     *  restart. This flag is set live by the Debug settings toggle and at DeviceProfile
-     *  .initialize() from the pref, and nothing else touches it. */
+    /**
+     * Debug "Force touchscreen-only mode". Separate from the transient forceVkbMode, which
+     * hideWindow() clears; set only by the Debug toggle and DeviceProfile.initialize().
+     */
     private volatile boolean debugForceVkbMode = false;
     public boolean isDebugForceVkbMode() { return debugForceVkbMode; }
     public void setDebugForceVkbMode(boolean force) { this.debugForceVkbMode = force; }
 
-    /** The current keyboard's language asked for the on-screen keyboard ("Always show the
-     *  on-screen keyboard" on the Language screen; {@code OnScreenKeyboardChoice}). Set by the IME
-     *  when the keyboard changes and when the choice does; forces the on-screen keyboard exactly
-     *  as the debug override above does, for that language's keyboards only. */
+    /** The current keyboard's language asks for the on-screen keyboard ({@code OnScreenKeyboardChoice}). */
     private volatile boolean languageForceVkbMode = false;
     public boolean isLanguageForceVkbMode() { return languageForceVkbMode; }
     public void setLanguageForceVkbMode(boolean force) { this.languageForceVkbMode = force; }

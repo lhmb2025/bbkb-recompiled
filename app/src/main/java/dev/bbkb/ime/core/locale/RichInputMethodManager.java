@@ -59,9 +59,8 @@ public class RichInputMethodManager {
     private ImeInfoCache imeInfoCache;
 
     /*
-     * Invalidation matrix (P-12). Every field focus used to clear these caches, which cost about
-     * a dozen binder calls to system_server per focus. They are now dropped together, by
-     * clearSubtypeCaches(), only when something that feeds them can have changed:
+     * Cache invalidation: clearSubtypeCaches() drops all caches together, only on these events
+     * (clearing per field focus costs about a dozen binder calls):
      *
      *   event                                       | source
      *   --------------------------------------------+--------------------------------------------
@@ -92,7 +91,7 @@ public class RichInputMethodManager {
      * dialogs must see the framework's list even if an event above was missed.
      */
 
-    /** The caches are refreshed at least this often while fields keep starting. */
+    /** Safety-net cache age, checked as input views start. */
     static final long MAX_CACHE_AGE_MS = 60_000L;
 
     /** Bumped by every {@link #clearSubtypeCaches()}; memos elsewhere compare it. */
@@ -106,7 +105,7 @@ public class RichInputMethodManager {
 
     private volatile Boolean offerSwitchingToNextIme;
 
-    /** The system locale list the caches were last valid for, as language tags. */
+    /** Language tags of the system locales the caches were last valid for. */
     private String lastSystemLocales;
 
     /** Generation for which moveToEnabledSubtypeIfCurrentIsNot found nothing to do. */
@@ -152,10 +151,7 @@ public class RichInputMethodManager {
         }
     }
 
-    /**
-     * The events from outside this process that change what the caches hold. Registered once on
-     * the application context, so they live as long as the caches do (the process).
-     */
+    /** Registered once on the application context, so they live as long as the caches. */
     private void registerInvalidationSources(Context appContext) {
         if (appContext == null) {
             return;
@@ -178,8 +174,7 @@ public class RichInputMethodManager {
             Logger.warn(TAG, "Package receiver not registered: " + e);
         }
         try {
-            // Enabling another keyboard, or a language of ours, in the system settings writes
-            // this setting and tells this IME nothing else.
+            // System settings changes to enabled keyboards or our languages only write this setting.
             appContext.getContentResolver().registerContentObserver(
                     Settings.Secure.getUriFor(ENABLED_INPUT_METHODS), false,
                     new ContentObserver(main) {
@@ -196,11 +191,7 @@ public class RichInputMethodManager {
     /** {@code Settings.Secure.ENABLED_INPUT_METHODS}, which is hidden API. */
     private static final String ENABLED_INPUT_METHODS = "enabled_input_methods";
 
-    /**
-     * Called as an input view starts, in place of the old unconditional cache clear: drops the
-     * caches only when the system locales changed since they were filled, or when they are older
-     * than {@link #MAX_CACHE_AGE_MS} (in case an invalidation event was missed).
-     */
+    /** Drops the caches if the system locales changed or they are older than {@link #MAX_CACHE_AGE_MS}. */
     public void onInputViewStarted() {
         final String locales = ConfigurationCompat.getLocales(Resources.getSystem().getConfiguration()).toLanguageTags();
         final boolean localesChanged = this.lastSystemLocales != null && !this.lastSystemLocales.equals(locales);
@@ -210,10 +201,7 @@ public class RichInputMethodManager {
         }
     }
 
-    /**
-     * For tests: forget the framework handle, so the next {@link #init} registers its event
-     * sources on that test's application.
-     */
+    /** For tests: the next {@link #init} registers its event sources on that test's application. */
     static synchronized void resetForTest() {
         sInstance.imm = null;
         sInstance.lastSystemLocales = null;
@@ -231,9 +219,8 @@ public class RichInputMethodManager {
     }
 
     /**
-     * {@link SpeechRecognizer#isRecognitionAvailable(Context)}, a PackageManager query, asked once
-     * per cache generation instead of twice per field focus. A recogniser appears or goes with a
-     * package change, which drops the caches.
+     * {@link SpeechRecognizer#isRecognitionAvailable(Context)} (a PackageManager query), cached per
+     * generation; a recogniser comes or goes with a package change, which drops the caches.
      */
     public boolean isRecognitionAvailable(Context context) {
         if (context == null) {
@@ -250,10 +237,7 @@ public class RichInputMethodManager {
         return available;
     }
 
-    /**
-     * Whether the switcher key should offer the next input method, asked once per cache
-     * generation. It depends on the enabled IMEs and subtypes, whose changes drop the caches.
-     */
+    /** Cached per generation; enabled IME or subtype changes drop the caches. */
     @SuppressWarnings("deprecation")
     public boolean shouldOfferSwitchingToNextInputMethod(InputMethodService ims) {
         Boolean offer = this.offerSwitchingToNextIme;
@@ -280,9 +264,8 @@ public class RichInputMethodManager {
         SharedPreferences defaultSharedPreferences = PrefsManager.INSTANCE.getPrefs(context);
         arrayList.addAll(Arrays.asList(SubtypeFactory.createSubtypesFromPref(SettingsManager.getCustomInputStyles(defaultSharedPreferences, context.getResources()))));
         arrayList.addAll(MultiLanguageUtils.getSubtypesFromPrefs(defaultSharedPreferences));
-        // Third source: runtime subtypes for engine-supported languages method.xml does not
-        // declare, added when the user side-loads a pack for one. Kept in its own preference so
-        // that custom_input_styles keeps falling back to the predefined_subtypes resource arrays.
+        // Runtime subtypes for side-loaded packs method.xml does not declare. Own preference, so
+        // custom_input_styles keeps falling back to the predefined_subtypes resource arrays.
         arrayList.addAll(Arrays.asList(SubtypeFactory.createSubtypesFromPref(
                 SideloadedSubtypes.readRaw(defaultSharedPreferences))));
         return (InputMethodSubtype[]) arrayList.toArray(new InputMethodSubtype[arrayList.size()]);
@@ -293,23 +276,14 @@ public class RichInputMethodManager {
         return this.imm;
     }
 
+    /** @param z whether to include implicitly enabled subtypes */
     public List<InputMethodSubtype> getMyEnabledInputMethodSubtypeList(boolean z) {
         return getEnabledInputMethodSubtypeList(getInputMethodInfoOfThisIme(), z);
     }
 
     /**
-     * The subtypes the user has enabled for this IME, read straight from the framework.
-     *
-     * <p>Deliberately NOT the {@link #getMyEnabledInputMethodSubtypeList(boolean)} cache: the
-     * callers here (the subtype-switch dialog, the locale-change receiver, the space-bar label
-     * map) run at moments when the enabled set may have just changed outside our process, and
-     * {@link #clearSubtypeCaches()} is only driven from two of them. Two byte-identical copies of
-     * this call used to live in {@code SubtypeSwitcherReceiver} and {@code
-     * QuickSubtypeSwitchHandler}; this is the single one.
-     *
-     * <p>Defect 1: empty when {@link #getInputMethodInfoOfThisIme()} is null. NOT passed through
-     * to the framework — see {@link #getEnabledInputMethodSubtypeList(InputMethodInfo, boolean)}
-     * for why a null {@code InputMethodInfo} is the wrong thing to hand it.
+     * This IME's enabled subtypes, uncached: callers run when the set may just have changed outside
+     * this process. Empty (never a framework call) when this IME's InputMethodInfo is null.
      */
     public List<InputMethodSubtype> getEnabledSubtypesOfThisIme() {
         final InputMethodInfo thisIme = getInputMethodInfoOfThisIme();
@@ -320,42 +294,22 @@ public class RichInputMethodManager {
     }
 
     /**
-     * Audit CT-16: this and {@link #setInputMethodAndSubtype(IBinder, InputMethodSubtype)} /
-     * {@link #shouldOfferSwitchingToNextInputMethod(IBinder)} wrap the IBinder-token
-     * {@link InputMethodManager} variants deprecated in API 28-29, in favour of
-     * {@code InputMethodService#switchToNextInputMethod(boolean)},
-     * {@code #switchInputMethod(String, InputMethodSubtype)} and
-     * {@code #shouldOfferSwitchingToNextInputMethod()}. The token variants have been
-     * progressively restricted, and every in-repo caller has an InputMethodService in hand.
-     * {@code BlackBerryIME.shouldShowLanguageSwitchKey} is migrated; the remaining callers live
-     * in {@code SubtypeState} and {@code SubtypeSwitcherReceiver}.
-     */
-    /**
-     * CT-16: token-free form for callers that hold the {@link InputMethodService}. Uses
-     * {@code InputMethodService#switchToNextInputMethod(boolean)} (API 28+) and falls back to the
-     * deprecated IBinder-token path, plus this class's own next-subtype/next-IME chain, below P
-     * or when the framework declines.
+     * Uses {@code InputMethodService#switchToNextInputMethod(boolean)} on API 28+, else the
+     * deprecated IBinder-token path plus this class's own next-subtype/next-IME chain.
+     * @param z true to rotate only within this IME
      */
     public boolean switchToNextInputMethod(InputMethodService ims, boolean z) {
         if (z && mustRotateWithinIme(this.imm.getCurrentInputMethodSubtype(), getEnabledSubtypesOfThisIme())) {
-            // The keyboard is on a language that is no longer enabled (the Language screen
-            // removed it while it was active). Android 15 does not decline that rotation: its
-            // switching controller logs "not in the list, falling back to most recent item" and
-            // jumps to whatever was used last, which can be another input method even with
-            // onlyCurrentIme. On the KEY2 that handed the keyboard to AOSP LatinIME when the
-            // owner switched from a removed Indonesian keyboard to Arabic (2026-10-01), and it
-            // read as a crash. Never ask the framework from that state.
+            // Current language no longer enabled: Android 15 then jumps to the most recent item,
+            // possibly another IME even with onlyCurrentIme. Never ask the framework from here.
             return switchToNextSubtypeWithinThisIme(ims);
         }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P && ims.switchToNextInputMethod(z)) {
             return true;
         }
         if (z) {
-            // "Only this IME" means exactly that. The framework declines when there is no other
-            // subtype to rotate to (one enabled keyboard, or the current one not in the enabled
-            // list), and the fallback below used to hand the whole IME over to the next one on
-            // the phone - AOSP LatinIME on the KEY2, whose suggestion strip then "disappeared"
-            // after a multifunction-key language switch (owner report 2026-09-26). Stay here.
+            // The framework declined (nothing to rotate to); the token fallback below would hand
+            // over to another IME, so stay here.
             return switchToNextSubtypeWithinThisIme(ims);
         }
         final IBinder token = windowToken(ims);
@@ -368,12 +322,7 @@ public class RichInputMethodManager {
         return switchToNextInputSubtypeInThisIme(token, z) || switchToNextInputMethodAndSubtype(token);
     }
 
-    /**
-     * Rotate to the next enabled subtype of this IME, or to its first one when the current
-     * subtype is not in the enabled list; with a single enabled subtype there is nowhere to go
-     * and nothing happens. Reads the enabled list fresh (the user may just have changed it) and
-     * never switches to another IME.
-     */
+    /** Next enabled subtype of this IME (fresh list); never switches to another IME. */
     private boolean switchToNextSubtypeWithinThisIme(InputMethodService ims) {
         final List<InputMethodSubtype> enabled = getEnabledSubtypesOfThisIme();
         final InputMethodSubtype next = nextSubtypeWithinIme(this.imm.getCurrentInputMethodSubtype(), enabled);
@@ -384,11 +333,7 @@ public class RichInputMethodManager {
         return true;
     }
 
-    /**
-     * Whether a "switch language" press must be answered by this class and not the framework:
-     * the current subtype is unknown or is not one of this IME's enabled ones. Pure, for the
-     * unit test.
-     */
+    /** True when the current subtype is unknown or not enabled, so the framework must not be asked. */
     static boolean mustRotateWithinIme(InputMethodSubtype current, List<InputMethodSubtype> enabled) {
         if (enabled == null || enabled.isEmpty()) {
             return false;
@@ -397,16 +342,11 @@ public class RichInputMethodManager {
     }
 
     /**
-     * Leave a language that is no longer enabled: when the current subtype is not in this IME's
-     * enabled list, switch to the first one that is. Called as a field takes focus, so removing
-     * the active keyboard on the Language screen does not leave the user typing in it.
-     *
+     * On field focus, switches to the first enabled subtype when the current one was removed.
      * @return true when it switched
      */
     public boolean moveToEnabledSubtypeIfCurrentIsNot(InputMethodService ims) {
-        // Both inputs (the current subtype and the enabled list) only change through events that
-        // drop the caches, so a generation already checked has nothing new to find: three binder
-        // calls per field focus otherwise.
+        // Both inputs only change through cache-dropping events, so a checked generation is done.
         final int checking = this.generation;
         if (checking == this.enabledSubtypeCheckedGeneration) {
             return false;
@@ -424,10 +364,7 @@ public class RichInputMethodManager {
         return true;
     }
 
-    /**
-     * The subtype a "switch language" press should land on, given the current one and this
-     * IME's enabled list. Null when there is nothing to switch to. Pure, for the unit test.
-     */
+    /** Where a "switch language" press lands; null when there is nothing to switch to. */
     static InputMethodSubtype nextSubtypeWithinIme(InputMethodSubtype current, List<InputMethodSubtype> enabled) {
         if (enabled == null || enabled.isEmpty()) {
             return null;
@@ -442,13 +379,9 @@ public class RichInputMethodManager {
         return enabled.get((index + 1) % enabled.size());
     }
 
-    /**
-     * CT-16: token-free form of {@link #setInputMethodAndSubtype(IBinder, InputMethodSubtype)},
-     * using {@code InputMethodService#switchInputMethod(String, InputMethodSubtype)} (API 28+).
-     */
+    /** Token-free form; uses {@code InputMethodService#switchInputMethod} on API 28+. */
     public void setInputMethodAndSubtype(InputMethodService ims, InputMethodSubtype inputMethodSubtype) {
-        // Defect 1: no id means we are not registered with the framework, so there is nothing to
-        // switch to. Do nothing rather than NPE / hand the framework a null id.
+        // No id: not registered with the framework, nothing to switch to.
         final String thisImeId = getInputMethodIdOfThisIme();
         if (thisImeId == null) {
             return;
@@ -471,6 +404,7 @@ public class RichInputMethodManager {
         return (window == null) ? null : window.getAttributes().token;
     }
 
+    /** @param z true to rotate only within this IME */
     @SuppressWarnings("deprecation")
     public boolean switchToNextInputMethod(IBinder iBinder, boolean z) {
         if (this.imm.switchToNextInputMethod(iBinder, z) || switchToNextInputSubtypeInThisIme(iBinder, z)) {
@@ -479,6 +413,7 @@ public class RichInputMethodManager {
         return switchToNextInputMethodAndSubtype(iBinder);
     }
 
+    /** @param z true to wrap from the last subtype back to the first */
     private boolean switchToNextInputSubtypeInThisIme(IBinder iBinder, boolean z) {
         InputMethodSubtype currentInputMethodSubtype = this.imm.getCurrentInputMethodSubtype();
         List<InputMethodSubtype> listM5877a = getMyEnabledInputMethodSubtypeList(true);
@@ -498,9 +433,7 @@ public class RichInputMethodManager {
     private boolean switchToNextInputMethodAndSubtype(IBinder iBinder) {
         InputMethodManager inputMethodManager = this.imm;
         List<InputMethodInfo> enabledInputMethodList = inputMethodManager.getEnabledInputMethodList();
-        // Defect 1: hoisted into a local. thisIme is null when we are not registered with the
-        // framework, and getImiIndexInList() then returns -1 — so the debug log below used to
-        // dereference the null on the one path that can reach it.
+        // Null when not registered with the framework (then the index is -1).
         final InputMethodInfo thisIme = getInputMethodInfoOfThisIme();
         int iM5860a = getImiIndexInList(thisIme, enabledInputMethodList);
         if (iM5860a == -1) {
@@ -528,6 +461,7 @@ public class RichInputMethodManager {
         return -1;
     }
 
+    /** @param i index of the current IME in {@code list} */
     private static InputMethodInfo getNextNonAuxiliaryIme(int i, List<InputMethodInfo> list) {
         int size = list.size();
         for (int i2 = 1; i2 < size; i2++) {
@@ -559,6 +493,7 @@ public class RichInputMethodManager {
 
         private InputMethodInfo cachedThisImeInfo;
 
+        /** @param str this IME's package name */
         ImeInfoCache(String str) {
             this.imePackageName = str;
         }
@@ -591,14 +526,9 @@ public class RichInputMethodManager {
     }
 
     /**
-     * This IME's framework id, or null when {@link #getInputMethodInfoOfThisIme()} has none.
-     *
-     * <p>Defect 1: this used to dereference the null and take the caller out with an NPE. Null is
-     * the right degraded answer because every out-of-class caller feeds it to
-     * {@code IntentUtils.getInputLanguageSelectionIntent()}, which drops an empty id and launches
-     * the system's input-language screen without pre-selecting us — which is precisely the screen
-     * a user in this state (installed, not yet enabled) needs to reach. The two in-class callers
-     * guard it themselves, because {@code InputMethodManager} will not take a null id.
+     * Null when not registered (installed, not enabled). Outside callers pass it to
+     * {@code IntentUtils.getInputLanguageSelectionIntent()}, which then opens the unfiltered screen
+     * the user needs; in-class callers guard it, as {@code InputMethodManager} rejects a null id.
      */
     public String getInputMethodIdOfThisIme() {
         final InputMethodInfo thisIme = getInputMethodInfoOfThisIme();
@@ -636,14 +566,17 @@ public class RichInputMethodManager {
         return currentInputMethodSubtype != null ? currentInputMethodSubtype : inputMethodSubtype;
     }
 
+    /** @param z whether two auxiliary subtypes of one IME count as multiple */
     public boolean hasMultipleEnabledIMEsOrSubtypes(boolean z) {
         return hasMultipleEnabledSubtypes(z, this.imm.getEnabledInputMethodList());
     }
 
+    /** @param z whether two auxiliary subtypes count as multiple */
     public boolean hasMultipleEnabledSubtypesInThisIme(boolean z) {
         return hasMultipleEnabledSubtypes(z, Collections.singletonList(getInputMethodInfoOfThisIme()));
     }
 
+    /** @param z whether two auxiliary subtypes of one IME count as multiple */
     private boolean hasMultipleEnabledSubtypes(boolean z, List<InputMethodInfo> list) {
         int i = 0;
         for (InputMethodInfo inputMethodInfo : list) {
@@ -679,6 +612,10 @@ public class RichInputMethodManager {
         return i3 > 1;
     }
 
+    /**
+     * @param str subtype locale
+     * @param str2 keyboard layout set name
+     */
     public InputMethodSubtype findSubtypeByLocaleAndKeyboardLayoutSet(String str, String str2) {
         InputMethodInfo inputMethodInfoM5890d = getInputMethodInfoOfThisIme();
         if (inputMethodInfoM5890d == null) {
@@ -696,7 +633,7 @@ public class RichInputMethodManager {
     }
 
     public void setInputMethodAndSubtype(IBinder iBinder, InputMethodSubtype inputMethodSubtype) {
-        // Defect 1: see setInputMethodAndSubtype(InputMethodService, InputMethodSubtype).
+        // No id: not registered with the framework.
         final String thisImeId = getInputMethodIdOfThisIme();
         if (thisImeId == null) {
             return;
@@ -749,16 +686,9 @@ public class RichInputMethodManager {
     }
 
     /**
-     * Defect 1: a null {@code inputMethodInfo} means {@link #getInputMethodInfoOfThisIme()} could
-     * not find this IME in the framework's list — we are installed but not yet enabled, or a
-     * package update is in flight. Answer "no subtypes" rather than forwarding the null.
-     *
-     * <p>Forwarding it would be worse than a crash, not better: {@code
-     * InputMethodManager#getEnabledInputMethodSubtypeList(null, ...)} is documented to mean "the
-     * CURRENTLY SELECTED IME", which in exactly this state is somebody else's keyboard — so we
-     * would silently answer with another IME's subtypes and then cache them under the null key
-     * until the next {@link #clearSubtypeCaches()}. Every caller of this method treats the result
-     * as "our subtypes".
+     * Never forwards a null {@code inputMethodInfo} (not enabled yet, or mid-update): the framework
+     * reads null as "the currently selected IME", i.e. another keyboard's subtypes.
+     * @param z whether to include implicitly enabled subtypes
      */
     private List<InputMethodSubtype> getEnabledInputMethodSubtypeList(InputMethodInfo inputMethodInfo, boolean z) {
         if (inputMethodInfo == null) {
@@ -791,10 +721,7 @@ public class RichInputMethodManager {
         return this.subtypeSwitchHistory;
     }
 
-    /**
-     * Drops every cache this class keeps (see the invalidation matrix at the top). Cheap: the
-     * framework is asked again only by the next reader.
-     */
+    /** Drops every cache (see the invalidation table at the top); readers refill lazily. */
     public void clearSubtypeCaches() {
         this.subtypeListCacheWithImplicit.clear();
         this.subtypeListCacheWithoutImplicit.clear();

@@ -63,15 +63,9 @@ import dev.bbkb.ime.core.settings.ui.SettingsScaffold
 import kotlin.math.min
 
 /**
- * Gesture Lab — a debug screen for the prototype unified gesture arbiter.
- *
- * Two tabs share one hoisted state so traces and config survive switching:
- *  - **Test**: the capture surface + verdict/features readout. Has no scrollable content, so a
- *    drag on the surface is never stolen by the page scroller.
- *  - **Tuning**: the [GestureConfig] sliders. Switch here to adjust, then tab back to test.
- *
- * The config sliders re-classify the last trace live, sharing the exact classifier the IME
- * integration will use.
+ * Debug screen for the gesture arbiter. Test tab: capture surface and verdict readout (no
+ * scrolling, so drags are never stolen). Tuning tab: [GestureConfig] sliders, which re-classify
+ * the last trace live with the IME's own classifier. Both share one hoisted state.
  */
 @Composable
 fun GestureLabScreen(onNavigateBack: () -> Unit) {
@@ -79,8 +73,7 @@ fun GestureLabScreen(onNavigateBack: () -> Unit) {
 
     val prefs = PrefsManager.getPrefs(LocalContext.current)
 
-    // Hoisted state — persists across tab switches AND to prefs, so the live IME engine reads the
-    // same tuning (GestureConfig.fromPrefs). Every change writes through.
+    // Persists across tabs and writes through to prefs, which the IME reads (GestureConfig.fromPrefs).
     var config by remember { mutableStateOf(GestureConfig.fromPrefs(prefs)) }
     val applyConfig: (GestureConfig) -> Unit = { config = it; it.writeTo(prefs) }
     val pathPx: SnapshotStateList<Offset> = remember { mutableStateListOf() }
@@ -154,7 +147,6 @@ private fun TestTab(
             "Drag on the surface to draw a gesture. Hold still for tap/hold; two quick taps for double-tap. Switch to Tuning to adjust thresholds.",
             style = MaterialTheme.typography.bodySmall
         )
-        // The grid overlay is only offered when a real grid exists (device config or capture).
         if (grid != null) {
         Spacer(Modifier.height(8.dp))
         Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {

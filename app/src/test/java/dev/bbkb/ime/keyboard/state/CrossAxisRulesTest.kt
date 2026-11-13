@@ -10,27 +10,11 @@ import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Test
 
-/**
- * Pins **the table** — [CrossAxisRules] — row by row.
- *
- * The table is the whole point of Phase 1a: before it, "what closes what" was a set of
- * `hide*` / `reset*` sweeps scattered across `KeyboardSwitcher`, `UnifiedInputBoardManager` and
- * `BlackBerryIME`, each carrying its own copy of the rule. Every row below is a rule that used to
- * live in one of those sweeps; the comment on each says which.
- *
- * Pure JVM — no Robolectric, no Android.
- */
+/** Pins the [CrossAxisRules] table row by row: what each transition closes, raises and reports. Pure JVM. */
 class CrossAxisRulesTest {
 
     private fun row(t: KeyboardTransition) = CrossAxisRules.ruleFor(t)
 
-    // ═══════════════════════════════════════════════════ 1. the rows
-
-    /**
-     * Was: the four `unifiedInputBoardManager.hideKeyboardOnKeyboardStateChange()` calls in
-     * `KeyboardSwitcher.setAlphabetKeyboard` / `setVkbSymbolsKeyboard` / `setPkbSymbolsKeyboard` /
-     * `onSymbolShiftToggle`.
-     */
     @Test
     fun switchLayoutSweepsTheBoardsAndLeavesTheOtherAxesAlone() {
         val t = KeyboardTransition.switchLayout(KeyboardTransition.Layout.ALPHABET)
@@ -42,11 +26,8 @@ class CrossAxisRulesTest {
     }
 
     /**
-     * No layout load touches the bar — the symbol keyboards included. `setPkbSymbolsKeyboard` used
-     * to carry an `if (isUimEnabled()) { if (!uim.isShowing()) { uim.show(false); uim.showEmojiBoard() } }`
-     * prologue the original app never had; the next suggestion update took the bar straight back,
-     * so each page turn flashed it (KEY2 report, beta.23). Owner decision, 2026-10-01: match the
-     * original.
+     * No layout load touches the bar, symbol keyboards included: the next suggestion update would take it
+     * back, so each page turn would flash it.
      */
     @Test
     fun noLayoutLoadTouchesTheBar() {
@@ -60,10 +41,8 @@ class CrossAxisRulesTest {
     }
 
     /**
-     * Was: `KeyboardSwitcher.setKeyboard() -> hideEmojiKeyboard()`, the cross-axis leak the plan
-     * notes name as the source of every 2026-09-20 symbol/mic bug; then Phase 1a's `LAYOUT_LOADED`
-     * row. Phase 1d gave the emoji board ONE identity, so it is an ordinary board switch: the
-     * report is scoped to -11, never "no board is open at all".
+     * Emoji has one board identity, so its lowering is an ordinary board switch scoped to -11, never "no
+     * board is open".
      */
     @Test
     fun theEmojiBoardLoweringClosesTheEmojiBoardOnly() {
@@ -76,8 +55,8 @@ class CrossAxisRulesTest {
     }
 
     /**
-     * Emoji is the ONLY board whose close is also a layout-mode change, because the layout mode is
-     * where emoji's identity lives. Every other board lowering is a board report and nothing else.
+     * Emoji is the only board whose close is also a layout-mode change, because its identity lives in the
+     * layout mode.
      */
     @Test
     fun onlyTheEmojiBoardsLoweringTouchesTheLayoutAxis() {
@@ -100,9 +79,8 @@ class CrossAxisRulesTest {
     }
 
     /**
-     * R2: a board that raises ITSELF follows the same `OPEN_BOARD` rule as one the funnel opens,
-     * split into a prologue (the layout clear, which must precede the mode change) and an epilogue
-     * (the bar raise and the open report). Put back together they are the `OPEN_BOARD` row.
+     * A board that raises itself follows the `OPEN_BOARD` row split in two: a prologue (the layout clear, which
+     * must precede the mode change) and an epilogue (the bar raise and the open report).
      */
     @Test
     fun aSelfRaisedBoardFollowsTheOrdinaryOpenRuleInTwoHalves() {
@@ -130,7 +108,6 @@ class CrossAxisRulesTest {
         assertEquals(CursorEffect.UNCHANGED, row(t).cursor())
     }
 
-    /** Was: `UnifiedInputBoardManager.beginBoardTransition() -> KeyboardSwitcher.clearPkbSymbolMode()`. */
     @Test
     fun openingABoardClearsPkbSymbolModeAndRaisesTheBar() {
         val t = KeyboardTransition.openBoard(CrossAxisRules.NUMBER_PAD_KEY_CODE)
@@ -142,10 +119,8 @@ class CrossAxisRulesTest {
     }
 
     /**
-     * No board's close touches the bar in the table. The cursor board's used to put the strip back
-     * on the on-screen keyboard (the `-42 && wasOpen && isOnScreenKeyboardVisible()` tail of
-     * `UnifiedInputBoardManager.closeBoard`); owner decision 2026-11-05 dropped it. What the bar goes
-     * back to after the last close is `AuxBarChoice`'s, tested where the funnel schedules it.
+     * No board's close touches the bar here; what the bar goes back to is `AuxBarChoice`'s, tested where
+     * the funnel schedules it.
      */
     @Test
     fun noBoardsCloseTouchesTheBar() {
@@ -163,7 +138,7 @@ class CrossAxisRulesTest {
         }
     }
 
-    /** Was: `BlackBerryIME.showArrowBar()` — hide the boards and the suggestion views, raise the arrows. */
+    /** Hide the boards and the suggestion views, raise the arrows. */
     @Test
     fun enteringCursorModeTakesEveryBoardDownIncludingTheExemptOnes() {
         val t = KeyboardTransition.enterCursorMode(false)
@@ -178,7 +153,7 @@ class CrossAxisRulesTest {
         assertEquals(CursorEffect.ON, row(t).cursor())
     }
 
-    /** Was: `BlackBerryIME.hideArrowBar()`. Leaving cursor mode opens no boards and closes none. */
+    /** Leaving cursor mode opens no boards and closes none. */
     @Test
     fun leavingCursorModeOnlyTouchesTheBarAndTheCursor() {
         val t = KeyboardTransition.exitCursorMode(false)
@@ -225,13 +200,9 @@ class CrossAxisRulesTest {
         samples.forEach { CrossAxisRules.ruleFor(it) }
     }
 
-    // ═══════════════════════════════════════════ 2. the exempt set
-
     /**
-     * The exemption list and its probe order, moved out of
-     * `UnifiedInputBoardManager.BOARDS_EXEMPT_FROM_KEYBOARD_STATE_CHANGE`. FCC and the number pad
-     * are boards the user TYPES from; voice is the board the user DICTATES from, and it reaches
-     * the sweep by the same route — the commit of the result.
+     * FCC and the number pad are boards the user types from; voice is dictated from and reaches the sweep
+     * through the result commit.
      */
     @Test
     fun theExemptSetIsFccTheNumberPadAndVoiceInThatOrder() {
@@ -258,12 +229,9 @@ class CrossAxisRulesTest {
         assertFalse("no board", CrossAxisRules.boardSurvivesCommitRebuild(0))
     }
 
-    // ══════════════════════════ the OTHER key-press policy: a physical text key
-
     /**
-     * **R3(b).** The two "a key was pressed" policies are different rows with different exempt
-     * sets. Phase 1a found them disagreeing and recorded it; the owner's ruling settles it: the
-     * number pad joins FCC here, because typing a letter must not close a board typed FROM.
+     * The text-key policy has its own exempt set: the number pad joins FCC, because typing a letter must
+     * not close a board typed from.
      */
     @Test
     fun theTextKeyExemptSetIsFccAndTheNumberPad() {
@@ -278,9 +246,8 @@ class CrossAxisRulesTest {
     }
 
     /**
-     * Voice is the one board the two policies disagree about, and deliberately so: a commit of a
-     * dictation result must leave the panel up, while typing a letter means the user has stopped
-     * dictating.
+     * Voice differs deliberately: a dictation commit leaves the panel up, but typing a letter means the
+     * user stopped dictating.
      */
     @Test
     fun voiceSurvivesACommitRebuildButNotATextKey() {
@@ -297,14 +264,12 @@ class CrossAxisRulesTest {
         assertFalse("no board", CrossAxisRules.boardSurvivesTextKey(0))
     }
 
-    // R3(c) (a text key closes nothing while emoji dynamic search runs) was retired on 2026-11-02:
-    // the emoji board now takes its text keys before dismissal runs (EmojiQueryKeyRoutingTest).
-
-    // ══════════════════════════════════════════ every keyboard is a board
+    // A text key during emoji search is handled by the emoji board before dismissal runs
+    // (EmojiQueryKeyRoutingTest).
 
     /**
-     * Phase 1d's whole point: the layout values are board keycodes. "Which keyboard is loaded" and
-     * "which board is up" are the same question, so they use the same vocabulary.
+     * Layout values are board keycodes: "which keyboard is loaded" and "which board is up" share one
+     * vocabulary.
      */
     @Test
     fun everyLayoutValueNamesABoard() {
@@ -314,7 +279,7 @@ class CrossAxisRulesTest {
         assertEquals(-23, CrossAxisRules.boardKeyCodeFor(KeyboardTransition.Layout.MENU))
     }
 
-    /** "Whatever is loaded" names no board — it is the absence of a layout change, not one. */
+    /** "Whatever is loaded" names no board: it is the absence of a layout change. */
     @Test
     fun theUnchangedLayoutNamesNoBoard() {
         assertEquals(
@@ -324,9 +289,8 @@ class CrossAxisRulesTest {
     }
 
     /**
-     * The semantics that make the exemption an exemption: ONE exempt board being up spares the
-     * WHOLE sweep, not just itself. That is the long-standing FCC behaviour and is what keeps a
-     * clipboard board open behind an open number pad.
+     * One exempt board being up spares the whole sweep, which keeps a clipboard board open behind an open
+     * number pad.
      */
     @Test
     fun oneExemptBoardUpSparesTheWholeSweep() {

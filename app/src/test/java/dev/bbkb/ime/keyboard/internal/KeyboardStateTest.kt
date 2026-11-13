@@ -34,32 +34,14 @@ import org.robolectric.annotation.Config
 import java.util.Locale
 
 /**
- * Characterisation tests for [KeyboardState] — the shift / symbol / caps state machine.
+ * Characterisation tests for [KeyboardState], the shift / symbol / caps state machine: they pin what
+ * the class does today, with odd behaviour tagged `Known bug:` in place. Only the shift-mode tracker
+ * and `currentMode` are directly readable; `switchState` and the page maxima come from `toString()`,
+ * and the rest is pinned through the [FakeSwitcherCallbacks] call sequence.
  *
- * These pin **what the class does today**, not what it ought to do. Where the behaviour looks
- * wrong it is still asserted, tagged `CHARACTERISED BUG:` in place. Waves 3/4 rewrite these
- * surfaces and will be diffed against this file plus [FakeSwitcherCallbacks].
- *
- * ## The state space being characterised
- *
- * `KeyboardState` carries several interacting sub-states:
- *
- *  * `currentMode` ∈ ALPHABET | SYMBOL | EMOJI | MENU
- *  * [VkbShiftModeTracker] ∈ UNSHIFTED | MANUAL_SHIFTED | MANUAL_SHIFTED_FROM_AUTO |
- *    AUTOMATIC_SHIFTED | SHIFT_LOCKED | SHIFT_LOCK_SHIFTED
- *  * [ShiftKeyState] ∈ RELEASING | PRESSING | CHORDING | PRESSING_ON_SHIFTED | IGNORING
- *    (plus two plain [ModifierKeyState]s for the SYM key and the symbol-paging key)
- *  * `switchState` ∈ ALPHA(0) | SYMBOL-BEGIN(1) | SYMBOL(2) | SYMBOL-AFTER-SPACE(3) |
- *    MOMENTARY-ALPHA-SYMBOL(4) | MOMENTARY-SYMBOL-MORE(5) | MOMENTARY-ALPHA_SHIFT(6)
- *  * `symbolEntryMethod` ∈ 0 (none) | 1 (start-of-input default) | 2 (PKB SYM) | 3 (VKB SYM)
- *  * page bookkeeping: `currentSymbolPageIndex`, `savedSymbolPageIndex`, `maxSymbolPages`,
- *    `maxPkbSymbolPages`, `isVkb/PkbCustomSymbolPage`, `vkb/pkbSymbolShiftState` (+ saved copies)
- *  * latches: `wasShiftLockedBeforeSymbol`, `isShiftLockReleased`, `isCapitalizationEnabled`,
- *    `requestedShiftMode`, and the `SavedKeyboardState` snapshot.
- *
- * Only two of those are directly readable from outside (the shift-mode tracker, and `currentMode`
- * via `isInSymbolMode()`/`isInEmojiMode()`); `switchState` and the page maxima are readable through
- * the public `toString()`. Everything else is pinned indirectly, through the callback sequence.
+ * `switchState`: ALPHA(0) | SYMBOL-BEGIN(1) | SYMBOL(2) | SYMBOL-AFTER-SPACE(3) |
+ * MOMENTARY-ALPHA-SYMBOL(4) | MOMENTARY-SYMBOL-MORE(5) | MOMENTARY-ALPHA_SHIFT(6).
+ * `symbolEntryMethod`: 0 none | 1 start-of-input default | 2 PKB SYM | 3 VKB SYM.
  */
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [34], manifest = Config.NONE)
@@ -73,8 +55,6 @@ class KeyboardStateTest {
         fake = FakeSwitcherCallbacks()
         state = KeyboardState(fake)
     }
-
-    // ================================================================= helpers
 
     /** Run `onStartInput` and forget the resulting calls; most tests only care what follows. */
     private fun startInput(
@@ -101,8 +81,6 @@ class KeyboardStateTest {
     }
 
     private val tracker get() = state.shiftModeTracker
-
-    // ── PKB Sym after a UIM panel cleared symbol mode ──────────────────────
 
     @Test
     fun theHardwareSymToggleEntersFromTheAlphabetEvenAfterResetSymbolMode() {
@@ -173,14 +151,12 @@ class KeyboardStateTest {
         assertTrue(state.isInSymbolMode())
     }
 
-    /** `switch=` field of the public `toString()` — the only window onto `switchState`. */
+    /** `switch=` field of the public `toString()`: the only window onto `switchState`. */
     private fun switchState(): String =
         Regex("switch=([A-Z\\-_]+)").find(state.toString())!!.groupValues[1]
 
     private fun field(name: String): String =
         Regex("$name=([^\\s\\]]+)").find(state.toString())!!.groupValues[1]
-
-    // ================================================================= 1. onStartInput / load
 
     @Test
     fun startInput_freshSession_loadsUnshiftedAlphabet() {
@@ -194,10 +170,8 @@ class KeyboardStateTest {
     }
 
     /**
-     * Automatic capitalisation is NOT applied by `KeyboardState` itself: it asks the switcher for
-     * an alphabet keyboard and the switcher's `setAlphabetKeyboard(autoCaps, recap)` hands the
-     * request straight back as `requestShiftMode`. Wired up, start-input with auto-caps on lands
-     * in AUTOMATIC_SHIFTED.
+     * Auto-caps is applied by the switcher, not `KeyboardState`: `setAlphabetKeyboard(autoCaps, recap)`
+     * hands the request back as `requestShiftMode`, so wired up, start-input lands in AUTOMATIC_SHIFTED.
      */
     @Test
     fun startInput_withAutoCaps_selectsAutomaticShiftThroughTheSwitcherLoop() {
@@ -215,7 +189,7 @@ class KeyboardStateTest {
         assertTrue(tracker.isAutomaticShifted)
     }
 
-    /** The same event without the switcher loop leaves the keyboard unshifted — pins the seam. */
+    /** The same event without the switcher loop leaves the keyboard unshifted (pins the seam). */
     @Test
     fun startInput_withAutoCaps_doesNothingWithoutTheSwitcherLoop() {
         state.onStartInput(AUTO_CAPS_ON, NO_RECAPITALIZE, Locale.US, TYPE_TEXT, "com.example.app")
@@ -227,8 +201,8 @@ class KeyboardStateTest {
     @Test
     fun startInput_symbolPageCounts_perLocaleAndCustomisationFlags() {
         // locale, vkbCustomisation, pkbCustomisation -> maxSymbolPages, maxPkbSymbolPages.
-        // NOTE the asymmetry: maxPkbSymbolPages is derived from the pre-VKB-bump base, so the
-        // VKB custom page never widens the PKB range and vice versa.
+        // maxPkbSymbolPages comes from the pre-VKB-bump base, so the VKB custom page never widens the
+        // PKB range and vice versa.
         data class Row(val locale: Locale, val vkb: Boolean, val pkb: Boolean, val max: Int, val pkbMax: Int)
         val rows = listOf(
             Row(Locale.US, vkb = false, pkb = false, max = 2, pkbMax = 2),
@@ -276,8 +250,6 @@ class KeyboardStateTest {
         assertFalse(state.hasImeOptionsChanged(TYPE_TEXT))
         assertTrue(state.hasImeOptionsChanged(TYPE_PASSWORD))
     }
-
-    // ================================================================= 2. save / restore
 
     @Test
     fun saveRestore_alphabetShiftLocked_comesBackShiftLocked() {
@@ -408,15 +380,13 @@ class KeyboardStateTest {
         assertFalse(state.isInSymbolMode)
     }
 
-    // ================================================================= 3. manual shift
-
     @Test
     fun shiftKeyPress_fromUnshifted_selectsTheManuallyShiftedKeyboard() {
         startInput()
 
         state.onCodeInput(CODE_SHIFT, false, 0, NO_RECAPITALIZE)
 
-        // CHARACTERISED BUG: onCodeInput() suppresses onKeyRelease() for the shift code only
+        // Known bug: onCodeInput() suppresses onKeyRelease() for the shift code only
         // (`if (i != CODE_SHIFT)`), so the switcher never hears about a shift key-down.
         fake.assertCalls(
             OnStartBatchInput, // switcher uses this to arm the double-tap-shift timer
@@ -523,7 +493,7 @@ class KeyboardStateTest {
 
         fake.assertCalls(RequestShiftLocked, UpdateShiftIndicator(true), UpdateShiftLockedIndicator(true))
         assertTrue(tracker.isShiftLocked)
-        // CHARACTERISED: this branch returns before ShiftKeyState.onPress(), so the key is still
+        // Characterised: this branch returns before ShiftKeyState.onPress(), so the key is still
         // "releasing" while it is physically held down.
         assertTrue(state.isShiftKeyReleasing)
 
@@ -626,10 +596,8 @@ class KeyboardStateTest {
 
     @Test
     fun chordedShiftInSymbolMode_isDeadCode() {
-        // CHARACTERISED BUG: onShiftKeyRelease() has a symbol-mode arm that cycles the symbol page
-        // when the shift key is CHORDING — but the key can never BE chording in symbol mode.
-        // onShiftKeyPress() returns early unless currentMode == ALPHABET, so ShiftKeyState.onPress()
-        // is never called there, and onOtherKeyPressed() only promotes RELEASING->... from PRESSING.
+        // Known bug: onShiftKeyRelease()'s symbol-mode arm cycles the page on a CHORDING shift key, but
+        // the key can never chord in symbol mode: onShiftKeyPress() returns early unless ALPHABET.
         startInput()
         tapSymbolKey()
         state.onCodeInput(CODE_SHIFT, false, 0, NO_RECAPITALIZE)
@@ -642,8 +610,6 @@ class KeyboardStateTest {
         fake.assertNoCalls()
         assertTrue(state.isInSymbolMode)
     }
-
-    // ================================================================= 4. automatic capitalisation
 
     @Test
     fun onInputCodeChanged_letter_appliesAutoCapsAndRecapitalizeMode() {
@@ -691,9 +657,8 @@ class KeyboardStateTest {
 
     @Test
     fun onInputCodeChanged_space_isTreatedAsALetterCodeForAutoCaps() {
-        // CHARACTERISED: Constants.isLetterCode() is `code >= 32`, so SPACE takes the "letter"
-        // branch and re-applies auto-caps (which is what makes sentence-start capitalisation work,
-        // but it also means punctuation and every other printable code do the same).
+        // Characterised: Constants.isLetterCode() is `code >= 32`, so SPACE (and every printable code)
+        // takes the "letter" branch and re-applies auto-caps, which is what sentence-start caps rely on.
         startInput()
 
         state.onInputCodeChanged(CODE_SPACE, AUTO_CAPS_ON, NO_RECAPITALIZE)
@@ -768,12 +733,9 @@ class KeyboardStateTest {
         state.onInputCodeChanged('a'.code, AUTO_CAPS_ON, NO_RECAPITALIZE)
 
         fake.assertCalls(OnCharacterKey)
-        // DEFECT 6 (investigated, NOT a defect — see the report for wave 2.5). The keyboard stays
-        // MANUAL_SHIFTED here *because the shift key is still physically down*: IGNORING is only
-        // reachable from PRESSING_ON_SHIFTED, so dropping the shift now would make the second and
-        // later letters of a held-shift run come out lowercase. This matches AOSP
-        // `KeyboardState.updateAlphabetShiftState`, which also refuses to recompute while the
-        // shift key is not RELEASING. The shift is consumed by the key's own release, below.
+        // Not a bug: the keyboard stays MANUAL_SHIFTED because the shift key is still down (IGNORING is
+        // reachable only from PRESSING_ON_SHIFTED); dropping it would lowercase later letters of a
+        // held-shift run, as in AOSP `updateAlphabetShiftState`. The key's own release consumes it.
         assertEquals("MANUAL_SHIFTED", tracker.toString())
 
         state.onCodeRelease(CODE_SHIFT, false, 0, NO_RECAPITALIZE)
@@ -785,11 +747,9 @@ class KeyboardStateTest {
 
     @Test
     fun ignoringShift_releasedBySlidingOffTheKey_isClearedByTheMomentaryFinish() {
-        // The other way out of IGNORING. A release `withSliding` takes the
-        // `isManualShifted() && withSliding` arm instead, which clears nothing and parks
-        // `switchState` on MOMENTARY-ALPHA_SHIFT; `PointerTracker` then reports
-        // `onFinishSlidingInput()`, and *that* is what unshifts the keyboard. Pinned because the
-        // two halves live in different classes and only make sense together.
+        // The other way out of IGNORING: a release `withSliding` parks `switchState` on
+        // MOMENTARY-ALPHA_SHIFT without clearing anything, and `PointerTracker`'s later
+        // `onFinishSlidingInput()` unshifts. The two halves live in different classes.
         startInput()
         tapShiftKey()
         state.onCodeInput(CODE_SHIFT, false, 0, NO_RECAPITALIZE) // -> PRESSING_ON_SHIFTED
@@ -825,9 +785,8 @@ class KeyboardStateTest {
 
     @Test
     fun requestShiftMode_latchesTheRequestedModeAndDisablesTheShiftKey() {
-        // CHARACTERISED BUG: requestShiftMode() stores the recapitalize mode in
-        // `requestedShiftMode` and nothing on the alphabet path ever clears it, so after one
-        // recapitalize-driven alphabet load the shift key's press handler is inert.
+        // Known bug: requestShiftMode() stores the recapitalize mode in `requestedShiftMode` and nothing
+        // on the alphabet path clears it, so after one recapitalize-driven load the shift press is inert.
         startInput()
 
         state.requestShiftMode(0, 2)
@@ -845,12 +804,9 @@ class KeyboardStateTest {
 
     @Test
     fun alphabetLoad_doesNotLeaveTheRecapitalizeModeLatched() {
-        // DEFECT 5 (hardening): the switcher's setAlphabetKeyboard() re-enters as
-        // requestShiftMode(), which stores the recapitalize mode in `requestedShiftMode`.
-        // KeyboardState.loadAlphabetKeyboard() clears it again once the load has been applied, so a
-        // mode asked for by one keyboard load cannot outlive it. Without that clear a single wrong
-        // argument disables onShiftKeyPress() for the rest of the session, which is what the emoji
-        // return path used to do.
+        // The switcher's setAlphabetKeyboard() re-enters as requestShiftMode(), storing the recapitalize
+        // mode in `requestedShiftMode`; loadAlphabetKeyboard() clears it after the load so the mode cannot
+        // outlive it and disable onShiftKeyPress() for the session.
         fake.wireProductionAlphabetReentry(state)
         startInput()
 
@@ -874,8 +830,6 @@ class KeyboardStateTest {
         )
         assertEquals("MANUAL_SHIFTED_FROM_AUTO", tracker.toString())
     }
-
-    // ================================================================= 5. symbols / alphabet
 
     @Test
     fun symbolKeyTap_entersSymbolModeOnPageZero() {
@@ -905,11 +859,8 @@ class KeyboardStateTest {
 
     @Test
     fun chordedSymbolKey_staysOnTheAlphabetWithoutFlashingSymbols() {
-        // DEFECT 7 (fixed): a chorded SYM key now touches no keyboard at all. onSymbolKeyPress()
-        // does not toggle on key-down, so the chord happened on the alphabet and the release
-        // leaves it there. Previously onSymbolKeyRelease() called switchToSymbolFromAlphabet()
-        // inside the `isChording()` branch AND again unconditionally after it (no else/return);
-        // the two toggles cancelled, flashing the symbol keyboard on the way back.
+        // A chorded SYM key touches no keyboard: onSymbolKeyPress() does not toggle on key-down, so the
+        // chord happens on the alphabet and the release leaves it there.
         startInput()
         state.onCodeInput(CODE_SYMBOL, false, 0, NO_RECAPITALIZE)
         state.onCodeInput('a'.code, false, 0, NO_RECAPITALIZE) // SYM key -> CHORDING
@@ -919,8 +870,8 @@ class KeyboardStateTest {
 
         fake.assertNoCalls()
         assertFalse(state.isInSymbolMode)
-        // The momentary marker onSymbolKeyPress() set is cleared explicitly now that the
-        // round-trip through switchToAlphabetUnshifted() no longer happens.
+        // The momentary marker onSymbolKeyPress() set is cleared explicitly, since no round-trip
+        // through switchToAlphabetUnshifted() happens.
         assertEquals("ALPHA", switchState())
         assertTrue(state.isShiftKeyReleasing)
         assertEquals("RELEASING", field("symbol"))
@@ -1046,8 +997,8 @@ class KeyboardStateTest {
 
     @Test
     fun actionNextAndPrevious_cycleSymbolPagesUsingTheVkbMaximumEvenOnPkb() {
-        // CHARACTERISED: cycleThroughSymbolPages() always uses maxSymbolPages, never
-        // maxPkbSymbolPages, and always calls setVkbSymbolsKeyboard — even on a PKB device.
+        // Characterised: cycleThroughSymbolPages() always uses maxSymbolPages, never
+        // maxPkbSymbolPages, and always calls setVkbSymbolsKeyboard, even on a PKB device.
         fake.pkbDevice = true
         fake.pkbSymbolCustomizationEnabled = true
         startInput()
@@ -1188,9 +1139,8 @@ class KeyboardStateTest {
 
     @Test
     fun wasSymbolEnteredFromAlphabet_tracksTheEntryMethodNotTheMode() {
-        // CHARACTERISED BUG: the accessor is `symbolEntryMethod != 0`, and onStartInput() seeds
-        // that field with 1. So it reports "entered from alphabet" while sitting on a plain
-        // alphabet keyboard, and reports false once the SYM key has actually opened symbols.
+        // Known bug: the accessor is `symbolEntryMethod != 0` and onStartInput() seeds it with 1, so it
+        // reports "entered from alphabet" on a plain alphabet and false once SYM has opened symbols.
         startInput()
         assertTrue(state.wasSymbolEnteredFromAlphabet())
         assertFalse(state.isInSymbolMode)
@@ -1272,8 +1222,8 @@ class KeyboardStateTest {
 
     @Test
     fun backspaceInSymbolMode_usesTheManualShiftedPathForTheBanamexApp() {
-        // CHARACTERISED: a hard-coded per-app quirk with no recorded rationale (see the javadoc on
-        // PKG_BANAMEX). It also silently stops applying if the app changes package name.
+        // Characterised: a hard-coded per-app quirk (see PKG_BANAMEX) that stops applying if the app
+        // changes package name.
         fake.manualTemporaryUppercase = true
         startInput(packageName = "com.citibanamex.banamexmobile")
         tapSymbolKey()
@@ -1308,8 +1258,6 @@ class KeyboardStateTest {
         assertFalse(state.isInSymbolMode)
     }
 
-    // ================================================================= 6. emoji and menu
-
     @Test
     fun emojiKey_opensEmojiAndTogglesBackToTheAlphabet() {
         startInput()
@@ -1319,20 +1267,16 @@ class KeyboardStateTest {
         assertTrue(state.isInEmojiMode)
 
         state.onInputCodeChanged(CODE_EMOJI, 0, NO_RECAPITALIZE)
-        // DEFECT 5 (fixed): the return path passes the recapitalize "none" sentinel
-        // (KeyboardState.RECAPITALIZE_NONE == -1) rather than a literal 0, which is a real
-        // recapitalize mode. See emojiClose_leavesTheShiftKeyWorking for the consequence.
+        // The return path passes RECAPITALIZE_NONE (-1), not a literal 0, which is a real recapitalize
+        // mode. See emojiClose_leavesTheShiftKeyWorking.
         fake.assertCalls(SetAlphabetKeyboard(0, NO_RECAPITALIZE), HideEmojiKeyboard)
         assertFalse(state.isInEmojiMode)
     }
 
     @Test
     fun emojiClose_leavesTheShiftKeyWorking() {
-        // DEFECT 5 (fixed): closing the emoji board used to hand the switcher a recapitalize mode
-        // of 0, and through the production re-entrant loop that latched requestedShiftMode = 0
-        // for the rest of the session — onShiftKeyPress()'s `RECAPITALIZE_NONE ==
-        // requestedShiftMode` guard then failed forever and the shift key was dead. It now
-        // responds normally after the emoji board closes.
+        // A recapitalize mode of 0 on emoji close would latch requestedShiftMode = 0 through the
+        // switcher's re-entrant loop, failing onShiftKeyPress()'s RECAPITALIZE_NONE guard for good.
         fake.wireProductionAlphabetReentry(state)
         startInput()
         state.onEmojiInput()
@@ -1372,8 +1316,8 @@ class KeyboardStateTest {
 
     @Test
     fun resetEmojiMode_onlyLeavesEmojiAndNeverClobbersAnotherMode() {
-        // Regression pin: this is called whenever the emoji view is hidden, including as a side
-        // effect of refreshing the suggestion strip, so forcing ALPHABET would break symbol mode.
+        // Called whenever the emoji view hides, including when the suggestion strip refreshes, so
+        // forcing ALPHABET would break symbol mode.
         startInput()
         state.onEmojiInput()
         fake.clear()
@@ -1452,8 +1396,6 @@ class KeyboardStateTest {
         assertTrue(state.isInSymbolMode)
     }
 
-    // ================================================================= 7. switchState machine
-
     @Test
     fun switchState_transitionsDrivenByOnInputCodeChanged() {
         // Walk the reachable part of the switch-state machine. States are read through toString().
@@ -1507,8 +1449,6 @@ class KeyboardStateTest {
         state.onMomentaryStateFinish(0, NO_RECAPITALIZE)
         fake.assertCalls(RequestShiftOff, SetAlphabetKeyboard(0, NO_RECAPITALIZE))
     }
-
-    // ================================================================= 8. hardware keys (PKB)
 
     @Test
     fun hardwareSymKey_armsThePkbSymbolEntryMethod() {
@@ -1597,7 +1537,7 @@ class KeyboardStateTest {
             state.onHardwareKeyEvent(code, 0, NO_RECAPITALIZE)
         }
 
-        // CHARACTERISED: KEYCODE_SPACE (62) shares the "ignore" arm with the two shift keys, so a
+        // Characterised: KEYCODE_SPACE (62) shares the "ignore" arm with the two shift keys, so a
         // hardware space does not close a PKB symbol keyboard, while ENTER (66) does.
         fake.assertNoCalls()
         assertTrue(state.isInSymbolMode)
@@ -1650,12 +1590,9 @@ class KeyboardStateTest {
         assertFalse(state.isInSymbolMode)
     }
 
-    // ============================================ 9. shift-key repeat (PKB symbol shift)
-
     /**
-     * `KeyboardState`'s constructor installs a [KeyRepeatHandler.ModifierListener] on the handler
-     * the switcher hands it. Capturing the listener here lets the repeat callbacks be driven
-     * directly, without a Looper or a real key-repeat timer.
+     * The constructor installs a [KeyRepeatHandler.ModifierListener] on the switcher's handler;
+     * capturing it drives the repeat callbacks without a Looper or a real timer.
      */
     private class ListenerCapturingKeyRepeatHandler(owner: MetaKeyStateTracker) : KeyRepeatHandler(owner) {
         var listener: KeyRepeatHandler.ModifierListener? = null

@@ -24,33 +24,25 @@ import java.io.Writer;
 import java.nio.charset.Charset;
 
 /**
- * Writes a built profile to the directory imported configs live in, and hands it to a share sheet.
+ * Writes a built profile to the imported-config directory and shares it.
  *
- * <p><b>Nothing is written until the parser has read it back.</b> {@link #validate} runs the
- * generated XML through {@code DeviceInputMappingParser} — the same parser that will load it on
- * the next IME start, on this device and on whoever else's the file reaches — and checks that what
- * came back is the config that went in: one device, matching this handset's keyboard name, with
- * every captured key present. A config that fails is a config that silently does nothing at
- * runtime (the parser logs and keeps going), so the failure has to surface here, while the user is
- * still standing in front of the keyboard they just captured.
+ * <p>Nothing is written until {@link #validate} has round-tripped the XML through the runtime
+ * parser: a bad config would silently do nothing at runtime, so the failure must surface here.
  */
 public final class DeviceProfileExporter {
 
     private static final String TAG = "DeviceProfileExporter";
 
     /**
-     * Mirrors {@code CustomDeviceConfigManager}'s two private constants: imported configs live in
-     * {@code filesDir/device_configs} and are activated by the id {@code "custom:<filename>"}.
-     * Writing the profile there is what lets it be activated immediately — it becomes an entry in
-     * the same list the file importer produces, with no second copy of the file anywhere.
-     * {@code DeviceProfileExportTest} pins both against the manager so a rename there fails here.
+     * Mirror {@code CustomDeviceConfigManager}'s private constants (pinned by
+     * {@code DeviceProfileExportTest}) so a built profile is an imported config, activatable at once.
      */
     public static final String CUSTOM_CONFIG_DIR = "device_configs";
     public static final String PREFIX_CUSTOM = "custom:";
 
     private static final Charset UTF_8 = Charset.forName("UTF-8");
 
-    private DeviceProfileExporter() {} // No instantiation
+    private DeviceProfileExporter() {}
 
     /** The outcome of an export: either a written file and the id that activates it, or a reason. */
     public static final class Result {
@@ -80,13 +72,7 @@ public final class DeviceProfileExporter {
         }
     }
 
-    // ── validation ───────────────────────────────────────────────────────────
-
-    /**
-     * Parses {@code xml} the way the app will and checks it says what the draft meant.
-     *
-     * @return null when the round trip is clean, or a human-readable reason it is not
-     */
+    /** Parses {@code xml} as the app will; returns null when it says what the draft meant, else a reason. */
     @Nullable
     public static String validate(@NonNull String xml, @NonNull DeviceProfileDraft draft) {
         final DeviceInputConfig parsed = DeviceInputMappingParser.parseConfigFromStream(
@@ -99,12 +85,8 @@ public final class DeviceProfileExporter {
         }
         final DeviceInputMapping mapping = parsed.mappings.get(0);
 
-        // The <match> block is checked against the values that went in, not by asking the matcher
-        // whether it matches: the generated block ANDs <build-device> with the live
-        // android.os.Build.DEVICE, so running the matcher here would only ever re-confirm that
-        // Build.DEVICE equals itself — and would fail spuriously anywhere Build is not the real
-        // device's. DeviceConfigSummary reads the criteria back out, which is also exactly what
-        // the import dialog will show on the phone this file is carried to.
+        // Compare <match> against the inputs, not via the matcher: it ANDs with the live
+        // Build.DEVICE, which would be circular here and fail where Build is not the real device's.
         final DeviceConfigSummary summary = DeviceConfigSummary.of(
                 new ByteArrayInputStream(xml.getBytes(UTF_8)));
         if (summary == null) {
@@ -153,13 +135,7 @@ public final class DeviceProfileExporter {
         return null;
     }
 
-    // ── export ───────────────────────────────────────────────────────────────
-
-    /**
-     * Serialises, validates and writes the profile. The file lands in the imported-config
-     * directory, so the returned id can be handed straight to
-     * {@code CustomDeviceConfigManager.setActiveConfigId}.
-     */
+    /** Serialises, validates and writes the profile; the result id suits {@code setActiveConfigId}. */
     @NonNull
     public static Result export(@NonNull Context context, @NonNull DeviceProfileDraft draft) {
         final String xml = DeviceProfileXmlWriter.toXml(draft);
@@ -180,11 +156,8 @@ public final class DeviceProfileExporter {
         }
         final File file = new File(dir, draft.fileName());
 
-        // Written through AtomicFile: the XML goes to "<name>.new", is synced to disk and is then
-        // renamed over the config, so the file in this directory is always the whole old config
-        // or the whole new one, even after a crash or a power cut. A half-written config here is
-        // one the manager would list, parse and fail on at the next IME start. The manager only
-        // lists "*.xml", so a ".new" a crash left behind is never loaded; the next export replaces it.
+        // AtomicFile so a crash never leaves a half-written config the manager would load; it only
+        // lists "*.xml", so a leftover ".new" is ignored.
         final AtomicFile atomic = new AtomicFile(file);
         FileOutputStream out = null;
         try {
@@ -222,20 +195,14 @@ public final class DeviceProfileExporter {
         return result;
     }
 
-    /** The directory imported and built configs share. */
     @NonNull
     public static File configDir(@NonNull Context context) {
         return new File(context.getApplicationContext().getFilesDir(), CUSTOM_CONFIG_DIR);
     }
 
-    // ── sharing ──────────────────────────────────────────────────────────────
-
     /**
-     * A share-sheet intent for a written profile, or null if the file cannot be exposed.
-     *
-     * <p>The file is inside {@code filesDir}, so it needs the app's {@code FileProvider} (the
-     * {@code device_configs} path was added to {@code res/xml/file_paths.xml} for this) and a
-     * read grant for whatever app the user picks.
+     * A share-sheet intent for a written profile, or null if it cannot be exposed. Needs the
+     * {@code device_configs} path in {@code res/xml/file_paths.xml}.
      */
     @Nullable
     public static Intent shareIntent(@NonNull Context context, @NonNull File file,
@@ -243,10 +210,7 @@ public final class DeviceProfileExporter {
         return shareIntent(context, file, chooserTitle, "text/xml");
     }
 
-    /**
-     * {@link #shareIntent(Context, File, String)} for a file of another type — the custom letter
-     * layouts Physical layouts shares, out of the {@code letter_layouts} provider path.
-     */
+    /** {@link #shareIntent(Context, File, String)} for another MIME type (custom letter layouts). */
     @Nullable
     public static Intent shareIntent(@NonNull Context context, @NonNull File file,
                                      @NonNull String chooserTitle, @NonNull String mimeType) {

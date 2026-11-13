@@ -75,9 +75,7 @@ public final class KeyboardSwitcher implements SymbolPageProvider, KeyboardLayou
 
     private static final String TAG = "KeyboardSwitcher";
 
-    // Process-lifetime singleton that DOES hold Views (inputView, mainKeyboardFrame,
-    // mainKeyboardView, emojiPalettesView, ...). destroy() releases every one of them, so the
-    // retention lint would otherwise flag is bounded by the input view's own lifecycle.
+    // Process-lifetime singleton that holds Views; destroy() releases every one of them.
     @SuppressLint({"StaticFieldLeak"})
     private static final KeyboardSwitcher INSTANCE = new KeyboardSwitcher();
 
@@ -93,22 +91,19 @@ public final class KeyboardSwitcher implements SymbolPageProvider, KeyboardLayou
 
     private EmojiPalettesView emojiPalettesView;
 
-    // Performance: ViewStub for lazy inflation of the emoji board (audit IB-1)
+    // The boards inflate lazily from these stubs on first open.
     private ViewStub emojiPalettesViewStub;
 
     private FccView fccView;
-    
-    // Performance: ViewStub for lazy inflation of FCC view
+
     private ViewStub fccViewStub;
     
     private VoiceInputView voiceInputView;
-    
-    // Performance: ViewStub for lazy inflation of voice input view
+
     private ViewStub voiceInputViewStub;
 
     private NumberPadView numberPadView;
 
-    // Performance: ViewStub for lazy inflation of the number pad board
     private ViewStub numberPadViewStub;
 
     private UnifiedInputBoardManager unifiedInputBoardManager;
@@ -117,18 +112,12 @@ public final class KeyboardSwitcher implements SymbolPageProvider, KeyboardLayou
 
     private BlackBerryIME blackberryIme;
 
-    /**
-     * The one funnel every cross-axis change goes through. Built lazily so it also exists on
-     * instances whose constructor never ran (the JVM tests build the switcher that way).
-     *
-     * @see #transitions()
-     */
+    /** Built lazily so it also exists when the constructor never ran (JVM tests). */
     private KeyboardStateCoordinator stateTransitions;
 
     /**
-     * The single entry point for "switch layout / open board / close board / enter or exit cursor
-     * mode / show or hide bar". What each of those does to the other three axes is stated once, in
-     * {@link CrossAxisRules}; nothing here decides it.
+     * The single entry point for layout, board, cursor-mode and bar changes. What each does to the
+     * other axes is stated once, in {@link CrossAxisRules}.
      */
     public KeyboardStateCoordinator transitions() {
         if (this.stateTransitions == null) {
@@ -137,15 +126,8 @@ public final class KeyboardSwitcher implements SymbolPageProvider, KeyboardLayou
         return this.stateTransitions;
     }
 
-    /**
-     * The production {@link KeyboardStateCoordinator.Axes}: every method is one of the mechanism
-     * calls the scattered sweeps used to make, under a name that says which axis it belongs to.
-     * No decisions live here — they are all in the table.
-     */
+    /** The production {@link KeyboardStateCoordinator.Axes}: mechanism only, no decisions. */
     private final class SwitcherAxes implements KeyboardStateCoordinator.Axes {
-
-        // ── layout ────────────────────────────────────────────────────────
-
         @Override
         public void leaveEmojiMode() {
             leaveEmojiModeInternal();
@@ -156,8 +138,6 @@ public final class KeyboardSwitcher implements SymbolPageProvider, KeyboardLayou
             KeyboardSwitcher.this.clearPkbSymbolMode();
         }
 
-        // ── board ─────────────────────────────────────────────────────────
-
         @Override
         public boolean isBoardUp(int keyCode) {
             UnifiedInputBoardManager uim = KeyboardSwitcher.this.unifiedInputBoardManager;
@@ -165,11 +145,8 @@ public final class KeyboardSwitcher implements SymbolPageProvider, KeyboardLayou
         }
 
         /**
-         * SITE 1 of the Phase 1f split, on the funnel's side of it: "a board is open" here has
-         * always meant a PANEL board, which is what {@code isAnyBoardShowing()} still answers (it
-         * delegates to {@code isPanelBoardShowing()}). The old name is kept at this one boundary
-         * because {@code KeyboardSwitcherLayoutTransitionTest} characterises the sweep against a
-         * mock UIM by stubbing it.
+         * Means a panel board is open ({@code isAnyBoardShowing()} delegates to
+         * {@code isPanelBoardShowing()}); KeyboardSwitcherLayoutTransitionTest stubs this name.
          */
         @Override
         public boolean anyBoardIsOpen() {
@@ -225,8 +202,6 @@ public final class KeyboardSwitcher implements SymbolPageProvider, KeyboardLayou
             }
         }
 
-        // ── bar ───────────────────────────────────────────────────────────
-
         @Override
         public boolean isUimEnabled() {
             BlackBerryIME ime = KeyboardSwitcher.this.blackberryIme;
@@ -263,8 +238,6 @@ public final class KeyboardSwitcher implements SymbolPageProvider, KeyboardLayou
                 ime.restoreStripOrUimBar();
             }
         }
-
-        // ── cursor ────────────────────────────────────────────────────────
 
         @Override
         public boolean canRaiseArrowBar() {
@@ -323,7 +296,7 @@ public final class KeyboardSwitcher implements SymbolPageProvider, KeyboardLayou
 
     private Context themeContext;
 
-    /** The IME service {@link #themeContext} was built on; see {@link #ensureThemeContext}. */
+    /** The IME service {@link #themeContext} was built on. */
     private Context themeContextIme;
 
     private final KeyboardTextsSet keyboardLayoutSet = new KeyboardTextsSet();
@@ -349,30 +322,16 @@ public final class KeyboardSwitcher implements SymbolPageProvider, KeyboardLayou
     }
 
     /**
-     * Lazy getter for EmojiPalettesView: inflates from its ViewStub on first access.
-     *
-     * <p>Audit IB-1: the emoji board used to be an {@code <include>}, so its whole view tree
-     * (TabHost, ViewPager, pager adapter) was built on every input-view creation whether or not
-     * the user ever opened emoji. Wiring that used to happen in {@link #createInputView} now
-     * happens here, once, at first inflation.
-     *
-     * <p>Callers that only need to answer "is it showing" or hide it must use
-     * {@link #peekEmojiPalettesView()} instead -- a board that was never opened must not cost
-     * an inflation just to report that it is not showing.
+     * Inflates the emoji board from its ViewStub on first access. State queries and hide paths
+     * must use {@link #peekEmojiPalettesView()} so an unopened board costs no inflation.
      */
     public EmojiPalettesView getEmojiPalettesView() {
         if (this.emojiPalettesView == null && this.emojiPalettesViewStub != null) {
             this.emojiPalettesView = (EmojiPalettesView) this.emojiPalettesViewStub.inflate();
-            // The <include> version was inflated VISIBLE and immediately hidden by the
-            // setKeyboard() -> hideEmojiKeyboard() that follows createInputView. Start hidden
-            // so an inflation triggered by anything other than showEmojiKeyboardInternal()
-            // cannot briefly cover the main keyboard.
+            // Start hidden so an inflation from any other path cannot briefly cover the keyboard.
             this.emojiPalettesView.setVisibility(View.GONE);
             this.emojiPalettesView.setHardwareAcceleratedDrawingEnabled(this.isHardwareAccelerated);
             this.emojiPalettesView.setKeyboardActionListener(this.blackberryIme);
-            // No component registration here any more: the -11 component is EmojiBoardController,
-            // which holds no view and is registered with the rest (§5.6 item 4). This getter's
-            // only job is the IB-1 ViewStub deferral.
         }
         return this.emojiPalettesView;
     }
@@ -382,10 +341,7 @@ public final class KeyboardSwitcher implements SymbolPageProvider, KeyboardLayou
         return this.emojiPalettesView;
     }
 
-    /**
-     * Get the current composing (uncommitted) text from InputLogic.
-     * Used by dynamic emoji search to drive search from what the user has typed.
-     */
+    /** The composing text, which seeds the emoji board's search. */
     public String getComposingText() {
         if (this.blackberryIme == null) return "";
         InputLogic logic = this.blackberryIme.getInputLogic();
@@ -393,39 +349,29 @@ public final class KeyboardSwitcher implements SymbolPageProvider, KeyboardLayou
         return logic.mComposingTracker.isComposing() ? logic.mComposingTracker.getComposingText() : "";
     }
 
-    /**
-     * Clear (discard) composing text without committing it.
-     * Uses the codebase's own discard pattern to fully reset all internal state.
-     * Called in emoji replace mode to delete the typed word before inserting emoji.
-     */
+    /** Discards the composing word (emoji replace mode), resetting all composing state. */
     public void clearComposingText() {
         if (this.blackberryIme == null) return;
         InputLogic logic = this.blackberryIme.getInputLogic();
         if (logic == null) return;
 
-        // Get composing text length before clearing
         int composingLength = logic.mComposingTracker.isComposing() ? logic.mComposingTracker.getComposingText().length() : 0;
 
-        // Follow codebase pattern: finish composing, clear all state
         if (logic.mComposingTracker.isComposing() || logic.mTouchHighlightTracker.isHighlightActive()) {
-            logic.mRichInputConnection.finishComposingText();   // finishComposingText
-            logic.mTouchHighlightTracker.clear();   // clear TouchHighlightTracker
-            logic.mComposingTracker.clearAll();   // reset ComposingTextTracker
+            logic.mRichInputConnection.finishComposingText();
+            logic.mTouchHighlightTracker.clear();
+            logic.mComposingTracker.clearAll();
         }
 
-        // Reset event dispatcher
         logic.clearComposingText(true);
 
-        // Delete the now-committed text from editor
+        // finishComposingText committed the word; delete it from the editor.
         if (composingLength > 0) {
-            logic.mRichInputConnection.deleteSurroundingText(composingLength, 0);  // deleteSurroundingText
+            logic.mRichInputConnection.deleteSurroundingText(composingLength, 0);
         }
     }
 
-    /**
-     * Commit composing text (finalize it in the editor).
-     * Called in emoji append mode to commit typed word before inserting emoji.
-     */
+    /** Commits the composing word (emoji append mode). */
     public void commitComposingText() {
         if (this.blackberryIme == null) return;
         InputLogic logic = this.blackberryIme.getInputLogic();
@@ -433,10 +379,7 @@ public final class KeyboardSwitcher implements SymbolPageProvider, KeyboardLayou
         logic.commitTouchEventText();
     }
 
-    /**
-     * Whether the focused field asked for no personalized learning (incognito).
-     * Called by the emoji board, which then keeps no recents.
-     */
+    /** Whether the field asked for no personalized learning; the emoji board then keeps no recents. */
     public boolean isNoPersonalizedLearning() {
         if (this.blackberryIme == null) return false;
         DynamicLearningManager learning = this.blackberryIme.getDynamicLearningManager();
@@ -446,6 +389,7 @@ public final class KeyboardSwitcher implements SymbolPageProvider, KeyboardLayou
     private KeyboardSwitcher() {
     }
 
+    /** @param aVar the IME's switcher callbacks */
     public static void initialize(BlackBerryIME blackBerryIME, SwitcherCallbacks aVar) {
         INSTANCE.initializeInternal(blackBerryIME, aVar, PrefsManager.INSTANCE.getPrefs());
     }
@@ -456,11 +400,7 @@ public final class KeyboardSwitcher implements SymbolPageProvider, KeyboardLayou
         this.sharedPreferences = sharedPreferences;
         this.subtypeManager = SubtypeManager.getInstance();
         this.keyboardState = new KeyboardState(this);
-        // ISSUE 1 FIX: Drop reflective enableHardwareAcceleration probe. The
-        // reflective lookup always returned null on every Android version
-        // (Class.getMethod() does not see @hide methods), so the runtime value
-        // was always false. Hardcode false to preserve behavior without paying
-        // the reflection cost. See BlackBerryIME.isHardwareAccelerated.
+        // Always false: the @hide enableHardwareAcceleration is not reachable by reflection.
         this.isHardwareAccelerated = false;
     }
 
@@ -475,32 +415,20 @@ public final class KeyboardSwitcher implements SymbolPageProvider, KeyboardLayou
         this.blackberryIme.setInputView(createInputView(this.isHardwareAccelerated));
     }
 
-    /**
-     * There is one keyboard style tree; light/dark/classic/dynamic are palettes in
-     * KeyboardColorManager, applied at draw time. The themed context therefore never
-     * changes after creation, and theme switches no longer recreate the input view.
-     *
-     * <p>It reads its resources through the IME service ({@link ImeResourcesContext}), so it
-     * belongs to ONE service instance. Switching to another keyboard destroys the service and
-     * switching back creates a new one, while this singleton lives on: a themed context kept from
-     * the old service answered with that dead service's frozen configuration, and the keyboard
-     * stayed sized for whichever orientation it had at the switch until a reboot (beta.26 report,
-     * 2026-10-26). So it is rebuilt for each new service.
-     */
     /** What the cached keyboards were built against; see {@link #ensureThemeContext}. */
     private String keyboardCacheFingerprint;
 
+    /**
+     * The themed context never changes with the theme (palettes apply at draw time), but it reads
+     * resources through one IME service instance, so it is rebuilt for each new service: a stale
+     * one answers with the dead service's frozen configuration (wrong orientation sizing).
+     */
     private void ensureThemeContext(Context context) {
         if (this.themeContext == null || this.themeContextIme != context) {
             this.themeContext = new ContextThemeWrapper(new ImeResourcesContext(context), R.style.KeyboardTheme_LXX);
             this.themeContextIme = context;
-            // Cached keyboards survive a new service instance (audit D-10: the first show and
-            // the first auto-shift after an IME switch used to rebuild them from XML on main)
-            // as long as everything they were built from is the same: their geometry, labels
-            // and dimensions come from the configuration below and the keyboard height setting
-            // (width and height are part of the cache key too), and their icon set rebinds to
-            // the live service's Resources on every match (KeyboardIconSet.SharedIcons). Any
-            // change in that fingerprint drops the cache as before.
+            // Cached keyboards survive a new service as long as this fingerprint matches (their
+            // icon set rebinds to the live Resources on every match); any change drops the cache.
             final Resources resources = this.themeContext.getResources();
             final android.content.res.Configuration config = resources.getConfiguration();
             final String fingerprint = config.densityDpi + "/" + config.fontScale + "/" + config.uiMode + "/"
@@ -514,6 +442,10 @@ public final class KeyboardSwitcher implements SymbolPageProvider, KeyboardLayou
         }
     }
 
+    /**
+     * @param i the key code: -23 (input menu toggle key) or -10 (space bar)
+     * @param str the secondary icon's name
+     */
     private void updateSecondaryKeySpec(int i, String str) {
         Key keyM6604b;
         MoreKeySpec c1065xM7444a;
@@ -549,6 +481,7 @@ public final class KeyboardSwitcher implements SymbolPageProvider, KeyboardLayou
         if (BuildConfig.DEBUG) Log.e(TAG, "Could not replace the secondary key spec of the key");
     }
 
+    /** @param i the key code, as for {@link #updateSecondaryKeySpec} */
     private boolean shouldShowSecondaryIcon(int i) {
         if (i == -23) {
             return SettingsManager.getInstance().getSettingsValues().isUimEnabled();
@@ -560,18 +493,20 @@ public final class KeyboardSwitcher implements SymbolPageProvider, KeyboardLayou
         return RichInputMethodManager.getInstance().hasMultipleEnabledSubtypesInThisIme(false);
     }
 
+    /**
+     * @param i the auto-caps flags (getCapsMode)
+     * @param i2 the recapitalize mode
+     */
     public void startInput(EditorInfo editorInfo, int i, int i2) throws Resources.NotFoundException {
         if (this.blackberryIme == null) {
             return;
         }
-        // destroy() drops the themed context; a start before the next createInputView must not
-        // build against a null context.
+        // destroy() drops the themed context; a start before the next createInputView needs it.
         ensureThemeContext(this.blackberryIme);
         KeyboardBuilder.Builder aVar = new KeyboardBuilder.Builder(this.themeContext, editorInfo);
         Resources resources = this.themeContext.getResources();
         aVar.setKeyboardGeometry(ResourceConfigManager.getScreenWidthPixels(resources), ResourceConfigManager.getKeyboardHeight(resources));
         aVar.setSubtype(getSubtypeForEditorInfo(editorInfo, this.subtypeManager.getCurrentSubtype()));
-        // The layout chosen for this language on the Language screen (AZERTY, Colemak…), if any.
         aVar.useChosenLetterLayout();
         aVar.setVoiceInputKeyEnabled(InputMethodHelper.shouldShowVoiceInputKey());
         aVar.setLanguageSwitchKeyEnabled(this.blackberryIme.shouldShowLanguageSwitchKey());
@@ -604,6 +539,7 @@ public final class KeyboardSwitcher implements SymbolPageProvider, KeyboardLayou
         return (z && LocaleUtils.isChinesePinyin(localeM5625c)) ? InputMethodSubtypeCompat.newInputMethodSubtype(R.string.subtype_no_language_qwerty, R.drawable.ic_ime_switcher, Locale.ENGLISH.toString(), "keyboard", "KeyboardLayoutSet=qwerty,AsciiCapable,EnabledWhenDefaultIsNotAsciiCapable,EmojiCapable", false, false, 0) : inputMethodSubtype;
     }
 
+    /** @param i the editor's input type */
     public void saveKeyboardState(int i) {
         if (getCurrentKeyboard() != null || isEmojiKeyboardShowing()) {
             this.keyboardState.saveKeyboardState(i);
@@ -622,20 +558,15 @@ public final class KeyboardSwitcher implements SymbolPageProvider, KeyboardLayou
         }
     }
 
+    /** @param c0965e the keyboard to show */
     private void setKeyboard(Keyboard c0965e) {
         SettingsValues c0804dM5050c = SettingsManager.getInstance().getSettingsValues();
-        // A new layout going into the main keyboard view means the emoji board is not up any more.
-        // Phase 1a wrote that as a LAYOUT_LOADED row, because emoji was a layout mode AND a board
-        // and the two identities disagreed. Phase 1d gave it one identity, so this is what it
-        // always was: an ordinary board switch. The report stays scoped to -11 — an unscoped
-        // "nothing is open" was what made the coordinator forget the open voice board on the KEY2
-        // every time a dictated word committed text.
+        // A new layout in the main view means the emoji board is down. Scoped to -11: an unscoped
+        // "nothing is open" would make the coordinator forget an open voice board.
         transitions().apply(KeyboardTransition.boardLowered(CrossAxisRules.EMOJI_KEY_CODE));
         MainKeyboardView mainKeyboardView = this.mainKeyboardView;
         if (mainKeyboardView != null) {
-            // Tint before the view takes the keyboard: MainKeyboardView.setKeyboard captures the
-            // shift/alt icons, and they must be the tinted instances. (A no-op unless the palette
-            // changed since this icon set was last tinted.)
+            // Tint first: MainKeyboardView.setKeyboard captures the shift/alt icon instances.
             if (c0965e != null && c0965e.mIconsSet != null) {
                 c0965e.mIconsSet.applyColorTint();
             }
@@ -672,39 +603,16 @@ public final class KeyboardSwitcher implements SymbolPageProvider, KeyboardLayou
                 }
             }
             String localeStr = LocaleUtils.toNuanceLocaleString(this.subtypeManager.getCurrentSubtypeLocale());
-            // VKB parity (2026-08-21): in the rebuilt keyboard model every current keyboard has
-            // elementId 0, so isTouchKeyboard() (elementId >= 100 — the original's CKB-posing
-            // layouts) never fires and the ON-SCREEN board was classified as a PKB: its view dims
-            // were discarded (setKeyboardSize(0,0)) and the engine never stretched the KDB to the
-            // surface — VKB swipes decoded against the wrong rows (hello->nelo). When the
-            // on-screen keyboard is the input surface, sync the VKB KDB and pass the real view
-            // dims so the engine applies the original app's SetKeyboardSize stretch.
-            // SURFACE TEST (fixed 2026-08-29): DeviceProfile.isOnScreenKeyboardVisible() alone is
-            // NOT authoritative — it caches shouldShowInputView(), whose UIM term is true whenever
-            // the KEY2's aux/suggestion bar is up, i.e. during ORDINARY PAD TYPING. That framed
-            // the engine VKB for pad syncs (pad swipe of "coffee" decoded "Dupree" against the
-            // stretched VKB KDB). The on-screen keyboard is the surface only when the actual
-            // keyboard view is DISPLAYED, so require MainKeyboardView.isShown() as well.
-            // EXCEPTION: the gesture-replay rig fakes a vkb-forced window while injecting
-            // engine-space touchpad events; its own marker prop keeps it on the PKB path (no
-            // stretch), preserving the emulator harness frame.
+            // Engine frame: the VKB frame (sid=1 + SetKeyboardSize stretch to the real view dims)
+            // only when the current element is VKB-family (!isTouchKb) AND its view is displayed.
+            // Do not use DeviceProfile.isOnScreenKeyboardVisible(): its UIM term is true during
+            // ordinary pad typing (aux bar). In the VKB frame pad keys become regional soup and
+            // pad swipes decode garbage until the next sync.
             MainKeyboardView mkvForSync = getMainKeyboardView();
-            // isShown() alone is NOT enough: in pad mode the KEY2 keeps the MainKeyboardView in
-            // the displayed input-view hierarchy (the aux bar's container) VISIBLE but collapsed,
-            // so require real on-screen size too (screenshot-verified: no keyboard displayed yet
-            // isShown()=true framed the engine VKB).
+            // isShown() is not enough: in pad mode the view stays VISIBLE but collapsed.
             boolean keyboardViewDisplayed = mkvForSync != null && mkvForSync.isShown()
                     && mkvForSync.getHeight() > 0 && mkvForSync.getWidth() > 0;
-            // ENGINE-FRAME RULE (2026-08-30, after the owner's doing->going/nonsense report):
-            // the VKB frame (sid=1 + SetKeyboardSize stretch) is selected ONLY when the CURRENT
-            // ELEMENT is a VKB-family layout AND its view is actually displayed. The element term
-            // is load-bearing: pad mode builds the CKB-posing elements (isTouchKeyboard()=true),
-            // so a transiently-measured keyboard view (window shows, UIM/board transitions, the
-            // posted showWindow re-sync racing layout) can no longer flip a pad session into the
-            // VKB frame — in that frame every typed key becomes regional soup ("doing" ranked
-            // under "going" with nonsense pools) and pad swipes decode garbage, sticking until
-            // the next layout sync. DeviceProfile.isOnScreenKeyboardVisible() is deliberately NOT
-            // consulted anymore: its UIM term is true during ordinary pad typing (aux bar).
+            // The replay rig fakes a vkb-forced window with engine-space pad events: keep it on PKB.
             boolean onScreenSurface = !isTouchKb && keyboardViewDisplayed && !isGestureReplayRig();
             if (InputPathDebug.on()) android.util.Log.i("CKB_SWIPE_TYPE_DEBUG",
                     "syncKeyboardLayout surface: mkv=" + (mkvForSync != null)
@@ -712,28 +620,14 @@ public final class KeyboardSwitcher implements SymbolPageProvider, KeyboardLayou
                     + " h=" + (mkvForSync != null ? mkvForSync.getHeight() : -1)
                     + " isTouchKb=" + isTouchKb
                     + " -> onScreenSurface=" + onScreenSurface);
-            // REBUILT-ARCHITECTURE CONTRACT (2026-08-29): CKB maps in JAVA (ckb-y-warp; engine
-            // scale stays 0,0) — VKB maps in the ENGINE (SetKeyboardSize stretch). isTouchKb
-            // (elementId >= 100, the original's CKB-posing layouts) must therefore NOT select the
-            // engine-stretch path anymore: with the Java warp active it double-warps (live pad
-            // replay of a known-good "coffee" trace read f-o-f-e -> "code"; first letter one row
-            // up). The pre-session live state only worked by coincidence — the window-flag soup
-            // built VKB-family elements whose pad-mode height is 0, so SetKeyboardSize(1080,0)
-            // neutered the stretch. The engine stretch is for an ACTUALLY DISPLAYED on-screen
-            // keyboard only.
+            // CKB maps in Java (ckb-y-warp, engine scale 0,0); VKB maps in the engine
+            // (SetKeyboardSize stretch). Stretching a CKB too would double-warp.
             boolean vkbSync = onScreenSurface;
             if (InputPathDebug.on()) android.util.Log.i("CKB_SWIPE_TYPE_DEBUG", "KeyboardSwitcher.syncKeyboardLayout: isTouchKb=" + isTouchKb + " onScreenSurface=" + onScreenSurface + " width=" + width + " height=" + height + " locale=" + localeStr + " keyboardId=" + c0965eM6834l.mId.mElementId);
-            // Wave 3: everything above is read here, on the main thread; the engine calls run in
-            // one op on the engine thread, so every tap, swipe or key posted after this is fed
-            // against the new layout by FIFO order. Behind a language load the op waits for the
-            // engine lock there; the main thread never does.
-            // Debug: capture the real ET9 key rectangles for the Gesture Lab's grid overlay, in the
-            // same op. needsCapture() skips the read when this keypad geometry is already cached — a
-            // COST guard (getKeys() builds 30 KeyInfo objects through JNI for a debug-only overlay),
-            // not a safety one. It used to be a read-once-per-process latch, on the never-assessed
-            // theory that repeated reads perturb ET9's gesture recognition; that is measured and
-            // false (audit §4.3 — the blob's shim at 0x20fc0 touches no engine state, and 0/1/20
-            // interleaved reads over the 240-swipe W6 replay are byte-identical).
+            // Read on main, applied in one engine-thread op, so input posted after this is fed
+            // against the new layout (FIFO). The main thread never waits for the engine lock.
+            // The Gesture Lab key-grid capture rides the same op; needsCapture() is a cost guard
+            // only (repeated getKeys() reads do not perturb the engine; the shim at 0x20fc0 is pure).
             final LayoutSync sync = new LayoutSync(vkbSync, localeStr, width, height,
                     isTouchKb && dev.bbkb.ime.core.gesture.arbiter.CkbKeyGridCapture.INSTANCE.needsCapture(width, height)
                             ? this.blackberryIme : null);
@@ -746,19 +640,15 @@ public final class KeyboardSwitcher implements SymbolPageProvider, KeyboardLayou
     }
 
     /**
-     * The layout the main thread last asked the engine for. A language load re-creates the
-     * engine's core, and it runs on the loader thread, so a sync posted while it was queued may
-     * have reached the engine before it; {@link #resyncLayoutAfterLanguageLoad} re-applies this
-     * one once the load has ended. Written on the main thread only.
+     * The last layout requested, re-applied by {@link #resyncLayoutAfterLanguageLoad} because a
+     * language load re-creates the engine core. Written on the main thread only.
      */
     private static volatile LayoutSync sLastLayoutSync;
 
     /**
-     * Called by the language-load op on the loader thread when the load has ended: re-applies the
-     * last requested layout AHEAD of everything queued on the engine thread, so no tap, key or
-     * swipe queued while the load held the engine reaches the new language before its layout
-     * (Wave 2's barrier). Front of the queue, not inline here: inline, the engine thread's
-     * waiting ops could take the engine lock between the load and the sync.
+     * Called on the loader thread when a language load ends: re-applies the layout at the front of
+     * the engine queue so no queued input reaches the new language first. Not inline: waiting
+     * engine ops could take the lock between the load and the sync.
      */
     public static void resyncLayoutAfterLanguageLoad() {
         final LayoutSync sync = sLastLayoutSync;
@@ -801,8 +691,7 @@ public final class KeyboardSwitcher implements SymbolPageProvider, KeyboardLayou
         }
 
         void apply() {
-            // FIX-D2: null when the engine failed to load; there is then no layout to sync and no
-            // key grid to capture, but the keyboard itself must still come up.
+            // Null when the engine failed to load; the keyboard must still come up.
             com.blackberry.nuanceshim.NuanceSDK engine = NuanceSDKManager.getInstance();
             if (engine == null) return;
             engine.syncKeyboardLayout(vkbSync, localeStr, width, height);
@@ -811,15 +700,16 @@ public final class KeyboardSwitcher implements SymbolPageProvider, KeyboardLayou
                     dev.bbkb.ime.core.gesture.arbiter.CkbKeyGridCapture.INSTANCE.capture(
                             captureContext, engine.getKeys(), width, height);
                 } catch (Throwable ignored) {
+                    // Debug-only overlay capture.
                 }
             }
         }
     }
 
-    /** True on the emulator gesture-replay rig (its doorway sets debug.et9.replayvkbpkg): the rig
-     *  fakes a vkb-forced window while injecting engine-space TOUCHPAD events, so the layout sync
-     *  must stay on the PKB path (no SetKeyboardSize stretch) or the replayed frame double-scales.
-     *  Not cached: syncs are rare, and clearing the prop then takes effect without a force-stop. */
+    /**
+     * True on the emulator gesture-replay rig (debug.et9.replayvkbpkg set): its engine-space pad
+     * events would double-scale under the VKB stretch. Not cached, so clearing the prop takes effect.
+     */
     private static boolean isGestureReplayRig() {
         String v = SystemProps.get("debug.et9.replayvkbpkg");
         return v != null && !v.trim().isEmpty();
@@ -842,9 +732,8 @@ public final class KeyboardSwitcher implements SymbolPageProvider, KeyboardLayou
     }
 
     /**
-     * The layout set the keyboard on screen was built from ({@code qwerty}, or {@code colemak}
-     * when that was chosen for its language), or null with no keyboard. What the engine's
-     * on-screen KDB follows ({@code LetterLayoutEngineSync}).
+     * The layout set the keyboard on screen was built from (including a chosen one such as
+     * {@code colemak}), or null; the engine's on-screen KDB follows it.
      */
     public String getCurrentKeyboardLayoutSet() {
         final Keyboard keyboard = getCurrentKeyboard();
@@ -852,9 +741,8 @@ public final class KeyboardSwitcher implements SymbolPageProvider, KeyboardLayou
     }
 
     /**
-     * The layout set the keyboard on screen would be built from with nothing chosen for its
-     * language: its subtype's own ({@code qwerty}, {@code azerty}…), or null with no keyboard. When
-     * {@link #getCurrentKeyboardLayoutSet()} differs from it, a chosen layout is on screen.
+     * The subtype's own layout set, or null. When {@link #getCurrentKeyboardLayoutSet()} differs
+     * from it, a chosen layout is on screen.
      */
     public String getCurrentKeyboardOwnLayoutSet() {
         final Keyboard keyboard = getCurrentKeyboard();
@@ -882,10 +770,20 @@ public final class KeyboardSwitcher implements SymbolPageProvider, KeyboardLayou
         return this.slideboardManager;
     }
 
+    /**
+     * @param i the auto-caps flags (getCapsMode)
+     * @param i2 the recapitalize mode
+     */
     public void onBackspaceInSymbolMode(int i, int i2) {
         this.keyboardState.onBackspaceInSymbolMode(i, i2);
     }
 
+    /**
+     * @param i the key code
+     * @param z true if this is the only active pointer
+     * @param i2 the auto-caps flags (getCapsMode)
+     * @param i3 the recapitalize mode
+     */
     public void onCodeInput(int i, boolean z, int i2, int i3) {
         boolean zM7248e = this.keyboardState.wasSymbolEnteredFromAlphabet();
         this.keyboardState.onCodeInput(i, z, i2, i3);
@@ -897,6 +795,12 @@ public final class KeyboardSwitcher implements SymbolPageProvider, KeyboardLayou
         this.blackberryIme.updatePhysicalKeyboardFilter();
     }
 
+    /**
+     * @param i the key code
+     * @param z true if released during sliding input
+     * @param i2 the auto-caps flags (getCapsMode)
+     * @param i3 the recapitalize mode
+     */
     public void onCodeRelease(int i, boolean z, int i2, int i3) {
         KeyboardState c1028ak = this.keyboardState;
         if (c1028ak != null) {
@@ -904,10 +808,18 @@ public final class KeyboardSwitcher implements SymbolPageProvider, KeyboardLayou
         }
     }
 
+    /**
+     * @param i the auto-caps flags (getCapsMode)
+     * @param i2 the recapitalize mode
+     */
     public void onHardwareKeyEvent(KeyEvent keyEvent, int i, int i2) {
         this.keyboardState.onHardwareKeyEvent(keyEvent.getKeyCode(), i, i2);
     }
 
+    /**
+     * @param i the auto-caps flags (getCapsMode)
+     * @param i2 the recapitalize mode
+     */
     public void onMomentaryStateFinish(int i, int i2) {
         this.keyboardState.onMomentaryStateFinish(i, i2);
     }
@@ -955,13 +867,10 @@ public final class KeyboardSwitcher implements SymbolPageProvider, KeyboardLayou
         setAlphabetKeyboard(4);
     }
 
+    /** @param i the shift mode: 0 off, 1 shifted once, 2 automatic, 3 locked, 4 momentary */
     private void setAlphabetKeyboard(int i) {
-        // No keyboard has been built yet, or it has been torn down: nothing to switch. A physical
-        // key can reach the shift-state machine before startInput() has run — the first key after
-        // an install or update cold-starts the keyboard process, and the key is delivered in the
-        // same breath as the field's first show request — and it dereferenced the null builder
-        // here (NPE on the KEY2, 2026-10-09). The requested shift mode is already recorded in
-        // keyboardState; startInput() builds the keyboard from it when the view comes up.
+        // A physical key can reach here before startInput() built the keyboard (cold start). The
+        // shift mode is already in keyboardState; startInput() builds from it.
         if (this.keyboardBuilder == null || this.blackberryIme == null) {
             return;
         }
@@ -997,9 +906,7 @@ public final class KeyboardSwitcher implements SymbolPageProvider, KeyboardLayou
     public void setPkbSymbolsKeyboard(int i, boolean z, boolean z2, int i2) {
         Keyboard c0965eM6735b;
         Key keyM6604b;
-        // The bar is left as it is, as in the original app: the Sym board comes up under the
-        // suggestion strip (or under the UIM bar, where that is this editor's bar). This used to
-        // raise the UIM bar, which the next suggestion update took straight back down.
+        // The bar is left as it is: the Sym board comes up under whichever bar is showing.
         transitions().apply(KeyboardTransition.switchLayout(KeyboardTransition.Layout.SYMBOL));
         if (this.slideboardManager != null) {
             this.slideboardManager.showNumericPanel();
@@ -1035,6 +942,7 @@ public final class KeyboardSwitcher implements SymbolPageProvider, KeyboardLayou
         this.unifiedInputBoardManager.hide();
     }
 
+    /** @param c0965e the symbol keyboard whose currency key to replace */
     private void replaceCurrencyKey(Keyboard c0965e) {
         if (SettingsManager.getInstance().getSettingsValues().currencySymbol.length() > 0) {
             Key keyM6597a = c0965e.getKeyByOutputText("currencyExtendedKeyStyle");
@@ -1084,14 +992,7 @@ public final class KeyboardSwitcher implements SymbolPageProvider, KeyboardLayou
         }
     }
 
-    /**
-     * The emoji board comes down: {@code BOARD_LOWERED(-11)}, an ordinary board switch. The layout
-     * half and the scoped board report are the two columns of that row, applied in the order stated
-     * in {@link CrossAxisRules}.
-     *
-     * <p>Kept as a named method because it is a {@link KeyboardState.SwitcherCallbacks} entry
-     * point (the emoji state machine closes the board through it) and has out-of-package callers.
-     */
+    /** The emoji board comes down: {@code BOARD_LOWERED(-11)}, an ordinary board switch. */
     @Override
     public void hideEmojiKeyboard() {
         transitions().apply(KeyboardTransition.boardLowered(CrossAxisRules.EMOJI_KEY_CODE));
@@ -1099,59 +1000,32 @@ public final class KeyboardSwitcher implements SymbolPageProvider, KeyboardLayou
 
     /**
      * The layout half of the emoji close: restore the main keyboard view, take the palettes down
-     * and leave EMOJI mode without UI callbacks. Owner ruling R1 — this returns to the ALPHABET,
-     * never to a PKB symbol page.
+     * and leave EMOJI mode. Always returns to the alphabet, never to a PKB symbol page.
      */
     void leaveEmojiModeInternal() {
-        // Always restore mainKeyboardView to VISIBLE. showEmojiKeyboardInternal() sets it
-        // GONE unconditionally, so we must restore it here to keep keyboard_frame sized
-        // correctly (prevents IME window collapse and touch passthrough on the suggestion
-        // strip). On PKB+VKB disabled the keyboard is visible but harmless — the user has
-        // a physical keyboard and onEvaluateInputViewShown() always returns true.
-        // Voice input uses bringToFront() to render on top of this view.
+        // Always restore: showEmojiKeyboardInternal() set it GONE, and keyboard_frame needs it to
+        // stay sized (else the IME window collapses and touches pass through the strip).
         this.mainKeyboardView.setVisibility(View.VISIBLE);
-        // Null until the board has been opened once: nothing to hide or detach then.
         EmojiPalettesView emojiPalettesView = this.emojiPalettesView;
         if (emojiPalettesView != null) {
             emojiPalettesView.setVisibility(View.GONE);
-            // Closing the board ends its search query: reopening starts clean.
             emojiPalettesView.clearQuery();
             emojiPalettesView.detachPagerAdapter();
         }
 
-        this.keyboardState.resetEmojiMode(); // Reset emoji mode state so next emoji tap will show emoji (not toggle off)
-
-        // R1: the conditional clearPkbSymbolMode() that used to follow the board report is GONE.
-        // It ran after the reset above had already turned EMOJI into ALPHABET, so its own
-        // isInSymbolMode() guard was false and it never fired; the owner's ruling is that leaving
-        // the emoji board returns to the alphabet, which is exactly what the reset does. The scoped
-        // board report is the funnel's board column and runs right after this returns.
+        this.keyboardState.resetEmojiMode(); // So the next emoji tap opens the board, not toggles it off.
     }
 
-    /**
-     * The emoji key, from every path that has one: the hardware bridge, the key processor and the
-     * board controller. {@code onEmojiInput()} is a TOGGLE, so the board-open prologue below only
-     * runs when this press is going to open the board.
-     */
+    /** The emoji key from every path. {@code onEmojiInput()} toggles; the prologue runs only on open. */
     public void onEmojiKeyPressed() {
         beginEmojiBoardTransition();
         this.keyboardState.onEmojiInput();
     }
 
     /**
-     * The {@code OPEN_BOARD} prologue for the emoji board — owner ruling R2.
-     *
-     * <p>Every other board clears a PKB symbol mode before it takes the screen
-     * ({@code UnifiedInputBoardManager.beginBoardTransition}). Emoji did not, so on a PKB, opening
-     * emoji from symbol mode left {@code symbolEntryMethod} at 2 or 3 with the mode already moved
-     * on — and the next Sym press then showed the board with
-     * {@code wasSymbolEnteredFromAlphabet()} false, so every hinted physical key typed its letter
-     * instead of its symbol. Recorded as a contradiction in PHASE1A-SUMMARY.md; this is the fix.
-     *
-     * <p>It has to run <em>before</em> the state machine moves the mode to EMOJI, because
-     * {@code clearPkbSymbolMode()} asks {@code isInSymbolMode()} — which is why the emoji board's
-     * open is the {@code BOARD_OPENING} / {@code BOARD_RAISED} pair rather than one
-     * {@code OPEN_BOARD}: its mechanism spans the mode change.
+     * The emoji board's {@code OPEN_BOARD} prologue: clears a PKB symbol mode like every other
+     * board. Must run before the mode moves to EMOJI ({@code clearPkbSymbolMode()} asks
+     * {@code isInSymbolMode()}), hence the BOARD_OPENING / BOARD_RAISED pair.
      */
     private void beginEmojiBoardTransition() {
         if (this.keyboardState != null && !this.keyboardState.isInEmojiMode()) {
@@ -1160,13 +1034,8 @@ public final class KeyboardSwitcher implements SymbolPageProvider, KeyboardLayou
     }
 
     /**
-     * The emoji board has been raised by the state machine: {@code BOARD_RAISED(-11)}, which is the
-     * {@code OPEN_BOARD} row's epilogue — raise the UIM bar if it is down, then report the open
-     * through the UIM's single bookkeeping funnel. The prologue (the PKB symbol clear) ran in
-     * {@link #beginEmojiBoardTransition()}, before the mode moved.
-     *
-     * <p>The bar raise and the report were written out by hand here before Phase 1d, which is why
-     * this path could clear no symbol mode and the emoji board had two identities.
+     * {@code BOARD_RAISED(-11)}, the {@code OPEN_BOARD} epilogue: raise the UIM bar if down and
+     * report the open. The prologue ran in {@link #beginEmojiBoardTransition()}.
      */
     @Override
     public void showEmojiKeyboard() {
@@ -1181,10 +1050,8 @@ public final class KeyboardSwitcher implements SymbolPageProvider, KeyboardLayou
             if (BuildConfig.DEBUG) Log.e(TAG, "Emoji keyboard is unable to access the main keyboard");
             return;
         }
-        // Hide flick suggestions when showing emoji picker
         this.blackberryIme.hideFlickSuggestions();
-        // Hide only the keyboard view - emoji picker is now inside keyboard_frame
-        // main_keyboard_frame stays VISIBLE so unified input bar remains above emoji picker
+        // Hide only the keyboard view: main_keyboard_frame stays so the UIM bar stays above emoji.
         this.mainKeyboardView.setVisibility(View.GONE);
         EmojiPalettesView emojiPalettesView = getEmojiPalettesView();
         if (emojiPalettesView == null) {
@@ -1197,8 +1064,7 @@ public final class KeyboardSwitcher implements SymbolPageProvider, KeyboardLayou
         emojiPalettesView.setSwitchingToEmoji(true);
         updateKeyboardLayout();
 
-        // The on-screen path of emoji dynamic search: the board opens filtered on the word being
-        // composed. A physical keyboard never seeds the query (owner decision 2026-11-02): there
+        // On-screen only: the board opens filtered on the composing word. On a physical keyboard
         // the user types into the open board instead (KeyEventProcessor -> appendToQuery).
         if (SettingsManager.getInstance().getSettingsValues().isEmojiDynamicSearchEnabled
                 && DeviceProfile.isOnScreenKeyboardVisible()) {
@@ -1228,23 +1094,13 @@ public final class KeyboardSwitcher implements SymbolPageProvider, KeyboardLayou
 
     @Override
     public boolean isSymHeld() {
-        // Owner decision, 2026-09-22: closing the symbol board after one symbol is the only
-        // behaviour (the "Close symbol keyboard after symbol" setting is gone). Holding Sym is
-        // how the board is kept open instead, so this is the one thing symbol mode asks about.
-        //
-        // Phase 1f: named after ModifierState.isSymHeld(), which is the same answer — but asked
-        // through the tracker's cheap boolean rather than through a snapshot. This runs on the
-        // per-keystroke path (twice: once from onHardwareKeyEvent and once from
-        // onSoftwareSymbolCommitted), and getModifierState() builds a value object and recomputes
-        // four span states and the interpreted meta to do it. The 1b agent raised that cost for
-        // getSymbolPageOrder() and it applies here for the same reason; isSymKeyHeld() is one
-        // SparseBooleanArray lookup, so the cheap query is the right one at this site.
+        // The symbol board closes after one symbol unless Sym is held. Per-keystroke path: use the
+        // tracker's cheap lookup, not getModifierState() (which builds a snapshot).
         return this.blackberryIme.getPhysicalKeyboardStateTracker().isSymKeyHeld();
     }
 
     @Override
     public int getSymbolPageOrder() {
-        // Delegate to the implementation below that handles batch input tracking
         if (this.keyboardState.getShiftModeTracker().isAutomaticShifted()) {
             return 5;
         }
@@ -1259,9 +1115,7 @@ public final class KeyboardSwitcher implements SymbolPageProvider, KeyboardLayou
 
     @Override
     public void togglePkbSymbolShift() {
-        // The caller turns the PKB symbol page over and immediately reloads the symbol keyboard,
-        // which replaces the meta mask the old page installed. Same ALL-scope clear as before,
-        // under the reason that says why.
+        // The caller reloads the symbol keyboard next, which replaces the old page's meta mask.
         this.blackberryIme.getPhysicalKeyboardStateTracker()
                 .resetModifiers(ModifierResetReason.KEYBOARD_RELOADED);
     }
@@ -1332,12 +1186,9 @@ public final class KeyboardSwitcher implements SymbolPageProvider, KeyboardLayou
     }
 
     /**
-     * Whether ABC on the symbols goes to the ON-SCREEN alphabet ({@link #requestManualShiftOff},
-     * which forces the on-screen keyboard) rather than the hidden physical-keyboard alphabet. The
-     * original asked "physical keyboard present, and this layout set has a physical-keyboard
-     * layout". This used to be {@code hasShiftedSymbolKeyboard()}, whose
-     * {@code hasAlphabeticKeyboard()} half means an EXTERNAL keyboard is attached: false for the
-     * KEY2's built-in keypad, so ABC on the Sym board just closed it (KEY2, 2026-10-25).
+     * Whether ABC on the symbols goes to the on-screen alphabet ({@link #requestManualShiftOff})
+     * rather than the hidden physical-keyboard one. Not {@code hasAlphabeticKeyboard()}: that
+     * means an external keyboard and is false for a built-in keypad.
      */
     @Override
     public boolean isManualTemporaryUppercase() {
@@ -1345,15 +1196,23 @@ public final class KeyboardSwitcher implements SymbolPageProvider, KeyboardLayou
                 && this.keyboardBuilder != null && this.keyboardBuilder.hasPkbLayout();
     }
 
+    /**
+     * @param i the key code
+     * @param i2 the auto-caps flags (getCapsMode)
+     * @param i3 the recapitalize mode
+     */
     public void onInputCodeChanged(int i, int i2, int i3) {
-        // -11 reaches KeyboardState.onInputCodeChanged as a code and lands on the same emoji
-        // toggle onEmojiKeyPressed() drives, so it needs the same OPEN_BOARD prologue (R2).
+        // -11 lands on the same emoji toggle as onEmojiKeyPressed(), so it needs the same prologue.
         if (i == CrossAxisRules.EMOJI_KEY_CODE) {
             beginEmojiBoardTransition();
         }
         this.keyboardState.onInputCodeChanged(i, i2, i3);
     }
 
+    /**
+     * @param i the auto-caps flags (getCapsMode)
+     * @param i2 the recapitalize mode
+     */
     public void onSoftwareSymbolCommitted(int code, int i, int i2) {
         this.keyboardState.onSoftwareSymbolCommitted(code, i, i2);
     }
@@ -1366,24 +1225,16 @@ public final class KeyboardSwitcher implements SymbolPageProvider, KeyboardLayou
         FccView fccView = this.fccView;
         return fccView != null && fccView.isShown();
     }
-    
-    /**
-     * Lazy getter for FccView.
-     * Performance optimization: Inflates from ViewStub on first access,
-     * saving ~10-20ms on startup when FCC is not immediately needed.
-     */
+
+    /** Inflates from its ViewStub on first access. */
     public FccView getFccView() {
         if (this.fccView == null && this.fccViewStub != null) {
             this.fccView = (FccView) this.fccViewStub.inflate();
         }
         return this.fccView;
     }
-    
-    /**
-     * Lazy getter for VoiceInputView.
-     * Performance optimization: Inflates from ViewStub on first access,
-     * saving ~10-20ms on startup when voice input is not immediately needed.
-     */
+
+    /** Inflates from its ViewStub on first access. */
     public VoiceInputView getVoiceInputView() {
         if (this.voiceInputView == null && this.voiceInputViewStub != null) {
             this.voiceInputView = (VoiceInputView) this.voiceInputViewStub.inflate();
@@ -1391,9 +1242,7 @@ public final class KeyboardSwitcher implements SymbolPageProvider, KeyboardLayou
         return this.voiceInputView;
     }
 
-    /**
-     * Lazy getter for NumberPadView: inflates from its ViewStub on first access.
-     */
+    /** Inflates from its ViewStub on first access. */
     public NumberPadView getNumberPadView() {
         if (this.numberPadView == null && this.numberPadViewStub != null) {
             this.numberPadView = (NumberPadView) this.numberPadViewStub.inflate();
@@ -1402,10 +1251,7 @@ public final class KeyboardSwitcher implements SymbolPageProvider, KeyboardLayou
         return this.numberPadView;
     }
 
-    /**
-     * Non-inflating variant for state queries (isShowing/hide/refresh): a board that was
-     * never opened must not cost a ViewStub inflation just to answer "not showing".
-     */
+    /** Non-inflating variant for state queries and hide paths. */
     public NumberPadView peekNumberPadView() {
         return this.numberPadView;
     }
@@ -1459,8 +1305,7 @@ public final class KeyboardSwitcher implements SymbolPageProvider, KeyboardLayou
             c1083e.hide();
             this.slideboardManager = null;
         }
-        // The singleton is process-lifetime (see INSTANCE); every view field must be released
-        // here or the destroyed input_view tree stays reachable until the next createInputView.
+        // Release every view field, or the destroyed input_view tree stays reachable.
         this.fccView = null;
         this.fccViewStub = null;
         this.voiceInputView = null;
@@ -1473,21 +1318,18 @@ public final class KeyboardSwitcher implements SymbolPageProvider, KeyboardLayou
         this.keyboardBuilder = null;
         this.switcherCallbacks = null;
         this.blackberryIme = null;
-        // The themed context wraps the service being destroyed. Dropping it lets the dead service
-        // (and its window) be collected after an IME switch instead of staying reachable from this
-        // process-lifetime singleton until the user switches back. Every reader either runs inside
-        // createInputView after ensureThemeContext, or (startInput) re-creates it when missing.
+        // The themed context wraps the dying service; drop it so the service can be collected.
+        // Readers re-create it via ensureThemeContext.
         this.themeContext = null;
         this.themeContextIme = null;
         this.sharedPreferences = null;
     }
 
     @SuppressLint({"InflateParams"})
+    /** @param z true to enable hardware-accelerated drawing */
     public View createInputView(boolean z) {
-        // UIM-09 fix: Clean up previous sub-component instances before creating new ones
-        // to prevent memory leaks from orphaned UIBM/emoji/slideboard managers.
-        // NOTE: We can't call full destroy() here because it nulls blackberryIme/sharedPreferences
-        // which are needed below. So we clean up only the sub-components.
+        // Clean up the previous sub-components so they do not leak. Not destroy(): it nulls
+        // blackberryIme and sharedPreferences, which are needed below.
         EmojiPalettesView oldEmoji = this.emojiPalettesView;
         if (oldEmoji != null) {
             oldEmoji.cleanup();
@@ -1514,14 +1356,13 @@ public final class KeyboardSwitcher implements SymbolPageProvider, KeyboardLayou
         this.inputView = (InputView) LayoutInflater.from(this.themeContext).inflate(R.layout.input_view, (ViewGroup) null);
         this.mainKeyboardFrame = this.inputView.findViewById(R.id.main_keyboard_frame);
         this.emojiPalettesViewStub = this.inputView.findViewById(R.id.emoji_palettes_view_stub);
-        this.emojiPalettesView = null; // Will be inflated on demand via getEmojiPalettesView()
-        // Performance: Use ViewStub for lazy inflation of FCC and voice input views
+        this.emojiPalettesView = null;
         this.fccViewStub = this.inputView.findViewById(R.id.fcc_view_stub);
-        this.fccView = null; // Will be inflated on demand via getFccView()
+        this.fccView = null;
         this.voiceInputViewStub = this.inputView.findViewById(R.id.voice_input_view_stub);
-        this.voiceInputView = null; // Will be inflated on demand via getVoiceInputView()
+        this.voiceInputView = null;
         this.numberPadViewStub = this.inputView.findViewById(R.id.number_pad_view_stub);
-        this.numberPadView = null; // Will be inflated on demand via getNumberPadView()
+        this.numberPadView = null;
         this.mainKeyboardView = (MainKeyboardView) this.inputView.findViewById(R.id.keyboard_view);
         this.mainKeyboardView.setHardwareAcceleratedDrawingEnabled(z);
         this.mainKeyboardView.setKeyboardActionListener(this.blackberryIme);
@@ -1558,9 +1399,8 @@ public final class KeyboardSwitcher implements SymbolPageProvider, KeyboardLayou
     }
 
     /**
-     * Whether an on-screen Ctrl chord should carry Shift: the user shifted the board by hand for
-     * the next key, or is holding Shift. Auto-capitalisation does not count (Ctrl+C at the start
-     * of a sentence must stay Ctrl+C), and neither does caps lock.
+     * Whether an on-screen Ctrl chord carries Shift: manual shift or a held Shift. Auto-caps and
+     * caps lock do not count (Ctrl+C at a sentence start must stay Ctrl+C).
      */
     public boolean isShiftedForCtrlChord() {
         VkbShiftModeTracker tracker = this.keyboardState.getShiftModeTracker();
@@ -1568,10 +1408,7 @@ public final class KeyboardSwitcher implements SymbolPageProvider, KeyboardLayou
         return manual || this.keyboardState.isShiftKeyPressed();
     }
 
-    /**
-     * A Ctrl chord used the hand-set Shift: unshift the board, as a typed letter does
-     * ({@code KeyboardState.onCodeInput}). A held Shift stays until it is let go.
-     */
+    /** A Ctrl chord used the manual Shift: unshift, as a typed letter does. A held Shift stays. */
     public void releaseShiftAfterCtrlChord() {
         VkbShiftModeTracker tracker = this.keyboardState.getShiftModeTracker();
         if (tracker.isManualShifted() && !tracker.isShiftLocked() && this.keyboardState.isShiftKeyReleasing()) {
@@ -1592,20 +1429,9 @@ public final class KeyboardSwitcher implements SymbolPageProvider, KeyboardLayou
     }
 
     /**
-     * <b>WHICH BOARD IS UP.</b> One question, one answer, across every keyboard — the point of
-     * Phase 1d.
-     *
-     * <p>Before it, "which keyboard is loaded" ({@code KeyboardState.currentMode} plus the symbol
-     * page and the entry method) and "which board is open"
-     * ({@code UnifiedBoardCoordinator.activeBoard}) were two states with two owners and no query
-     * that could answer both. Emoji sat on both at once, which is what made its open path
-     * unmigratable in Phase 1a.
-     *
-     * <p>A panel board wins when one is open, because it is drawn over the main keyboard view.
-     * Otherwise the main keyboard view is showing one of the typing boards, and which one is the
-     * layout mode read through {@link CrossAxisRules}' board vocabulary. Never
-     * {@link KeyboardTransition#NO_BOARD}: some board is always up, and with nothing else it is the
-     * alphabet.
+     * Which board is up, across every keyboard. An open panel board wins (it is drawn over the main
+     * view); otherwise the layout mode in {@link CrossAxisRules}' board vocabulary. Never
+     * {@link KeyboardTransition#NO_BOARD}: with nothing else up it is the alphabet.
      */
     public int activeBoard() {
         UnifiedInputBoardManager uim = this.unifiedInputBoardManager;
@@ -1633,9 +1459,8 @@ public final class KeyboardSwitcher implements SymbolPageProvider, KeyboardLayou
     }
 
     /**
-     * If the PKB is currently in symbol mode, reset state and reload the alphabet keyboard.
-     * Called when any UIM panel opens so the underlying mainKeyboardView has the alphabet
-     * layout loaded before the panel is dismissed.
+     * If the PKB is in symbol mode, reload the alphabet. Called when any UIM panel opens so the
+     * main view has the alphabet loaded before the panel is dismissed.
      */
     public void clearPkbSymbolMode() {
         if (isPkbDevice() && this.keyboardState.isInSymbolMode()) {
@@ -1652,10 +1477,9 @@ public final class KeyboardSwitcher implements SymbolPageProvider, KeyboardLayou
 
 
     /**
-     * NOT an element id despite the name: this returns the layout set's {@code supportedScript}
-     * id (latin = 14, han = 7, thai = 20, ...), which callers forward to word-boundary
-     * classification. Do NOT compare it against {@link KeyboardId} element constants.
-     * The name is kept only because five out-of-package call sites use it.
+     * Not an element id despite the name: the layout set's {@code supportedScript} id (latin = 14,
+     * han = 7, thai = 20, ...), used for word-boundary classification. Never compare it with
+     * {@link KeyboardId} element constants.
      */
     public int getKeyboardElementId() {
         KeyboardBuilder c0978h = this.keyboardBuilder;
@@ -1665,17 +1489,19 @@ public final class KeyboardSwitcher implements SymbolPageProvider, KeyboardLayou
         return c0978h.getSupportedScriptId();
     }
 
-    /**
-     * Get the KeyboardBuilder for external components like AuxBarManager.
-     */
     @Nullable
     public KeyboardBuilder getKeyboardBuilder() {
         return this.keyboardBuilder;
     }
 
+    /**
+     * @param i the auto-caps flags (getCapsMode)
+     * @param i2 the recapitalize mode
+     * @param z true when triggered by a swipe gesture
+     * @param z2 true for the physical keyboard's symbol pages
+     */
     public boolean onSymbolShiftToggle(int i, int i2, boolean z, boolean z2) {
-        // The page turn does not know yet whether it lands on another symbol page or back on the
-        // alphabet, so the layout is UNCHANGED — only the board column applies.
+        // The page turn may land on another symbol page or the alphabet: layout UNCHANGED.
         transitions().apply(KeyboardTransition.switchLayout(KeyboardTransition.Layout.UNCHANGED));
         Keyboard c0965eM6834l = getCurrentKeyboard();
         if (c0965eM6834l == null) {
@@ -1688,10 +1514,18 @@ public final class KeyboardSwitcher implements SymbolPageProvider, KeyboardLayou
         return true;
     }
 
+    /**
+     * @param i the auto-caps flags (getCapsMode)
+     * @param i2 the recapitalize mode
+     */
     public void onSymbolKeyLongPress(int i, int i2) {
         this.keyboardState.onSymbolKeyLongPress(i, i2);
     }
 
+    /**
+     * @param i the physical key's scan code
+     * @param z the pressed state to show on the matching key
+     */
     public Key getKeyByPhysicalScanCode(int i, boolean z) {
         Keyboard c0965eM6834l;
         if (!this.keyboardState.wasSymbolEnteredFromAlphabet() || (c0965eM6834l = getCurrentKeyboard()) == null) {
@@ -1705,10 +1539,10 @@ public final class KeyboardSwitcher implements SymbolPageProvider, KeyboardLayou
     }
 
     /**
-     * What holding the physical key that typed {@code str} offers: the user's letter layout, then
-     * the built-in document for the keyboard's language, then the currency key's list
-     * ({@link PhysicalKeyResolver#moreKeys}). The same whichever keyboard is current: the on-screen,
-     * URL, password and symbol keyboards used to read copies of the tables of their own.
+     * What holding the physical key that typed {@code str} offers, the same on every keyboard
+     * ({@link PhysicalKeyResolver#moreKeys}).
+     *
+     * @param str the character the key typed
      */
     @Override // dev.bbkb.ime.core.KeyboardLayoutCallback
     public String[] getMoreKeysForKey(String str) {
@@ -1716,8 +1550,9 @@ public final class KeyboardSwitcher implements SymbolPageProvider, KeyboardLayou
     }
 
     /**
-     * The double-tap sequence for {@code str}: the user's letter layout, then the built-in
-     * document's doubled keycaps (й/ё, щ/з) ({@link PhysicalKeyResolver#multitap}).
+     * The double-tap sequence for {@code str} ({@link PhysicalKeyResolver#multitap}).
+     *
+     * @param str the character the key typed
      */
     @Override // dev.bbkb.ime.core.KeyboardLayoutCallback
     public String[] getMoreKeysForKeyByStyle(String str) {
@@ -1725,15 +1560,15 @@ public final class KeyboardSwitcher implements SymbolPageProvider, KeyboardLayou
     }
 
     /**
-     * True while a symbol page is the current keyboard, so the physical letter keys mean symbols.
-     * Not {@code wasSymbolEnteredFromAlphabet()}: that records how the last symbol page was
-     * entered and stays set on the alphabet keyboard afterwards. False before the IME has
-     * initialised the switcher: the user letter-layout tier asks this for any key its layout names.
+     * True while a symbol page is current, so physical letter keys mean symbols. Not
+     * {@code wasSymbolEnteredFromAlphabet()}, which stays set on the alphabet afterwards. Safe
+     * before initialisation.
      */
     public boolean isPhysicalSymbolMappingActive() {
         return this.keyboardState != null && this.keyboardState.isInSymbolMode();
     }
 
+    /** @param i the key code */
     public String[] getMoreKeysForCode(int i) {
         Keyboard c0965eM6834l = getCurrentKeyboard();
         if (c0965eM6834l != null) {
@@ -1743,19 +1578,11 @@ public final class KeyboardSwitcher implements SymbolPageProvider, KeyboardLayou
     }
     
     /**
-     * Get more keys for a physical key by its scan code.
-     * This mirrors the original smali logic in KeyboardSwitcher.SuggestedWordInfo(KeyEvent)String
-     * which looked up the Key from the keyboard layout by scanCode and returned its moreKeys.
-     * 
-     * The original smali appended the key label to the moreKeys string.
-     * It also required wasSymbolEnteredFromAlphabet() to be true.
-     * 
-     * @param scanCode The physical key's scan code
-     * @return The moreKeys string for the key (with label appended), or null if not found
+     * The more-keys string of the physical key, with its label appended; null when not in a
+     * symbol mode entered from the alphabet or no key matches.
      */
     @Nullable
     public String getMoreKeysForScanCode(int scanCode) {
-        // Original smali checked wasSymbolEnteredFromAlphabet() first
         if (!this.keyboardState.wasSymbolEnteredFromAlphabet()) {
             return null;
         }
@@ -1774,8 +1601,7 @@ public final class KeyboardSwitcher implements SymbolPageProvider, KeyboardLayou
         if (moreKeys == null) {
             return "";
         }
-        
-        // Original smali appended the key label to moreKeys
+
         String label = key.getLabel();
         if (label != null) {
             return moreKeys + label;
@@ -1868,15 +1694,15 @@ public final class KeyboardSwitcher implements SymbolPageProvider, KeyboardLayou
     }
 
     /**
-     * Whether a UIM <b>panel</b> board is drawn over the main keyboard view. Gates cursor mode and
-     * the suggestion strip, both of which care about the panel and not about which keyboard is
-     * loaded behind it — so this is the panel query, not {@link #activeBoard()}.
+     * Whether a UIM panel board is drawn over the main view. Gates cursor mode and the strip, which
+     * care about the panel, not the keyboard behind it (so not {@link #activeBoard()}).
      */
     public boolean isUnifiedInputBoardShowing() {
         UnifiedInputBoardManager c1011i = this.unifiedInputBoardManager;
         return c1011i != null && c1011i.isPanelBoardShowing();
     }
 
+    /** @param i 0 to unshift; otherwise the main keyboard view's new visibility */
     public void onUnifiedInputBoardAction(int i) {
         if (i == 0) {
             requestShiftOff();

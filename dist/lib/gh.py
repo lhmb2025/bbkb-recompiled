@@ -36,7 +36,6 @@ class Gh(object):
         self.dry_run = dry_run
         self.echo = echo
 
-    # -- plumbing ---------------------------------------------------------
 
     def available(self):
         return shutil.which("gh") is not None
@@ -67,7 +66,6 @@ class Gh(object):
             return None
         return result.stdout
 
-    # -- releases ---------------------------------------------------------
 
     def release_exists(self, tag):
         return self.run_readonly(["release", "view", tag, "--json", "tagName"]) is not None

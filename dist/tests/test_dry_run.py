@@ -23,8 +23,7 @@ APP = os.path.join(support.REPO_ROOT, "dist", "publish_app.py")
 
 # A slice of the real catalogue, one file per outcome: plain languages, a
 # country-qualified pack, a Swiss variant from `new/`, a refused three-letter
-# code, the two table-locale overrides, and (fabricated, since the real
-# catalogue no longer has one) a second Afrikaans pack to exercise a duplicate.
+# code, the two table-locale overrides, and a fabricated duplicate Afrikaans pack.
 SOURCE_FILES = [
     "Blackberry_1305_r1-2_AFlsUN_xt9_ALM3.ldb",
     "Blackberry_1305_r9-9_AFlsUN_xt9_ALM3.ldb",

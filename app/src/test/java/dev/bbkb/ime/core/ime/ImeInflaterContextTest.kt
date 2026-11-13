@@ -5,16 +5,10 @@ import org.junit.Assert.assertFalse
 import org.junit.Test
 
 /**
- * With gesture navigation (API 33+) Android builds the keyboard's own navigation bar with
- * `LayoutInflater.from(service)`. Its Back button, the hide-keyboard chevron, only acts when the
- * button's context is the input method service; given any other context it does nothing, with no
- * error. The service used to override `getSystemService` to answer inflater lookups with a themed
- * wrapper's inflater, which left that button dead.
- *
- * The rule is checked on the class, not by inflating a view: the old override only switched on
- * inside `onCreate`, which a unit test cannot run (it starts the engine), and Robolectric gives a
- * service the application's inflater whatever the service does, so an inflation check here could
- * not tell the two apart. On a device the difference is the chevron working or not.
+ * With gesture navigation (API 33+) the IME nav bar is inflated via `LayoutInflater.from(service)`
+ * and its hide chevron works only if its context is the service itself, so the service must not
+ * override `getSystemService`. Checked by reflection: Robolectric's inflater cannot tell the
+ * difference and `onCreate` starts the engine.
  */
 class ImeInflaterContextTest {
 

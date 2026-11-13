@@ -8,25 +8,10 @@ import dev.bbkb.ime.keyboard.KeyboardSwitcher;
 import dev.bbkb.ime.keyboard.state.CrossAxisRules;
 
 /**
- * The alphabet board's controller (keycode {@code -3}) — the default board, the one that is up when
- * no other is.
- *
- * <p>Phase 1d gave every keyboard a board <em>identity</em> but could not make the two typing boards
- * real {@link UnifiedInputBoardComponent}s, so the UIM's component map was a registry of panel
- * boards only and "every keyboard is a board" was true of the vocabulary and false of the registry.
- * Phase 1f splits the question the map was being asked — "is a PANEL board up"
- * ({@link UnifiedInputBoardManager#isPanelBoardShowing()}) versus "WHICH board is up"
- * ({@link KeyboardSwitcher#activeBoard()}) — and this class is what the first half made safe to
- * register.
- *
- * <h3>A typing board is not a panel</h3>
- *
- * <p>It has no view of its own: it <em>is</em> the main keyboard view, whose contents the keyboard
- * loaders own (the layout column of {@link CrossAxisRules}' table). So it is never shown, hidden,
- * swept or relayouted by the board framework — {@link CrossAxisRules#isPanelBoard(int)} keeps every
- * one of those paths off it, and the no-ops below are belt to that braces. What registration buys is
- * the registry: the component map now lists all eight boards, and every board keycode resolves to a
- * component that can answer for itself.
+ * The alphabet board (keycode {@code -3}), up whenever no other board is. A typing board, not a
+ * panel: it is the main keyboard view, loaded by the keyboard loaders, so the board framework never
+ * shows, hides, sweeps or relayouts it ({@link CrossAxisRules#isPanelBoard(int)}). It is registered
+ * so every board keycode resolves to a component.
  */
 public final class AlphabetBoardController extends AbstractBoardController<Void> {
 
@@ -42,13 +27,8 @@ public final class AlphabetBoardController extends AbstractBoardController<Void>
     }
 
     /**
-     * Whether the alphabet board is the board that is up — the same answer
-     * {@link KeyboardSwitcher#activeBoard()} gives, asked of one board.
-     *
-     * <p>A panel board wins whenever one is open, because it is drawn over the main keyboard view;
-     * with nothing else up, some board is always up and it is this one. Deriving it from the single
-     * canonical query rather than from a second reading of the layout mode is what makes the
-     * registry's per-board answers partition {@code activeBoard()} exactly.
+     * {@link KeyboardSwitcher#activeBoard()} asked of this board; false while a panel board is open
+     * over it. Derived from that one query so the per-board answers partition it exactly.
      */
     @Override
     public boolean isShowing() {
@@ -67,18 +47,13 @@ public final class AlphabetBoardController extends AbstractBoardController<Void>
         return null;
     }
 
-    /**
-     * Deliberately nothing. The alphabet keyboard is loaded by {@code KeyboardSwitcher}'s loaders,
-     * which is the layout axis; the board framework never opens a typing board (the exclusive-open
-     * invariant and both sweeps are filtered to panel boards, and the bar's centre {@code -3} key
-     * keeps its own dispatch branch, which restores the strip rather than "opening" anything).
-     */
     @Override
     protected void onShow() {
+        // KeyboardSwitcher's loaders load it; the bar's -3 key restores the strip instead.
     }
 
-    /** Deliberately nothing — see {@link #onShow()}. A typing board is replaced, never hidden. */
     @Override
     protected void onHide() {
+        // A typing board is replaced, never hidden.
     }
 }

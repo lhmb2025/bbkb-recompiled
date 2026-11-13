@@ -17,13 +17,9 @@ import dev.bbkb.ime.R
 import dev.bbkb.ime.core.settings.ui.drawableIcon
 
 /**
- * Key Press Feedback Settings Screen
- * Manages vibration, sound, and popup feedback for key presses
- *
- * The three switch defaults come from the same `config_default_*` resources SettingsManager
- * reads, or a toggle could disagree with what the keyboard is actually doing until it is first
- * touched. The vibration-duration and sound-volume rows are edited as strings but persisted as
- * ints with a "system default" sentinel each stores differently — see their stores below.
+ * Switch defaults come from the same `config_default_*` resources SettingsManager reads, so a
+ * toggle never disagrees with the keyboard. Vibration duration and sound volume are persisted as
+ * ints with differently stored "system default" sentinels (see their stores).
  */
 @Composable
 fun KeyPressFeedbackScreen(
@@ -102,10 +98,8 @@ private val VIBRATION_DURATION = PrefStore(
 )
 
 /**
- * "System default" here means *no* stored entry, so choosing it removes the key.
- *
- * Written as an int percent, but an entry the original APK's seek bar wrote is a 0..1 float, so
- * the read accepts both, as `SettingsManager.getKeypressSoundVolume` does.
+ * "System default" means no stored entry, so choosing it removes the key. Written as an int
+ * percent; the read also accepts a legacy 0..1 float, as `SettingsManager.getKeypressSoundVolume` does.
  */
 private val SOUND_VOLUME = PrefStore(
     "pref_keypress_sound_volume",

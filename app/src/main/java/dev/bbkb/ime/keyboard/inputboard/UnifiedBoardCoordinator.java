@@ -1,33 +1,11 @@
 package dev.bbkb.ime.keyboard.inputboard;
 
 /**
- * Single owner of "which input board is currently open."
- *
- * <p>Board visibility used to be decided ad hoc from each component's
- * {@code isShowing()} (the view's visual state). A key-down side effect
- * ({@code hideOtherComponents}) hides the view — and clears the UIM's
- * {@code activeComponent} — between a board key's down and up, so the key-up
- * handler saw "nothing open" and <em>reopened</em> the board instead of closing
- * it. On-device logging confirmed the UIM's active-component signal is cleared
- * before key-up, so it cannot be the toggle's source of truth.
- *
- * <p>This coordinator therefore owns the <em>only</em> copy of that state:
- * {@link #activeBoard}. The UIM no longer keeps a parallel activeComponent field —
- * it derives it from here, and every open/close path reports through the UIM's
- * single bookkeeping funnel ({@code setActiveComponent}), which mutates
- * {@link #activeBoard} via {@link #notifyBoardOpened(int)} /
- * {@link #notifyBoardClosed()}. This is the single idempotent toggle choke point
- * for board keys.
- *
- * <p>Drives the existing {@link UnifiedInputBoardManager} through {@link BoardHost}.
- * Every board-key entry point routes through {@link #requestBoard(int)} — physical
- * board/multifunction keys, interceptor-relayed keys, gestures, and touch on the
- * UIM bar — and the text-key dismissal is the explicit {@link #onTextKeyPressed()}
- * (board keys are exempted from it at the key-down site). Paths that still open or
- * close boards outside the coordinator (the KeyboardState emoji machine, side-effect
- * sweeps) are reconciled via {@link #notifyBoardOpened(int)} /
- * {@link #notifyBoardClosed()}. The KeyboardState-owned symbol / PKB-symbol modes
- * remain outside the coordinator for now.
+ * Single owner of "which input board is currently open." View state cannot be the source of
+ * truth: a key-down side effect hides the view between a board key's down and up, so key-up would
+ * reopen instead of close. Every board key goes through {@link #requestBoard(int)}; every open or
+ * close path reports back through the UIM's {@code setActiveComponent}, which calls
+ * {@link #notifyBoardOpened(int)} / {@link #notifyBoardClosed()}. Symbol modes stay outside.
  */
 public final class UnifiedBoardCoordinator {
 
@@ -35,15 +13,9 @@ public final class UnifiedBoardCoordinator {
     public static final int NO_BOARD = 0;
 
     /**
-     * The mechanism the coordinator drives. Backed by {@link UnifiedInputBoardManager}
-     * in production and by a fake in tests, so the toggle logic can be verified
-     * without Android view state. All visibility side effects live behind this.
-     *
-     * <p>Contract: implementations must report the resulting state back via
-     * {@link #notifyBoardOpened(int)} / {@link #notifyBoardClosed()} — those calls
-     * are the only thing that mutates {@link #activeBoard}, so a failed open leaves
-     * the coordinator truthful instead of assuming success. Production reports
-     * through {@code UnifiedInputBoardManager.setActiveComponent}.
+     * Performs the visibility side effects (the UIM in production, a fake in tests). It must report
+     * the result via {@link #notifyBoardOpened(int)} / {@link #notifyBoardClosed()}, so a failed
+     * open leaves the coordinator truthful.
      */
     public interface BoardHost {
         /** Force-open {@code keyCode}'s board (exclusive: closes any other open board). */
@@ -55,24 +27,14 @@ public final class UnifiedBoardCoordinator {
 
     private final BoardHost host;
 
-    /**
-     * Authoritative "currently open board" keycode, or {@link #NO_BOARD} — the only
-     * copy of this state. Mutated exclusively by {@link #notifyBoardOpened(int)} /
-     * {@link #notifyBoardClosed()}, never read back from view state.
-     */
+    /** Open board keycode or {@link #NO_BOARD}; mutated only by the notify methods. */
     private int activeBoard = NO_BOARD;
 
     public UnifiedBoardCoordinator(BoardHost host) {
         this.host = host;
     }
 
-    /**
-     * Toggle a board: if it is already the active board, close it; otherwise open it
-     * (the host's open is exclusive, so it closes whatever else was open). Single
-     * choke point for board keys — the decision comes from {@link #activeBoard}, so a
-     * second press reliably closes even though the view was hidden on the key-down
-     * side of that same press.
-     */
+    /** Close {@code keyCode}'s board if it is active, otherwise open it (exclusively). */
     public void requestBoard(int keyCode) {
         if (keyCode == NO_BOARD) {
             return;
@@ -102,28 +64,19 @@ public final class UnifiedBoardCoordinator {
     }
 
     /**
-     * A text key was pressed — dismiss any open board. Explicit coordinator input
-     * replacing the old scattered key-down hide side effect, so the dismissal both
-     * uses the per-board close semantics and keeps {@link #activeBoard} truthful
-     * (no dead press on the next board key). Board keys are exempted from this at
-     * the key-down site, so it cannot fight a board key's own key-up toggle.
+     * A text key was pressed: dismiss any open board. Board keys are exempted at the key-down
+     * site so this cannot fight their own key-up toggle.
      */
     public void onTextKeyPressed() {
         closeBoard();
     }
 
-    /**
-     * A board opened — THE mutation path for {@link #activeBoard}, reported from the
-     * UIM's bookkeeping funnel (setActiveComponent) by every open path.
-     */
+    /** Reported from the UIM's {@code setActiveComponent} by every open path. */
     public void notifyBoardOpened(int keyCode) {
         activeBoard = keyCode;
     }
 
-    /**
-     * The open board closed — THE mutation path for {@link #activeBoard}, reported
-     * from the UIM's bookkeeping funnel (setActiveComponent) by every close path.
-     */
+    /** Reported from the UIM's {@code setActiveComponent} by every close path. */
     public void notifyBoardClosed() {
         activeBoard = NO_BOARD;
     }

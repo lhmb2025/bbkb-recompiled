@@ -5,9 +5,9 @@ import org.junit.Assert.assertTrue
 import org.junit.Test
 
 /**
- * [InputEvent.editsText]: what counts as the user typing, which is what brings the suggestion strip
- * back over a menu they raised (owner decision 2026-11-05: keys that edit text and swipes count;
- * modifiers, mode switches and board keys do not).
+ * [InputEvent.editsText]: what counts as the user typing, which brings the suggestion strip back
+ * over a menu they raised. Keys that edit text and swipes count; modifiers, mode switches and
+ * board keys do not.
  */
 class InputEventEditsTextTest {
 

@@ -721,7 +721,6 @@
     <string name="device_config_import_unreadable">Berkas kuwi dudu konfigurasi piranti</string>
     <string name="device_config_import_failed">Ora bisa ngimpor berkas kuwi</string>
 
-    <!-- OTA app updates -->
     <string name="settings_updates_title">Nganyarake</string>
     <string name="settings_updates_summary">Priksa versi anyar BBKB</string>
     <string name="settings_update_installed_version_title">Versi kang kapasang</string>
@@ -755,7 +754,6 @@
     <string name="settings_update_ready_title">Siap dipasang</string>
     <string name="settings_update_version_details">Rincian versi</string>
     <string name="settings_update_unknown_sources_title">Idini BBKB masang nganyarake?</string>
-    <!-- Downloadable language packs (core/languagepack) -->
     <string name="language_packs_installed_header">Wis diinstal</string>
     <string name="language_packs_available_header">Kena diundhuh</string>
     <string name="language_packs_download">Undhuh</string>
@@ -877,7 +875,6 @@
     <string name="settings_voice_stop_on_pause_summary_off">Tetep ngrungokake nalika ngaso nganti sampeyan nutul mikrofon, utawa sawise setengah menit sepi</string>
     <string name="voice_status_listening_tap_to_stop">Ngrungokake&#8230; Tutul mikrofon kanggo mandheg</string>
 
-    <!-- Settings text moved out of the code (2026-11) -->
     <string name="settings_common_save">Simpen</string>
     <string name="settings_common_edit">Sunting</string>
     <string name="settings_common_back">Bali</string>

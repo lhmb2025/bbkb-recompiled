@@ -1,21 +1,14 @@
-/* diff_harness.c — differential test: owned KDB vs the blob's ET9KDB.
+/* diff_harness.c: differential test, owned KDB vs the blob's ET9KDB (which needs a live context).
  *
- * The blob (libnative-lib.so / libxt9core.so) is an Android/bionic lib whose ET9KDB_* need a live
- * init()-built context, so a TRUE A/B run happens ON-DEVICE. Two usages:
+ *   (A) On-device live A/B (-DXT9DIFF_ONDEVICE, DIFF build): diff_geometry_live()/diff_init() on the
+ *       app's live context; mismatches log to stderr / XT9DIFF.
  *
- *   (A) On-device live A/B  — embed this in the app (DIFF build, owned = xt9kdb_*, blob = ET9KDB_*)
- *       and call diff_geometry_live()/diff_init() on the app's LIVE context. Both impls run on the
- *       same loaded KDB; mismatches log to stderr / XT9DIFF. (Compile with -DXT9DIFF_ONDEVICE.)
- *
- *   (B) Offline corpus replay (runs anywhere, incl. CI) — capture the blob's getKeys ground truth
- *       on-device, then replay the OWNED parser+model against it here:
+ *   (B) Offline replay of the blob's getKeys capture against the owned parser + model:
  *           adb logcat -s XT9KEYS:I | \
  *             awk -F'[= ]+' '/k\[/{gsub(/[(),]/,"",$0); print $4","$8","$10","$12","$14}' > corpus.csv
- *       (columns: keyCode,left,top,right,bottom — adjust to your XT9KEYS line format)
- *       then:  ./diff_harness <kdb.xml> <corpus.csv>
- *       Rects use a +/-1 tolerance (owned rects are half-open, the blob's are inclusive); keyCode
- *       and center must match exactly. Validates the owned parser/model against the blob for an
- *       IDENTICAL KDB (load the same XML the device had loaded).
+ *       (columns: keyCode,left,top,right,bottom; adjust to your XT9KEYS line format)
+ *       then:  ./diff_harness <kdb.xml> <corpus.csv>   (the same XML the device loaded)
+ *       Rects allow +/-1 (owned rects are half-open, the blob's inclusive); keyCode and center exact.
  *
  *   With no corpus arg, prints the owned model as CSV (seed a baseline / inspect).
  *
@@ -28,10 +21,10 @@
 #include <stdlib.h>
 #include <string.h>
 
-/* ---- (A) on-device live A/B (compiled into the app; needs the blob + a live ctx) ------------- */
+/* (A) on-device live A/B */
 #ifdef XT9DIFF_ONDEVICE
 #include <dlfcn.h>
-/* REAL ABI (reversed 2026-07-05): (ctx, out[stride 0x30], capacity, *count). */
+/* ABI: (ctx, out[stride 0x30], capacity, *count). */
 typedef ET9STATUS (*fn_getkeys)(ET9KDBInfoPtr, void*, ET9U16, ET9U32*);   /* count is 32-bit: blob @0xbb3dc `str w0` */
 static fn_getkeys blob_GetKeyPositions;
 int diff_init(void) {
@@ -52,7 +45,7 @@ int diff_geometry_live(ET9KDBInfoPtr ctx_blob, ET9KDBInfoPtr ctx_owned) {
 }
 #endif
 
-/* ---- (B) offline corpus replay ------------------------------------------------------------- */
+/* (B) offline corpus replay */
 typedef struct { int code, left, top, right, bottom; } CorpusKey;
 
 static int load_corpus(const char* path, CorpusKey* out, int max) {

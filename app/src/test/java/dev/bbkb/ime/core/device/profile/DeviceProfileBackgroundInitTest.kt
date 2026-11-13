@@ -14,15 +14,9 @@ import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
 
 /**
- * `DeviceProfile.initialize` moved off the IME's `onCreate` main thread (~250 ms: a device scan,
- * the active-config XML parse and a blocking pref read). The only thing that makes that safe is
- * that every reader joins the load before it can observe the profile — otherwise the first
- * reader takes `current()`'s auto-detect fallback, which on a KEY2 is the *wrong shape* (VKB),
- * publishes it, and the real profile lands on top of it some milliseconds later.
- *
- * These pin the join. The observable is the occurrence counter on
- * `deviceProfile.initializeForDevice`: if the reader raced the load, the load would not yet have
- * run when the reader returned.
+ * `DeviceProfile.initialize` runs off the main thread, so every reader must join the load first;
+ * otherwise it takes `current()`'s auto-detect fallback (VKB on a CKB phone) and publishes it. The
+ * observable is the occurrence counter on `deviceProfile.initializeForDevice`.
  */
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [34], manifest = Config.NONE)
@@ -42,9 +36,8 @@ class DeviceProfileBackgroundInitTest {
     @After
     fun tearDown() {
         DeviceProfile.clearPendingInitForTest()
-        // The profile and its captured application context are process statics that outlive this
-        // class under Robolectric's shared sandbox classloader; leave the no-context profile the
-        // other DeviceProfile suites expect to find.
+        // The profile and its context are process statics shared across suites under Robolectric;
+        // leave the no-context profile the other DeviceProfile suites expect.
         DeviceProfile.initialize(null)
     }
 
@@ -63,10 +56,8 @@ class DeviceProfileBackgroundInitTest {
     }
 
     /**
-     * `KeyEventProcessor` treats `appContext() == null` as "initialize has never run" and fires a
-     * targeted `initializeForDevice` when it is. A first hardware key arriving while the
-     * background load was still in flight would have met exactly that, and paid for a second full
-     * profile build mid-keystroke — so `appContext()` has to join too.
+     * `KeyEventProcessor` treats `appContext() == null` as "never initialized" and starts its own
+     * build, so `appContext()` must join too or a first key during the load builds twice.
      */
     @Test
     fun appContextJoinsTheBackgroundLoadSoTheKeyPathSeesAnInitializedProfile() {
@@ -94,11 +85,7 @@ class DeviceProfileBackgroundInitTest {
         assertEquals("no reader may trigger a second build", 1, StartupTiming.occurrences(initPhase))
     }
 
-    /**
-     * Semantics preserved: the synchronous `initialize()` this replaced rebuilt the profile every
-     * time it was called (the settings activity relies on that — it re-initializes on every
-     * launch so an imported config takes effect). Two sequential starts are two builds.
-     */
+    /** Each start rebuilds the profile: settings re-initializes on launch so an imported config applies. */
     @Test
     fun aSecondStartAfterTheFirstCompletedRebuildsJustAsInitializeDid() {
         DeviceProfile.startInitialize(null, null)

@@ -24,15 +24,9 @@ import org.robolectric.annotation.Config
 import java.io.File
 
 /**
- * [ApkInstaller]'s intent construction and its housekeeping.
- *
- * The intent is the part that silently breaks: a `file://` URI, a missing
- * `FLAG_GRANT_READ_URI_PERMISSION`, an authority the manifest's `FileProvider` does not answer
- * to, or a `paths` xml that does not cover `cacheDir/downloads/` all produce the same symptom —
- * the installer opens on an unreadable file, or not at all — and none of them are visible from
- * reading the calling code. `FileProvider.getUriForFile` here is the real one, resolving against
- * the app's real manifest, so a `paths` entry that stops covering the download directory fails
- * this test.
+ * [ApkInstaller]'s intent and housekeeping. A `file://` URI, a missing read grant, a wrong
+ * authority or a `paths` xml not covering `cacheDir/downloads/` all fail silently on a phone; the
+ * real `FileProvider` resolves against the real manifest here, so they fail this test instead.
  */
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [34])
@@ -60,13 +54,8 @@ class ApkInstallerTest {
     }
 
     /**
-     * Test-only, and not a workaround for anything in production: `FileProvider` parses the
-     * `paths` xml once per authority and keeps the result in a static map. Robolectric gives every
-     * test method its own temporary data directory, so a strategy cached by an earlier test - in
-     * this class or in any other test in the same JVM - has roots under a directory this method
-     * has never heard of, and `getUriForFile` then fails with "Failed to find configured root".
-     * A real app has one data directory for its lifetime, which is why nothing in the app has to
-     * do this.
+     * Test-only: `FileProvider` caches its parsed roots statically, but Robolectric gives each test
+     * a new data directory, so a stale cache fails with "Failed to find configured root".
      */
     private fun forgetCachedFileProviderRoots() {
         for (field in FileProvider::class.java.declaredFields) {
@@ -75,8 +64,7 @@ class ApkInstallerTest {
                 field.isAccessible = true
                 (field.get(null) as? MutableMap<*, *>)?.clear()
             } catch (ignored: ReflectiveOperationException) {
-                // A future androidx that caches differently: the tests below then either still
-                // pass (no cache to go stale) or fail loudly, which is the right outcome.
+                // An androidx that caches differently: the tests still pass or fail loudly.
             }
         }
     }

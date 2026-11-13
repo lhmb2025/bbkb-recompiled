@@ -10,13 +10,8 @@ import java.util.List;
 import java.util.Locale;
 
 /**
- * A device config about to be written: the name it will carry, the facts it was built from, and
- * the keys the user captured.
- *
- * <p>Everything {@link DeviceProfileXmlWriter} needs and nothing it does not, so serialising is a
- * pure function of this object — no clock, no {@code Context}, no live hardware. {@link
- * #exportDate} is the one value that would otherwise be read from the clock mid-write; it is a
- * field so a test can pin it.
+ * A device config about to be written: name, facts and captured keys. Serialising is a pure
+ * function of this object; {@link #exportDate} is a field so tests can pin it.
  */
 public final class DeviceProfileDraft {
 
@@ -24,7 +19,7 @@ public final class DeviceProfileDraft {
     @NonNull public final DeviceFacts facts;
     @NonNull public final List<CapturedKey> capturedKeys;
 
-    /** Date written into the header comment; defaults to today, in ISO form. */
+    /** Header comment date; defaults to today (ISO). */
     @NonNull public String exportDate = today();
 
     public DeviceProfileDraft(@NonNull String name, @NonNull DeviceFacts facts,
@@ -34,22 +29,18 @@ public final class DeviceProfileDraft {
         this.capturedKeys = Collections.unmodifiableList(new ArrayList<>(capturedKeys));
     }
 
-    /** Fluent form of {@link #exportDate}, for tests and for a caller with its own clock. */
     @NonNull
     public DeviceProfileDraft withExportDate(@NonNull String date) {
         this.exportDate = date;
         return this;
     }
 
-    /**
-     * A config is only worth writing if it says something about this device: at minimum a
-     * {@code <match>} block that can identify it.
-     */
+    /** Only worth writing when a {@code <match>} block can identify this device. */
     public boolean isExportable() {
         return !facts.buildDevice.isEmpty() || facts.matchDeviceName() != null;
     }
 
-    /** The file name this profile is stored under, sanitised the way the importer would. */
+    /** The stored file name, sanitised as the importer would. */
     @NonNull
     public String fileName() {
         final String safe = name.replaceAll("[^a-zA-Z0-9.\\-]", "_");

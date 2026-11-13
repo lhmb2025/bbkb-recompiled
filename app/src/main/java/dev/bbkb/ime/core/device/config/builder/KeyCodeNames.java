@@ -10,25 +10,15 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * {@code keyCode -> "KEYCODE_…"}, for the {@code treatAs} attribute and the header comment.
- *
- * <p>Not {@link KeyEvent#keyCodeToString}: that one is a native call, so off a device — in the
- * Robolectric suite, in any JVM — it silently degrades to returning the number. A config generated
- * under test would then differ from the one the same capture produces on the handset, which makes
- * the pinned document in {@code DeviceProfileExportTest} a test of the test environment rather
- * than of the writer.
- *
- * <p>The table is reflected off {@code KeyEvent}'s own {@code KEYCODE_*} constants rather than
- * hand-written, so a keycode this app has never seen still gets its real name. The class is a
- * framework class and is never shrunk, so the reflection is safe in a release build; if it ever
- * failed, the effect is a {@code treatAs} that falls back to the step's default, which is what the
- * attribute meant anyway.
+ * {@code keyCode -> KEYCODE_* name}, reflected off {@code KeyEvent}'s constants (a framework
+ * class, never shrunk). Not {@link KeyEvent#keyCodeToString}, which is native and returns the
+ * number off-device, so tests would see different XML than the handset.
  */
 public final class KeyCodeNames {
 
     @Nullable private static volatile Map<Integer, String> sNames;
 
-    private KeyCodeNames() {} // No instantiation
+    private KeyCodeNames() {}
 
     /** The {@code KEYCODE_*} name for {@code keyCode}, or null for 0 and for unknown codes. */
     @Nullable
@@ -52,8 +42,7 @@ public final class KeyCodeNames {
                 if (!Modifier.isStatic(field.getModifiers())) continue;
                 final int value = field.getInt(null);
                 final String existing = names.get(value);
-                // Two names for one code (there are none today) would otherwise depend on field
-                // order; the shorter, then alphabetically first, keeps it deterministic.
+                // Deterministic if two names share a code: shorter, then alphabetically first.
                 if (existing == null || existing.length() > field.getName().length()
                         || (existing.length() == field.getName().length()
                             && field.getName().compareTo(existing) < 0)) {
@@ -61,8 +50,7 @@ public final class KeyCodeNames {
                 }
             }
         } catch (Throwable t) {
-            // A blocked or stripped KeyEvent leaves the table empty: every caller then falls back
-            // to the step's own default name, which is the behaviour this replaced.
+            // An empty table makes callers fall back to the step's default name.
         }
         sNames = names;
         return names;

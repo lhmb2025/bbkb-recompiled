@@ -14,8 +14,6 @@ class GestureClassifierTest {
 
     private val classifier = GestureClassifier()
 
-    // --- trace builders (normalized, y-down) ---
-
     private fun straight(x0: Float, y0: Float, x1: Float, y1: Float, durationMs: Long, n: Int = 12): GestureTrace {
         val pts = (0 until n).map { i ->
             val f = i / (n - 1f)
@@ -41,8 +39,8 @@ class GestureClassifierTest {
     }
 
     /**
-     * A straight move (possibly quick) that ends with a brief dwell on the target key — the finger
-     * settles on the final letter before lifting. Terminal speed ≈ 0 regardless of stroke length.
+     * A straight move (possibly quick) that ends with a brief dwell on the target key (the finger
+     * settles on the final letter before lifting). Terminal speed ≈ 0 regardless of stroke length.
      */
     private fun settledStraight(x0: Float, y0: Float, x1: Float, y1: Float, moveMs: Long, dwellMs: Long = 60, n: Int = 12): GestureTrace {
         val pts = ArrayList<TracePoint>()
@@ -64,8 +62,6 @@ class GestureClassifierTest {
         }
         return GestureTrace(pts)
     }
-
-    // --- swipes / flicks ---
 
     @Test fun fastStraightUp_isUpFlick() {
         val c = classifier.classify(straight(0.5f, 0.8f, 0.5f, 0.2f, durationMs = 120))
@@ -100,17 +96,13 @@ class GestureClassifierTest {
     }
 
     @Test fun diagonalNearBoundary_stillResolvesToASwipe() {
-        // Exactly on the up/right 45° boundary — must resolve deterministically, never be rejected.
+        // Exactly on the up/right 45° boundary: must resolve deterministically, never be rejected.
         val c = classifier.classify(straight(0.3f, 0.7f, 0.7f, 0.3f, durationMs = 150))
         assertTrue("boundary diagonal must not vanish into a dead zone", c is GestureClassification.Swipe)
     }
 
-    // --- taps / holds / double-taps ---
-
-    // --- flick rescue: fast-short strokes are swipes, slow-short ones stay taps ---
-    // Values from on-device capture (KEY2, 2026-08-09): real commit flicks measured
-    // disp 0.077-0.089 at mean speed 1.8-3.6 and were dying as Taps under the plain
-    // minSwipeDistance gate.
+    // Flick rescue: fast short strokes are swipes, slow short ones stay taps. Real commit flicks
+    // measure disp 0.077-0.089 at mean speed 1.8-3.6, under minSwipeDistance.
 
     @Test fun fastShortUpFlick_isRescuedAsSwipe() {
         // disp ~0.085 (< minSwipeDistance 0.12), 30ms -> meanSpeed ~2.8 (> rescue 1.2)
@@ -134,14 +126,11 @@ class GestureClassifierTest {
         assertEquals(GestureClassification.Tap, c)
     }
 
-    // --- vertical scaling: the pad is ~2.3x wider than tall, so vertical thresholds are
-    // scaled by vDistanceScale (0.5). Values from the second on-device capture
-    // (2026-08-09 evening): a real flick at disp 0.053 / speed 1.26 was still dying --
-    // not even reaching the distance gate, because maxExcursion <= tapSlop (0.06)
-    // classified it as stationary first.
+    // Vertical scaling: the pad is ~2.3x wider than tall, so vertical thresholds are scaled by
+    // vDistanceScale (0.5); otherwise a real flick (disp 0.053) is under tapSlop and stationary.
 
     @Test fun veryShortFastVerticalFlick_isSwipe() {
-        // disp ~0.053, 42ms -> meanSpeed ~1.26: the captured failing stroke, verbatim
+        // disp ~0.053, 42ms -> meanSpeed ~1.26: a real captured flick
         val c = classifier.classify(straight(0.5f, 0.4f, 0.5f, 0.347f, durationMs = 42))
         assertTrue("expected Swipe, got $c", c is GestureClassification.Swipe)
         assertEquals(GestureDirection.UP, (c as GestureClassification.Swipe).direction)
@@ -185,14 +174,12 @@ class GestureClassifierTest {
         assertEquals(GestureClassification.Tap, classifier.classify(second, previousTap = first))
     }
 
-    // --- flow trace ---
-
     @Test fun meanderingArc_isFlowTrace() {
         assertEquals(GestureClassification.FlowTrace, classifier.classify(semicircle(durationMs = 500)))
     }
 
-    // --- terminal-dwell: short swipe-typed words settle on a key (low terminal speed) and
-    //     must NOT read as action swipes; ballistic flicks of the same length still do. ---
+    // Short swipe-typed words settle on a key (low terminal speed) and must not read as action
+    // swipes; ballistic flicks of the same length still do.
 
     @Test fun shortDeceleratingHorizontal_isFlowTrace_twoLetterWord() {
         // "we": short straight horizontal that settles on the target key → flow, not delete.
@@ -227,17 +214,13 @@ class GestureClassifierTest {
         assertEquals(GestureDirection.LEFT, (c as GestureClassification.Swipe).direction)
     }
 
-    // --- ambiguity falls back safely ---
-
     @Test fun shortMoveBelowSwipeThreshold_fallsBackToTap() {
         // Moves more than tapSlop (0.06) but less than minSwipeDistance (0.12), straight,
         // and too slow for the flick rescue. Horizontal: the wide axis keeps unscaled
-        // thresholds (the equivalent vertical stroke is now a legitimate flick).
+        // thresholds (the equivalent vertical stroke is a legitimate flick).
         val c = classifier.classify(straight(0.5f, 0.5f, 0.42f, 0.5f, durationMs = 220))
         assertEquals(GestureClassification.Tap, c)
     }
-
-    // --- no dead zone: every straight long gesture resolves to a swipe, at every angle ---
 
     @Test fun noDeadZone_allAnglesClassifyAsSwipe() {
         var angle = 0

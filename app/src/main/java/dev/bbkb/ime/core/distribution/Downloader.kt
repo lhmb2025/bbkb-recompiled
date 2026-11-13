@@ -12,42 +12,11 @@ import java.security.MessageDigest
 import kotlin.coroutines.coroutineContext
 
 /**
- * Downloads one file — an APK or a language pack — and refuses to call it a success until the
- * bytes on disk are the bytes the manifest promised.
- *
- * ### The shape of a download
- *
- * 1. Stream the body to `<destination>.tmp`, hashing as it goes. The real destination never
- *    exists in a partial state, so "the file is there" is always safe to read as "the file is
- *    complete and verified".
- * 2. Check the size, then the SHA-256, **before** the rename. A mismatch deletes the temp file
- *    and fails with [IntegrityException].
- * 3. Rename onto [destination].
- *
- * ### Redirects
- *
- * A GitHub release asset URL answers `302` to `objects.githubusercontent.com` — a *different
- * host*, and `HttpURLConnection` silently declines to follow those (it drops cross-host
- * redirects even with `instanceFollowRedirects` on, which shows up as a zero-byte "successful"
- * download). So redirects are followed by hand: `301/302/303/307/308`, at most
- * [MAX_REDIRECTS] hops, each checked by [isRedirectAllowed].
- *
- * ### Integrity
- *
- * There is no signature anywhere in this system. Integrity is exactly two things: the bytes came
- * over HTTPS from a host we named, and they hash to what the manifest said. [isRedirectAllowed]
- * protects the first (no HTTPS→cleartext downgrade, ever); step 2 above protects the second.
- * A caller that passes a blank hash is opting out of the second leg — the download still works,
- * which is what makes local debug servers usable, but nothing installable should ever be fetched
- * that way.
- *
- * ### Threading and cancellation
- *
- * [download] is a suspend function that does all of its work on [Dispatchers.IO]; call it from
- * anywhere. Cancelling the calling coroutine stops the transfer at the next chunk boundary,
- * deletes the partial temp file and rethrows [CancellationException] — cancellation is *not*
- * reported as a `Result.failure`, so a `Result` coming out of this function always describes a
- * download that actually ran to a conclusion.
+ * Downloads one file (APK or language pack) to `<destination>.tmp`, hashing as it streams, checks
+ * size and SHA-256 before renaming, so an existing destination is always complete and verified.
+ * Redirects are followed by hand because `HttpURLConnection` drops cross-host ones (GitHub assets
+ * 302 to another host). There is no signature: integrity is HTTPS from a named host plus the
+ * manifest hash. Cancellation deletes the temp file and rethrows; it is never a `Result.failure`.
  */
 class Downloader @JvmOverloads constructor(
     private val context: Context,
@@ -56,27 +25,9 @@ class Downloader @JvmOverloads constructor(
 ) {
 
     /**
-     * Fetch [url] into [destination], verifying it against the manifest's promises.
-     *
-     * @param url absolute `http(s)` URL. In production always HTTPS; plain HTTP is accepted so
-     *   a debug build can talk to a local server, and a request that *starts* on HTTPS can never
-     *   be redirected down to it.
-     * @param expectedSha256 lowercase (or any-case) hex SHA-256 the finished file must have.
-     *   Blank or `null` skips the check — see the integrity note above.
-     * @param expectedSize the size in bytes the finished file must have. `<= 0` skips the check.
-     *   When positive it is also the denominator handed to [onProgress], which is why it is
-     *   preferred over the server's `Content-Length`.
-     * @param destination where the verified file ends up. Its parent directory is created if
-     *   needed. Anything already there is replaced only on success.
-     * @param onProgress called on the IO dispatcher as bytes arrive, with the running byte count
-     *   and the total (`-1` when neither [expectedSize] nor `Content-Length` gave one). Called
-     *   at most every 100 ms, and once more with the final count; keep it cheap and marshal to
-     *   the main thread yourself.
-     *
-     * @return the verified [destination] on success. On failure a [DistributionException]:
-     *   [InsecureUrlException], [TooManyRedirectsException], [HttpStatusException],
-     *   [IntegrityException], or a plain [DistributionException] wrapping the underlying
-     *   [IOException].
+     * Fetch [url] into [destination], verifying [expectedSha256] (blank skips) and [expectedSize]
+     * (`<= 0` skips; when positive it is also the progress total). [onProgress] runs on IO at most
+     * every 100 ms plus once with the final count; total is `-1` when unknown.
      */
     @JvmOverloads
     suspend fun download(
@@ -114,7 +65,6 @@ class Downloader @JvmOverloads constructor(
             }
             Result.success(destination)
         } catch (cancelled: CancellationException) {
-            // Cancellation is not a failure: clean up the partial file and let it propagate.
             temp.delete()
             throw cancelled
         } catch (failure: DistributionException) {
@@ -127,12 +77,8 @@ class Downloader @JvmOverloads constructor(
     }
 
     /**
-     * The connection attempt, retried twice after a failure (three attempts in all) with a
-     * 500 ms / 1500 ms backoff. Only transport-level failures are retried: an
-     * [HttpStatusException], an [InsecureUrlException] or a redirect loop is a definite answer
-     * and retrying it would only waste the user's battery.
-     *
-     * @return the lowercase hex SHA-256 of everything written to [temp].
+     * Three attempts with 500/1500 ms backoff. Only transport failures retry; HTTP status, insecure
+     * URL and redirect loops are definite answers. Returns the hex SHA-256 of [temp].
      */
     private suspend fun transferWithRetries(
         url: String,
@@ -162,7 +108,6 @@ class Downloader @JvmOverloads constructor(
         throw TransportException("Download of $url failed after ${RETRIES + 1} attempts", lastFailure)
     }
 
-    /** One full attempt: open (following redirects), stream, hash. */
     private suspend fun transfer(
         url: String,
         expectedSize: Long,
@@ -180,22 +125,18 @@ class Downloader @JvmOverloads constructor(
             if (status !in 200..299) {
                 throw HttpStatusException(status, url)
             }
-            // The Content-Length header as a long; -1 when it is missing or not a number.
             val declared = connection.getHeaderField("Content-Length")?.toLongOrNull() ?: -1L
             val total = if (expectedSize > 0L) expectedSize else declared
             val digest = MessageDigest.getInstance("SHA-256")
             var written = 0L
-            // A network read returns a few KB, so reporting each one meant hundreds to thousands
-            // of callbacks per pack, each a new state map and a recomposition of the Language
-            // packs screen (P-23). At most one per PROGRESS_INTERVAL_NANOS, plus the final count.
+            // Throttled: each report recomposes the Language packs screen.
             var reported = -1L
             var reportedAt = System.nanoTime() - PROGRESS_INTERVAL_NANOS
             connection.inputStream.use { input ->
                 temp.outputStream().use { output ->
                     val buffer = ByteArray(BUFFER_BYTES)
                     while (true) {
-                        // Cancellation lands here, between chunks: the partial file is deleted
-                        // by download()'s CancellationException arm.
+                        // Cancellation point; download() deletes the partial file.
                         coroutineContext.ensureActive()
                         val read = input.read(buffer)
                         if (read < 0) break
@@ -219,22 +160,11 @@ class Downloader @JvmOverloads constructor(
         }
     }
 
-    // ── Download directory housekeeping ───────────────────────────────────────────────────────
-
-    /** `cacheDir/downloads/`, created if needed. */
     fun downloadDir(): File = DistributionConfig.downloadDir(context)
 
-    /** A file in [downloadDir] named after [name], for callers that do not want to build paths. */
     fun destinationFor(name: String): File = File(downloadDir(), name)
 
-    /**
-     * Delete everything in [downloadDir] last modified more than [maxAgeMs] ago, including
-     * orphaned `.tmp` files from a download that died with the process.
-     *
-     * Blocking file I/O — call it off the main thread.
-     *
-     * @return how many files were deleted.
-     */
+    /** Delete files in [downloadDir] older than [maxAgeMs] (including orphaned `.tmp`); blocking I/O. */
     fun clearStale(maxAgeMs: Long): Int {
         val cutoff = System.currentTimeMillis() - maxAgeMs
         val files = downloadDir().listFiles() ?: return 0
@@ -246,31 +176,20 @@ class Downloader @JvmOverloads constructor(
     }
 
     companion object {
-        /** Redirect hops followed before giving up and calling it a loop. */
         const val MAX_REDIRECTS: Int = 5
 
-        /** Retries *after* the first attempt, so three connection attempts in all. */
+        /** Retries after the first attempt (three attempts in all). */
         const val RETRIES: Int = 2
 
         private val BACKOFF_MS = longArrayOf(500L, 1500L)
 
         private const val BUFFER_BYTES = 64 * 1024
 
-        /** The shortest gap between two progress reports: 100 ms. */
         private const val PROGRESS_INTERVAL_NANOS = 100_000_000L
 
         /**
-         * Whether a redirect from [from] to [to] may be followed.
-         *
-         * Two rules, and a cross-host hop breaks neither of them (GitHub's asset redirect is
-         * exactly that, and refusing it would make every download fail):
-         *
-         *  - the target must be `http` or `https` — no `file:`, `ftp:`, `content:` or anything
-         *    else that would turn a download into a local read;
-         *  - an `https` request may never be redirected to `http`. Integrity rests on HTTPS plus
-         *    the manifest hash, so a downgrade removes half of it silently. `http` → `https` is
-         *    fine, and `http` → `http` is fine because the request was already cleartext (that
-         *    is the debug/local-server case; production always starts at HTTPS).
+         * Cross-host hops are allowed (GitHub needs them). The target must be `http(s)` (no local
+         * reads via `file:`/`content:`), and `https` may never downgrade to `http`.
          */
         @JvmStatic
         fun isRedirectAllowed(from: String, to: String): Boolean {
@@ -286,7 +205,7 @@ class Downloader @JvmOverloads constructor(
                 .takeIf { it.isNotEmpty() && url.contains(':') }
     }
 
-    /** `renameTo` where it works, copy-and-delete across filesystems where it does not. */
+    /** Falls back to copy-and-delete when `renameTo` fails across filesystems. */
     private fun replace(temp: File, destination: File): Boolean {
         destination.delete()
         if (temp.renameTo(destination)) return true

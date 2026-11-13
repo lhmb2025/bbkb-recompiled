@@ -23,38 +23,21 @@ import dev.bbkb.ime.core.textinput.composing.TouchHighlightTracker;
 import java.util.List;
 
 /**
- * Handles all backspace and delete operations: single-character backspace,
- * accelerated word-delete, shift+backspace selection delete, and swipe-to-delete.
- *
- * <p>Owns the repeat-count and delete-state fields that were previously scattered
- * across {@link InputLogic}. Also owns the shift-held and backspace-active flags
- * used to gate selection-delete and auto-correct suppression.</p>
- *
- * <p>Extracted from {@link InputLogic} in Phase 4.3 of the text editing reorganization.
- * Calls back into {@link InputLogic} for shared composing and commit operations.</p>
+ * Backspace and delete: character backspace, hold-to-delete escalation, Shift forward delete,
+ * selection delete and swipe-to-delete. Owns the repeat counters and the shift-held and
+ * backspace-active flags.
  */
 class BackspaceController {
 
     private static final String TAG = "BackspaceController";
 
-    /**
-     * Repeat count at which hold-to-delete stops removing characters and starts removing whole
-     * words. Both repeat paths in this class use it: the accelerated one in
-     * {@link #handleAcceleratedDelete} and the ordinary one in {@link #handleBackspace}, which
-     * differ only in whether gesture input is available.
-     */
+    /** Repeat count where hold-to-delete switches from characters to words, on both repeat paths. */
     private static final int WORD_DELETE_REPEAT_THRESHOLD = 40;
 
-    /**
-     * Past this many repeats the accelerated path stops shrinking the gap between word deletes
-     * and settles on one word every two repeats.
-     */
+    /** Past this many repeats the accelerated path deletes a word every two repeats. */
     private static final int FAST_WORD_DELETE_REPEAT = 44;
 
-    /**
-     * Gap, in repeats, between word deletes on the ordinary (non-accelerated) repeat path once
-     * {@link #WORD_DELETE_REPEAT_THRESHOLD} is passed.
-     */
+    /** Repeats between word deletes on the ordinary repeat path past the threshold. */
     private static final int ORDINARY_WORD_DELETE_INTERVAL = 6;
 
     private final InputLogic mInputLogic;
@@ -66,29 +49,17 @@ class BackspaceController {
     boolean mIsShiftHeld;
     boolean mIsBackspaceActive;
 
-    /**
-     * Creates a new {@code BackspaceController} bound to the given {@link InputLogic} instance.
-     *
-     * @param inputLogic the owning {@link InputLogic}; used to access shared composing,
-     *                   connection, and commit state
-     */
     BackspaceController(InputLogic inputLogic) {
         this.mInputLogic = inputLogic;
     }
 
-    /**
-     * Resets all delete-repeat counters to their initial state.
-     * Called at the start of each new key sequence and on input session reset.
-     */
+    /** Called at the start of each key sequence and on session reset. */
     void resetDeleteCounters() {
         this.mDeleteRepeatCount = 0;
         this.mDeleteWordCount = 0;
         this.mDeleteAccelThreshold = 0;
     }
 
-    /**
-     * Fully resets all backspace state: counters, last-delete state, and modifier flags.
-     */
     void reset() {
         resetDeleteCounters();
         this.mLastDeleteState = 0;
@@ -97,14 +68,9 @@ class BackspaceController {
     }
 
     /**
-     * Determines whether a backspace event should be processed by the IME's composing logic
-     * rather than passed through as a raw key event.
+     * Whether the IME handles this backspace rather than passing the raw key through.
      *
-     * @param event           the backspace input event
-     * @param deleteCursorState current cursor-unavailable flag (1 if cursor unknown, else 0)
-     * @param lastDeleteState delete state from the previous backspace event
-     * @param ric             the rich input connection
-     * @return {@code true} if the IME should handle the backspace; {@code false} to pass through
+     * @param deleteCursorState 1 if the cursor position is unknown, else 0
      */
     boolean shouldProcessBackspace(InputEvent event, int deleteCursorState, int lastDeleteState, RichInputConnection ric) {
         return ric.hasCursorPosition() || !event.isKeyRepeat() || (event.isKeyRepeat() && lastDeleteState == deleteCursorState);
@@ -171,12 +137,8 @@ class BackspaceController {
         TouchHighlightTracker tht = mInputLogic.mTouchHighlightTracker;
 
         if (ct.isComposing() || tht.isHighlightActive()) {
-            // Delete the CURRENT (uncommitted) word directly, sized from the composing
-            // tracker itself. Sizing it from getTextBeforeCursor after
-            // finishComposingText is unreliable — the connection's cached text can
-            // still exclude the composing region at that point, which made this path
-            // tokenize the PREVIOUS word and delete that instead, leaving the
-            // just-committed word floating after the cursor.
+            // Size the delete from the tracker: after finishComposingText the cached text can
+            // still exclude the composing region, so tokenizing would hit the previous word.
             String composingWord = ct.getComposingText();
             int beforeLen = ct.getComposingTextBeforeCursor().length();
             int afterLen = composingWord.length() - beforeLen;
@@ -248,14 +210,10 @@ class BackspaceController {
         if (deleteCount > 0) {
             if (BuildConfig.DEBUG) Log.d(TAG, deleteCount + " chars deleted on swipe.");
             ric.deleteSurroundingText(deleteCount, 0);
-            // Unlearn: a swipe-deleted word is an explicit rejection. Remove it from the
-            // dynamic language model so bad commits (especially misrecognized gestures)
-            // stop self-reinforcing — without this, every accepted misrecognition
-            // permanently boosts itself and the DLM degenerates (the 'help'-over-'hello'
-            // pathology). Deleting from the DLM never touches the static lexicon.
+            // A swipe-deleted word is a rejection: unlearn it from the DLM so misrecognitions
+            // do not self-reinforce. The static lexicon is untouched.
             final String deletedWord = textBefore.subSequence(deletePos, length).toString().trim();
             if (!deletedWord.isEmpty()) {
-                // Posted to the engine thread (Phase A); the outcome is only logged.
                 EngineOps.post("swipeDeleteUnlearn", sdk -> {
                     if (!sdk.deleteDLMWord(deletedWord)) {
                         if (BuildConfig.DEBUG) Log.d(TAG, "swipe-delete unlearn: '" + deletedWord + "' not in DLM");
@@ -273,11 +231,8 @@ class BackspaceController {
     }
 
     /**
-     * Handles a swipe-delete gesture. Deletes the selection if active, deletes to the beginning
-     * in password fields, or deletes by character (CJK) or by word (other locales).
-     *
-     * @param settings current settings values
-     * @return {@code true} if any text was deleted
+     * Swipe-delete: the selection, everything before the cursor in password fields, else one
+     * character (CJK) or one word. Returns whether anything was deleted.
      */
     boolean handleSwipeDelete(SettingsValues settings) {
         mInputLogic.mHasModifiedEvent = false;
@@ -302,31 +257,15 @@ class BackspaceController {
     }
 
     /**
-     * Removes one input event's worth of text from the LIVE composing word and republishes the
-     * shortened word to the editor. The one place either repeat path may shorten a composing
-     * word: {@link #handleBackspace}'s ordinary branch and {@link #handleAcceleratedDelete}'s
-     * repeat branch both call it, so the two cannot drift apart again.
-     *
-     * <p>A composing word must never be shortened with
-     * {@link RichInputConnection#deleteSurroundingText}: that call is defined to leave the
-     * composing text alone and delete the text <em>around</em> it, so it would eat the
-     * already-committed sentence to the left while the half-typed word stayed put.</p>
-     *
-     * <p>Callers are responsible for the guards: composing is live, the word was not
-     * auto-corrected (both callers commit that word before deleting anything, so the region is
-     * finished by the time text is deleted around it), and the password / all-digits
-     * cancellation at the top of {@link #handleBackspace} has already run.</p>
-     *
-     * @param event   the backspace input event, handed to the tracker to shorten its buffer
-     * @param context the current input event context
+     * Shortens the live composing word and republishes it; the only way either path may do so.
+     * Never use {@link RichInputConnection#deleteSurroundingText} on a composing word: it
+     * deletes around the region. Callers check composing, not auto-corrected, password/digits.
      */
     private void deleteFromComposingText(InputEvent event, InputEventContext context) {
         RichInputConnection ric = mInputLogic.mRichInputConnection;
         dev.bbkb.ime.core.textinput.composing.ComposingTextTracker ct = mInputLogic.mComposingTracker;
         if (ct.isPredictionMode()) {
-            // A word held open after a gesture commit goes in one keystroke, and that keystroke
-            // is a rejection of the swipe result: forget the word, as the swipe-delete gesture
-            // does. The hook used to be a no-op; since 2026-10-12 it reaches the learned model.
+            // A word held open after a gesture goes in one keystroke, a rejection: unlearn it.
             String composingText = ct.getComposingText();
             ct.clearAll();
             ct.setLastCommittedWord(composingText);
@@ -346,35 +285,19 @@ class BackspaceController {
     }
 
     /**
-     * Handles accelerated (key-repeat) deletion: deletes forward or backward by character,
-     * and escalates to word-delete as the repeat count increases. Also triggers recorrection
-     * when predictions are enabled and the cursor lands beside a word.
-     *
-     * @param event       the backspace input event (needed to shorten a live composing word)
-     * @param shiftHeld   {@code true} if Shift is held (deletes forward instead of backward)
-     * @param context     the current input event context
-     * @param symbolPage  symbol page order / shift state passed to recorrection
-     */
-    /**
-     * Whether the cursor is at the very start of the field: the tracked selection start is 0 and
-     * nothing is selected. Asked of the tracked position, never of the before-cursor text, which
-     * some editors return empty while a composing span is active mid-word.
+     * Uses the tracked cursor, never the before-cursor text, which some editors return empty
+     * while a composing span is active mid-word.
      */
     private static boolean isAtStartOfField(RichInputConnection ric) {
         return ric.getCursorStart() == 0 && !ric.hasSelection();
     }
 
+    /** Key-repeat delete on gesture-capable input: characters first, then escalating to words. */
     private void handleAcceleratedDelete(InputEvent event, boolean shiftHeld, InputEventContext context, int symbolPage) {
         RichInputConnection ric = mInputLogic.mRichInputConnection;
         dev.bbkb.ime.core.textinput.composing.ComposingTextTracker ct = mInputLogic.mComposingTracker;
-        // FIX-BKSP, second entrance to the same hole. The ordinary path opens its `else` arm by
-        // committing an auto-corrected composing word before it deletes anything; this path has
-        // to do the same, because everything below deletes AROUND a live composing region
-        // rather than out of it. Reachable after a swiped word: the first (non-repeat) press
-        // recorrects and stamps wasAutoCorrected, and the repeats that follow land here with a
-        // composing region open, whereupon the character delete ate the space and the word in
-        // front of it. No revert here: the first press of a hold is never a repeat, so the
-        // auto-correct revert has already had its keystroke.
+        // Commit an auto-corrected composing word first: everything below deletes around a live
+        // region. No revert here; the first press of a hold already had it.
         if (ct.isComposing() && ct.wasAutoCorrected()) {
             mInputLogic.commitWord(context.settingsValues, ct.getComposingText(),
                     CommitEventRecord.CommitType.DECIDED_WORD, "", InputSource.UNKNOWN);
@@ -382,9 +305,7 @@ class BackspaceController {
         boolean deleted = false;
         int cpBefore = ric.getCodePointBeforeCursor();
         int cpAfter = ric.getCodePointAfterCursor();
-        // Forward delete on Shift, or at the start of the field: the tracked cursor at 0, not
-        // cpBefore == -1, which some editors fake mid-word while a composing span is active
-        // (see handleBackspace).
+        // Forward delete on Shift or at the start of the field (see isAtStartOfField).
         if (cpAfter != -1 && (shiftHeld || isAtStartOfField(ric))) {
             ric.deleteSurroundingText(0, Character.isSupplementaryCodePoint(cpAfter) ? 2 : 1);
             return;
@@ -393,58 +314,28 @@ class BackspaceController {
             ric.deleteSurroundingText(1, 0);
             return;
         }
-        // F3 defect 4: the repeat schedule.
-        //
-        // This used to arm mDeleteAccelThreshold to 2 on the first repeat and delete NOTHING,
-        // delete a whole WORD on the second, then push the threshold to 11 so that the next
-        // eight repeats deleted nothing at all. Holding backspace on a gesture-capable device
-        // therefore never removed a single character: one swallowed repeat, then words.
-        //
-        // Hold-to-delete is meant to escalate — characters first, words once the hold has gone
-        // on long enough. The escalation point is WORD_DELETE_REPEAT_THRESHOLD, the count at
-        // which the non-accelerated repeat path further down handleBackspace makes exactly the
-        // same switch. The two paths differ only in whether gesture input happens to be ready,
-        // which has nothing to do with how fast delete should escalate, so they use one number.
         if (this.mDeleteWordCount == 0 && this.mDeleteAccelThreshold == 0) {
             this.mDeleteAccelThreshold = WORD_DELETE_REPEAT_THRESHOLD;
         }
         if (this.mDeleteRepeatCount >= this.mDeleteAccelThreshold) {
             deleteWord(context);
             this.mDeleteWordCount++;
-            // Word deletes then come closer together — gaps of 9, 8, 7 ... settling at a flat 2
-            // once the hold passes FAST_WORD_DELETE_REPEAT. Re-seeded from the live repeat
-            // count rather than accumulated onto the old threshold: with the `>=` test above, an
-            // accumulated threshold could fall behind the count and fire a word delete on every
-            // repeat. (The original `==` test had the opposite failure mode — a single missed
-            // repeat stopped word deletes for the rest of the hold.)
+            // Gaps of 9, 8, 7 ... down to 2. Re-seeded from the live count: an accumulated
+            // threshold could fall behind it and fire on every repeat.
             int gap = this.mDeleteRepeatCount >= FAST_WORD_DELETE_REPEAT
                     ? 2
                     : Math.max(2, 10 - this.mDeleteWordCount);
             this.mDeleteAccelThreshold = this.mDeleteRepeatCount + gap;
             deleted = true;
         } else if (ct.isComposing() && !ct.wasAutoCorrected()) {
-            // FIX-BKSP: a repeat over a half-typed word shortens THAT word, exactly as the
-            // ordinary (non-repeat) branch of handleBackspace does — same guards, same code.
-            // The character delete below would call deleteSurroundingText with the composing
-            // region still live, which by contract deletes the text AROUND the region: holding
-            // backspace ate the committed sentence to the left of the word one character at a
-            // time while the word itself never changed.
-            //
-            // Returns rather than falling through to the recorrection call: the ordinary path's
-            // composing branch does not recorrect either (it is an `else if` around it). A
-            // word that is still being composed already owns the suggestion strip, which
-            // setShouldUpdateSuggestions refreshes.
+            // Shorten the composing word itself; no recorrection, as on the ordinary path.
             deleteFromComposingText(event, context);
             return;
         } else if (cpBefore != -1) {
-            // Below the escalation point every repeat takes one grapheme cluster — the same unit
-            // and the same scan the non-accelerated path uses, so an emoji goes in one repeat
-            // rather than leaving a lone surrogate behind.
+            // One grapheme cluster per repeat, so an emoji never leaves a lone surrogate.
             ric.deleteSurroundingText(
                     GraphemeUtils.getGraphemeLengthBeforeCursor(ric.getTextBeforeCursor(48, 0), cpBefore), 0);
-            // `deleted` deliberately stays false: a character repeat still falls through to the
-            // recorrection call below, exactly as a character delete does on the non-accelerated
-            // path. Only a word delete suppresses it.
+            // `deleted` stays false: only a word delete suppresses recorrection.
         }
         if (deleted || !context.settingsValues.isPredictionsEnabled
                 || !context.settingsValues.spacingAndPunctuation.currentLanguageHasSpaces
@@ -455,15 +346,7 @@ class BackspaceController {
         mInputLogic.performRecorrection(context.settingsValues, true, symbolPage);
     }
 
-    /**
-     * Handles a backspace event through the full delete pipeline: composing-text backspace,
-     * accelerated delete on repeat, selection delete, auto-correction revert, and raw deletion.
-     *
-     * @param event     the backspace input event
-     * @param context   the current input event context
-     * @param settings  current settings values
-     * @param symbolPage symbol page order / shift state
-     */
+    /** The full backspace pipeline: composing, repeat, selection, revert, then raw delete. */
     void handleBackspace(InputEvent event, InputEventContext context, SettingsValues settings, int symbolPage) {
         int iM5844h;
         int length;
@@ -485,12 +368,8 @@ class BackspaceController {
             mInputLogic.resetComposingAndSelect(ric.getCursorStart(), ric.getCursorEnd(), true);
         }
         if (ct.isCursorMoved() && ct.isComposing()) {
-            // Cursor is positioned inside the composing word. Finish composing
-            // (the text in the editor stays; only the composing span is cleared)
-            // and fall through to the standard backspace path so a character
-            // is actually deleted. Previously this branch truncated the composing
-            // buffer to the cursor and returned, which made the first backspace
-            // a no-op visible to the user.
+            // Cursor inside the composing word: drop the span and fall through so a character
+            // is actually deleted.
             int cursorStart = ric.getCursorStart();
             int cursorEnd = ric.getCursorEnd();
             if (BuildConfig.DEBUG) {
@@ -500,7 +379,6 @@ class BackspaceController {
                     + " cursor=[" + cursorStart + "," + cursorEnd + "]");
             }
             mInputLogic.resetComposingAndSelect(cursorStart, cursorEnd, false);
-            // Fall through.
         }
         if (ric.hasSelection()) {
             deleteSelection();
@@ -516,31 +394,9 @@ class BackspaceController {
                 mInputLogic.commitWord(context.settingsValues, ct.getComposingText(), CommitEventRecord.CommitType.DECIDED_WORD, "", InputSource.UNKNOWN);
             }
             int cpBefore = ric.getCodePointBeforeCursor();
-            // F3 defect 3: the revert-auto-correction gate.
-            //
-            // It used to additionally require that the code point before the cursor was NOT a
-            // word separator, which is unreachable in practice. An auto-correction is committed
-            // together with the separator the user typed to end the word (handleSeparatorInput
-            // -> autoCorrectAndCommit -> commitWordExtended commits "the" and then " "), so by
-            // the time backspace arrives the character before the cursor IS that separator.
-            // Backspace-to-undo-a-correction therefore never fired from the keyboard at all -
-            // only through the swipe-delete coordinate below, which bypasses the whole gate.
-            // The give-away was that the isUsuallyFollowedBySpace() term could not affect the
-            // result: every symbol in symbols_followed_by_space is a word separator too, so the
-            // separator test already implied it. The expression had been written against the
-            // helper's NAME rather than its (inverted) value.
-            //
-            // What survives is the exclusion that second term was written for: when the cursor
-            // sits right after one of ".,;:!?)]}&" the keystroke must fall through to the
-            // double-space-period / swap-punctuation reverts further down this method, which
-            // own the undo for those. Everything else - the committed word itself, or the plain
-            // separator committed with it - reverts.
-            //
-            // The original keyboard did revert from the keyboard, on the SECOND press: the first
-            // deleted the space, and with a letter before the cursor the old gate opened. One
-            // press here therefore also drops a whitespace separator, so the word comes back
-            // composing with no space after it, as it did there (otherwise the next space
-            // leaves two). Swipe-to-delete keeps the separator.
+            // Revert the auto-correction unless the cursor follows one of ".,;:!?)]}&", whose
+            // undo belongs to the double-space-period / swap-punctuation reverts below. The
+            // keyboard revert also drops a whitespace separator; swipe-delete keeps it.
             boolean isFollowedBySpaceSymbol = settings.isUsuallyFollowedBySpace(cpBefore);
             boolean revertGateOpen = !isFollowedBySpaceSymbol;
             boolean isSwipeDeleteRevert = event.mX == InputEvent.COORD_SWIPE_DELETE_REVERT;
@@ -582,13 +438,7 @@ class BackspaceController {
             } else {
                 int cpBefore2 = ric.getCodePointBeforeCursor();
                 int cpAfter = ric.getCodePointAfterCursor();
-                // Forward delete on Shift, or at the very start of the field, as in the original
-                // app. The original read "start of the field" as cpBefore2 == -1, and that bit
-                // back: with the cursor tapped into a word, some editors answer
-                // getTextBeforeCursor() with "" while a composing span is active (text before
-                // the span start, not before the cursor), so backspace mid-word ate the
-                // character to the RIGHT. The start of the field is the TRACKED cursor being at
-                // 0, which that quirk never fakes (beta report, 2026-10-25).
+                // Forward delete on Shift or at the start of the field (see isAtStartOfField).
                 if (cpAfter != -1 && (shiftHeld || isAtStartOfField(ric))) {
                     ric.deleteSurroundingText(0, GraphemeUtils.getGraphemeLengthAfterCursor(ric.getTextAfterCursor(48, 0), cpAfter));
                 } else {
@@ -611,9 +461,7 @@ class BackspaceController {
             }
             if (context.settingsValues.isPredictionsEnabled
                     && context.settingsValues.spacingAndPunctuation.currentLanguageHasSpaces
-                    // Same gate as above, so recorrection is skipped only for the one case that
-                    // reached here while still revert-eligible (a followed-by-space symbol,
-                    // which the punctuation reverts own).
+                    // Same gate as the revert above.
                     && ((!mInputLogic.mEventDispatcher.isRevertEligible() || revertGateOpen)
                         && context.getInputSource() != InputSource.INTERNAL)) {
                 mInputLogic.performRecorrection(context.settingsValues, true, symbolPage);

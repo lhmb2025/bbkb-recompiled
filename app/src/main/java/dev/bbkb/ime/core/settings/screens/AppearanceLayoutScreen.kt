@@ -29,26 +29,19 @@ import dev.bbkb.ime.R
 
 private const val THEME_STYLE = "pref_keyboard_theme_style"
 
-/**
- * Personalization hub screen (primary settings category)
- * Direct controls: Keyboard theme, Keyboard height.
- * Links to: Symbol customization. (Slideboard settings now live under On-Screen Keyboard.)
- */
 @Composable
 fun AppearanceLayoutScreen(
     onNavigateToSymbolCustomization: () -> Unit,
     onNavigateBack: () -> Unit
 ) {
-    // Migrate here too: settings can open before the IME process has run. This runs before the
-    // host seeds its state map, so the rows below read post-migration values, as they did before.
+    // Migrate here too: settings can open before the IME has run. Must run before the host seeds
+    // its state map so the rows read post-migration values.
     val context = LocalContext.current
     remember { PrefsManager.migrateThemePrefs(PrefsManager.getPrefs(context)) }
 
     SettingsScreenHost(R.string.settings_appearance_layout_title, onNavigateBack, listOf(
         Category(R.string.settings_category_appearance),
-        // Keyboard theme (Classic / Modern / Material / BB10). Classic and BB10 are fixed looks;
-        // Modern and Material expose the color-scheme selector (and the system-colors toggle on
-        // Android 12+) below.
+        // Classic and BB10 are fixed looks; Modern and Material expose the color controls below.
         Choice(
             store = stringPref(THEME_STYLE, "modern"),
             title = R.string.settings_keyboard_theme_title,
@@ -67,7 +60,6 @@ fun AppearanceLayoutScreen(
             // Greyed out, not hidden, for a theme with one fixed look.
             enabled = { it.hasColorScheme() },
         ),
-        // Material You wallpaper colors (Android 12+ only)
         Toggle(
             store = boolPref("pref_keyboard_use_system_colors", false),
             title = R.string.settings_use_system_colors_title,
@@ -86,11 +78,8 @@ fun AppearanceLayoutScreen(
             modifier = Modifier.settingsSearchAnchor("pref_keyboard_height_mode"),
         ),
         Category(R.string.settings_category_symbols),
-        // Default currency: the one grid picker in settings, so a hand-written block rather than
-        // a row type of its own. Here rather than on the symbols screen (2026-10-19): it is a
-        // keyboard-wide choice, not a custom page.
+        // The one grid picker in settings, so a hand-written block.
         Custom(inGroup = true) { CurrencyPicker() },
-        // Custom symbol pages (on-screen + physical)
         Nav(
             title = R.string.settings_symbol_customization_title,
             summary = R.string.settings_symbol_customization_summary,
@@ -107,10 +96,8 @@ private fun CurrencyPicker() {
     val currencySymbols = remember {
         context.resources.getStringArray(R.array.symbols_list_currency).toList()
     }
-    // "" is the runtime default (SettingsManager.getCurrencySymbol) and means "leave the layout's own
-    // currency key alone" — CurrencyKeyHandler, KeyboardSwitcher and the slideboard number pad all
-    // skip the replacement on it. So an unset key is not "$" (a £ layout shows £); say so, and
-    // highlight no cell.
+    // "" (the runtime default) leaves the layout's own currency key alone, so an unset key is not
+    // "$" and highlights no cell.
     var currency by remember { mutableStateOf(prefs.getString("pref_currency_key", "") ?: "") }
 
     GridPreference(

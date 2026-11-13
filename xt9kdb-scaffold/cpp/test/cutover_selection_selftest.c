@@ -1,20 +1,12 @@
-/* cutover_selection_selftest.c — the ctx+0x04/+0x08 selection contract (CUTOVER builds only).
- *
- * This is the regression net for the 2026-07 "suggestions frozen while typing" bug. That bug was
- * invisible to every existing test because the other selftests build in DIFF mode, where the
- * context accessors are no-ops, and because the blob's failure mode is silent.
- *
- * The contract, from disassembling the blob (docs/libnative-documentation.md §5-6):
- *   - ET9KDB_SetKdbNum (0xba654) stores its ARGUMENTS, not decomposed ids:
+/* cutover_selection_selftest.c: the ctx+0x04/+0x08 selection contract (CUTOVER only; in DIFF the
+ * context accessors are no-ops and the blob fails silently).
+ *   - ET9KDB_SetKdbNum (0xba654) stores its arguments, not decomposed ids:
  *       ctx+0x04 = arg1 verbatim, the full u32 selector (secondaryId<<8)|primaryId
- *       ctx+0x08 = uxth(arg2),    the flags word — NOT the secondaryId
- *   - it is transactional: both fields roll back if the load fails (0xba77c)
- *   - the internal loader (0xba264) keeps our NKL only while
- *       *(u32*)(NKL+0x04) == *(u32*)(ctx+0x04)
- *     and otherwise reloads from the blob's own flat index, which cannot see variant KDBs.
- *
- * Build:  cc -std=c11 -DXT9KDB_CUTOVER -Iinclude "src/*.c" test/cutover_selection_selftest.c -lm
- */
+ *       ctx+0x08 = uxth(arg2), the flags word (not the secondaryId)
+ *   - both roll back if the load fails (0xba77c)
+ *   - the loader (0xba264) keeps our NKL only while *(u32*)(NKL+0x04) == *(u32*)(ctx+0x04),
+ *     else reloads from the blob's flat index, which cannot see variant KDBs.
+ * Build:  cc -std=c11 -DXT9KDB_CUTOVER -Iinclude "src/*.c" test/cutover_selection_selftest.c -lm */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -27,7 +19,7 @@ static int g_fail = 0, g_pass = 0;
     if (cond) { g_pass++; } \
     else { g_fail++; printf("  FAIL: " msg "\n", ##__VA_ARGS__); } } while (0)
 
-/* athena PKB: primaryId 9, secondaryId 6 -> selector 0x0609. The historical bug wrote 0x0009. */
+/* athena PKB: primaryId 9, secondaryId 6 -> selector 0x0609 (PID_ONLY = the wrong pid-only write). */
 #define SEL_ATHENA 0x0609u
 #define PID_ONLY   0x0009u
 
@@ -38,7 +30,7 @@ static const char VARIANT_XML[] =
     "<key keyType=\"regional\" keyLabel=\"W\" keyWidth=\"540dp\" keyHeight=\"450dp\" keyTop=\"0dp\" keyLeft=\"540dp\" />"
     "</keyboard>";
 
-/* A context big enough for the real field map, with an arena the NKL can be emitted into. */
+/* Context for the real field map, plus an arena for the NKL. */
 typedef struct {
     unsigned char ctx[0x100];
     unsigned char arena[0x8000];       /* >= 0x3ef0, the Load_Reset span */
@@ -81,7 +73,6 @@ int main(int argc, char** argv) {
     CHECK(st == ET9STATUS_NONE, "SetKdbNum status=%d", st);
     CHECK(ctx_selector(c) == SEL_ATHENA,
           "ctx+0x04 = 0x%04x, want 0x%04x", ctx_selector(c), SEL_ATHENA);
-    /* The exact historical defect. Pinned so it cannot come back by another route. */
     CHECK(ctx_selector(c) != PID_ONLY,
           "ctx+0x04 = 0x%04x — the pid-only regression is back", ctx_selector(c));
 
@@ -92,9 +83,8 @@ int main(int argc, char** argv) {
     CHECK(ctx_flags(c) != 6u, "ctx+0x08 = 6 — secondaryId is being written where flags belong");
 
     printf("[3] THE INVARIANT: *(u32*)(NKL+0x04) == *(u32*)(ctx+0x04)\n");
-    /* This is the check the blob performs on every single keystroke at 0xba2a0. If it fails, the
-     * blob discards our NKL, reloads from an index that cannot see variants, and silently stops
-     * committing typed symbols to the word engine. */
+    /* The blob's per-keystroke check (0xba2a0): on failure it discards our NKL, reloads from an
+     * index that cannot see variants, and silently stops committing typed symbols. */
     const unsigned char* nkl = ctx_nkl(c);
     CHECK(nkl != 0, "no NKL installed");
     if (nkl) {
@@ -124,9 +114,9 @@ int main(int argc, char** argv) {
           nkl ? *(const ET9U32*)(nkl + 0x04) : 0u, ctx_selector(c));
 
     printf("[5] the KDB buffer pointer (ctx+0x68) NEVER moves across loads\n");
-    /* Blob Init sets ctx+0x60 == ctx+0x68 == ctx+0x70 and nothing ever advances +0x68 — each load
-     * overwrites the one buffer. We used to bump it per load; since SetKdbNum runs on nearly every
-     * keystroke, the NKL marched into ctx+0xfc30, the engine's live view offset/scale fields. */
+    /* Blob Init sets ctx+0x60 == ctx+0x68 == ctx+0x70 and +0x68 never advances: each load
+     * overwrites one buffer. Advancing it per load would march the NKL into ctx+0xfc30
+     * (live offset/scale), since SetKdbNum runs on nearly every keystroke. */
     void* buf_before = *(void**)((char*)c + ET9_OFF_ARENA);
     const unsigned char* nkl_before = ctx_nkl(c);
     for (int i = 0; i < 8; i++) {
@@ -140,9 +130,8 @@ int main(int argc, char** argv) {
     CHECK(ctx_nkl(c) == buf_before, "NKL is not at the KDB buffer");
 
     printf("[6] ctx+0x5a carries the loader's \"KDB loaded\" stamp\n");
-    /* ProcessKeyBySymbol rejects every keystroke with 0x27 unless ctx+0x5a == ctx+0x58
-     * (0xc0814-0xc0820). The blob sets it at 0xba528 when ITS loader completes; since we replaced
-     * the loader, install_nkl must stamp it. Missing this rejected 100% of typed characters. */
+    /* ProcessKeyBySymbol rejects every key with 0x27 unless ctx+0x5a == ctx+0x58 (0xc0814). The
+     * blob's loader stamps it at 0xba528; our install_nkl must too. */
     CHECK(*(ET9U16*)((char*)c + 0x5a) == *(ET9U16*)((char*)c + ET9_OFF_MAGIC),
           "ctx+0x5a = 0x%04x, want 0x%04x — the engine would reject every keystroke with 0x27",
           (unsigned)*(ET9U16*)((char*)c + 0x5a), (unsigned)*(ET9U16*)((char*)c + ET9_OFF_MAGIC));

@@ -15,15 +15,21 @@ public interface KeyCharacterResult {
 
         private static final int FLAG_MODIFIER = 1;
         private static final int FLAG_SHIFT_LOCKED = 2;
-        /** Set by the text-output constructor only; it is the pair of the two flags above. */
+        /** Text output sets both flags above. */
         private static final int FLAGS_TEXT_OUTPUT = FLAG_MODIFIER | FLAG_SHIFT_LOCKED;
 
+        /** @param i the code point */
         public Interpretation(int i) {
             this.flags = 0;
             this.codePoint = i;
             this.text = null;
         }
 
+        /**
+         * @param i the code point
+         * @param z true if Shift is locked
+         * @param z2 true if a modifier (multitap) interpretation
+         */
         public Interpretation(int i, boolean z, boolean z2) {
             this.flags = (z ? FLAG_SHIFT_LOCKED : 0) | (z2 ? FLAG_MODIFIER : 0);
             this.codePoint = i;
@@ -44,13 +50,7 @@ public interface KeyCharacterResult {
             return (this.flags & FLAG_SHIFT_LOCKED) != 0;
         }
 
-        /**
-         * Audit DK-32: this tested {@code != 0}, so a modifier-only (flags 1) or shift-locked
-         * (flags 2) interpretation reported itself as text output. Only the text-output
-         * constructor sets both bits. The bug was masked because {@code KeyEventConverter}'s
-         * consumer also guards on {@code text != null} and the two-arg constructor leaves
-         * {@code text} null — a trap for anyone adding a constructor that sets both.
-         */
+        /** Both bits, not either: modifier-only or shift-locked interpretations are not text output. */
         public boolean isTextOutput() {
             return (this.flags & FLAGS_TEXT_OUTPUT) == FLAGS_TEXT_OUTPUT;
         }

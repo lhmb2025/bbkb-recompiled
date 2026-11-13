@@ -1,12 +1,7 @@
-/* eval_drv.c — run the owned decoder on a LABELED collection corpus (intended words known) and
- * score toward the INTENDED word, not the blob's count. The offline proxy for "would AW recover
- * this?": after collapsing consecutive duplicate top-keys, is the intended word a SUBSEQUENCE of
- * the decoded spell? That fails exactly on the catastrophic under-segmentation (pool->pl drops
- * both o's) and wrong-endpoint cases, which are what break recovery; it tolerates the benign
- * over-segmentation AW's ambiguous-set matching absorbs.
- *
- * Reports, per mode (global / per-row): subsequence-preserved count, mean |countDelta| vs blob,
- * and the per-trace decoded spell for eyeballing. All these traces ran the athena variant.
+/* eval_drv.c: runs the owned decoder on a labeled corpus and scores toward the intended word: is it
+ * a subsequence of the deduplicated decoded spell? That fails on under-segmentation and wrong
+ * endpoints (what breaks AW recovery) and tolerates over-segmentation. Reports per mode the
+ * preserved count, mean |countDelta| vs the blob and per-trace spells. Traces use the athena variant.
  *
  * Usage: eval_drv <collection_corpus.txt> <athena_qwerty_pkb.xml> [--per-row] [--verbose]
  */
@@ -33,7 +28,7 @@ static void dedup(const char* in, char* out) {
     out[w] = 0;
 }
 
-/* Is intended letter c in this position's ambiguous set? (case-insensitive) */
+/* Is letter c in this position's ambiguous set? (case-insensitive) */
 static int in_set(const Xt9DecPos* p, char c) {
     char lc = c | 0x20;
     for (int i = 0; i < p->nsymb; i++)
@@ -41,10 +36,8 @@ static int in_set(const Xt9DecPos* p, char c) {
     return 0;
 }
 
-/* Reachability: can the intended word be spelled by choosing one symbol from each of an ORDERED
- * subsequence of positions (positions skippable for over-segmentation)? This is the necessary
- * condition for AW's ambiguous-set matcher to recover the word — the offline recovery floor.
- * dp[j] after processing want[0..i): reachable-prefix lengths. Simple O(len*np) sweep. */
+/* Can the word be spelled by one symbol from each of an ordered subsequence of positions? The
+ * necessary condition for AW's ambiguous-set matcher, i.e. the offline recovery floor. */
 static int reachable(const char* want, const Xt9DecPos* pos, int np) {
     int wl = 0; while (want[wl]) wl++;
     /* dp[i] = can we have matched exactly i intended letters using positions seen so far */

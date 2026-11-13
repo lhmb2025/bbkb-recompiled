@@ -1,11 +1,8 @@
 package dev.bbkb.ime.core.device.touch.shizuku
 
 /**
- * JNI into libbbkbevdev.so (app/src/main/cpp/bbkbevdev/bbkbevdev.c). See that file for the
- * handle lifetime contract.
- *
- * Touched ONLY from [EvdevUserService]'s process: the library is loaded on first use, and the
- * IME process never uses this object. Negative returns are negated errno values.
+ * JNI into libbbkbevdev.so (cpp/bbkbevdev/bbkbevdev.c has the handle lifetime contract). Used
+ * only in [EvdevUserService]'s process, never the IME's. Negative returns are -errno.
  */
 internal object EvdevNative {
 
@@ -22,7 +19,7 @@ internal object EvdevNative {
     /** A handle (> 0), or -errno; -ESTALE when the node's name is no longer [expectedName]. */
     @JvmStatic external fun nativeOpen(path: String, expectedName: String): Int
 
-    /** Whether the open device stamps events with CLOCK_MONOTONIC (EVIOCSCLOCKID succeeded). */
+    /** Whether EVIOCSCLOCKID set CLOCK_MONOTONIC stamps. */
     @JvmStatic external fun nativeIsMonotonic(handle: Int): Boolean
 
     /** 0 or -errno (-EBUSY: another client holds the grab). */
@@ -34,6 +31,6 @@ internal object EvdevNative {
     /** Makes the current and every later [nativeRead] on [handle] return 0. */
     @JvmStatic external fun nativeWake(handle: Int)
 
-    /** Releases the grab and closes the device. Only after the reader has stopped reading. */
+    /** Releases the grab and closes. Only after the reader has stopped reading. */
     @JvmStatic external fun nativeClose(handle: Int)
 }

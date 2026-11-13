@@ -1,67 +1,41 @@
-/* kdb_decode.c — owned reimplementation of the blob's gesture decoder (ET9KDB_ProcessStoredTouch),
- * built from the byte-complete RE spec in ../TRACE_RESULT_REGION.md, with the one capability the
- * blob cannot express: PER-ROW vertical thresholds for uneven-band keyboards (remediation log
- * §8.7). The blob derives every segmentation threshold from the single NKL RADY (home-row height),
- * which no value satisfies on athena's 90/180/180 bands: 180 under-segments short hooks in the
- * 90px row (hello->help), 108 over-segments transits through the 180px rows (done->songs).
- *
- * Spec provenance (all thresholds are the blob's own, from the pass 3-5 literal-pool decode):
- *   cluster WIDTH cut   RADY / 0.9          [0xc74c4 setup 0xc7454-0xc749c]
- *   cluster HEIGHT cut  RADY / 2            [same; "= one QWERTY row" at RADY=108-ish grids]
- *   segments reduce to their point-cluster CENTROID (mean x,y)      [0xc799c/0xc79e8]
- *   key assignment: bbox containment + nearest-centre location cost [0xc857c]
- *   candidates assembled in PATH ORDER (no sort — pass 8)           [0xc9c00+]
- *   per-position AMBIGUOUS symbol set, 1-8 symbols (smart-touch)    [0xc8f90 -> 0xb55e0]
- *
- * Parity contract: in GLOBAL mode (per_row=0) this must reproduce the blob's segmentation on real
- * traces — validated offline by test/parity_drv.c against a live-capture corpus where the blob's
- * per-trace WSI position count is known (bbkb-captures, sessions 1-7 + validation). Only after
- * count parity does per-row mode change behavior, and only on layouts with uneven rows.
- */
+/* kdb_decode.c: owned gesture decoder (ET9KDB_ProcessStoredTouch, spec ../TRACE_RESULT_REGION.md)
+ * plus per-row vertical thresholds. The blob derives every threshold from one RADY (home-row height),
+ * which no value satisfies on 90/180/180 bands (180 misses short hooks, 108 over-segments transits).
+ *   cluster width cut RADY/0.9, height cut RADY/2 [0xc74c4]; centroid per cluster [0xc799c]
+ *   key = bbox containment + nearest centre [0xc857c]; path order, no sort [0xc9c00+]; 1-8 symbols [0xc8f90]
+ * Global mode (per_row=0) must match the blob's segmentation (test/parity_drv.c). */
 #include "et9kdb.h"
 #include "et9_context.h"
 #include "kdb_internal.h"
 #include <math.h>
 #include <string.h>
 
-/* Turn-angle criterion (cos of the direction change between adjacent centroid legs above which a
- * cluster is an inflection). The tunable realization of the blob's (RADY/3)*pi arc term; the
- * parity corpus is insensitive across 0.3-0.7 (see test/parity_drv.c), so the midpoint stands. */
+/* Cos of the turn between adjacent centroid legs below which a cluster is an inflection; stands in
+ * for the blob's (RADY/3)*pi arc term. Parity is insensitive across 0.3-0.7. */
 #ifndef XT9_DEC_TURN_COS
 #define XT9_DEC_TURN_COS 0.5f
 #endif
 
-/* Arc-length window (px) for the START position: the first emitted position's coordinate is the
- * mean of the samples within this much travel from the touchdown, NOT the whole first cluster's
- * centroid. At a key-boundary touchdown the first cluster can legally grow ~one key wide before
- * the bbox cut, dragging its centroid onto the neighbour (pool -> "oll": p eaten at the o/p
- * boundary, §8.7.8). Ported from the old decode_keyseq START_ARC denoising, which never had
- * this failure. 0 disables (centroid as before). */
+/* Start position = mean of samples within this arc (px) of touchdown, not the first cluster's
+ * centroid, which can grow a key wide and drift onto the neighbour (pool -> "oll"). 0 disables. */
 #ifndef XT9_DEC_START_ARC
 #define XT9_DEC_START_ARC 45.0f
 #endif
 
-/* Waypoint-emission deviation threshold, in key units (max perpendicular deviation of gap
- * samples from the chord between kept positions). Sweep on corpus_v2 (§8.7.10): 0.30 recovers
- * pool (5/8 'pol') but wrecks hello/done (6/19 clean); 0.50 protects them (15/19) but leaves
- * pool at 'pl'. No threshold separates pool's shallow o-detour from transit bulges in this
- * user's swipe style, so the default is CONSERVATIVE — fires only on egregious hidden waypoints
- * — and pool stays a known-hard residual (the blob fails it too: "ppl"). */
+/* Waypoint threshold in key units (max perpendicular deviation of gap samples from the chord).
+ * Conservative: lower values recover shallow detours (pool's o) but break hello/done. */
 #ifndef XT9_DEC_WAYPOINT_DEV
 #define XT9_DEC_WAYPOINT_DEV 0.65f
 #endif
 
-/* Min samples in a tight kept cluster to read it as a dwell (double letter); 0 = DISABLED.
- * Default off: offline the dwell split raises intended-word reachability (35->39 on collection1)
- * but over-fires on slow pass-through clusters (blob-count parity 21->11), and the reachability
- * FLOOR cannot tell a correct double from spurious over-segmentation — only on-device AW can.
- * So the mechanism ships as an A/B lever, validated on-device before it becomes a default. */
+/* Min samples in a tight kept cluster to read it as a dwell (double letter); 0 disables.
+ * Off by default: it over-fires on slow pass-through clusters. */
 #ifndef XT9_DEC_DWELL_MIN
 #define XT9_DEC_DWELL_MIN 0
 #endif
 
-/* Key-crossing recovery: min samples the path must dwell in a distinct key cell (inside a
- * minimal-feed gap) to emit that key. 0 = DISABLED (A/B lever, debug.et9.owncross). */
+/* Key-crossing recovery: min samples in a distinct key cell inside a minimal-feed gap to emit
+ * that key. 0 disables (debug.et9.owncross). */
 #ifndef XT9_DEC_CROSS_MIN
 #define XT9_DEC_CROSS_MIN 0
 #endif
@@ -71,7 +45,7 @@ void xt9kdb_decode_params_from_model(const ET9KdbLoaded* m, Xt9DecParams* p, int
     p->per_row = per_row;
     p->wp_dev = XT9_DEC_WAYPOINT_DEV;
     int maxW = 0;
-    /* distinct row bands by key top, ascending — same derivation as kdb_nkl.c's RADY block */
+    /* distinct row bands by key top, ascending (as in kdb_nkl.c) */
     for (ET9U16 i = 0; i < m->keyCount; i++) {
         int kw = (m->keys[i].right - m->keys[i].left) + 1;
         if (kw > maxW) maxW = kw;
@@ -85,14 +59,13 @@ void xt9kdb_decode_params_from_model(const ET9KdbLoaded* m, Xt9DecParams* p, int
             float h = p->row_h[a];  p->row_h[a]  = p->row_h[b];  p->row_h[b]  = h;
         }
     p->radx = (float)(maxW > 0 ? maxW : 108);
-    /* global RADY default = home-row height, the blob's rule (kdb_nkl.c) */
+    /* global RADY = home-row height */
     p->rady = p->nrows > 1 ? p->row_h[1] : (p->nrows ? p->row_h[0] : 108.0f);
     p->dwell_min = XT9_DEC_DWELL_MIN;
     p->cross_min = XT9_DEC_CROSS_MIN;
 }
 
-/* Vertical tuning scale at a Y position: the containing row band's height in per-row mode,
- * the global RADY otherwise. Below/above the banded area, the nearest band applies. */
+/* Vertical scale at y: containing band's height in per-row mode (nearest band outside), else RADY. */
 static float rady_at(const Xt9DecParams* p, float y) {
     if (!p->per_row || p->nrows == 0) return p->rady;
     for (int r = p->nrows - 1; r >= 0; r--)
@@ -101,11 +74,9 @@ static float rady_at(const Xt9DecParams* p, float y) {
 }
 
 /* Where per-row reads its vertical scale during cluster growth:
- *   START    — band of the cluster's first point (original; §8.7.2 showed it barely diverges)
- *   POINT    — band of the point being tested (per-point budget: tightens in the 90px row,
- *              loosens in the 180px rows — the mechanically-right version)
- *   MINSPAN  — smallest band the growing cluster has touched (most conservative cut)
- */
+ *   START    band of the cluster's first point
+ *   POINT    band of the point being tested
+ *   MINSPAN  smallest band the growing cluster has touched (most conservative) */
 #ifndef XT9_DEC_ROWBAND
 #define XT9_DEC_ROWBAND POINT
 #endif
@@ -119,8 +90,7 @@ int xt9kdb_decode_gesture(const Xt9DecPt* pts, ET9U32 n, const ET9KdbLoaded* m,
                           const Xt9DecParams* p, Xt9DecPos* out, int max_out) {
     if (!pts || !n || !m || !p || !out || max_out <= 0) return 0;
 
-    /* Step 2 [0xc6e04]: filter to keyboard bounds. The record carries raw points; the blob drops
-     * out-of-bounds samples before clustering (space-row grazes, edge noise). */
+    /* [0xc6e04] drop out-of-bounds samples before clustering */
     enum { MAXPTS = 2503 };  /* record capacity, 0x7568/12 */
     static Xt9DecPt f[MAXPTS];
     ET9U32 fn = 0;
@@ -132,9 +102,8 @@ int xt9kdb_decode_gesture(const Xt9DecPt* pts, ET9U32 n, const ET9KdbLoaded* m,
     }
     if (!fn) return 0;
 
-    /* Step 3 [0xc74c4]: grow point clusters while each bbox stays within (RADY/0.9 x RADY/2);
-     * the point that would burst the box starts the next cluster. Per-row mode reads the scale
-     * from the band containing the cluster's first point. */
+    /* [0xc74c4] grow clusters while the bbox stays within RADY/0.9 x RADY/2; the bursting point
+     * starts the next cluster */
     enum { MAXCL = 256 };
     static struct { float cx, cy; ET9U32 first, last; } cl[MAXCL];
     int ncl = 0;
@@ -145,7 +114,6 @@ int xt9kdb_decode_gesture(const Xt9DecPt* pts, ET9U32 n, const ET9KdbLoaded* m,
         float ry_min = ry_start;
         ET9U32 j = i + 1;
         while (j < fn) {
-            /* per-row vertical budget: which band sets the cut (see XT9_DEC_ROWBAND) */
             float ry;
             if (!p->per_row) ry = p->rady;
 #if XT9_ROWBAND == ROWBAND_POINT
@@ -163,7 +131,7 @@ int xt9kdb_decode_gesture(const Xt9DecPt* pts, ET9U32 n, const ET9KdbLoaded* m,
             j++;
         }
         (void)ry_min;
-        float sx = 0.0f, sy = 0.0f;                       /* Step 4 [0xc799c]: centroid */
+        float sx = 0.0f, sy = 0.0f;                       /* [0xc799c] centroid */
         for (ET9U32 k = i; k < j; k++) { sx += f[k].x; sy += f[k].y; }
         cl[ncl].cx = sx / (float)(j - i); cl[ncl].cy = sy / (float)(j - i);
         cl[ncl].first = i; cl[ncl].last = j - 1;
@@ -173,19 +141,15 @@ int xt9kdb_decode_gesture(const Xt9DecPt* pts, ET9U32 n, const ET9KdbLoaded* m,
     if (!ncl) return 0;
     long g_start_window_end = -1;   /* set by the START_ARC block; first-gap scan origin */
 
-    /* Step 5 [0xc76cc]: only INFLECTIONS emit keys — endpoints always, interior clusters when the
-     * path direction turns there (bbox-spread/angle criteria). Straight-transit clusters are
-     * pass-through; long straight travel instead emits INTERPOLATED key crossings every
-     * arc = 2*min(RADX,RADY) px ("interpolate segments for crossings") — this is exactly the
-     * mechanism behind the blob's documented "very"->6-positions over-segmentation. */
+    /* [0xc76cc] only inflections emit keys: endpoints always, interior clusters where the path
+     * turns. Straight travel emits interpolated crossings every 2*min(RADX,RADY) px (the cause of
+     * the blob's "very" -> 6 positions over-segmentation). */
     static unsigned char keep[MAXCL];
     keep[0] = 1; keep[ncl - 1] = 1;
     for (int c = 1; c + 1 < ncl; c++) {
         float ix = cl[c].cx - cl[c-1].cx, iy = cl[c].cy - cl[c-1].cy;
         float ox = cl[c+1].cx - cl[c].cx, oy = cl[c+1].cy - cl[c].cy;
         float li = sqrtf(ix*ix + iy*iy), lo = sqrtf(ox*ox + oy*oy);
-        /* turn if the direction change between adjacent centroid legs exceeds the angle
-         * criterion; cos threshold is the tunable realization of the (RADY/3)*pi arc term */
         keep[c] = (li > 1.0f && lo > 1.0f &&
                    (ix*ox + iy*oy) / (li*lo) < XT9_DEC_TURN_COS) ? 1 : 0;
     }
@@ -195,20 +159,14 @@ int xt9kdb_decode_gesture(const Xt9DecPt* pts, ET9U32 n, const ET9KdbLoaded* m,
     for (int c = 0; c < ncl && npos < max_out; c++) {
         if (!keep[c]) continue;
         if (npos > 0 && p->feed_minimal) {
-            /* WAYPOINT emission (§8.7.9 residue — pool's mid-path o, absorbed into a neighbour
-             * cluster so no cluster-level pass can recover it): Douglas-Peucker over the RAW
-             * SAMPLES of the gap. A real waypoint deviates from the chord between the kept
-             * positions (pool's o: ~0.8 key units off the p->l chord); straight-transit samples
-             * (hello's h->e leg) lie ON their chord and cannot fire this. One level (single
-             * deepest waypoint per gap) — recursion has not been needed on the corpus. */
+            /* Waypoints absorbed into a neighbour cluster: one level of Douglas-Peucker over the
+             * gap's raw samples (deepest point off the chord between kept positions). */
             ET9U32 g0 = (ET9U32)cl[prev_kept].last, g1 = cl[c].first;
             if (npos == 1 && g_start_window_end >= 0 && (ET9U32)g_start_window_end < g0)
                 g0 = (ET9U32)g_start_window_end;   /* first gap: scan from the start-window end */
-            /* KEY-CROSSING recovery (W6 sitting-1 decode robustness): emit each distinct key cell
-             * the path dwells in across the gap for >= cross_min samples, skipping the two flanking
-             * keys. Recovers COLLINEAR pass-through letters (coffee's f: o-f-e straight, ~0 chord
-             * deviation) that the deviation waypoint below cannot see. Supersedes the deviation pass
-             * when active (a deviated letter also lands in a distinct cell). */
+            /* Key-crossing recovery: emit each distinct key cell dwelt in for >= cross_min samples,
+             * skipping the flanking keys. Catches collinear letters (coffee's f) the deviation pass
+             * cannot see, so it replaces that pass when active. */
             if (p->cross_min > 0 && g1 > g0 + 1) {
                 ET9SYMB nextSym = 0;
                 { ET9SYMB s8[8]; ET9U8 fq8[8];
@@ -285,8 +243,8 @@ int xt9kdb_decode_gesture(const Xt9DecPt* pts, ET9U32 n, const ET9KdbLoaded* m,
                     o->first = (int)(k + 1); o->count = 1;
                     int ns = xt9kdb_point_to_candidates(m, o->cx, o->cy, o->symbs, o->freqs, 8);
                     o->nsymb = (ET9U8)(ns > 0 ? ns : 0);
-                    /* a crossing still over the PREVIOUS position's key adds no information —
-                     * suppress it (real inflections, e.g. hello's double-l, are NOT suppressed) */
+                    /* a crossing still over the previous position's key adds nothing (real
+                     * inflections such as hello's double l are not suppressed) */
                     if (o->nsymb && !(npos > 0 && out[npos-1].nsymb &&
                                       o->symbs[0] == out[npos-1].symbs[0]))
                         npos++;
@@ -308,24 +266,18 @@ int xt9kdb_decode_gesture(const Xt9DecPt* pts, ET9U32 n, const ET9KdbLoaded* m,
                 sx += f[k].x; sy += f[k].y; cnt++;
             }
             o->cx = sx / (float)cnt; o->cy = sy / (float)cnt;
-            /* the first waypoint gap starts where the start WINDOW ends, not at the cluster's
-             * end — the over-wide row-1 start cluster can swallow an adjacent key (pool's o
-             * dwell lives inside it, invisible to a cluster-boundary gap scan) */
+            /* first waypoint gap starts at the start window's end: an over-wide start cluster
+             * can swallow an adjacent key */
             g_start_window_end = cl[c].first + cnt - 1;
         }
         o->first = (int)cl[c].first; o->count = (int)(cl[c].last - cl[c].first + 1);
-        /* Step 6 [0xc857c]: key assignment — containment + nearest-centre — realized through the
-         * existing smart-touch candidate set (symbs[0] is the location-cost winner). */
+        /* [0xc857c] key assignment via the smart-touch candidate set (symbs[0] = location winner) */
         int ns = xt9kdb_point_to_candidates(m, o->cx, o->cy, o->symbs, o->freqs, 8);
         o->nsymb = (ET9U8)(ns > 0 ? ns : 0);
         if (o->nsymb) {
             npos++;
-            /* DWELL split (feature ported from decode_keyseq, dropped in the spatial rewrite):
-             * a genuine double-letter (pool's oo, coffee's ff) is a PAUSE at one key — many
-             * resampled samples piled into a tight bbox, not two separated clusters. The blob
-             * cannot split it either (pool->ppl). When a kept cluster holds >= DWELL_MIN samples
-             * in a bbox under half a key, emit its position a second time so AW can see the
-             * double. Endpoints and normal pass-through clusters (2-4 samples) are untouched. */
+            /* Dwell split: a double letter is a pause at one key. A kept cluster with >= dwell_min
+             * samples in a bbox under half a key emits its position twice. */
             int span = o->count;
             float bw = 0.0f, bh = 0.0f;
             for (int k = o->first; k <= (int)cl[c].last; k++) {
@@ -341,5 +293,5 @@ int xt9kdb_decode_gesture(const Xt9DecPt* pts, ET9U32 n, const ET9KdbLoaded* m,
         }
         prev_kept = c;
     }
-    return npos;   /* path order; no sort [pass 8] */
+    return npos;   /* path order; no sort */
 }

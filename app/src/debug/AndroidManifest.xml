@@ -1,18 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!--
-    Debug-only manifest additions. (SuggestionSpanReceiver moved to the main manifest on
-    2026-09-20 when it started learning picks; see the note there.)
--->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
     <application>
-        <!-- SuggestionSpanReceiver now lives in the main manifest (it learns picks). -->
 
-        <!--
-            Shizuku touch engine validation doorway (core.device.touch.shizuku): streams an input
-            device for N seconds and logs the decoded touches under the ShizukuTouch tag. Debug
-            builds only. DUMP is held by adb's shell, so only `adb shell am broadcast` can drive
-            it; send with `-p ${applicationId}` (manifest receivers ignore implicit broadcasts).
-        -->
+        <!-- Shizuku touch probe: logs decoded touches (tag ShizukuTouch); DUMP limits it to adb shell, send with -p ${applicationId} -->
         <receiver
             android:name="dev.bbkb.ime.core.device.touch.shizuku.ShizukuTouchProbeReceiver"
             android:exported="true"

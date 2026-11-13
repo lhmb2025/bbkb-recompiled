@@ -13,36 +13,21 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * Alternative characters ("more keys") for a held physical key.
- *
- * <p>Three sources, queried in this order: accent/diacritic variants of the base character
- * ({@link KeyboardSwitcher#getMoreKeysForKey}), Alt-held style variants
- * ({@link KeyboardSwitcher#getMoreKeysForKeyByStyle}), and, in symbol mode, the list of what the
- * symbol page typed ({@link PhysicalKeyResolver#moreKeys}: the currency key's list on a currency
- * symbol). Duplicates keep their first position.
+ * Alternative characters ("more keys") for a held physical key, from three sources in order:
+ * accent variants ({@link KeyboardSwitcher#getMoreKeysForKey}), Alt-held style variants
+ * ({@link KeyboardSwitcher#getMoreKeysForKeyByStyle}), and in symbol mode
+ * {@link PhysicalKeyResolver#moreKeys}. Duplicates keep their first position.
  */
 public final class MoreKeysProvider {
-
-    /** Everything the lookup depends on. */
     public static final class MoreKeysContext {
-        /** The base character that was typed (e.g., "n", "e", "-"). */
+        /** The base character that was typed (e.g. "n", "-"). */
         public final String baseCharacter;
 
-        /**
-         * Current modifier state, from the one query API.
-         *
-         * <p>Phase 1f: this was a {@code core.device.state.MetaState}, which had become a naming
-         * layer over {@link ModifierState} with two call sites — this one and the
-         * {@code AuxBarManager} that fills it in. Both are the accent bar's raw-event reader, which
-         * Phase 1b named as the API's first consumer and could not migrate because it did not own
-         * these files. Taking the {@link ModifierState} directly removes the layer.
-         */
         public final ModifierState modifiers;
 
-        /** Whether the key is being held (repeatCount >= 1). */
+        /** repeatCount >= 1. */
         public final boolean isHolding;
 
-        /** Whether we're in symbol mode. */
         public final boolean inSymbolMode;
 
         public MoreKeysContext(String baseCharacter, ModifierState modifiers,
@@ -68,18 +53,12 @@ public final class MoreKeysProvider {
         this.keyboardSwitcher = keyboardSwitcher;
     }
 
-    /**
-     * Get alternative characters for a key based on the provided context.
-     *
-     * @return List of alternative characters, or empty list if none available
-     */
     public List<String> getMoreKeys(MoreKeysContext context) {
         if (context == null || !context.isHolding || keyboardSwitcher == null) {
             return Collections.emptyList();
         }
-        // LinkedHashSet, not List.contains: this runs synchronously on the long-press timer
-        // callback, i.e. while the user is holding a key waiting for the popup. Insertion order
-        // is the source priority order and must be preserved.
+        // LinkedHashSet: runs on the long-press timer while the user waits, and insertion
+        // order is the source priority.
         final Set<String> out = new LinkedHashSet<>();
         final boolean hasBase = !TextUtils.isEmpty(context.baseCharacter);
 
@@ -87,15 +66,11 @@ public final class MoreKeysProvider {
         if (hasBase && !context.inSymbolMode) {
             addAll(out, keyboardSwitcher.getMoreKeysForKey(context.baseCharacter));
         }
-        // Alt styles: no symbol-mode guard, matching the previous StyleMoreKeysProvider.
-        // isAltHeld() is what MetaState.isAltActive() delegated to for an event-only state (its two
-        // other witnesses, the span and the per-key state, are only filled in by the tracker).
+        // Alt styles: offered in symbol mode too.
         if (hasBase && context.modifiers.isAltHeld()) {
             addAll(out, keyboardSwitcher.getMoreKeysForKeyByStyle(context.baseCharacter));
         }
-        // What the symbol page typed: the symbol keyboards used to carry a copy of the physical-key
-        // tables for this (the currency symbols' lists); the resolver answers it now, and
-        // tolerates an empty base.
+        // What the symbol page typed (e.g. the currency list); the resolver tolerates an empty base.
         if (context.inSymbolMode) {
             addAll(out, PhysicalKeyResolver.moreKeys(context.baseCharacter));
         }

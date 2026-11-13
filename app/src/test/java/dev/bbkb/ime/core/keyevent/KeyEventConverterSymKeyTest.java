@@ -29,21 +29,9 @@ import org.robolectric.RobolectricTestRunner;
 import org.robolectric.annotation.Config;
 
 /**
- * The second half of "Sym key does nothing" on the Minimal Phone MP01 (beta triage #10).
- *
- * <p>{@link KeyEventConverter} had two places where a SYM press on a third-party PKB device was
- * turned into {@code InputEvent.createEmptyEvent()} — the {@code KEYCODE_SYM} site and the
- * {@code BOARD_SYM} site — both guarded by {@code DeviceProfile.usesMetaSymHandling()}. The
- * theory was that {@code SymKeyStateTracker} would pick the key up via {@code META_SYM_ON}; that
- * tracker had zero callers and was deleted in 2026-09, leaving the key swallowed and handled by
- * nobody. A KNOWN GAP comment recorded the situation and deferred the fix to this work.
- *
- * <p>This is the path that matters most in practice, because it needs no accessibility service:
- * it is what happens on an MP01 straight out of the box, where {@code
- * pref_key_interceptor_enabled} defaults to false.
- *
- * <p>{@code -22} is the project's functional key code for the symbol-board toggle: it reaches
- * {@code InputLogic.handleFunctionalKeyEvent} → {@code BlackBerryIME.updateSymbolShift} →
+ * On a third-party PKB device ({@code usesMetaSymHandling()} true, e.g. the MP01) a SYM press must
+ * convert to the symbol-board toggle, not an empty event. This path needs no accessibility service.
+ * {@code -22} reaches {@code InputLogic.handleFunctionalKeyEvent} then
  * {@code KeyboardSwitcher.onSymbolShiftToggle}.
  */
 @RunWith(RobolectricTestRunner.class)
@@ -76,7 +64,7 @@ public class KeyEventConverterSymKeyTest {
         DeviceProfileTestSupport.installMapping(mapping);
         DeviceInputResolver.installPhoneProfileForTest(mapping);
 
-        // Guards the premise of every test below: this used to be the flag that swallowed SYM.
+        // Guards the premise of every test below.
         assertTrue("an MP01-shaped profile must still be a usesMetaSymHandling() device,"
                         + " or these tests are asserting nothing",
                 DeviceProfile.current().usesMetaSymHandling());

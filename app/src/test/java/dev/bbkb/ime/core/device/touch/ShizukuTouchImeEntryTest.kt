@@ -15,9 +15,9 @@ import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
 
 /**
- * The Shizuku source delivers into the IME's own generic-motion entry, so the IME's existing rule
- * applies to its events as to the KEY2's: a pad event is recognised as one, and dropped (answered
- * false) while the input view is hidden — with the grab released then, the ROM has the pad.
+ * Shizuku events enter the IME's generic-motion entry, so the KEY2 rule applies: a pad event is
+ * recognised as one, and answered false while the input view is hidden (the grab is released, so
+ * the ROM has the pad).
  */
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [34], manifest = Config.NONE)

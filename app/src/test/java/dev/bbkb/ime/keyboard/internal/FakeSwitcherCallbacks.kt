@@ -3,51 +3,21 @@ package dev.bbkb.ime.keyboard.internal
 import org.junit.Assert.assertEquals
 
 /**
- * Test double for [KeyboardState.SwitcherCallbacks] — the one seam through which `KeyboardState`
- * touches the world.
+ * Test double for [KeyboardState.SwitcherCallbacks], the only seam through which `KeyboardState`
+ * touches the world. Queries (methods that return something) are settable inputs and not recorded;
+ * commands (`void` methods) are recorded in [calls] in order. Assert with [assertCalls].
  *
- * `KeyboardState` is a pure state machine: it consumes events (key press / release, code input,
- * hardware key, start-input, save/restore) and its *only* output is the sequence of calls it makes
- * on this interface. So the interface splits cleanly in two, and this fake treats the halves
- * differently:
- *
- *  * **Queries** (the methods that return something — `isPkbDevice()`,
- *    `isVkbSymbolCustomizationEnabled()`, `shouldCapitalizeAfterSpace()`, …) are *inputs* to the
- *    machine. They are plain settable properties here, so a test reads as a configuration block
- *    followed by a script of events. They are deliberately **not** recorded: how many times
- *    `KeyboardState` asks a question is an implementation detail a rewrite is free to change.
- *  * **Commands** (the `void` methods) are the *outputs*. Every one is recorded in [calls], in
- *    order, as a [Call] value object.
- *
- * Assert with [assertCalls], which compares the rendered sequence so a failure prints both scripts
- * line by line.
- *
- * ### The re-entrant callback
- *
- * One production callback calls straight back into `KeyboardState`:
- * `KeyboardSwitcher.setAlphabetKeyboard(autoCapsFlags, recapitalizeMode)` is implemented as
- * `keyboardState.requestShiftMode(autoCapsFlags, recapitalizeMode)`. That loop is how automatic
- * capitalisation is actually applied — `KeyboardState` never applies auto-caps to itself directly,
- * it asks for an alphabet keyboard and the switcher hands the request back. None of the other
- * `request*` callbacks re-enter (`KeyboardSwitcher.requestShiftOff()` and friends go to a *private*
- * one-argument `setAlphabetKeyboard(int)` that does not).
- *
- * By default this fake is a pure recorder and does not re-enter, which pins `KeyboardState` alone.
- * A test that needs the production loop opts in with [wireProductionAlphabetReentry].
+ * Production `setAlphabetKeyboard(autoCaps, recap)` re-enters as `requestShiftMode(...)`, which is
+ * how auto-caps is applied. This fake re-enters only after [wireProductionAlphabetReentry].
  */
 class FakeSwitcherCallbacks : KeyboardState.SwitcherCallbacks {
-
-    // ---------------------------------------------------------------- recorded commands
-
     /** One recorded call on the switcher seam. Every subtype renders itself as its call syntax. */
     sealed class Call {
-        // -- keyboard selection ------------------------------------------------------------
-        /** `setAlphabetKeyboard(autoCapsFlags, recapitalizeMode)` — the re-entrant one. */
+        /** `setAlphabetKeyboard(autoCapsFlags, recapitalizeMode)`, the re-entrant one. */
         data class SetAlphabetKeyboard(val autoCapsFlags: Int, val recapitalizeMode: Int) : Call() {
             override fun toString() = "setAlphabetKeyboard(autoCaps=$autoCapsFlags, recap=$recapitalizeMode)"
         }
 
-        /** `setVkbSymbolsKeyboard(page, forceLayout, isCustomPage, symbolShiftAction)`. */
         data class SetVkbSymbolsKeyboard(
             val page: Int,
             val flag: Boolean,
@@ -58,7 +28,6 @@ class FakeSwitcherCallbacks : KeyboardState.SwitcherCallbacks {
                 "setVkbSymbolsKeyboard(page=$page, flag=$flag, custom=$customPage, shiftAction=$symbolShiftAction)"
         }
 
-        /** `setPkbSymbolsKeyboard(page, forceLayout, isCustomPage, symbolShiftAction)`. */
         data class SetPkbSymbolsKeyboard(
             val page: Int,
             val flag: Boolean,
@@ -69,7 +38,6 @@ class FakeSwitcherCallbacks : KeyboardState.SwitcherCallbacks {
                 "setPkbSymbolsKeyboard(page=$page, flag=$flag, custom=$customPage, shiftAction=$symbolShiftAction)"
         }
 
-        // -- shift element requests --------------------------------------------------------
         /** Select the UNSHIFTED alphabet element (switcher: `setAlphabetKeyboard(0)`). */
         data object RequestShiftOff : Call() {
             override fun toString() = "requestShiftOff()"
@@ -100,7 +68,6 @@ class FakeSwitcherCallbacks : KeyboardState.SwitcherCallbacks {
             override fun toString() = "requestShiftMomentary()"
         }
 
-        // -- indicators --------------------------------------------------------------------
         data class UpdateShiftIndicator(val shifted: Boolean) : Call() {
             override fun toString() = "updateShiftIndicator($shifted)"
         }
@@ -109,7 +76,6 @@ class FakeSwitcherCallbacks : KeyboardState.SwitcherCallbacks {
             override fun toString() = "updateShiftLockedIndicator($locked)"
         }
 
-        // -- other boards ------------------------------------------------------------------
         data object ShowEmojiKeyboard : Call() {
             override fun toString() = "showEmojiKeyboard()"
         }
@@ -122,7 +88,6 @@ class FakeSwitcherCallbacks : KeyboardState.SwitcherCallbacks {
             override fun toString() = "showMenu()"
         }
 
-        // -- notifications -----------------------------------------------------------------
         data object OnReturnToAlphabetFromSymbol : Call() {
             override fun toString() = "onReturnToAlphabetFromSymbol()"
         }
@@ -158,30 +123,24 @@ class FakeSwitcherCallbacks : KeyboardState.SwitcherCallbacks {
     /** Everything recorded since construction or the last [clear] / [drain], in call order. */
     val calls: List<Call> get() = recorded.toList()
 
-    // ---------------------------------------------------------------- configured queries
-
     /** Physical-keyboard device? Splits nearly every symbol-mode branch. */
     var pkbDevice: Boolean = false
 
-    /** "Custom symbol page" feature flags — these change `maxSymbolPages` / `maxPkbSymbolPages`. */
+    /** "Custom symbol page" feature flags; these change `maxSymbolPages` / `maxPkbSymbolPages`. */
     var vkbSymbolCustomizationEnabled: Boolean = false
     var vkbCustomPageFirst: Boolean = false
     var pkbSymbolCustomizationEnabled: Boolean = false
     var pkbCustomPageFirst: Boolean = false
 
-    /**
-     * Whether the hardware SYM key is being physically held. A PKB SYM-key entry closes back to
-     * the alphabet after one character unless it is — holding SYM keeps the board open.
-     */
+    /** Whether the hardware SYM key is held; a PKB SYM entry returns to the alphabet after one character unless it is. */
     var symKeyHeld: Boolean = false
 
     /** Feeds `getSymbolShiftStateFromOrder()`; see the order table in `KeyboardStateTest`. */
     var symbolPageOrderSetting: Int = 0
 
     /**
-     * Production name is misleading: `KeyboardSwitcher` implements this as
-     * `MainKeyboardView.isInDoubleTapShiftKeyTimeout()`. Set it true to simulate the second tap of
-     * a shift double-tap.
+     * Misleading name: production implements this as `MainKeyboardView.isInDoubleTapShiftKeyTimeout()`.
+     * Set true to simulate the second tap of a shift double-tap.
      */
     var shouldCapitalizeAfterSpace: Boolean = false
 
@@ -208,12 +167,9 @@ class FakeSwitcherCallbacks : KeyboardState.SwitcherCallbacks {
         }
     }
 
-    // ---------------------------------------------------------------- assertions
-
     /** Forget everything recorded so far (typically after arranging a state). */
     fun clear() = recorded.clear()
 
-    /** Return everything recorded so far and forget it. */
     fun drain(): List<Call> = calls.also { recorded.clear() }
 
     /** Assert the exact recorded sequence, then clear it so the next act/assert starts fresh. */
@@ -227,8 +183,6 @@ class FakeSwitcherCallbacks : KeyboardState.SwitcherCallbacks {
 
     private fun render(seq: List<Call>): String =
         if (seq.isEmpty()) "(no calls)" else seq.joinToString("\n") { "  $it" }
-
-    // ---------------------------------------------------------------- SwitcherCallbacks
 
     override fun showEmojiKeyboard() {
         recorded += Call.ShowEmojiKeyboard

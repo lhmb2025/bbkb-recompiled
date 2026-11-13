@@ -25,12 +25,9 @@ import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
 
 /**
- * The query typed into the open board on a physical keyboard (owner decisions, 2026-11-02),
- * driven through the real view tree like [EmojiPalettesViewCharacterisationTest] and against the
- * same dataset: positions 0 Recents | 1-2 Smileys ("smile N") | 3 Animals | 4 Food.
- *
- * `KeyEventProcessor` routes a printable key to [EmojiPalettesView.appendToQuery] and Backspace
- * to [EmojiPalettesView.backspaceQuery]; these cases start there.
+ * The query typed into the open board on a physical keyboard, through the real view tree. Dataset: 0 Recents |
+ * 1-2 Smileys ("smile N") | 3 Animals | 4 Food. `KeyEventProcessor` routes printable keys to
+ * [EmojiPalettesView.appendToQuery] and Backspace to [EmojiPalettesView.backspaceQuery]; cases start there.
  */
 @RunWith(RobolectricTestRunner::class)
 @Config(
@@ -57,8 +54,6 @@ class EmojiBoardQueryTest {
         idle()
         EmojiTestEnv.uninstall()
     }
-
-    // ------------------------------------------------------------------ harness
 
     private fun open(): EmojiPalettesView = EmojiTestEnv.inflatePalettes(activity)
 
@@ -106,8 +101,6 @@ class EmojiBoardQueryTest {
 
     private fun EmojiPalettesView.resultsShow(prefix: String): Boolean =
         overlay().isOverlayVisible && overlay().keyboards().firstOrNull()?.let { emojiOutputs(it).firstOrNull()?.startsWith(prefix) } == true
-
-    // ------------------------------------------------------------------ the field
 
     @Test
     fun theBoardOpensNormalWithNoQuery() {
@@ -170,8 +163,6 @@ class EmojiBoardQueryTest {
         assertEquals(1, v.dotCount())
     }
 
-    // ------------------------------------------------------------------ backspace and clear
-
     @Test
     fun backspaceShortensTheQueryAndTheLastOneRestoresTheTabRow() {
         val v = open()
@@ -226,8 +217,6 @@ class EmojiBoardQueryTest {
         v.assertNormal()
     }
 
-    // ------------------------------------------------------------------ picks
-
     @Test
     fun aPickLeavesTheQueryAndTheResultsInPlace() {
         val v = open()
@@ -241,8 +230,6 @@ class EmojiBoardQueryTest {
         assertEquals(padded("s0"), prefs.getString(RECENTS_KEY, null))
         assertFalse("a typed query is not dynamic search, so the composing word is left alone", v.isDynamicSearchActive)
     }
-
-    // ------------------------------------------------------------------ recents and the editor's query
 
     @Test
     fun typingOverRecentsKeepsThemUntilTheSecondLetter() {

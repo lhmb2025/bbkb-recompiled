@@ -16,14 +16,7 @@ public final class InputSettingsLauncher {
     private InputSettingsLauncher() {
     }
 
-    /**
-     * TI-15: this used to build an explicit {@code MAIN} intent for
-     * {@code com.android.settings.LanguageSettings}, an activity removed from AOSP Settings well
-     * before API 23. {@code resolveActivityInfo} therefore returned null on every supported
-     * device, so {@link #isInputSettingsAvailable} always answered false and
-     * {@link #invokeInputSettings} always threw {@code ActivityNotFoundException} into its catch -
-     * i.e. the "input settings" key (key code -26) silently did nothing.
-     */
+    /** Not an explicit {@code com.android.settings.LanguageSettings} intent: that activity is gone. */
     private static Intent createInputSettingsIntent() {
         Intent intent = new Intent(android.provider.Settings.ACTION_INPUT_METHOD_SETTINGS);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);

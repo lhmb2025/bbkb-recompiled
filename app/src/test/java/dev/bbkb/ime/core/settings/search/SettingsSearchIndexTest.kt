@@ -13,11 +13,9 @@ import org.robolectric.annotation.Config
 import java.io.File
 
 /**
- * Sync tests for the hand-maintained [SettingsSearchIndex]. The index is a flat list kept
- * alongside the Compose settings screens; every entry's `anchor` must match a
- * `settingsSearchAnchor("...")` call in some screen so search navigation can highlight the row.
- * These tests scan the screen sources so a renamed/removed/forgotten anchor fails CI instead of
- * silently breaking search highlighting.
+ * Keeps the hand-maintained [SettingsSearchIndex] in sync: every entry's `anchor` must match a
+ * `settingsSearchAnchor("...")` call in a screen (scanned from source) and a key something reads,
+ * and the device gating must filter the right entries.
  */
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [34], manifest = Config.NONE)
@@ -81,11 +79,8 @@ class SettingsSearchIndexTest {
     }
 
     /**
-     * A route is one screen, and search groups its results under the hub the screen hangs off, so
-     * every entry pointing at the same screen must name the same category. Two entries that
-     * disagree put one screen's rows under two headings, which is what happens when a leaf screen
-     * is re-parented — "Slideboard settings" moving from Personalization to On-Screen Keyboard —
-     * and only some of its entries are moved with it.
+     * Search groups results under the screen's hub, so all entries for one route must name the
+     * same category (a re-parented screen with only some entries moved would split its rows).
      */
     @Test
     fun everyRouteHasOneCategory() {
@@ -102,14 +97,10 @@ class SettingsSearchIndexTest {
         assertTrue("Entries with blank keywords/route: $bad", bad.isEmpty())
     }
 
-    // ── index ↔ owner (§5.8 item 4) ──────────────────────────────────────────
-
     /**
-     * Every string in `app/src/main` that could be a preference key being *read*: all Java/Kotlin
-     * source with the `settingsSearchAnchor("…")` calls stripped out (so a screen that only
-     * decorates a row does not count as owning the key), plus the values of `strings.xml`, because
-     * a dozen keys are declared there as `<string name="pref_x_key">pref_x</string>` and read via
-     * `context.getString(R.string.pref_x_key)` rather than as an inline literal.
+     * Strings that could be a preference key being read: Java/Kotlin source minus the
+     * `settingsSearchAnchor("…")` calls (decorating a row is not owning it), plus `strings.xml`
+     * values, since some keys are read via `getString(R.string.pref_x_key)`.
      */
     private fun ownerCorpus(): String {
         val code = File(mainDir(), "java").walkTopDown()
@@ -123,17 +114,9 @@ class SettingsSearchIndexTest {
     }
 
     /**
-     * The direction the plan called out as the one that silently rots (§3.5, §5.8 item 4): the
-     * existing tests guard index ↔ screen, so a renamed anchor fails CI — but an anchor that
-     * matches a live `settingsSearchAnchor` call and yet names a preference key nobody reads any
-     * more passes both of them. Search then finds the setting, navigates to it, highlights a row,
-     * and the value goes nowhere.
-     *
-     * Note the plan's own wording ("a key SettingsManager knows about") is too narrow to assert:
-     * 22 of the 68 anchors are legitimately owned outside SettingsManager/SettingsValues — the CKB
-     * gesture assignments by CkbGestureBridge, the theme keys by PrefsManager.Keys, the unified
-     * key-mapping and symbol-auto-close flags by the key-event path. What every anchor must have is
-     * *an* owner that reads it.
+     * An anchor on a live row whose key nobody reads passes the screen checks, but the value goes
+     * nowhere. Owners are not only SettingsManager: CkbGestureBridge, PrefsManager.Keys and the
+     * key-event path read some keys, so any reader counts.
      */
     @Test
     fun everyIndexAnchorIsReadByAnOwner() {
@@ -149,8 +132,6 @@ class SettingsSearchIndexTest {
         )
     }
 
-    // ── device gating (defect 16) ────────────────────────────────────────────
-
     /** The KEY2 shape: a physical keyboard with capacitive keys and a mic key. */
     private val pkbDevice = SearchDeviceCapabilities(hasPhysicalKeyboard = true, hasMultifunctionKey = true, hasTouchKeypad = true)
     private val touchDevice = SearchDeviceCapabilities(hasPhysicalKeyboard = false, hasMultifunctionKey = false)
@@ -159,12 +140,8 @@ class SettingsSearchIndexTest {
         SettingsSearchIndex.entriesFor(capabilities).mapNotNull { it.anchor }.toSet()
 
     /**
-     * The half of the guard that cannot be rendered. `SettingsScreenRenderTest` probes the real
-     * composition, but `DeviceProfile` is a process-wide singleton, so it only ever runs as the
-     * touch-only device — the KEY2 rendering of the gated screens is not pinned anywhere.
-     *
-     * This asserts the filter itself flips the right way for both shapes, which is what makes the
-     * touch-side render assertion meaningful in the other direction too.
+     * `SettingsScreenRenderTest` only ever renders as the touch-only device (`DeviceProfile` is a
+     * process singleton), so this pins that the filter flips the right way for both shapes.
      */
     @Test
     fun deviceGatesFollowTheDeviceShape() {
@@ -200,10 +177,8 @@ class SettingsSearchIndexTest {
             "ckb_gesture_hold" in anchorsOn(pkbDevice.copy(hasTouchKeypad = false))
         )
 
-        // Everything else is device-independent and must not have been swept up by the gating.
-        // The BBKB helper's entries count here: both shapes are phones whose profile keeps the
-        // helper offered (keyboardHelperEntriesFollowTheProfilesHelperSwitch covers the switch),
-        // and so does Dynamic color: both run Android 12 or later by default.
+        // Everything else is device-independent. Both shapes keep the BBKB helper offered and run
+        // Android 12+, so the helper and Dynamic color entries count here too.
         val shapeIndependent = setOf(
             DeviceRequirement.ANY,
             DeviceRequirement.ACCESSIBILITY_HELPER_AVAILABLE,
@@ -223,12 +198,6 @@ class SettingsSearchIndexTest {
         )
     }
 
-    /**
-     * The Touch surface helper row is drawn on every phone (greyed out without a declared pad), so
-     * its entry is offered everywhere; its Shizuku section only where the profile declares a pad
-     * and the selector gives it to the Shizuku reader — not on a Titan 2 on Android 16, whose
-     * built-in route works.
-     */
     /** The BBKB helper's settings are not offered where its row is greyed out (BlackBerry phones). */
     @Test
     fun keyboardHelperEntriesFollowTheProfilesHelperSwitch() {
@@ -238,6 +207,7 @@ class SettingsSearchIndexTest {
         assertTrue(helperAnchors.none { it in anchorsOn(blackBerry) })
     }
 
+    /** Touch surface entries need a declared pad; the Shizuku section also needs the Shizuku route. */
     @Test
     fun touchSurfaceEntriesFollowTheProfilesPadAndRoute() {
         val titanOnShizuku = pkbDevice.copy(declaresTouchKeypad = true, touchKeypadUsesShizuku = true)
@@ -259,10 +229,8 @@ class SettingsSearchIndexTest {
     }
 
     /**
-     * "Show or hide the input menu" is an action of the multifunction key and of the Alt+Sym
-     * shortcut, and the way back to the menu once "Show the suggestion bar" has hidden it: a
-     * search for the menu finds both settings that can be set to it, as well as that toggle.
-     * Matched as MainSettingsScreen matches, by substring of the keywords.
+     * A search for the input menu finds the multifunction key and Alt+Sym settings (both can be set
+     * to "Show or hide the input menu") and "Show the suggestion bar". Substring match, as the UI does.
      */
     @Test
     fun searchingForTheInputMenuFindsTheShortcutsThatShowOrHideIt() {
@@ -278,12 +246,7 @@ class SettingsSearchIndexTest {
         }
     }
 
-    /**
-     * The gating is only worth anything if the search UI consumes the filtered view. This is a
-     * source check rather than a behavioural one because `MainSettingsScreen` is a composable with
-     * no seam to observe its result list from here; the render test covers reachability, this
-     * covers the one line that decides what gets offered in the first place.
-     */
+    /** The search UI must use the filtered view; a source check, as `MainSettingsScreen` has no seam to observe. */
     @Test
     fun theSearchUiQueriesTheDeviceFilteredView() {
         val offenders = File(mainDir(), "java/dev/bbkb/ime/core/settings")
@@ -299,8 +262,6 @@ class SettingsSearchIndexTest {
             offenders.isEmpty()
         )
     }
-
-    // ── screens ──────────────────────────────────────────────────────────────
 
     /** The routes the settings NavHost registers, as `SettingsRoute` object names. */
     private fun navHostRouteObjects(): Set<String> {

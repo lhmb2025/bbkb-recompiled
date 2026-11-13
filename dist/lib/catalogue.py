@@ -44,25 +44,13 @@ SKIPPED = (REFUSED, UNSUPPORTED, DUPLICATE)
 
 #: Exact filename -> the engine-table locale the manifest should name it under.
 #:
-#: These four packs have a region the FILENAME cannot express: the app's parser
-#: reads `_ESusUNlatam_` as plain `es` (lower-case market marker), `_ENubUNZH_`
-#: as plain `en` (`ZH` is a market, not a region the app allowlists), and both
-#: Big5 Chinese packs as plain `zh`. The engine's own locale table names all
-#: four -- `es_419`, `en_ZH`, `zh_TW`, `zh_HK` -- but it carries the region in
-#: the ASSET PATH (`es_419/...`), which a side-loaded file does not have.
-#:
-#: Overriding them here is sound because the DOWNLOAD path is not the side-load
-#: path: the client installs a downloaded pack under the manifest's `locale`
-#: (into `nuance/<locale>/`) and never re-parses the filename, so the manifest
-#: is free to name the engine-table locale. That is the only reason this map is
-#: allowed to disagree with `ldb_names`; it must never be used to invent a
-#: locale the engine table does not have, and every entry is verified against
-#: the table at classification time (one that is not in the table falls back to
-#: the parsed locale, and so to the ordinary duplicate/unsupported handling).
-#:
-#: Consequence worth knowing: these four locales are reachable by DOWNLOAD only.
-#: A user who side-loads the same file by hand still gets the base language,
-#: because that path does re-parse the filename.
+#: Regions the filename cannot express: the app parses `_ESusUNlatam_` as `es`,
+#: `_ENubUNZH_` as `en` and both Big5 Chinese packs as `zh`; the engine table
+#: names them `es_419`, `en_ZH`, `zh_TW`, `zh_HK` (region in the asset path).
+#: Sound because a downloaded pack installs under the manifest's `locale` and the
+#: filename is never re-parsed (side-loading the same file still gets the base
+#: language). Entries must exist in the engine table; one that does not falls
+#: back to the parsed locale.
 TABLE_LOCALE_OVERRIDES = {
     "Blackberry_1305_r1-11_ESusUNlatam_xt9_ALM3.ldb": "es_419",
     "Blackberry_1305_r1-3_ENubUNZH_xt9_2.ldb": "en_ZH",
@@ -146,9 +134,8 @@ def classify(file_name, path, source, engine_table):
         else:
             decision.reason = ("language block '%s' is not a code the app accepts"
                                % (block or "?"))
-        # The cross-check that makes the refusal safe to trust: these codes are
-        # absent from the engine's locale table as well, so no device on this
-        # build could load the file even if the name were spelled differently.
+        # Shows the refusal is safe: no device on this build could load the file
+        # under any spelling.
         if block and block.lower() not in engine_table:
             decision.reason += (" (and '%s' is absent from the engine's %d-entry locale table)"
                                 % (block.lower(), len(engine_table)))
@@ -159,10 +146,7 @@ def classify(file_name, path, source, engine_table):
     decision.locale = "%s_%s" % (language, decision.country) if decision.country else language
     decision.parsed_locale = decision.locale
 
-    # A file whose region the filename cannot express, named after the engine
-    # table instead. Only ever applied when the table really has that locale --
-    # otherwise the parsed locale stands and the file takes its chances with the
-    # ordinary duplicate/unsupported handling.
+    # Applied only when the engine table has that locale.
     override = TABLE_LOCALE_OVERRIDES.get(file_name)
     if override and override in engine_table:
         decision.locale = override

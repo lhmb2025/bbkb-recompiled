@@ -28,14 +28,8 @@ import org.robolectric.RobolectricTestRunner;
 import org.robolectric.annotation.Config;
 
 /**
- * A board key is never a modifier, whatever keycode the ROM gave it.
- *
- * <p>The Minimal Phone MP01 maps its Sym key's scancode 249 to {@code KEY_RIGHTALT}, so every Sym
- * press arrived at {@link PhysicalKeyboardStateTracker#handleKeyDown} as a
- * {@code KEYCODE_ALT_RIGHT} down and latched sticky Alt. That is the other half of "Sym key does
- * nothing" (beta triage #10): the key not only failed to open the symbol board, it silently armed
- * Alt for the next keystroke. The scancode identifies the key; the keycode is only what the
- * device's key layout file says about it.
+ * Pins that a board key is never a modifier, whatever keycode the ROM gave it. The MP01 maps its
+ * Sym scancode 249 to {@code KEY_RIGHTALT}; the scancode identifies the key, so Sym must not latch Alt.
  */
 @RunWith(RobolectricTestRunner.class)
 @Config(sdk = 34, manifest = Config.NONE)
@@ -80,8 +74,6 @@ public class PhysicalKeyboardStateTrackerBoardKeyTest {
                 /* deviceId */ 0, scanCode, /* flags */ 0, InputDevice.SOURCE_KEYBOARD);
     }
 
-    // ── the classification itself ────────────────────────────────────────────
-
     @Test
     public void anAltKeycodeCarryingABoardScancodeIsNotAModifierEvent() {
         KeyEvent sym = event(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_ALT_RIGHT, SCANCODE_SYM);
@@ -104,7 +96,7 @@ public class PhysicalKeyboardStateTrackerBoardKeyTest {
 
     @Test
     public void withNoDeviceConfigArmedNothingChanges() {
-        // A device whose config has no <scancode-mappings> must behave exactly as before.
+        // A device config without <scancode-mappings> keeps keycode-based classification.
         DeviceInputResolver.resetConfig();
         KeyEvent sym = event(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_ALT_RIGHT, SCANCODE_SYM);
 
@@ -112,8 +104,6 @@ public class PhysicalKeyboardStateTrackerBoardKeyTest {
         assertTrue(PhysicalKeyboardStateTracker.isModifierKeyEvent(
                 KeyEvent.KEYCODE_ALT_RIGHT, sym));
     }
-
-    // ── and what the tracker does with it ────────────────────────────────────
 
     @Test
     public void pressingSymDoesNotLatchAlt() {
@@ -134,9 +124,8 @@ public class PhysicalKeyboardStateTrackerBoardKeyTest {
 
     @Test
     public void theSymPressIsStillCountedAsAKeyDown() {
-        // The exemption is from *modifier* treatment only. Everything else the tracker does for
-        // a key — the keys-down count the FCC and board coordinators read — must still happen,
-        // or the key becomes invisible rather than merely non-modifying.
+        // Only modifier treatment is skipped; the keys-down count (read by FCC and the board
+        // coordinator) must still see the key.
         assertEquals(0, tracker.getNumberOfKeysDown());
 
         tracker.handleKeyDown(KeyEvent.KEYCODE_ALT_RIGHT,
@@ -148,10 +137,6 @@ public class PhysicalKeyboardStateTrackerBoardKeyTest {
         assertEquals(0, tracker.getNumberOfKeysDown());
     }
 
-    // The positive control — "a real Alt is still tracked as a modifier" — is
-    // {@link #anOrdinaryAltKeyIsStillAModifierEvent} rather than a handleKeyDown() round trip.
-    // The modifier arm delegates to MetaKeyKeyListener and then arms the long-press timer, which
-    // reads SettingsManager.getSettingsValues(); standing a whole SettingsManager up here would
-    // test the timer, not this change. The decision is what moved, so the decision is what is
-    // pinned, and pressingSymDoesNotLatchAlt proves the modifier arm is not entered at all.
+    // The positive control is anOrdinaryAltKeyIsStillAModifierEvent, not a handleKeyDown() round
+    // trip: the modifier arm's long-press timer would need a full SettingsManager.
 }

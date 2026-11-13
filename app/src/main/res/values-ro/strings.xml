@@ -721,7 +721,6 @@
     <string name="device_config_import_unreadable">Fișierul acela nu este o configurație de dispozitiv</string>
     <string name="device_config_import_failed">Fișierul acela nu a putut fi importat</string>
 
-    <!-- OTA app updates -->
     <string name="settings_updates_title">Actualizări</string>
     <string name="settings_updates_summary">Caută o versiune nouă de BBKB</string>
     <string name="settings_update_installed_version_title">Versiunea instalată</string>
@@ -755,7 +754,6 @@
     <string name="settings_update_ready_title">Gata de instalare</string>
     <string name="settings_update_version_details">Detaliile versiunii</string>
     <string name="settings_update_unknown_sources_title">Permiți ca BBKB să instaleze actualizări?</string>
-    <!-- Downloadable language packs (core/languagepack) -->
     <string name="language_packs_installed_header">Instalate</string>
     <string name="language_packs_available_header">Disponibile pentru descărcare</string>
     <string name="language_packs_download">Descarcă</string>
@@ -877,7 +875,6 @@
     <string name="settings_voice_stop_on_pause_summary_off">Continuă ascultarea în timpul pauzelor până când atingeți microfonul sau după jumătate de minut de liniște</string>
     <string name="voice_status_listening_tap_to_stop">Se ascultă&#8230; Atingeți microfonul pentru a opri</string>
 
-    <!-- Settings text moved out of the code (2026-11) -->
     <string name="settings_common_save">Salvați</string>
     <string name="settings_common_edit">Editați</string>
     <string name="settings_common_back">Înapoi</string>

@@ -29,12 +29,11 @@ public class ClipboardController extends AbstractBoardController<ClipboardContro
         void onClipboardHidden();
     }
 
+    /** @param aVar receives clipboard shown and hidden events */
     public ClipboardController(BlackBerryIME blackBerryIME, Listener aVar) {
         super(KEY_CODE, blackBerryIME, aVar);
-        // The application context, not the service: the manager registers a primary-clip
-        // listener whose binder stub the system holds until its own GC, and through
-        // ClipboardManager.mContext that pinned every destroyed IME instance (and its view tree)
-        // after an IME switch. The manager only needs system services, prefs and strings.
+        // The application context, not the service: the system holds the primary-clip listener's
+        // binder stub until its own GC, which would pin every destroyed IME instance.
         Context appContext = blackBerryIME.getApplicationContext();
         this.mHistoryManager = new ClipboardHistoryManager(appContext != null ? appContext : blackBerryIME);
     }
@@ -59,14 +58,14 @@ public class ClipboardController extends AbstractBoardController<ClipboardContro
         hideClipboard();
     }
 
-    /** The focused field is incognito: stop capturing clips into the history until it is not. */
+    /** @param z true if the focused field is incognito (stop capturing clips) */
     public void setNoPersonalizedLearning(boolean z) {
         if (hasHistoryManager()) {
             this.mHistoryManager.setNoPersonalizedLearning(z);
         }
     }
 
-    /** A new input session: expire clips past the retention setting (and load, once unlocked). */
+    /** Expire clips past retention (and load, once unlocked). */
     public void onStartInput() {
         if (hasHistoryManager()) {
             this.mHistoryManager.prune();
@@ -123,11 +122,8 @@ public class ClipboardController extends AbstractBoardController<ClipboardContro
         }
     }
 
-    /**
-     * A row was tapped: insert its text. The system clipboard is not touched, so pasting from the
-     * board never replaces what the user last copied.
-     */
-    @Override // dev.bbkb.ime.keyboard.inputboard.clipboard.ClipboardView.OnPasteListener
+    /** The system clipboard is not touched, so pasting never replaces what the user last copied. */
+    @Override
     public void onPaste(CharSequence text) {
         if (this.ime != null) {
             this.ime.getInputLogic().pasteText(text);

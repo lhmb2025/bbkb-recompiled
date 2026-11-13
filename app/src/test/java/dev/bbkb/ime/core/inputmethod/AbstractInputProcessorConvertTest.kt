@@ -7,12 +7,9 @@ import org.junit.Assert.assertEquals
 import org.junit.Test
 
 /**
- * Audit DK-39: `AbstractInputProcessor.convert()` was raw jadx output (ten pre-declared `i`..`i8`
- * temporaries) and was renamed/rescoped without any intended behaviour change. This pins the
- * coordinate-realignment contract so the rename is verifiable: while source and converted text
- * agree code point by code point, each output code point inherits the source's coordinates; at the
- * first divergence the reported counts truncate to the common prefix and everything downstream is
- * emitted with no coordinates.
+ * `AbstractInputProcessor.convert()` coordinate realignment: while source and converted text agree
+ * code point by code point, each output code point inherits the source's coordinates; from the first
+ * divergence the counts truncate to the common prefix and the rest carries no coordinates.
  */
 class AbstractInputProcessorConvertTest {
 

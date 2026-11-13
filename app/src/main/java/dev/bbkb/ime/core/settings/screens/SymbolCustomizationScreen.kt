@@ -16,14 +16,9 @@ private const val PKB_ENABLED = "enable_symbol_customization_pkb"
 private const val VKB_ENABLED = "enable_symbol_customization_vkb"
 
 /**
- * Symbol Customization Screen
- * Configure custom symbol layouts for physical and touch screen keyboards
- *
- * The default currency row moved to the Personalization hub (2026-10-19).
- * The on-screen symbol page section is always drawn (every device has the on-screen keyboard);
- * the physical-keyboard section, whose Sym pages are denser, is added under its own header on
- * keypad devices, as the original app did. `SettingsSearchIndex` mirrors that with
- * PHYSICAL_KEYBOARD on the `pkb_custom_page_first` entry only.
+ * Custom symbol pages. The on-screen section is always drawn; the physical-keyboard section is
+ * added on keypad devices. `SettingsSearchIndex` mirrors that with PHYSICAL_KEYBOARD on the
+ * `pkb_custom_page_first` entry only.
  */
 @Composable
 fun SymbolCustomizationScreen(
@@ -41,8 +36,8 @@ fun SymbolCustomizationScreen(
             modifier = Modifier.settingsSearchAnchor("symbol_customization"),
         ),
         groupBreak(),
-        // The page editors stay open while their page is off, so a page can be filled in before
-        // it is shown. "Show page first" only tunes a page that is on, so it greys out.
+        // Editors stay enabled while their page is off so a page can be filled in first;
+        // "Show page first" only tunes a page that is on, so it greys out.
         Nav(
             title = R.string.settings_symbol_customize_page_title,
             summary = R.string.settings_symbol_customize_page_summary,
@@ -79,10 +74,7 @@ fun SymbolCustomizationScreen(
             visible = { it.hasPhysicalKeyboard },
         ),
 
-        // Straight to the number pad editor, the slideboard's symbol page, so every symbol editor
-        // is one tap from here (2026-11-11; it used to open Slideboard settings, one tap short).
-        // Always enabled: the editor stays open while the slideboard is off. The slideboard's own
-        // settings have one home, On-screen keyboard.
+        // Straight to the number pad editor; always enabled, even while the slideboard is off.
         Category(R.string.settings_category_slideboard),
         Nav(
             title = R.string.settings_vkb_customize_numberpad_title,

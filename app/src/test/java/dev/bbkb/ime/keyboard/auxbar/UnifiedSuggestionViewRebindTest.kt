@@ -16,10 +16,7 @@ import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
 import org.robolectric.util.ReflectionHelpers
 
-/**
- * The strip skips the rebind when a delivery draws exactly what is shown (P-15), and otherwise
- * rebinds through ranged notifications rather than notifyDataSetChanged.
- */
+/** The strip skips the rebind when a delivery draws what is shown, else rebinds via ranged notifications. */
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [34], manifest = Config.NONE)
 class UnifiedSuggestionViewRebindTest {

@@ -1,8 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!--
-    The consolidated Language screen (and the bottom sheet for one keyboard). Translated like
-    every other screen: a new string here needs its 73 locale entries.
--->
+<!-- Language screen and the per-keyboard bottom sheet; new strings need all 73 locale entries -->
 <resources>
     <string name="languages_hub_old_android">This version of Android requires new keyboards to be enabled in Android settings.</string>
     <string name="languages_hub_follow_system_title">Match phone languages</string>

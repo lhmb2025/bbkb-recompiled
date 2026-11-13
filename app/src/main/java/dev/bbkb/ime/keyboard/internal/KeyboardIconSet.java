@@ -27,7 +27,7 @@ public final class KeyboardIconSet {
 
     private static final HashMap<String, Integer> sNameToIconId = new HashMap<>();
 
-    // Updated to use proper R.styleable attribute indices instead of hardcoded values
+    // Pairs of icon name and Keyboard styleable attribute; the index of a pair is the icon id.
     private static final Object[] NAMES_AND_ATTR_IDS = {"undefined", 0, "shift_key", R.styleable.Keyboard_iconShiftKey, "delete_key", R.styleable.Keyboard_iconDeleteKey, "delete_rtl_key", R.styleable.Keyboard_iconDeleteRTLKey, "settings_key", R.styleable.Keyboard_iconSettingsKey, "space_key", R.styleable.Keyboard_iconSpaceKey, "enter_key", R.styleable.Keyboard_iconEnterKey, "pkb_enter_key", R.styleable.Keyboard_iconPkbEnterKey, "go_key", R.styleable.Keyboard_iconGoKey, "search_key", R.styleable.Keyboard_iconSearchKey, "send_key", R.styleable.Keyboard_iconSendKey, "next_key", R.styleable.Keyboard_iconNextKey, "done_key", R.styleable.Keyboard_iconDoneKey, "previous_key", R.styleable.Keyboard_iconPreviousKey, "tab_key", R.styleable.Keyboard_iconTabKey, "shortcut_key", R.styleable.Keyboard_iconShortcutKey, "space_key_for_number_layout", R.styleable.Keyboard_iconSpaceKeyForNumberLayout, "shift_key_shifted", R.styleable.Keyboard_iconShiftKeyShifted, "shift_key_locked", R.styleable.Keyboard_iconShiftKeyLocked, "shortcut_key_disabled", R.styleable.Keyboard_iconShortcutKeyDisabled, "language_switch_key", R.styleable.Keyboard_iconLanguageSwitchKey, "language_quick_switch_key", R.styleable.Keyboard_iconLanguageQuickSwitchKey, "zwnj_key", R.styleable.Keyboard_iconZwnjKey, "zwj_key", R.styleable.Keyboard_iconZwjKey, "emoji_action_key", R.styleable.Keyboard_iconEmojiActionKey, "emoji_normal_key", R.styleable.Keyboard_iconEmojiNormalKey, "diacritic_up_key", R.styleable.Keyboard_iconDiacriticKeyUp, "diacritic_down_key", R.styleable.Keyboard_iconDiacriticKeyDown, "voice_input_small_key", R.styleable.Keyboard_iconVoiceInputSmallKey, "show_input_menu_key", R.styleable.Keyboard_iconShowInputMenuKey, "show_keyboard_key", R.styleable.Keyboard_iconShowKeyboardKey, "show_keyboard_settings_key", R.styleable.Keyboard_iconShowKeyboardSettingsKey, "show_keyboard_active_key", R.styleable.Keyboard_iconShowKeyboardActiveKey, "emoji_key", R.styleable.Keyboard_iconEmojiKey, "emoji_active_key", R.styleable.Keyboard_iconEmojiActiveKey, "emoji_key_disabled", R.styleable.Keyboard_iconEmojiKeyDisabled, "paste_key", R.styleable.Keyboard_iconPasteKey, "paste_active_key", R.styleable.Keyboard_iconPasteActiveKey, "paste_key_disabled", R.styleable.Keyboard_iconPasteKeyDisabled, "fcc_key", R.styleable.Keyboard_iconFccKey, "fcc_key_disabled", R.styleable.Keyboard_iconFccKeyDisabled, "fcc_active_key", R.styleable.Keyboard_iconFccActiveKey, "slideboard_settings_key", R.styleable.Keyboard_iconSlideboardSettingsKey, "voice_input_key", R.styleable.Keyboard_iconVoiceInputKey, "voice_active_key", R.styleable.Keyboard_iconVoiceActiveKey, "voice_input_key_disabled", R.styleable.Keyboard_iconVoiceInputKeyDisabled, "arrow_left_key", R.styleable.Keyboard_iconArrowLeftKey, "arrow_right_key", R.styleable.Keyboard_iconArrowRightKey, "arrow_up_key", R.styleable.Keyboard_iconArrowUpKey, "arrow_down_key", R.styleable.Keyboard_iconArrowDownKey, "password_keeper_toggle_key", R.styleable.Keyboard_iconPasswordKeeperToggleKey, "password_keeper_toggle_inactive_key", R.styleable.Keyboard_iconPasswordKeeperInactiveKey, "password_keeper_toggle_active_key", R.styleable.Keyboard_iconPasswordKeeperActiveKey, "hide_keyboard_big_key", R.styleable.Keyboard_iconHideKeyboardBigKey, "dedicated_show_ib_key", R.styleable.Keyboard_iconDedicatedShowIbKey, "number_pad_key", R.styleable.Keyboard_iconNumberPadKey, "number_pad_active_key", R.styleable.Keyboard_iconNumberPadActiveKey, "number_pad_key_disabled", R.styleable.Keyboard_iconNumberPadKeyDisabled};
 
     private static int sIconsCount = NAMES_AND_ATTR_IDS.length / 2;
@@ -35,19 +35,10 @@ public final class KeyboardIconSet {
     private static final String[] sIconNames = new String[sIconsCount];
 
     /**
-     * Prototype icons for the themes seen most recently, newest first. Every Keyboard (and every
-     * long-press popup) used to inflate and mutate all ~52 icons for itself: 164 zip inflations and
-     * about 17 MB of native churn per 20 long-presses, and a private copy of every icon per cached
-     * Keyboard. Now each theme's icons are inflated once, on first use, and a keyboard copies only
-     * the icons it actually draws from those prototypes (no XML, no zip). Bounded: a theme change
-     * leaves the old prototypes to the keyboards still holding them and to the garbage collector.
-     *
-     * <p>Why each keyboard still gets its own instances: a VectorDrawable's tint, alpha and raster
-     * size are per instance, and up to Android 9 HWUI reads them when it renders, not when a view
-     * records. One instance shared by the keyboard, the aux bar and the popups would then paint
-     * with whichever tint or size the last view set (the aux bar dims inactive icons; the main
-     * keyboard draws the mic and the globe as 16dp hints). Per-keyboard copies of the few icons
-     * drawn keep today's behaviour exactly.
+     * Prototype icons for the most recent themes, newest first: each theme's icons are inflated
+     * once, and a keyboard copies only the icons it draws. Keyboards still need their own
+     * instances: up to Android 9 HWUI reads a VectorDrawable's tint, alpha and size at render time,
+     * so a shared instance would paint with whatever the last view set.
      */
     private static final ArrayList<SharedIcons> sSharedIcons = new ArrayList<>();
 
@@ -187,10 +178,12 @@ public final class KeyboardIconSet {
         }
     }
 
+    /** @param i the icon id */
     private static boolean isValidIconId(int i) {
         return i >= 0 && i < sIconNames.length;
     }
 
+    /** @param i the icon id */
     public static String getIconName(int i) {
         if (isValidIconId(i)) {
             return sIconNames[i];
@@ -198,6 +191,7 @@ public final class KeyboardIconSet {
         return "unknown<" + i + ">";
     }
 
+    /** @param str the icon name */
     public static int getIconId(String str) {
         Integer num = sNameToIconId.get(str);
         if (num != null) {
@@ -206,6 +200,7 @@ public final class KeyboardIconSet {
         throw new RuntimeException("unknown icon name: " + str);
     }
 
+    /** @param str the icon name */
     public int getIconResourceId(String str) {
         if (this.mDelegate != null) {
             return this.mDelegate.getIconResourceId(str);
@@ -217,6 +212,7 @@ public final class KeyboardIconSet {
         throw new RuntimeException("unknown icon name: " + str);
     }
 
+    /** @param i the icon id */
     public Drawable getIconDrawable(int i) {
         if (isValidIconId(i)) {
             if (this.mDelegate != null) {
@@ -230,7 +226,11 @@ public final class KeyboardIconSet {
         throw new RuntimeException("unknown icon id: " + getIconName(i));
     }
 
-    /** This set's own copy of icon {@code i}, made from the theme's prototype. */
+    /**
+     * Makes this set's own copy of an icon from the theme's prototype.
+     *
+     * @param i the icon id
+     */
     private synchronized void materialize(int i) {
         if (this.mResolved[i]) {
             return;
@@ -260,17 +260,9 @@ public final class KeyboardIconSet {
     }
     
     /**
-     * Apply color tint from KeyboardColorManager to all loaded icons.
-     * This should be called after icons are loaded and when theme changes.
-     *
-     * <p>Tints in place and only when the icon color changed since the last call. The icons are
-     * already mutated copies (the theme's shared set mutates each one as it inflates it, and the
-     * tint state lives with that set, so the first keyboard of a palette tints for all), so a fresh
-     * {@code newDrawable().mutate()} per call bought nothing: it deep-copied every vector tree on
-     * each keyboard swap (every shift change), and swapped the instances out from under anything
-     * that had captured them (MainKeyboardView's shift/alt overlay icons). The key draw path
-     * re-tints each icon before drawing it (KeyboardView.applyIconTint), so this is only the
-     * baseline color for consumers that draw an icon without tinting it (key previews).
+     * Tints the icons in place with the palette's icon color, only when it changed. Do not swap in
+     * new instances: MainKeyboardView captures the shift/alt overlay icons. The key draw path
+     * re-tints anyway; this is the baseline for untinted consumers such as key previews.
      */
     public void applyColorTint() {
         if (this.mDelegate != null) {
@@ -301,11 +293,9 @@ public final class KeyboardIconSet {
     private static final class SharedIcons {
 
         /**
-         * The live service's Resources and Theme. Rebound on every match (see {@link #rebind}):
-         * a cached Keyboard outlives the service it was built for, and an icon it has not copied
-         * yet must come from the current service's Resources, never from a dead service's frozen
-         * ones (the beta.26 orientation bug) or from a collected Theme (the ?attr colours of the
-         * globe and hide-keyboard icons would not resolve). Guarded by this object's monitor.
+         * The live service's Resources and Theme, rebound on every match: a cached Keyboard
+         * outlives its service, and an icon not copied yet must not come from a dead service's
+         * Resources or a collected Theme. Guarded by this object's monitor.
          */
         Resources resources;
 
@@ -330,10 +320,8 @@ public final class KeyboardIconSet {
         }
 
         boolean matches(Resources resources, Resources.Theme theme, int[] resourceIds) {
-            // Not keyed on the Resources or Theme instances: every service instance has its own,
-            // and the prototypes they inflate are the same for the same density, uiMode and ids.
-            // The ?attr colours the icons resolve come from the keyboard style, which uiMode
-            // covers. A match rebinds the live instances (rebind).
+            // Not keyed on Resources/Theme instances (each service has its own): density, uiMode
+            // and ids decide what the prototypes look like.
             return this.densityDpi == resources.getConfiguration().densityDpi
                     && this.uiMode == resources.getConfiguration().uiMode
                     && Arrays.equals(this.resourceIds, resourceIds);
@@ -369,8 +357,9 @@ public final class KeyboardIconSet {
             try {
                 return resources.getDrawable(resourceId, theme.get());
             } catch (Resources.NotFoundException unused) {
-                // Icon attribute not found - this is normal for optional icons
-                if (BuildConfig.DEBUG) Log.w(TAG, "Drawable resource for icon '" + getIconName(iconId) + "' not found");
+                // Normal for optional icons.
+                if
+ (BuildConfig.DEBUG) Log.w(TAG, "Drawable resource for icon '" + getIconName(iconId) + "' not found");
                 return null;
             }
         }

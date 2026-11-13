@@ -31,14 +31,9 @@ object TouchSurfaceAnchors {
 }
 
 /**
- * Touch surface helper (Advanced > Device compatibility, on phones whose profile declares a touch
- * surface over the keys). Says which way the touch surface reaches BBKB and how that is going, and
- * links out to whatever setup that way needs: the phone's Scroll assistant (the built-in route),
- * or Shizuku. There is no choice to make here: the profile decides the route.
- *
- * Shaped like the BBKB Helper screen: everything is re-read on resume (coming back from the phone's
- * settings or from the Shizuku app) and kept no wizard state; Shizuku's answer to Grant access
- * arrives as a status change while the screen is up.
+ * Touch surface helper (phones whose profile declares a touch surface over the keys): shows the
+ * route the profile chose (built-in Scroll assistant or Shizuku), its status, and setup links.
+ * Everything is re-read on resume with no wizard state; Shizuku's grant arrives as a status change.
  */
 @Composable
 fun TouchSurfaceHelperScreen(
@@ -47,8 +42,7 @@ fun TouchSurfaceHelperScreen(
     val context = LocalContext.current
     val state = rememberTouchSurfaceState()
     val mediaTek = remember { HardwareProbe.isMediaTek() }
-    // Installing or removing Shizuku happens away from this screen, so it is looked up again
-    // whenever the state is re-read (on every resume).
+    // Looked up again on every re-read: Shizuku is installed or removed elsewhere.
     val shizukuApp = remember(state) { TouchSurfaceLinks.shizukuApp(context) }
     val builtIn: (SettingsEnv) -> Boolean = { state.showBuiltIn }
     val shizuku: (SettingsEnv) -> Boolean = { state.showShizuku }
@@ -56,7 +50,7 @@ fun TouchSurfaceHelperScreen(
     SettingsScreenHost(R.string.touch_surface_helper_title, onNavigateBack, listOf(
         Custom { TouchSurfaceStatusHeader(state) },
 
-        // ── Built-in: the phone hands the pad to BBKB itself ─────────────────
+        // Built-in: the phone hands the pad to BBKB
         Category(R.string.touch_surface_builtin_category, visible = builtIn),
         Custom(visible = builtIn) {
             PreferenceInfo(text = stringResource(R.string.touch_surface_builtin_intro))
@@ -75,7 +69,7 @@ fun TouchSurfaceHelperScreen(
             onClick = { TouchSurfaceLinks.open(it, TouchSurfaceLinks.cursorAssistant()) },
         ),
 
-        // ── Shizuku: BBKB reads the pad itself ───────────────────────────────
+        // Shizuku: BBKB reads the pad itself
         Category(R.string.touch_surface_shizuku_category, visible = shizuku),
         Custom(visible = shizuku) {
             PreferenceInfo(text = stringResource(R.string.touch_surface_shizuku_intro))
@@ -105,8 +99,7 @@ fun TouchSurfaceHelperScreen(
         ),
         Nav(
             title = R.string.touch_surface_grant_access,
-            // The status row above already says whether access is granted; this row only has
-            // something to add when Shizuku will not ask again.
+            // Only adds something when Shizuku will not ask again.
             summary = if (state.shizukuAccessDenied) R.string.touch_surface_grant_access_denied
                 else R.string.touch_surface_grant_access_summary,
             icon = drawableIcon(R.drawable.ic_settings_m_key),

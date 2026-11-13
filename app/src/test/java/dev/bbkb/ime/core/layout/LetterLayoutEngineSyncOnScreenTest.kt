@@ -22,17 +22,11 @@ import java.io.File
 import java.util.Collections
 
 /**
- * [LetterLayoutEngineSync] for the on-screen keyboard and for a keyboard language's chosen layout
- * ([LetterLayoutChoice]), end to end through [Xt9KdbVariant] with only the owned library's two
- * registry calls replaced by a recorder keyed as the native registry keys it: by variant,
- * primaryId and secondaryId.
- *
- * On screen: whatever keyboard is drawn, its letters go on the shipped on-screen file of its row
- * shape, under every on-screen id, registered as `layout:screen:<fingerprint>` and selected; the
- * Chinese stroke, zhuyin and Cangjie keyboards select the device variant and their shipped files.
- * Built files are kept in a [KdbStore]. On the keypad: a language's choice wins over the Physical
- * layouts selection for that language, and only there. The KDB files are the shipped ones, read off
- * disk.
+ * [LetterLayoutEngineSync] for the on-screen keyboard and per-language chosen layouts, through
+ * [Xt9KdbVariant] with registry calls recorded by variant/pid/sid. On screen, the drawn letters go on
+ * the shipped file of the row shape as `layout:screen:<fingerprint>` (Chinese stroke, zhuyin and
+ * Cangjie keep the device variant); built files live in a [KdbStore]. On the keypad a language's
+ * choice beats the Physical layouts selection for that language only.
  */
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [34])
@@ -181,10 +175,7 @@ class LetterLayoutEngineSyncOnScreenTest {
     private val colemak get() = registry.builtIn("colemak")!!
     private val dvorak get() = registry.builtIn("dvorak")!!
 
-    /**
-     * The shipped Colemak marked for the physical keys: what a chosen built-in that drives them
-     * would be. The shipped one is for the on-screen keyboard only.
-     */
+    /** The shipped Colemak (on-screen only) marked for the physical keys. */
     private val colemakForKeypad
         get() = colemak.let { LetterLayout(it.id, it.name, it.origin, setOf(LetterLayout.Target.PKB), it.binding, it.rowsTemplate, it.keys) }
 
@@ -193,8 +184,6 @@ class LetterLayoutEngineSyncOnScreenTest {
             """<letter-layout version="1" id="swap" name="Swap"><bind/>
                 <key code="KEYCODE_Q" keySpec="w"/><key code="KEYCODE_W" keySpec="q"/></letter-layout>"""
         )
-
-    // ── the on-screen keyboard ───────────────────────────────────────────────
 
     @Test
     fun theDrawnKeyboard_isBuiltOnTheFileOfItsShape_forEveryOnScreenId() {
@@ -300,8 +289,6 @@ class LetterLayoutEngineSyncOnScreenTest {
         assertEquals("athena", Xt9KdbVariant.applied())
     }
 
-    // ── kept on storage ──────────────────────────────────────────────────────
-
     @Test
     fun builtKdbs_areKeptOnStorage_andReadBackByTheNextProcess() {
         deviceVariant("athena")
@@ -339,8 +326,6 @@ class LetterLayoutEngineSyncOnScreenTest {
         sync.prebuildOnScreen(drawn("stroke", "qwerty", "qwertyuiop", "asdfghjkl", "zxcvbnm"))
         assertTrue("nothing for a kept keyboard", folder.root.walk().count { it.isFile } == 2)
     }
-
-    // ── a language's chosen layout on the keypad ─────────────────────────────
 
     @Test
     fun aLanguagesChoiceDrivesTheKeypadKdbs_overTheOneEveryOtherLanguageHas() {

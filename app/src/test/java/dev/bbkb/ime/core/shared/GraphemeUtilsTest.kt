@@ -9,17 +9,10 @@ import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
 
 /**
- * What one Backspace, one forward delete and one cursor step cross.
- *
- * Deletes take a whole cluster only when it holds an emoji; other text keeps the one code point
- * plus non-spacing marks rule. Cursor steps always take the whole cluster.
- *
- * Robolectric only so [EmojiTextAnalyzer.isEmoji] gets the real `TextUtils.isEmpty`.
- *
- * These run on the JDK 17 toolchain, whose character iterator predates the Unicode 9 emoji
- * rules (it splits ZWJ sequences, flags and skin tones like ICU on Android 6 and 7), so the
- * emoji cases here exercise the GraphemeUtils guard for such iterators. The same expectations
- * hold on JDK 21's extended grapheme clusters.
+ * What one Backspace, forward delete and cursor step cross: deletes take a whole cluster only if it
+ * holds an emoji (else one code point plus non-spacing marks); cursor steps take the whole cluster.
+ * JDK 17's iterator splits emoji sequences like old Android ICU, so these exercise GraphemeUtils'
+ * guard for that. Robolectric only for `TextUtils.isEmpty`.
  */
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [34], manifest = Config.NONE)
@@ -48,11 +41,9 @@ class GraphemeUtilsTest {
         assertEquals("$name: step right", expected, stepRight("$unit ab"))
     }
 
-    // ── emoji: one press, one step ───────────────────────────────────────────────
-
     @Test
     fun newerEmojiWithASkinTone_isOneUnit() {
-        // U+1FAF6 (Unicode 14) + U+1F3FD. The old range check stopped at U+1F9FF.
+        // U+1FAF6 (Unicode 14) + U+1F3FD: past U+1F9FF.
         assertWholeUnit("heart hands, medium skin tone", "🫶🏽", 4)
         assertWholeUnit("melting face", "🫠", 2)
     }
@@ -115,8 +106,6 @@ class GraphemeUtilsTest {
         assertEquals(3, backspace("a😀́"))
     }
 
-    // ── other text: deletes keep the per-code-point rule ─────────────────────────
-
     @Test
     fun plainAscii_isOneChar() {
         assertWholeUnit("ascii", "x", 1)
@@ -162,8 +151,6 @@ class GraphemeUtilsTest {
         assertEquals(3, backspace("a$script́"))
     }
 
-    // ── edges ────────────────────────────────────────────────────────────────────
-
     @Test
     fun emptyText_isZero_nullIsOne() {
         assertEquals(0, backspace(""))
@@ -193,8 +180,6 @@ class GraphemeUtilsTest {
         assertEquals(4, forwardDelete("/::) hi"))
         assertEquals(4, stepRight("/::) hi"))
     }
-
-    // ── isEmoji ──────────────────────────────────────────────────────────────────
 
     @Test
     fun isEmoji_acceptsWhatItDidAndTheNewerBlocks() {

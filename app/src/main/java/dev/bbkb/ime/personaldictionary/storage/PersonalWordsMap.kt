@@ -4,11 +4,7 @@ import dev.bbkb.ime.personaldictionary.model.PersonalWord
 import java.util.HashMap
 import java.util.concurrent.ConcurrentHashMap
 
-/**
- * Stores [PersonalWord] entries keyed by word string.
- *
- * Tracks dirty state for JSON persistence.
- */
+/** [PersonalWord]s keyed by word. */
 class PersonalWordsMap(filename: String) : DictionaryWordObservable() {
     private val personalWords = HashMap<String, PersonalWord>()
 

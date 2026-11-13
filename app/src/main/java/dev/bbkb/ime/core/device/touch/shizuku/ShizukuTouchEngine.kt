@@ -13,41 +13,15 @@ import dev.bbkb.ime.core.shared.Logger
 import java.util.concurrent.CopyOnWriteArraySet
 
 /**
- * The Shizuku evdev touch engine: reads one input device's raw single-contact touches at
- * shell (or root) privilege through Shizuku and hands the IME decoded DOWN/MOVE/UP/CANCEL
- * touches, optionally holding an exclusive grab so the system's own InputReader stops seeing the
- * device. This object is the whole integration surface; nothing else in this package is meant
- * to be called from outside it (apart from the pure model types it hands out).
+ * Reads one input device's raw single-contact touches at shell/root privilege through Shizuku and
+ * hands the IME decoded DOWN/MOVE/UP/CANCEL touches, optionally holding an EVIOCGRAB so the system
+ * stops seeing the device. The package's only entry point. It binds [EvdevUserService] (own
+ * `:evdev` process), opens the device by name, and decodes the stream with [TouchStreamDecoder].
  *
- * ```
- * ShizukuTouchEngine.start(context, "touch_keypad", grab = true,
- *     listener = { touch -> ... },            // main thread, raw device coordinates
- *     statusListener = { status -> ... })     // main thread
- * ...
- * ShizukuTouchEngine.stop()
- * ```
- *
- * Pieces: [ShizukuStatusTracker] follows Shizuku itself (UNSUPPORTED..READY) from its binder and
- * permission callbacks; the engine binds [EvdevUserService] (a Shizuku UserService in its own
- * `<applicationId>:evdev` process), asks it to [IEvdevService.open] the device by name, and
- * decodes the packed records it streams back with a [TouchStreamDecoder].
- *
- * Recovery, all with [RetryBackoff] (250 ms doubling to 30 s), none of it polling:
- *  - Shizuku restarts: its binder dies (status NOT_RUNNING; a contact in progress is CANCELled),
- *    and when the binder comes back (Shizuku's sticky binder-received listener) the service is
- *    re-bound and the device re-opened by name.
- *  - The device node vanishes (firmware re-enumeration, ENODEV): CANCEL, then discovery by name
- *    is retried until a device with that name is back, wherever its new node is.
- *  - The service process dies: re-bound, then re-opened.
- *  - No device has the name yet: retried (status BOUND, error not_found).
- *
- * Threading: call everything from the main thread (calls from elsewhere are posted to it).
- * Listeners run on the main thread, or on the handler given to [start] for touches; once
- * [stop] has run on the touch handler's thread, that listener is never called again. The
- * binder calls into the reader process run on a private background thread.
- *
- * Release builds carry this engine but nothing starts it until a caller does; the only debug
- * entry point is [ShizukuTouchProbeReceiver].
+ * Recovery uses [RetryBackoff] (250 ms doubling to 30 s), never polling: a Shizuku restart, a
+ * vanished node (ENODEV) or a dead service process CANCELs any contact, then re-binds and re-opens
+ * by name when possible. Call from the main thread (other calls are posted). Listeners run on main,
+ * touches on [start]'s handler; after [stop] runs on that thread, the listener is never called.
  */
 object ShizukuTouchEngine {
 
@@ -84,7 +58,6 @@ object ShizukuTouchEngine {
     }
     private val statusListeners = CopyOnWriteArraySet<StatusListener>()
 
-    // ---- Main-thread state -------------------------------------------------------------------
     private var initialized = false
     private lateinit var facade: ShizukuFacade
     private lateinit var tracker: ShizukuStatusTracker
@@ -125,13 +98,11 @@ object ShizukuTouchEngine {
     private val connection = object : ServiceConnection {
         override fun onServiceConnected(name: ComponentName?, binder: IBinder?) = onConnected(binder)
         override fun onServiceDisconnected(name: ComponentName?) {
-            // Shizuku reports this from its own death watch; ours ([serviceDeath]) knows which
-            // binder died, so only act here if the current one really is dead.
+            // Shizuku's own death watch; [serviceDeath] knows which binder died, so act only
+            // if the current one really is dead.
             serviceBinder?.let { if (!it.isBinderAlive) onServiceDied(it) }
         }
     }
-
-    // ---- Public API --------------------------------------------------------------------------
 
     /**
      * Streams the device named exactly [deviceName] (EVIOCGNAME, e.g. "touch_keypad" on the
@@ -277,8 +248,6 @@ object ShizukuTouchEngine {
         deviceQueries.add(callback)
         advance()
     }
-
-    // ---- Engine ------------------------------------------------------------------------------
 
     private class StreamRequest(
         val matcher: TouchDeviceMatcher,

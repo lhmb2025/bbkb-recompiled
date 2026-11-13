@@ -19,13 +19,10 @@ import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
 
 /**
- * The spell checker's dictionary is released when the service unbinds or after
- * [AndroidSpellCheckerService.ENGINE_IDLE_RELEASE_MS] without a request, never while a request
- * is running, and every release moves the engine generation the sessions key their cached
- * verdicts on. The engine itself is never disposed (NuanceSDKManager.resetForTests says why).
- *
- * The service is built with its constructor only (onCreate needs the keyboard's singletons); the
- * idle countdown's handler is then absent, so the release is driven through releaseEngineIfIdle.
+ * The spell checker's dictionary is released on unbind or after
+ * [AndroidSpellCheckerService.ENGINE_IDLE_RELEASE_MS] idle, never mid-request, and each release
+ * bumps the engine generation cached verdicts key on. The engine is never disposed. Built without
+ * onCreate, so there is no idle handler and releaseEngineIfIdle drives the release.
  */
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [34], manifest = Config.NONE, instrumentedPackages = ["com.blackberry.nuanceshim"])

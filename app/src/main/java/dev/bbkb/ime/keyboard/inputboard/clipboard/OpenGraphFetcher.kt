@@ -13,19 +13,10 @@ import java.net.HttpURLConnection
 import java.net.URL
 
 /**
- * Fetches a link preview — the page's Open Graph title and a scaled thumbnail — for one copied
- * URL.
- *
- * Everything it requests comes from untrusted text (what the user copied) or from what the
- * fetched page names, so every request is bounded:
- *  - **https only**, for the page and for the image ([UrlUtils.httpsUrlOrNull]);
- *  - **[TIMEOUT_MS] per request**: the page's whole connect-and-read, and the image's connect
- *    plus its body read, which [readCapped] stops at the deadline;
- *  - **[MAX_PAGE_BYTES]** of page (jsoup stops reading there; the Open Graph tags are in the
- *    head) and **[MAX_IMAGE_BYTES]** of image, beyond which the image is dropped rather than
- *    decoded;
- *  - the image is decoded subsampled to roughly the thumbnail size, so a small file that expands
- *    to an enormous bitmap cannot exhaust memory.
+ * Fetches a link preview (Open Graph title and scaled thumbnail) for one copied URL. All URLs are
+ * untrusted, so requests are bounded: https only, [TIMEOUT_MS] per request (including the image
+ * body via [readCapped]), [MAX_PAGE_BYTES] / [MAX_IMAGE_BYTES], and the image is decoded
+ * subsampled so a small file cannot expand into an enormous bitmap.
  */
 object OpenGraphFetcher {
 
@@ -36,17 +27,13 @@ object OpenGraphFetcher {
     const val MAX_PAGE_BYTES = 1024 * 1024
     const val MAX_IMAGE_BYTES = 2 * 1024 * 1024
 
-    /**
-     * The preview for [url], or null when there is nothing to show (not https, unreachable, no
-     * title and no image). Never throws; the blocking work runs on [Dispatchers.IO].
-     */
+    /** Null when there is nothing to show. Never throws; runs on [Dispatchers.IO]. */
     suspend fun fetchPreview(url: String, targetWidth: Int, targetHeight: Int): OpenGraphMetadata? =
         withContext(Dispatchers.IO) {
             val pageUrl = UrlUtils.httpsUrlOrNull(url) ?: return@withContext null
             val metadata = OpenGraphMetadata()
             metadata.url = url
             if (UrlUtils.isImageUrl(url)) {
-                // The row IS the image: no page to read.
                 metadata.imageUrl = pageUrl
             } else {
                 fetchPage(pageUrl, metadata)
@@ -96,8 +83,8 @@ object OpenGraphFetcher {
     }
 
     /**
-     * The whole of [input], or null if it is longer than [maxBytes] or is still arriving after
-     * [timeoutMs]. A server that drips one byte just inside every read timeout is stopped here.
+     * The whole of [input], or null if over [maxBytes] or still arriving after [timeoutMs] (stops a
+     * server that drips one byte inside every read timeout).
      */
     @JvmStatic
     fun readCapped(
@@ -117,10 +104,7 @@ object OpenGraphFetcher {
         }
     }
 
-    /**
-     * The largest power-of-two subsampling that still leaves the decoded image at least the target
-     * size in both dimensions, as `BitmapFactory.Options.inSampleSize` wants it.
-     */
+    /** The largest power-of-two `inSampleSize` that keeps the image at least the target size. */
     @JvmStatic
     fun sampleSizeFor(sourceWidth: Int, sourceHeight: Int, targetWidth: Int, targetHeight: Int): Int {
         var sample = 1

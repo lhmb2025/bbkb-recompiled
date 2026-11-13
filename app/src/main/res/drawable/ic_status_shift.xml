@@ -3,11 +3,7 @@
     android:height="15dp"
     android:viewportWidth="76.8"
     android:viewportHeight="71.31">
-  <!-- Status bar modifier icon. One glyph = 16x15dp, two = 32x15dp: at 15dp tall the status bar
-       draws the icon unscaled, and 16dp/32dp are whole pixels on the usual densities, so the pair
-       is exactly twice the single. The art keeps its 144x72 grid (Shift in x 72..144) and the
-       group moves it so the right-hand glyph is the same distance from the icon's right edge in
-       both: Shift does not move when Alt or Ctrl joins it. -->
+  <!-- 16x15dp per glyph draws unscaled in the status bar; the group pins the right-hand glyph so Shift stays put when Alt or Ctrl joins it -->
   <group android:translateX="-69.6" android:translateY="-0.345">
     <path
         android:fillColor="@android:color/white"

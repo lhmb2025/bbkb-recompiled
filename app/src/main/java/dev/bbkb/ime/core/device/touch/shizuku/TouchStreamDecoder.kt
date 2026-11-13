@@ -22,11 +22,8 @@ enum class TouchAction(val motionEventAction: Int) {
 }
 
 /**
- * One touch of a single-contact gesture, in the device's raw coordinates: scale with
- * [TouchDeviceInfo.xRange]/[TouchDeviceInfo.yRange] of [device].
- *
- * [eventTimeMs] and [downTimeMs] are on the SystemClock.uptimeMillis() timebase, so they can go
- * straight into MotionEvent.obtain(); see [TouchStreamDecoder] for the conversion.
+ * One touch in the device's raw coordinates (scale by [device]'s ranges). Times are on the
+ * SystemClock.uptimeMillis() timebase, ready for MotionEvent.obtain().
  */
 data class DecodedTouch(
     val action: TouchAction,
@@ -38,37 +35,17 @@ data class DecodedTouch(
 )
 
 /**
- * Turns packed evdev records ([EvdevPacking]) into DOWN/MOVE/UP/CANCEL for ONE contact. Pure
- * Kotlin: no Android types, so every rule below has a JVM test.
- *
- * Contact state:
- *  - BTN_TOUCH 1/0 and ABS_MT_TRACKING_ID >= 0/-1 are both read as down/up, whichever the
- *    device sends (most send both). A tracking id that changes without a -1 in between is a
- *    lift and a new touch in the same frame.
- *  - Position is ABS_MT_POSITION_X/Y when the device has both, else ABS_X/ABS_Y. Evdev only
- *    reports an axis when it changes, so the last value is remembered per slot.
- *  - Only the first contact is followed: with ABS_MT_SLOT, other slots are tracked but never
- *    emitted, and a finger that lands after the followed one has lifted is not picked up mid-
- *    stroke. ABS_MT_TOUCH_MAJOR/MINOR (and pressure) are ignored: on the Titan pad a second
- *    finger arrives as a jump in contact size, not as a new contact, and there is no reliable
- *    way to undo that, so it is simply not looked at.
- *
- * Frames: nothing is emitted until SYN_REPORT, which applies the whole frame at once (a tap that
- * starts and ends inside one frame gives DOWN then UP). MOVE is emitted only when the position
- * actually changed. SYN_DROPPED (the kernel's buffer overflowed) cancels a contact in progress
- * with CANCEL, then every record up to and including the next SYN_REPORT is discarded, per the
- * evdev documentation. The finger that was down stays ignored until it lifts: its lift may have
- * been among the lost records, so the next explicit touch-down is what starts a new gesture.
- *
- * Timebase: [EvdevUserService] asks for CLOCK_MONOTONIC event stamps (EVIOCSCLOCKID); where a
- * kernel refuses, it converts the default CLOCK_REALTIME stamps by the realtime-to-monotonic
- * offset sampled at each read (exact to about a millisecond, and wrong for the one read that
- * straddles a wall-clock step). The packed timestamps are therefore CLOCK_MONOTONIC
- * microseconds. SystemClock.uptimeMillis() is CLOCK_MONOTONIC in milliseconds (Android's
- * `systemTime(SYSTEM_TIME_MONOTONIC)`; it stops in deep sleep, exactly as these stamps do), and
- * CLOCK_MONOTONIC is one system-wide clock, so the shell-uid reader and the IME process agree
- * on it: `eventTimeMs = monotonicMicros / 1000` needs no offset and is what InputReader would
- * have stamped on a MotionEvent for the same contact.
+ * Turns packed evdev records ([EvdevPacking]) into DOWN/MOVE/UP/CANCEL for one contact. Pure
+ * Kotlin, so every rule has a JVM test.
+ *  - BTN_TOUCH and ABS_MT_TRACKING_ID both mean down/up; a tracking id changing without -1 is a
+ *    lift plus a new touch.
+ *  - Position: ABS_MT_POSITION_X/Y when present, else ABS_X/Y; last value remembered per slot.
+ *  - Only the first contact is followed; touch size and pressure are ignored (on the Titan pad a
+ *    second finger shows up as a size jump, not a new contact).
+ *  - Emits only at SYN_REPORT; MOVE only on a real change. SYN_DROPPED CANCELs, discards up to the
+ *    next SYN_REPORT, and the finger that was down stays ignored until a fresh touch-down.
+ *  - Stamps are CLOCK_MONOTONIC micros ([EvdevUserService]), the same clock as uptimeMillis(), so
+ *    `eventTimeMs = micros / 1000` needs no offset.
  */
 class TouchStreamDecoder(val device: TouchDeviceInfo) {
 
@@ -105,10 +82,7 @@ class TouchStreamDecoder(val device: TouchDeviceInfo) {
         }
     }
 
-    /**
-     * Ends a contact in progress because the stream itself ended (device gone, service died,
-     * engine stopping): returns the CANCEL at [timeMs] to deliver, or null if nothing was down.
-     */
+    /** The stream ended: the CANCEL at [timeMs] to deliver, or null if nothing was down. */
     fun cancel(timeMs: Long): DecodedTouch? {
         clearFrame()
         trackedSlot = NO_SLOT

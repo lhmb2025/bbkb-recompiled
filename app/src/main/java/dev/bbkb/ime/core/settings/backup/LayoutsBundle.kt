@@ -23,51 +23,24 @@ import java.util.Locale
 import java.util.TimeZone
 
 /**
- * The user's layouts as one JSON file, and reading one back: the two symbol pages, the custom
- * palette, the slideboard keypad, the quick phrases and the currency key. The settings backup
- * ([SettingsBackup]) carries the raw preferences; this carries the layouts in a form a person can
- * read, edit and hand to someone else. The imported letter layouts are not in it: each is its own
- * XML document ([LetterLayoutXml]), and a backup carries them as files beside this one
- * ([BackupBundle]).
- *
- * ## Document shape
+ * The user's editor layouts as one human-readable JSON file (symbol pages, palette, slideboard,
+ * quick phrases, currency key). Letter layouts travel as separate XML files ([BackupBundle]).
+ * Shape:
  *
  * ```json
  * {
- *   "format": "bbkb-layouts",
- *   "version": 1,
- *   "app": "5.0.0-beta.24",
- *   "versionCode": 1437,
- *   "created": "2026-10-06T09:14:07Z",
- *   "vkbSymbolPage": ["1", "2", "3", …26 slots],
- *   "pkbSymbolPage": ["!", "@", "#", …27 slots],
- *   "palette": ["★", "→"],
- *   "slideboard": ["7", "8", "9", "&", "*", …20 slots],
- *   "quickPhrases": ["On my way!", null, null, null, null],
+ *   "format": "bbkb-layouts", "version": 1, "app": "…", "versionCode": 1437, "created": "…Z",
+ *   "vkbSymbolPage": [26 slots], "pkbSymbolPage": [27 slots], "palette": ["★", "→"],
+ *   "slideboard": [20 slots], "quickPhrases": ["On my way!", null, null, null, null],
  *   "currency": "€"
  * }
  * ```
  *
- * Every list is in **editor order** — the order the slots appear on the editor's mock keyboard,
- * row by row — because that is the order a person reading the file sees, and because two of the
- * stores are not in that order: the on-screen symbol page and the slideboard keep a permutation
- * only `KeyEditorSpec.load`/`save` know (see [KeyEditorSpec]). So this reads and writes them
- * through the specs and never touches those preferences directly. A blank slot is `""`. A `null`
- * quick phrase is one the user never set, which shows the translated default; `""` for the
- * currency means the keyboard's own currency key.
- *
- * ## Import semantics
- *
- * Every section is optional, and a section the file leaves out is left alone, as [SettingsBackup]
- * merges rather than replaces. A section that is present must be complete: a symbol page with 25
- * slots is refused, not padded, because the user's 26th key would silently go blank. The parse
- * runs to completion before anything is written ([parse] then [applyEditors]), so a bad file
- * changes nothing. [parse] also accepts a single `letter-layout` XML document, so one Import row
- * serves both kinds of file.
- *
- * A `pkbLetterMaps` array, where builds before the XML layouts kept letter maps, is skipped
- * rather than refused: that format never reached users, and refusing it would refuse a developer's
- * whole backup over one section this build no longer reads.
+ * Lists are in editor order (row by row on the editor's mock keyboard), read and written through
+ * the [KeyEditorSpec]s because two stores keep a permutation only the specs know. A blank slot is
+ * `""`, a `null` quick phrase shows the translated default, `""` currency means the keyboard's own.
+ * On import a missing section is left alone; a present one must be complete (never padded), and
+ * the whole file is validated before anything is written. A legacy `pkbLetterMaps` field is skipped.
  */
 object LayoutsBundle {
 
@@ -75,16 +48,13 @@ object LayoutsBundle {
     const val VERSION: Int = 1
     const val MIME_TYPE: String = "application/json"
 
-    /** Largest file [parse] reads. A full bundle is tens of kilobytes. */
+    /** Largest file [parse] reads (a full bundle is tens of KB). */
     const val MAX_BYTES: Int = 1024 * 1024
 
     const val VKB_SLOTS: Int = 26
     const val PKB_SLOTS: Int = 27
 
-    /**
-     * Bundles written while the physical editor still drew a 28th slot carry 28 entries; they are
-     * still accepted, and the editor trims the extra on load since the keyboard has no key for it.
-     */
+    /** Older bundles carry a 28th physical slot; accepted, and the editor trims it on load. */
     const val PKB_SLOTS_LEGACY: Int = 28
     const val SLIDEBOARD_SLOTS: Int = 20
     const val QUICK_PHRASES: Int = 5
@@ -93,16 +63,11 @@ object LayoutsBundle {
     const val MAX_PHRASE_LENGTH: Int = 1000
     const val MAX_CURRENCY_LENGTH: Int = 8
 
-    /** `SettingsManager.getCurrencySymbol` / `SymbolCustomizationScreen`'s key. */
     private const val CURRENCY_KEY = "pref_currency_key"
 
     /**
-     * The preference keys the editor sections live under: the two symbol pages and the palette
-     * (`CustomSymbolRepository`), the slideboard numpad (`KeyEditorSpec`), the quick phrases and
-     * the currency key. A backup bundle keeps these out of its settings part so that Settings and
-     * Layouts are two separate things to restore or reset; [resetEditors] clears exactly these.
-     * The letter layouts are files, not preferences, and the active layout's id is already on
-     * [SettingsBackup.DENIED_KEYS].
+     * Preference keys of the editor sections. A bundle keeps these out of its settings part so
+     * Settings and Layouts restore or reset separately; [resetEditors] clears exactly these.
      */
     val PREF_KEYS: Set<String> by lazy {
         setOf(
@@ -115,9 +80,8 @@ object LayoutsBundle {
     }
 
     /**
-     * Puts every editor section back to its default by removing [PREF_KEYS], then clears the
-     * keyboard cache the way an edit does (see `CustomSymbolRepository.saveLayout`). Main thread,
-     * as [applyEditors]. Letter layouts are not touched here: the caller deletes those files.
+     * Resets every editor section by removing [PREF_KEYS] and clears the keyboard cache as an edit
+     * does. Main thread. Letter layout files are the caller's to delete.
      */
     fun resetEditors(context: Context) {
         val editor = PrefsManager.getPrefs(context).edit()
@@ -126,7 +90,7 @@ object LayoutsBundle {
         dev.bbkb.ime.keyboard.KeyboardBuilder.onKeyboardThemeChanged()
     }
 
-    /** `CustomSymbolRepository.DELIMITER`: the separator of the stores the slots live in. */
+    /** `CustomSymbolRepository.DELIMITER`, the slot stores' separator. */
     private const val STORAGE_DELIMITER = '͸'
 
     private val KNOWN_FIELDS = setOf(
@@ -134,13 +98,10 @@ object LayoutsBundle {
         "vkbSymbolPage", "pkbSymbolPage", "palette", "slideboard", "quickPhrases", "currency",
     )
 
-    /** Fields earlier builds wrote that this one reads past; see the class comment. */
+    /** Fields read past without refusing the file. */
     private val RETIRED_FIELDS = setOf("pkbLetterMaps")
 
-    /**
-     * What a layouts file holds. A null section is one the file does not carry (on import: leave
-     * that layout alone). Lists are in editor order; a blank slot is `""`.
-     */
+    /** A layouts file; a null section is absent (left alone on import). */
     class Layouts(
         val vkbSymbolPage: List<String>? = null,
         val pkbSymbolPage: List<String>? = null,
@@ -150,31 +111,25 @@ object LayoutsBundle {
         val quickPhrases: List<String?>? = null,
         val currency: String? = null,
     ) {
-        /** Whether the file carries any of the editor sections. */
         val hasEditorSections: Boolean
             get() = vkbSymbolPage != null || pkbSymbolPage != null || palette != null ||
                 slideboard != null || quickPhrases != null || currency != null
     }
 
-    /** What the Import row was handed: a layouts bundle, or one letter layout document. */
+    /** What the Import row was handed: a bundle or one letter layout. */
     sealed interface Import {
         class Bundle(val layouts: Layouts) : Import
         class LetterMap(val layout: LetterLayout) : Import
     }
 
-    /** The file is not one this build can import; [message] says why, for the user to fix it. */
+    /** [message] says which field is wrong and why. */
     class InvalidLayoutsException(message: String) : Exception(message)
 
-    // ── export ───────────────────────────────────────────────────────────────
-
-    /** `bbkb-layouts-2026-10-06.json` — what the save dialog opens pre-filled. */
+    /** `bbkb-layouts-<yyyy-MM-dd>.json`, the save dialog's suggested name. */
     fun defaultFileName(nowMillis: Long = System.currentTimeMillis()): String =
         "bbkb-layouts-" + SimpleDateFormat("yyyy-MM-dd", Locale.US).format(Date(nowMillis)) + ".json"
 
-    /**
-     * The user's current layouts, every section present, read the way the editors read them —
-     * defaults included, so the file describes what the keyboard shows. Safe off the main thread.
-     */
+    /** Current layouts with every section, defaults included, as the editors read them. Any thread. */
     fun capture(context: Context): Layouts {
         val prefs = PrefsManager.getPrefs(context)
         return Layouts(
@@ -210,12 +165,7 @@ object LayoutsBundle {
         layouts.currency?.let { put("currency", it) }
     }.toString(2)
 
-    // ── import ───────────────────────────────────────────────────────────────
-
-    /**
-     * Reads at most one byte past [MAX_BYTES] from [input], so an oversized file is refused by
-     * [parse] without the whole of it being held in memory.
-     */
+    /** Reads at most [MAX_BYTES] + 1 bytes, so [parse] can refuse an oversized file cheaply. */
     @Throws(IOException::class)
     fun readCapped(input: InputStream): String {
         val bytes = input.readNBytesCompat(MAX_BYTES + 1)
@@ -233,10 +183,7 @@ object LayoutsBundle {
         return out.toByteArray()
     }
 
-    /**
-     * Reads a layouts bundle (JSON) or a single letter layout (XML), validating all of it.
-     * Failures are [InvalidLayoutsException]s whose message names the field and the problem.
-     */
+    /** Parses and fully validates a layouts bundle (JSON) or one letter layout (XML). */
     fun parse(text: String): Result<Import> = try {
         Result.success(parseOrThrow(text))
     } catch (e: InvalidLayoutsException) {
@@ -325,10 +272,7 @@ object LayoutsBundle {
         return raw as? JSONArray ?: fail("$field must be a list")
     }
 
-    /**
-     * One key or palette symbol: short, printable, and free of the two characters the stores
-     * cannot hold — their list separator and the blank-slot marker.
-     */
+    /** A slot or palette symbol: short, printable, and without the stores' list separator. */
     private fun checkSymbol(value: String, where: String, allowBlank: Boolean): String {
         if (value.isEmpty()) {
             if (allowBlank) return value
@@ -341,11 +285,8 @@ object LayoutsBundle {
     }
 
     /**
-     * Writes the editor sections [layouts] carries, through the same repositories and specs the
-     * editors save with — so the symbol pages and the palette clear `KeyboardBuilder`'s cache as
-     * an edit does. Main thread: that cache is a plain `HashMap` the keyboard reads on the main
-     * thread. Letter layouts are not written here; they are files, saved off it through
-     * `LetterLayoutRegistry`.
+     * Writes the sections [layouts] carries through the editors' own specs, so caches clear as an
+     * edit does. Main thread: `KeyboardBuilder`'s cache is a plain `HashMap`.
      *
      * @return how many sections were written
      */
@@ -370,14 +311,9 @@ object LayoutsBundle {
         return written
     }
 
-    /** Editor slots as the file writes them: the blank-slot marker becomes `""`. */
     private fun fromSlots(slots: List<String>): List<String> = slots.map { if (it == EMPTY_SLOT) "" else it }
 
-    /**
-     * File slots as the editors store them: `""` becomes the blank-slot marker. The slideboard in
-     * particular must never be handed `""`: its loader treats any empty entry as "never
-     * customised" and would put the whole default pad back.
-     */
+    /** `""` to the blank-slot marker; the slideboard loader treats any `""` as "reset to default". */
     private fun toSlots(slots: List<String>): List<String> = slots.map { it.ifEmpty { EMPTY_SLOT } }
 
     private fun fail(message: String): Nothing = throw InvalidLayoutsException(message)

@@ -721,7 +721,6 @@
     <string name="device_config_import_unreadable">Tas failas nėra įrenginio konfigūracija</string>
     <string name="device_config_import_failed">Nepavyko importuoti to failo</string>
 
-    <!-- OTA app updates -->
     <string name="settings_updates_title">Naujinimai</string>
     <string name="settings_updates_summary">Tikrinti, ar yra nauja BBKB versija</string>
     <string name="settings_update_installed_version_title">Įdiegta versija</string>
@@ -755,7 +754,6 @@
     <string name="settings_update_ready_title">Paruošta įdiegti</string>
     <string name="settings_update_version_details">Versijos informacija</string>
     <string name="settings_update_unknown_sources_title">Leisti BBKB įdiegti naujinimus?</string>
-    <!-- Downloadable language packs (core/languagepack) -->
     <string name="language_packs_installed_header">Įdiegta</string>
     <string name="language_packs_available_header">Galima atsisiųsti</string>
     <string name="language_packs_download">Atsisiųsti</string>
@@ -877,7 +875,6 @@
     <string name="settings_voice_stop_on_pause_summary_off">Klausomasi ir per pauzes, kol bakstelėsite mikrofoną arba kol pusę minutės bus tylu</string>
     <string name="voice_status_listening_tap_to_stop">Klausoma&#8230; Bakstelėkite mikrofoną, kad sustabdytumėte</string>
 
-    <!-- Settings text moved out of the code (2026-11) -->
     <string name="settings_common_save">Išsaugoti</string>
     <string name="settings_common_edit">Redaguoti</string>
     <string name="settings_common_back">Atgal</string>

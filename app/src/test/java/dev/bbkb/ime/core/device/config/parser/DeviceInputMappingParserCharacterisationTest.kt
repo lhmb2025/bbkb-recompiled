@@ -17,19 +17,10 @@ import org.robolectric.annotation.Config
 import org.robolectric.util.ReflectionHelpers
 
 /**
- * Characterisation tests for [DeviceInputMappingParser] and the model types it fills.
- *
- * Written before the W3-D parser/model rewrite to pin the schema paths that
- * [DeviceInputMappingParserTest] does not reach: `<layout-alt-overrides>`, `<alt-mappings>`
- * (including `<enabled>false`), `<ckb-y-warp>`, unrecognised `<device-type>` values, the
- * `vendor-id` / `product-id` / `brand` / `build-device` match rules, exact-vs-regex precedence,
- * invalid regex, the non-boolean setting-override types, the scancode attribute error paths and
- * [DeviceInputMappingParser.parseDisplayName].
- *
- * These assertions describe the parser as it behaved *before* the rewrite. They must keep passing
- * verbatim; a failure here means the rewrite changed behaviour.
- *
- * Runs under Robolectric for android.util.Xml (a real XmlPullParser on the JVM).
+ * Characterises the [DeviceInputMappingParser] schema paths [DeviceInputMappingParserTest] does not
+ * reach: alt overrides and mappings, `<ckb-y-warp>`, unknown `<device-type>`, match rules and regex
+ * precedence, typed setting overrides, scancode errors and [DeviceInputMappingParser.parseDisplayName].
+ * Robolectric for android.util.Xml.
  */
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [34], manifest = Config.NONE)
@@ -64,8 +55,6 @@ class DeviceInputMappingParserCharacterisationTest {
 
     private fun named(body: String) = parseSingle("""<match><device-name exact="d"/></match>$body""")
 
-    // ── <device-type> ────────────────────────────────────────────────────────
-
     @Test
     fun deviceType_unrecognisedValue_forcesNothing() {
         val m = named("<device-type>VKB</device-type>")
@@ -87,8 +76,6 @@ class DeviceInputMappingParserCharacterisationTest {
         assertFalse(m.forceTouchKeypad)
     }
 
-    // ── <ckb-y-warp> ─────────────────────────────────────────────────────────
-
     @Test
     fun ckbYWarp_parsedAndTrimmed() {
         val m = named("<ckb-y-warp>  0:0,450:450  </ckb-y-warp>")
@@ -105,8 +92,6 @@ class DeviceInputMappingParserCharacterisationTest {
     fun ckbYWarp_absent_isNull() {
         assertNull(named("").ckbYWarp)
     }
-
-    // ── <keypad-layout> ──────────────────────────────────────────────────────
 
     @Test
     fun keypadLayout_acceptsTheThreeLayouts() {
@@ -141,8 +126,6 @@ class DeviceInputMappingParserCharacterisationTest {
         assertEquals("azerty", m.keypadLayout)
         assertEquals("0:0,450:324", m.ckbYWarp)
     }
-
-    // ── <alt-mappings> ───────────────────────────────────────────────────────
 
     @Test
     fun altMappings_sourceSetsCustomTypeAndFile() {
@@ -190,8 +173,6 @@ class DeviceInputMappingParserCharacterisationTest {
         assertEquals(DeviceInputMapping.InputMappingType.DEFAULT, named("").mappingType)
     }
 
-    // ── <layout-alt-overrides> ───────────────────────────────────────────────
-
     @Test
     fun layoutAltOverrides_parsedIntoMap() {
         val m = named(
@@ -238,8 +219,6 @@ class DeviceInputMappingParserCharacterisationTest {
         assertNull(m.getLayoutOverride("rows_symbols_shifted"))
         assertNull(m.getLayoutOverride(null))
     }
-
-    // ── <match> rules beyond device-name ─────────────────────────────────────
 
     @Test
     fun vendorAndProductId_exactRules_areAnded() {
@@ -368,8 +347,6 @@ class DeviceInputMappingParserCharacterisationTest {
         assertTrue(config.mappings.isEmpty())
     }
 
-    // ── settings overrides ───────────────────────────────────────────────────
-
     @Test
     fun integerSettingOverride_parsed() {
         val m = named(
@@ -462,8 +439,6 @@ class DeviceInputMappingParserCharacterisationTest {
         assertFalse(m.hasSettingOverride("absent"))
         assertNull(m.getSettingOverride(null))
     }
-
-    // ── scancode mappings ────────────────────────────────────────────────────
 
     @Test
     fun scancodeMapping_allAttributesParsed() {
@@ -583,8 +558,6 @@ class DeviceInputMappingParserCharacterisationTest {
         assertFalse(k.matches(43, 999))
     }
 
-    // ── ckb-key-grid edge cases ──────────────────────────────────────────────
-
     @Test
     fun ckbKeyGrid_missingDimensionsAndBadFloats_defaultToZero() {
         val m = named(
@@ -612,8 +585,6 @@ class DeviceInputMappingParserCharacterisationTest {
         assertNull(m.ckbKeyGridConfig)
     }
 
-    // ── document level ───────────────────────────────────────────────────────
-
     @Test
     fun unknownTopLevelElements_areIgnored() {
         val config = parse(
@@ -631,19 +602,12 @@ class DeviceInputMappingParserCharacterisationTest {
         assertEquals("d", m.deviceName)
     }
 
-    // NOTE: there is deliberately no test for a truncated document inside a <device> element.
-    // A document that ends with an element still open (e.g. "<device-input-config><device><match>")
-    // makes the parser spin forever: Android's KXmlParser returns END_DOCUMENT from next() at EOF
-    // instead of throwing, and every element loop terminates only on its own END_TAG. Recorded as
-    // a defect by W3-D and deliberately left unfixed in this behaviour-neutral wave; a test for it
-    // would hang the suite.
+    // Truncated documents are covered by TruncatedConfigTerminatesTest.
 
     @Test
     fun emptyDocument_yieldsEmptyConfig() {
         assertTrue(parse("").mappings.isEmpty())
     }
-
-    // ── parseDisplayName ─────────────────────────────────────────────────────
 
     @Test
     fun displayName_fromRootAttributeOnDeviceInputConfig() {

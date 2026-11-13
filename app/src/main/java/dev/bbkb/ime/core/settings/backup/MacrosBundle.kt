@@ -6,9 +6,8 @@ import org.json.JSONException
 import org.json.JSONObject
 
 /**
- * The user's custom macros (Advanced > Custom macros: `%tag` placeholders that expand to text)
- * as one JSON document, and reading one back. They live in their own preference file, so the
- * settings document ([SettingsBackup]) never sees them; this is their part of a backup bundle.
+ * Custom macros (`%tag` placeholders that expand to text) as a JSON document; they live in their
+ * own preference file, outside [SettingsBackup].
  *
  * ```json
  * {
@@ -18,8 +17,7 @@ import org.json.JSONObject
  * }
  * ```
  *
- * A restore replaces the macro set with the document's: a macro is addressed by its tag, and
- * merging two sets by tag would silently keep whichever side wrote a tag last.
+ * A restore replaces the whole set: merging by tag would silently keep whichever side wrote last.
  */
 object MacrosBundle {
 

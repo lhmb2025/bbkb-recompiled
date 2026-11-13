@@ -3,15 +3,9 @@ package dev.bbkb.ime.core.gesture.arbiter
 import android.content.SharedPreferences
 
 /**
- * The user-configurable mapping of assignable gesture slots to [GestureAction]s.
- *
- * Slots (see [[ckb-gesture-rebuild]] memory): flick/swipe left & right, swipe up, swipe down
- * (flick-down folds in here), double-tap, and tap-and-hold. Flick **up** is reserved (commit) and
- * is not a slot. Swipe-down defaults to Cycle symbols.
- *
- * Cursor mode is entered by **double-tap**, matching the original engine's gesture
- * (see docs/legacy-gesture-engine.md, onDoubleTapEvent) and leaving tap-and-hold free — with [hold] unassigned
- * the policy yields the stroke, so holding a key falls through to its normal behavior.
+ * Assignable gesture slots: flick/swipe left and right, swipe down (flick-down folds in), double-tap
+ * and hold. Up is reserved (commit). Double-tap enters cursor mode so an unassigned [hold] yields
+ * and holding a key keeps its normal behavior.
  */
 data class GestureAssignments(
     val flickLeft: GestureAction = GestureAction.DELETE_WORD,
@@ -32,9 +26,8 @@ data class GestureAssignments(
         const val KEY_HOLD = "ckb_gesture_hold"
 
         /**
-         * The app-wide defaults, with every slot for which [deviceDefault] names an action (a
-         * device profile's `<setting key="ckb_gesture_..." default-value="..."/>`) replaced by it.
-         * A default, not a lock: the user's stored choice still wins in [fromPrefs].
+         * App defaults overridden per slot by [deviceDefault] (a profile's
+         * `<setting key="ckb_gesture_..." default-value="..."/>`); stored choices still win.
          */
         fun defaults(deviceDefault: (key: String) -> String?): GestureAssignments {
             val d = GestureAssignments()
@@ -51,16 +44,12 @@ data class GestureAssignments(
             )
         }
 
-        /**
-         * [defaults] for the active device profile: on the Titans double-tap defaults to none,
-         * because the OEM Cursor assistant owns double-tap there; everywhere else these are the
-         * app-wide defaults.
-         */
+        /** [defaults] for the active profile (Titans default double-tap to none: the OEM Cursor assistant owns it). */
         fun deviceDefaults(): GestureAssignments = defaults { key ->
             dev.bbkb.ime.core.device.profile.DeviceProfile.current().getDefaultStringValue(key, null)
         }
 
-        /** Load assignments from prefs, falling back to [defaults]' slot when one is unset. */
+        /** Unset slots fall back to [defaults]. */
         fun fromPrefs(prefs: SharedPreferences, defaults: GestureAssignments = GestureAssignments()): GestureAssignments {
             val d = defaults
             return GestureAssignments(

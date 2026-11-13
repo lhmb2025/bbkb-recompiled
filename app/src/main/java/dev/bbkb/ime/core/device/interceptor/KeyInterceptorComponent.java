@@ -12,25 +12,18 @@ import dev.bbkb.ime.core.device.profile.DeviceProfile;
 import dev.bbkb.ime.core.shared.Logger;
 
 /**
- * Keeps the BBKB helper's service component ({@link KeyInterceptorService}) in step with the
- * device profile.
- *
- * <p>Android lists an app's accessibility service under Settings &gt; Accessibility only while its
- * component is enabled. On a phone whose profile says {@code <accessibility-helper>off} (BlackBerry
- * hardware, whose firmware delivers every key the keyboard handles) the component is disabled, so
- * the helper is not offered there at all; if it had been switched on, Android turns it off. Every
- * other phone gets the manifest default, which is enabled.
- *
- * <p>The manifest cannot read the profiles, so a fresh install lists the helper until BBKB first
- * runs on the phone; {@link DeviceProfile} calls {@link #apply} each time it resolves the profile
- * (keyboard start-up, the settings screen, a device-configuration switch). The change survives app
- * updates and reboots, and is written only when it differs from what the system already holds.
+ * Keeps the {@link KeyInterceptorService} component in step with the device profile. Android lists
+ * an accessibility service only while its component is enabled, so a profile with
+ * {@code <accessibility-helper>off} disables it (and Android switches the service off); other phones
+ * keep the manifest default (enabled). {@link DeviceProfile} calls {@link #apply} on every profile
+ * resolve, so a fresh install lists the helper until BBKB first runs. Writes only on a change.
  */
 public final class KeyInterceptorComponent {
 
     private static final String TAG = "KeyInterceptorComponent";
 
     private KeyInterceptorComponent() {
+        // Static helpers only.
     }
 
     /** Whether the profile says this phone never needs the helper. */

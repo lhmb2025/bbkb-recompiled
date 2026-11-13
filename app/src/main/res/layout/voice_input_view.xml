@@ -35,11 +35,8 @@
         android:layout_marginEnd="36dp"
         android:layout_toStartOf="@+id/voice_input_btn"/>
 
-    <!-- Material-only additions (shown by VoiceInputView when the Material theme
-         is active): status line, live waveform, recognition-language chip. -->
-    <!-- Full width with side margins and centred lines, so a message long enough to wrap keeps
-         clear of the board's edges. VoiceInputView widens the margins to clear the language
-         chip, which a second line reaches on most keyboard heights. -->
+    <!-- Material theme only (VoiceInputView shows them) -->
+    <!-- VoiceInputView widens the margins so a wrapped line clears the language chip -->
     <TextView
         android:id="@+id/voice_status_text"
         android:layout_width="match_parent"
@@ -61,8 +58,7 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="8dp"
         android:visibility="gone"/>
-    <!-- Corner badge: anchored top-end so it never competes with the mic stack
-         for vertical space on compact keyboard heights. -->
+    <!-- Top-end so it never takes vertical space from the mic stack -->
     <TextView
         android:id="@+id/voice_language_chip"
         android:layout_width="wrap_content"

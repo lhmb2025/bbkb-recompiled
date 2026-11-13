@@ -1,20 +1,12 @@
 package dev.bbkb.ime.core.layout
 
 /**
- * The engine's on-screen KDBs, built from the keyboard actually drawn.
- *
- * The app used to ship one on-screen KDB per language (`assets/kdb/<name>_vkb.xml`); they came in
- * a handful of row shapes, and their letters were a copy of what the language's keyboard draws,
- * kept by hand and sometimes wrong (Belgian Dutch and German draw AZERTY but had QWERTY and QWERTZ
- * letters). Now one file of each shape ships, and the engine's KDB is built from it and the drawn
- * keyboard's letters ([DrawnKeyboard]): [choose] picks the file whose rows have the drawn row
- * shape and, between files of one shape (QWERTY and Georgian, Thai and Lao), whose keys sit nearest
- * the drawn ones; [build] writes the letters on it and stamps it with every engine id the
- * on-screen keyboard may ask for ([IDS]), so whichever language the engine loads it finds the
- * drawn letters, as the physical keypad's files do ([KeypadKdbs]).
- *
- * The Chinese stroke, zhuyin and Cangjie keyboards keep their shipped files: their keys stand for
- * strokes and radicals the engine reads its own way ([KEPT_LAYOUT_SETS]).
+ * The engine's on-screen KDBs, built from the drawn keyboard ([DrawnKeyboard]). One template ships
+ * per row shape: [choose] picks the one matching the drawn shape (nearest key centres between
+ * same-shape files such as QWERTY/Georgian, Thai/Lao); [build] writes the drawn letters on it and
+ * stamps every engine id in [IDS], so whichever language the engine loads finds the drawn letters.
+ * Chinese stroke, zhuyin and Cangjie keep their shipped files ([KEPT_LAYOUT_SETS]): their keys are
+ * strokes and radicals the engine reads its own way.
  */
 object OnScreenKdbs {
 
@@ -32,10 +24,7 @@ object OnScreenKdbs {
     @JvmField
     val NOT_TEMPLATES: Set<String> = setOf("chinese_stroke_vkb.xml", "chinese_zhuyin_vkb.xml")
 
-    /**
-     * Every (primaryId, secondaryId) the engine may ask an on-screen KDB for, from the per-language
-     * files the app shipped: the built KDB is registered under each.
-     */
+    /** Every (primaryId, secondaryId) the engine may ask an on-screen KDB for; the built KDB is registered under each. */
     @JvmField
     val IDS: List<Pair<Int, Int>> = listOf(
         1, 2, 3, 6, 7, 8, 9, 10, 11, 12, 13, 18, 20, 25, 30, 31, 34, 35, 37, 41, 43, 44, 47, 57, 68,
@@ -47,9 +36,8 @@ object OnScreenKdbs {
     fun isTemplate(name: String): Boolean = name.endsWith(LetterLayoutKdb.Template.VKB.fileSuffix) && name !in NOT_TEMPLATES
 
     /**
-     * The name of the template in [templates] (file name -> contents) for [drawn]: one whose rows
-     * above its last have [drawn]'s shape, nearest by key centres and then by its last row's
-     * positions ([DrawnKeyboard.spaceRowPositions]). Null when none has the shape.
+     * The template name in [templates] (file name -> contents) whose non-space rows have [drawn]'s
+     * shape, nearest by key centres, then by space-row position count. Null when none has the shape.
      */
     @JvmStatic
     fun choose(templates: Map<String, String>, drawn: DrawnKeyboard): String? {
@@ -75,10 +63,7 @@ object OnScreenKdbs {
         return best
     }
 
-    /**
-     * The on-screen KDB for every id in [IDS]: [template] with [drawn]'s letters, each stamped with
-     * one id. Null when the drawn rows do not fit the template.
-     */
+    /** [template] with [drawn]'s letters, once per id in [IDS]; null when the drawn rows do not fit. */
     @JvmStatic
     fun build(template: String, drawn: DrawnKeyboard): List<String>? {
         val lettered = LetterLayoutKdb.forDrawnKeyboard(template, drawn.rows.map { row -> row.map { it.codes } }) ?: return null

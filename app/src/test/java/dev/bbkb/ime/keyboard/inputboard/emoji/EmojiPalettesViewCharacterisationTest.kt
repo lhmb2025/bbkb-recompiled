@@ -30,24 +30,10 @@ import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
 
 /**
- * Characterisation of `EmojiPalettesView` and its pager adapter, driven through the real view tree
- * inflated from `emoji_palettes_view.xml` with the app's resources and keyboard XML. The dataset is
- * [EmojiTestEnv.seedStandard]: positions 0 Recents | 1-2 Smileys | 3 Animals | 4 Food, and People
- * has no emoji, so it has no tab and no pages.
- *
- * Pinned AS IT BEHAVES, including the entries marked CHARACTERISED DEFECT.
- *
- * ## The second open (audit §6 defect 11)
- * `KeyboardSwitcher.hideEmojiKeyboard()` calls `detachPagerAdapter()`, which sets the pager's
- * adapter to null. The ONLY place the adapter is attached again is `attachPagerAdapter()`, which
- * `showEmojiKeyboardInternal()` calls on every open (it used to hide inside the delete-icon
- * update). [secondOpenIsEmptyUntilAttachPagerAdapter] replays that exact call sequence and pins
- * both halves: without the call the pager is empty, with it the same adapter is back at the page
- * the user left.
- *
- * ## Remembered category
- * A remembered category id must name a category that has a tab; anything else (an empty category,
- * a negative or out-of-range id) opens on the default category, which replaces it.
+ * Characterisation of `EmojiPalettesView` and its pager adapter through the real inflated view tree. Dataset
+ * [EmojiTestEnv.seedStandard]: 0 Recents | 1-2 Smileys | 3 Animals | 4 Food; People is empty (no tab).
+ * `detachPagerAdapter()` on hide leaves the pager empty until `attachPagerAdapter()` runs on the next open.
+ * A remembered category without a tab opens on the default category, which replaces it.
  */
 @RunWith(RobolectricTestRunner::class)
 @Config(
@@ -74,8 +60,6 @@ class EmojiPalettesViewCharacterisationTest {
         idle()
         EmojiTestEnv.uninstall()
     }
-
-    // ------------------------------------------------------------------ harness
 
     private fun open(): EmojiPalettesView = EmojiTestEnv.inflatePalettes(activity)
 
@@ -127,8 +111,6 @@ class EmojiPalettesViewCharacterisationTest {
     }
 
     private fun storedRecents(): String? = prefs.getString(RECENTS_KEY, null)
-
-    // ------------------------------------------------------------------ category index
 
     @Test
     fun emptyCategoriesGetNoTabAndNoPages() {
@@ -216,7 +198,7 @@ class EmojiPalettesViewCharacterisationTest {
         assertEquals(0, lastCategory())
     }
 
-    /** Lands on Recents by tapping its tab: with no recents stored the board no longer opens there. */
+    /** Lands on Recents by tapping its tab: with no recents stored the board does not open there. */
     private fun openOnEmptyRecents(): EmojiPalettesView = open().also { it.selectTab(0) }
 
     @Test
@@ -274,8 +256,6 @@ class EmojiPalettesViewCharacterisationTest {
         assertTrue(v.firstOutputs().contains("a0"))
     }
 
-    // ------------------------------------------------------------------ second open (defect 11)
-
     @Test
     fun secondOpenIsEmptyUntilAttachPagerAdapter() {
         val v = open()
@@ -327,8 +307,6 @@ class EmojiPalettesViewCharacterisationTest {
         assertEquals("[\"😀\",\"😁\"]", storedRecents())
     }
 
-    // ------------------------------------------------------------------ pager adapter page lifecycle
-
     /** While switching to emoji (every open until requestShiftOff), destroyed pages are still removed. */
     @Test
     fun whileSwitchingToEmojiDestroyedPagesAreRemoved() {
@@ -351,8 +329,6 @@ class EmojiPalettesViewCharacterisationTest {
         v.select(1)
         assertEquals(3, v.pager().recycler().childCount)
     }
-
-    // ------------------------------------------------------------------ taps and recents
 
     @Test
     fun anEmojiTappedInACategoryIsWrittenToRecentsImmediately() {
@@ -384,8 +360,6 @@ class EmojiPalettesViewCharacterisationTest {
         assertTrue(v.overlay().isOverlayVisible)
         assertEquals(listOf("😀"), emojiOutputs(v.overlay().keyboards().single()))
     }
-
-    // ------------------------------------------------------------------ recents overlay and search
 
     @Test
     fun openingOnRecentsShowsAtMostThirtyRecentsInTheOverlay() {

@@ -5,12 +5,9 @@ import org.junit.Test
 import java.util.Locale
 
 /**
- * Indonesian, Hebrew and Yiddish are spelled `in`, `iw` and `ji` everywhere in this app (the
- * subtypes, both pack catalogs, the installed-pack directories, the script tables and the engine's
- * language table). Java 17 and Android 15 (apps targeting API 35) stopped converting `Locale` to
- * those codes, so on an Android 15 phone an Indonesian keyboard found no dictionary and the engine
- * was handed a language it does not know. [LocaleUtils.languageCode] is the bridge; this test runs
- * on a modern JDK, so it sees exactly what the phone sees.
+ * The app spells Indonesian, Hebrew and Yiddish `in`, `iw`, `ji` everywhere (subtypes, pack
+ * catalogs and directories, script and engine tables), but Java 17 and targetSdk 35+ `Locale` give
+ * `id`, `he`, `yi`. [LocaleUtils.languageCode] bridges them; a modern JDK sees what the phone sees.
  */
 class LocaleUtilsLanguageCodeTest {
 

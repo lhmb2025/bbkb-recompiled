@@ -21,13 +21,9 @@ import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
 
 /**
- * The clipboard list's interaction model: a tap pastes; a long-press on the row and a tap on its
- * overflow button open the same menu (Pin/Unpin, Copy, Share, Show full text, Delete), whose
- * actions reach [ClipboardActionCallback]; pinned rows sit under a "Pinned" header above a
- * "Recent" one; link previews are bound by entry id.
- *
- * The menu is captured through [ClipboardAdapter.menuLauncher] instead of being shown: a popup
- * needs a window, which a bare RecyclerView under Robolectric does not have.
+ * The clipboard list: a tap pastes; long-press and the overflow button open the same menu, whose actions reach
+ * [ClipboardActionCallback]; "Pinned" sits above "Recent"; previews bind by entry id. The menu is captured
+ * through [ClipboardAdapter.menuLauncher], since a popup needs a window Robolectric's bare RecyclerView lacks.
  */
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [34], qualifiers = "w411dp-h891dp")
@@ -94,8 +90,6 @@ class ClipboardRowMenuTest {
 
     private fun str(id: Int) = context.getString(id)
 
-    // ── which actions a row offers ───────────────────────────────────────────
-
     @Test
     fun theActionsFollowTheRowsState() {
         val plain = clip(1, "x")
@@ -122,8 +116,6 @@ class ClipboardRowMenuTest {
             ClipboardEntryMenu.actionsFor(plain, true, true),
         )
     }
-
-    // ── opening the menu ─────────────────────────────────────────────────────
 
     @Test
     fun aTapPastesAndOpensNoMenu() {
@@ -217,8 +209,6 @@ class ClipboardRowMenuTest {
         assertEquals(3, b.row(0).dataTextView.maxLines)
     }
 
-    // ── sections, ids, glyphs ────────────────────────────────────────────────
-
     @Test
     fun pinnedRowsSitUnderAPinnedHeaderAboveRecentOnes() {
         val b = board(
@@ -253,8 +243,6 @@ class ClipboardRowMenuTest {
             (0 until b.adapter.itemCount).map { b.adapter.getItemId(it) },
         )
     }
-
-    // ── link previews ────────────────────────────────────────────────────────
 
     @Test
     fun noLinkIsFetchedWhilePreviewsAreOff() {

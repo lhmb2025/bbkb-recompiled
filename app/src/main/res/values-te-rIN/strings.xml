@@ -721,7 +721,6 @@
     <string name="device_config_import_unreadable">ఆ ఫైల్ పరికర కాన్ఫిగరేషన్ కాదు</string>
     <string name="device_config_import_failed">ఆ ఫైల్‌ను దిగుమతి చేయలేకపోయాం</string>
 
-    <!-- OTA app updates -->
     <string name="settings_updates_title">నవీకరణలు</string>
     <string name="settings_updates_summary">BBKB కొత్త వెర్షన్ కోసం తనిఖీ చేయండి</string>
     <string name="settings_update_installed_version_title">ఇన్‌స్టాల్ చేసిన వెర్షన్</string>
@@ -755,7 +754,6 @@
     <string name="settings_update_ready_title">ఇన్‌స్టాల్ చేయడానికి సిద్ధంగా ఉంది</string>
     <string name="settings_update_version_details">వెర్షన్ వివరాలు</string>
     <string name="settings_update_unknown_sources_title">నవీకరణలను ఇన్‌స్టాల్ చేయడానికి BBKBని అనుమతించాలా?</string>
-    <!-- Downloadable language packs (core/languagepack) -->
     <string name="language_packs_installed_header">ఇన్‌స్టాల్ చేయబడింది</string>
     <string name="language_packs_available_header">డౌన్‌లోడ్‌కు అందుబాటులో</string>
     <string name="language_packs_download">డౌన్‌లోడ్</string>
@@ -877,7 +875,6 @@
     <string name="settings_voice_stop_on_pause_summary_off">మీరు మైక్రోఫోన్‌ను నొక్కే వరకు లేదా అర నిమిషం నిశ్శబ్దం వచ్చే వరకు విరామాల్లోనూ వింటూనే ఉంటుంది</string>
     <string name="voice_status_listening_tap_to_stop">వింటోంది&#8230; ఆపడానికి మైక్‌ను నొక్కండి</string>
 
-    <!-- Settings text moved out of the code (2026-11) -->
     <string name="settings_common_save">సేవ్ చేయి</string>
     <string name="settings_common_edit">సవరించు</string>
     <string name="settings_common_back">వెనుకకు</string>

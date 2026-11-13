@@ -38,25 +38,10 @@ import org.robolectric.annotation.Config
 import java.util.Locale
 
 /**
- * Phase 1g slice 2: **the accessibility pre-pass identifies the Sym key the same way the ordinary
- * key path does.**
- *
- * <p>`KeyEventProcessor.processKeyEventForState` — the pre-pass the accessibility interceptor
- * feeds while no editor is bound — used to test the raw `keyCode == KEYCODE_SYM` and resolve no
- * device mapping at all, while `onKeyDownInternal` asks [ResolvedKey], which is mapping-aware. On
- * a device whose Sym key does not arrive as `KEYCODE_SYM` the two paths disagreed: the MP01's Sym
- * is `KEYCODE_ALT_RIGHT` on scancode 249 (`device_config_minimal.xml`,
- * `<key rawScanCode="249" role="BOARD_SYM"/>`), and `HardwareKeyBridge`'s all-keys callback routes
- * every `KEYCODE_ALT_RIGHT` into the pre-pass *and consumes it*, so on an MP01 with the
- * interceptor on the Sym key reached the pre-pass, was not recognised, and did nothing.
- *
- * <p>Owner decision, 2026-09-22: the pre-pass uses the same [ResolvedKey] identity. That is an
- * **MP01-only behaviour change** (a fix in intent) and a deliberate one; the KEY2, whose
- * `device_config_athena.xml` declares no Sym mapping at all, must be untouched, and the first two
- * tests here are what pins that.
- *
- * <p>Two of the tests below record the change. Against `de4d2092` they asserted the opposite and
- * passed; see PHASE1G-SUMMARY.md.
+ * The accessibility pre-pass (`processKeyEventForState`) identifies the Sym key through
+ * [ResolvedKey], like `onKeyDownInternal`. On the MP01 Sym is `KEYCODE_ALT_RIGHT` on scancode 249
+ * (role BOARD_SYM), which `HardwareKeyBridge` routes into the pre-pass and consumes; the KEY2
+ * (no Sym mapping in `device_config_athena.xml`) must behave exactly as a raw keycode test.
  */
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [34], manifest = Config.NONE)
@@ -138,13 +123,10 @@ class SymPrePassIdentityTest {
         PrefsManager.getPrefs(context).edit().clear().commit()
     }
 
-    // ======================================================= KEY2: nothing may change
-
     /**
-     * A real {@code KEYCODE_SYM} on a KEY2 reaches the pre-pass and toggles the symbol board, with
-     * `device_config_athena.xml` loaded. The premise the whole KEY2 claim rests on is asserted
-     * first: that config declares no mapping for the Sym key, so the mapping-aware test falls back
-     * to the key code and answers exactly what the old raw comparison answered.
+     * A real {@code KEYCODE_SYM} on a KEY2 reaches the pre-pass and toggles the symbol board. The
+     * premise is asserted first: the athena config maps no Sym key, so identity falls back to the
+     * key code.
      */
     @Test
     fun `a KEY2 Sym still toggles the symbol board on the pre-pass`() {
@@ -197,13 +179,7 @@ class SymPrePassIdentityTest {
             .onSymbolShiftToggle(anyInt(), anyInt(), anyBoolean(), anyBoolean())
     }
 
-    // ======================================================= MP01: the authorised change
-
-    /**
-     * The disagreement, stated as one test: the very same MP01 Sym event, through both entry
-     * points. The ordinary key path has always recognised it. Against `de4d2092` the pre-pass did
-     * not (`assertEquals(0, …)` after the pre-pass, and it passed).
-     */
+    /** The same MP01 Sym event through both entry points: both recognise it. */
     @Test
     fun `an MP01 Sym is recognised by both paths`() {
         installMp01()
@@ -224,9 +200,8 @@ class SymPrePassIdentityTest {
     }
 
     /**
-     * A bare MP01 Sym on the pre-pass toggles the symbol board. Against `de4d2092` this asserted
-     * `verify(keyboardSwitcher, never())…` and passed: with the interceptor on, an MP01's Sym key
-     * was consumed by the accessibility service and then dropped.
+     * A bare MP01 Sym on the pre-pass toggles the symbol board rather than being consumed by the
+     * accessibility service and dropped.
      */
     @Test
     fun `a bare MP01 Sym toggles the symbol board on the pre-pass`() {
@@ -239,8 +214,8 @@ class SymPrePassIdentityTest {
 
     /**
      * The MP01's Sym key is also its right-Alt key code, so the pre-pass must name it to the
-     * tracker as the Sym key — otherwise `isSymKeyHeld()` ("hold Sym to keep the symbol board
-     * open") cannot answer on that device. The ordinary key path already does this.
+     * tracker as the Sym key, or `isSymKeyHeld()` ("hold Sym to keep the symbol board open")
+     * cannot answer on that device.
      */
     @Test
     fun `the pre-pass names the MP01 Sym key code to the tracker`() {
@@ -270,12 +245,9 @@ class SymPrePassIdentityTest {
             .onSymbolShiftToggle(anyInt(), anyInt(), anyBoolean(), anyBoolean())
     }
 
-    // ======================================================= helpers
-
     /**
-     * A KEY2-shaped profile with the shipped `device_config_athena.xml` loaded, and the premise
-     * that config has to keep satisfying: it names no Sym key, so identity for `KEYCODE_SYM` comes
-     * from the key code either way.
+     * A KEY2-shaped profile with the shipped `device_config_athena.xml`, which must keep naming no
+     * Sym key so `KEYCODE_SYM` identity comes from the key code.
      */
     private fun installKey2() {
         DeviceProfile.installForTest(

@@ -39,10 +39,6 @@ public class ClipboardView extends RelativeLayout implements ClipboardHistoryMan
 
     private final int clipboardMaxSize;
 
-    /**
-     * Audit IB-27: updateEmptyState() ran findViewById on every clipboard mutation,
-     * although the view is already resolved in the constructor.
-     */
     private View emptyStateView;
 
     private ClipboardAdapter adapter;
@@ -57,11 +53,10 @@ public class ClipboardView extends RelativeLayout implements ClipboardHistoryMan
         this(context, attributeSet, 0);
     }
 
+    /** @param i the default style attribute */
     public ClipboardView(Context context, AttributeSet attributeSet, int i) {
         super(context, attributeSet, i);
-        // Assigned here, not in the 2-arg constructor: that one delegates first, so a
-        // direct 3-arg construction used to leave `context` null and NPE in
-        // onShareClip (audit IB-27).
+        // Assigned here so every constructor path sets it.
         this.context = context;
         LayoutInflater.from(context).inflate(R.layout.clipboard, this);
         this.recyclerView = (RecyclerView) findViewById(R.id.clipboardView);
@@ -71,16 +66,13 @@ public class ClipboardView extends RelativeLayout implements ClipboardHistoryMan
         hide();
         this.keyboardSwitcher = KeyboardSwitcher.getInstance();
         this.clipboardMaxSize = BoardHeightPolicy.fallbackHeight(getContext().getResources());
-        
-        // Apply keyBackgroundColor from KeyboardColorManager to match keyboard keys
+
         if (KeyboardColorManager.INSTANCE.isInitialized()) {
             boolean modernBoards = KeyboardColorManager.styleSpec().getModernBoards();
-            // Modern boards share the keyboard's background surface; legacy keyColor.
             setBackgroundColor(modernBoards
                     ? KeyboardColorManager.INSTANCE.getBackgroundColor()
                     : KeyboardColorManager.INSTANCE.getKeyColor());
             if (modernBoards) {
-                // Card spacing: 8dp side margins, 6dp gaps between cards.
                 final float density = getResources().getDisplayMetrics().density;
                 final int marginH = (int) (8 * density);
                 final int marginV = (int) (3 * density);
@@ -92,11 +84,9 @@ public class ClipboardView extends RelativeLayout implements ClipboardHistoryMan
                     }
                 });
             }
-            
-            // Apply colors to empty clipboard view
+
             android.view.View emptyClipboardView = findViewById(R.id.empty_clipboard);
             if (emptyClipboardView instanceof android.view.ViewGroup) {
-                // Tint the empty clipboard icon with iconColorAlt
                 android.widget.ImageView emptyIcon = emptyClipboardView.findViewById(R.id.empty_clipboard_graphic);
                 if (emptyIcon != null) {
                     KeyboardColorManager.INSTANCE.tint(
@@ -105,7 +95,6 @@ public class ClipboardView extends RelativeLayout implements ClipboardHistoryMan
                     );
                 }
 
-                // Set text color for all TextViews to textColor
                 android.view.ViewGroup emptyGroup = (android.view.ViewGroup) emptyClipboardView;
                 int textColor = KeyboardColorManager.INSTANCE.getTextColor();
                 for (int childIndex = 0; childIndex < emptyGroup.getChildCount(); childIndex++) {
@@ -122,12 +111,7 @@ public class ClipboardView extends RelativeLayout implements ClipboardHistoryMan
         }
     }
 
-    /**
-     * M3 empty state: the full-bleed illustration becomes a small icon in a tonal
-     * circle centered on the board, with the two lines of text (XML order: user hint
-     * first, headline second) restacked beneath it. Positioning uses translationY on
-     * gravity-centered views so the legacy layout params stay untouched in spirit.
-     */
+    /** Modern empty state: a small icon in a tonal circle, the two text lines restacked beneath it. */
     private void applyMaterialEmptyState(android.view.ViewGroup emptyGroup,
             android.widget.ImageView emptyIcon) {
         final float density = getResources().getDisplayMetrics().density;
@@ -139,9 +123,8 @@ public class ClipboardView extends RelativeLayout implements ClipboardHistoryMan
         emptyIcon.setTranslationY(-44 * density);
         int pad = (int) (26 * density);
         emptyIcon.setPadding(pad, pad, pad, pad);
-        // The legacy full-bleed illustration is an ultra-wide 1342x755 canvas whose
-        // glyph shrinks to nothing inside the chip — swap in the same glyph
-        // re-centered on a square 48dp canvas (the view's tint list carries over).
+        // The legacy illustration is an ultra-wide 1342x755 canvas whose glyph shrinks to nothing
+        // in the chip, so use the same glyph on a square canvas (the tint list carries over).
         emptyIcon.setImageResource(R.drawable.ic_inputboard_clipboard_empty_glyph);
         android.graphics.drawable.GradientDrawable circle =
                 new android.graphics.drawable.GradientDrawable();
@@ -191,14 +174,12 @@ public class ClipboardView extends RelativeLayout implements ClipboardHistoryMan
         return this.isOpening;
     }
 
+    /** @param z true while the board is being opened */
     public void setOpening(boolean z) {
         this.isOpening = z;
     }
 
-    /**
-     * Open the board: apply the link-preview setting, collapse rows expanded last time, and prune
-     * the history (which also loads it, the first time after unlock).
-     */
+    /** Open the board; pruning also loads the history the first time after unlock. */
     public void show() {
         setVisibility(View.VISIBLE);
         if (this.adapter != null && this.clipboardHistoryManager != null) {
@@ -216,7 +197,11 @@ public class ClipboardView extends RelativeLayout implements ClipboardHistoryMan
         this.keyboardDelegate = listener;
     }
 
-    @Override // android.widget.RelativeLayout, android.view.View
+    /**
+     * @param i the width measure spec
+     * @param i2 the height measure spec
+     */
+    @Override
     public void onMeasure(int i, int i2) {
         setMeasuredDimension(
                 BoardHeightPolicy.measuredWidth(this),
@@ -232,7 +217,7 @@ public class ClipboardView extends RelativeLayout implements ClipboardHistoryMan
         List<ClipboardItem> items = ClipboardItem.build(
                 this.clipboardHistoryManager.getPinned(), this.clipboardHistoryManager.getRecent());
         this.adapter.submitList(items);
-        // Previews of rows that are gone (deleted, expired, evicted) are dropped with them.
+        // Drop previews of rows that are gone.
         Set<Long> ids = new HashSet<>();
         for (ClipboardItem item : items) {
             if (item.entry != null) {
@@ -267,8 +252,7 @@ public class ClipboardView extends RelativeLayout implements ClipboardHistoryMan
     @Override
     public void onCopyClip(ClipEntry entry) {
         this.clipboardHistoryManager.copyToSystemClipboard(entry);
-        // From Android 13 the system confirms every copy itself; a toast as well would be a
-        // second notice for the same thing.
+        // From Android 13 the system confirms every copy itself.
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
             Toast.makeText(this.context, R.string.clipboard_copy_toast_message, Toast.LENGTH_SHORT).show();
         }
@@ -295,10 +279,8 @@ public class ClipboardView extends RelativeLayout implements ClipboardHistoryMan
     }
 
     private void updateEmptyState() {
-        // The manager is null until initialize() has run, and show() is reachable from
-        // ClipboardController.showClipboard() which only checks hasView() (audit IB-27). The
-        // history, not the adapter, decides: submitList() diffs asynchronously, so the adapter's
-        // count can still be the previous list's.
+        // The manager is null until initialize(), yet show() can run before it. The history
+        // decides, not the adapter: submitList() diffs asynchronously.
         if (this.emptyStateView == null || this.clipboardHistoryManager == null) {
             return;
         }
@@ -306,10 +288,7 @@ public class ClipboardView extends RelativeLayout implements ClipboardHistoryMan
                 this.clipboardHistoryManager.getHistory().isEmpty() ? View.VISIBLE : View.GONE);
     }
 
-    /**
-     * Cancels in-flight link-preview fetches and drops their results. Called when the controller
-     * binds a new board view in place of this one, and from {@link ClipboardController#destroy()}.
-     */
+    /** Cancels link-preview fetches; call when this view is replaced or destroyed. */
     public void release() {
         if (this.adapter != null) {
             this.adapter.getImageProvider().release();

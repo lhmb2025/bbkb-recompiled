@@ -11,14 +11,10 @@ import java.util.TreeMap;
 
 
 public final class ScriptUtils {
-
-    /** Sentinel returned for a locale whose script we do not know; every consumer treats it as "accept anything". */
+    /** Returned for an unlisted language; consumers treat it as "accept anything". */
     public static final int SCRIPT_UNKNOWN = -1;
 
-    /**
-     * Language tag -> script code. Immutable after class initialisation: it is read from the main
-     * thread and from the suggestion worker, so it must never be mutated at runtime.
-     */
+    /** Language tag to script code. Read from the main and suggestion threads, so never mutate after init. */
     private static final Map<String, Integer> SCRIPT_MAP;
 
     static {
@@ -93,16 +89,14 @@ public final class ScriptUtils {
         map.put("ur", 0);
         map.put("uz", 14);
         map.put("vi", 21);
-        // The languages offered only as runtime subtypes once their pack is installed
-        // (SideloadedSubtypes): Cyrillic for the three Turkic/Persian ones, Latin for the rest.
+        // Runtime-only subtypes from installed packs (SideloadedSubtypes).
         map.put("tg", 3);
         map.put("tt", 3);
         for (String latin : new String[] {"ha", "ig", "ku", "ln", "mg", "st", "tk", "xh", "yo", "zu"}) {
             map.put(latin, 14);
         }
         map.put(NuanceSDK.CHINESE_LOCALE, 7);
-        // The five scripts that got on-screen layouts on 2026-09-28 (ids continue attrs.xml's
-        // supportedScript enum after 21 = Vietnamese).
+        // Ids continue attrs.xml's supportedScript enum after 21 = Vietnamese.
         map.put("gu", 22);   // Gujarati
         map.put("pa", 23);   // Punjabi, Gurmukhi
         map.put("or", 24);   // Odia
@@ -117,6 +111,10 @@ public final class ScriptUtils {
         return script == null ? SCRIPT_UNKNOWN : script.intValue();
     }
 
+    /**
+     * @param i code point
+     * @param i2 script code from {@link #getScript}
+     */
     public static boolean isLetterPartOfScript(int i, int i2) {
         switch (i2) {
             case -1:
@@ -180,11 +178,7 @@ public final class ScriptUtils {
         }
     }
 
-    /**
-     * @return the script code for {@code locale}'s language, or {@link #SCRIPT_UNKNOWN} when the
-     *         language is not listed. An added language or a "no language" subtype used to throw
-     *         here and take the IME down; {@code isLetterPartOfScript} already handles the sentinel.
-     */
+    /** @return the script code for {@code locale}'s language, or {@link #SCRIPT_UNKNOWN} if unlisted (never throws). */
     public static int getScriptFromLocale(Locale locale) {
         return getScript(LocaleUtils.languageCode(locale));
     }

@@ -8,21 +8,19 @@ import org.junit.Assert.assertTrue
 import org.junit.Test
 
 /**
- * The decisions behind voice input's "No selected voice recognition service" notice and its
- * per-error status messages. Pure functions, so no Android runtime: the KEY2 case (2026-10-06,
- * Google app disabled, `Settings.Secure.voice_recognition_service` empty) is spelt out as plain
- * values.
+ * Pure-function decisions behind the "No selected voice recognition service" notice and per-error status
+ * messages.
  */
 class VoiceRecognitionAvailabilityTest {
-
-    // ── before starting ──────────────────────────────────────────────────────
-
     @Test
     fun `no recognition service installed is no service`() {
         assertTrue(VoiceRecognitionAvailability.isNoService(false, true, "com.google/.Recognizer"))
     }
 
-    /** The KEY2 report: a service may be installed, but with none selected nothing can bind. */
+    /**
+     * A service may be installed, but with none selected (`voice_recognition_service` empty) nothing can
+     * bind.
+     */
     @Test
     fun `an empty selected-service setting is no service`() {
         assertTrue(VoiceRecognitionAvailability.isNoService(true, true, null))
@@ -42,8 +40,6 @@ class VoiceRecognitionAvailabilityTest {
         assertFalse(VoiceRecognitionAvailability.isNoService(true, false, null))
         assertTrue(VoiceRecognitionAvailability.isNoService(false, false, null))
     }
-
-    // ── after starting ───────────────────────────────────────────────────────
 
     /** What SpeechRecognizer answers when it has no service to bind: ERROR_CLIENT, before ready. */
     @Test
@@ -66,8 +62,8 @@ class VoiceRecognitionAvailabilityTest {
     }
 
     /**
-     * Stop, then a quick restart: the stop's ERROR_CLIENT can arrive after the new session began.
-     * That is the case the recognition manager's "transient" re-arm exists for.
+     * Stop, then a quick restart: the stop's ERROR_CLIENT can arrive after the new session began (the
+     * transient re-arm case).
      */
     @Test
     fun `client error that may answer an earlier stop is not no service`() {
@@ -84,8 +80,6 @@ class VoiceRecognitionAvailabilityTest {
             assertFalse("error $error", VoiceRecognitionAvailability.isNoServiceError(error, true, false, false))
         }
     }
-
-    // ── what the board says when a session ends on an error ──────────────────
 
     @Test
     fun `each recoverable error has its own message`() {

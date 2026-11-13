@@ -27,30 +27,15 @@ import dev.bbkb.ime.core.BlackBerryIME;
 import dev.bbkb.ime.core.device.config.resolver.DeviceInputResolver;
 import dev.bbkb.ime.core.device.profile.DeviceProfile;
 
-/**
- * Processes physical keyboard events extracted from BlackBerryIME.
- * Handles onKeyDown, onKeyUp, processKeyEventForState, and related helpers.
- *
- * This class reduces BlackBerryIME's responsibility count by encapsulating
- * the key event processing pipeline into a focused processor.
- */
+/** BlackBerryIME's physical keyboard pipeline: key down/up and the accessibility state pre-pass. */
 public class KeyEventProcessor {
 
     private static final String TAG = "KeyEventProcessor";
 
-    /**
-     * Key codes whose key-down the open emoji board's search query consumed. Their key-up is
-     * consumed too, so neither the typing pipeline nor the app sees half a key press
-     * (see {@link #routeKeyDownToEmojiQuery}).
-     */
+    /** Key codes whose key-down the emoji search consumed; their key-up is consumed too. */
     private final java.util.Set<Integer> emojiQueryKeysDown = new java.util.HashSet<>();
 
-    /**
-     * Whether the IME answered the last hardware ENTER key-down itself (the newline it commits on
-     * a physical keyboard, a CJK commit) instead of passing it to the app. Its key-up is then
-     * consumed too, as for the other keys whose press the IME consumes: delegating it alone
-     * handed the app a release whose press it never saw.
-     */
+    /** The IME answered the last ENTER key-down itself, so the app must not see its key-up. */
     private boolean enterDownConsumed;
 
     private final BlackBerryIME ime;
@@ -60,43 +45,21 @@ public class KeyEventProcessor {
     }
 
     /**
-     * Process a key event for state updates only (shift, alt, symbol mode).
-     * Called by the accessibility service when pre-processing keys without an active text field.
+     * State updates only (shift, alt, symbol mode), for keys the accessibility service
+     * pre-processes without an active text field.
      */
     public void processKeyEventForState(KeyEvent event) {
-        // Phase 1g: WHICH KEY IS THIS, answered by the same ResolvedKey the ordinary key path
-        // asks. No remap happens on this path — the accessibility service hands the raw event
-        // straight over — so this is the event every branch below acts on.
-        //
-        // It used to be a raw `keyCode == KEYCODE_SYM` with no mapping resolution at all, and
-        // that was the one place in the key path where identity was decided by the key code
-        // alone. On an MP01 the Sym key arrives as KEYCODE_ALT_RIGHT on scancode 249
-        // (device_config_minimal.xml gives that scancode the BOARD_SYM role), and
-        // HardwareKeyBridge's all-keys callback routes every KEYCODE_ALT_RIGHT into this method
-        // AND consumes it — so with the interceptor on, the MP01's Sym key arrived here, was not
-        // recognised as Sym, and did nothing at all. Owner decision, 2026-09-22: both paths use
-        // the same identity. That is a deliberate MP01-only behaviour change; on a KEY2 the
-        // shipped device_config_athena.xml names no Sym key, so the mapping-aware test falls back
-        // to KEYCODE_SYM and answers exactly what the old comparison answered
-        // (SymPrePassIdentityTest pins both halves).
+        // Same ResolvedKey identity as the ordinary path (no remap here): the MP01's Sym is
+        // KEYCODE_ALT_RIGHT on scancode 249. SymPrePassIdentityTest pins it.
         final ResolvedKey key = ResolvedKey.of(event);
         int keyCode = key.keyCode();
         int action = event.getAction();
 
         PhysicalKeyboardStateTracker tracker = ime.getPhysicalKeyboardStateTracker();
 
-        // Snapshot the Alt state BEFORE the tracker sees this event. Two reasons, both of which
-        // dropped the Alt+Sym chord here:
-        //
-        //  1. This used to pass `tracker.getInternalMetaState()` and nothing else, so a
-        //     physically HELD Alt — which lives in the event's own meta state — was invisible.
-        //  2. `tracker.handleKeyDown()` resets the internal Alt span for key code 63
-        //     (KEYCODE_SYM) on every profile whose usesMetaSymHandling() is false, so even a
-        //     sticky or locked Alt was already gone by the time the old code read it.
-        // ModifierState.getChordMetaState(), not the interpreted state: the latter is passed
-        // through the current keyboard's meta mask, and the symbol board's Alt page is a mask
-        // that adds Alt — reading it here made the second/third Sym press look like Alt+Sym
-        // (KEY2, 2026-09-21).
+        // Snapshot Alt before the tracker sees the event: handleKeyDown() resets the Alt span on
+        // Sym when usesMetaSymHandling() is false. Chord state, not interpreted (the symbol
+        // board's Alt page would make a repeat Sym press look like Alt+Sym).
         int effectiveMeta = (tracker != null ? tracker.getModifierState(event) : ModifierState.ofEvent(event))
                 .getChordMetaState();
 
@@ -112,16 +75,12 @@ public class KeyEventProcessor {
             return;
         }
         if (tracker != null) {
-            // Same note as in onKeyDownInternal: name the Sym key to the tracker so its
-            // isSymKeyHeld() ("hold Sym to keep the symbol board open") can answer. On a device
-            // whose Sym key is not KEYCODE_SYM this is the key code the ROM attached — which is
-            // the point, and is what the ordinary key path has always recorded.
+            // For isSymKeyHeld(); on some devices this is the key code the ROM attached.
             tracker.setSymKeyCode(keyCode);
         }
         AltSymShortcutHandler altSym = ime.getHardwareKeys().getAltSymShortcutHandler();
         if (action == KeyEvent.ACTION_UP) {
-            // The press already dispatched the configured action; its release is not a second
-            // Sym press and must not reach the symbol board.
+            // A consumed press's release must not reach the symbol board.
             altSym.consumeSymKeyUp();
             return;
         }
@@ -146,21 +105,10 @@ public class KeyEventProcessor {
     }
 
     /**
-     * Show-on-keypress: summon the IME window for a hardware key press that arrived while it was
-     * hidden, and report whether the input view is showing afterwards.
-     *
-     * <p>Extracted from {@link #onKeyDownInternal} so the accessibility-service SYM path can use
-     * it too. A SYM press opens a board, and a board lives in the IME window, so "the window is
-     * not up yet" has to mean "put it up", not "do nothing" — on a PKB device the window is
-     * routinely down while the user types on the hardware keyboard, which is most of the time
-     * (beta triage #10, MP01).
-     *
-     * <p>The caller is responsible for establishing that the event came from a physical keyboard;
-     * the rest of the original gate is reproduced here unchanged, including ISSUE 3's requirement
-     * of a real editor binding ({@code getCurrentInputBinding() != null}) before auto-summoning.
-     * The prior gate only checked {@code isInputActive()}, which is true whenever an input
-     * connection exists — including for transient bindings the system creates during home
-     * transitions.
+     * Show-on-keypress: summon the hidden IME window for a hardware key (also used by the
+     * accessibility SYM path, since boards live in the window). The caller checks the event is
+     * physical. Requires a real input binding: isInputActive() alone is true for the transient
+     * bindings of home transitions.
      *
      * @return true if the input view is (now) shown
      */
@@ -197,54 +145,30 @@ public class KeyEventProcessor {
         return true;
     }
 
-    /**
-     * Internal onKeyDown handler.
-     * Extracted from BlackBerryIME.handlePhysicalKeyDown().
-     */
+    /** @param i the key code */
     public boolean onKeyDownInternal(int i, KeyEvent keyEvent) throws Resources.NotFoundException {
         boolean zM5997a;
         InputEventContext c0920gM4442a;
         boolean z2 = false;
 
-        // isInputActive goes stale-false when the window was hidden for a still-bound
-        // editor (onWindowHidden clears it; re-show delivers no onStartInput). Heal it
-        // before any of the gates below read it, or hardware keys bypass the whole
-        // pipeline — dead autocomplete + dead SYM — while superOnKeyDown still types.
+        // isInputActive goes stale-false after onWindowHidden for a still-bound editor (re-show
+        // delivers no onStartInput); heal it first or hardware keys bypass the pipeline.
         ime.refreshInputActive();
 
-        // Audit CT-12: the physical-keyboard classification is invariant for one event, and this
-        // method used to evaluate it up to eight times (a singleton lookup plus a classification
-        // each) on the KEY2's most latency-sensitive path.
-        //
-        // Phase 1e: this is the RAW event's classification, and it stays a plain local because
-        // the four gates below it all run before remapKeyEvent — the keypad-layout detector and
-        // the profile-builder capture bus both need the raw scancode/keycode, and the
-        // "not a physical keyboard" bail-out has to happen before we remap anything. The identity
-        // the rest of the method acts on is the ResolvedKey built from the REMAPPED event; this
-        // local is deliberately never reassigned to it, which is what the old code did.
+        // The RAW event's classification, for the gates that must run before remapKeyEvent.
+        // Everything after the remap uses the ResolvedKey of the remapped event instead.
         final boolean rawIsPhysical =
                 KeyEventDeviceClassifier.getInstance().isPhysicalKeyboardEvent(keyEvent);
 
-        // §5.4: this used to initialize DeviceSettingsManager, the second facade over the same
-        // resolved DeviceInputMapping. DeviceProfile is that facade now, and appContext() != null
-        // is the same "has initialize() ever run" test DeviceSettingsManager.isInitialized() was.
-        // In the IME this is already true (BlackBerryIME.onCreate initializes the profile before
-        // any key can arrive); it stays as the safety net it always was, and resolving against
-        // this event's own device id rather than scanning is what the targeted form is for.
+        // Safety net: onCreate normally initializes the profile before any key arrives.
         if (rawIsPhysical && DeviceProfile.appContext() == null) {
             DeviceProfile.initializeForDevice(ime.getApplicationContext(), keyEvent.getDeviceId());
             Logger.info(TAG, "DeviceProfile initialized for device ID: " + keyEvent.getDeviceId());
         }
 
-        // Last-resort physical keypad layout detection (KeypadLayoutDetector source 5): what the
-        // keypad actually sent is proof, and on a ROM that sets no keypad-language sysprop and
-        // names its keypad generically it is the only proof there is. Reads the RAW event, before
-        // remapKeyEvent — a remap rewrites the key code the detector fingerprints. Almost every
-        // call is two integer compares; it returns true only on the rare keystroke that changes
-        // the answer, and then the profile is rebuilt so the symbol rows and layout-set names
-        // follow.
-        // Only from a keyboard the phone's profile speaks for: an external keyboard's layout says
-        // nothing about the phone's own keypad.
+        // Last-resort keypad layout detection (KeypadLayoutDetector source 5) from the RAW key
+        // code, which a remap would rewrite. Cheap; true only when the answer changes, and then
+        // the profile is rebuilt. Phone keypad only: an external keyboard says nothing about it.
         if (rawIsPhysical
                 && DeviceInputResolver.isPhoneKeyboard(keyEvent.getDeviceId())
                 && dev.bbkb.ime.core.device.detection.KeypadLayoutDetector
@@ -253,31 +177,20 @@ public class KeyEventProcessor {
                     ime.getApplicationContext(), keyEvent.getDeviceId());
         }
 
-        // Device-profile builder: while its capture screen is open it needs the RAW scancode and
-        // keycode of the key the user just pressed, and it needs them before anything acts on the
-        // key — the whole point of capturing is to find out what a key IS on this ROM, which is
-        // not knowable from the role the current config assigns it. Consumed rather than
-        // observed, so a Sym press during capture cannot open a board over the settings screen.
-        // One volatile read when no capture is running, which is always, except on this screen.
+        // Device-profile builder capture: needs the RAW codes before anything acts on the key,
+        // and consumes it so a Sym press cannot open a board over the settings screen.
         if (rawIsPhysical && HardwareKeyCaptureBus.offer(keyEvent.getScanCode(), keyEvent.getKeyCode(),
                 keyEvent.getDeviceId(), keyEvent.getRepeatCount(), true, keyEvent.getEventTime())) {
             return true;
         }
 
         if (!rawIsPhysical) {
-            // Audit CT-11: an empty `if (!ime.getFccController().isViewActive()) {}` stood here.
-            // Its body had been deleted and the predicate left behind — an unguarded call that
-            // would NPE once fccController is nulled in releaseResources, for zero benefit.
             ime.applyCursorModeState(false, false, false);
             return ime.superOnKeyDown(i, keyEvent);
         }
 
-        // ISSUE 2 FIX: Route KEYCODE_BACK straight to super.onKeyDown so that
-        // InputMethodService.onKeyDown can call getKeyDispatcherState().startTracking(),
-        // which is what makes KeyEvent.isTracking() return true at onKeyUp time.
-        // Without this, the BACK key is consumed by the AuxBar / KeyHold / InputLogic
-        // pipelines, never reaches super.onKeyDown, and the dismiss-on-up branch in
-        // onKeyUpInternal silently fails because event.isTracking() is false.
+        // BACK goes straight to super.onKeyDown so startTracking() runs; otherwise
+        // event.isTracking() is false and the dismiss-on-up branch in onKeyUpInternal fails.
         if (i == KeyEvent.KEYCODE_BACK) {
             return ime.superOnKeyDown(i, keyEvent);
         }
@@ -287,15 +200,9 @@ public class KeyEventProcessor {
         }
         KeyEvent keyEventRemapped = ime.remapKeyEvent(i, keyEvent);
 
-        // Phase 1e: WHICH KEY IS THIS, answered once, here, for the remapped event — the one
-        // every branch below acts on. It carries the key code, the scancode, the physical-keyboard
-        // classification (the remap can hand back a different KeyEvent, so this is its own
-        // classification, not the raw one above), the device config's role, and the 666/667
-        // pseudo-keycode translation. Board/multifunction keys are exempt from several "an
-        // ordinary text key went down" behaviours below, including the Alt symbol-long-press
-        // fallthroughs at the bottom of this method: the MP01's SYM key arrives as
-        // KEYCODE_ALT_RIGHT (scancode 249), and isAltKey() would otherwise fire
-        // onSymbolKeyLongPress() on top of the board toggle the key already performed.
+        // Identity of the remapped event, resolved once. Board keys are exempt from the
+        // ordinary-key behaviours below, e.g. the MP01's SYM (KEYCODE_ALT_RIGHT) would otherwise
+        // fire onSymbolKeyLongPress() via isAltKey() on top of its board toggle.
         final ResolvedKey key = ResolvedKey.of(keyEventRemapped);
         final int keyCode = key.keyCode();
         if (key.isEnterKey()) {
@@ -303,32 +210,18 @@ public class KeyEventProcessor {
             enterDownConsumed = false;
         }
 
-        // === Alt+Sym, on the ordinary hardware key path ===
-        //
-        // The chord used to be consulted only from the two accessibility-fed call sites, and
-        // neither of them is live on a BlackBerry KEY2 with stock settings: the interceptor's
-        // special-key callback is gated on pref_key_interceptor_enabled (default false), and
-        // processKeyEventForState() only sees keys the service pre-processes while no input
-        // connection is bound — which a board key never is, since KeyInterceptorService
-        // classifies it out first. So the KEY2's real KEYCODE_SYM arrived HERE, where nothing
-        // asked about Alt, and Alt+Sym did exactly what a bare Sym does. (Owner report,
-        // 2026-09-21: "Alt+Sym shortcut does nothing".)
-        //
-        // Placement matters: this must run before handleKeyDown() below, which resets the
-        // internal Alt span for key code 63 on every profile without usesMetaSymHandling().
+        // Alt+Sym on the ordinary path (the only one live with stock settings). Must run before
+        // handleKeyDown(), which resets the Alt span on Sym without usesMetaSymHandling().
         if (key.isPhysical() && keyEventRemapped.getRepeatCount() == 0 && key.isSymKey()) {
-            // Which key code the Sym key answers to on this device, for the tracker's
-            // isSymKeyHeld() — the "hold Sym to keep the symbol board open" gate below and in
-            // KeyboardState. Recorded before the chord check, because a press the chord consumes
-            // is still a press of the Sym key.
+            // For isSymKeyHeld(); recorded before the chord check, since a consumed press is
+            // still a Sym press.
             ime.getPhysicalKeyboardStateTracker().setSymKeyCode(keyCode);
             AltSymShortcutHandler altSym = ime.getHardwareKeys().getAltSymShortcutHandler();
-            // Modifier-KEY state only (see ModifierState.getChordMetaState): the interpreted
-            // state carries the symbol board's own Alt page as META_ALT_ON.
+            // Chord state: the interpreted state carries the symbol board's Alt page.
             int effectiveMeta = ime.getPhysicalKeyboardStateTracker()
                     .getModifierState(keyEventRemapped).getChordMetaState();
-            // Alt+Sym as Ctrl: an Alt still held down after it was spent on the previous Alt+Sym
-            // counts for the next one, so "hold Alt, tap Sym twice" is a double tap of Ctrl.
+            // Alt+Sym as Ctrl: a held, already-spent Alt still counts, so "hold Alt, tap Sym
+            // twice" is a Ctrl double tap.
             if (altSym.isCtrlAction() && ime.getPhysicalKeyboardStateTracker().isAltKeyConsumed()) {
                 effectiveMeta |= KeyEvent.META_ALT_ON;
             }
@@ -340,11 +233,8 @@ public class KeyEventProcessor {
             altSym.clearPendingSymKeyUp();
         }
 
-        // The open emoji board takes its text keys before the bar, the hold handler and the
-        // typing pipeline see them: a letter filters the board, Backspace edits the query (owner
-        // decisions 2026-11-02, rules in EmojiQueryKeyRouting). Nothing downstream - the accent
-        // bar, type-to-dismiss, the editor - learns of a consumed key, and onKeyUpInternal
-        // swallows its release.
+        // The open emoji board takes its text keys before anything else sees them (rules in
+        // EmojiQueryKeyRouting); onKeyUpInternal swallows their release.
         if (routeKeyDownToEmojiQuery(key, keyEventRemapped)) {
             return true;
         }
@@ -368,7 +258,6 @@ public class KeyEventProcessor {
             ime.getKeyboardSwitcher().requestShiftOff();
             return true;
         }
-        // Audit CT-11: a second empty `if (!ime.getFccController().isViewActive()) {}` stood here.
         if (ime.getVkbGestureListener() != null) {
             ime.getVkbGestureListener().setLastKeyEventTime(keyEventRemapped.getDownTime());
         }
@@ -384,27 +273,12 @@ public class KeyEventProcessor {
             return true;
         }
         if (ime.isInputActive() && zIsInputViewShown && !ime.getInputLogic().isUntrackedKeyRepeat(keyEventRemapped)) {
-            // Audit CT-9: a `boolean z3 = getSymbolPageOrder() == 1 || == 3;` stood here. It was
-            // never read anywhere in the file — two getSymbolPageOrder() calls per physical
-            // key-down for nothing — and it is the fossil of a predicate that once gated the
-            // block below. If that gate is wanted back it belongs here as ime.isInSymbolMode().
             boolean z4 = key.isShiftKey();
-            // FIX Bug #1: Don't hide UIM boards (clipboard, emoji, voice) on Enter key press.
-            // Only non-Enter, non-Shift keys should trigger board dismissal.
+            // Enter and Shift do not dismiss boards.
             boolean isEnterKey = key.isEnterKey();
             if (!z4 && !isEnterKey) {
-                // Audit CT-10: this tested `i == -5`, the project's SOFT-key code for delete,
-                // against the raw framework key code that onKeyDown delivers — a constant false.
-                // So applyCursorModeState always got `false` here and the shift-state repost
-                // below was unreachable: "backspace while cursor mode is on re-derives shift
-                // state" never happened on a physical keyboard.
                 boolean isBackspace = key.isBackspaceKey();
-                // Board/multifunction keys are exempt from the text-key dismissals:
-                // their key-UP toggles the board (or cursor mode) through its own
-                // action, and disabling on key-DOWN would clear the state that
-                // key-up decision reads — the historical toggle-reopen fight.
-                // Text keys still dismiss boards AND disable cursor mode.
-                // (ResolvedKey is computed once near the top of this method.)
+                // Board keys act on key-up, which reads the state a key-down dismissal clears.
                 if (!key.isBoardKey()) {
                     ime.applyCursorModeState(false, isBackspace, false);
                     ime.dismissBoardsForTextKey();
@@ -421,11 +295,8 @@ public class KeyEventProcessor {
 
             if (key.isEnterKey()
                     && ModifierState.ofEvent(keyEventRemapped).isShiftHeld()) {
-                // Parity with the original (WhatsApp enter fix, 2026-08-27): retire the composing
-                // word, then PASS THE KEY THROUGH to the app instead of committing "\n" ourselves.
-                // Self-committing a newline here made WhatsApp (whose enter-is-send watches the
-                // text buffer for '\n') SEND on Shift+Enter; passing the raw event lets the app
-                // apply its own convention (WhatsApp/EditText: Shift+Enter = newline).
+                // Retire the word and pass Shift+Enter to the app: committing "\n" ourselves made
+                // enter-is-send apps (WhatsApp) send instead of inserting a newline.
                 ime.getInputLogic().mRichInputConnection.finishComposingText();
                 ime.getInputLogic().mRichInputConnection.invalidateConnection();
                 ime.getInputLogic().mComposingTracker.clearAll();
@@ -449,21 +320,16 @@ public class KeyEventProcessor {
                 } else {
                     c0920gM4442a = ime.getInputLogic().processInputEvent(ime.getSettingsManager().getSettingsValues(), c0914aMo5937a, ime.getPhysicalKeyboardStateTracker(), InputSource.HARDWARE, ime.getKeyboardSwitcher().getKeyboardElementId(), ime.getUiUpdateHandler());
                 }
-                // Typing brings the strip back over a menu the user raised (AuxBarChoice). Here,
-                // after the key's own processing, so a cursor mode this key just ended has already
-                // put its bar back.
+                // Typing brings the strip back over a raised menu (AuxBarChoice); after the key's
+                // processing, so a cursor mode this key ended has already restored its bar.
                 if (c0914aMo5937a.editsText() && ime.getUiCoordinator() != null) {
                     ime.getUiCoordinator().onUserTyped(true);
                 }
                 boolean fccBlocking = ime.getFccController().isShowing() && ime.getFccController().isSelectModeActive();
                 boolean flagFromInputLogic = c0920gM4442a.hasPendingEditorAction();
                 zM5997a = fccBlocking ? false : flagFromInputLogic;
-                // Audit LC-14: handleEnterKey sets pendingEditorAction and deliberately leaves the
-                // tracker composing for the consumer below to retire. When FCC select mode
-                // suppresses that consumer, nobody discharges the handoff: the editor action never
-                // fires AND the word is left composing with its queued suggestion update alive.
-                // Suppressing the action is intentional (the cursor-selection UI owns Enter), so
-                // only the cleanup half is owed here.
+                // handleEnterKey leaves the word composing for the Enter pass-through to retire.
+                // FCC select mode suppresses that (it owns Enter), so do the cleanup here.
                 if (fccBlocking && flagFromInputLogic) {
                     ime.getInputLogic().mComposingTracker.clearAll();
                     ime.getUiUpdateHandler().cancelPendingSuggestionUpdates();
@@ -493,18 +359,14 @@ public class KeyEventProcessor {
                 z2 = true;
                 zM5997a = false;
             } else if (c0914aMo5937a.isGestureEnd()) {
-                // Mic/emoji key consumed by IME — do not fall through to superOnKeyDown,
-                // which would type the key's base character (e.g. '0' for the Athena mic key).
+                // Consumed mic/emoji key: superOnKeyDown would type its base char ('0' on Athena).
                 ime.getPhysicalKeyboardStateTracker().consumeModifiersAfterKey(keyCode, key.isPhysical());
                 z2 = true;
                 zM5997a = false;
             } else {
                 ime.getPhysicalKeyboardStateTracker().consumeModifiersAfterKey(keyCode, key.isPhysical());
-                // "Is Sym held?" is the TRACKER's answer, not the event's. The KEY2's Sym key
-                // sets no META_SYM_ON, so ModifierState.ofEvent(...) — which is all this site
-                // used to read — said "not held" on the one device the branch exists for, while
-                // the matching key-UP test a few hundred lines down said "held". Owner decision,
-                // 2026-09-22: both read the tracker (SymHeldReadsTrackerTest).
+                // Sym held per the tracker, not the event: the KEY2's Sym sets no META_SYM_ON.
+                // The key-up test reads the same (SymHeldReadsTrackerTest).
                 if (key.isAltKey() && !key.isBoardKey()
                         && !ime.getPhysicalKeyboardStateTracker()
                                 .getModifierState(keyEventRemapped).isSymHeld()) {
@@ -524,20 +386,10 @@ public class KeyEventProcessor {
                 return true;
             }
             if (key.isEnterKey()) {
-                // Parity with the original (WhatsApp enter fix, 2026-08-27). The original never
-                // performs the editor action itself on a hardware Enter: handleEnterKey's
-                // "pendingEditorAction" means "retire the word, then return super.onKeyDown(66)"
-                // — the raw ENTER reaches the app, and THE APP decides (WhatsApp's enter-is-send
-                // sends; EditText inserts a newline; search fields submit). Our previous block
-                // called performEditorAction(imeOptions & 255) instead, which (a) ignored
-                // IME_FLAG_NO_ENTER_ACTION and actionLabel, and (b) fired actions like SEND that
-                // apps such as WhatsApp ignore — enter did nothing and the strip emptied.
-                // Order still matters: finishComposingText BEFORE the app receives Enter keeps
-                // the cursor after the word in WebView editors (the Outlook fix), and the word
-                // must be FULLY retired (clearAll + cancel the delayed suggestion update) or the
-                // late reply re-inserts it (launcher-search "instagraminstagram" bug).
-                // The key-UP side passes Enter through too, so the app gets the whole press and
-                // not just its ACTION_DOWN half: onKeyUpInternal + shouldDelegateEnterKeyUp.
+                // Hardware Enter: retire the word and pass the raw ENTER to the app, which picks
+                // the action (performEditorAction ignores NO_ENTER_ACTION and apps like WhatsApp).
+                // finishComposingText first keeps the WebView cursor after the word; clearAll and
+                // cancel the late suggestion update or it re-inserts the word. Key-up passes too.
                 ime.getInputLogic().mRichInputConnection.finishComposingText();
                 ime.getInputLogic().mRichInputConnection.invalidateConnection();
                 ime.getInputLogic().mComposingTracker.clearAll();
@@ -551,26 +403,16 @@ public class KeyEventProcessor {
         return ime.superOnKeyDown(keyCode, keyEventRemapped);
     }
 
-    /**
-     * Internal onKeyUp handler.
-     * Extracted from BlackBerryIME.onKeyUp().
-     */
+    /** @param i the key code */
     public boolean onKeyUpInternal(int i, KeyEvent keyEvent) {
-        // Audit LC-9: the key-DOWN path heals isInputActive (line ~96) but this one did not,
-        // so a key released just after onWindowHidden skipped InputLogic.onHardwareKeyUp and
-        // left BackspaceController.mIsBackspaceActive stuck true — which then suppresses the
-        // composing/auto-correct-indicator update in onSuggestionsReceived until the next
-        // backspace. Heal here too, for the same reason and by the same means.
+        // Heal as on key-down, or a release after onWindowHidden skips onHardwareKeyUp and leaves
+        // BackspaceController.mIsBackspaceActive stuck true.
         ime.refreshInputActive();
-        // Audit CT-12 / Phase 1e: the RAW event's classification, once. It has to be the raw one:
-        // both users below run before remapKeyEvent. (It used to be evaluated twice here — once
-        // inside the capture hook and once for the delegate gate — and once more further down,
-        // which the ResolvedKey below replaces.)
+        // RAW classification: both users run before remapKeyEvent.
         final boolean rawIsPhysical =
                 KeyEventDeviceClassifier.getInstance().isPhysicalKeyboardEvent(keyEvent);
-        // The key-UP half of the profile-builder capture hook in onKeyDownInternal: a step ends on
-        // the release of the key it recorded, and a release the capture swallowed the press of
-        // must not reach the system alone (for a modifier that is how its meta state sticks on).
+        // Capture hook key-up: a release whose press was captured must not reach the system
+        // alone (a modifier's meta state would stick on).
         if (HardwareKeyCaptureBus.isCapturing() && rawIsPhysical
                 && HardwareKeyCaptureBus.offer(keyEvent.getScanCode(), keyEvent.getKeyCode(),
                         keyEvent.getDeviceId(), keyEvent.getRepeatCount(), false,
@@ -578,13 +420,10 @@ public class KeyEventProcessor {
             return true;
         }
         if (!rawIsPhysical) {
-            // Non-physical events (deviceId==0): delegate to framework.
-            // For KEYCODE_BACK, super.onKeyUp() calls handleBack(true) → requestHideSelf(0).
+            // For BACK, super.onKeyUp() calls handleBack(true).
             return ime.superOnKeyUp(i, keyEvent);
         }
-        // Physical keyboard BACK handling (matches original smali onKeyUp for deviceId != 0):
-        // Set wasBackPressed and reset symbol mode, then fall through to super.onKeyUp()
-        // which handles the actual keyboard dismissal via handleBack(true).
+        // Physical BACK: record it and reset symbol mode; super.onKeyUp() dismisses.
         if (ime.isInputViewShown() && keyEvent.getKeyCode() == KeyEvent.KEYCODE_BACK
                 && keyEvent.isTracking() && !keyEvent.isCanceled()) {
             ime.setWasBackPressed(true);
@@ -600,24 +439,17 @@ public class KeyEventProcessor {
         }
         KeyEvent keyEventRemapped = ime.remapKeyEvent(i, keyEvent);
 
-        // Phase 1e: WHICH KEY IS THIS, answered once for the remapped event. This method used to
-        // resolve the same scancode mapping twice — once for the Alt+Sym key-up gate below and
-        // again for the emoji/voice/multifunction block — and classify the device a third time.
         final ResolvedKey key = ResolvedKey.of(keyEventRemapped);
         final int keyCode = key.keyCode();
 
-        // The key-UP half of the Alt+Sym chord: the press already dispatched the configured
-        // action, so this release must reach neither the symbol-board machinery nor (through
-        // superOnKeyUp) the app, which would otherwise see a Sym release with no matching press.
-        // Gated on the key itself, not just on the outstanding flag: the user routinely lets Alt
-        // go before Sym, and swallowing the Alt release would strand the tracker's Alt state.
+        // Alt+Sym key-up: reaches neither the symbol board nor the app. Gated on the key too:
+        // users often release Alt first, and swallowing that would strand the Alt state.
         if (key.isPhysical() && key.isSymKey()
                 && ime.getHardwareKeys().getAltSymShortcutHandler().consumeSymKeyUp()) {
             releaseConsumedBoardKey(keyEventRemapped);
             return true;
         }
 
-        // The release of a key the emoji board's search query took on the way down.
         if (key.isPhysical() && emojiQueryKeysDown.remove(keyCode)) {
             releaseConsumedBoardKey(keyEventRemapped);
             return true;
@@ -625,7 +457,6 @@ public class KeyEventProcessor {
 
         KeyHoldHandler.getInstance().processKeyUp(keyEventRemapped);
 
-        // Notify AuxBarManager of key release for hold-to-auto-commit state reset
         dev.bbkb.ime.keyboard.auxbar.AuxBarManager auxBarManager = ime.getAuxBarManager();
         if (auxBarManager != null) {
             auxBarManager.processKeyUp(keyEventRemapped);
@@ -637,17 +468,7 @@ public class KeyEventProcessor {
         if (LocaleUtils.isChineseCangjie(SubtypeManager.getInstance().getCurrentSubtypeLocale()) && ime.isInputViewShown() && key.isShiftKey()) {
             return true;
         }
-        // === UNIFIED: emoji/voice key-up handling, off the one resolved identity ===
-        // ResolvedKey.isEmojiKey() is the BOARD_EMOJI role, a MULTIFUNCTION key whose configured
-        // action is the emoji board (its down-event armed the same PendingKeyAction.EMOJI_BOARD, so
-        // it takes the same key-up path), or the legacy 666 pseudo-keycode. isBoardKey() additionally
-        // covers MULTIFUNCTION and 667: those keys are consumed by the IME, and their base
-        // character must never leak through the symbol-long-press / extra-key fallthroughs below.
-        //
-        // Phase 1g: the three branches below used to read (and clear) the three mutable
-        // InputMethodHelper flags. BoardKeyPressTracker owns that pairing now — armed by
-        // KeyEventConverter on the way down, spent here on the way up, discarded with the rest of
-        // the per-key state on a full modifier reset.
+        // Board key-up: spends the PendingKeyAction KeyEventConverter armed on key-down.
         final BoardKeyPressTracker pairing = BoardKeyPressTracker.getInstance();
 
         if (key.isEmojiKey() && key.isPhysical()) {
@@ -662,52 +483,38 @@ public class KeyEventProcessor {
             }
             return true;
         }
-        // isPhysical() first, then consume(): the pending action must not be spent by an event
-        // this branch will not act on. (The old form read the flag first and the classification
-        // second, which came to the same thing because the clear was inside the branch.)
+        // isPhysical() first: the pending action must not be spent by an event this branch ignores.
         if (key.isPhysical() && pairing.consume(PendingKeyAction.VOICE_INPUT)) {
             releaseConsumedBoardKey(keyEventRemapped);
             if (!ime.isInputActive() || !ime.isInputViewShown()) {
                 ime.getHardwareKeys().launchVoiceAssistant();
             } else if (ime.getHardwareKeys().voiceKeyRefused()) {
-                // No recognition service (KEY2, 2026-10-06). The notice is already up; the press
-                // opens nothing — not the board, and not the UIM bar the coordinator's open path
-                // would raise first — and, like every other end of this branch, types nothing.
+                // No recognition service: the notice is up; open nothing (not even the UIM bar)
+                // and type nothing.
             } else {
                 UnifiedInputBoardManager unifiedManager = ime.getKeyboardSwitcher().getUnifiedInputBoardManager();
                 if (unifiedManager != null && ime.isUimEnabled()) {
-                    // TOGGLES: the coordinator owns "which board is open", so a second press
-                    // closes the voice board (same as the clipboard/FCC multifunction actions).
+                    // Toggles: a second press closes the voice board.
                     unifiedManager.requestBoard(key.boardId(ResolvedKey.DEFAULT_VOICE_BOARD_ID));
                 } else {
-                    // UIM disabled (or its manager not built yet). This used to call
-                    // switchToVoiceIme(), which hands off to ANOTHER IME and so could never close
-                    // anything — the mic key re-opened voice on every press. The accessibility
-                    // path already routes here (bug #4); both paths now share this one toggle,
-                    // which keeps switchToVoiceIme as its fallback when there is no controller.
+                    // UIM off: the shared toggle (accessibility path too); switchToVoiceIme only
+                    // as its fallback, since another IME can never be closed by this key.
                     ime.getHardwareKeys().triggerVoiceInput();
                 }
             }
             return true;
         }
-        // Multifunction key released: dispatch the user-configured action (the emoji
-        // action armed EMOJI_BOARD above; ctrl was remapped).
-        // Board actions (clipboard, fcc, number pad) route through the board coordinator, which
-        // TOGGLES the board — a second press closes it if it's open.
+        // Multifunction key-up runs the configured action (emoji armed EMOJI_BOARD above; ctrl
+        // was remapped). Board actions toggle through the coordinator.
         if (key.isPhysical() && pairing.consume(PendingKeyAction.MULTIFUNCTION)) {
-            // Release BEFORE dispatching: FccController.showFcc() refuses to open while
-            // the tracker still counts this key as held (keysDown == 0 guard).
+            // Release before dispatching: showFcc() refuses while this key counts as held.
             releaseConsumedBoardKey(keyEventRemapped);
             if (ime.isInputActive() && ime.isInputViewShown()) {
-                // The action comes from the key being RELEASED, not from the key that armed the
-                // pending action — pairing.armedBy(MULTIFUNCTION) knows which that was. They are
-                // the same key in every real sequence, and where they are not this resolves null
-                // and the switch throws; preserved rather than fixed, and pinned by
-                // BoardKeyPairingCharacterisationTest, because changing it is a behaviour change.
+                // From the RELEASED key, not pairing.armedBy(MULTIFUNCTION). If they ever differ
+                // this is null and the switch throws; pinned by BoardKeyPairingCharacterisationTest.
                 final String multifunctionAction = key.getMultifunctionAction();
                 switch (multifunctionAction) {
                     case MultifunctionKeyHandler.ACTION_LANGUAGE_SWITCH:
-                        // The language bar on the strip, as Alt+Sym's action of the same name.
                         ime.switchToNextSubtype(InputSource.HARDWARE);
                         break;
                     case MultifunctionKeyHandler.ACTION_LANGUAGE_QUICK_SWITCH:
@@ -725,8 +532,6 @@ public class KeyEventProcessor {
                         });
                         break;
                     case MultifunctionKeyHandler.ACTION_FCC:
-                        // -42 toggles FCC in the UIM. With the menu off (or hidden with the
-                        // suggestion bar) the board opens on its own, as the clipboard does.
                         toggleBoardOrFallback(FccController.KEY_CODE, () -> {
                             if (ime.getFccController() != null) {
                                 ime.getFccController().toggle();
@@ -744,8 +549,7 @@ public class KeyEventProcessor {
                         ime.getKeyboardSwitcher().onSymbolShiftToggle(ime.getCurrentInputType(), ime.getCurrentImeOptions(), false, true);
                         break;
                     case MultifunctionKeyHandler.ACTION_TOGGLE_UIM:
-                        // Up even where the menu is off or hidden with the suggestion bar; the
-                        // board actions above then take the menu's route until it goes again.
+                        // Works even where the menu is off; board actions then route via the menu.
                         ime.getUiCoordinator().toggleInputMenu();
                         break;
                     default:
@@ -774,14 +578,8 @@ public class KeyEventProcessor {
             if (ime.isInputActive() && ime.isInputViewShown()) {
                 ime.getInputLogic().onHardwareKeyUp(keyEventRemapped);
                 ime.setLastKeyEventTime(keyEventRemapped.getEventTime());
-                // A hinted key released while Sym is not held ends a one-shot symbol entry
-                // (tap Sym, type one symbol, back to letters) — the default and only
-                // behaviour since the "Close symbol keyboard after symbol" setting was
-                // removed. Holding Sym is what keeps the board up instead, so the hold is
-                // the one thing that suppresses it. The event's own META_SYM_ON alone is not
-                // that test — the KEY2's Sym key does not set it — so ModifierState.isSymHeld()
-                // is the OR of that bit and the tracker's held-key set, which is exactly the
-                // pair of conditions this branch used to spell out separately.
+                // A hinted key released without Sym held ends a one-shot symbol entry; holding
+                // Sym keeps the board up. isSymHeld() includes the tracker (KEY2 sets no META_SYM_ON).
                 if (!key.isBoardKey() && key.isPhysical()
                         && ime.getKeyboardSwitcher().getKeyByPhysicalScanCode(key.scanCode(), false) != null
                         && !ime.getPhysicalKeyboardStateTracker()
@@ -795,20 +593,8 @@ public class KeyEventProcessor {
                 enterDownConsumed = false;
             }
             if (!enterPressWasConsumed && shouldDelegateEnterKeyUp(keyCode)) {
-                // Parity with the original, and the other half of the 2026-08-27 WhatsApp fix.
-                // That change made the key-DOWN return superOnKeyDown so the APP receives the
-                // raw ENTER and applies its own convention, and its comment states that "the
-                // key-UP side already passes Enter through" — it did not. This branch consumed
-                // every tracked key-up, so the app got a key-DOWN with no matching ACTION_UP.
-                // The original delegates it (BlackBerryIME.onKeyUp:
-                //   return !(isShiftKey(keyCode) || (keyCode == 66 && N() != 1))
-                //           || super.onKeyUp(keyCode, event);
-                // with N() == getSymbolPageOrder()), so on a physical keyboard the app sees the
-                // complete DOWN/UP pair. Half a confirm-key press is what a lock screen, and any
-                // other editor that pairs the two halves (TextView only clears its
-                // InputContentType.enterDown latch on the UP, and MetaKeyKeyListener balances
-                // its meta state there), never sees from the stock keyboard or from any IME
-                // that leaves hardware keys alone.
+                // The app got the ENTER down, so it must get the up: TextView clears its
+                // enterDown latch and MetaKeyKeyListener balances meta state on the UP.
                 return ime.superOnKeyUp(keyCode, keyEventRemapped);
             }
             return true;
@@ -821,19 +607,9 @@ public class KeyEventProcessor {
     }
 
     /**
-     * Whether a tracked hardware ENTER key-up must be handed on to the app
-     * ({@code super.onKeyUp}) instead of being consumed here.
-     *
-     * <p>This is the original's rule, keyCode-for-keyCode: ENTER on a device the IME treats as
-     * having a physical keyboard, unless the shift page is active — the key-DOWN side answers
-     * Shift+Enter in its own branch, and the original's {@code N() != 1} is the same
-     * {@code getSymbolPageOrder()} test. The device gate matters: on a VKB shape
-     * {@code handleEnterKey} answers Enter with {@code performEditorAction} and the DOWN is
-     * consumed, so releasing the UP on its own would hand the app a confirm-key release whose
-     * press it never saw.
-     *
-     * @param keyCode the remapped key code of the key-up being processed
-     * @return {@code true} to delegate the key-up to the framework (and thus the app)
+     * ENTER key-up goes to the app on a PKB device unless the shift page is active (Shift+Enter
+     * has its own key-down branch). On a VKB shape the DOWN is consumed by performEditorAction,
+     * so the UP must be too.
      */
     @VisibleForTesting
     boolean shouldDelegateEnterKeyUp(int keyCode) {
@@ -842,25 +618,16 @@ public class KeyEventProcessor {
                 && ime.getPhysicalKeyboardStateTracker().getSymbolPageOrder() != 1;
     }
 
-    /**
-     * Board/multifunction key-ups are consumed by their branches above before the
-     * generic tracked-key block runs, so that block's tracker bookkeeping must happen
-     * here instead: without it the PhysicalKeyboardStateTracker keys-down count leaks
-     * +1 per press (permanently blocking FccController.showFcc()'s keysDown == 0
-     * guard) and InputLogic keeps the event tracked. Only releases keys the key-down
-     * path actually tracked.
-     */
-    /**
-     * Whether this key is the Sym key. The rule lives in {@link ResolvedKey#isSymBoardKey}, which
-     * is the one place key identity is decided; this stays as the name the existing suites call.
-     *
-     * @param mapping the mapping already resolved for this event, or null if none matched
-     */
+    /** Test entry point for {@link ResolvedKey#isSymBoardKey}. */
     @VisibleForTesting
     static boolean isSymBoardKey(int keyCode, ScancodeMapping mapping) {
         return ResolvedKey.isSymBoardKey(keyCode, mapping);
     }
 
+    /**
+     * Tracker bookkeeping for a key-up consumed before the tracked-key block; otherwise the
+     * keys-down count leaks (blocking showFcc()) and InputLogic keeps the event tracked.
+     */
     private void releaseConsumedBoardKey(KeyEvent event) {
         if (ime.getInputLogic().isKeyTracked(event)) {
             ime.getPhysicalKeyboardStateTracker().handleKeyUp(event.getKeyCode(), event);
@@ -869,11 +636,9 @@ public class KeyEventProcessor {
     }
 
     /**
-     * Toggle a UIM board by keycode. When the Unified Input Menu is enabled, routes through
-     * {@link UnifiedInputBoardManager#requestBoard(int)} — the coordinator's single toggle
-     * choke point, which decides from the active-board state so a second press reliably
-     * closes the board. Otherwise runs {@code fallback} for the non-UIM path. A menu the
-     * "Show or hide the input menu" action has up counts as enabled, so it gets the first route.
+     * With the UIM enabled (including a menu raised by the toggle action), toggle through
+     * {@link UnifiedInputBoardManager#requestBoard(int)} so a second press closes it; else run
+     * {@code fallback}.
      */
     private void toggleBoardOrFallback(int boardKeyCode, Runnable fallback) {
         UnifiedInputBoardManager unifiedManager = ime.getKeyboardSwitcher().getUnifiedInputBoardManager();
@@ -897,11 +662,9 @@ public class KeyEventProcessor {
     }
 
     /**
-     * Routes a hardware key-down into the open emoji board's search query (owner decisions,
-     * 2026-11-02; the pure rules are {@link EmojiQueryKeyRouting}). A printable key appends its
-     * character, resolved by the same converter the typing path uses so Alt characters and
-     * remapped layouts search with what the user sees; Backspace edits the query while there is
-     * one and passes through otherwise. A consumed key is tracked so its release is swallowed too.
+     * Feeds a key-down to the open emoji board's search ({@link EmojiQueryKeyRouting}). Characters
+     * go through the typing converter so Alt chars and layouts match; Backspace edits a non-empty
+     * query. Consumed keys are tracked so their release is swallowed.
      *
      * @return true when the board took the key
      */
@@ -911,8 +674,7 @@ public class KeyEventProcessor {
                 || !EmojiQueryKeyRouting.mayFeedQuery(key)) {
             return false;
         }
-        // "Enable emoji search" under Physical keyboard (owner decision 2026-11-03): off, the
-        // board takes no keys and typing goes to the editor as it always did.
+        // "Enable emoji search" off: typing goes to the editor.
         if (!ime.getSettingsManager().getSettingsValues().isPkbEmojiSearchEnabled) {
             return false;
         }
@@ -939,7 +701,7 @@ public class KeyEventProcessor {
         }
         tracker.handleKeyDown(keyCode, event);
         board.appendToQuery(text);
-        // A one-shot Shift or Alt is spent on this character, as it would be on a typed one.
+        // A one-shot Shift or Alt is spent on this character.
         tracker.consumeModifiersAfterKey(keyCode, true);
         trackEmojiQueryKey(keyCode, event);
         return true;

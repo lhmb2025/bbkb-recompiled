@@ -7,14 +7,9 @@ import java.util.HashMap;
 import java.util.WeakHashMap;
 
 /**
- * Long-press popup keyboards, kept per parent keyboard and per key, as LatinIME keeps them.
- *
- * <p>The view used to hold one map keyed by key and clear it on every keyboard swap (each shift
- * change) and every {@code closing()} (each field start), so the first long-press after either
- * rebuilt the popup. A popup only depends on its parent keyboard, its key and the preview
- * geometry, so it lives as long as the parent keyboard does: the outer map is weak on the parent,
- * which KeyboardBuilder's cache owns. Shifted and unshifted states are separate Keyboard objects
- * with their own keys, so each gets its own popups and the labels always match the board shown.
+ * Long-press popup keyboards per parent keyboard and key. A popup depends only on its parent, its
+ * key and the preview geometry, so the outer map is weak on the parent (owned by KeyboardBuilder's
+ * cache). Shifted and unshifted boards are separate Keyboards, so labels always match.
  */
 public final class MoreKeysKeyboardCache {
 

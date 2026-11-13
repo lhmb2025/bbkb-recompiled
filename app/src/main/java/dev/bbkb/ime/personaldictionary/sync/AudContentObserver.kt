@@ -15,12 +15,7 @@ import java.util.concurrent.ScheduledExecutorService
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicBoolean
 
-/**
- * Observes changes in Android's UserDictionary ContentProvider.
- *
- * Schedules delayed sync tasks when external changes are detected,
- * using an atomic flag to avoid redundant sync operations.
- */
+/** Observes the UserDictionary provider and schedules one debounced sync per burst of changes. */
 @VisibleForTesting
 class AudContentObserver(
     private val context: Context,
@@ -30,15 +25,7 @@ class AudContentObserver(
 
     private val isSyncTaskPending = AtomicBoolean(false)
 
-    /**
-     * One scheduler for the observer's whole lifetime, shut down in [unregister].
-     *
-     * Audit PD-16: a fresh java.util.Timer - i.e. a new non-daemon thread - used to be
-     * created per onChange notification just to sleep 2 s, and a Throwable (rather than
-     * an Exception) escaping the body skipped its timer.cancel() and leaked the thread
-     * permanently. The debounce is the only throttle in front of AudSyncer's sync
-     * launches, so a thread per AUD notification burst was exactly the wrong shape.
-     */
+    /** One scheduler for the observer's lifetime, shut down in [unregister]; the debounce is the only sync throttle. */
     private val scheduler: ScheduledExecutorService = Executors.newSingleThreadScheduledExecutor()
 
     override fun deliverSelfNotifications(): Boolean {

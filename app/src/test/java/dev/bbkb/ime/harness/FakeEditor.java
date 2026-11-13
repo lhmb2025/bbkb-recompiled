@@ -15,26 +15,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * A faithful, inspectable fake editor for the regression harness.
- *
- * <p>Implements the {@link InputConnection} contract the way a real
- * {@code TextView}/{@code BaseInputConnection} does — most importantly the semantics every
- * historical pipeline bug depended on:
- *
- * <ul>
- *   <li>{@link #setComposingText}: replaces the composing region if one exists, otherwise
- *       replaces the selection and <b>establishes a new region around the inserted text</b>
- *       (the "insert-when-no-region" behavior behind the launcher-search duplication bug).
- *   <li>{@link #commitText}: replaces the composing region (or selection), clears the region.
- *   <li>{@link #finishComposingText}: drops the region markers, keeps the text.
- *   <li>Every text/selection mutation queues an asynchronous selection-update event
- *       ({@link SelectionEvent}) that the harness delivers to
- *       {@code InputLogic.onUpdateSelection} when it chooses — mimicking the binder delay
- *       that real race bugs rode on. Batch edits coalesce into a single event.
- * </ul>
- *
- * <p>App-side behavior (launcher clearing the field on search, a messaging app clearing on
- * send) is scriptable via {@link #onEditorAction}.
+ * Inspectable {@link InputConnection} with {@code BaseInputConnection} semantics:
+ * {@link #setComposingText} with no region inserts at the selection and makes it the region;
+ * every mutation queues a {@link SelectionEvent} the harness delivers later (the binder delay),
+ * with batch edits coalesced. App reactions are scriptable via {@link EditorActionBehavior}.
  */
 public class FakeEditor implements InputConnection {
 
@@ -76,17 +60,12 @@ public class FakeEditor implements InputConnection {
     public final List<Integer> editorActions = new ArrayList<>();
     /** Raw key events received via sendKeyEvent. */
     public final List<KeyEvent> sentKeyEvents = new ArrayList<>();
-    /**
-     * Text reads (synchronous round-trips on a real device), counted apart from {@link #callLog}
-     * so the order-sensitive assertions on edits stay as they are.
-     */
+    /** Text reads (sync round-trips on a device), counted apart from {@link #callLog}. */
     public int getTextBeforeCursorCalls = 0;
     public int getTextAfterCursorCalls = 0;
 
     private EditorActionBehavior mActionBehavior = null;
     private boolean mConnectionValid = true;
-
-    // ── harness controls ─────────────────────────────────────────────────────
 
     public void setEditorActionBehavior(EditorActionBehavior b) { mActionBehavior = b; }
 
@@ -103,11 +82,7 @@ public class FakeEditor implements InputConnection {
         queueSelectionEvent(os, oe);
     }
 
-    /**
-     * App-side caret move (the user tapping elsewhere, an app repositioning the caret). Unlike
-     * {@link #appSetText} this keeps the text AND any composing region — which is what makes it
-     * the right model for an external cursor move arriving mid-word. Queues an event.
-     */
+    /** App-side caret move; unlike {@link #appSetText} keeps text and composing region. Queues an event. */
     public void appSetSelection(int selStart, int selEnd) {
         int os = mReportedSelStart, oe = mReportedSelEnd;
         mSelStart = clamp(selStart); mSelEnd = clamp(selEnd);
@@ -130,8 +105,6 @@ public class FakeEditor implements InputConnection {
     public int pendingSelectionEventCount() { return mPendingSelectionEvents.size(); }
     /** Drop queued events without delivering (a swallowed/never-delivered update). */
     public void dropPendingSelectionEvents() { mPendingSelectionEvents.clear(); }
-
-    // ── internal helpers ─────────────────────────────────────────────────────
 
     private int clamp(int i) { return Math.max(0, Math.min(i, mText.length())); }
 
@@ -164,8 +137,6 @@ public class FakeEditor implements InputConnection {
         return start + text.length();
     }
 
-    // ── InputConnection: the load-bearing methods ────────────────────────────
-
     @Override
     public boolean commitText(CharSequence text, int newCursorPosition) {
         if (!mConnectionValid) return false;
@@ -197,8 +168,7 @@ public class FakeEditor implements InputConnection {
         if (hasComposingRegion()) {
             start = mComposingStart; end = mComposingEnd;
         } else {
-            // THE semantics the launcher bug depended on: with no composing region,
-            // the text is inserted at the selection and becomes the new region.
+            // With no composing region the text goes in at the selection and becomes the region.
             start = Math.min(mSelStart, mSelEnd); end = Math.max(mSelStart, mSelEnd);
         }
         int insEnd = replace(start, end, text);
@@ -219,10 +189,7 @@ public class FakeEditor implements InputConnection {
     public boolean finishComposingText() {
         if (!mConnectionValid) return false;
         callLog.add("finishComposingText()");
-        // No text change, no cursor change: real editors do not emit a selection
-        // update for a pure region drop (candidates change only is not reported
-        // through onUpdateSelection by all editors; we mirror TextView, which does
-        // report candidates end. Keep it observable but position-unchanged.)
+        // Mirrors TextView: a pure region drop still reports an update (candidates end changes).
         beginMutation();
         mComposingStart = -1; mComposingEnd = -1;
         endMutation();
@@ -252,12 +219,8 @@ public class FakeEditor implements InputConnection {
         callLog.add("deleteSurroundingText(" + beforeLength + "," + afterLength + ")");
         beginMutation();
         int selLo = Math.min(mSelStart, mSelEnd), selHi = Math.max(mSelStart, mSelEnd);
-        // THE contract this fake exists to reproduce: deleteSurroundingText does NOT touch the
-        // composing text. BaseInputConnection widens the protected span from the selection out
-        // to cover the whole composing region, then deletes AROUND it — so with a live region
-        // the characters that go are the ones BEFORE the half-typed word, not the word's own.
-        // A fake that quietly shrank the region instead would hide every bug of that shape
-        // (FIX-BKSP: hold-to-delete ate the committed sentence while the word sat unchanged).
+        // Like BaseInputConnection, never touch the composing text: widen the kept span to the
+        // whole region and delete around it, so a live region loses the text before the word.
         int keepLo = selLo, keepHi = selHi;
         if (hasComposingRegion()) {
             keepLo = Math.min(keepLo, mComposingStart);
@@ -353,8 +316,6 @@ public class FakeEditor implements InputConnection {
         }
         return mBatchDepth > 0;
     }
-
-    // ── InputConnection: recorded no-ops ─────────────────────────────────────
 
     @Override public boolean commitCompletion(CompletionInfo text) { callLog.add("commitCompletion"); return true; }
     @Override public boolean commitCorrection(CorrectionInfo correctionInfo) { callLog.add("commitCorrection"); return true; }

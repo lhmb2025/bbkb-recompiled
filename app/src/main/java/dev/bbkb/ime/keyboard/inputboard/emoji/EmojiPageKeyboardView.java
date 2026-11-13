@@ -37,17 +37,8 @@ import dev.bbkb.ime.keyboard.internal.DrawingPreviewPlacerView;
 import java.util.List;
 
 /**
- * Custom KeyboardView for rendering a single page of emoji keys.
- * 
- * Extends KeyboardView to provide:
- * - Touch event handling for emoji selection
- * - Long-press support for emoji variants (skin tones, etc.)
- * - More keys popup panel display
- * - Gesture detection (tap, long press, swipe)
- * - Key press visual feedback and animations
- * 
- * Each instance displays one page of emoji grid. Multiple instances are managed
- * by EmojiPagerAdapter within the emoji picker's ViewPager2, and by the search overlay's.
+ * One page of the emoji grid: tap to type, long-press for the skin-tone popup. Pages are made
+ * by EmojiPagerAdapter for the board's ViewPager2 and by the search overlay.
  */
 
 public final class EmojiPageKeyboardView extends KeyboardView implements GestureDetector.OnGestureListener, TimerHandler.Callbacks, LongPressHandler.KeyPreviewDismisser, MoreKeysPanel.Controller, PointerTracker.KeyDrawingProxy, PointerTracker.GestureEnabledProvider {
@@ -56,20 +47,20 @@ public final class EmojiPageKeyboardView extends KeyboardView implements Gesture
 
     @Override
     protected boolean capPainterDrawsEmptyKeys() {
-        // Per-style: Material floats each emoji on its own key cap (the pager behind
-        // is painted the board background color by EmojiPalettesView.applyColors);
-        // BB10 draws bare glyphs on the board. Pressed feedback stays either way —
-        // the cap painters give pressed empty keys a state layer regardless.
+        // Material draws a cap per emoji; BB10 draws bare glyphs. Pressed keys get a state
+        // layer either way.
         return dev.bbkb.ime.keyboard.KeyboardColorManager.styleSpec().getEmojiCaps();
     }
 
     private static final OnEmojiKeyListener EMPTY_LISTENER = new OnEmojiKeyListener() {
         @Override // dev.bbkb.ime.keyboard.inputboard.emoji.EmojiPageKeyboardView.OnEmojiKeyListener
         public void onEmojiKeyPressed(Key key) {
+            // No listener set yet.
         }
 
         @Override // dev.bbkb.ime.keyboard.inputboard.emoji.EmojiPageKeyboardView.OnEmojiKeyListener
         public void onEmojiKeyReleased(Key key) {
+            // No listener set yet.
         }
     };
 
@@ -95,7 +86,7 @@ public final class EmojiPageKeyboardView extends KeyboardView implements Gesture
 
     private final DrawingPreviewPlacerView moreKeysLayoutParams;
 
-    /** The window content view the placer was added to, kept for its removal (see onDetachedFromWindow). */
+    /** The window content view the placer was added to, kept for its removal. */
     private ViewGroup placerHost;
 
     private final BatchInputTimerHandler keyPreviewHandler;
@@ -117,33 +108,38 @@ public final class EmojiPageKeyboardView extends KeyboardView implements Gesture
 
         void onEmojiKeyReleased(Key key);
 
-        /**
-         * The skin-tone popup changed the remembered tone of {@code emoji}'s base: the board
-         * redraws that emoji's keys with it at once.
-         */
+        /** The skin-tone popup changed the remembered tone of {@code emoji}'s base; redraw its keys. */
         default void onToneMemoryChanged(String emoji) {
+            // Optional for listeners.
         }
 
         /** An emoji was picked from the skin-tone popup: it counts as used, like a tapped key. */
         default void onPopupEmojiPicked(String emoji) {
+            // Optional for listeners.
         }
     }
 
+    /** @param c1084t the pointer tracker */
     @Override
     public void showGestureTrail(PointerTracker c1084t) {
+        // No gesture typing on emoji pages.
     }
 
+    /** @param c1084t the pointer tracker */
     @Override
     public void showSlidingKeyInputPreview(PointerTracker c1084t) {
+        // No sliding key input on emoji pages.
     }
     
     @Override
     public void invalidateKeyGraphics(Key key) {
-        // Default implementation - no action required
+        // Keys are redrawn through invalidateKey.
     }
 
+    /** @param c1084t the pointer tracker */
     @Override
     public void onLongPress(PointerTracker c1084t) {
+        // Long-press is handled by the GestureDetector (onLongPress(MotionEvent)).
     }
 
     @Override // android.view.View
@@ -153,14 +149,17 @@ public final class EmojiPageKeyboardView extends KeyboardView implements Gesture
 
     @Override
     public void startWhileTypingFadeinAnimation() {
+        // No while-typing animation on emoji pages.
     }
 
     @Override
     public void startWhileTypingFadeoutAnimation() {
+        // No while-typing animation on emoji pages.
     }
 
     @Override
     public void dismissGestureTrail() {
+        // No gesture trail to dismiss.
     }
 
     @Override
@@ -168,11 +167,19 @@ public final class EmojiPageKeyboardView extends KeyboardView implements Gesture
         return false;
     }
 
+    /**
+     * @param f horizontal velocity
+     * @param f2 vertical velocity
+     */
     @Override // android.view.GestureDetector.OnGestureListener
     public boolean onFling(MotionEvent motionEvent, MotionEvent motionEvent2, float f, float f2) {
         return false;
     }
 
+    /**
+     * @param f horizontal scroll distance
+     * @param f2 vertical scroll distance
+     */
     @Override // android.view.GestureDetector.OnGestureListener
     public boolean onScroll(MotionEvent motionEvent, MotionEvent motionEvent2, float f, float f2) {
         return false;
@@ -180,8 +187,10 @@ public final class EmojiPageKeyboardView extends KeyboardView implements Gesture
 
     @Override // android.view.GestureDetector.OnGestureListener
     public void onShowPress(MotionEvent motionEvent) {
+        // Pressed state is set in onDown.
     }
 
+    /** @param interfaceC1071m the popup panel being shown */
     @Override
     public void onShowMoreKeysPanel(MoreKeysPanel interfaceC1071m) {
         updateMoreKeysPosition();
@@ -246,6 +255,7 @@ public final class EmojiPageKeyboardView extends KeyboardView implements Gesture
         this(context, attributeSet, R.attr.keyboardViewStyle);
     }
 
+    /** @param i the default style attribute */
     public EmojiPageKeyboardView(Context context, AttributeSet attributeSet, int i) {
         super(context, attributeSet, i);
         this.keyboardStyleSet = null;
@@ -257,8 +267,7 @@ public final class EmojiPageKeyboardView extends KeyboardView implements Gesture
         this.gestureDetector.setIsLongpressEnabled(true);
         TypedArray typedArrayObtainStyledAttributes = context.obtainStyledAttributes(attributeSet, R.styleable.MainKeyboardView, i, R.style.MainKeyboardView);
         this.keyboardStyleSet = new KeyPreviewDrawParams(typedArrayObtainStyledAttributes);
-        // Not inflated here: most pages are never long-pressed, and every page used to inflate a
-        // whole more-keys KeyboardView up front (audit P-16).
+        // Inflated lazily: most pages are never long-pressed.
         this.moreKeysLayoutResId = typedArrayObtainStyledAttributes.getResourceId(R.styleable.MainKeyboardView_moreKeysKeyboardLayout, 0);
         this.moreKeysLayoutParams = new DrawingPreviewPlacerView(context, attributeSet);
         int i2 = typedArrayObtainStyledAttributes.getInt(R.styleable.MainKeyboardView_backgroundDimAlpha, 0);
@@ -286,10 +295,10 @@ public final class EmojiPageKeyboardView extends KeyboardView implements Gesture
     }
 
     /**
-     * The skin-tone popup's view for every page of one board, inflated on the first long-press.
-     * Only one popup can be up at a time, and showing it detaches it from whichever page's placer
-     * held it last ({@code MoreKeysKeyboardView.showInParent}).
+     * The skin-tone popup view shared by every page of one board, inflated on the first long-press.
+     * Only one popup is up at a time; showing it detaches it from the page that held it last.
      */
+
     static final class SharedMoreKeysPanel {
         private View view;
         private int layoutResId;
@@ -328,18 +337,8 @@ public final class EmojiPageKeyboardView extends KeyboardView implements Gesture
     }
 
     /**
-     * Attaches the more-keys placer to the window content view, mirroring
-     * {@code MainKeyboardView.installPreviewPlacerView()}.
-     *
-     * <p>Audit IB-5: the guard used to be inverted - the placer was added only when a
-     * view carrying the placer's own id was <em>already</em> in the content view. The
-     * placer inherits its id from the AttributeSet it is constructed with, so down the
-     * XML path it passed by accident (findViewById found the page view itself), while
-     * the programmatic path used by {@code EmojiSearchOverlayView}
-     * ({@code new EmojiPageKeyboardView(context, null)}) has {@code NO_ID}, so
-     * {@code findViewById(-1)} returned null and the placer was never attached - which
-     * silently killed skin-tone long-press popups on every emoji shown through the
-     * search/recents overlay.</p>
+     * Attaches the more-keys placer to the window content view when it has no parent. Do not
+     * test by view id: pages built in code (the search overlay) have NO_ID.
      */
     private void attachMoreKeysToWindow() {
         ViewGroup windowContentView = getWindowContentView();
@@ -353,16 +352,9 @@ public final class EmojiPageKeyboardView extends KeyboardView implements Gesture
     }
 
     /**
-     * Removes the more-keys placer from the window content view, on the next main-loop turn when a
-     * layout pass is running.
-     *
-     * <p>The pagers are RecyclerViews, which detach recycled pages from the window inside their own
-     * layout (a tab jump, a rebuilt overlay). That layout runs inside the content frame's
-     * {@code layoutChildren}, and removing the placer, a child of that frame, while it iterates its
-     * children crashed it (NPE in FrameLayout.layoutChildren; the v1 pager adapter posted its page
-     * removal for the same reason). A page attached again before the posted removal runs keeps its
-     * placer. The host is the one remembered on attach: a page RecyclerView temporarily detached is
-     * no longer in the window's tree here, so {@code getRootView()} cannot find the content view.
+     * Removes the more-keys placer, posted when the host is mid-layout: RecyclerView detaches pages
+     * inside the content frame's layoutChildren, and removing a child then throws an NPE. Uses the
+     * host remembered on attach, since a detached page cannot reach the content view.
      */
     @Override // dev.bbkb.ime.keyboard.KeyboardView, android.view.View
     protected void onDetachedFromWindow() {
@@ -402,6 +394,7 @@ public final class EmojiPageKeyboardView extends KeyboardView implements Gesture
         this.moreKeysLayoutParams.removeAllDrawingPreviews();
     }
 
+    /** @param interfaceC0967a receives emoji key presses and releases */
     public void setOnKeyEventListener(OnEmojiKeyListener interfaceC0967a) {
         this.keyEventListener = interfaceC0967a;
     }
@@ -433,12 +426,9 @@ public final class EmojiPageKeyboardView extends KeyboardView implements Gesture
                     break;
             }
         }
-        // Route all events through processPointerEvents, which is the single
-        // dispatcher: it forwards to the GestureDetector and, when the gesture is
-        // consumed (e.g. a tap), terminates the PointerTracker via cancelTracking(). Calling
-        // gestureDetector.onTouchEvent() here and returning early on a consumed UP
-        // would bypass that cleanup, leaving the long-press timer armed on DOWN to
-        // fire and open the dimmed MoreKeys overlay, which swallows all touch input.
+        // Always go through processPointerEvents: on a consumed gesture it cancels the tracker.
+        // Returning early here leaves the long-press timer armed and opens a dimmed popup that
+        // swallows all touches.
         return processPointerEvents(motionEvent);
     }
 
@@ -463,44 +453,29 @@ public final class EmojiPageKeyboardView extends KeyboardView implements Gesture
 
     @Override // android.view.View
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        // Fix for multi-row emoji display:
-        // Calculate proper height dynamically from actual key positions
-        // This ensures correct display on any screen size
+        // Height comes from the bottom-most key, not the keyboard's declared height.
         Keyboard keyboard = getKeyboard();
         if (keyboard != null && keyboard instanceof EmojiKeyboard) {
             int width = keyboard.mOccupiedWidth + getPaddingLeft() + getPaddingRight();
-            
-            // Get all keys to calculate actual required height
+
             List<Key> keys = keyboard.getKeys();
             int keyCount = keys.size();
             
             if (keyCount > 0) {
-                // Find the bottom-most key to determine required height
-                // This works for any grid layout (7 cols, 10 cols, etc.) on any screen size
                 int maxBottom = 0;
                 for (Key key : keys) {
-                    // Use the key's actual hit box rectangle for accurate positioning
-                    int keyBottom = key.getHitBox().bottom;  // Rect.bottom
+                    int keyBottom = key.getHitBox().bottom;
                     if (keyBottom > maxBottom) {
                         maxBottom = keyBottom;
                     }
                 }
-                
-                // Add padding to the calculated height
+
                 int calculatedHeight = maxBottom + getPaddingTop() + getPaddingBottom();
 
-                // Log for debugging (helps verify correct height on different devices)
-                // Log.d(TAG, "EmojiPage onMeasure: keyCount=" + keyCount +
-                //           ", maxBottom=" + maxBottom +
-                //           ", calculatedHeight=" + calculatedHeight +
-                //           ", paddingTop=" + getPaddingTop() +
-                //           ", paddingBottom=" + getPaddingBottom());
-                
                 setMeasuredDimension(width, calculatedHeight);
                 return;
             }
         }
-        // Fallback to parent implementation
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
     }
     
@@ -512,6 +487,7 @@ public final class EmojiPageKeyboardView extends KeyboardView implements Gesture
         }
     }
 
+    /** @param z true to dim the page behind an open popup */
     private void setDimmed(boolean z) {
         boolean z2 = this.isDimmed != z;
         this.isDimmed = z;
@@ -526,7 +502,7 @@ public final class EmojiPageKeyboardView extends KeyboardView implements Gesture
         if (keyM6620b == null) {
             return false;
         }
-        // Skip blank placeholder keys (code -21) which fill empty slots in recents
+        // -21 is a blank placeholder key filling empty recents slots.
         if (keyM6620b.getCode() == -21) {
             return false;
         }
@@ -544,7 +520,6 @@ public final class EmojiPageKeyboardView extends KeyboardView implements Gesture
         if (keyM6620b == null) {
             return false;
         }
-        // Skip blank placeholder keys (code -21) which fill empty slots in recents
         int keyCode = keyM6620b.getCode();
         if (keyCode == -21) {
             return false;
@@ -573,7 +548,6 @@ public final class EmojiPageKeyboardView extends KeyboardView implements Gesture
         if (keyM6620b == null) {
             return;
         }
-        // Skip blank placeholder keys (code -21) which fill empty slots in recents
         if (keyM6620b.getCode() == -21) {
             return;
         }
@@ -590,14 +564,9 @@ public final class EmojiPageKeyboardView extends KeyboardView implements Gesture
     }
 
     /**
-     * With skin tones to choose from, the pager must not take the long-pressing finger from the
-     * popup. The popup opens from the long-press timer, between touch events, so the request in
-     * processPointerEvents only comes with the next move, after the pager has seen it:
-     * RecyclerView intercepts any move whose horizontal part passes its slop (ViewPager v1 also
-     * wanted it mostly horizontal), so a diagonal slide to a tone dragged the page. Asked here,
-     * the pager stays out until the finger lifts (ViewGroup clears it on UP, CANCEL and the next
-     * DOWN). The popup lists the base emoji first, then its tones: a popup of the base alone
-     * offers nothing to slide to, so there a sideways move still pages, as it did on ViewPager v1.
+     * Keeps the pager from stealing the finger once a popup with tones opens. The popup opens
+     * between touch events, so waiting for the next move is too late: RecyclerView would already
+     * intercept a diagonal slide. A base-only popup has nothing to slide to, so paging still works.
      */
     void holdPagerForTones(Key key) {
         MoreKeySpec[] popup = key.getMoreKeys();
@@ -607,10 +576,9 @@ public final class EmojiPageKeyboardView extends KeyboardView implements Gesture
     }
 
     /**
-     * Wraps the IME's listener for the skin-tone popup: a variant picked there is remembered for
-     * its base emoji ({@link EmojiToneMemory}) and the plain emoji forgets it, so the key shows the
-     * chosen tone from then on (the board is told, so it redraws that key at once rather than on
-     * the next open). Nothing is remembered in an incognito field.
+     * Wraps the IME listener for the skin-tone popup: a picked tone is remembered for its base
+     * ({@link EmojiToneMemory}) and the board redraws that key. Nothing is remembered in an
+     * incognito field.
      */
     static final class ToneRecordingListener implements KeyboardActionListenerInterface {
         private final KeyboardActionListenerInterface delegate;
@@ -666,8 +634,9 @@ public final class EmojiPageKeyboardView extends KeyboardView implements Gesture
             if (KeyboardSwitcher.getInstance().isNoPersonalizedLearning()) {
                 return;
             }
-            // Recents first: a popup pick is a pick (owner report 2026-11-06: only tapped keys got there).
+            // A popup pick counts for recents too.
             board.onPopupEmojiPicked(emoji);
+
             if (EmojiToneMemory.onEmojiPicked(PrefsManager.INSTANCE.getPrefs(context), emoji)) {
                 board.onToneMemoryChanged(emoji);
             }

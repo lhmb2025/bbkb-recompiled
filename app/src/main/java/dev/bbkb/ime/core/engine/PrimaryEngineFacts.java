@@ -5,13 +5,8 @@ import com.blackberry.nuanceshim.NuanceSDK;
 import java.util.Locale;
 
 /**
- * Null-safe readers of the published engine facts ({@link EngineFacts}) for the typing path, which
- * reads them on the main thread instead of calling the engine (Wave 3 Phase A).
- *
- * <p>{@link NuanceSDKManager#facts()} never returns null in production; under a static mock of
- * the manager (the JVM tests) it does, and so does {@link NuanceSDK#getFacts()} on a mocked
- * engine. Every reader here answers {@link EngineFacts#NONE} then, so a test that mocks the
- * engine without stubbing the facts sees "no language loaded" rather than an NPE.
+ * Null-safe readers of the published {@link EngineFacts} for the main thread. The facts are null
+ * only under JVM-test mocks; readers then answer {@link EngineFacts#NONE} rather than NPE.
  */
 public final class PrimaryEngineFacts {
 
@@ -30,11 +25,7 @@ public final class PrimaryEngineFacts {
         return facts != null ? facts : EngineFacts.NONE;
     }
 
-    /**
-     * The primary language, English when no language is published: the default
-     * {@code NuanceSDK.getPrimaryLanguage()} gave, so a caller switched from the wrapper to the
-     * facts sees the same value (and never a null, which the tokenizers do not accept).
-     */
+    /** The primary language, English when none is published (never null: the tokenizers reject it). */
     public static Locale primaryLanguage(EngineFacts facts) {
         Locale primary = facts != null ? facts.getPrimaryLanguage() : null;
         return primary != null ? primary : Locale.ENGLISH;
@@ -45,10 +36,7 @@ public final class PrimaryEngineFacts {
         return primaryLanguage(get());
     }
 
-    /**
-     * The separator a word is committed with: none for Chinese, else the engine's default word
-     * separator (what {@code NuanceSDKDictionaryBridge.getWordSeparator} asked the engine for).
-     */
+    /** The separator a word is committed with: none for Chinese, else the engine's default. */
     public static String wordSeparator(EngineFacts facts) {
         if (facts == null) {
             facts = EngineFacts.NONE;

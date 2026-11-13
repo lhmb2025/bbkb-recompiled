@@ -13,23 +13,18 @@ import dev.bbkb.ime.core.settings.backup.AutoBackup;
 /**
  * BBKB's part in the phone's own backup: one file, the backup bundle the keyboard keeps fresh
  * ({@link AutoBackup#AUTO_BUNDLE_PATH}), carried by Android's key/value backup.
- *
- * <p>This used to back up the default preference file directly. That carried the preferences
- * alone — no letter maps, dictionary, shortcuts or learned words — and carried the device-specific
- * keys the settings backup leaves out on purpose. The bundle holds all three kinds of data in the
- * formats the Backup and restore screen writes and reads, and {@link AutoBackup} applies it on
- * the first start after a restore with the same rules a manual restore follows.
+ * {@link AutoBackup} applies it on the first start after a restore, with the manual-restore rules.
  */
 public final class BackupAgent extends BackupAgentHelper {
 
     private static final String KEY_BUNDLE = "bbkb_backup_bundle";
 
-    @Override // android.app.backup.BackupAgent
+    @Override
     public void onCreate() {
         addHelper(KEY_BUNDLE, new FileBackupHelper(this, AutoBackup.AUTO_BUNDLE_PATH));
     }
 
-    @Override // android.app.backup.BackupAgentHelper
+    @Override
     public void onBackup(ParcelFileDescriptor oldState, BackupDataOutput data,
                          ParcelFileDescriptor newState) throws IOException {
         AutoBackup.prepareForPhoneBackup(this);
@@ -37,13 +32,13 @@ public final class BackupAgent extends BackupAgentHelper {
         AutoBackup.onPhoneBackupWritten(this);
     }
 
-    @Override // android.app.backup.BackupAgentHelper
+    @Override
     public void onRestore(BackupDataInput data, int appVersionCode,
                           ParcelFileDescriptor newState) throws IOException {
         super.onRestore(data, appVersionCode, newState);
     }
 
-    @Override // android.app.backup.BackupAgent
+    @Override
     public void onRestoreFinished() {
         AutoBackup.onPhoneRestoreFinished(this);
     }

@@ -8,32 +8,17 @@ import dev.bbkb.ime.keyboard.Keyboard;
 import dev.bbkb.ime.keyboard.KeyboardSwitcher;
 
 /**
- * How big an input board is.
- *
- * <p>Every board is a full-width panel that sits exactly over the alphabet keyboard, so its size is
- * one rule: take the live alphabet keyboard's occupied height, and fall back to the configured
- * keyboard height when there is no keyboard yet (first show before any layout has been built) or
- * when it reports zero.
- *
- * <p>That rule was written out four times — {@code ClipboardView.onMeasure},
- * {@code FccView.onMeasure}, {@code VoiceInputView.onMeasure} and {@code EmojiPalettesView.onMeasure},
- * the first three character-for-character identical including the re-measure with EXACTLY specs.
- * Four copies of a sizing rule is four chances for a board to be a few pixels off the keyboard it
- * covers (§5.6 item 2).
- *
- * <p>The fallback is deliberately resolved once and passed back in rather than read here on every
- * measure pass: that is what the views did (a {@code final} field set in the constructor), and
- * measure runs on the layout hot path.
+ * Board size: full width, and the live alphabet keyboard's occupied height, falling back to the
+ * configured keyboard height when there is no keyboard yet or it reports zero. The fallback is
+ * resolved once per view and passed in, since measure runs on the layout hot path.
  */
 public final class BoardHeightPolicy {
 
     private BoardHeightPolicy() {
+        // Static utility.
     }
 
-    /**
-     * The height to use when there is no alphabet keyboard to match. Resolve once per view, at
-     * construction, and hand it back to {@link #contentHeight} / {@link #measuredHeight}.
-     */
+    /** Height when there is no alphabet keyboard to match; resolve once per view at construction. */
     public static int fallbackHeight(Resources resources) {
         return ResourceConfigManager.getKeyboardHeightWithPadding(resources);
     }

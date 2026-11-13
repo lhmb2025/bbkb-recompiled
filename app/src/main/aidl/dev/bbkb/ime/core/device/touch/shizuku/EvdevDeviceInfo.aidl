@@ -1,12 +1,9 @@
 package dev.bbkb.ime.core.device.touch.shizuku;
 
 /**
- * One /dev/input/event* node as EvdevUserService saw it. Mirrors TouchDeviceInfo, the
- * Android-free model the IME side works with (EvdevDeviceInfos converts between the two).
- *
- * `flags` uses the EvdevProbeLayout.FLAG_* bits: which of the axes below exist, and whether
- * the device reports BTN_TOUCH, ABS_MT_TRACKING_ID and ABS_MT_SLOT. A range is only meaningful
- * when its flag is set.
+ * One /dev/input/event* node as EvdevUserService saw it; EvdevDeviceInfos converts it to TouchDeviceInfo.
+ * `flags` uses the EvdevProbeLayout.FLAG_* bits: which axes below exist (a range is only meaningful
+ * when its flag is set) and whether BTN_TOUCH, ABS_MT_TRACKING_ID and ABS_MT_SLOT are reported.
  */
 parcelable EvdevDeviceInfo {
     String path;

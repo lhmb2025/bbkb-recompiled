@@ -36,12 +36,8 @@ import org.robolectric.shadows.ShadowToast
 import java.util.Locale
 
 /**
- * The gate in front of every way of opening voice input, through the real [VoiceInputController].
- *
- * KEY2, 2026-10-06, no recognition service selected: the mic key's toggle set voice mode on,
- * opened a board the UIM bar's consistency pass then hid, and left voice mode latched on with no
- * message. Now the open is refused before anything is shown, voice mode stays off, and the notice
- * says why — in the exact words the owner asked for.
+ * The gate in front of every way of opening voice input, through the real [VoiceInputController]: with no
+ * usable recogniser the open is refused before anything is shown, voice mode stays off, and the notice says why.
  */
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [34], manifest = Config.NONE)
@@ -122,7 +118,7 @@ class VoiceInputGateTest {
         assertEquals("No selected voice recognition service", ShadowToast.getTextOfLatestToast())
     }
 
-    /** The KEY2 shape: something could recognise speech, but nothing is chosen to. */
+    /** Something could recognise speech, but nothing is chosen to. */
     @Test
     fun `an installed but unselected service is still no service`() {
         installRecognitionService(selected = false)
@@ -164,8 +160,8 @@ class VoiceInputGateTest {
     }
 
     /**
-     * The "Speech recognizer" setting binds the chosen app directly, so the phone's own (empty)
-     * choice does not matter: this is the KEY2 shape with a way out.
+     * The "Speech recognizer" setting binds the chosen app directly, so the phone's own (empty) choice
+     * does not matter.
      */
     @Test
     fun `a chosen installed app passes the gate with no system service selected`() {
@@ -221,8 +217,8 @@ class VoiceInputGateTest {
     }
 
     /**
-     * KEY2, 2026-10-08: Claude holds the microphone and still refused. The notice must not send the
-     * user after a permission Claude already has; another recognizer is the only fix.
+     * A recogniser that holds the microphone and still refused: the notice must point to another
+     * recogniser, not the permission.
      */
     @Test
     fun `a refusing app is named and another recognizer suggested on the status line`() {

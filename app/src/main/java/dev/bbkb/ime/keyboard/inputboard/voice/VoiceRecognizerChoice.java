@@ -15,12 +15,11 @@ import java.util.Map;
  * {@code voice_recognition_service} setting names), {@link #ON_DEVICE} (the platform's on-device
  * recogniser, API 31+), or a flattened component name of one installed {@code RecognitionService}.
  *
- * <p>Plain values in, plain values out, with no Android classes, so every decision here is tested on
- * the JVM. {@link InstalledVoiceRecognizers} is what reads the device and builds the recogniser.
+ * <p>No Android classes, so every decision is JVM-tested; {@link InstalledVoiceRecognizers} reads
+ * the device and builds the recogniser.
  */
 public final class VoiceRecognizerChoice {
-
-    /** "" in the setting: the phone's own choice, as dictation always worked before this setting. */
+    /** "" in the setting: the phone's own choice. */
     public static final String SYSTEM_DEFAULT = "";
 
     /** The platform's on-device recogniser ({@code createOnDeviceSpeechRecognizer}). */
@@ -30,10 +29,9 @@ public final class VoiceRecognizerChoice {
     public static final int ON_DEVICE_MIN_SDK = 31;
 
     /**
-     * The voice picker's remembered language list. The system default keeps the key it always had,
-     * so an existing cache is still found; every other choice adds its own suffix, so switching
-     * recognisers never shows the last one's languages. The settings backup excludes the whole
-     * prefix.
+     * The voice picker's remembered language list. The system default uses the bare key (existing
+     * caches stay valid); other choices add a suffix so switching recognisers never shows the last
+     * one's languages. The settings backup excludes the whole prefix.
      */
     public static final String LANGUAGE_CACHE_KEY = "voice_input_language_cache";
 
@@ -54,14 +52,13 @@ public final class VoiceRecognizerChoice {
         }
     }
 
-    /** One entry of the "Speech recognizer" list. */
     public static final class Provider {
         /** Flattened component name, {@code package/fully.qualified.Class}: the setting's value. */
         public final String component;
         public final String packageName;
         /** What the list shows: the app's label, made unique among the providers. */
         public final String label;
-        /** This is the service the phone's secure setting names. */
+        /** The service the phone's secure setting names. */
         public final boolean isSystemDefault;
 
         public Provider(String component, String packageName, String label, boolean isSystemDefault) {
@@ -244,14 +241,11 @@ public final class VoiceRecognizerChoice {
 
     /** What to do when the recogniser answers {@code ERROR_INSUFFICIENT_PERMISSIONS}. */
     public enum PermissionErrorAction {
-        /** Ask for this keyboard's own microphone permission, as before there was a choice. */
+        /** Ask for this keyboard's own microphone permission. */
         REQUEST_OWN_PERMISSION,
         /** The chosen app has no microphone permission: "<app> needs microphone permission". */
         APP_NEEDS_PERMISSION,
-        /**
-         * The chosen app has the microphone and still refused: it will not serve this keyboard
-         * ("<app> did not allow dictation"). Claude's service did this on the KEY2 (2026-10-08).
-         */
+        /** The chosen app has the microphone and still refused this keyboard ("<app> did not allow dictation"). */
         APP_REFUSED
     }
 

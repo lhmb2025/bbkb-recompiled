@@ -16,16 +16,9 @@ import java.util.Date
 import java.util.Locale
 
 /**
- * Capacitive-keypad sensor mapper.
- *
- * The data model lives in [SensorViz] (an object), NOT in the view, so capture + the periodic logcat
- * dump + file export all work even if the on-screen overlay fails to attach to the IME window (which
- * is finicky on a PKB). [SensorVizView] is purely a renderer for the model.
- *
- * Pipeline: BlackBerryIME.onGenericMotionEvent forwards each raw SOURCE_TOUCHPAD sample (1080x525)
- * to [SensorViz.addPoint] (and to the view's [SensorVizView.plot] if present), then swallows the
- * event so typing is suppressed while mapping. This is upstream of the Nuance engine, so it works
- * even when the KDB fails to load.
+ * Capacitive-keypad sensor mapper. The model lives here, not in the view, so capture, the logcat
+ * dump and export work even when the overlay fails to attach (finicky on a PKB). Fed raw 1080x525
+ * SOURCE_TOUCHPAD samples upstream of the engine, so it works even when the KDB fails to load.
  */
 object SensorViz {
     const val PREF_KEY = "ckb_sensor_viz"
@@ -38,15 +31,11 @@ object SensorViz {
     @Volatile
     var active = false
 
-    // Proposed mapping model drawn as a reference grid on the canvas (tweak freely to test):
-    // a dead strip at the top, then equal-height letter rows. Default = the 50px + 128px hypothesis.
+    // Reference grid drawn on the canvas: a dead strip at the top, then equal-height letter rows.
     @Volatile var refDeadTop = 50f
     @Volatile var refRowH = 128f
 
-    // Audit GD-24: allocate the 320 KB of sample buffers on first use, not at class init. The
-    // object is touched once per input session just to read `active` (SensorVizOverlay), and the
-    // visualizer is off by default — an IME is one of the most heap-constrained processes on the
-    // device, so the buffers must not exist until something actually records into them.
+    // Lazy: 320 KB of buffers, and the object is touched every input session just to read `active`.
     val rawX: FloatArray by lazy(LazyThreadSafetyMode.NONE) { FloatArray(MAX_POINTS) }
     val rawY: FloatArray by lazy(LazyThreadSafetyMode.NONE) { FloatArray(MAX_POINTS) }
     var rawHead = 0
@@ -141,7 +130,7 @@ object SensorViz {
         return sb.toString()
     }
 
-    /** Write the report to the app's external files dir and dump bands to logcat. Returns the file. */
+    /** Writes the report to the external files dir and dumps bands to logcat; returns the file. */
     fun export(context: Context): File? {
         logSummary()
         if (total == 0L) return null
@@ -220,7 +209,7 @@ class SensorVizView(context: Context) : View(context) {
     private fun sx(x: Float) = content.left + x / SensorViz.SENSOR_W * content.width()
     private fun sy(y: Float) = content.top + y / SensorViz.SENSOR_H * content.height()
 
-    /** Draw one already-recorded sample. (Data is stored by SensorViz.addPoint, called separately.) */
+    /** Draws one sample already recorded by [SensorViz.addPoint]. */
     fun plot(x: Float, y: Float) {
         accumCanvas?.drawCircle(sx(x), sy(y), 3.5f, pPoint)
         postInvalidateOnAnimation()
@@ -281,8 +270,7 @@ class SensorVizView(context: Context) : View(context) {
 
         accum?.let { c.drawBitmap(it, 0f, 0f, null) }
 
-        // Proposed reference model: dead strip + equal-height rows (orange), to compare against the
-        // actual touch density (green bands / points). Adjust SensorViz.refDeadTop / refRowH to test.
+        // Reference model (orange) against the actual touch density (green).
         run {
             val dead = SensorViz.refDeadTop
             val rh = SensorViz.refRowH

@@ -28,33 +28,18 @@ import java.io.OutputStream
 import java.util.Locale
 
 /**
- * Backing up, restoring and resetting the three kinds of data ([BackupBundle.Part]) on a phone:
- * the one place that knows where each lives and in what order it has to be put back.
- *
- * [BackupBundle] owns the file; this object owns the phone. Every function here is a suspend
- * function that does its file and dictionary work on the IO dispatcher and its keyboard-cache
- * work on the main thread, so the Backup and restore screen, the phone-backup agent and the
- * first-run restore all go through the same steps.
- *
- * ## Restore order
- *
- * Device profiles and letter layouts (files) first, so a failure there leaves the preferences
- * untouched; then settings and macros; then the layout editors on the main thread, because
- * writing them clears `KeyboardBuilder`'s cache, which the keyboard reads on the main thread;
- * then the dictionary through [DictionaryRepository] (never by copying its files, which the
- * system-dictionary sync would undo); and the learned words last, through the engine's own
- * learn call, only when the engine is up.
- *
- * Settings, macros and layouts replace: the phone ends up with exactly what the backup holds
- * (a setting the backup does not name goes back to its default; [SettingsBackup.apply] with
- * `replace`). Dictionary entries and learned words are added, never removed: a word is never
- * worth losing to a restore.
+ * Capture, restore and reset of the [BackupBundle.Part]s on the phone ([BackupBundle] owns the file).
+ * Restore order: device profiles and letter layouts (files) first so a failure leaves prefs
+ * untouched; settings and macros; layout editors on main (they clear `KeyboardBuilder`'s cache);
+ * the dictionary via [DictionaryRepository] (copying its files would be undone by the system sync);
+ * learned words last, only with the engine up. Settings, macros and layouts replace; dictionary
+ * entries and learned words are only ever added.
  */
 object BackupOperations {
 
     private const val TAG = "BackupOperations"
 
-    /** `files/device_configs`: `CustomDeviceConfigManager`'s folder of imported profiles. */
+    /** `CustomDeviceConfigManager`'s folder of imported profiles under `files/`. */
     private const val DEVICE_CONFIG_DIR = "device_configs"
 
     /** What a restore did, for the summary shown afterwards. */
@@ -74,22 +59,15 @@ object BackupOperations {
         val restoredWords: Boolean get() = dictionaryAdded > 0 || learnedAdded > 0
     }
 
-    /** How reading a picked file went. */
     sealed interface ReadResult {
         class Ok(val bundle: BackupBundle.Bundle) : ReadResult
-        /** The file was read but is not a backup; [message] says why. */
         class NotABackup(val message: String) : ReadResult
-        /** The storage layer would not hand over the bytes. */
         object Unreadable : ReadResult
     }
 
-    // ── capture ──────────────────────────────────────────────────────────────
-
     /**
-     * The selected parts of the phone's current data, serialised. Learned words are included
-     * only when the engine is running with its model loaded (the keyboard has been used in this
-     * process); otherwise the words part carries the dictionary alone, and a restore of it leaves
-     * the learned words as they are.
+     * The selected parts, serialized. Learned words are included only when the engine is running
+     * with its model; otherwise the words part carries the dictionary alone.
      */
     suspend fun capture(context: Context, selection: BackupBundle.Selection): BackupBundle.Contents =
         withContext(Dispatchers.IO) {
@@ -124,11 +102,7 @@ object BackupOperations {
             )
         }
 
-    /**
-     * The user's letter layouts, each written out afresh from its parsed form rather than copied:
-     * a file that no longer parses is skipped by the registry, and copying it would make the
-     * whole backup one the reader refuses.
-     */
+    /** Re-serialized from the parsed form, not copied, so one unparsable file cannot spoil the bundle. */
     private fun captureLetterLayouts(context: Context): List<BackupBundle.LetterLayoutFile> =
         LetterLayoutRegistry(context).list()
             .sortedBy { it.id }
@@ -156,7 +130,7 @@ object BackupOperations {
             }
     }
 
-    /** Every dictionary entry on the phone, across locales, each once. */
+    /** Every dictionary entry across locales, deduplicated. */
     private suspend fun dictionaryEntries(context: Context): List<DictionaryEntry> {
         val repository = DictionaryRepository(context)
         repository.initialize()
@@ -175,9 +149,8 @@ object BackupOperations {
     private fun entryKey(entry: DictionaryEntry): String = entry.locale + "\u0000" + entry.displayKey
 
     /**
-     * The engine's learned words, or null when the engine is not running with its model. The
-     * enumeration is one op on the engine's loader thread (a Dispatchers.IO thread can exit, so it
-     * must never call the engine).
+     * The engine's learned words, or null when the engine is not running with its model. Runs on
+     * the engine's loader thread: an IO thread can exit, so it must never call the engine.
      */
     private suspend fun learnedWords(): List<String>? = withContext(engineLoaderDispatcher) {
         val sdk = NuanceSDKManager.peekInstance()
@@ -190,12 +163,9 @@ object BackupOperations {
         }
     }
 
-    /** The phone this bundle is written on, for the restore summary on another one. */
     fun deviceInfo(): BackupBundle.DeviceInfo = BackupBundle.DeviceInfo(Build.MANUFACTURER, Build.MODEL)
 
-    // ── files ────────────────────────────────────────────────────────────────
-
-    /** Writes the selected parts to [uri] (a document the user chose). False if storage refused. */
+    /** Writes the selected parts to [uri]; false if storage refused. */
     suspend fun writeTo(context: Context, uri: Uri, selection: BackupBundle.Selection): Boolean {
         val contents = capture(context, selection)
         return withContext(Dispatchers.IO) {
@@ -215,10 +185,8 @@ object BackupOperations {
     }
 
     /**
-     * Writes [contents] to [file] atomically, through [AtomicFile]: the zip goes to
-     * `<name>.new`, is synced to disk and is then renamed over [file]. The phone-backup helper
-     * reads `backup/auto.zip` directly, so it must always find the whole old bundle or the whole
-     * new one, even after a crash or a power cut.
+     * Writes [contents] to [file] atomically via [AtomicFile]: the phone-backup helper reads
+     * `backup/auto.zip` directly and must find a whole bundle even after a crash.
      */
     @Throws(IOException::class)
     fun writeTo(file: File, contents: BackupBundle.Contents) {
@@ -228,9 +196,7 @@ object BackupOperations {
         var out: FileOutputStream? = null
         try {
             out = atomic.startWrite()
-            // BackupBundle.write closes the stream it is given (its ZipOutputStream does), and
-            // finishWrite has to sync the file before it is closed: hand it a stream whose close
-            // only flushes.
+            // BackupBundle.write closes its stream, but finishWrite must sync before close.
             writeTo(KeepOpenOutputStream(out), contents)
             atomic.finishWrite(out)
         } catch (e: IOException) {
@@ -248,7 +214,7 @@ object BackupOperations {
         }
     }
 
-    /** Passes writes through to [target] and leaves it open on [close], which only flushes it. */
+    /** [close] only flushes, leaving [target] open. */
     private class KeepOpenOutputStream(target: OutputStream) : FilterOutputStream(target) {
         override fun write(b: ByteArray, off: Int, len: Int) = out.write(b, off, len)
         override fun close() = out.flush()
@@ -281,12 +247,7 @@ object BackupOperations {
         return ReadResult.Ok(bundle)
     }
 
-    // ── restore ──────────────────────────────────────────────────────────────
-
-    /**
-     * Applies the parts of [bundle] that [selection] asks for and the bundle has. Safe to call
-     * with parts the bundle lacks: they count as nothing restored.
-     */
+    /** Applies the parts [selection] asks for that [bundle] has. */
     suspend fun restore(context: Context, bundle: BackupBundle.Bundle, selection: BackupBundle.Selection): RestoreReport {
         val app = context.applicationContext
         val report = RestoreReport()
@@ -297,16 +258,14 @@ object BackupOperations {
                 report.deviceConfigs = restoreDeviceConfigs(app, bundle.deviceConfigs)
             }
             if (wanted.layouts && bundle.letterLayouts.isNotEmpty()) {
-                // Added or replaced by id, never switched on: the active layout stays the user's
-                // choice on this phone.
+                // Added or replaced by id, never switched on.
                 val registry = LetterLayoutRegistry(app)
                 bundle.letterLayouts.forEach { registry.save(it) }
                 report.letterLayouts = bundle.letterLayouts.size
             }
             if (wanted.settings) {
                 bundle.settings?.let {
-                    // Replace: the phone ends up with exactly the backup's settings. The layout
-                    // keys are kept because they are the Layouts part's, restored or not above.
+                    // Layout keys belong to the Layouts part, restored or not.
                     report.settings = SettingsBackup.apply(PrefsManager.getPrefs(app), it,
                         replace = true, keepKeys = LayoutsBundle.PREF_KEYS)
                 }
@@ -336,7 +295,7 @@ object BackupOperations {
         return report
     }
 
-    /** Writes each profile into the imported-profiles folder, replacing a file of the same name. */
+    /** Writes each profile into the imported-profiles folder, replacing same-named files. */
     private fun restoreDeviceConfigs(context: Context, configs: List<BackupBundle.DeviceConfigFile>): Int {
         if (configs.isEmpty()) return 0
         val dir = File(context.filesDir, DEVICE_CONFIG_DIR)
@@ -346,9 +305,8 @@ object BackupOperations {
         }
         var written = 0
         configs.forEach { config ->
-            // The bundle reader already pinned the name to a plain file name. Parse before
-            // writing, so an XML that is not a device profile does not land in the folder the
-            // profile loader scans.
+            // The reader already sanitized the name. Parse first so a non-profile XML never
+            // lands in the folder the profile loader scans.
             if (DeviceInputMappingParser.parseConfigFromStream(ByteArrayInputStream(config.xml)) == null) {
                 Logger.warn(TAG, "skipping device profile ${config.name}: not a device config")
                 return@forEach
@@ -363,7 +321,6 @@ object BackupOperations {
         return written
     }
 
-    /** Adds the entries the phone does not already have. */
     private suspend fun restoreDictionary(context: Context, entries: List<DictionaryEntry>): Int {
         val repository = DictionaryRepository(context)
         repository.initialize()
@@ -384,10 +341,7 @@ object BackupOperations {
         return added
     }
 
-    /**
-     * Teaches the engine each word; null when the engine is not running with its model. One op on
-     * the loader thread, as [learnedWords].
-     */
+    /** Teaches the engine each new word; null without the engine. Loader thread, as [learnedWords]. */
     private suspend fun restoreLearnedWords(words: List<String>): Int? = withContext(engineLoaderDispatcher) {
         val sdk = NuanceSDKManager.peekInstance()
         if (sdk == null || !sdk.isDLMReady()) return@withContext null
@@ -404,13 +358,7 @@ object BackupOperations {
         added
     }
 
-    // ── reset ────────────────────────────────────────────────────────────────
-
-    /**
-     * Puts the selected parts back to a fresh install's state. Settings: every preference that is
-     * not a layout key, plus the macros. Layouts: the editor sections and every letter layout. Words:
-     * the whole dictionary and the engine's learned-word model.
-     */
+    /** Puts the selected parts back to a fresh install's state. */
     suspend fun reset(context: Context, selection: BackupBundle.Selection) {
         val app = context.applicationContext
         if (selection.settings) {
@@ -421,8 +369,7 @@ object BackupOperations {
                 editor.apply()
                 CustomMacroRepository(app).replaceAll(emptyList())
             }
-            // What DebugSettingsUtils.clearAllSettings did after its clear: the subtype list is
-            // rebuilt from the phone's languages so the keyboard is not left with none.
+            // Rebuild the subtype list from the phone's languages so the keyboard is not left with none.
             SubtypeManager.ensureInitialized(app)
         }
         if (selection.layouts) {
@@ -443,7 +390,7 @@ object BackupOperations {
                     }
                 }
             }
-            // The model reset is a long hold: on the engine's loader thread.
+            // A long engine hold: on the loader thread.
             withContext(engineLoaderDispatcher) {
                 NuanceSDKManager.getInstance()?.let { sdk ->
                     try {

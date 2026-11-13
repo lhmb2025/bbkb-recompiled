@@ -27,8 +27,8 @@ import org.robolectric.annotation.Config
 import java.lang.reflect.Modifier
 
 /**
- * P-14: long-press popups no longer re-parse the more-keys template or reload icons per popup, and
- * keyboards of one theme share one lazily inflated icon set.
+ * Long-press popups do not re-parse the more-keys template or reload icons per popup, and keyboards
+ * of one theme share one lazily inflated icon set.
  */
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [34])
@@ -72,7 +72,7 @@ class MoreKeysPopupReuseTest {
             .getKeyboard(elementId)
     }
 
-    /** Every field `load(template, id)` writes, as the old per-popup parse left it. */
+    /** Every field `load(template, id)` writes. */
     @Test
     fun theCachedTemplateFillsTheParamsExactlyAsAParseDoes() {
         val themed = BoardKeyboardFactory.themedContext(app)

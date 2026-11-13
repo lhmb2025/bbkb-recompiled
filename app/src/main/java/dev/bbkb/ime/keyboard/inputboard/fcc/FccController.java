@@ -15,9 +15,7 @@ import dev.bbkb.ime.keyboard.inputboard.AbstractBoardController;
 import dev.bbkb.ime.keyboard.inputboard.UnifiedBoardCoordinator;
 import dev.bbkb.ime.BuildConfig;
 
-/**
- * Controller class for the Fine Cursor Control board.
- */
+/** The Fine Cursor Control board. */
 
 public class FccController extends AbstractBoardController<FccController.Listener>
         implements FccView.ActionListener {
@@ -37,17 +35,17 @@ public class FccController extends AbstractBoardController<FccController.Listene
         void onFccPanelHidden();
     }
 
+    /** @param aVar receives panel shown and hidden events */
     public FccController(BlackBerryIME blackBerryIME, Listener aVar) {
         super(KEY_CODE, blackBerryIME, aVar);
     }
 
     public void bindView(View view) {
-        // Performance: Use lazy getter from KeyboardSwitcher instead of direct findViewById
-        // FccView is now inflated from ViewStub on first access
+        // Inflated from a ViewStub on first access.
         this.mFccView = dev.bbkb.ime.keyboard.KeyboardSwitcher.getInstance().getFccView();
         if (this.mFccView != null) {
             this.mFccView.setListeners(this, new FccView.SelectionProvider() {
-                @Override // dev.bbkb.ime.keyboard.inputboard.cursor.FccView.SelectionProvider
+                @Override
                 public boolean hasSelection() {
                     return FccController.this.ime.getInputLogic().mRichInputConnection.hasSelection();
                 }
@@ -63,7 +61,8 @@ public class FccController extends AbstractBoardController<FccController.Listene
         return hasView() && (this.mFccView.isShowing() || this.mFccView.isOpening());
     }
 
-    @Override // dev.bbkb.ime.keyboard.inputboard.cursor.FccView.ActionListener
+    /** @param enumC0992a the arrow pressed */
+    @Override
     public void onMove(FccView.Direction enumC0992a) {
         switch (enumC0992a) {
             case LEFT:
@@ -81,7 +80,8 @@ public class FccController extends AbstractBoardController<FccController.Listene
         }
     }
 
-    @Override // dev.bbkb.ime.keyboard.inputboard.cursor.FccView.ActionListener
+    /** @param i the key code */
+    @Override
     public void onKeyDown(int i) {
         if (i == 29) {
             this.ime.getCursorTracker().hide();
@@ -89,12 +89,14 @@ public class FccController extends AbstractBoardController<FccController.Listene
         this.ime.getInputLogic().sendKeyDownWithMeta(i, 12288);
     }
 
-    @Override // dev.bbkb.ime.keyboard.inputboard.cursor.FccView.ActionListener
+    /** @param i the key code */
+    @Override
     public void onKeyUp(int i) {
         this.ime.getInputLogic().sendKeyUpWithMeta(i, 12288);
     }
 
-    @Override // dev.bbkb.ime.keyboard.inputboard.cursor.FccView.ActionListener
+    /** @param i how to collapse a selection on exit: 1 to its end, 0 to its start, -1 leave it */
+    @Override
     public void onToggleSelect(int i) {
         if (BuildConfig.DEBUG) Log.d("FccController", "FCC selection mode toggle: direction=" + i);
         if (isViewInSelectMode()) {
@@ -103,14 +105,14 @@ public class FccController extends AbstractBoardController<FccController.Listene
         }
         collapseSelection(i);
         exitSelectMode();
-        // REMOVED: legacy shift-state reset call - causes shift state desync when toggling FCC select mode
-        // The synthetic shift up (exitSelectMode) should be sufficient to clear shift state
+        // No shift-state reset: the synthetic shift up clears it, and a reset desyncs shift.
     }
 
     public boolean isViewInSelectMode() {
         return hasView() && this.mFccView.isSelectMode();
     }
 
+    /** @param i 1 to collapse to the end (start in RTL), 0 to the start, -1 to leave the selection */
     private void collapseSelection(int i) {
         int iMin;
         if (i == -1) {
@@ -130,16 +132,13 @@ public class FccController extends AbstractBoardController<FccController.Listene
 
     private void enterSelectMode() {
         this.mSelectModeActive = true;
-        // Use controlMode setting to determine which shift key: 0=left shift, otherwise=right shift (default)
-        // Default to right shift to avoid conflict with physical left shift key
+        // controlMode 0 = left shift, else right shift (default, so the physical left shift is free).
         int i = SettingsManager.getInstance().getSettingsValues().controlMode == 0 ? 59 : 60;
         this.ime.onKeyDown(i, new KeyEvent(0L, 0L, 0, i, 0, 0, 0, 0));
     }
 
     private void exitSelectMode() {
         this.mSelectModeActive = false;
-        // Use controlMode setting to determine which shift key: 0=left shift, otherwise=right shift (default)
-        // Default to right shift to avoid conflict with physical left shift key
         int i = SettingsManager.getInstance().getSettingsValues().controlMode == 0 ? 59 : 60;
         this.ime.onKeyUp(i, new KeyEvent(0L, 0L, 1, i, 0, 0, 0, 0));
     }
@@ -149,27 +148,18 @@ public class FccController extends AbstractBoardController<FccController.Listene
         boolean notShowing = hasView && !this.mFccView.isShowing();
         int keysDown = this.ime.getPhysicalKeyboardStateTracker().getNumberOfKeysDown();
         if (!hasView || !notShowing || keysDown != 0) {
-            // One line, INFO, naming WHICH gate refused. Every refusal here is silent to the
-            // user — the icon tap simply does nothing — so a field report is undiagnosable
-            // without it. Not DEBUG: the whole point is that it survives on a release build.
+            // INFO, not DEBUG, so release builds log which gate refused: refusals are silent to the user.
             Log.i(TAG, "showFcc refused: gate="
                     + (!hasView ? "hasView" : !notShowing ? "alreadyShowing" : "keysDown")
                     + " keysDown=" + keysDown);
         }
         if (hasView && notShowing && keysDown == 0) {
             this.mFccView.setOpening(true);
-            
-            // REMOVED: Unstuck shift hack - no longer needed
-            // The hack was sending synthetic shift events before state reset,
-            // which caused timing conflicts and made the problem worse.
-            
-            // REMOVED: legacy shift-state reset call - this was the root cause of stuck shift!
-            // Aggressively resetting ALL meta key state (shift/alt/ctrl/sym) when FCC opens
-            // caused desynchronization with buffered events and external state.
-            // The getNumberOfKeysDown() == 0 check already ensures no keys are held,
-            // so state reset is unnecessary and harmful.
-            
-            this.ime.getKeyboardSwitcher().requestShiftOff();  // Unshift VKB (harmless, keeps UI consistent)
+
+            // Do not reset meta state here: it desyncs with buffered events (stuck shift), and
+            // the keysDown check already guarantees no key is held.
+
+            this.ime.getKeyboardSwitcher().requestShiftOff();
             this.mFccView.show();
             this.listener.onFccPanelShown();
             this.mFccView.setOpening(false);
@@ -186,24 +176,9 @@ public class FccController extends AbstractBoardController<FccController.Listene
     }
 
     /**
-     * Tell the board coordinator, through the UIM's bookkeeping funnel, that FCC is down.
-     *
-     * <p>{@link UnifiedBoardCoordinator#activeBoard()} is the ONLY copy of "which board is open",
-     * and it is mutated exclusively by reports. {@code UnifiedInputBoardManager.closeBoard(-42)}
-     * reports; nothing else did. But FCC closes itself from a dozen places that never touch the
-     * UIM — {@link #hideIfDisabled()} on a settings reload, {@link #hideUnlessToggling()},
-     * {@link #onSelectionUpdate(int, int)} when the editor reports a selection, the
-     * configuration-change and dismiss-keyboard paths, and the UIM's own
-     * {@code updateKeyHighlightedStates} force-close — and {@code onFccPanelHidden()} does not
-     * report either ({@code closeActiveComponent()} only runs the keyboard-state chain, as its
-     * own javadoc says). Each of those left the coordinator claiming {@code -42} with the board
-     * visibly gone, so the user's next tap on the FCC icon took {@code requestBoard}'s CLOSE
-     * branch and did nothing. That is the reported "FCC sometimes does not open when tapping on
-     * its icon": the tap was spent closing a board that was already closed.
-     *
-     * <p>Reporting from here — after the view is already down — closes that hole for every one of
-     * those paths at once. It is idempotent, and it cannot recurse into another close: the sweeps
-     * {@code reportBoardClosed} can reach skip components whose view is down, which FCC's now is.
+     * Tell the board coordinator FCC is down. FCC closes itself from many paths that bypass the UIM,
+     * and a coordinator still claiming {@code -42} turns the next icon tap into a close. Idempotent,
+     * and cannot recurse: {@code reportBoardClosed}'s sweeps skip components whose view is down.
      */
     private void reportClosedToCoordinator() {
         BlackBerryIME ime = this.ime;
@@ -241,6 +216,10 @@ public class FccController extends AbstractBoardController<FccController.Listene
         }
     }
 
+    /**
+     * @param i the new selection start
+     * @param i2 the new selection end
+     */
     public void onSelectionUpdate(int i, int i2) {
         if (i != i2 && !this.ime.isMetaKeyActive()) {
             commitPendingSelection();
@@ -251,10 +230,7 @@ public class FccController extends AbstractBoardController<FccController.Listene
     }
 
     public void onKeyEventWhileShowing() {
-        // REMOVED: legacy shift-state reset call - causes shift state corruption during normal typing
-        // This was being called on every key event while FCC is open and in select mode,
-        // which completely destroys shift state management.
-        // No state reset is needed here - shift should work normally with FCC open.
+        // Nothing to do: resetting shift state here would corrupt it while typing.
     }
 
     public void hideUnlessToggling() {
@@ -264,10 +240,9 @@ public class FccController extends AbstractBoardController<FccController.Listene
         hideFcc();
     }
 
+    /** @param z true if FCC was enabled */
     public void onFccEnabled(boolean z) {
-        // REMOVED: Unstuck hack call - no longer needed
-        // This was attempting to run the hack when FCC state changed,
-        // but the hack has been deprecated and removed.
+        // Nothing to do when the setting changes.
     }
 
     public void hideIfDisabled() {
@@ -286,11 +261,7 @@ public class FccController extends AbstractBoardController<FccController.Listene
         hideFcc();
     }
 
-    /**
-     * showFcc() carries FCC's own extra precondition — it refuses to open while any physical key
-     * is held (getNumberOfKeysDown() == 0), because opening mid-chord used to strand the modifier
-     * state. That gate stays in showFcc(), which is also called directly from the key path.
-     */
+    /** showFcc() refuses while any physical key is held (opening mid-chord strands modifier state). */
     @Override
     protected void onShow() {
         showFcc();

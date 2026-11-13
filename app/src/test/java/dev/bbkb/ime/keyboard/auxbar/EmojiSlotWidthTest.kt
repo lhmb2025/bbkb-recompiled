@@ -20,17 +20,9 @@ import org.robolectric.Shadows.shadowOf
 import org.robolectric.annotation.Config
 
 /**
- * The three word slots share the strip's width, and they have to give room to the emoji slot on
- * the same update that shows it (owner report, 2026-11-05: an emoji result sometimes overlapped
- * the rightmost word).
- *
- * The slot width used to be taken from the recycler's `OnLayoutChangeListener`, whose
- * `notifyDataSetChanged()` asks for a layout from inside layout. `View.layout` clears the
- * force-layout flag after the listeners run, so `ViewRootImpl` drops that request, and the slots
- * kept a third of the OLD width until the next suggestion update: 37 px under the emoji when it
- * appeared, a 41 px gap when it went. "Sometimes" was whenever the emoji came with the last letter
- * typed, with no update after it to correct the widths. `UnifiedSuggestionView.onMeasure` now
- * takes the width while measuring, before the recycler lays out its children.
+ * The three word slots share the strip's width and give room to the emoji slot on the same update that shows it.
+ * The width is taken in `UnifiedSuggestionView.onMeasure`: a `notifyDataSetChanged()` from a layout listener is a
+ * layout request from inside layout, which `ViewRootImpl` drops, leaving the old width until the next update.
  */
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [34])

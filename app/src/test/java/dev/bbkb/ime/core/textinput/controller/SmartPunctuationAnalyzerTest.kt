@@ -21,26 +21,12 @@ import org.robolectric.annotation.Config
 import java.util.Locale
 
 /**
- * CHARACTERISATION table test for [SmartPunctuationAnalyzer.analyze] — Wave 2 of the
- * feature-simplification plan.
+ * Table test for [SmartPunctuationAnalyzer.analyze]: each row is an input (preceding text, code
+ * point, auto-space, spacing table, internal source, dumb mode) and the exact decision (event
+ * chain as (codePoint, keyCode), the three [SmartPunctuationAnalyzer.Result] flags, dumb mode
+ * after). The `CHARACTERISED BUG:` row asserts shipping behaviour; do not "fix" it here.
  *
- * `analyze` is the closest thing in the typing path to a pure function: its whole output is
- * determined by (preceding text, typed code point, auto-space-active, the language's
- * spacing/punctuation table, whether the event came from an internal/gesture source) plus the
- * one bit of instance state, dumb mode. So it gets a table: every row states an input
- * combination and the EXACT decision — the synthesized event chain as (codePoint, keyCode)
- * pairs, the three [SmartPunctuationAnalyzer.Result] flags, and dumb mode afterwards.
- *
- * Wave 3/4 may rewrite `decideActions`' five-clause chain and `analyze`'s reverse-walk loop.
- * Any rewrite has to reproduce every row here, including the one still marked
- * `CHARACTERISED BUG:`. That row asserts the behaviour that ships TODAY; do not "fix" it here.
- *
- * Wave 2.5 fixed three of the four originally-characterised bugs — defect 2 (a no-spaces locale
- * duplicated the typed character) and defects 9a/9b (both spacing guards used the last
- * character's INDEX where they meant the context's LENGTH). The rows for those three now assert
- * the corrected behaviour and say so.
- *
- * ## The decision space, enumerated from the source
+ * ## The decision space
  *
  * `analyze` (in order):
  *  1. not a key-press event                     -> event unmodified, all flags false
@@ -75,8 +61,7 @@ class SmartPunctuationAnalyzerTest {
 
     @Before
     fun setUp() {
-        // Built BEFORE the static mock: SpacingAndPunctuation's constructor itself reads
-        // LocaleUtils.getConfigurationLocale(resources), which goes through SubtypeManager.
+        // Built before the static mock: the constructor reads the locale through SubtypeManager.
         spacing = SpacingAndPunctuation(RuntimeEnvironment.getApplication().resources)
 
         subtypes = mock(SubtypeManager::class.java)
@@ -92,22 +77,14 @@ class SmartPunctuationAnalyzerTest {
         subtypeStatic.close()
     }
 
-    /**
-     * The French preceded-by-space set (`!?«`) is gated on
-     * `LocaleUtils.isCurrentSubtypeNonCanadianFrench()`, which reads the current subtype's
-     * locale — so the locale IS one of the analyzer's inputs.
-     */
+    /** The French preceded-by-space set (`!?«`) is gated on the current subtype locale. */
     private fun setLocale(locale: Locale) {
         `when`(subtypes.currentSubtypeLocale).thenReturn(locale)
     }
 
-    // ── settings shells ─────────────────────────────────────────────────────────
-
     /**
-     * A [SettingsValues] carrying only the collaborator `analyze` reads. Its real constructor
-     * reaches SettingsManager/DeviceProfile/RichInputMethodManager, none of which this decision
-     * depends on, so the shell is allocated without running it — the same trick PipelineHarness
-     * uses.
+     * A [SettingsValues] carrying only `spacingAndPunctuation`, allocated via Unsafe because the
+     * real constructor reaches SettingsManager, DeviceProfile and RichInputMethodManager.
      */
     private fun settings(hasSpaces: Boolean = true): SettingsValues {
         val sp = if (hasSpaces) spacing else withoutSpaces(spacing)
@@ -129,8 +106,6 @@ class SmartPunctuationAnalyzerTest {
         return copy
     }
 
-    // ── event helpers ───────────────────────────────────────────────────────────
-
     private fun keyPress(ch: Char, next: InputEvent? = null): InputEvent =
         InputEvent.createHardwareKeyPress(ch.code, 0, next, false, 1000L)
 
@@ -149,10 +124,7 @@ class SmartPunctuationAnalyzerTest {
     private val backspace = -1 to -5
     private fun typed(ch: Char) = ch.code to 0
 
-    /**
-     * Runs one table row and asserts the whole decision. Every row builds a FRESH analyzer, so
-     * dumb mode never leaks between rows (except where a row deliberately pre-arms it).
-     */
+    /** Runs one row on a fresh analyzer, so dumb mode never leaks between rows unless pre-armed. */
     private fun run(
         label: String,
         context: String,
@@ -203,8 +175,6 @@ class SmartPunctuationAnalyzerTest {
         expectDumbModeAfter = expectDumbModeAfter,
     )
 
-    // ── rule 1: not a key-press event ───────────────────────────────────────────
-
     @Test
     fun nonKeyPressEvent_isReturnedUntouched() {
         // A text-input event (paste, suggestion text) is never analyzed at all.
@@ -218,12 +188,9 @@ class SmartPunctuationAnalyzerTest {
         assertFalse(a.isDumbMode)
     }
 
-    // ── rule 4: ordinary characters are left alone ──────────────────────────────
-
     @Test
     fun ordinaryCharacters_afterEveryKindOfContext_passThrough() {
-        // The preceding-text axis for a character with NO spacing rule attached: whatever sits
-        // before the cursor, a plain letter is emitted as-is with no flags.
+        // A plain letter is emitted as-is with no flags, whatever precedes it.
         for ((label, ctx) in listOf(
             "empty" to "",
             "letter" to "hello",
@@ -240,20 +207,15 @@ class SmartPunctuationAnalyzerTest {
 
     @Test
     fun contextEndingInSpace_withAutoSpaceOff_shortCircuitsBeforeAnyAnalysis() {
-        // Rule 2. This is the guard that keeps "hello ." from being rewritten when the space
-        // was the user's own rather than an auto-space: the sentence-separator rules below
-        // never run at all.
+        // Rule 2: a space the user typed (not an auto-space) is never rewritten.
         runPassthrough("period after user-typed space", "hello ", '.', autoSpaceActive = false)
         runPassthrough("bracket after user-typed space", "hello ", ')', autoSpaceActive = false)
     }
 
-    // ── rule 5: followed-by-space punctuation (the `.,;:!?)]}&` set) ─────────────
-
     @Test
     fun sentenceSeparator_afterWord_autoSpaceOff_rebuildsTheEventWithoutTrailingSpace() {
-        // The trailing INS_SPACE is dropped when auto-space is not active — but the event is
-        // still REBUILT rather than returned, so eventsPrepended reports true even though the
-        // chain is a one-for-one replacement of the typed character.
+        // Without auto-space the trailing INS_SPACE is dropped, but the event is still rebuilt,
+        // so eventsPrepended is true for a one-for-one chain.
         for (ch in listOf('.', ',', ';', ':', '!', '?', ')', ']', '}', '&')) {
             run(
                 "followed-by-space '$ch' after a word, auto-space off",
@@ -269,8 +231,8 @@ class SmartPunctuationAnalyzerTest {
 
     @Test
     fun sentenceSeparator_afterWord_autoSpaceOn_emitsSpaceAndAlsoAsksForOne() {
-        // Auto-space active and the source is not internal: the trailing INS_SPACE survives,
-        // so the chain carries a space AND appendAutoSpace comes back true. Both, not either.
+        // Auto-space active, non-internal source: the chain carries a space and appendAutoSpace
+        // is true, both.
         run(
             "period after a word with auto-space active",
             context = "hello", ch = '.', autoSpaceActive = true,
@@ -284,8 +246,8 @@ class SmartPunctuationAnalyzerTest {
 
     @Test
     fun sentenceSeparator_fromInternalSource_dropsTheTrailingSpace() {
-        // A gesture/internal-source event takes the `!z || z2` branch: the trailing INS_SPACE
-        // is dropped and appendAutoSpace stays false even though auto-space is active.
+        // An internal-source event drops the trailing INS_SPACE and appendAutoSpace stays false
+        // even with auto-space active.
         run(
             "period after a gesture commit",
             context = "hello", ch = '.', autoSpaceActive = true, fromInternalSource = true,
@@ -299,9 +261,7 @@ class SmartPunctuationAnalyzerTest {
 
     @Test
     fun sentenceSeparator_afterAutoSpace_injectsBackspaceFirst() {
-        // The headline smart-punctuation move: "hello " + '.' with the space being an AUTO
-        // space (auto-space active, so rule 2 does not short-circuit) becomes
-        // backspace, '.', space — i.e. "hello. ".
+        // "hello " (auto-space) + '.' becomes backspace, '.', space: "hello. ".
         run(
             "period after an auto-space",
             context = "hello ", ch = '.', autoSpaceActive = true,
@@ -315,8 +275,8 @@ class SmartPunctuationAnalyzerTest {
 
     @Test
     fun sentenceSeparatorAfterTab_injectsBackspace_butAfterNewlineDoesNot() {
-        // The whitespace test is `isWhitespace(c) && c != '\n'`, so a tab is eaten and a
-        // newline is preserved. A tab also slips past rule 2, which only tests for ' '.
+        // The test is `isWhitespace(c) && c != '\n'`: a tab is eaten, a newline kept. A tab also
+        // slips past rule 2, which only tests for ' '.
         run(
             "period after a tab, auto-space off",
             context = "hello\t", ch = '.', autoSpaceActive = false,
@@ -339,13 +299,8 @@ class SmartPunctuationAnalyzerTest {
 
     @Test
     fun sentenceSeparatorAfterASingleSpaceContext_backspacesTheLoneAutoSpace() {
-        // Defect 9a, FIXED: the backspace guard was `str.length() - 1 > 0` — that is the last
-        // character's INDEX, so it demanded a context at least TWO characters long, where all
-        // the clause needs is a character to inspect (`str.length() > 0`). A context that is
-        // exactly one space — the cursor sitting after a lone auto-space at the very start of
-        // the field — used to keep that space, leaving " ." where "." was intended.
-        // It is now eaten, exactly as it is for any longer context (compare
-        // [sentenceSeparator_afterAutoSpace_injectsBackspaceFirst]).
+        // A one-space context (lone auto-space at field start) is eaten like a longer one; the
+        // guard is `length > 0`, not `length - 1 > 0`.
         run(
             "period after a context that is exactly one space",
             context = " ", ch = '.', autoSpaceActive = true,
@@ -359,19 +314,10 @@ class SmartPunctuationAnalyzerTest {
 
     @Test
     fun sentenceSeparator_inALanguageWithoutSpaces_emitsTheTypedCharacterOnce() {
-        // Defect 2, FIXED — the sharpest bug this file characterised. With
-        // `currentLanguageHasSpaces == false` the INS_SPACE arm of the loop `break`s WITHOUT
-        // creating an event, so the chain's tail slot was still open; but the old tail test
-        // asked `i == length2` ("am I the last action?") rather than "has anything been
-        // created yet?", so the following INS_FOCUS kept the ORIGINAL event as its tail and
-        // emitted the typed character TWICE — typing '.' in a CJK/Thai locale with auto-space
-        // active produced "..". The loop now tracks whether the chain has been started.
-        //
-        // appendAutoSpace stays true here: PunctuationController.appendAutoSpace re-checks
-        // `currentLanguageHasSpaces` itself, so no space reaches the editor.
-        //
-        // The auto-space-off row right below was always fine, because there `length2--` had
-        // already stepped past the INS_SPACE.
+        // Without spaces the INS_SPACE arm creates no event; the chain must still emit the typed
+        // character once (the loop tracks whether the chain has started), not "..".
+        // appendAutoSpace stays true: PunctuationController.appendAutoSpace re-checks
+        // `currentLanguageHasSpaces`, so no space reaches the editor.
         run(
             "period in a no-spaces locale, auto-space ACTIVE",
             context = "hello", ch = '.', autoSpaceActive = true, hasSpaces = false,
@@ -391,8 +337,6 @@ class SmartPunctuationAnalyzerTest {
             expectDumbModeAfter = false,
         )
     }
-
-    // ── the French preceded-by-space set (`!?«`) ────────────────────────────────
 
     @Test
     fun frenchPrecededBySpace_insertsASpaceBeforeTheCharacter() {
@@ -437,9 +381,7 @@ class SmartPunctuationAnalyzerTest {
     @Test
     fun frenchPrecededBySpace_atStartOfFieldInsertsNothing_andEatsALoneAutoSpace() {
         setLocale(Locale.FRANCE)
-        // Empty context: no leading space. Unchanged by the defect-9b fix, and deliberately so —
-        // the French rule separates '!' '?' '«' from the word in FRONT of them, and at the start
-        // of a field there is no such word.
+        // Empty context: no leading space, since there is no word in front to separate from.
         run(
             "'!' at the very start of the field, fr-FR",
             context = "", ch = '!', autoSpaceActive = false,
@@ -449,17 +391,8 @@ class SmartPunctuationAnalyzerTest {
             expectAppendAutoSpace = false,
             expectDumbModeAfter = false,
         )
-        // Defect 9b, FIXED. The guard used to read
-        //   `str.length() - 1 == 0 || (str.length() - 1 > 0 && !isWhitespace(last))`
-        // — the last character's INDEX in both halves. The first half therefore meant "the
-        // context is exactly ONE character" and never inspected that character, so a lone space
-        // still got a space inserted in front of it: " " + '!' became "  !". (The second half
-        // had the mirror error of defect 9a: "at least TWO characters", so "A" + '!' got no
-        // French space at all.) Both halves collapse into `len > 0 && !isWhitespace(last)`.
-        //
-        // With the French clause correctly declining, the followed-by-space clause below it now
-        // fires instead and eats the lone auto-space (defect 9a) — so a one-character context
-        // behaves exactly like a longer one.
+        // The French guard is `len > 0 && !isWhitespace(last)`, so a lone space gets no extra
+        // space; the followed-by-space clause then eats the auto-space, as for a longer context.
         run(
             "'!' after a context that is exactly one space, fr-FR",
             context = " ", ch = '!', autoSpaceActive = true,
@@ -469,8 +402,7 @@ class SmartPunctuationAnalyzerTest {
             expectAppendAutoSpace = true,
             expectDumbModeAfter = false,
         )
-        // The other half of the 9b fix, previously uncovered: a one-character NON-whitespace
-        // context now gets the French space it always should have had.
+        // A one-character non-whitespace context gets the French space.
         run(
             "'!' after a one-character word, fr-FR",
             context = "A", ch = '!', autoSpaceActive = false,
@@ -482,13 +414,10 @@ class SmartPunctuationAnalyzerTest {
         )
     }
 
-    // ── URL / email detection and dumb mode ─────────────────────────────────────
-
     @Test
     fun urlContext_armsDumbModeAndLeavesTheEventAlone() {
-        // "www.google" + '.' -> the TLD test fires -> DUMB_MODE, which short-circuits the whole
-        // rewrite: the typed character is returned untouched and smart punctuation is off for
-        // the rest of the session.
+        // "www.google" + '.' trips the TLD test: DUMB_MODE returns the character untouched and
+        // turns smart punctuation off for the rest of the session.
         run(
             "dot inside a URL",
             context = "www.google", ch = '.', autoSpaceActive = true,
@@ -511,11 +440,8 @@ class SmartPunctuationAnalyzerTest {
 
     @Test
     fun emailContext_suppressesAutoSpace_butDoesNotArmDumbMode() {
-        // CHARACTERISED BUG (a documentation/behaviour split): the class javadoc says dumb mode
-        // is armed "when a URL or email pattern is detected", and `decideActions` does test for
-        // email — but the email branch only SKIPS the URL/auto-space work; it never adds
-        // DUMB_MODE. So an email address suppresses the trailing auto-space for exactly the one
-        // keystroke that completes the pattern, and smart punctuation is re-enabled on the next.
+        // CHARACTERISED BUG: the analyzer's doc says email arms dumb mode, but the email branch
+        // only skips the URL/auto-space work for the one keystroke that completes the pattern.
         run(
             "dot in the domain of an email address",
             context = "user@example", ch = '.', autoSpaceActive = true,
@@ -529,8 +455,7 @@ class SmartPunctuationAnalyzerTest {
 
     @Test
     fun chainedSymbolEvent_armsDumbMode() {
-        // A key whose chained next event is a symbol (the more-keys / symbol-page path):
-        // [INS_FOCUS, DUMB_MODE] -> dumb mode on, event untouched.
+        // A chained symbol event (more-keys / symbol page): dumb mode on, event untouched.
         runPassthrough(
             "letter chained to a symbol",
             context = "hello", ch = 'a', next = keyPress('!'),
@@ -540,11 +465,8 @@ class SmartPunctuationAnalyzerTest {
 
     @Test
     fun chainedNonSymbolEvent_yieldsNoActionsAtAll() {
-        // The `else` that isn't: when a chained event is present and its code point is NOT a
-        // symbol, decideActions returns an EMPTY action array — not even INS_FOCUS. analyze's
-        // `length2 == -1` then falls through to the pass-through branch, so nothing happens.
-        // Worth pinning because it means a chained event disables sentence-separator handling
-        // entirely: the '.' below gets no auto-space treatment.
+        // A chained non-symbol event yields an empty action list (not even INS_FOCUS), so the
+        // event passes through and the '.' gets no sentence-separator handling.
         runPassthrough(
             "period chained to a letter",
             context = "hello", ch = '.', autoSpaceActive = true, next = keyPress('a'),
@@ -567,11 +489,9 @@ class SmartPunctuationAnalyzerTest {
 
     @Test
     fun dumbModeArmed_reEnablesTheNormalPathForChainedEvents() {
-        // `event.mNextEvent != null && !dumbMode` — once dumb mode is on, a chained event takes
-        // the ORDINARY branch instead of the symbol branch. So the very state that is supposed
-        // to suppress smart punctuation makes a chained '.' get the full sentence-separator
-        // rewrite that a chained '.' does NOT get while dumb mode is off (see
-        // [chainedNonSymbolEvent_yieldsNoActionsAtAll]).
+        // The chained branch requires `!dumbMode`, so in dumb mode a chained '.' takes the
+        // ordinary branch and gets the full rewrite it does not get with dumb mode off
+        // ([chainedNonSymbolEvent_yieldsNoActionsAtAll]).
         run(
             "period chained to a letter, with dumb mode already armed",
             context = "hello", ch = '.', autoSpaceActive = true, next = keyPress('a'),

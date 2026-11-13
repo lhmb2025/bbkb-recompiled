@@ -4,16 +4,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Per-device capacitive-keyboard letter grid, parsed from a {@code <ckb-key-grid>} block in a
- * device config XML. Lets us inject known geometry for any device without reading the live ET9
- * engine. Cells are normalized [0,1] within the keypad rect, so they're resolution-independent.
- *
- * <p>This serves the gesture arbiter's key-topology check and the Gesture Lab overlay — it is NOT
- * fed to ET9/Nuance (which computes its own rectangles from its built-in keyboard database).</p>
+ * A device's {@code <ckb-key-grid>} letter grid, cells normalized [0,1] within the keypad rect. Used
+ * by the gesture arbiter's key-topology check and the Gesture Lab overlay; never fed to the engine.
  */
 public class CkbKeyGridConfig {
-
-    /** Keypad coordinate-space dimensions (informational; cells are already normalized). */
+    /** Keypad coordinate space (informational; cells are already normalized). */
     public int width;
     public int height;
 
@@ -26,6 +21,12 @@ public class CkbKeyGridConfig {
         public final float w;
         public final float h;
 
+        /**
+         * @param cx normalized center x
+         * @param cy normalized center y
+         * @param w normalized width
+         * @param h normalized height
+         */
         public Cell(String label, float cx, float cy, float w, float h) {
             this.label = label;
             this.cx = cx;

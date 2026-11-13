@@ -22,27 +22,9 @@ import java.util.ArrayList
 import java.util.Locale
 
 /**
- * FIX-MACRO / divergence D-4 — the substitution LOOKUP was gated on the auto-correct setting.
- *
- * The macro channel is separate from the spelling heuristic. The original asks the personal
- * dictionary for a substitution unconditionally and ORs the answer into `willAutoCorrect`:
- *
- * ```
- * // sources/dev/bbkb/ime/core/ab.java:108-119 (smali-shaped jadx dump)
- * boolean r9 = r0.f;                 if (r9 != 0) goto L7E;   // "suggestions suppressed" flag
- * ...  boolean r9 = r9.d();          if (r9 == 0) goto L7E;   // dictionary ready
- * ...  boolean r11 = r9 instanceof dev.bbkb.ime.core.r;
- * boolean r7 = r9.a(r7, r10, r1);    r7 = r7 | r8;            // <- no autoCorrectEnabled term
- * ```
- *
- * The `autoCorrectEnabled` parameter (`r24`) appears only at `ab.java:84`, guarding the
- * spelling heuristic. We had added `autoCorrectEnabled &&` in front of the bridge call under an
- * "Issue 1 fix" comment, which compounded D-3: with auto-correct off, the substitution was never
- * even looked up, so no kind-7 candidate reached the commit path at all.
- *
- * Ordering, verified against the original and pinned by
- * [macroLookupRunsAfterTheSpellingHeuristic]: `ab.java:81` computes the heuristic BEFORE
- * `ab.java:118` inserts the substitution, so a kind-7 entry never feeds the sugg[1] heuristic.
+ * The personal-dictionary substitution (macro) lookup runs regardless of the auto-correct setting
+ * and ORs into `willAutoCorrect`; the setting guards only the spelling heuristic. The heuristic is
+ * computed before the substitution is inserted, so a kind-7 entry never feeds it.
  */
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [34], manifest = Config.NONE, instrumentedPackages = ["com.blackberry.nuanceshim"])
@@ -52,7 +34,7 @@ class SuggestionEngineMacroLookupTest {
     private lateinit var bridge: NuanceSDKDictionaryBridge
     private lateinit var engine: SuggestionEngine
 
-    /** Kind 7 — a personal-dictionary substitution (macro). */
+    /** Kind 7: a personal-dictionary substitution (macro). */
     private val KIND_SUBSTITUTION = 7
 
     @Before
@@ -64,11 +46,7 @@ class SuggestionEngineMacroLookupTest {
         engine = SuggestionEngine(loader)
     }
 
-    /**
-     * A composing tracker holding [typed], with no caps and not in prediction mode — the plain
-     * "user is typing a word" state. Allocated rather than driven so the test stays about the
-     * gate; every field the engine reads is stubbed.
-     */
+    /** A composing tracker holding [typed], no caps, not predicting; every field the engine reads is stubbed. */
     private fun tracker(typed: String): ComposingTextTracker {
         val t = mock(ComposingTextTracker::class.java)
         `when`(t.getComposingText()).thenReturn(typed)
@@ -84,11 +62,7 @@ class SuggestionEngineMacroLookupTest {
         return t
     }
 
-    /**
-     * Stub `generateSuggestions` to return [words] as kind-0 entries — i.e. the engine produced
-     * nothing the spelling heuristic would auto-correct on its own, so `willAutoCorrect` can only
-     * become true through the macro channel.
-     */
+    /** Stub engine output as kind-0 entries, so `willAutoCorrect` can only come from the macro channel. */
     private fun engineReturns(vararg words: String) {
         val result = SuggestionResult(Locale.US, 18, false)
         val list = ArrayList<SuggestedWords.SuggestedWordInfo>()
@@ -128,12 +102,10 @@ class SuggestionEngineMacroLookupTest {
         return out!!
     }
 
-    // ── D-4: the lookup must not be gated on the setting ────────────────────────
-
     @Test
     fun macroIsLookedUpAndOffered_withAutoCorrectOff() {
-        // The bug: `autoCorrectEnabled && bridge.shouldAutoCorrect(...)` short-circuited, so the
-        // personal dictionary was never asked and `bb` produced no kind-7 candidate.
+        // With `autoCorrectEnabled &&` in front, the dictionary was never asked and `bb` produced
+        // no kind-7 candidate.
         engineReturns("bb")
         bridgeSubstitutes("BlackBerry")
 
@@ -159,8 +131,7 @@ class SuggestionEngineMacroLookupTest {
 
     @Test
     fun noMacroHit_withAutoCorrectOff_doesNotAutoCorrect() {
-        // The guard against over-correcting the fix: asking the dictionary is not the same as
-        // auto-correcting. A word with no substitution and a kind-0 candidate list stays put.
+        // Asking the dictionary is not auto-correcting: no substitution and kind-0 candidates stay put.
         engineReturns("teh", "the")
         `when`(bridge.shouldAutoCorrect(any(), any(), any())).thenReturn(false)
 
@@ -171,9 +142,7 @@ class SuggestionEngineMacroLookupTest {
 
     @Test
     fun spellingHeuristicStillObeysTheSetting_whenOff() {
-        // Ordinary correction: index 1 is a kind-2 CORRECTION, which the heuristic would accept.
-        // With the setting off it must still be rejected — `autoCorrectEnabled` keeps guarding
-        // the heuristic (ab.java:84), only the macro lookup is ungated.
+        // Index 1 is a kind-2 CORRECTION; with the setting off the heuristic must still reject it.
         val result = SuggestionResult(Locale.US, 18, false)
         val list = ArrayList<SuggestedWords.SuggestedWordInfo>()
         list.add(SuggestedWords.SuggestedWordInfo("teh", 100, 0, null, -1, -1, null))
@@ -188,10 +157,8 @@ class SuggestionEngineMacroLookupTest {
 
     @Test
     fun macroLookupRunsAfterTheSpellingHeuristic() {
-        // ab.java:81 runs the heuristic; ab.java:118 inserts the substitution. If the order were
-        // reversed the kind-7 entry would land at index 1 and the heuristic would judge IT rather
-        // than the engine's own candidate. Proven by capturing the list the bridge was handed:
-        // it must not already contain the expansion the bridge is about to insert.
+        // The heuristic runs before the substitution is inserted, otherwise it would judge the kind-7
+        // entry at index 1. The list the bridge was handed must not contain the expansion yet.
         engineReturns("bb", "bbc")
         var sizeSeenByBridge = -1
         var wordsSeenByBridge: List<String> = emptyList()
@@ -215,8 +182,8 @@ class SuggestionEngineMacroLookupTest {
 
     @Test
     fun skipNuanceCheck_stillSuppressesTheLookupEntirely() {
-        // `setSkipNuanceCheck(true)` is the gesture/batch path's own suppression and is NOT the
-        // user setting — it must keep working after the D-4 ungating.
+        // `setSkipNuanceCheck(true)` is the gesture/batch path's own suppression, not the user
+        // setting, and must keep working.
         engineReturns("bb")
         bridgeSubstitutes("BlackBerry")
         engine.setSkipNuanceCheck(true)

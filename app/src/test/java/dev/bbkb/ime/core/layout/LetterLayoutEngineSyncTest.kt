@@ -22,13 +22,9 @@ import java.io.File
 import java.util.Collections
 
 /**
- * The engine's key letters following the active letter layout ([LetterLayoutEngineSync]), end to
- * end through [Xt9KdbVariant] with only the owned library's two registry calls replaced by a
- * recorder: which KDBs a layout registers and from which device files, which variant is selected
- * for which keyboard, and when nothing needs doing at all.
- *
- * The KDB files are the shipped ones, read off disk; the device variant comes from the app's
- * assets, as on the phone.
+ * [LetterLayoutEngineSync] end to end through [Xt9KdbVariant], with the native registry calls
+ * recorded: which KDBs a layout registers from which files, which variant each keyboard selects,
+ * and when nothing needs doing. Shipped KDB files and the asset device variant are used.
  */
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [34])
@@ -162,7 +158,7 @@ class LetterLayoutEngineSyncTest {
     private fun registered(variant: String, primaryId: Int): String =
         String(native.files[variant]!![primaryId]!!, Charsets.UTF_8)
 
-    /** A keypad KDB the app used to ship, kept in `xt9kdb-scaffold/reference/kdb_pkb/`. */
+    /** A keypad KDB kept in `xt9kdb-scaffold/reference/kdb_pkb/` (no longer shipped). */
     private fun shippedFile(name: String): String {
         val dir = sequenceOf("../xt9kdb-scaffold/reference/kdb_pkb", "xt9kdb-scaffold/reference/kdb_pkb")
             .map { File(it).canonicalFile }
@@ -173,8 +169,6 @@ class LetterLayoutEngineSyncTest {
     /** What [device]'s keypad KDB for [primaryId] is: built from its geometry file. */
     private fun deviceKdb(device: String, primaryId: Int): String =
         KeypadKdbs.forDevice(File(kdbDir(), KeypadKdbs.templateFile(device)).readText(Charsets.UTF_8), KeypadKdbs.shippedLetters(builtIns))[primaryId]!!
-
-    // ── the built-in layouts ─────────────────────────────────────────────────
 
     private val builtIns by lazy { LetterLayoutRegistry(context) }
 
@@ -237,10 +231,6 @@ class LetterLayoutEngineSyncTest {
         assertFalse(LetterLayout.isValidId("builtin:en"))
         assertEquals("layout:builtin:en", LetterLayoutKdb.builtInVariantName(builtIns.builtIn("en")!!))
     }
-
-    // ── following a layout ───────────────────────────────────────────────────
-
-    // ── the device's keypad ──────────────────────────────────────────────────
 
     @Test
     fun theDevicesKeypadKdbsAreBuiltFromItsGeometry_andSelected() {
@@ -416,8 +406,6 @@ class LetterLayoutEngineSyncTest {
         assertEquals(0, submits)
     }
 
-    // ── the real sources ─────────────────────────────────────────────────────
-
     @Test
     fun theRegistryDrivesIt() {
         deviceVariant("athena")
@@ -467,9 +455,8 @@ class LetterLayoutEngineSyncTest {
 
     @Test
     fun theLettersALayoutIsComparedWith_areTheShippedKdbs() {
-        // What a layout is compared with must be what the engine really has on each key, or a
-        // layout of the keycaps would switch the engine (harmless) and, worse, one that changes a
-        // letter could be taken for one that does not.
+        // The comparison must use what the engine really has on each key, or a layout that
+        // changes a letter could be taken for one that does not.
         val builtIns = LetterLayoutRegistry(context)
         val keyboards = listOf(
             Triple("ar", "arabic", "arabic"), Triple("ru", "east_slavic", "east_slavic"),

@@ -2,7 +2,7 @@ plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
     id 'org.jetbrains.kotlin.plugin.compose' version '2.2.10'
-    id 'com.github.node-gradle.node'  // Version managed by buildscript classpath
+    id 'com.github.node-gradle.node'  // version set by the buildscript classpath
 }
 
 node {
@@ -14,25 +14,19 @@ node {
 }
 
 android {
-    // Where the generated R / BuildConfig / viewBinding classes are packaged. It matches
-    // the applicationId and the java root, so `dev.bbkb.ime.R` is the only R there is.
     namespace = "dev.bbkb.ime"
     compileSdk = 36
     
     signingConfigs {
-        // Throwaway key, used for `debug` only. It is gitignored (*.keystore), so a
-        // fresh clone generates it on demand -- see the `ensureDebugKeystore` task below.
+        // Throwaway key, gitignored; `ensureDebugKeystore` below generates it on demand.
         debug {
             storeFile file('debug.keystore')
             storePassword 'android'
             keyAlias 'androiddebugkey'
             keyPassword 'android'
         }
-        // Release signing is opt-in and never falls back to the debug key: a release
-        // APK signed with the well-known debug key cannot be distributed and can be
-        // re-signed by anyone. Supply the four values in ~/.gradle/gradle.properties
-        // (or as -P/env overrides) to produce a signed release; otherwise the release
-        // APK is left unsigned for an external signing step.
+        // Opt-in, never falls back to the public debug key. Supply the four values in
+        // ~/.gradle/gradle.properties (or -P); otherwise the release APK is left unsigned.
         if (project.hasProperty('releaseStoreFile')) {
             release {
                 storeFile file(project.property('releaseStoreFile'))
@@ -44,47 +38,35 @@ android {
     }
 
     defaultConfig {
-        // The app's own identity, deliberately distinct from the original BlackBerry Keyboard
-        // (com.blackberry.keyboard) so both can be installed side by side on a KEY2. It matches
-        // the Gradle `namespace` and the java root: applicationId, generated R/BuildConfig and
-        // every class this app owns all live under dev.bbkb.ime. Nothing may hardcode this
-        // value - read BuildConfig.APPLICATION_ID or Context.getPackageName();
-        // PackageIdentityTest enforces that.
+        // Never hardcode this: read BuildConfig.APPLICATION_ID or Context.getPackageName()
+        // (PackageIdentityTest enforces it).
         applicationId = "dev.bbkb.ime"
         minSdk = 26
         targetSdk = 36
-        versionCode = 1441  //  Most recent build is 1441
+        versionCode = 1441
         versionName = "5.0.0-beta.28"
 
-        // arm64 only, matching the engine blob (libnative-lib.so exists for no other ABI, so
-        // the keyboard cannot run anywhere else). This one filter covers the CMake build below
-        // and the libraries that AARs bring along: without it libandroidx.graphics.path.so
-        // also shipped for armeabi-v7a, x86 and x86_64.
+        // arm64 only: the engine blob exists for no other ABI. Also filters AAR native libs.
         ndk {
             abiFilters 'arm64-v8a'
         }
 
-        // Owned native code: libkb.so, libxt9trace.so, libbbkbevdev.so.
         externalNativeBuild {
             cmake {
-                // CUTOVER is the standard build (no flag needed): owned KDB compiled as
-                // libkb.so (exports ET9KDB_*), pairing with the DT_NEEDED-patched
-                // libnative-lib.so that ships in jniLibs. Passed explicitly (not just a
-                // CMake option default) so it overrides any stale value in the CMake cache.
-                // Opt out with -Pxt9Diff for the DIFF build: libxt9kdb.so self-check
-                // harness alongside an UNPATCHED blob (repatch with
-                // xt9kdb-scaffold/tools/cutover_deploy.sh before flipping).
+                // CUTOVER (default): owned KDB as libkb.so for the DT_NEEDED-patched blob in
+                // jniLibs. Passed explicitly so it overrides a stale CMake cache value.
+                // -Pxt9Diff builds the libxt9kdb.so self-check harness, which needs an unpatched
+                // blob (repatch with xt9kdb-scaffold/tools/cutover_deploy.sh before flipping).
                 arguments project.hasProperty('xt9Diff') ? '-DXT9KDB_CUTOVER=OFF' : '-DXT9KDB_CUTOVER=ON'
             }
         }
     }
     buildFeatures {
-        buildConfig = true // Required for BuildConfig.DEBUG usage in pipeline logging
-        viewBinding = true // Enabled for ViewBinding (type-safe view access)
-        compose = true // Enable Jetpack Compose
-        aidl = true // IEvdevService/IEvdevCallback: the Shizuku evdev touch reader (core.device.touch.shizuku)
+        buildConfig = true
+        viewBinding = true
+        compose = true
+        aidl = true // the Shizuku evdev touch reader (core.device.touch.shizuku)
     }
-    // Compose compiler is now handled by org.jetbrains.kotlin.plugin.compose plugin
     buildTypes {
         debug {
             applicationIdSuffix = ".debug"
@@ -111,7 +93,6 @@ android {
     kotlinOptions {
         jvmTarget = '17'
     }
-    // Fix for Android 11+ (API 30+) resources.arsc requirement
     packagingOptions {
         jniLibs {
             useLegacyPackaging = false
@@ -121,16 +102,14 @@ android {
         }
     }
     androidResources {
-        // 'ldb': the engine opens each dictionary with AAsset_getBuffer, which inflates a
-        // Deflated asset in full (5 to 6 MB per language, one more private copy and 25 to 80 ms
-        // under the engine lock on first use). Stored, the asset is mapped clean from the APK.
+        // 'arsc': Android 11+ needs resources.arsc stored. 'ldb': the engine reads dictionaries with
+        // AAsset_getBuffer, which inflates a deflated asset in full (5 to 6 MB, 25 to 80 ms under the
+        // engine lock); stored, it is mapped from the APK.
         noCompress 'arsc', 'ldb'
     }
     lint {
-        // The historical backlog is large, so lint still cannot fail the build; but it
-        // now runs on release, where DeprecatedSinceApi/StaticFieldLeak/Recycle actually
-        // matter. Note res/values/public.xml pins every resource public, which suppresses
-        // UnusedResources wholesale -- public.xml shields the guard families from the lint sweep.
+        // The backlog is too large to fail the build on. res/values/public.xml pins every
+        // resource public, which suppresses UnusedResources entirely.
         abortOnError false
         checkReleaseBuilds true
     }
@@ -142,7 +121,7 @@ android {
         }
     }
 
-    // Builds libxt9trace.so (in-app trace-result logcat dumper).
+    // libkb.so, libxt9trace.so, libbbkbevdev.so.
     externalNativeBuild {
         cmake {
             path = file("src/main/cpp/CMakeLists.txt")
@@ -151,7 +130,6 @@ android {
     }
 }
 
-// Add Java toolchain to ensure consistent Java version
 java {
     toolchain {
         languageVersion = JavaLanguageVersion.of(17)
@@ -159,71 +137,52 @@ java {
 }
 
 dependencies {
-    // Material Design (replaces design support library)
     implementation 'com.google.android.material:material:1.13.0'
     implementation 'androidx.collection:collection:1.6.0'
 
-    // Kotlin Coroutines for async operations
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.10.2'
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.2'
 
-    // Other Dependencies
-    // Guava removed - using Java stdlib alternatives
     implementation 'androidx.appcompat:appcompat:1.7.1'
     implementation 'androidx.recyclerview:recyclerview:1.4.0'
     implementation 'androidx.annotation:annotation:1.9.1'
     implementation 'androidx.core:core-ktx:1.18.0'
-    // The emoji board's pages. The first-generation viewpager line below is no longer imported
-    // anywhere; it stays only to hold the version Material and AppCompat otherwise pull in at 1.0.0.
     implementation 'androidx.viewpager2:viewpager2:1.1.0'
+    // Not imported; pins the version (Material and AppCompat would pull in 1.0.0).
     implementation 'androidx.viewpager:viewpager:1.1.0'
-    // Not imported anywhere, but kept on purpose: AppCompat only asks for 1.1.0 of these two, so
-    // without the lines both would drop back to that version.
+    // Not imported; pins the version (AppCompat would pull in 1.1.0).
     implementation 'androidx.vectordrawable:vectordrawable:1.2.0'
     implementation 'androidx.vectordrawable:vectordrawable-animated:1.2.0'
-    
-    // AndroidX Autofill for inline suggestions (Android 11+)
+
     implementation 'androidx.autofill:autofill:1.1.0'
-    
-    // Jetpack Compose BOM (Bill of Materials) - manages Compose versions
+
     def composeBom = platform('androidx.compose:compose-bom:2026.03.00')
     implementation composeBom
     androidTestImplementation composeBom
-    
-    // Compose Core
+
     implementation 'androidx.compose.ui:ui'
     implementation 'androidx.compose.ui:ui-tooling-preview'
     implementation 'androidx.compose.foundation:foundation'
     implementation 'androidx.compose.runtime:runtime'
-    
-    // Material 3 for Compose
+
     implementation 'androidx.compose.material3:material3'
-    
-    // Integration with Activities
+
     implementation 'androidx.activity:activity-compose:1.13.0'
-    
-    // ViewModel and LiveData for Compose
+
     implementation 'androidx.lifecycle:lifecycle-viewmodel-compose:2.10.0'
     implementation 'androidx.lifecycle:lifecycle-runtime-compose:2.10.0'
-    
-    // Navigation for Compose
+
     implementation 'androidx.navigation:navigation-compose:2.9.7'
-    
-    // Compose Preview and Debug
+
+    // ui-test-manifest must stay debugImplementation: JVM render tests get its ComponentActivity
+    // through the merged debug manifest (androidTest-only fails every render case, activity not found).
     debugImplementation 'androidx.compose.ui:ui-tooling'
     debugImplementation 'androidx.compose.ui:ui-test-manifest'
-    
-    // kotlin-stdlib managed by Kotlin plugin (2.2.0)
+
     testImplementation 'junit:junit:4.13.2'
     testImplementation 'org.robolectric:robolectric:4.14.1'
-    // Compose UI testing on the JVM (Robolectric), for SettingsScreenRenderTest.
-    // LOAD-BEARING: createComposeRule() needs the ComponentActivity that
-    // androidx.compose.ui:ui-test-manifest contributes, and that artifact is only a
-    // debugImplementation above -- it reaches testDebugUnitTest through the merged
-    // DEBUG manifest, not through the test classpath. Moving it to androidTest-only
-    // kills all 80 render cases with an activity-not-found error that does not name it.
-    // Render tests also need @Config(qualifiers = "w411dp-h891dp"); with no viewport
-    // every node lays out to zero bounds and assertIsDisplayed() silently means nothing.
+    // Render tests need @Config(qualifiers = "w411dp-h891dp"): with no viewport every node has
+    // zero bounds and assertIsDisplayed() proves nothing.
     testImplementation composeBom
     testImplementation 'androidx.compose.ui:ui-test-junit4'
     testImplementation 'org.mockito:mockito-core:5.14.2'
@@ -231,22 +190,14 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.7.0'
     implementation 'org.jsoup:jsoup:1.18.3'
 
-    // Shizuku (dev.bbkb.ime.core.device.touch.shizuku): runs EvdevUserService as shell/root so the
-    // IME can read a keyboard's touch surface straight from /dev/input. 13.1.5 is the newest 13.1.x
-    // on Maven Central.
+    // Runs EvdevUserService as shell/root to read the touch surface from /dev/input.
+    // 13.1.5 is the newest 13.1.x on Maven Central.
     implementation 'dev.rikka.shizuku:api:13.1.5'
     implementation 'dev.rikka.shizuku:provider:13.1.5'
 }
 
-// ============================================================================
-// Emojibase NPM Integration
-// ============================================================================
-
-// Generated assets live under build/, never in the source tree: the generator and a
-// git-tracked copy of its output cannot silently disagree that way. The app reads only
-// emoji/emojibase-en.tsv, a compact form of emojibase-data's en/data.json written by the task
-// below (format: EmojibaseCompactFormat.kt). The 735 KB JSON itself no longer ships, nor do
-// compact.json (541 KB) and groups.json (3.8 KB), which never had a reader.
+// Generated under build/, never committed, so generator and output cannot disagree. The app
+// reads only emoji/emojibase-en.tsv (format: EmojibaseCompactFormat.kt).
 def emojibaseGeneratedDir = layout.buildDirectory.dir('generated/emojibaseAssets')
 
 /**
@@ -254,11 +205,8 @@ def emojibaseGeneratedDir = layout.buildDirectory.dir('generated/emojibaseAssets
  * sha256=<hex of data.json>", then one line per data.json entry, in order, with 13 TAB-separated
  * fields: emoji, hexcode, label, tags, shortcodes, group, subgroup, version, order, type, gender,
  * tone, skins (their emoji only). List items are joined with U+001F; an empty field is a missing
- * list or a missing nullable int. Missing group, subgroup and order are written as 0 because that
- * is what the old Gson parse produced (EmojiData has no no-arg constructor, so Gson skipped the
- * Kotlin defaults). Anything the format cannot carry (a separator inside a string, an empty list)
- * fails the build rather than producing a file that reads back differently. Deterministic: the
- * same data.json gives the same bytes.
+ * list or nullable int; missing group, subgroup and order are written as 0. Anything the format
+ * cannot carry (a separator in a string, an empty list) fails the build. Deterministic.
  */
 @CacheableTask
 abstract class EmojibaseCompactTask extends DefaultTask {
@@ -301,7 +249,7 @@ abstract class EmojibaseCompactTask extends DefaultTask {
         return value.toString()
     }
 
-    /** The shortest round-trip form, which Double.parseDouble reads back to the double Gson produced. */
+    /** The shortest round-trip form, which Double.parseDouble reads back exactly. */
     static String version(Object value, String what) {
         if (!(value instanceof Number)) throw new GradleException("${what}.version: expected a number, got $value")
         double d = ((Number) value).doubleValue()
@@ -352,9 +300,8 @@ abstract class EmojibaseCompactTask extends DefaultTask {
     }
 }
 
-// Note: npmInstall task is created automatically by the node-gradle plugin
 tasks.register('generateEmojibaseCompact', EmojibaseCompactTask) {
-    dependsOn npmInstall  // Use auto-created task from plugin
+    dependsOn npmInstall  // created by the node-gradle plugin
     dataJson = file('node_modules/emojibase-data/en/data.json')
     packageJson = file('node_modules/emojibase-data/package.json')
     outputDir = emojibaseGeneratedDir
@@ -370,13 +317,7 @@ tasks.matching { it.name ==~ /merge.*Assets/ }.configureEach {
 }
 preBuild.dependsOn generateEmojibaseCompact
 
-// ============================================================================
-// Debug keystore
-// ============================================================================
-
-// app/debug.keystore is gitignored (*.keystore), so a fresh clone has no store file and
-// every build type that references signingConfigs.debug would fail. Generate the
-// throwaway key on demand instead of committing it.
+// debug.keystore is gitignored; without it every build using signingConfigs.debug fails.
 tasks.register('ensureDebugKeystore', Exec) {
     def keystore = file('debug.keystore')
     outputs.file(keystore)

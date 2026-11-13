@@ -39,8 +39,7 @@ public class ContactsChangeObserver implements Runnable {
 
     /**
      * How long the address book must stay quiet before it is queried. The provider notifies once
-     * per row it touches, so a sync from an account or an import sent a burst of notifications,
-     * each of which queried the whole address book (P-21).
+     * per row it touches, so a sync or import sends a burst of notifications.
      */
     static final long CHANGE_DEBOUNCE_MS = 3000L;
 
@@ -57,6 +56,7 @@ public class ContactsChangeObserver implements Runnable {
         this.context = context;
     }
 
+    /** @param aVar listener told after the address book has stayed quiet */
     public void registerObserver(ContactsDataProvider.Listener aVar) {
         if (!PermissionUtils.checkAllPermissionsGranted(this.context, "android.permission.READ_CONTACTS")) {
             Logger.info(TAG, "No permission to read contacts. Not registering the observer.");

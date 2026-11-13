@@ -20,22 +20,12 @@ import dev.bbkb.ime.core.device.profile.DeviceProfile
 import dev.bbkb.ime.core.settings.PrefsManager
 
 /**
- * The one renderer for every [ScreenSpec].
+ * Renders a [ScreenSpec]: [SettingsScaffold], a scrolling column, then the visible rows split by
+ * [groupRows] into groups and page-level blocks, drawn with the `ui/Preferences.kt` widgets.
  *
- * It emits the frame the 17 hand-written screens each carried a copy of — [SettingsScaffold]
- * (the collapsing top bar on the page colour), a `fillMaxSize` scrolling `Column`, a trailing
- * `extraLarge` spacer — and then the rows in the grouped layout: the visible rows are split by
- * [groupRows] into labelled groups of cards and page-level blocks, and each row is drawn by the
- * same `ui/Preferences.kt` widgets the screens called directly.
- *
- * **State lifetime is the contract.** The value map is `remember`ed with no key and seeded once,
- * from every row that owns a preference, whether or not that row is currently visible. That is
- * precisely what the screens' unconditional `var x by remember { mutableStateOf(prefs.getX(…)) }`
- * declarations did: read once on first composition, hold, write through. Keying the map on the
- * row list would let a row re-read mid-screen and appear to reset.
- *
- * [rows] may be rebuilt on every recomposition — it is plain data plus lambdas, and nothing in it
- * captures a live value; summaries and gates are evaluated here, against the map.
+ * The value map is `remember`ed with no key and seeded once from every value row, visible or not;
+ * keying it on the rows would re-read and appear to reset a row. [rows] may be rebuilt each
+ * recomposition since summaries and gates are evaluated here against the map.
  */
 @Composable
 fun SettingsScreenHost(
@@ -66,8 +56,7 @@ fun SettingsScreenHost(
     HostScaffold(context.getString(title), onNavigateBack, search, searchHint?.let { context.getString(it) }) { paddingValues ->
         val spacing = LocalSpacing.current
 
-        // Visibility is decided here, before grouping, so a hidden row never opens a gap in a
-        // group: the row's own gate, and for a ManagedToggle the device profile's hide as well.
+        // Decide visibility before grouping so a hidden row never opens a gap in a group.
         val deviceProfile = DeviceProfile.current()
         val visibleRows = rows.filter { row ->
             row.visible(env) &&
@@ -243,11 +232,7 @@ private fun RowSummary.render(
     is RowSummary.Of -> text(context, value)
 }
 
-/**
- * A row's icon as the [ImageVector] the preference composables take: a vector as it is, a drawable
- * loaded through `vectorResource`. Before this, every row type but [Nav] cast the icon to
- * [RowIcon.Vector] and silently dropped a drawable (the Keyboard height row drew no icon).
- */
+/** A row's icon as an [ImageVector]; a drawable is loaded through `vectorResource`. */
 @Composable
 private fun RowIcon?.asImageVector(): ImageVector? = when (this) {
     null -> null
@@ -274,7 +259,7 @@ private fun PreferenceItemRow(
     )
 }
 
-/** Routes to whichever `PreferenceScreen` overload the icon kind needs, as the screens did. */
+/** Routes to the `PreferenceScreen` overload the icon kind needs. */
 @Composable
 private fun NavRow(
     title: String,

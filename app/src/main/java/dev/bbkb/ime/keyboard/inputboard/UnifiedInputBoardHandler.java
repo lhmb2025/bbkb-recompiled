@@ -10,11 +10,8 @@ public class UnifiedInputBoardHandler extends WeakOwnerHandler<UnifiedInputBoard
 
     private long mDelay;
 
-    // No strong callback field. The original APK (k.java) kept one next to the WeakOwnerHandler
-    // reference, which defeated it: a queued message -> this handler -> callback (an inner class of
-    // UnifiedInputBoardManager) -> manager -> key view -> IME, pinned for the typing delay. The
-    // callback is held strongly by its owner (UnifiedInputBoardManager.uimHandlerCallback) and only
-    // weakly here, so it lives exactly as long as the manager that has keys to restore.
+    // Keep the callback weak only: a strong field would let a queued message pin the manager and
+    // the IME for the delay. Its owner (UnifiedInputBoardManager) holds it strongly.
 
     public interface Callback {
         void disableAllKeys();
@@ -22,12 +19,16 @@ public class UnifiedInputBoardHandler extends WeakOwnerHandler<UnifiedInputBoard
         void restoreKeyStates();
     }
 
+    /**
+     * @param aVar the callback, held weakly
+     * @param j delay in ms before key states are restored
+     */
     public UnifiedInputBoardHandler(Callback aVar, long j) {
         super(aVar);
         this.mDelay = j;
     }
 
-    @Override // android.os.Handler
+    @Override
     public void handleMessage(Message message) {
         Callback aVar = getOwner();
         if (aVar == null) {
@@ -53,11 +54,7 @@ public class UnifiedInputBoardHandler extends WeakOwnerHandler<UnifiedInputBoard
         sendMessageDelayed(obtainMessage(1), this.mDelay);
     }
 
-    /**
-     * Cancel all pending save (0) and restore (1) messages.
-     * Called when a board switch occurs to prevent stale restores from
-     * overwriting the new board's key states (UIM-03 fix).
-     */
+    /** Cancel pending disable (0) and restore (1) messages so a board switch gets no stale restore. */
     public void cancelPendingMessages() {
         removeMessages(0);
         removeMessages(1);

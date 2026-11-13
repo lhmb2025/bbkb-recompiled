@@ -721,7 +721,6 @@
     <string name="device_config_import_unreadable">ეს ფაილი მოწყობილობის კონფიგურაცია არ არის</string>
     <string name="device_config_import_failed">ამ ფაილის იმპორტი ვერ მოხერხდა</string>
 
-    <!-- OTA app updates -->
     <string name="settings_updates_title">განახლებები</string>
     <string name="settings_updates_summary">BBKB-ის ახალი ვერსიის შემოწმება</string>
     <string name="settings_update_installed_version_title">დაყენებული ვერსია</string>
@@ -755,7 +754,6 @@
     <string name="settings_update_ready_title">მზადაა დასაყენებლად</string>
     <string name="settings_update_version_details">ვერსიის დეტალები</string>
     <string name="settings_update_unknown_sources_title">მისცეთ BBKB-ს განახლებების დაყენების ნებართვა?</string>
-    <!-- Downloadable language packs (core/languagepack) -->
     <string name="language_packs_installed_header">დაინსტალირებული</string>
     <string name="language_packs_available_header">ჩამოტვირთვად ხელმისაწვდომი</string>
     <string name="language_packs_download">ჩამოტვირთვა</string>
@@ -877,7 +875,6 @@
     <string name="settings_voice_stop_on_pause_summary_off">მოსმენა პაუზების დროსაც გრძელდება, სანამ მიკროფონს არ შეეხებით, ან ნახევარი წუთის სიჩუმემდე</string>
     <string name="voice_status_listening_tap_to_stop">გისმენთ&#8230; შესაჩერებლად შეეხეთ მიკროფონს</string>
 
-    <!-- Settings text moved out of the code (2026-11) -->
     <string name="settings_common_save">შენახვა</string>
     <string name="settings_common_edit">რედაქტირება</string>
     <string name="settings_common_back">უკან</string>

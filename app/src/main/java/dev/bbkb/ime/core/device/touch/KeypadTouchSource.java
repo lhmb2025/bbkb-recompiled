@@ -3,30 +3,22 @@ package dev.bbkb.ime.core.device.touch;
 import androidx.annotation.NonNull;
 
 /**
- * A way for the touch keypad's events to reach the IME's gesture pipeline
- * ({@code BlackBerryIME.onGenericMotionEvent}). Every source delivers the same MotionEvents the
- * KEY2's pad already produces — the pad's device id (or a registered synthetic one, see
- * {@link SyntheticTouchSources}), {@code SOURCE_TOUCHPAD}, sensor coordinates in the
- * {@link TouchKeypadGeometry} frame — so nothing downstream knows which source fed it.
- *
- * <p>Implementations: {@link NativeTouchSource} (the OS delivers the pad to a focused IME window)
- * and {@link ShizukuTouchSource} (BBKB reads the pad's evdev node through Shizuku, for firmware
- * that does not); {@link TouchSourceSelector} decides which one should run.
+ * A route for touch keypad events into {@code BlackBerryIME.onGenericMotionEvent}. Every source
+ * delivers KEY2-shaped events (pad or {@link SyntheticTouchSources} id, {@code SOURCE_TOUCHPAD},
+ * {@link TouchKeypadGeometry} sensor coordinates), so downstream cannot tell them apart.
+ * {@link TouchSourceSelector} picks {@link NativeTouchSource} or {@link ShizukuTouchSource}.
  */
 public interface KeypadTouchSource {
-
-    /** Told whenever the source's {@link #status()} changes. Called on the main thread. */
+    /** Called on the main thread. */
     interface StatusListener {
         void onStatusChanged(@NonNull KeypadTouchSource source, @NonNull TouchSourceStatus status);
     }
 
-    /** Allow the source to run (it may still wait for the IME window). */
+    /** Allows the source to run; it may still wait for the IME window. */
     void start();
 
-    /** Stop delivering events and release whatever the source holds. */
     void stop();
 
-    /** Where the source stands right now. */
     @NonNull
     TouchSourceStatus status();
 

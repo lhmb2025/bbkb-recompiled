@@ -32,18 +32,14 @@ public class QuickPhrasesController implements QuickPhrasesView.OnQuickPhraseSel
         this.view.setQuickPhrases(buildPhrasesList(this.settingsManager.getSettingsValues()));
     }
 
-    /** Repopulate the attached view's phrase list. No-op when no view is attached. */
+    /** Repopulate the attached view's phrase list, if any. */
     public void show() {
         if (hasAttachedView()) {
             this.view.setQuickPhrases(buildPhrasesList(this.settingsManager.getSettingsValues()));
         }
     }
 
-    /**
-     * DETACHES the view (drops the listener and the reference); it does not merely hide it.
-     * Called when the input view is going away, so {@link #show()} stays a no-op until the next
-     * {@link #setView} - which SlideboardManager.setSlideboardComponent performs.
-     */
+    /** Detaches the view, not merely hides it: {@link #show()} is a no-op until the next {@link #setView}. */
     public void hide() {
         if (hasAttachedView()) {
             this.view.setQuickPhrasesListener(null);
@@ -51,16 +47,17 @@ public class QuickPhrasesController implements QuickPhrasesView.OnQuickPhraseSel
         }
     }
 
-    /** Whether a view is attached to this controller - NOT whether it is visible. */
+    /** Whether a view is attached, not whether it is visible. */
     public boolean hasAttachedView() {
         return this.view != null;
     }
 
-    @Override // dev.bbkb.ime.keyboard.slideboard.QuickPhrasesView.OnQuickPhraseSelectedListener
+    @Override
     public void onQuickPhraseSelected(CharSequence charSequence, Context context) {
         this.ime.getInputLogic().pasteText(charSequence);
     }
 
+    /** @param c0804d the settings holding the five phrases */
     private List<QuickPhrasesAdapter.QuickPhrase> buildPhrasesList(SettingsValues c0804d) {
         ArrayList arrayList = new ArrayList();
         addPhrase(arrayList, c0804d.quickPhrase1);
@@ -71,6 +68,10 @@ public class QuickPhrasesController implements QuickPhrasesView.OnQuickPhraseSel
         return arrayList;
     }
 
+    /**
+     * @param list the phrases so far
+     * @param str the phrase; blank ones are skipped
+     */
     private static void addPhrase(List<QuickPhrasesAdapter.QuickPhrase> list, String str) {
         if (isAllWhitespace(str)) {
             return;
@@ -78,6 +79,7 @@ public class QuickPhrasesController implements QuickPhrasesView.OnQuickPhraseSel
         list.add(new QuickPhrasesAdapter.QuickPhrase(str + " "));
     }
 
+    /** @param c0804d the settings holding the five phrases */
     public void loadPhrases(SettingsValues c0804d) {
         QuickPhrasesView quickPhrasesView = this.view;
         if (quickPhrasesView != null) {

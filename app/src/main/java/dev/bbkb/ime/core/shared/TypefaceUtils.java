@@ -27,10 +27,7 @@ public final class TypefaceUtils {
 
     private static final Rect sTextWidthBounds = new Rect();
 
-    /**
-     * Per-thread scratch rect: {@link #getStringWidth} is called from the draw thread on every
-     * frame, so a single shared static would serialise every caller on one monitor.
-     */
+    /** Per-thread scratch rect: {@link #getStringWidth} runs every frame, so a shared one would serialise callers. */
     private static final ThreadLocal<Rect> sStringWidthBounds = new ThreadLocal<Rect>() {
         @Override
         protected Rect initialValue() {
@@ -66,11 +63,7 @@ public final class TypefaceUtils {
         }
     }
 
-    /**
-     * A small id per typeface instance, for the geometry cache key. Typeface instances are
-     * cached by the framework (Typeface.create returns the same object for the same family and
-     * weight), so identity is the right equality, and the set stays a handful of entries.
-     */
+    /** Small id per typeface for the cache key; the framework caches Typeface instances, so identity equality works. */
     private static final IdentityHashMap<Typeface, Integer> sTypefaceIds = new IdentityHashMap<>();
 
     private static int typefaceId(Typeface typeface) {
@@ -86,11 +79,7 @@ public final class TypefaceUtils {
         }
     }
 
-    /**
-     * (typeface, char, text size). Every typeface other than DEFAULT, DEFAULT_BOLD and MONOSPACE
-     * used to share DEFAULT's key, so the medium-weight key-label face was centred with the
-     * regular face's cached 'M' metrics.
-     */
+    /** Key = (typeface id, char, text size); every typeface needs its own id or faces share metrics. */
     private static long getCharGeometryCacheKey(char c, Paint paint) {
         long textSize = ((long) (int) paint.getTextSize()) & 0xFFFFFFL;
         return ((long) typefaceId(paint.getTypeface()) << 40) | ((long) c << 24) | textSize;

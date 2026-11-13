@@ -11,15 +11,14 @@ public interface SlideboardComponent {
 
     boolean isShowing();
 
-    /** Make the panel visible. */
     void show();
 
-    /** Take the panel off screen. */
     void hide();
 
     int getSlideBoardWidth();
 
     void setListener(Listener listener);
 
+    /** @param f the panel's x translation */
     void setXTranslation(float f);
 }

@@ -10,28 +10,10 @@ import org.robolectric.annotation.Config
 import java.util.Locale
 
 /**
- * "Close the symbol board after a symbol, unless Sym is held" — owner decision, 2026-09-22.
- *
- * The user-facing "Close symbol keyboard after symbol" toggle (`pkb_symbol_auto_close`) is gone.
- * Closing after one symbol is now the default and only behaviour, and the way to keep the board
- * open is to HOLD the Sym key down while typing symbols:
- *
- *  * Sym tapped, one symbol typed -> back to letters.
- *  * Sym held, symbols typed -> the board stays up and the symbols keep going in.
- *  * Sym released -> the entry ends and the board closes.
- *
- * These drive [KeyboardState] the way the hardware key path drives it on a PKB device:
- *
- *  * the Sym key-DOWN reaches `onSymbolShiftToggle(.., fromSym = true)`
- *    (`InputLogic.toggleKeyboardDirection` -> `BlackBerryIME.updateSymbolShift`),
- *  * a character key-DOWN reaches `onCodeInput`, its key-UP `onHardwareKeyEvent`,
- *  * the Sym key-UP reaches `onHardwareKeyEvent(KEYCODE_SYM)`.
- *
- * The held state itself comes from `PhysicalKeyboardStateTracker.isSymKeyHeld()`, which
- * `KeyboardSwitcher` answers the [KeyboardState.SwitcherCallbacks.isSymKeyHeld] question with;
- * here [FakeSwitcherCallbacks.symKeyHeld] stands in for the physical key. Production order is
- * preserved: the tracker is told about the release *after* `KeyboardState` has seen the Sym
- * key-up, so the flag is still set while that key-up is processed.
+ * Pins "close the PKB symbol board after one symbol unless Sym is held", driving [KeyboardState] the
+ * way the hardware key path does: Sym down -> `onSymbolShiftToggle(.., fromSym = true)`, character
+ * down -> `onCodeInput`, key-ups -> `onHardwareKeyEvent`. [FakeSwitcherCallbacks.symKeyHeld] stands
+ * in for `PhysicalKeyboardStateTracker.isSymKeyHeld()`, which learns of a release after the key-up.
  */
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [34], manifest = Config.NONE)
@@ -49,8 +31,6 @@ class PkbSymbolHoldTest {
         fake.clear()
     }
 
-    // ── the hardware key path, one call per half of each physical key press ──
-
     /** The Sym key-DOWN: opens the PKB symbol board. */
     private fun symDown() {
         state.onSymbolShiftToggle(0, NO_RECAPITALIZE, false, true)
@@ -67,8 +47,6 @@ class PkbSymbolHoldTest {
         state.onCodeInput(code, false, 0, NO_RECAPITALIZE)
         state.onHardwareKeyEvent(keyCode, 0, NO_RECAPITALIZE)
     }
-
-    // ── the three behaviours ─────────────────────────────────────────────────
 
     @Test
     fun aSymbolTypedWithSymNotHeldClosesTheBoard() {
@@ -128,8 +106,8 @@ class PkbSymbolHoldTest {
     }
 
     /**
-     * Sym pressed and released with nothing typed leaves the board up — that is the one-shot
-     * entry waiting for its symbol, not a hold.
+     * Sym pressed and released with nothing typed leaves the board up: that is the one-shot entry
+     * waiting for its symbol, not a hold.
      */
     @Test
     fun tappingSymWithNothingTypedLeavesTheBoardUp() {
@@ -139,16 +117,10 @@ class PkbSymbolHoldTest {
         assertTrue(state.isInSymbolMode)
     }
 
-    // ── the on-screen ABC key on the Sym board ───────────────────────────────
-
     /**
-     * Sym tapped, then the board's on-screen ABC key (−3) tapped. The soft-key path fires, in
-     * production order: the press, the IME's onCodeInput (which runs `onInputCodeChanged` and the
-     * symbol-committed hook), then the release. ABC is a toggle read against the current mode, so
-     * the hook must not end the entry first: with the entry still up, the release asks for the
-     * on-screen alphabet (`requestManualShiftOff`, which forces the on-screen keyboard), as in the
-     * original app. Before the fix the hook treated −3 as a committed symbol, the release found
-     * the alphabet already loaded and toggled onto the on-screen SYMBOLS page (KEY2, 2026-10-25).
+     * Sym tapped, then the board's on-screen ABC key (−3), in soft-key order (press, onCodeInput with
+     * the symbol-committed hook, release). ABC toggles against the current mode, so the hook must not
+     * end the entry first; the release then asks for the on-screen alphabet (`requestManualShiftOff`).
      */
     @Test
     fun theOnScreenAbcKeyOnTheSymBoardAsksForTheOnScreenAlphabet() {

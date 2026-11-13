@@ -6,9 +6,8 @@ import org.junit.Assert.assertNull
 import org.junit.Test
 
 /**
- * A firmware swipe key (the Titan 2's keycode 322 / 404, role GESTURE_SWIPE_LEFT) runs whatever
- * the user assigned to the swipe-left slot — the same slot a pad swipe left uses — through the
- * ordinary policy. Pure JVM.
+ * A firmware swipe key (the Titan 2's keycode 322 / 404, role GESTURE_SWIPE_LEFT) runs the action
+ * in the pad's swipe-left slot through the ordinary policy. Pure JVM.
  */
 class FirmwareGestureKeysTest {
 
@@ -60,8 +59,6 @@ class FirmwareGestureKeysTest {
         assertEquals(PolicyOutcome.Act(GestureAction.DELETE_WORD),
             FirmwareGestureKeys.outcome(KeyRole.GESTURE_SWIPE_LEFT, typing, GestureAssignments()))
     }
-
-    // ── device defaults for the slots ────────────────────────────────────────
 
     @Test
     fun deviceDefaults_replaceOnlyTheSlotsTheyName() {

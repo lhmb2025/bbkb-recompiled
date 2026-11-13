@@ -37,10 +37,7 @@ import java.util.List;
 import java.util.ArrayList;
 import dev.bbkb.ime.BuildConfig;
 
-/**
- * Unified suggestion view that handles Latin, CJK, and Autofill suggestions.
- * Uses RecyclerView for efficient recycling and consistent performance.
- */
+/** The suggestion strip for every {@link SuggestionMode}, on a RecyclerView. */
 public class UnifiedSuggestionView extends FrameLayout implements UnifiedSuggestionAdapter.OnSuggestionClickListener {
 
     private static final String TAG = "UnifiedSuggestionView";
@@ -57,17 +54,15 @@ public class UnifiedSuggestionView extends FrameLayout implements UnifiedSuggest
     private GestureDetector gestureDetector;
     /** The words as the strip shows them: {@link #currentWords} without the emoji entry. */
     private SuggestedWords currentSuggestions;
-    /** The words as given to {@link #setSuggestions}, emoji entry included, for a round trip through {@link #getCurrentSuggestions}. */
+    /** The words as given to {@link #setSuggestions}, emoji entry included. */
     private SuggestedWords currentWords;
     
     private Listener listener;
     private FlickSuggestionAnimationView suggestionAnimationView;
 
     /**
-     * The emoji slot at the strip's right end: the emojibase hit for the word being typed
-     * (kind 11, {@link EmojibaseStripSuggestion}), or hidden. It rides outside the word slots so
-     * the three words keep their positions and widths. A tap inserts it like any suggestion; a
-     * long-press shows its skin tones ({@link #showEmojiVariants}).
+     * The emojibase hit for the typed word (kind 11, {@link EmojibaseStripSuggestion}) at the
+     * right end, outside the word slots so they keep their widths. Long-press shows skin tones.
      */
     private android.widget.TextView emojiSlot;
     private SuggestedWords.SuggestedWordInfo emojiSuggestion;
@@ -76,8 +71,7 @@ public class UnifiedSuggestionView extends FrameLayout implements UnifiedSuggest
         updateColors();
         return kotlin.Unit.INSTANCE;
     };
-    
-    // More suggestions components
+
     private View moreSuggestionsContainer;
     private MoreSuggestionsView moreSuggestionsView;
     private MoreSuggestionsKeyboard.Builder moreSuggestionsBuilder;
@@ -95,14 +89,10 @@ public class UnifiedSuggestionView extends FrameLayout implements UnifiedSuggest
         void onAutofillSuggestionClicked(int position);
         void onHamburgerClicked();
         void onExpandClicked();
-        /** A tap on a chip of the language-chip bar. */
         void onLanguageChipClicked(LanguageChip chip);
-        /** The gear that stands in the hamburger's place on the language-chip bar. */
+        /** The gear in the hamburger's place on the language-chip bar. */
         void onLanguageSettingsClicked();
-        /**
-         * Called when user long-presses the center suggestion to show more suggestions.
-         * @return The current Keyboard to use for building the MoreSuggestions panel, or null if unavailable.
-         */
+        /** @return the keyboard to build the more-suggestions panel from, or null */
         Keyboard onMoreSuggestionsRequested();
     }
 
@@ -147,25 +137,19 @@ public class UnifiedSuggestionView extends FrameLayout implements UnifiedSuggest
         });
         emojiSlot.setOnLongClickListener(v -> showEmojiVariants(emojiSuggestion));
 
-        // Setup RecyclerView with custom non-scrollable layout manager for Latin mode
         adapter = new UnifiedSuggestionAdapter(context, this);
         recyclerView.setAdapter(adapter);
         layoutManager = new NonScrollableLayoutManager(context);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setHasFixedSize(true);
-        // The adapter now notifies item ranges rather than the whole data set. Nothing here ever
-        // animated (notifyDataSetChanged runs no item animations), and ranged changes would start
-        // the default cross-fade with a second holder per word, so keep the strip unanimated.
+        // Ranged adapter updates would otherwise cross-fade with a second holder per word.
         recyclerView.setItemAnimator(null);
-        // CJK mode binds every candidate (20-30 in a row); with the default pool of 5 per view
-        // type, holders beyond that were discarded and re-inflated on the next update.
+        // CJK binds 20 to 30 candidates; the default pool of 5 would re-inflate the rest.
         recyclerView.getRecycledViewPool().setMaxRecycledViews(
                 UnifiedSuggestionAdapter.VIEW_TYPE_WORD, CJK_RECYCLED_WORD_VIEWS);
-        
-        // The word slots' width follows the recycler's in onMeasure, not in a layout listener:
-        // see onMeasure for why a listener here left the slots a step behind.
 
-        // Setup hamburger button
+        // The word slots' width follows the recycler's in onMeasure, not a layout listener.
+
         hamburgerBtn.setOnClickListener(v -> {
             if (listener == null) {
                 return;
@@ -177,30 +161,26 @@ public class UnifiedSuggestionView extends FrameLayout implements UnifiedSuggest
             }
         });
 
-        // Setup action button (CJK expand)
+        // CJK expand
         actionBtn.setOnClickListener(v -> {
             if (listener != null) {
                 listener.onExpandClicked();
             }
         });
 
-        // Apply theme colors
         updateColors();
-        
-        // Initialize MoreSuggestions components
+
         initMoreSuggestions(context);
-        
-        // Setup gesture detector for swipe-up to commit suggestions
+
+        // Swipe up on a slot commits it.
         gestureDetector = new GestureDetector(context, new GestureDetector.SimpleOnGestureListener() {
             @Override
             public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
                 if (currentMode != SuggestionMode.LATIN) {
                     return false;
                 }
-                // Detect upward swipe (negative Y movement)
                 float deltaY = e2.getY() - e1.getY();
                 if (distanceY > 0 && deltaY < -getHeight() / 2.0f) {
-                    // Swipe up detected - find which suggestion was swiped
                     return handleSwipeUp(e1.getX());
                 }
                 return false;
@@ -213,9 +193,8 @@ public class UnifiedSuggestionView extends FrameLayout implements UnifiedSuggest
     }
 
     /**
-     * Whether the menu button at the left edge is drawn. With the unified input menu off it is
-     * gone and the suggestions take the whole width (2026-10-19); the language-chip bar keeps
-     * its gear whatever the menu setting, since that button opens the language settings.
+     * With the input menu off the left button is gone and suggestions take the full width; the
+     * language-chip bar always keeps its gear, which opens the language settings.
      */
     public void setMenuButtonVisible(boolean visible) {
         boolean show = visible || currentMode == SuggestionMode.LANGUAGES;
@@ -230,24 +209,20 @@ public class UnifiedSuggestionView extends FrameLayout implements UnifiedSuggest
         if (this.currentMode != mode) {
             this.currentMode = mode;
             adapter.setMode(mode);
-            
-            // Update UI based on mode
+
             switch (mode) {
                 case LATIN:
                     actionBtn.setVisibility(GONE);
-                    // Disable scrolling for Latin mode (fixed 3 items)
                     layoutManager.setScrollEnabled(false);
                     recyclerView.setNestedScrollingEnabled(false);
                     break;
                 case CJK:
                     actionBtn.setVisibility(VISIBLE);
-                    // Enable scrolling for CJK mode
                     layoutManager.setScrollEnabled(true);
                     recyclerView.setNestedScrollingEnabled(true);
                     break;
                 case AUTOFILL:
                     actionBtn.setVisibility(GONE);
-                    // Enable scrolling for Autofill mode
                     layoutManager.setScrollEnabled(true);
                     recyclerView.setNestedScrollingEnabled(true);
                     break;
@@ -257,19 +232,16 @@ public class UnifiedSuggestionView extends FrameLayout implements UnifiedSuggest
                     recyclerView.setNestedScrollingEnabled(true);
                     break;
             }
-            // The language-chip bar's left button is the language settings gear; every other
-            // mode's is the hamburger.
             hamburgerBtn.setImageResource(mode == SuggestionMode.LANGUAGES
                     ? R.drawable.ic_auxbar_language_settings : R.drawable.ic_auxbar_hamburger);
-            
-            // Update adapter with current dimensions
+
             updateAdapterDimensions();
             updateEmojiSlot();
         }
     }
     
     private void updateAdapterDimensions() {
-        // Post to ensure RecyclerView has been laid out
+        // Posted so the RecyclerView has been laid out.
         if (recyclerView != null) {
             recyclerView.post(() -> {
                 int recyclerWidth = recyclerView.getWidth();
@@ -281,16 +253,9 @@ public class UnifiedSuggestionView extends FrameLayout implements UnifiedSuggest
     }
     
     /**
-     * Hand the recycler's new width to the adapter while measuring, so the three word slots are
-     * re-sized in the same pass that gives room to (or takes it back from) the emoji slot.
-     *
-     * <p>This used to happen in the recycler's {@code OnLayoutChangeListener}. Its
-     * {@code notifyDataSetChanged()} asks for a layout from inside layout, and {@code View.layout}
-     * clears the force-layout flag after the listeners run, so {@code ViewRootImpl} dropped the
-     * request: the slots kept a third of the old width until the next suggestion update, and the
-     * rightmost word ran under the emoji (owner report, 2026-11-05). Asked for here, the request
-     * lands before this pass lays the recycler out. {@code setAvailableWidth} is a no-op when the
-     * width has not changed.
+     * Resizes the word slots in the same pass that sizes the emoji slot. Not from an
+     * OnLayoutChangeListener: a relayout requested inside layout is dropped, leaving the slots
+     * at the old width. No-op when the width is unchanged.
      */
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
@@ -323,30 +288,19 @@ public class UnifiedSuggestionView extends FrameLayout implements UnifiedSuggest
         if (suggestionAnimationView == null) {
             suggestionAnimationView = new FlickSuggestionAnimationView(getContext(), null);
         }
-        // Host the flick animation in the window's root view (DecorView), NOT in the
-        // suggestion strip or its content LinearLayout. Two reasons:
-        //  1) FlickSuggestionAnimationView positions itself in absolute window coordinates
-        //     (setX/translationY from getLocationInWindow). That only renders correctly when
-        //     the host's top-left is at window (0,0). The strip sits near the bottom of the
-        //     window, so hosting there double-offsets the view off-screen (the animation
-        //     never displayed). The root view is at window (0,0) and spans the full window
-        //     height, so the word also has room to float up out of the strip without clipping.
-        //  2) The strip's content layer is a horizontal LinearLayout; adding a fixed-width
-        //     child there steals width from the weight=1 RecyclerView (the ~2/3 shrink bug).
-        //     The root view is not part of the strip's layout, so widths are unaffected.
+        // Host in the root view: the animation positions itself in window coordinates, needs
+        // room above the strip, and a child in the strip's LinearLayout would steal its width.
         ViewGroup host = (ViewGroup) getRootView();
         suggestionAnimationView.animateSelection(tv, tv.getCurrentTextColor(), host);
     }
 
     public void setSuggestions(SuggestedWords words) {
         hideOverlays();
-        // Most deliveries repeat what is already on screen (shift, cursor and modifier
-        // re-requests, a re-delivered result for unchanged text). Skip the rebind then, but still
-        // take the new objects: clicks, the emoji slot and getCurrentSuggestions() must see the
-        // latest result (its request edit count, its word metadata).
+        // Most deliveries repeat what is on screen: skip the rebind, but keep the new objects so
+        // clicks and getCurrentSuggestions() see the latest edit count and word metadata.
         boolean unchanged = currentWords != null && rendersSame(currentWords, words);
         currentWords = words;
-        // The strip's emoji (kind 11) goes to its own slot at the right end, not into a word slot.
+        // The emoji (kind 11) goes to its own slot, not a word slot.
         SuggestedWords.SuggestedWordInfo emoji = null;
         ArrayList<SuggestedWords.SuggestedWordInfo> wordsOnly = null;
         if (words != null) {
@@ -388,10 +342,8 @@ public class UnifiedSuggestionView extends FrameLayout implements UnifiedSuggest
     private static final int CJK_RECYCLED_WORD_VIEWS = 32;
 
     /**
-     * Whether two results draw the same: the same words in the same order, each of the same
-     * kind (the emoji entry and its slot), and the same auto-correct / typed-word flags (the
-     * candidate emphasis on the strip, the spacebar word on the on-screen keyboard). These are
-     * the only fields the strip and the flick overlay render.
+     * Same words, order, kinds and auto-correct / typed-word flags: the only fields the strip
+     * and the flick overlay render.
      */
     public static boolean rendersSame(SuggestedWords a, SuggestedWords b) {
         if (a == b) {
@@ -476,10 +428,8 @@ public class UnifiedSuggestionView extends FrameLayout implements UnifiedSuggest
         hamburgerBtn.setColorFilter(iconColor);
         actionBtn.setColorFilter(iconColor);
 
-        // Modern boards: rounded state-layer press feedback (matching the suggestion
-        // words) and 48dp touch-target width. Legacy styles keep the original
-        // no-feedback, 39dp-wide buttons. Separate drawable instances — a
-        // StateListDrawable must not be shared across views.
+        // Modern boards: press feedback and 48dp width; legacy: none and 39dp. Separate drawable
+        // instances, since a StateListDrawable must not be shared across views.
         boolean modernBoards = KeyboardColorManager.styleSpec().getModernBoards();
         hamburgerBtn.setForeground(modernBoards ? KeyboardColorManager.pressedHighlight() : null);
         actionBtn.setForeground(modernBoards ? KeyboardColorManager.pressedHighlight() : null);
@@ -494,7 +444,6 @@ public class UnifiedSuggestionView extends FrameLayout implements UnifiedSuggest
             applyButtonWidth(emojiSlot, buttonWidth);
         }
 
-        // Update background
         int bgColor = colorManager.getBackgroundColor();
         setBackgroundColor(bgColor);
 
@@ -510,49 +459,31 @@ public class UnifiedSuggestionView extends FrameLayout implements UnifiedSuggest
             button.setLayoutParams(params);
         }
     }
-    
-    /**
-     * Initialize the MoreSuggestions components for showing additional suggestions popup.
-     */
+
     private void initMoreSuggestions(Context context) {
-        // Inflate the more suggestions container
         LayoutInflater inflater = LayoutInflater.from(context);
         moreSuggestionsContainer = inflater.inflate(R.layout.more_suggestions, null);
         moreSuggestionsView = moreSuggestionsContainer.findViewById(R.id.more_suggestions_view);
         moreSuggestionsBuilder = new MoreSuggestionsKeyboard.Builder(context, moreSuggestionsView);
-        
-        // Get the modal tolerance for determining when to switch to modal mode
+
         moreSuggestionsModalTolerance = context.getResources().getDimensionPixelOffset(
                 R.dimen.config_more_suggestions_modal_tolerance);
-        
-        // Use 2dp gap between panel bottom and suggestion strip top
+
+        // 2dp gap between the panel and the strip.
         moreSuggestionsBottomGap = (int) (2 * context.getResources().getDisplayMetrics().density);
     }
-    
-    /**
-     * Check if MoreSuggestions panel is currently showing.
-     */
+
     public boolean isMoreSuggestionsShowing() {
         return moreSuggestionsView != null && moreSuggestionsView.isShowingInParent();
     }
-    
-    /**
-     * Dismiss the MoreSuggestions panel if showing.
-     */
+
     public void dismissMoreSuggestions() {
         if (moreSuggestionsView != null) {
             moreSuggestionsView.dismissMoreKeysPanel();
         }
     }
-    
-    /**
-     * Show MoreSuggestions panel with additional word suggestions.
-     * Called when user long-presses the center suggestion.
-     * 
-     * @param keyboard The current keyboard for layout parameters
-     * @param actionListener The keyboard action listener for handling suggestion selection
-     * @return true if MoreSuggestions was shown successfully
-     */
+
+    /** Shows the words past the first three, on a long-press of the center slot. */
     public boolean showMoreSuggestions(Keyboard keyboard, KeyboardActionListenerInterface actionListener) {
         if (BuildConfig.DEBUG) {
         android.util.Log.d(TAG, "showMoreSuggestions called - suggestions: " + 
@@ -564,8 +495,7 @@ public class UnifiedSuggestionView extends FrameLayout implements UnifiedSuggest
             if (BuildConfig.DEBUG) android.util.Log.w(TAG, "Cannot show MoreSuggestions - missing data");
             return false;
         }
-        
-        // Check if there are more suggestions than what's shown
+
         if (currentSuggestions.size() <= LATIN_MAX_SUGGESTIONS) {
             if (BuildConfig.DEBUG) android.util.Log.d(TAG, "Not enough suggestions to show MoreSuggestions panel");
             return false;
@@ -574,11 +504,8 @@ public class UnifiedSuggestionView extends FrameLayout implements UnifiedSuggest
     }
 
     /**
-     * The skin-tone popup for the emoji slot (owner decision 2026-11-03): a long-press on an emoji
-     * that has tones shows the base emoji and every tone in the more-suggestions panel. Picking one
-     * replaces the typed word as a tap does, and the IME remembers the tone ({@link EmojiToneMemory}).
-     * An emoji without tones returns false and keeps today's long-press behaviour. Never pays for
-     * the emojibase parse: a provider not loaded yet also returns false.
+     * Shows the base emoji and its skin tones in the more-suggestions panel; the pick is remembered
+     * ({@link EmojiToneMemory}). False without tones or before emojibase is loaded (never parses it).
      */
     private boolean showEmojiVariants(SuggestedWords.SuggestedWordInfo emoji) {
         if (emoji == null || listener == null) {
@@ -613,17 +540,14 @@ public class UnifiedSuggestionView extends FrameLayout implements UnifiedSuggest
             int paddingLeft = recyclerView.getPaddingLeft();
             int paddingRight = recyclerView.getPaddingRight();
             int availableWidth = width - paddingLeft - paddingRight;
-            
-            // Calculate max height as a fraction of available width
+
             int maxHeight = (int) (availableWidth * 0.5f);
-            
-            // Get suggestion text size from resources
+
             float suggestionTextSize = getResources().getDimension(R.dimen.config_suggestion_text_size);
-            
-            // Build the MoreSuggestions keyboard
+
             moreSuggestionsBuilder.layout(
                     words, 
-                    fromIndex,  // Start from after visible suggestions
+                    fromIndex,
                     availableWidth, 
                     maxHeight, 
                     (int) suggestionTextSize, 
@@ -633,8 +557,7 @@ public class UnifiedSuggestionView extends FrameLayout implements UnifiedSuggest
             moreSuggestionsContainer.measure(
                     MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED),
                     MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED));
-            
-            // Create listener for handling suggestion selection from MoreSuggestions
+
             final MoreSuggestionsView.MoreSuggestionsListener moreSuggestionsListener = 
                     new MoreSuggestionsView.MoreSuggestionsListener() {
                 @Override
@@ -652,18 +575,15 @@ public class UnifiedSuggestionView extends FrameLayout implements UnifiedSuggest
                     dismissMoreSuggestions();
                 }
             };
-            
-            // Create drawing proxy callback for panel management
+
             MoreKeysPanel.Controller drawingProxyCallback = new MoreKeysPanel.Controller() {
                 @Override
                 public void onCancelMoreKeysPanel() {
-                    // Panel dismissed - remove from view hierarchy
                     moreSuggestionsView.removeFromParent();
                 }
 
                 @Override
                 public void onShowMoreKeysPanel(MoreKeysPanel drawingProxy) {
-                    // Panel shown - add to view hierarchy
                     ViewGroup rootView = (ViewGroup) getRootView().findViewById(android.R.id.content);
                     if (rootView != null) {
                         moreSuggestionsView.showInParent(rootView);
@@ -672,14 +592,12 @@ public class UnifiedSuggestionView extends FrameLayout implements UnifiedSuggest
 
                 @Override
                 public void onDismissMoreKeysPanel() {
-                    // Cancel - dismiss panel
                     dismissMoreSuggestions();
                 }
             };
-            
-            // Position the MoreSuggestions panel so its bottom edge is above the top of UnifiedSuggestionView
-            // The showMoreKeysPanel method calculates final Y as: anchor_Y + (panelY - containerHeight) + padding
-            // So passing -bottomGap results in bottom edge being bottomGap pixels above the anchor view
+
+            // showMoreKeysPanel puts the top at anchorY + panelY - containerHeight + padding, so
+            // -bottomGap leaves the panel's bottom that far above the strip.
             int centerX = width / 2;
             int panelY = -moreSuggestionsBottomGap;
             
@@ -690,8 +608,7 @@ public class UnifiedSuggestionView extends FrameLayout implements UnifiedSuggest
             }
             
             moreSuggestionsView.showMoreKeysPanel(this, drawingProxyCallback, centerX, panelY, moreSuggestionsListener);
-            
-            // Store origin for touch tracking
+
             moreSuggestionsOriginX = moreSuggestionsTouchX;
             moreSuggestionsOriginY = moreSuggestionsTouchY;
             
@@ -702,8 +619,6 @@ public class UnifiedSuggestionView extends FrameLayout implements UnifiedSuggest
         }
     }
 
-    // UnifiedSuggestionAdapter.OnSuggestionClickListener implementation
-
     @Override
     public void onSuggestionClick(int position, SuggestedWords.SuggestedWordInfo wordInfo) {
         if (listener != null && wordInfo != null) {
@@ -713,8 +628,7 @@ public class UnifiedSuggestionView extends FrameLayout implements UnifiedSuggest
 
     @Override
     public void onSuggestionLongClick(int position, SuggestedWords.SuggestedWordInfo wordInfo) {
-        // If long-pressing center suggestion (position 1) and we have more suggestions, 
-        // show the MoreSuggestions panel
+        // The center slot opens the more-suggestions panel when there are more words.
         if (position == 1 && currentMode == SuggestionMode.LATIN 
                 && currentSuggestions != null 
                 && currentSuggestions.size() > LATIN_MAX_SUGGESTIONS
@@ -722,12 +636,10 @@ public class UnifiedSuggestionView extends FrameLayout implements UnifiedSuggest
             
             Keyboard keyboard = listener.onMoreSuggestionsRequested();
             if (keyboard != null && showMoreSuggestions(keyboard, listener instanceof KeyboardActionListenerInterface ? (KeyboardActionListenerInterface) listener : null)) {
-                // MoreSuggestions panel shown successfully
                 return;
             }
         }
-        
-        // Fall back to regular long-click behavior
+
         if (listener != null && wordInfo != null) {
             listener.onSuggestionLongClicked(wordInfo);
         }
@@ -742,38 +654,32 @@ public class UnifiedSuggestionView extends FrameLayout implements UnifiedSuggest
     
     @Override
     public boolean onInterceptTouchEvent(MotionEvent ev) {
-        // Track touch position for MoreSuggestions
         if (ev.getActionMasked() == MotionEvent.ACTION_DOWN) {
             moreSuggestionsTouchX = (int) ev.getX();
             moreSuggestionsTouchY = (int) ev.getY();
         }
-        
-        // If MoreSuggestions is showing, intercept touches to handle them
+
         if (isMoreSuggestionsShowing()) {
-            // Masked: the raw action packs the pointer index into bits 8-15, so lifting a
-            // second finger produced 0x0106 and never matched ACTION_POINTER_UP.
+            // Masked: the raw action packs the pointer index into bits 8-15.
             int action = ev.getActionMasked();
             int actionIndex = ev.getActionIndex();
             int x = (int) ev.getX(actionIndex);
             int y = (int) ev.getY(actionIndex);
-            
-            // Check if we should switch to modal mode (drag far enough from origin)
+
             int deltaX = Math.abs(x - moreSuggestionsOriginX);
             int deltaY = moreSuggestionsOriginY - y;
             
             if (deltaX >= moreSuggestionsModalTolerance || deltaY >= moreSuggestionsModalTolerance) {
-                // Dragged far enough: swallow the event so MoreSuggestions handles it directly.
+                // Dragged far enough: modal, the panel handles it directly.
                 return true;
             }
-            
-            // Dismiss on touch up if not dragged
+
             if (action == MotionEvent.ACTION_UP || action == MotionEvent.ACTION_POINTER_UP) {
                 dismissMoreSuggestions();
             }
             return false;
         }
-        
-        // Let gesture detector process events for swipe-up detection
+
         if (currentMode == SuggestionMode.LATIN && gestureDetector != null) {
             gestureDetector.onTouchEvent(ev);
         }
@@ -782,7 +688,6 @@ public class UnifiedSuggestionView extends FrameLayout implements UnifiedSuggest
     
     @Override
     public boolean onTouchEvent(MotionEvent ev) {
-        // If MoreSuggestions is showing, forward touch events to it
         if (isMoreSuggestionsShowing()) {
             int actionIndex = ev.getActionIndex();
             int translatedX = moreSuggestionsView.translateX((int) ev.getX(actionIndex));
@@ -793,8 +698,7 @@ public class UnifiedSuggestionView extends FrameLayout implements UnifiedSuggest
             moreSuggestionsView.onTouchEvent(ev);
             return true;
         }
-        
-        // Let gesture detector process events for swipe-up detection
+
         if (currentMode == SuggestionMode.LATIN && gestureDetector != null) {
             if (gestureDetector.onTouchEvent(ev)) {
                 return true;
@@ -802,40 +706,31 @@ public class UnifiedSuggestionView extends FrameLayout implements UnifiedSuggest
         }
         return super.onTouchEvent(ev);
     }
-    
-    /**
-     * Handle swipe-up gesture to commit the suggestion at the given X position.
-     * @param x The X coordinate of the swipe start
-     * @return true if a suggestion was committed
-     */
+
+    /** Commits the slot under the swipe's start {@code x}; true if one was committed. */
     private boolean handleSwipeUp(float x) {
         if (currentSuggestions == null || currentSuggestions.size() == 0) {
             return false;
         }
-        
-        // Calculate which suggestion slot was swiped based on X position
+
         int recyclerWidth = recyclerView.getWidth();
         if (recyclerWidth <= 0) {
             return false;
         }
-        
-        // Account for hamburger button offset
+
         float recyclerX = x - hamburgerBtn.getWidth();
         if (recyclerX < 0) {
-            return false; // Swipe was on hamburger button
+            return false; // on the hamburger
         }
-        
-        // Calculate slot width and determine which slot was swiped
+
         int slotWidth = recyclerWidth / 3;
         int slotIndex = (int) (recyclerX / slotWidth);
-        slotIndex = Math.max(0, Math.min(slotIndex, 2)); // Clamp to 0-2
-        
-        // Check if we have a suggestion at this index
+        slotIndex = Math.max(0, Math.min(slotIndex, 2));
+
         if (slotIndex >= currentSuggestions.size()) {
             return false;
         }
-        
-        // Commit the suggestion
+
         SuggestedWords.SuggestedWordInfo wordInfo = currentSuggestions.getWordInfo(slotIndex);
         if (wordInfo != null && listener != null) {
             listener.onSuggestionClicked(wordInfo, InputSource.SOFTWARE);
@@ -844,10 +739,8 @@ public class UnifiedSuggestionView extends FrameLayout implements UnifiedSuggest
         
         return false;
     }
-    
-    /**
-     * Custom LinearLayoutManager that can disable scrolling for Latin mode.
-     */
+
+    /** Horizontal layout whose scrolling is off in Latin mode. */
     private static class NonScrollableLayoutManager extends LinearLayoutManager {
         private boolean scrollEnabled = false;
         

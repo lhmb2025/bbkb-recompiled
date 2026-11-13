@@ -10,13 +10,7 @@ import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
 
-/**
- * Where a "switch language" press lands when it must stay within this IME.
- *
- * Owner report 2026-09-26: with one enabled keyboard ("Match phone languages" on), the
- * multifunction key handed the whole IME over to AOSP LatinIME, and BBKB's suggestion strip
- * "disappeared". The rotation now never leaves this IME; these pin what it does instead.
- */
+/** Where a "switch language" press lands; the rotation never leaves this IME. */
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [34], manifest = Config.NONE)
 class NextSubtypeWithinImeTest {
@@ -41,7 +35,7 @@ class NextSubtypeWithinImeTest {
 
     @Test
     fun aSingleEnabledSubtypeHasNowhereToGo() {
-        // The reported case. Null means "do nothing" - never "switch to another IME".
+        // Null means "do nothing", never "switch to another IME".
         assertNull(RichInputMethodManager.nextSubtypeWithinIme(english, listOf(english)))
     }
 
@@ -54,10 +48,8 @@ class NextSubtypeWithinImeTest {
     }
 
     /**
-     * Android 15 does not decline a rotation from a subtype it no longer lists: it falls back to
-     * the most recently used item, which can be another input method. Switching from a removed
-     * Indonesian keyboard handed the KEY2 to AOSP LatinIME (owner report 2026-10-01), so from
-     * that state the framework is never asked.
+     * Android 15 answers a rotation from a subtype it no longer lists with the most recently used
+     * item, which can be another IME, so from that state the framework is never asked.
      */
     @Test
     fun aRemovedOrUnknownCurrentSubtypeIsRotatedHereAndNotByTheFramework() {

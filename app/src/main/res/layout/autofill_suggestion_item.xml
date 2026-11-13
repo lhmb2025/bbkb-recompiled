@@ -7,6 +7,6 @@
     android:clickable="true"
     android:focusable="true">
 
-    <!-- InlineContentView will be inflated here dynamically -->
+    <!-- InlineContentView is added here at runtime -->
 
 </FrameLayout>

@@ -22,20 +22,15 @@ import java.util.ArrayDeque
 import java.util.concurrent.Executors
 
 /**
- * Builds the engine's KDBs for every enabled keyboard ahead of its first use, into the
- * [KdbStore], so switching to a keyboard only reads and registers them
- * ([LetterLayoutEngineSync.prebuildKeypad], [LetterLayoutEngineSync.prebuildOnScreen]).
- *
- * The IME starts it a few seconds after its own start-up, to stay out of its way. The keypad's KDBs are built on
- * a low-priority worker thread. The on-screen ones need each keyboard's drawn letters, and
- * keyboards are built on the main thread only (their caches are not thread-safe), so one keyboard
- * is built per idle moment of the main thread and its letters handed to the worker. A keyboard
- * done once is not built again until the install or its drawn layout set changes.
+ * Prebuilds every enabled keyboard's KDBs into the [KdbStore] so a switch only reads and registers them.
+ * Keypad KDBs build on a low-priority worker. On-screen ones need drawn letters, and keyboards build
+ * on the main thread only (caches are not thread-safe), so one keyboard is built per main-thread idle
+ * and its letters handed to the worker. Rebuilt only when the install or drawn layout set changes.
  */
 object KdbPrebuilder {
     private const val TAG = "XT9KDB"
 
-    /** How long after the IME's start-up to begin. */
+    /** Delay after IME start-up, to stay out of its way. */
     const val START_DELAY_MS: Long = 4000L
 
     private val worker = Executors.newSingleThreadExecutor { r ->

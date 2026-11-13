@@ -34,9 +34,9 @@ import org.robolectric.util.ReflectionHelpers
 import java.util.Locale
 
 /**
- * The bar's remembered choice as [InputViewCoordinator] applies it (owner decision 2026-11-05):
- * what the bar does when the last board closes, what the menu's keyboard key does, and which
- * events choose the menu. The choice's own table is `AuxBarChoiceTest`.
+ * Pins how [InputViewCoordinator] applies the bar's remembered choice: what the bar does when the
+ * last board closes, what the menu's keyboard key does, and which events choose or end the menu.
+ * The choice's own table is `AuxBarChoiceTest`.
  */
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [34], manifest = Config.NONE)
@@ -103,8 +103,6 @@ class AuxBarChoiceWiringTest {
         )
     }
 
-    // ── the field's own bar ─────────────────────────────────────────────────
-
     @Test
     fun aTextFieldWithPredictionsHasTheStripAsItsBar() {
         field()
@@ -116,8 +114,6 @@ class AuxBarChoiceWiringTest {
         field(predictions = false)
         assertEquals(AuxBarChoice.FieldBar.MENU, coordinator.fieldBar())
     }
-
-    // ── the last board closed ───────────────────────────────────────────────
 
     /** The menu came up with the board; the board is gone, so the strip comes back. */
     @Test
@@ -190,12 +186,9 @@ class AuxBarChoiceWiringTest {
         verify(uim, never()).hide()
     }
 
-    // ── the menu's keyboard key ─────────────────────────────────────────────
-
     /**
-     * Where the field has a strip, the key brings it back with the words it holds, and asks for
-     * nothing: the request it used to make (`restoreSuggestionStrip(true, true)`) often came back
-     * empty and blanked the strip.
+     * Where the field has a strip, the key brings it back with its words and requests nothing
+     * (a fresh request often came back empty and blanked the strip).
      */
     @Test
     fun theKeyboardKeyUncoversTheStripWithItsWords() {
@@ -209,7 +202,7 @@ class AuxBarChoiceWiringTest {
         assertFalse(coordinator.barChoice.isMenuChosen)
     }
 
-    /** Where the field's bar is the menu, the key does what it did before. */
+    /** Where the field's bar is the menu, the key restores the strip with a fresh request. */
     @Test
     fun theKeyboardKeyInAMenuFieldDoesWhatItDidBefore() {
         field(predictions = false)
@@ -219,8 +212,6 @@ class AuxBarChoiceWiringTest {
         verify(uim, never()).lowerMenuOntoStrip()
         verify(ime).restoreSuggestionStrip(true, true)
     }
-
-    // ── what chooses the menu, and what ends it ─────────────────────────────
 
     @Test
     fun theHamburgerChoosesTheMenuOnlyWhenTheMenuCameUp() {
@@ -241,8 +232,6 @@ class AuxBarChoiceWiringTest {
 
         assertFalse(coordinator.barChoice.isMenuChosen)
     }
-
-    // ── typing brings the strip back (phase 2) ──────────────────────────────
 
     /** The user raised the menu and types: the strip comes back in its place, with its words. */
     @Test
@@ -319,10 +308,7 @@ class AuxBarChoiceWiringTest {
         verify(uim, never()).hide()
     }
 
-    /**
-     * A menu raised in the last field (its choice reset by the field start): new suggestions no
-     * longer take it down, so the field start does.
-     */
+    /** A menu raised in the last field (choice reset by the field start) is hidden at the field start. */
     @Test
     fun aMenuLeftFromTheLastFieldGoesAtTheFieldStart() {
         field()
@@ -332,7 +318,7 @@ class AuxBarChoiceWiringTest {
         verify(uim).hide()
     }
 
-    /** ...but a board still open keeps it, as before. */
+    /** ...but a board still open keeps it. */
     @Test
     fun aMenuOverAnOpenBoardStaysAtTheFieldStart() {
         field()
@@ -343,11 +329,9 @@ class AuxBarChoiceWiringTest {
         verify(uim, never()).hide()
     }
 
-    // ── what the bar goes back to after a temporary bar ─────────────────────
-
     /**
-     * Cursor mode's exit (and the accent bar's, the language chips') puts back "the strip or the
-     * menu" through shouldShowUim(): a menu the user chose counts (owner decision 2).
+     * Exiting a temporary bar (cursor mode, accent bar, language chips) restores "the strip or the
+     * menu" through shouldShowUim(); a menu the user chose counts.
      */
     @Test
     fun aChosenMenuIsWhatTheBarGoesBackTo() {

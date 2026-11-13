@@ -4,10 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layoutDirection="ltr">
-    <!-- Nav-bar insets are applied explicitly via an OnApplyWindowInsetsListener installed in
-         BlackBerryIME.setInputView() (see FABLE_VIEW_REPORT §1); declarative fitsSystemWindows
-         is intentionally not used because its apply timing is non-deterministic under
-         edge-to-edge and left the keyboard rendering under the nav bar on some shows. -->
+    <!-- Nav-bar insets come from a listener in BlackBerryIME.setInputView(); fitsSystemWindows applies too late under edge-to-edge -->
     <include
         android:id="@+id/main_keyboard_frame"
         layout="@layout/main_keyboard_frame"/>

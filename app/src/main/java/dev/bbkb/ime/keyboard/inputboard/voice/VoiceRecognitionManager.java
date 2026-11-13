@@ -25,11 +25,7 @@ public class VoiceRecognitionManager {
 
     private static final String TAG = "VoiceRecognition";
 
-    /**
-     * Recognition lifecycle states passed to {@link Callback#onStateChanged}. These
-     * were bare 1/2/3 literals, decoded on the far side with an opaque
-     * {@code (i & 1) != 0} bit test (audit IB-16).
-     */
+    /** Recognition lifecycle states passed to {@link Callback#onStateChanged}. */
     public static final int STATE_STARTED = 1;
 
     public static final int STATE_READY_FOR_SPEECH = 2;
@@ -56,30 +52,23 @@ public class VoiceRecognitionManager {
     /** Set when we cancel deliberately, so the resulting ERROR_CLIENT is ignored. */
     private boolean mCancelRequested;
 
-    /**
-     * A stop or cancel of ours was still unanswered when the current session started, so an
-     * ERROR_CLIENT before onReadyForSpeech may be that stop's answer rather than this session's.
-     */
+    /** A stop or cancel was still unanswered at session start: an early ERROR_CLIENT may be its answer. */
     private boolean mStaleClientErrorPossible;
 
-    /**
-     * The user asked to finish ({@link #stopDictation}): {@code stopListening()} was sent and the
-     * final result is awaited, for up to {@link #STOP_GRACE_MILLIS}.
-     */
+    /** {@link #stopDictation} sent stopListening(); the final result is awaited up to {@link #STOP_GRACE_MILLIS}. */
     private boolean mStopRequested;
 
     /**
-     * "Stop listening when you pause" is off for this dictation: the session is kept going through
-     * pauses until the user stops it. On Android 13+ the recogniser is asked for a segmented
-     * session, which hands phrases over as they finish without ending; elsewhere, and whenever a
-     * session ends on its own, the next one is started straight away ({@link #chain}).
+     * "Stop listening when you pause" is off: on Android 13+ a segmented session hands phrases
+     * over without ending; elsewhere, and whenever a session ends on its own, the next one starts
+     * at once ({@link #chain}).
      */
     private boolean mContinuous;
 
     /** Continuous mode: whether the running session has committed anything yet. */
     private boolean mCommittedThisSession;
 
-    /** Continuous mode: sessions in a row that ended with nothing heard. {@link #MAX_EMPTY_SESSIONS} ends listening. */
+    /** Continuous mode: sessions in a row that heard nothing. */
     private int mEmptySessionsInARow;
 
     /** The last dictation request, replayed by {@link #chain}. */
@@ -95,23 +84,18 @@ public class VoiceRecognitionManager {
     static final long STOP_GRACE_MILLIS = 2000L;
 
     /**
-     * How long after a dictation the recogniser is kept before it is let go. A recogniser stays
-     * connected to its speech service from its first session until it is destroyed, and the
-     * system keeps that service's app alive for as long: one dictation used to hold it for the
-     * life of the keyboard. The next dictation builds a new recogniser.
+     * Idle time before the recogniser is destroyed. While it exists it stays bound to its speech
+     * service, which keeps that app alive; the next dictation builds a new one.
      */
     static final long IDLE_RELEASE_MILLIS = 30_000L;
 
-    /**
-     * Started with each session. When it fires with a session still running it waits again, so
-     * however a session ends the recogniser goes within two periods of it and never during one.
-     */
+    /** Started with each session and re-posted while one runs: release is never mid-session. */
     private final Runnable mReleaseRunnable;
 
     /** {@link #destroy} has run: no recogniser is built again. */
     private boolean mDestroyed;
 
-    /** With "stop when you pause" on: the silence the recogniser is asked to allow before ending. A hint; recognisers cap it. */
+    /** With "stop when you pause" on: the silence to allow before ending (a hint; recognisers cap it). */
     static final long PAUSE_SILENCE_MILLIS = 2500L;
 
     /** Continuous mode on Android 13+: the silence after which a segmented session ends on its own. */
@@ -120,16 +104,15 @@ public class VoiceRecognitionManager {
     /** Continuous mode: silent sessions in a row after which listening ends rather than chaining again. */
     static final int MAX_EMPTY_SESSIONS = 3;
 
-    /** Application context, kept only to name ourselves as the recogniser's calling package. */
+    /** Application context. */
     private final Context mContext;
 
     /** The language the last dictation was for; what the error and the chip should name. */
     private String mLastLanguageTag = SettingsManager.DEFAULT_VOICE_INPUT_LANGUAGE;
 
     /**
-     * Languages this recogniser turned out to know under another tag ("fr" as "fr-FR"): the tag
-     * asked for, to the tag to send. Learned by {@link #resolveRefusedLanguage}; forgotten when
-     * the recogniser is changed for another.
+     * Tag asked for to the tag this recogniser accepts ("fr" to "fr-FR"), learned by
+     * {@link #resolveRefusedLanguage} and cleared when the recogniser changes.
      */
     private final java.util.HashMap<String, String> mUsableTags = new java.util.HashMap<>();
 
@@ -139,16 +122,10 @@ public class VoiceRecognitionManager {
     /** Whether the dictation the user started has already been retried with a region added. */
     private boolean mRegionTried;
 
-    /**
-     * Counts the dictations the user starts. A language check or download answers with the
-     * number it was started under, and is ignored once that is no longer the current one.
-     */
+    /** Counts user-started dictations; a language check or download answer from an older one is ignored. */
     private int mLanguageRequest;
 
-    /**
-     * While a language download is being followed, the recogniser is not let go for being idle
-     * (its listener would be dropped) until this uptime: {@link #DOWNLOAD_HOLD_MILLIS} at most.
-     */
+    /** Uptime until which a followed download keeps the idle recogniser (its listener would be dropped). */
     private long mDownloadHoldUntil;
 
     /** The current download's listener, for a test to play the recogniser's side. */
@@ -158,9 +135,8 @@ public class VoiceRecognitionManager {
     static final long DOWNLOAD_HOLD_MILLIS = 10 * 60_000L;
 
     /**
-     * How long a download request may go without any answer before it is taken as refused. A
-     * recogniser with the feature switched off drops the request without a word (Google's
-     * service logs "disabled via flag. Noop"), which would leave "Downloading…" up for good.
+     * Silence after which a download request counts as refused: a recogniser with the feature off
+     * drops it silently (Google logs "disabled via flag. Noop").
      */
     static final long DOWNLOAD_ANSWER_MILLIS = 20_000L;
 
@@ -175,8 +151,13 @@ public class VoiceRecognitionManager {
 
     
     public interface Callback {
+        /**
+         * @param aVar the current mode
+         * @param i one of the STATE_ constants
+         */
         void onStateChanged(Mode aVar, int i);
 
+        /** @param str the final transcription */
         void onDictationResult(String str);
 
         void onPermissionNeeded();
@@ -189,33 +170,31 @@ public class VoiceRecognitionManager {
 
         void onLanguageUnavailable();
 
-        /** The recogniser refused the language itself (error 12 or 13); {@code languageTag} is what was sent. */
+        /** Error 12 or 13; {@code languageTag} is what was sent. */
         void onLanguageNotSupported(String languageTag);
 
         /**
-         * The recogniser is downloading the language it refused; dictation starts by itself when
-         * that finishes, if the board is still up.
-         *
-         * @param percent how far along, 0 to 100, or -1 when not known
+         * Dictation starts by itself when the download finishes, if the board is still up.
+         * @param percent 0 to 100, or -1 when not known
          */
         void onLanguageDownloading(String languageTag, int percent);
 
         /** The download was accepted but will happen later, or cannot be followed (Android 13). */
         void onLanguageDownloadPending(String languageTag);
 
-        /** There is no speech-recognition service to bind, so no session can start. */
+        /** No speech-recognition service to bind. */
         void onNoRecognitionService();
 
-        /** A session ended on an error the user should hear about; {@code messageRes} says which. */
+        /** A session ended on an error worth showing. */
         void onRecognitionError(int messageRes);
 
-        /** The transcription so far of the session in progress. */
         void onPartialResult(String text);
 
-        /** The session ended without a final result: whatever partial text is showing stays as it is. */
+        /** No final result: the partial text showing stays as it is. */
         void onDictationAbandoned();
     }
 
+    /** @param c1122b the board's controller, also the callback */
     public VoiceRecognitionManager(Context context, VoiceInputController c1122b) {
         this.mContext = context.getApplicationContext();
         this.mSelection = InstalledVoiceRecognizers.resolve(this.mContext);
@@ -227,7 +206,7 @@ public class VoiceRecognitionManager {
         this.mMode = Mode.NONE;
         this.mHandler = new Handler(android.os.Looper.getMainLooper());
         this.mTimeoutRunnable = new Runnable() {
-            @Override // java.lang.Runnable
+            @Override
             public void run() {
                 if (!VoiceRecognitionManager.this.mReadyForSpeech || VoiceRecognitionManager.this.mMode == Mode.NONE) {
                     return;
@@ -236,7 +215,7 @@ public class VoiceRecognitionManager {
             }
         };
         this.mFinaliseRunnable = new Runnable() {
-            @Override // java.lang.Runnable
+            @Override
             public void run() {
                 if (VoiceRecognitionManager.this.mMode == Mode.NONE || !VoiceRecognitionManager.this.mStopRequested) {
                     return;
@@ -246,7 +225,7 @@ public class VoiceRecognitionManager {
             }
         };
         this.mReleaseRunnable = new Runnable() {
-            @Override // java.lang.Runnable
+            @Override
             public void run() {
                 if (VoiceRecognitionManager.this.mSpeechRecognizer == null) {
                     return;
@@ -265,15 +244,13 @@ public class VoiceRecognitionManager {
         };
     }
 
-    /** The recogniser's listener, for a test to play the recogniser's side of the conversation. */
     RecognitionListener listenerForTest() {
         return this.mListener;
     }
 
     public void startDictation() {
         Logger.debug(TAG, "Dictation button pressed");
-        // A new dictation of the user's: it gets its own language check, and whatever an earlier
-        // check or download still has to say is no longer wanted.
+        // A fresh language check; answers to earlier checks or downloads are now stale.
         this.mLanguageChecked = false;
         this.mRegionTried = false;
         this.mLanguageRequest++;
@@ -287,23 +264,19 @@ public class VoiceRecognitionManager {
         refreshRecognizer();
         SettingsValues c0804dM5050c = SettingsManager.getInstance().getSettingsValues();
         Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
-        // Dictation, not a search query: the recogniser tunes for running prose.
         intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
-        // One normaliser for both sources. Google's service treats the raw subtype locale
-        // ("en_US", "de_CH", "zh_CN_pinyin") as invalid and silently dictates in the phone's
-        // default language instead (KEY2, 2026-09-28); it wants a hyphenated BCP-47 tag.
+        // Google's service treats a raw subtype locale ("en_US", "zh_CN_pinyin") as invalid and
+        // silently uses the phone's language; it needs a hyphenated BCP-47 tag.
         final SubtypeManager subtypes = SubtypeManager.getInstance();
         final String keyboardLocale = subtypes.getCurrentSubtype() != null ? subtypes.getCurrentSubtype().getLocale() : null;
         final String tag = VoiceLanguageTags.effectiveTag(c0804dM5050c.voiceInputUseInputLanguage, keyboardLocale, c0804dM5050c.voiceInputLanguageList);
         this.mLastLanguageTag = tag;
-        // The recogniser's own tag for the language, when an earlier refusal taught us one.
         final String known = this.mUsableTags.get(tag);
         final String sentTag = known != null ? known : tag;
         intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, sentTag);
         intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_PREFERENCE, sentTag);
         if (c0804dM5050c.voiceInputUseInputLanguage && Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
-            // A multi-language keyboard's extra prediction languages: let the recogniser detect
-            // and switch between them rather than hear everything as the primary language.
+            // Let the recogniser detect and switch among a multi-language keyboard's languages.
             final ArrayList<String> allowed = VoiceLanguageTags.allowedTags(sentTag, subtypes.getCurrentSubtypeAdditionalLocales());
             if (allowed.size() > 1) {
                 intent.putExtra(RecognizerIntent.EXTRA_ENABLE_LANGUAGE_DETECTION, true);
@@ -313,20 +286,14 @@ public class VoiceRecognitionManager {
             }
         }
         intent.putExtra(RecognizerIntent.EXTRA_PREFER_OFFLINE, c0804dM5050c.voiceInputPreferOffline);
-        // "Block offensive words" was a dead flag for dictation: without this extra the
-        // recogniser applies its own default (mask), so turning the setting off changed
-        // nothing. SettingsValues is re-read per dictation, so a toggle lands on the next tap.
+        // Without this extra the recogniser always masks, whatever "Block offensive words" says.
         intent.putExtra(RecognizerIntent.EXTRA_MASK_OFFENSIVE_WORDS, c0804dM5050c.blockPotentiallyOffensiveWords);
         intent.putExtra(RecognizerIntent.EXTRA_PARTIAL_RESULTS, true);
-        // Our own package: recognisers attribute the request to whatever this names, so a
-        // hardcoded id would credit (and, on some ROMs, be permission-checked as) a different app.
+        // Recognisers attribute (and on some ROMs permission-check) the request by this package.
         intent.putExtra(RecognizerIntent.EXTRA_CALLING_PACKAGE, this.mContext.getPackageName());
-        // "Stop listening when you pause". On: one utterance, ended by the recogniser's own
-        // endpointer, with a hint to allow a longer pause than its default (a hint only: Google's
-        // service caps it). Off: continuous — on Android 13+ a segmented session, which delivers
-        // each phrase through onSegmentResults and only ends after CONTINUOUS_SILENCE_MILLIS of
-        // silence or our stopListening(); on older Android the plain session, chained again by
-        // onResults for as long as the user has not stopped (see chain()).
+        // "Stop listening when you pause" on: one utterance with a longer pause hint. Off: on
+        // Android 13+ a segmented session (onSegmentResults, ends after CONTINUOUS_SILENCE_MILLIS
+        // or our stop); older Android chains plain sessions from onResults (see chain()).
         final boolean stopOnPause = c0804dM5050c.voiceInputStopOnPause;
         this.mContinuous = !stopOnPause;
         this.mEmptySessionsInARow = 0;
@@ -342,11 +309,9 @@ public class VoiceRecognitionManager {
     }
 
     /**
-     * The user asked to finish — the on-screen mic while listening. Unlike {@link #stopListening},
-     * this keeps what was heard: the recogniser is told to stop and finalise, its final result
-     * commits through {@code onResults} (or the last segment) as usual, and only a stop it never
-     * answers is cancelled, after {@link #STOP_GRACE_MILLIS}. Before this, a tap while listening
-     * cancelled outright and whatever was still being transcribed was lost.
+     * The on-screen mic while listening. Unlike {@link #stopListening} it keeps what was heard:
+     * the final result commits as usual, and only a stop never answered within
+     * {@link #STOP_GRACE_MILLIS} is cancelled.
      */
     public void stopDictation() {
         if (this.mSpeechRecognizer == null || this.mMode == Mode.NONE || this.mStopRequested) {
@@ -374,35 +339,31 @@ public class VoiceRecognitionManager {
         this.mHandler.removeCallbacks(this.mFinaliseRunnable);
         this.mStopRequested = false;
         this.mContinuous = false;
-        // cancel() fires an async onError(ERROR_CLIENT); mark it deliberate so the
-        // transient-error hack below doesn't re-arm mMode (which made the mic
-        // untappable: every tap "stopped" a phantom session forever).
+        // cancel() fires an async onError(ERROR_CLIENT); mark it deliberate so the transient-error
+        // handling does not re-arm mMode (a phantom session would make every tap a stop).
         this.mCancelRequested = true;
         this.mSpeechRecognizer.stopListening();
         this.mSpeechRecognizer.cancel();
         this.mMode = Mode.NONE;
-        // cancel() means no final result will come for whatever was being transcribed.
         this.mCallback.onDictationAbandoned();
         notifyState(STATE_STOPPED);
     }
 
     /**
-     * Continuous mode: whether to start the next session when the current one ends on its own —
-     * the user has not stopped, the board is still up, and the last few sessions were not all
-     * silent (a forgotten open mic is not kept open for ever).
+     * Continuous mode: chain unless the user stopped, the board closed, or the last
+     * {@link #MAX_EMPTY_SESSIONS} sessions were silent (a forgotten mic is not kept open).
      */
     private boolean shouldChain() {
         return this.mContinuous && !this.mStopRequested && this.mSpeechRecognizer != null
                 && this.mController.isViewShowing() && this.mEmptySessionsInARow < MAX_EMPTY_SESSIONS;
     }
 
-    /** Starts the next session of a continuous dictation with the same request. */
     private void chain() {
         Logger.debug(TAG, "Continuous: next session (silent in a row: " + this.mEmptySessionsInARow + ")");
         startRecognition(Mode.DICTATION, this.mDictationIntent);
     }
 
-    /** A session ended for good: the flags that only mean something while one runs. */
+    /** Clears the per-session flags once a session ends for good. */
     private void endSession() {
         this.mHandler.removeCallbacks(this.mTimeoutRunnable);
         this.mHandler.removeCallbacks(this.mFinaliseRunnable);
@@ -417,10 +378,7 @@ public class VoiceRecognitionManager {
         this.mEmptySessionsInARow = this.mCommittedThisSession ? 0 : this.mEmptySessionsInARow + 1;
     }
 
-    /**
-     * Commits the first result of {@code bundle} as dictation, or abandons the partial when there
-     * is none. True when something was committed.
-     */
+    /** Commits the first result, or abandons the partial when there is none; true if committed. */
     private boolean commitResult(Bundle bundle) {
         ArrayList<String> stringArrayList = bundle == null ? null
                 : bundle.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION);
@@ -438,11 +396,8 @@ public class VoiceRecognitionManager {
     }
 
     /**
-     * Audit IB-7: destroy() neither nulled the recognizer nor cancelled the 6 s
-     * timeout runnable, so a surviving callback could reach a destroyed recognizer up
-     * to 6 s after teardown - and UnifiedInputBoardManager.closeBoard calls
-     * cancelVoiceInput() unconditionally on keycode -27, i.e. after
-     * VoiceInputController.destroy() has already run.
+     * Nulls the recogniser and cancels the timeouts: closeBoard calls cancelVoiceInput() after
+     * VoiceInputController.destroy() has run.
      */
     public void destroy() {
         this.mDestroyed = true;
@@ -462,11 +417,8 @@ public class VoiceRecognitionManager {
     }
 
     /**
-     * Rebuilds the recogniser when the "Speech recognizer" setting no longer resolves to the one it
-     * was built for: the setting changed, or the chosen app went away (back to the system default).
-     * Runs before each dictation, when no session of ours is live, so a change lands on the next
-     * tap without restarting the keyboard. Also builds one again after the last was let go for
-     * being idle ({@link #mReleaseRunnable}). A destroyed manager stays destroyed.
+     * Before each dictation: rebuilds the recogniser when the "Speech recognizer" setting resolves
+     * to another app, or after an idle release ({@link #mReleaseRunnable}). Never after destroy.
      */
     private void refreshRecognizer() {
         if (this.mDestroyed) {
@@ -478,13 +430,12 @@ public class VoiceRecognitionManager {
                 return;
             }
             Logger.debug(TAG, "Speech recognizer changed: " + this.mSelection + " -> " + selection);
-            // destroy() drops the old listener, so nothing the old recogniser still had queued
-            // (the answer to an earlier stop included) can reach this session.
+            // destroy() drops the old listener, so nothing it still had queued reaches this session.
             this.mSpeechRecognizer.destroy();
         }
         this.mCancelRequested = false;
         if (!selection.equals(this.mSelection)) {
-            this.mUsableTags.clear();  // another recogniser, with its own names for languages
+            this.mUsableTags.clear();  // another recogniser names languages its own way
         }
         this.mSelection = selection;
         this.mSpeechRecognizer = InstalledVoiceRecognizers.create(this.mContext, selection);
@@ -492,15 +443,11 @@ public class VoiceRecognitionManager {
         this.mSpeechRecognizer.setRecognitionListener(this.mListener);
     }
 
-    /** Whether this keyboard itself holds the microphone permission. */
     private boolean hasOwnMicrophonePermission() {
         return this.mContext.checkSelfPermission(Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED;
     }
 
-    /**
-     * Whether the chosen app holds the microphone permission, or null when that cannot be checked.
-     * Its package is visible to us through the manifest's {@code RecognitionService} query.
-     */
+    /** Null when it cannot be checked; the package is visible via the manifest's RecognitionService query. */
     private Boolean appMicrophonePermission(VoiceRecognizerChoice.Selection selection) {
         if (selection == null || selection.packageName == null) {
             return null;
@@ -513,6 +460,7 @@ public class VoiceRecognitionManager {
         }
     }
 
+    /** @param aVar the mode the session runs in */
     private void startRecognition(Mode aVar, Intent intent) {
         if (this.mSpeechRecognizer == null) {
             return;
@@ -529,9 +477,8 @@ public class VoiceRecognitionManager {
         this.mHandler.removeCallbacks(this.mReleaseRunnable);
         this.mHandler.postDelayed(this.mReleaseRunnable, IDLE_RELEASE_MILLIS);
         this.mHandler.removeCallbacks(this.mTimeoutRunnable);
-        // The "nothing heard for 6 s" cut-off is for one-utterance dictation. Continuous mode
-        // waits: the recogniser's own no-speech timeout ends a silent session, and the
-        // silent-sessions cap in shouldChain() keeps that from going on for ever.
+        // The 6 s nothing-heard cut-off is for single utterances; continuous mode relies on the
+        // recogniser's no-speech timeout and the silent-sessions cap in shouldChain().
         if (!this.mContinuous) {
             this.mHandler.postDelayed(this.mTimeoutRunnable, 6000L);
         }
@@ -542,23 +489,12 @@ public class VoiceRecognitionManager {
     }
 
     /**
-     * The recogniser refused the language of the dictation that just ended. Two things are tried
-     * before the user is told, each once per dictation they start, so a recogniser that keeps
-     * refusing cannot loop:
-     * <ol>
-     *   <li>A bare language refused as unknown is sent again with its likely region. Google's
-     *       on-device recogniser knows "fr-FR" and not "fr" (emulator and KEY2, 2026-11-10: "fr"
-     *       is error 12, "fr-FR" error 13 when its pack is missing), while a keyboard language
-     *       is often bare.</li>
-     *   <li>On Android 13+ the recogniser is asked what it has: a language it knows under
-     *       another tag is used, one it can download is downloaded and dictation starts when
-     *       that finishes. A recogniser that cannot say (older Google services answer that the
-     *       check is switched off) is still asked for the download on Android 14+, when its
-     *       refusal was "not downloaded".</li>
-     * </ol>
-     *
-     * @param error {@code ERROR_LANGUAGE_NOT_SUPPORTED} or {@code ERROR_LANGUAGE_UNAVAILABLE}
-     * @return false when nothing was started and the caller should report the refusal itself
+     * Before telling the user of a refused language, tries once per user dictation (so it cannot
+     * loop): a bare tag refused as unknown is retried with its likely region (Google knows
+     * "fr-FR", not "fr"); then on Android 13+ the recogniser is asked what it has, using another
+     * tag or downloading. One that cannot answer is still asked to download on 14+ when the
+     * refusal was "not downloaded".
+     * @return false when nothing was started and the caller should report the refusal
      */
     private boolean resolveRefusedLanguage(final int error) {
         if (this.mSpeechRecognizer == null || this.mDictationIntent == null) {
@@ -591,11 +527,8 @@ public class VoiceRecognitionManager {
                             }
                             if (error == SpeechRecognizer.ERROR_LANGUAGE_UNAVAILABLE
                                     && Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
-                                // It knows the language and lacks the download, and cannot list
-                                // what it has: ask for exactly what it refused. Android 14+ only,
-                                // where the request is answered; on Android 13 a recogniser that
-                                // will not list its languages drops the request too (emulator,
-                                // 2026-11-10), and nothing would say so.
+                                // Ask for exactly what it refused. 14+ only: on 13 a recogniser
+                                // that cannot list its languages silently drops the request.
                                 downloadLanguage(request, asked, refused);
                             } else {
                                 VoiceRecognitionManager.this.mCallback.onLanguageNotSupported(asked);
@@ -609,12 +542,7 @@ public class VoiceRecognitionManager {
         return true;
     }
 
-    /**
-     * Starts the dictation again with the likely region added to a bare language ("fr" as
-     * "fr-FR"), and remembers the fuller tag for the dictations after it.
-     *
-     * @return whether the dictation was started again
-     */
+    /** Restarts with "fr" as "fr-FR" and remembers the fuller tag; true if restarted. */
     private boolean retryWithLikelyRegion(String asked, String refused) {
         if (this.mRegionTried || refused == null || refused.indexOf('-') >= 0) {
             return false;
@@ -734,7 +662,6 @@ public class VoiceRecognitionManager {
         }
     }
 
-    /** The listener of the last language download requested, for a test to play the recogniser's side. */
     Object languageDownloadListenerForTest() {
         return this.mDownloadListener;
     }
@@ -744,15 +671,14 @@ public class VoiceRecognitionManager {
         return this.mLastLanguageTag;
     }
 
+    /** @param i one of the STATE_ constants */
     public void notifyState(int i) {
         this.mCallback.onStateChanged(this.mMode, i);
     }
 
     /**
-     * The "Show words as you speak" setting. Read from the current {@link SettingsValues} for each
-     * partial rather than kept from when the recogniser was built, so a change in settings applies
-     * from the next dictation with no restart. The request is the same either way: partial results
-     * are still asked for, and only their forwarding to the editor depends on this.
+     * "Show words as you speak", read per partial so a change applies without a restart. Partials
+     * are always requested; only forwarding them to the editor depends on this.
      */
     private static boolean showsPartialResults() {
         SettingsValues settingsValues = SettingsManager.getInstance().getSettingsValues();
@@ -761,34 +687,37 @@ public class VoiceRecognitionManager {
 
     
     protected class RecognitionListenerImpl implements RecognitionListener {
-        @Override // android.speech.RecognitionListener
+        /** @param bArr raw audio, unused */
+        @Override
         public void onBufferReceived(byte[] bArr) {
+            // Raw audio is not needed.
         }
 
         protected RecognitionListenerImpl() {
+            // Stateless; reads the outer manager's fields.
         }
 
-        @Override // android.speech.RecognitionListener
+        @Override
         public void onBeginningOfSpeech() {
             Logger.info(VoiceRecognitionManager.TAG, "onBeginningOfSpeech");
             VoiceRecognitionManager.this.mHandler.removeCallbacks(VoiceRecognitionManager.this.mTimeoutRunnable);
         }
 
-        @Override // android.speech.RecognitionListener
+        @Override
         public void onEndOfSpeech() {
             Logger.debug(VoiceRecognitionManager.TAG, "onEndOfSpeech, ended mode = " + VoiceRecognitionManager.this.mMode);
             VoiceRecognitionManager.this.mReadyForSpeech = false;
             VoiceRecognitionManager.this.notifyState(STATE_STOPPED);
         }
 
-        @Override // android.speech.RecognitionListener
+        /** @param i the SpeechRecognizer ERROR_ code (5 is ERROR_CLIENT) */
+        @Override
         public void onError(int i) {
             Logger.debug(VoiceRecognitionManager.TAG, "error = " + i);
             final boolean sessionActive = VoiceRecognitionManager.this.mMode != Mode.NONE;
             final boolean noService = VoiceRecognitionAvailability.isNoServiceError(i, sessionActive,
                     VoiceRecognitionManager.this.mReadyForSpeech, VoiceRecognitionManager.this.mStaleClientErrorPossible);
-            // The two flags that describe the session that just ended; put back below in the one
-            // case where it has not ended (the transient ERROR_CLIENT re-arm).
+            // Restored below in the one case where the session has not ended (transient ERROR_CLIENT).
             final boolean stopRequested = VoiceRecognitionManager.this.mStopRequested;
             final boolean continuous = VoiceRecognitionManager.this.mContinuous;
             VoiceRecognitionManager.this.mMode = Mode.NONE;
@@ -796,8 +725,7 @@ public class VoiceRecognitionManager {
             VoiceRecognitionManager.this.mStopRequested = false;
             VoiceRecognitionManager.this.mContinuous = false;
             VoiceRecognitionManager.this.mHandler.removeCallbacks(VoiceRecognitionManager.this.mFinaliseRunnable);
-            // Deliberate stop/cancel: the session is over; skip the transient-error
-            // handling entirely (notably the case-5 mMode re-arm).
+            // Deliberate stop/cancel: skip the transient-error handling (the case-5 re-arm).
             if (VoiceRecognitionManager.this.mCancelRequested) {
                 VoiceRecognitionManager.this.mCancelRequested = false;
                 if (i != 5) {
@@ -806,9 +734,8 @@ public class VoiceRecognitionManager {
                 return;
             }
             if (i == 5 && !sessionActive) {
-                // Nothing of ours was running: the answer to a stop with no session behind it (or
-                // the platform's second report of a missing service). Re-arming DICTATION here is
-                // the phantom session the stopListening() note describes.
+                // Nothing was running: the answer to a stray stop (or a second missing-service
+                // report). Re-arming here would create a phantom session.
                 return;
             }
             if (i == 5) {
@@ -816,8 +743,7 @@ public class VoiceRecognitionManager {
                 VoiceRecognitionManager.this.mStaleClientErrorPossible = false;
             }
             if (noService) {
-                // No service to bind (KEY2, 2026-10-06): this used to re-arm DICTATION and never
-                // send STOPPED, leaving the board "listening" to nothing.
+                // No service to bind: must not re-arm, and must send STOPPED.
                 VoiceRecognitionManager.this.mCallback.onDictationAbandoned();
                 VoiceRecognitionManager.this.notifyState(STATE_STOPPED);
                 VoiceRecognitionManager.this.mCallback.onNoRecognitionService();
@@ -834,8 +760,7 @@ public class VoiceRecognitionManager {
             VoiceRecognitionManager.this.mCallback.onDictationAbandoned();
             final boolean nothingHeard = i == SpeechRecognizer.ERROR_SPEECH_TIMEOUT || i == SpeechRecognizer.ERROR_NO_MATCH;
             if (nothingHeard && continuous && !stopRequested && sessionActive) {
-                // Continuous dictation: a silent session is just a pause. Chain the next one
-                // without a word, until the silent-sessions cap says the mic was forgotten.
+                // Continuous: a silent session is a pause; chain quietly until the silent cap.
                 VoiceRecognitionManager.this.mContinuous = true;
                 VoiceRecognitionManager.this.noteSessionOutcome();
                 if (VoiceRecognitionManager.this.shouldChain()) {
@@ -851,7 +776,6 @@ public class VoiceRecognitionManager {
             final int message = nothingHeard && stopRequested
                     ? VoiceRecognitionAvailability.NO_MESSAGE : VoiceRecognitionAvailability.messageForError(i);
             if (message != VoiceRecognitionAvailability.NO_MESSAGE) {
-                // These used to end the session silently, straight back to "Tap the mic to speak".
                 VoiceRecognitionManager.this.mCallback.onRecognitionError(message);
             }
             switch (i) {
@@ -868,8 +792,7 @@ public class VoiceRecognitionManager {
                     break;
                 case 9:
                     if (VoiceRecognitionManager.this.mController.isViewShowing()) {
-                        // STOPPED has already gone out above, so the board is idle; with a chosen
-                        // app, asking for our own permission again cannot help, so say what is wrong.
+                        // With a chosen app, asking for our own permission again cannot help.
                         final VoiceRecognizerChoice.Selection selection = VoiceRecognitionManager.this.mSelection;
                         final boolean ownGranted = VoiceRecognitionManager.this.hasOwnMicrophonePermission();
                         switch (VoiceRecognizerChoice.permissionErrorAction(selection, ownGranted,
@@ -888,10 +811,8 @@ public class VoiceRecognitionManager {
                     break;
                 case SpeechRecognizer.ERROR_LANGUAGE_NOT_SUPPORTED:
                 case SpeechRecognizer.ERROR_LANGUAGE_UNAVAILABLE:
-                    // The two codes that actually mean "not this language". Google's online service
-                    // never sends them (it falls back silently), but its on-device recogniser and
-                    // others do; before this they just stopped the mic with no message. First see
-                    // whether the recogniser has the language under another name or can fetch it.
+                    // Google's online service never sends these (it falls back silently); on-device
+                    // recognisers do. First try another tag or a download.
                     if (!VoiceRecognitionManager.this.resolveRefusedLanguage(i)) {
                         VoiceRecognitionManager.this.mCallback.onLanguageNotSupported(VoiceRecognitionManager.this.mLastLanguageTag);
                     }
@@ -899,21 +820,21 @@ public class VoiceRecognitionManager {
             }
         }
 
-        @Override // android.speech.RecognitionListener
+        /** @param i the recogniser's event type */
+        @Override
         public void onEvent(int i, Bundle bundle) {
             Logger.debug(VoiceRecognitionManager.TAG, "onEvent");
             Logger.debug(VoiceRecognitionManager.TAG, "Event type: " + i + "bundle: " + bundle.toString());
         }
 
-        @Override // android.speech.RecognitionListener
+        @Override
         public void onPartialResults(Bundle bundle) {
             Logger.debug(VoiceRecognitionManager.TAG, "onPartialResults");
             if (VoiceRecognitionManager.this.mMode != Mode.DICTATION || VoiceRecognitionManager.this.mCancelRequested) {
                 return;
             }
             if (!showsPartialResults()) {
-                // "Show words as you speak" is off: nothing reaches the editor until onResults
-                // commits the final result, as it did before partials were shown at all.
+                // "Show words as you speak" is off: only onResults reaches the editor.
                 return;
             }
             ArrayList<String> partials = bundle == null ? null
@@ -923,22 +844,21 @@ public class VoiceRecognitionManager {
             }
         }
 
-        @Override // android.speech.RecognitionListener
+        @Override
         public void onReadyForSpeech(Bundle bundle) {
             Logger.debug(VoiceRecognitionManager.TAG, "onReadyForSpeech");
             VoiceRecognitionManager.this.mReadyForSpeech = true;
             VoiceRecognitionManager.this.notifyState(STATE_READY_FOR_SPEECH);
         }
 
-        @Override // android.speech.RecognitionListener
+        @Override
         public void onResults(Bundle bundle) {
             Logger.debug(VoiceRecognitionManager.TAG, "onResults");
             VoiceRecognitionManager.this.commitResult(bundle);
             VoiceRecognitionManager.this.mReadyForSpeech = false;
             VoiceRecognitionManager.this.noteSessionOutcome();
             if (VoiceRecognitionManager.this.shouldChain()) {
-                // Continuous dictation on a recogniser without segmented sessions (or one that
-                // ended the session anyway): straight on to the next one.
+                // Continuous without segmented sessions (or one that ended anyway): next session.
                 VoiceRecognitionManager.this.chain();
                 return;
             }
@@ -946,10 +866,9 @@ public class VoiceRecognitionManager {
             VoiceRecognitionManager.this.notifyState(STATE_STOPPED);
         }
 
-        @Override // android.speech.RecognitionListener
+        @Override
         public void onSegmentResults(Bundle bundle) {
-            // Continuous mode on Android 13+: one phrase of a session that goes on. Commit it and
-            // keep listening; nothing about the session changes.
+            // Continuous mode on Android 13+: one phrase of a session that goes on.
             Logger.debug(VoiceRecognitionManager.TAG, "onSegmentResults");
             if (VoiceRecognitionManager.this.mMode != Mode.DICTATION) {
                 return;
@@ -959,11 +878,9 @@ public class VoiceRecognitionManager {
             }
         }
 
-        @Override // android.speech.RecognitionListener
+        @Override
         public void onEndOfSegmentedSession() {
-            // The segmented session ended: our stop, or CONTINUOUS_SILENCE_MILLIS of silence. A
-            // session that heard something and was not stopped is chained like a plain one; a
-            // silent one counts toward the cap.
+            // Our stop or CONTINUOUS_SILENCE_MILLIS of silence; chained like a plain session.
             Logger.debug(VoiceRecognitionManager.TAG, "onEndOfSegmentedSession");
             if (VoiceRecognitionManager.this.mMode == Mode.NONE) {
                 return;
@@ -978,10 +895,10 @@ public class VoiceRecognitionManager {
             VoiceRecognitionManager.this.notifyState(STATE_STOPPED);
         }
 
-        @Override // android.speech.RecognitionListener
+        /** @param f the input level in dB */
+        @Override
         public void onRmsChanged(float f) {
-            // 10-50 times a second while listening: build the string only in debug builds
-            // (Logger gates inside the callee, after the concatenation has run).
+            // 10 to 50 times a second: skip the string concatenation outside debug builds.
             if (BuildConfig.DEBUG) {
                 Logger.debug(VoiceRecognitionManager.TAG, "onRmsChanged:" + f);
             }

@@ -4,27 +4,11 @@ import java.text.BreakIterator;
 import java.util.Locale;
 
 /**
- * How many chars one Backspace, one forward delete or one cursor step crosses.
- *
- * <p>Cluster boundaries come from the platform's character {@link BreakIterator} (ICU on
- * Android: extended grapheme clusters, so it knows every emoji sequence the phone's Unicode
- * version knows). The two kinds of caller use it differently:
- * <ul>
- *   <li>Cursor steps ({@link #getClusterLengthBeforeCursor}, {@link #getClusterLengthAfterCursor})
- *       cross one whole cluster, as the platform's own text field does.</li>
- *   <li>Deletes ({@link #getGraphemeLengthBeforeCursor}, {@link #getGraphemeLengthAfterCursor})
- *       take the whole cluster only when it holds an emoji
- *       ({@link EmojiTextAnalyzer#isEmojiRelated}). Any other text keeps the older rule of one
- *       code point plus its non-spacing marks, so a Devanagari vowel sign, a Hangul jamo or a
- *       Thai mark is deleted on its own, as the platform's text field does, rather than the
- *       whole syllable.</li>
- * </ul>
- * Both first check for an emoticon shortcode ({@link EmojiTextAnalyzer#findEmoticonShortcodeLength}),
- * which the iterator knows nothing about.
- *
- * <p>The callers pass a short window of text (tens of chars) next to the cursor. They are the
- * backspace and cursor-move handlers, which run on the IME's main thread; the iterator is kept
- * per thread, so a call from another thread is still safe and no keystroke creates one.
+ * How many chars one Backspace, forward delete or cursor step crosses, from a short window next
+ * to the cursor. Cursor steps cross one grapheme cluster; deletes take the whole cluster only
+ * when it holds an emoji, otherwise one code point plus its non-spacing marks (as the platform
+ * does for Devanagari, Hangul jamo, Thai). Emoticon shortcodes are checked first. The
+ * BreakIterator is per thread.
  */
 public final class GraphemeUtils {
 
@@ -37,7 +21,11 @@ public final class GraphemeUtils {
         }
     };
 
-    /** Chars one Backspace deletes from the end of {@code charSequence} (the text before the cursor). */
+    /**
+     * Chars one Backspace deletes from the end of {@code charSequence} (the text before the cursor).
+     *
+     * @param i the code point before the cursor
+     */
     public static int getGraphemeLengthBeforeCursor(CharSequence charSequence, int i) {
         if (charSequence == null) {
             return 1;
@@ -55,7 +43,11 @@ public final class GraphemeUtils {
         return codePointWithMarksBefore(text);
     }
 
-    /** Chars one forward delete removes from the start of {@code charSequence} (the text after the cursor). */
+    /**
+     * Chars one forward delete removes from the start of {@code charSequence} (the text after the cursor).
+     *
+     * @param i the code point after the cursor
+     */
     public static int getGraphemeLengthAfterCursor(CharSequence charSequence, int i) {
         if (charSequence == null) {
             return 1;
@@ -72,7 +64,11 @@ public final class GraphemeUtils {
         return codePointWithMarksAfter(text);
     }
 
-    /** Chars one cursor step left crosses: the last cluster of {@code charSequence}. */
+    /**
+     * Chars one cursor step left crosses: the last cluster of {@code charSequence}.
+     *
+     * @param i the code point before the cursor
+     */
     public static int getClusterLengthBeforeCursor(CharSequence charSequence, int i) {
         if (charSequence == null) {
             return 1;
@@ -85,7 +81,11 @@ public final class GraphemeUtils {
         return text.length() - clusterStartBefore(text, text.length());
     }
 
-    /** Chars one cursor step right crosses: the first cluster of {@code charSequence}. */
+    /**
+     * Chars one cursor step right crosses: the first cluster of {@code charSequence}.
+     *
+     * @param i the code point after the cursor
+     */
     public static int getClusterLengthAfterCursor(CharSequence charSequence, int i) {
         if (charSequence == null) {
             return 1;
@@ -97,6 +97,7 @@ public final class GraphemeUtils {
         return clusterEndAfter(charSequence.toString(), 0);
     }
 
+    /** @param str a two-char string; returns 0 unless it is a surrogate pair */
     public static int surrogatePairToCodePoint(String str) {
         if (str.length() != 2 || !Character.isSurrogatePair(str.charAt(0), str.charAt(1))) {
             return 0;
@@ -131,14 +132,9 @@ public final class GraphemeUtils {
     }
 
     /**
-     * Whether a boundary the iterator reported at {@code index} splits an emoji sequence: before a
-     * ZWJ, skin tone, VS16, keycap or tag that follows an emoji, after a ZWJ that joins two
-     * emoji, or between the two regional indicators of a flag.
-     *
-     * <p>A current ICU never puts a boundary there, so on a current phone this changes nothing.
-     * It is for iterators that predate the emoji rules of Unicode 9 or do not know a newer emoji
-     * as a modifier base, such as the JDK 17 iterator the unit tests run on,
-     * which splits ZWJ sequences, flags and skin tones into their code points.
+     * Whether a reported boundary at {@code index} splits an emoji sequence (before an extender or
+     * ZWJ after an emoji, after a joining ZWJ, inside a flag pair). Current ICU never does this;
+     * older iterators, such as the JDK 17 one unit tests run on, do.
      */
     private static boolean isInsideEmojiSequence(String text, int index) {
         if (index <= 0 || index >= text.length()) {
@@ -153,7 +149,7 @@ public final class GraphemeUtils {
                     && EmojiTextAnalyzer.isEmojiRelated(next);
         }
         if (isRegionalIndicator(next)) {
-            // A flag is a PAIR of regional indicators: glue only to an unpaired one.
+            // A flag is a pair of regional indicators: glue only to an unpaired one.
             int run = 0;
             for (int i = index; i > 0 && isRegionalIndicator(text.codePointBefore(i)); i -= 2) {
                 run++;
@@ -187,10 +183,7 @@ public final class GraphemeUtils {
         return false;
     }
 
-    /**
-     * The delete rule for text that is not an emoji: the last code point plus the non-spacing
-     * marks after it.
-     */
+    /** Non-emoji delete: the last code point plus the non-spacing marks after it. */
     private static int codePointWithMarksBefore(String text) {
         int length = text.length();
         if (length >= 2 && Character.isSurrogatePair(text.charAt(length - 2), text.charAt(length - 1))) {
@@ -200,8 +193,7 @@ public final class GraphemeUtils {
         while (count < length && Character.getType(text.charAt(length - count)) == Character.NON_SPACING_MARK) {
             count++;
         }
-        // Marks on a supplementary base (𝒜 + U+0301): take the base's whole surrogate pair, not
-        // its low half.
+        // Marks on a supplementary base (𝒜 + U+0301): take its whole surrogate pair.
         if (count < length && Character.isLowSurrogate(text.charAt(length - count))
                 && Character.isHighSurrogate(text.charAt(length - count - 1))) {
             count++;
@@ -209,10 +201,7 @@ public final class GraphemeUtils {
         return count;
     }
 
-    /**
-     * The forward-delete rule for text that is not an emoji: the first code point plus the
-     * non-spacing marks after it (a supplementary code point is taken alone).
-     */
+    /** Non-emoji forward delete: the first code point plus its marks (a supplementary one alone). */
     private static int codePointWithMarksAfter(String text) {
         int length = text.length();
         if (length >= 2 && Character.isSurrogatePair(text.charAt(0), text.charAt(1))) {

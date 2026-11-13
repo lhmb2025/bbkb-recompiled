@@ -13,26 +13,10 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Subtypes for languages the engine supports but {@code res/xml/method.xml} does not offer.
- *
- * <p><b>The problem.</b> The ET9 core's locale table (105 entries, mirrored by
- * {@code assets/ldb/manifest.json}) covers 94 languages. {@code method.xml} declares subtypes for
- * 66 of them. The other 28 can be installed - the dictionary loads, the engine knows the language -
- * and then cannot be SELECTED, because Android only offers the subtypes an IME declares. Before
- * 2026-09-16 the hourly cleanup then deleted those packs for never being "in use", which hid the
- * gap behind a bigger bug.
- *
- * <p><b>The mechanism.</b> Android lets an IME add subtypes at runtime
- * ({@code InputMethodManager.setAdditionalInputMethodSubtypes}), which this app already uses for
- * multi-language keyboards. This class keeps a second list of {@code language:layout} pairs in its
- * own preference, which {@code RichInputMethodManager.getAdditionalSubtypes} merges alongside the
- * existing two sources.
- *
- * <p>Deliberately NOT stored in {@code custom_input_styles}: that preference has no setter today
- * and falls back to the {@code predefined_subtypes} resource arrays, so writing to it would pin a
- * snapshot of those arrays into every affected user's preferences and silently stop future changes
- * to the shipped defaults from reaching them.
- *
+ * Runtime subtypes for engine languages {@code res/xml/method.xml} does not declare (Android only
+ * offers declared or added subtypes). Kept as {@code language:layout} pairs in their own preference,
+ * merged by {@code RichInputMethodManager.getAdditionalSubtypes}. Not in {@code custom_input_styles}:
+ * writing there would pin a snapshot of the {@code predefined_subtypes} defaults into user prefs.
  */
 public final class SideloadedSubtypes {
 
@@ -42,49 +26,40 @@ public final class SideloadedSubtypes {
     static final String PREF_KEY = "sideloaded_subtypes";
 
     /**
-     * Keyboard layout to give each engine-supported language {@code method.xml} omits.
-     *
-     * <p>Every value is a layout that actually ships in {@code res/xml/keyboard_layout_set_*.xml}
-     * and writes the language's own script. The 11 Latin-script entries take plain {@code qwerty};
-     * the rest reuse the script layout their writing system needs.
-     *
-     * <p>Amharic, Tibetan, Gujarati, Odia and Punjabi were absent until 2026-09-28, when their
-     * scripts got layouts of their own (Ethiopic, Tibetan, Gujarati, Odia, Gurmukhi). A language
-     * whose script has no layout must stay out of this table: {@code translit} is not a
-     * transliteration keyboard but a Cyrillic one, and {@code qwerty} would offer a keyboard that
-     * cannot type one character of the dictionary behind it.
+     * Layout per engine language {@code method.xml} omits; each value ships in
+     * {@code keyboard_layout_set_*.xml} and writes the language's script. A language whose script has
+     * no layout stays out ({@code translit} is Cyrillic, not a transliteration keyboard).
      */
     private static final Map<String, String> LAYOUT_FOR_LANGUAGE;
 
     static {
         final Map<String, String> m = new LinkedHashMap<>();
-        // Latin script - the shipped qwerty types these languages directly.
+        // Latin script: qwerty types these directly.
         for (String latin : new String[] {"ha", "ig", "ku", "ln", "mg", "st", "sw", "tk", "xh", "yo", "zu"}) {
             m.put(latin, "qwerty");
         }
         m.put("as", "bengali");             // Assamese uses the Bengali script
         m.put("kk", "east_slavic");         // Kazakh Cyrillic
         m.put("tg", "east_slavic");         // Tajik Cyrillic
-        m.put("tt", "east_slavic");         // Tatar Cyrillic - the shipped pack is *_TTlsUNcyrillic_*
-        m.put("ks", "hindi");               // Kashmiri - the shipped pack is *_KSlsUNdevanagari_*
+        m.put("tt", "east_slavic");         // Tatar Cyrillic (pack *_TTlsUNcyrillic_*)
+        m.put("ks", "hindi");               // Kashmiri (pack *_KSlsUNdevanagari_*)
         m.put("sa", "hindi");               // Sanskrit, Devanagari
         m.put("ne", "nepali_traditional");  // Nepali, Devanagari
         m.put("my", "myanmar");             // Burmese
         m.put("si", "sinhala");             // Sinhala
-        m.put("ps", "farsi");               // Pashto - Perso-Arabic, closer to farsi than arabic
-        m.put("ur", "farsi");               // Urdu - Perso-Arabic
-        m.put("ug", "arabic");              // Uyghur - Perso-Arabic
-        // The five scripts authored on 2026-09-28: Indic ones transposed from the Bengali InScript
-        // layout, Ethiopic and Tibetan as four-row layouts with a shift layer.
+        m.put("ps", "farsi");               // Pashto, Perso-Arabic: closer to farsi than arabic
+        m.put("ur", "farsi");               // Urdu, Perso-Arabic
+        m.put("ug", "arabic");              // Uyghur, Perso-Arabic
         m.put("gu", "gujarati");            // Gujarati
-        m.put("pa", "gurmukhi");            // Punjabi - Gurmukhi
+        m.put("pa", "gurmukhi");            // Punjabi, Gurmukhi
         m.put("or", "oriya");               // Odia
-        m.put("am", "ethiopic");            // Amharic - Ethiopic
+        m.put("am", "ethiopic");            // Amharic, Ethiopic
         m.put("bo", "tibetan");             // Tibetan
         LAYOUT_FOR_LANGUAGE = Collections.unmodifiableMap(m);
     }
 
     private SideloadedSubtypes() {
+        // Static utility, no instances.
     }
 
     /** Every language this app can offer a runtime subtype for, with its layout; in table order. */
@@ -129,10 +104,7 @@ public final class SideloadedSubtypes {
     }
 
     /**
-     * Record a runtime subtype for {@code language}, if this app has a layout for it.
-     *
-     * <p>Idempotent, and does NOT check whether {@code method.xml} already declares the language -
-     * callers know that, and {@link #LAYOUT_FOR_LANGUAGE} only contains languages it does not.
+     * Records a runtime subtype for {@code language} if it has a layout; idempotent.
      *
      * @return {@code true} if the preference now contains an entry for {@code language}
      */

@@ -34,10 +34,6 @@ import dev.bbkb.ime.keyboard.inputboard.voice.InstalledVoiceRecognizers
 import dev.bbkb.ime.keyboard.inputboard.voice.VoiceLanguages
 import dev.bbkb.ime.keyboard.inputboard.voice.VoiceRecognizerChoice
 
-/**
- * Voice Input Settings Screen
- * Configure voice input recognition settings
- */
 @Composable
 fun VoiceInputSettingsScreen(
     onNavigateToLanguageSelection: () -> Unit,
@@ -45,8 +41,7 @@ fun VoiceInputSettingsScreen(
 ) {
     val context = LocalContext.current
     val prefs = remember { PrefsManager.getPrefs(context) }
-    
-    // Enable built-in voice input vs system voice typing
+
     var builtInVoiceEnabled by remember {
         mutableStateOf(prefs.getBoolean("voice_input_enabled", true))
     }
@@ -69,22 +64,18 @@ fun VoiceInputSettingsScreen(
         mutableStateOf(prefs.getBoolean(VoiceLanguages.PREF_AUTO_DOWNLOAD, true))
     }
     var blockOffensive by remember {
-        // Frozen key, and the engine reads it with
-        // resources.getBoolean(R.bool.config_block_potentially_offensive) — now false — via
-        // SettingsManager.isBlockOffensiveEnabled. Read the resource rather than hard-coding a
-        // default here, so the row and the recogniser can never disagree about it.
+        // Default from the same resource SettingsManager.isBlockOffensiveEnabled reads, so the row
+        // and the recogniser agree.
         mutableStateOf(prefs.getBoolean("pref_key_block_potentially_offensive",
             context.resources.getBoolean(R.bool.config_block_potentially_offensive)))
     }
-    // The recognition services installed when the screen opened, and the platform's on-device one.
     val recognizers = remember { InstalledVoiceRecognizers.query(context) }
     val onDeviceAvailable = remember { InstalledVoiceRecognizers.isOnDeviceAvailable(context) }
     var recognizer by remember {
         mutableStateOf(SettingsManager.getVoiceInputRecognizer(prefs))
     }
-    // The chosen recogniser's own settings screen, looked up again when the choice changes.
     val offlineLanguagesLink = remember(recognizer) { VoiceLanguages.settingsLink(context) }
-    // Read once: this screen only displays it; the picker is what changes it.
+    // Read once: only the picker changes it.
     val voiceLanguage = remember {
         prefs.getString(VOICE_LANGUAGE_PREF, SettingsManager.DEFAULT_VOICE_INPUT_LANGUAGE)
             ?: SettingsManager.DEFAULT_VOICE_INPUT_LANGUAGE
@@ -103,7 +94,6 @@ fun VoiceInputSettingsScreen(
                 .verticalScroll(rememberScrollState())
         ) {
             PreferenceGroup {
-                // Enable Built-in Voice Input
                 SwitchPreference(
                     title = context.getString(R.string.settings_voice_builtin_title),
                     icon = ImageVector.vectorResource(R.drawable.ic_settings_voice_enable),
@@ -118,12 +108,10 @@ fun VoiceInputSettingsScreen(
 
             }
 
-            // Which recogniser listens, and where.
             PreferenceCategory(context.getString(R.string.settings_voice_group_recognition))
             PreferenceGroup {
-                // Speech recognizer: which recognition service dictation binds. The row shows what the
-                // setting resolves to now, so a chosen app that has since been uninstalled reads as the
-                // system default, which is what dictation falls back to.
+                // Shows what the setting resolves to now: an uninstalled choice reads as the system
+                // default, which dictation falls back to.
                 val recognizerOptions = voiceRecognizerOptions(context, recognizers, onDeviceAvailable)
                 val resolvedRecognizer = VoiceRecognizerChoice
                     .select(recognizer, Build.VERSION.SDK_INT, onDeviceAvailable, recognizers)
@@ -147,7 +135,6 @@ fun VoiceInputSettingsScreen(
                     }
                 )
 
-                // Prefer Offline Recognition
                 SwitchPreference(
                     title = context.getString(R.string.settings_voice_prefer_offline_title),
                     icon = ImageVector.vectorResource(R.drawable.ic_settings_voice_offline),
@@ -162,10 +149,8 @@ fun VoiceInputSettingsScreen(
                 )
             }
 
-            // Which language it listens for, and getting that language onto the phone.
             PreferenceCategory(context.getString(R.string.settings_languages_title))
             PreferenceGroup {
-                // Use Input Language
                 SwitchPreference(
                     title = context.getString(R.string.settings_voice_use_keyboard_lang_title),
                     icon = ImageVector.vectorResource(R.drawable.ic_settings_keyboard_alphabet),
@@ -178,9 +163,8 @@ fun VoiceInputSettingsScreen(
                         prefs.edit().putBoolean("voice_input_use_input_language", newValue).apply()
                     }
                 )
-            
-                // The language to listen for when it is not the keyboard's. Always shown, and
-                // greyed out while the switch above (or voice input itself) makes it moot.
+
+                // Always shown; greyed out while the switch above or voice input makes it moot.
                 PreferenceScreen(
                     title = context.getString(R.string.settings_voice_input_lang_title),
                     summary = voiceLanguageDisplayName(voiceLanguage),
@@ -189,8 +173,7 @@ fun VoiceInputSettingsScreen(
                     onClick = onNavigateToLanguageSelection
                 )
 
-                // Download voice languages: when a keyboard is added, ask the recogniser for
-                // its voice language. Android 13+, where a recogniser can be asked at all.
+                // Asks the recogniser for a voice language when a keyboard is added (Android 13+).
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                     SwitchPreference(
                         title = context.getString(R.string.settings_voice_download_languages_title),
@@ -206,8 +189,7 @@ fun VoiceInputSettingsScreen(
                     )
                 }
 
-                // Offline voice languages: the recogniser's own settings, where its languages are
-                // added and removed. Only when it declares a screen this keyboard can open.
+                // The recogniser's own languages screen, only when it declares one we can open.
                 offlineLanguagesLink?.let { (intent, appName) ->
                     PreferenceScreen(
                         title = context.getString(R.string.settings_voice_offline_languages_title),
@@ -225,10 +207,8 @@ fun VoiceInputSettingsScreen(
                 }
             }
 
-            // When listening starts and ends.
             PreferenceCategory(context.getString(R.string.settings_voice_group_listening))
             PreferenceGroup {
-                // Auto-start listening
                 SwitchPreference(
                     title = context.getString(R.string.settings_voice_auto_start_title),
                     icon = ImageVector.vectorResource(R.drawable.ic_settings_voice_auto_start),
@@ -245,8 +225,7 @@ fun VoiceInputSettingsScreen(
                     }
                 )
 
-                // Stop listening when you pause: off is continuous dictation until the mic is tapped.
-                // The pair with Auto-start covers starting and ending by hand, automatically, or either.
+                // Off is continuous dictation until the mic is tapped.
                 SwitchPreference(
                     title = context.getString(R.string.settings_voice_stop_on_pause_title),
                     icon = ImageVector.vectorResource(R.drawable.ic_settings_voice_stop_on_pause),
@@ -264,10 +243,9 @@ fun VoiceInputSettingsScreen(
                 )
             }
 
-            // What is typed.
             PreferenceCategory(context.getString(R.string.settings_voice_group_text))
             PreferenceGroup {
-                // Show words as you speak: partial results as composing text in the editor
+                // Partial results as composing text in the editor
                 SwitchPreference(
                     title = context.getString(R.string.settings_voice_show_partial_results_title),
                     icon = ImageVector.vectorResource(R.drawable.ic_settings_voice_partial_results),
@@ -281,10 +259,7 @@ fun VoiceInputSettingsScreen(
                     }
                 )
 
-                // Block offensive words — the recogniser's EXTRA_MASK_OFFENSIVE_WORDS. It used to sit
-                // on the Suggestions screen, among the prediction toggles, but dictation masking is
-                // its only effect (VoiceRecognitionManager.startDictation), so it belongs here. The
-                // preference key is unchanged, so nobody's setting moved with it.
+                // EXTRA_MASK_OFFENSIVE_WORDS; dictation masking is its only effect.
                 SwitchPreference(
                     title = context.getString(R.string.settings_pred_block_offensive_title),
                     icon = ImageVector.vectorResource(R.drawable.ic_settings_voice_block_offensive),
@@ -305,9 +280,8 @@ fun VoiceInputSettingsScreen(
 }
 
 /**
- * The "Speech recognizer" choices: the system default (named after the app it is, when that app is
- * installed), each installed recognition app by its label, and the on-device recogniser where the
- * phone has one.
+ * "Speech recognizer" choices: the system default (named after its app when installed), each
+ * installed recognition app, and the on-device recogniser where present.
  */
 internal fun voiceRecognizerOptions(
     context: Context,

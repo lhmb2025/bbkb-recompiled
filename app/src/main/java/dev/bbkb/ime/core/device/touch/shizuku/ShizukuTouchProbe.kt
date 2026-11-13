@@ -10,12 +10,8 @@ import dev.bbkb.ime.BuildConfig
 import dev.bbkb.ime.core.shared.Logger
 
 /**
- * Debug-build validation doorway for [ShizukuTouchEngine], in the spirit of
- * GestureReplayReceiver: one adb broadcast streams a device for a few seconds and logs every
- * decoded touch under the `ShizukuTouch` tag. Declared ONLY in app/src/debug/AndroidManifest.xml
- * (so release builds neither register nor, after R8, contain it), guarded by the DUMP
- * permission so only adb's shell can send it, and inert if a release build ever reached it.
- *
+ * Debug-only adb doorway for [ShizukuTouchEngine]: streams a device and logs every decoded touch
+ * under `ShizukuTouch`. Declared only in the debug manifest, guarded by DUMP (adb shell only).
  * ```
  * adb shell am broadcast -p dev.bbkb.ime.debug -a dev.bbkb.ime.debug.SHIZUKU_TOUCH_PROBE \
  *     --es device touch_keypad --ez grab true --ei seconds 20
@@ -54,7 +50,7 @@ class ShizukuTouchProbeReceiver : BroadcastReceiver() {
     }
 }
 
-/** The probe broadcast's extras, parsed leniently (adb's --es/--ei/--ez all accepted). */
+/** Parsed leniently: adb's --es/--ei/--ez all accepted. */
 data class ShizukuTouchProbeArgs(
     val matcher: TouchDeviceMatcher,
     val grab: Boolean,
@@ -161,8 +157,8 @@ internal object ShizukuTouchProbe {
     }
 
     /**
-     * Logs every input device the reader can open. A broadcast that has just started this
-     * process arrives before Shizuku's binder does, so this waits (briefly) for Shizuku first.
+     * Logs every input device the reader can open. Waits for Shizuku first: a broadcast that
+     * just started this process arrives before Shizuku's binder does.
      */
     fun dumpDevices(context: Context) {
         val app = context.applicationContext

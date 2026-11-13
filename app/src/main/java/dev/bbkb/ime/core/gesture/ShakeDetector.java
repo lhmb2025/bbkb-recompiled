@@ -45,11 +45,19 @@ public class ShakeDetector implements SensorEventListener {
 
     
     public interface Listener {
+        /**
+         * @param i axis 0 to 2 (x, y, z), or 3 for a shake on any axis
+         * @param i2 shake count so far on that axis
+         * @param j sensor timestamp, nanoseconds
+         * @return true when handled; no further shakes are reported until the counts reset
+         */
         boolean onShake(int i, int i2, long j);
     }
 
+    /** @param i the new accuracy, unused */
     @Override // android.hardware.SensorEventListener
     public void onAccuracyChanged(Sensor sensor, int i) {
+        // Accuracy changes do not affect shake detection.
     }
 
     public ShakeDetector(Context context, Listener listener) {
@@ -63,8 +71,6 @@ public class ShakeDetector implements SensorEventListener {
             return;
         }
         this.settings = SettingsManager.getInstance().getSettingsValues();
-        // Audit GD-42: 2 == SENSOR_DELAY_UI; the trailing value is the max report latency in
-        // microseconds (100 ms of batching).
         this.listening = this.sensorManager.registerListener(
                 this, this.accelerometer, SensorManager.SENSOR_DELAY_UI, MAX_REPORT_LATENCY_US);
     }

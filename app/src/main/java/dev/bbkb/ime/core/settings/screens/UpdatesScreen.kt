@@ -74,15 +74,10 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 /**
- * Updates screen — the whole user-facing side of OTA app updates.
- *
- * Everything here is a decision the user makes. The screen renders the *last recorded* outcome
- * when it opens ([UpdateChecker.lastOutcome] reads preferences, not the network), so there is no
- * spinner on entry; "Check now" is the only thing that fetches, "Download" is the only thing that
- * transfers bytes, and "Install" is the only thing that hands the APK to the platform installer.
- *
- * On a debug build the honest answer is usually "no update channel": the published manifest
- * carries `release` only. That is stated as a fact, not as an error — see [UpdateStatus.NoChannel].
+ * OTA app updates. Opens on the last recorded outcome ([UpdateChecker.lastOutcome], no network),
+ * so there is no spinner on entry; only "Check now" fetches, "Download" transfers and "Install"
+ * hands off to the installer. Debug builds usually have no channel ([UpdateStatus.NoChannel]),
+ * which is stated as a fact, not an error.
  */
 @Composable
 fun UpdatesScreen(
@@ -106,33 +101,26 @@ fun UpdatesScreen(
         )
     }
 
-    // Asking for POST_NOTIFICATIONS is only meaningful on API 33+; the launcher is harmless
-    // below that and the result is ignored either way — a denied grant costs the notification and
-    // nothing else, and the toggle stays on so the check still runs and this screen still shows
-    // what it found.
+    // POST_NOTIFICATIONS matters only on API 33+. A denial costs only the notification: the toggle
+    // stays on and the check still runs.
     val notificationPermission = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.RequestPermission()
     ) { /* granted or not, the daily check is unaffected */ }
 
-    // Opening this screen is being told: the notification has done its job, and the version it
-    // named must not produce a second one.
+    // Opening this screen counts as being told, so the named version must not notify again.
     LaunchedEffect(Unit) {
         UpdateNotifier.cancel(context)
-        // A fresh install has neither rebooted nor been through a package replace, so this is
-        // where the default-on daily check first gets scheduled. Idempotent, and it schedules
-        // nothing on a build with no update channel.
+        // A fresh install has not rebooted or been replaced, so schedule the default-on daily check here.
+        // Idempotent; schedules nothing on a build with no update channel.
         UpdateJobService.sync(context)
         (status as? UpdateStatus.Available)?.let { checker.markSeen(it.build.versionCode) }
-        // If an APK for the update on record is already downloaded and verified, offer Install
-        // rather than Download — the file is kept until a newer one replaces it.
+        // An already downloaded and verified APK for this update offers Install instead of Download.
         val available = status as? UpdateStatus.Available ?: return@LaunchedEffect
         val existing = withContext(Dispatchers.IO) { installer.downloadedApk(available.build) }
         if (existing != null) download = DownloadState.Done(existing)
     }
 
-    // One check, wherever it is started from (the status card's main button or its Retry). An
-    // update it finds may already be downloaded from an earlier sitting: offer Install, not
-    // Download, exactly as opening the screen does.
+    // One check from either button; a found update may already be downloaded, so offer Install then.
     val runCheck: () -> Unit = {
         checking = true
         scope.launch {
@@ -152,9 +140,7 @@ fun UpdatesScreen(
         download = DownloadState.Running(0)
         scope.launch {
             val result = installer.download(available.build) { bytes, total ->
-                // onProgress arrives on the IO dispatcher, often - a Compose snapshot write is
-                // safe from any thread, so this needs no marshalling, and only a whole percent is
-                // worth a recomposition.
+                // Arrives on the IO dispatcher; snapshot writes are thread-safe. Only whole percents recompose.
                 val pct = percentOf(bytes, total)
                 val shown = (download as? DownloadState.Running)?.percent
                 if (shown != pct) download = DownloadState.Running(pct)
@@ -170,7 +156,7 @@ fun UpdatesScreen(
         if (!installer.canRequestInstalls()) {
             explainUnknownSources = true
         } else if (!installer.startInstall(apk)) {
-            // The file went away (cache eviction) — offer the download again.
+            // The file went away (cache eviction): offer the download again.
             download = DownloadState.Idle
         }
     }
@@ -185,7 +171,6 @@ fun UpdatesScreen(
                 .padding(paddingValues)
                 .verticalScroll(rememberScrollState())
         ) {
-            // ── Where things stand, and the one thing to do about it ───────────────
             StatusCard(
                 context = context,
                 status = status,
@@ -197,7 +182,6 @@ fun UpdatesScreen(
                 onInstall = runInstall,
             )
 
-            // ── Background check ────────────────────────────────────────────────
             // No subhead: under a screen titled "Updates", one titled "Updates" says nothing.
             Spacer(modifier = Modifier.height(spacing.extraLarge))
             PreferenceGroup {
@@ -206,9 +190,7 @@ fun UpdatesScreen(
                     summary = context.getString(R.string.settings_update_background_check_summary),
                     icon = ImageVector.vectorResource(R.drawable.ic_settings_m_notifications),
                     checked = backgroundCheck,
-                    // Spelled out rather than referring to UpdateJobService.PREF_BACKGROUND_CHECK:
-                    // SettingsSearchIndexTest greps the screens for the string literal each
-                    // settingsSearchAnchor call is given, and cannot resolve a constant.
+                    // A literal, not UpdateJobService.PREF_BACKGROUND_CHECK: SettingsSearchIndexTest greps for it.
                     modifier = Modifier.settingsSearchAnchor("pref_update_background_check"),
                     onCheckedChange = { enabled ->
                         backgroundCheck = enabled
@@ -226,8 +208,7 @@ fun UpdatesScreen(
                 )
             }
 
-            // ── This build ──────────────────────────────────────────────────────
-            // Reference facts, so they come last. The version reads exactly as on About.
+            // Reference facts last. The version reads exactly as on About.
             PreferenceCategory(title = context.getString(R.string.settings_update_version_details))
             PreferenceGroup {
                 PreferenceItem(
@@ -261,7 +242,6 @@ fun UpdatesScreen(
                 )
             },
             title = {
-                // Centred under the icon, as Material's icon dialogs are; it wraps to two lines.
                 Text(
                     context.getString(R.string.settings_update_unknown_sources_title),
                     textAlign = TextAlign.Center,
@@ -287,7 +267,7 @@ fun UpdatesScreen(
 private fun percentOf(bytes: Long, total: Long): Int =
     if (total > 0L) ((bytes * 100L) / total).toInt().coerceIn(0, 100) else 0
 
-/** Where a download has got to. Deliberately not persisted: a download is one sitting's work. */
+/** Where a download has got to. Not persisted: a download is one sitting's work. */
 private sealed class DownloadState {
     object Idle : DownloadState()
     data class Running(val percent: Int) : DownloadState()
@@ -295,17 +275,12 @@ private sealed class DownloadState {
     data class Failed(val error: Throwable) : DownloadState()
 }
 
-/** The status card's leading badge: which icon, and how loudly it is coloured. */
 private enum class BadgeTone { Calm, Attention, Error }
 
 /**
- * The status card: one answer to "where do I stand?" — a badge, a headline, one supporting
- * line, the release notes while an update is on offer — and the single action that makes
- * sense from here, at the card's end.
- *
- * Every state of [UpdateStatus] and [DownloadState] lands on exactly one layout, so the screen
- * never shows two cards or a loose line of text. A failed refresh that still knows of an update
- * shows that update, with the failure as a line in the card, rather than replacing it.
+ * One answer to "where do I stand?": badge, headline, one line, release notes while an update is
+ * offered, and the single sensible action. Every [UpdateStatus] x [DownloadState] maps to one
+ * layout; a failed refresh that still knows an update shows it, with the failure as a line.
  */
 @Composable
 private fun StatusCard(
@@ -342,7 +317,7 @@ private fun StatusCard(
 
         status is UpdateStatus.NoChannel -> StatusCardFrame(
             badge = R.drawable.ic_settings_m_info, tone = BadgeTone.Calm,
-            // A fact about this build, not an error, and there is nothing to check against.
+            // A fact about this build, not an error; there is nothing to check against.
             headline = context.getString(R.string.settings_update_channel_none),
         )
 
@@ -368,7 +343,7 @@ private fun StatusCard(
                     badge = R.drawable.ic_settings_m_download, tone = BadgeTone.Attention,
                     headline = context.getString(R.string.settings_update_available_title),
                     supporting = context.getString(R.string.settings_update_downloading, download.percent),
-                    // Determinate: the manifest states the size, so the bar means something.
+                    // Determinate: the manifest states the size.
                     progress = download.percent / 100f,
                     showProgress = true,
                     notes = offered.build.notes,
@@ -522,7 +497,7 @@ private fun StatusCardFrame(
 private fun channelSummary(context: Context, checker: UpdateChecker): String = when {
     !checker.hasChannel -> context.getString(R.string.settings_update_channel_none)
     checker.channel == "release" -> context.getString(R.string.settings_update_channel_release)
-    // A debug build with pref_distribution_channel_override set to something else: say which.
+    // A debug build with pref_distribution_channel_override set: say which.
     else -> checker.channel
 }
 
@@ -530,7 +505,6 @@ private fun lastCheckedSummary(context: Context, at: Long): String =
     if (at <= 0L) {
         context.getString(R.string.settings_update_never)
     } else {
-        // The phone's language and its 12- or 24-hour setting.
         DateUtils.formatDateTime(
             context, at,
             DateUtils.FORMAT_SHOW_DATE or DateUtils.FORMAT_SHOW_TIME or DateUtils.FORMAT_SHOW_YEAR or
@@ -538,10 +512,7 @@ private fun lastCheckedSummary(context: Context, at: Long): String =
         )
     }
 
-/**
- * One sentence per failure the foundation can report. Each [DistributionException] carries the
- * values its message needs, so nothing here parses a message string.
- */
+/** One sentence per failure; each [DistributionException] carries its values, so no message parsing. */
 private fun errorMessage(context: Context, error: Throwable): String = when (error) {
     is OfflineException -> context.getString(R.string.settings_update_error_offline)
     is IntegrityException -> context.getString(R.string.settings_update_error_integrity)

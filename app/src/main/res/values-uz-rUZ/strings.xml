@@ -721,7 +721,6 @@
     <string name="device_config_import_unreadable">Bu fayl qurilma konfiguratsiyasi emas</string>
     <string name="device_config_import_failed">Bu faylni import qilib bo‘lmadi</string>
 
-    <!-- OTA app updates -->
     <string name="settings_updates_title">Yangilanishlar</string>
     <string name="settings_updates_summary">BBKB ning yangi versiyasini tekshirish</string>
     <string name="settings_update_installed_version_title">Oʻrnatilgan versiya</string>
@@ -755,7 +754,6 @@
     <string name="settings_update_ready_title">Oʻrnatishga tayyor</string>
     <string name="settings_update_version_details">Versiya tafsilotlari</string>
     <string name="settings_update_unknown_sources_title">BBKB ga yangilanishlarni oʻrnatishga ruxsat berilsinmi?</string>
-    <!-- Downloadable language packs (core/languagepack) -->
     <string name="language_packs_installed_header">O‘rnatilgan</string>
     <string name="language_packs_available_header">Yuklab olish mumkin</string>
     <string name="language_packs_download">Yuklab olish</string>
@@ -877,7 +875,6 @@
     <string name="settings_voice_stop_on_pause_summary_off">Mikrofonni bosguningizcha yoki yarim daqiqa sukunat bo‘lguncha pauzalarda ham tinglashda davom etadi</string>
     <string name="voice_status_listening_tap_to_stop">Tinglanmoqda&#8230; To‘xtatish uchun mikrofonni bosing</string>
 
-    <!-- Settings text moved out of the code (2026-11) -->
     <string name="settings_common_save">Saqlash</string>
     <string name="settings_common_edit">Tahrirlash</string>
     <string name="settings_common_back">Orqaga</string>

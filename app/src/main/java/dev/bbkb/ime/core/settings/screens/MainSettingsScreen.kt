@@ -50,10 +50,7 @@ import dev.bbkb.ime.core.settings.ui.PreferenceScreen
 import dev.bbkb.ime.core.settings.ui.SettingsScaffold
 import dev.bbkb.ime.core.update.UpdateChecker
 
-/**
- * Main Settings Screen - Root navigation menu for all settings
- * Displays a search bar and all primary settings categories.
- */
+/** Settings root: the search bar and the primary categories. */
 @Composable
 fun MainSettingsScreen(
     onNavigateToScreen: (String) -> Unit,
@@ -64,20 +61,18 @@ fun MainSettingsScreen(
 
     var query by remember { mutableStateOf("") }
 
-    // The last recorded "update available", if there is one. Preferences only.
+    // Preferences only, no network.
     val updateAvailable = remember { UpdateChecker(context).lastKnownAvailable() }
 
-    // Results are drawn from the device-filtered view of the index, never the raw list: a setting
-    // whose row sits behind a DeviceProfile gate the device does not satisfy is not rendered by
-    // its screen, so a result for it would navigate somewhere that does not contain it (defect 16).
+    // Device-filtered index only: a row behind an unmet DeviceProfile gate is not rendered, so a
+    // result for it would lead nowhere.
     val deviceCapabilities = remember { SearchDeviceCapabilities.current() }
     val searchable = remember(deviceCapabilities) { SettingsSearchIndex.entriesFor(deviceCapabilities) }
 
     // Screens too, so a search for "physical keyboard" or "learned words" lists the page itself.
     val searchableScreens = remember(deviceCapabilities) { SettingsSearchIndex.screensFor(deviceCapabilities) }
 
-    // The titles in lower case, resolved once per index and language instead of once per entry
-    // on every typed character (about 100 string loads and copies per keystroke).
+    // Lower-cased titles resolved once per index and language, not on every keystroke.
     val configuration = LocalConfiguration.current
     val searchableTitles = remember(searchable, configuration) {
         searchable.map { context.getString(it.titleRes).lowercase() }
@@ -102,8 +97,7 @@ fun MainSettingsScreen(
                 .padding(paddingValues)
                 .verticalScroll(rememberScrollState())
         ) {
-            // The search field as the Android 16 Settings app draws it: a pill on the page with no
-            // outline, its fill one step above the page colour.
+            // Android 16 Settings style: an outline-free pill one step above the page colour.
             TextField(
                 value = query,
                 onValueChange = { query = it },
@@ -132,7 +126,6 @@ fun MainSettingsScreen(
             )
 
             if (query.isNotEmpty()) {
-                // ── Search results ──────────────────────────────────────────────
                 if (results.isEmpty()) {
                     Text(
                         text = context.getString(R.string.settings_search_no_results),
@@ -149,8 +142,7 @@ fun MainSettingsScreen(
                                     val screen = result.screen
                                     PreferenceItem(
                                         title = context.getString(screen.titleRes),
-                                        // Where the page sits: "Input › Physical keyboard". A
-                                        // category sits on the settings root itself.
+                                        // Breadcrumb, e.g. "Input › Physical keyboard".
                                         summary = if (screen.parentPath.isEmpty()) {
                                             context.getString(R.string.settings_title)
                                         } else {
@@ -182,11 +174,7 @@ fun MainSettingsScreen(
                     }
                 }
             } else {
-                // ── Category list ───────────────────────────────────────────────
-
-                // An update the last check found, read straight out of preferences — no network
-                // call and no spinner on the settings root. Absent on a build with no update
-                // channel and on a fresh install, which is why nothing is shown in those states.
+                // Absent on builds with no update channel and on a fresh install.
                 updateAvailable?.let { available ->
                     UpdateAvailableBanner(
                         version = available.build.versionName,
@@ -196,8 +184,8 @@ fun MainSettingsScreen(
 
                 Spacer(modifier = Modifier.height(spacing.small))
                 PreferenceGroup {
-                    // 1. Languages: straight to the consolidated screen. The old Languages
-                    // menu stays registered for deep links and search results that route to it.
+                    // Straight to the Language screen; the Languages menu route stays registered
+                    // for deep links and search results.
                     PreferenceScreen(
                         title = context.getString(R.string.settings_languages_title),
                         summary = context.getString(R.string.settings_languages_summary),
@@ -205,7 +193,6 @@ fun MainSettingsScreen(
                         onClick = { onNavigateToScreen(SettingsRoute.LanguagesHub.route) }
                     )
 
-                    // 2. Typing and input
                     PreferenceScreen(
                         title = context.getString(R.string.settings_preferences_title),
                         summary = context.getString(R.string.settings_preferences_summary),
@@ -213,7 +200,6 @@ fun MainSettingsScreen(
                         onClick = { onNavigateToScreen(SettingsRoute.Preferences.route) }
                     )
 
-                    // 3. Suggestion and correction
                     PreferenceScreen(
                         title = context.getString(R.string.settings_suggestion_correction_title),
                         summary = context.getString(R.string.settings_suggestion_correction_summary),
@@ -221,7 +207,6 @@ fun MainSettingsScreen(
                         onClick = { onNavigateToScreen(SettingsRoute.SuggestionCorrection.route) }
                     )
 
-                    // 4. Appearance and layout
                     PreferenceScreen(
                         title = context.getString(R.string.settings_appearance_layout_title),
                         summary = context.getString(R.string.settings_appearance_layout_summary),
@@ -229,7 +214,6 @@ fun MainSettingsScreen(
                         onClick = { onNavigateToScreen(SettingsRoute.AppearanceLayout.route) }
                     )
 
-                    // 5. Advanced
                     PreferenceScreen(
                         title = context.getString(R.string.settings_advanced_title),
                         summary = context.getString(R.string.settings_advanced_summary),
@@ -238,9 +222,7 @@ fun MainSettingsScreen(
                     )
                 }
 
-                // About: on its own below the categories, as Android's own "About phone" is.
-                // It is information, not settings, so it is not one of the categories; the
-                // subtitle is the version, the thing most people open About to find.
+                // About sits apart from the categories; its subtitle is the version.
                 Spacer(modifier = Modifier.height(spacing.large))
                 PreferenceGroup {
                     PreferenceScreen(
@@ -258,11 +240,8 @@ fun MainSettingsScreen(
 }
 
 /**
- * Compact "an update is waiting" banner at the top of the settings root.
- *
- * One row, one tap, no actions of its own: everything about the update — what it is, how big
- * it is, and the two deliberate presses that download and install it — lives on the Updates
- * screen.
+ * Compact "an update is waiting" banner; one tap opens the Updates screen, which owns download
+ * and install.
  */
 @Composable
 private fun UpdateAvailableBanner(

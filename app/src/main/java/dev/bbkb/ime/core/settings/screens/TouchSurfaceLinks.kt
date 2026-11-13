@@ -10,9 +10,8 @@ import dev.bbkb.ime.core.device.touch.shizuku.ShizukuFacade
 import dev.bbkb.ime.core.shared.Logger
 
 /**
- * Where the Touch surface helper sends the user: the OEM's touchpad pages, Shizuku's releases and
- * the Shizuku app. Every link is a chain of intents tried in order, because the OEM pages exist
- * only on the firmware that has them.
+ * Touch surface helper links (OEM touchpad pages, Shizuku). Each is a chain of intents tried in
+ * order, because the OEM pages exist only on some firmware.
  */
 object TouchSurfaceLinks {
 
@@ -50,15 +49,13 @@ object TouchSurfaceLinks {
     fun shizukuApp(context: Context): Intent? =
         context.packageManager.getLaunchIntentForPackage(ShizukuFacade.MANAGER_PACKAGE)
 
-    /** Opens the first of [intents] that starts. */
     fun open(context: Context, intents: List<Intent>): Intent? = openFirst(intents) { intent ->
         context.startActivity(Intent(intent).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
     }
 
     /**
-     * Tries [intents] in order with [start] and returns the one that started, or null when none
-     * did. A page that does not exist (ActivityNotFoundException) or is not exported
-     * (SecurityException) moves on to the next.
+     * Returns the first of [intents] that [start] launched, or null. ActivityNotFoundException and
+     * SecurityException (not exported) move on to the next.
      */
     fun openFirst(intents: List<Intent>, start: (Intent) -> Unit): Intent? {
         for (intent in intents) {

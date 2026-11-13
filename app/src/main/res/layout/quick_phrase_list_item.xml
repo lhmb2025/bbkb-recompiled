@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- One quick-phrase row. Height, fill and text colour are set by QuickPhrasesAdapter from
-     the slideboard palette. The fill is inset at the bottom by the tile gap, so the gap
-     between tiles is still part of the row's touch target. -->
+<!-- Height and colours set by QuickPhrasesAdapter; the fill is bottom-inset so the tile gap stays in the touch target -->
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/quick_phrase_text_container"
     android:clickable="true"

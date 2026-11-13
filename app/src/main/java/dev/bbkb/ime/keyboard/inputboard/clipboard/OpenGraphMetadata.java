@@ -32,8 +32,7 @@ public final class OpenGraphMetadata {
         Element c1662hM11332d = c1646cC.select(OG_TITLE_SELECTOR).first();
         Element c1662hM11332d2 = c1646cC.select(OG_IMAGE_SELECTOR).first();
         if (c1662hM11332d != null) {
-            // attr() returns "" for a missing attribute; leave the title null so the row falls
-            // back to showing the URL instead of a blank title line.
+            // attr() returns "" when missing; keep the title null so the row shows the URL instead.
             String title = c1662hM11332d.attr("content");
             if (!title.trim().isEmpty()) {
                 this.mTitle = title;
@@ -52,6 +51,7 @@ public final class OpenGraphMetadata {
         return this.mUrl;
     }
 
+    /** @param str the link the preview is for */
     public void setUrl(String str) {
         this.mUrl = str;
     }
@@ -60,6 +60,7 @@ public final class OpenGraphMetadata {
         return this.mImageUrl;
     }
 
+    /** @param str the preview image URL */
     public void setImageUrl(String str) {
         this.mImageUrl = str;
     }

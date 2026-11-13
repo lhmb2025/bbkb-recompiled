@@ -17,14 +17,6 @@ import dev.bbkb.ime.core.settings.ui.boolPref
 import dev.bbkb.ime.R
 import dev.bbkb.ime.core.settings.ui.drawableIcon
 
-/**
- * On-Screen Keyboard Settings Screen
- * Categories: Behavior (Ctrl key, long-press delay, flick animation), Gestures, Emoji, then one
- * link each under Slideboard and Feedback.
- *
- * The custom symbol page still lives under Appearance & layout; Slideboard settings moved here,
- * because everything it configures is on-screen-keyboard behaviour.
- */
 @Composable
 fun TouchScreenKeyboardScreen(
     onNavigateBack: () -> Unit,
@@ -43,17 +35,13 @@ fun TouchScreenKeyboardScreen(
             summary = RowSummary.Res(R.string.vkb_control_key_summary),
             modifier = Modifier.settingsSearchAnchor("vkb_control_mode_enabled"),
         ),
-        // How long a key is held before its alternates pop up (the physical Alt key's accent
-        // popup uses twice this). Was two Debug sliders, one swapped in while the slideboard was
-        // on (2026-10-20).
+        // Hold time before alternates pop up (the physical Alt key's accent popup uses twice this).
         Slide(intPref("pref_key_longpress_timeout", 400),
             R.string.prefs_key_longpress_delay_title,
             R.string.prefs_key_longpress_delay_summary, 100..1000, step = 50, unit = "ms",
             valueOnRow = true,
             icon = drawableIcon(R.drawable.ic_settings_gesture_delay),
             modifier = Modifier.settingsSearchAnchor("pref_key_longpress_timeout")),
-        // The committed word floating up on a flick: an on-screen animation, so it lives here
-        // rather than under Suggestions (2026-10-20).
         Toggle(
             store = boolPref("pref_flick_commit_animation", true),
             title = R.string.settings_pred_flick_animation_title,
@@ -86,9 +74,8 @@ fun TouchScreenKeyboardScreen(
             modifier = Modifier.settingsSearchAnchor("swipe_down_vkb"),
         ),
 
-        // On-screen only (2026-11-03): the emoji board opens filtered by the word being composed,
-        // and a pick can replace that word. A physical keyboard has its own "Enable emoji search"
-        // on the Physical keyboard screen, which types into the open board instead.
+        // The emoji board opens filtered by the composing word. The physical keyboard has its own
+        // "Enable emoji search" (pref_pkb_emoji_search), which types into the board instead.
         Category(R.string.settings_category_emoji),
         Toggle(
             store = boolPref("pref_emoji_dynamic_search", false),
@@ -108,8 +95,6 @@ fun TouchScreenKeyboardScreen(
             enabled = { it.bool("pref_emoji_dynamic_search") },
             modifier = Modifier.settingsSearchAnchor("pref_emoji_search_replace_text"),
         ),
-        // The two links to other screens close the page, each under its own header, so Behavior
-        // holds settings only (2026-11-11). This group is the slideboard's one home.
         Category(R.string.settings_category_slideboard),
         Nav(
             title = R.string.settings_slideboard_settings_title,

@@ -6,21 +6,9 @@ import org.junit.Test
 import java.io.File
 
 /**
- * Audit L6 (docs/2026-09_kdb-touch-abi_audit.md §5): the PKB branch of
- * [NuanceSDK.setKeyboardSize] passes a hardcoded `(0, 0)`, and the comment justifying that is
- * an argument about the ORIGINAL app's `sPkbDimensionsMap`.
- *
- * That comment used to say the original's map had no athena entry. It has one — keyed
- * `"bbf100"`, the KEY2's model number — and the lookup misses only on a KEY2 whose
- * `Build.DEVICE` is `"athena"`. The corrected comment now rests on that string, so pin it: if
- * [NuanceSDK.DEVICE_ATHENA] and the `<build-device>` the shipped athena config matches on ever
- * drift apart, the comment's reasoning is wrong again AND the athena config stops being
- * selected (its selection is what makes "athena" a measured fact rather than an assumption).
- *
- * The config matches the model number too (2026-10-01): a KEY2 can report either string.
- *
- * Nothing here calls the engine: [NuanceSDK.setKeyboardSize]'s PKB branch ends in a `native`
- * method, so the (0,0) itself is pinned on device, not on the JVM.
+ * [NuanceSDK.DEVICE_ATHENA] and the shipped athena config's `<build-device>` rule must agree
+ * (the PKB branch of [NuanceSDK.setKeyboardSize] relies on it); the rule also matches the KEY2
+ * model number. The `(0, 0)` size itself is a native call, pinned on device only.
  */
 class PkbKeyboardSizeContractTest {
 
@@ -45,9 +33,8 @@ class PkbKeyboardSizeContractTest {
 
     @Test
     fun theShippedAthenaConfigAlsoMatchesTheModelNumber() {
-        // Stock firmware and some custom LineageOS builds report the KEY2's model number in
-        // ro.product.device instead of the "athena" codename. The config has to claim both, or
-        // those units fall through to the generic BlackBerry config: no CKB, no Y warp.
+        // Some ROMs report the model number instead of "athena"; without a match those units get
+        // the generic BlackBerry config (no CKB, no Y warp).
         val rule = shippedAthenaBuildDeviceRule()
         assertTrue("the athena config must match Build.DEVICE = bbf100", rule.matches("bbf100"))
         assertTrue("the match must not depend on case", rule.matches("BBF100"))
@@ -66,9 +53,7 @@ class PkbKeyboardSizeContractTest {
 
     @Test
     fun deviceAthenaIsNotTheOriginalAppsModelNumberKey() {
-        // The original keys its athena entry "bbf100" -> {1080, 525}. Ours is keyed by
-        // Build.DEVICE. Adopting the original's key would silently hand the engine a 525-tall
-        // stretch for a KDB authored 1080x450 — the interim fix reverted on 2026-08-13.
+        // A "bbf100" key maps to {1080, 525}: a 525-tall stretch for a KDB authored 1080x450.
         assertTrue(
             "DEVICE_ATHENA must not be the original's model-number key",
             NuanceSDK.DEVICE_ATHENA != "bbf100",

@@ -37,29 +37,10 @@ import org.robolectric.annotation.Config;
 import java.util.Locale;
 
 /**
- * "Alt+Sym shortcut does nothing" — owner report, BlackBerry KEY2, 2026-09-21, with
- * {@code pref_alt_sym_shortcut_action = emoji_picker} stored on the device. Sym alone toggled the
- * symbol board; Alt+Sym did not open the emoji board.
- *
- * <p>Three independent reasons the chord was dropped, one per Sym entry point:
- *
- * <ol>
- *   <li><b>The ordinary hardware key path never asked.</b>
- *       {@link KeyEventProcessor#onKeyDownInternal} routed the KEY2's real {@code KEYCODE_SYM}
- *       straight to {@code KeyEventConverter}, which turns it into the symbol-board toggle
- *       ({@code -22}) with no Alt+Sym check anywhere. The two call sites that did have one both
- *       require the accessibility service, and one of them additionally requires
- *       {@code pref_key_interceptor_enabled}, which defaults to false — so on a stock KEY2 the
- *       chord was consulted by nobody.</li>
- *   <li><b>A held Alt was invisible to the state-only path.</b>
- *       {@link KeyEventProcessor#processKeyEventForState} passed only
- *       {@code tracker.getInternalMetaState()} and never the event's own meta state, and it read
- *       that state <em>after</em> {@code tracker.handleKeyDown()} — which resets the internal Alt
- *       span for key code 63 on every profile whose {@code usesMetaSymHandling()} is false. So
- *       held Alt was never seen, and sticky Alt was wiped a line before it was read.</li>
- *   <li><b>The accessibility path dispatched into a closed window.</b> Covered by
- *       {@link AltSymShortcutBoardGateTest}.</li>
- * </ol>
+ * Pins the Alt+Sym chord (configured action, e.g. emoji picker) on both Sym entry points: the
+ * ordinary hardware key path ({@link KeyEventProcessor#onKeyDownInternal}) and the state-only
+ * accessibility path ({@link KeyEventProcessor#processKeyEventForState}). Held Alt comes from the
+ * event's meta state; sticky Alt must be read before {@code tracker.handleKeyDown(63)} resets it.
  */
 @RunWith(RobolectricTestRunner.class)
 @Config(sdk = 34, manifest = Config.NONE)
@@ -99,10 +80,8 @@ public class AltSymShortcutChordTest {
     public void setUp() {
         context = ApplicationProvider.getApplicationContext();
 
-        // A KEY2-shaped device: PKB, physical keyboard, BlackBerry hardware, and — the part that
-        // matters here — no custom alt-mappings file, so usesMetaSymHandling() is false and
-        // PhysicalKeyboardStateTracker.handleKeyDown(63) resets the Alt span. (On the KEY2 the
-        // Alt layer comes from the firmware's .kcm, not from a table in the app.)
+        // KEY2-shaped: no custom alt-mappings file, so usesMetaSymHandling() is false and
+        // handleKeyDown(63) resets the Alt span. (The KEY2 Alt layer comes from the firmware .kcm.)
         DeviceProfile.installForTest(DeviceCapabilities.forShape(
                 DeviceCapabilities.DetectedDeviceType.PKB,
                 /* hasPhysicalKeyboard */ true, /* hasTouchKeypad */ true,
@@ -163,12 +142,7 @@ public class AltSymShortcutChordTest {
                 .onSymbolShiftToggle(anyInt(), anyInt(), anyBoolean(), anyBoolean());
     }
 
-    // ==================== processKeyEventForState (accessibility pre-processing) ====================
-
-    /**
-     * Alt physically held: the only place that says so is the event's own meta state, which this
-     * path used to ignore entirely.
-     */
+    /** Alt physically held: only the event's own meta state says so. */
     @Test
     public void heldAltInTheEventMetaStateFiresTheChordOnTheStateOnlyPath() {
         processor.processKeyEventForState(
@@ -179,9 +153,8 @@ public class AltSymShortcutChordTest {
     }
 
     /**
-     * Alt tapped (sticky), then Sym: the event carries no Alt at all, so the chord can only be
-     * seen in the tracker's span state — and only if it is read before the tracker processes the
-     * Sym down, which resets it.
+     * Sticky Alt, then Sym: the event carries no Alt, so the chord is only in the tracker's span
+     * state, and only if read before the tracker processes the Sym down (which resets it).
      */
     @Test
     public void stickyAltSurvivesTheTrackersSymResetOnTheStateOnlyPath() {
@@ -207,8 +180,8 @@ public class AltSymShortcutChordTest {
     }
 
     /**
-     * The release of a Sym press the chord consumed is not a second Sym press. Without this the
-     * emoji board opened on the down and the symbol board opened on the up.
+     * The release of a Sym press the chord consumed is not a second Sym press; otherwise the
+     * symbol board would open on the up.
      */
     @Test
     public void theSymKeyUpAfterAChordIsConsumed() {
@@ -234,11 +207,9 @@ public class AltSymShortcutChordTest {
         assertFalse("a bare Sym must not claim its key-up", handler.consumeSymKeyUp());
     }
 
-    // ==================== onKeyDownInternal (the ordinary hardware key path) ====================
-
     /**
-     * The KEY2's own path. {@code pref_key_interceptor_enabled} defaults to false, so this is
-     * where a real {@code KEYCODE_SYM} lands, and it had no chord handling at all.
+     * The KEY2's own path: {@code pref_key_interceptor_enabled} defaults to false, so a real
+     * {@code KEYCODE_SYM} lands here.
      */
     @Test
     public void heldAltFiresTheChordOnTheOrdinaryHardwareKeyPath() {
@@ -252,7 +223,7 @@ public class AltSymShortcutChordTest {
         verifySymbolBoardNotToggled();
     }
 
-    /** Sticky Alt, same path — and again the tracker's Sym reset must not get there first. */
+    /** Sticky Alt, same path: the tracker's Sym reset must not get there first. */
     @Test
     public void stickyAltFiresTheChordOnTheOrdinaryHardwareKeyPath() {
         pressAndReleaseAlt();
@@ -265,9 +236,7 @@ public class AltSymShortcutChordTest {
         assertEquals(1, actions.emojiPicker);
     }
 
-    /**
-     * The chord clears the Alt it used, so the next keystroke is not silently alt-shifted.
-     */
+    /** The chord clears the Alt it used, so the next keystroke is not silently alt-shifted. */
     @Test
     public void theChordConsumesTheAltItUsed() {
         pressAndReleaseAlt();
@@ -280,15 +249,10 @@ public class AltSymShortcutChordTest {
                 tracker.getInternalMetaState() & KeyEvent.META_ALT_ON);
     }
 
-    // ==================== the symbol board's own Alt page is not a chord ====================
-
     /**
-     * Owner report, KEY2, 2026-09-21, right after the chord landed: "the emoji board is treated
-     * like the third SYM board" — Sym, Sym, Sym opened the emoji picker. The second Sym turns the
-     * PKB symbol board to its Alt page, and that page is a {@link KeyCharacterInterpreter.MetaMask}
-     * that adds {@code META_ALT_ON} to {@code getInternalMetaState()} so letter keys type their
-     * Alt-layer symbols. The chord read that masked state and took the board's own page for a held
-     * Alt. No Alt key was ever pressed, so no chord: the third Sym must keep paging/closing.
+     * The PKB symbol board's Alt page is a {@link KeyCharacterInterpreter.MetaMask} adding
+     * {@code META_ALT_ON} to {@code getInternalMetaState()}; that is not a held Alt, so Sym, Sym,
+     * Sym must keep paging/closing rather than open the chord's emoji picker.
      */
     private void turnTheSymbolBoardToItsAltPage() {
         // What KeyboardSwitcher.getKeyCharacterMap() hands the tracker on the Alt page: a mask
@@ -340,8 +304,6 @@ public class AltSymShortcutChordTest {
         assertEquals(1, actions.emojiPicker);
     }
 
-    // ==================== the shared "is this the Sym key" test ====================
-
     @Test
     public void aRealSymKeycodeWithNoDeviceConfigIsTheSymKey() {
         assertTrue(KeyEventProcessor.isSymBoardKey(KeyEvent.KEYCODE_SYM, /* mapping */ null));
@@ -357,8 +319,6 @@ public class AltSymShortcutChordTest {
         tracker.handleKeyDown(KeyEvent.KEYCODE_ALT_LEFT, altDown);
         tracker.handleKeyUp(KeyEvent.KEYCODE_ALT_LEFT, altUp);
     }
-
-    // ==================== Alt+Sym set to Ctrl ====================
 
     private void useAction(String action) {
         PrefsManager.INSTANCE.getPrefs(context).edit()

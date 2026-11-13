@@ -4,20 +4,9 @@ import org.junit.Assert.assertTrue
 import org.junit.Test
 
 /**
- * Pins the divide-by-zero hole in [ProximityGrid] — the grid behind `Keyboard.getNearestKeys`
- * → `KeyDetector.detectHitKey`, i.e. the key-hit test for every touch.
- *
- * The constructor derives the grid cell size by dividing the occupied width/height by the grid
- * width/height. The guard that was supposed to prevent a divide-by-zero sat BELOW those two
- * divisions and tested the occupied dimensions, not the divisors — so a keyboard built with a
- * zero grid dimension threw `ArithmeticException` out of the `Keyboard` constructor before the
- * guard was ever reached. MainKeyboardView documents that crash as a real observed failure on the
- * physical pad (it was worked around there by choosing a different source keyboard for
- * `MoreKeysKeyboard` geometry); the hole stayed open for every other caller, including
- * `KeyboardBuilder.createFromLabels`, which takes its key height straight from its caller.
- *
- * The grid must simply come out empty for a degenerate keyboard, and lookups against it must not
- * divide by the (now zero) cell size either.
+ * Pins that [ProximityGrid] (the key-hit grid behind `Keyboard.getNearestKeys`) comes out empty for
+ * a zero or negative grid dimension instead of throwing `ArithmeticException` from the `Keyboard`
+ * constructor, and that lookups do not divide by the zero cell size.
  */
 class ProximityGridDegenerateTest {
 
@@ -39,7 +28,7 @@ class ProximityGridDegenerateTest {
         assertTrue("degenerate grid must be empty", g.getKeysInColumns(10, 10).isEmpty())
     }
 
-    /** The original guard's case: a moreKeys keyboard against a zero-height parent. */
+    /** A moreKeys keyboard against a zero-height parent. */
     @Test
     fun negativeOccupiedHeightDoesNotThrow() {
         val g = grid(gridWidth = 4, gridHeight = 4, occupiedWidth = 1080, occupiedHeight = -9)

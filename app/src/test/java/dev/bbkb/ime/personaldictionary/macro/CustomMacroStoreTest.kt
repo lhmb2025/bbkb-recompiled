@@ -16,17 +16,9 @@ import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
 
 /**
- * CHARACTERISATION TEST — the persisted form of a user's custom macros.
- *
- * `CustomMacrosScreen` had no coverage of any kind before Wave 3, and the thing most worth pinning
- * about it is not its layout but the bytes it leaves behind: a user who has defined `%p` expects it
- * to still expand after an upgrade. So this file records, against the current code, **where** the
- * macros live (the `custom_macros` preferences file, string key `macros`), **in what shape** (a JSON
- * array of objects with exactly `tag`, `name`, `value`, `createdAt`), and the ordering, update and
- * availability rules layered on top.
- *
- * Everything here is plain SharedPreferences and JSON — no Compose, no native dictionary — so these
- * cases run the production write path end to end rather than a stand-in for it.
+ * The persisted form of custom macros, so they survive upgrades: the `custom_macros` prefs file,
+ * string key `macros`, a JSON array of objects with exactly `tag`, `name`, `value`, `createdAt`;
+ * plus the ordering, update and availability rules.
  */
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [34])
@@ -42,10 +34,8 @@ class CustomMacroStoreTest {
     }
 
     /**
-     * Robolectric shares one sandbox — and therefore one set of statics and one preferences
-     * store — between test classes with the same `@Config`. `SettingsScreenRenderTest` renders
-     * `CustomMacrosScreen` in the fresh-install state, so anything left behind here would show up
-     * as rows it did not expect.
+     * Robolectric shares statics and prefs between classes with the same `@Config`, and
+     * `SettingsScreenRenderTest` expects `CustomMacrosScreen` in its fresh-install state.
      */
     @After
     fun tearDown() {
@@ -79,8 +69,6 @@ class CustomMacroStoreTest {
         prefs().edit().putString("macros", array.toString()).commit()
         CustomMacroRepository.invalidateCache()
     }
-
-    // ------------------------------------------------------- where and in what shape
 
     @Test
     fun macrosArePersistedInTheCustomMacrosPrefsFileUnderTheKeyMacros() {
@@ -126,8 +114,6 @@ class CustomMacroStoreTest {
         assertEquals("P", loaded.tag)
         assertTrue("a missing createdAt is defaulted, not treated as corruption", loaded.createdAt > 0)
     }
-
-    // ----------------------------------------------------------------- read and write
 
     @Test
     fun everyStoredMacroIsReadBackInStoredOrder() {
@@ -204,8 +190,6 @@ class CustomMacroStoreTest {
 
         assertEquals(listOf("P"), repo().getAllMacros().map { it.tag })
     }
-
-    // ------------------------------------------------------------ availability rules
 
     @Test
     fun theBuiltInMacroTagsAreReserved() {

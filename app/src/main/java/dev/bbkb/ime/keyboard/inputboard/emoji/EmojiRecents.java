@@ -16,26 +16,22 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * The one owner of the emoji recents preference format ({@code emoji_recent_keys}).
- *
- * <p>The value is a compact JSON array, newest first. Until 2026-11 a default-configured Gson
- * wrote it, which escaped {@code < > & = '} as Unicode escapes; such a value reads the same.
- * {@link EmojiKeyboard} writes its whole key grid, so the array is normally padded
- * with {@code ""} for every blank filler key, and a key with no output text is written as its
- * integer code. Readers keep only non-empty strings.
- *
- * <p>Deliberately does NOT choose an exception policy: the Recents page and the recents overlay
- * have different ones (see their call sites), and both are user-visible.
+ * Owns the emoji recents preference format ({@code emoji_recent_keys}): a JSON array, newest
+ * first, padded with {@code ""} for blank filler keys; a key with no output text is its integer
+ * code. Readers keep only non-empty strings. No exception policy here: the Recents page and the
+ * overlay each choose their own.
  */
 final class EmojiRecents {
 
     private EmojiRecents() {
+        // Static helpers only.
     }
 
     /**
      * The stored non-empty string entries, in stored order, at most {@code limit} of them.
      *
-     * <p>An empty or {@code null} value is no recents, as it was for Gson.
+     * <p>An empty or {@code null} value is no recents.
+
      *
      * @throws JSONException if the stored value is not a JSON array, or has anything after it
      */

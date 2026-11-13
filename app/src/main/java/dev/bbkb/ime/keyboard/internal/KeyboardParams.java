@@ -15,19 +15,12 @@ import java.util.TreeSet;
 public class KeyboardParams {
 
     /**
-     * Row/column order, i.e. position: y then x, exactly as AOSP orders it. mSortedKeys is a
-     * TreeSet, so "comparator returns 0" silently DROPS the insert — and the decompiled
-     * comparator ordered by height then width, which is a size histogram, not a row/column
-     * order, and made two distinct keys of equal size collide. onAddKey registers a dropped key
-     * in mShiftKeys / mAltCodeKeysWhileTyping regardless, so it stayed a shift key while being
-     * absent from the draw list and the proximity grid.
-     *
-     * <p>The code / output-text / size tiebreaks from the decompiled version are kept after the
-     * position, so the set of key pairs that can still compare equal is a strict subset of what
-     * collided before: nothing that survives today can be dropped by this ordering.
+     * Position order (y then x), with code, output text and size as tiebreaks. mSortedKeys is a
+     * TreeSet, so a 0 result silently drops the insert while onAddKey still registers the key in
+     * mShiftKeys / mAltCodeKeysWhileTyping.
      */
     private static final Comparator<Key> ROW_COLUMN_COMPARATOR = new Comparator<Key>() {
-        @Override // java.util.Comparator
+        @Override
         public int compare(Key key, Key key2) {
             if (key.getY() != key2.getY()) {
                 return key.getY() < key2.getY() ? -1 : 1;
@@ -116,10 +109,7 @@ public class KeyboardParams {
 
     public int mMostCommonKeyWidth = 0;
 
-
-    /** Highest bucket count seen in mHeightHistogram / mWidthHistogram. The decompiled
-     *  names had these two crossed, next to the code that derives every gesture
-     *  threshold in this package from mMostCommonKeyWidth / mMostCommonKeyHeight. */
+    /** Highest bucket counts seen in mHeightHistogram / mWidthHistogram. */
     private int mMostCommonKeyHeightCount = 0;
 
     private int mMostCommonKeyWidthCount = 0;

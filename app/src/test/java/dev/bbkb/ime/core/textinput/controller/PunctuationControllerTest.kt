@@ -13,12 +13,8 @@ import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
 
 /**
- * Unit tests for [PunctuationController]'s last-space timestamp state — the eligibility
- * window behind double-space-to-period substitution. The controller was extracted from
- * InputLogic and owns this state exclusively.
- *
- * SettingsValues can't be constructed on the JVM (it reads prefs/resources), so a Mockito
- * mock carries the public `doubleSpacePeriodTimeoutMs` field, assigned directly.
+ * Pins [PunctuationController]'s last-space timestamp, the double-space-to-period window.
+ * SettingsValues cannot be built on the JVM, so a mock carries `doubleSpacePeriodTimeoutMs`.
  */
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [34], manifest = Config.NONE, instrumentedPackages = ["com.blackberry.nuanceshim"])

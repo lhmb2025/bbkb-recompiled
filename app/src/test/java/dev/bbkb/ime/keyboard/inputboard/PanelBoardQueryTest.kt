@@ -24,28 +24,11 @@ import org.robolectric.util.ReflectionHelpers
 import java.util.concurrent.ConcurrentHashMap
 
 /**
- * Characterisation of **the two board questions**, pinned across the step that registers the
- * alphabet and symbol boards in the UIM's component map.
- *
- * Phase 1d gave every keyboard a board identity but could not make the two typing boards real
- * `UnifiedInputBoardComponent`s, because four sites iterate the component map while *meaning*
- * "is a PANEL board up" — and the alphabet board is always up. Registering the typing boards
- * without splitting those two questions first would have made:
- *
- *  1. `hideKeyboardOnKeyboardStateChange()`'s gate permanently true, so every layout change sweeps;
- *  2. `dispatchBoardAction`'s exclusive-open invariant `hide()` the alphabet board;
- *  3. `updateKeyHighlightedStates`'s "did I find a showing, enabled component" conclusion always
- *     true, suppressing its `hideOtherComponents(-37)` sweep and un-highlighting the centre key;
- *  4. `isSlideboardActiveAndNoBoardOpen()` — and therefore `updateAlphabetKeyForSlideboard()` —
- *     always take the "a board is open" branch, so the slideboard never gets its settings key.
- *
- * Every assertion below was read off the **unmodified** code and confirmed green against it before
- * the split was made. They answer only in terms of panel boards, so they must read identically
- * before and after registration; [section 5][theTypingBoardsAreRegisteredInTheComponentMap] then
- * adds the same questions again with the typing boards actually in the map.
- *
- * The harness is [UnifiedInputBoardManagerBoardStateTest]'s: a real manager whose constructor never
- * ran, with only the collaborators these paths touch injected.
+ * Pins the two board questions (a PANEL board is up, versus any component) with the alphabet and
+ * symbol boards registered in the component map. The alphabet board is always up, so four sites
+ * that mean "a panel board is up" must skip typing boards: the state-change sweep gate,
+ * dispatchBoardAction's exclusive open, updateKeyHighlightedStates' `-37` sweep, and the
+ * slideboard's centre key. Harness as in [UnifiedInputBoardManagerBoardStateTest].
  */
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [34], manifest = Config.NONE)
@@ -148,10 +131,6 @@ class PanelBoardQueryTest {
         return keyboard
     }
 
-    // ═══════════════════════════════════════════════════════════════════════
-    // 1. The query itself
-    // ═══════════════════════════════════════════════════════════════════════
-
     @Test
     fun noPanelBoardIsUpWhenNothingIsUp() {
         assertFalse("nothing is up", uim.isPanelBoardShowing())
@@ -165,8 +144,8 @@ class PanelBoardQueryTest {
     }
 
     /**
-     * The query follows each component's own view, not the coordinator — that is what it has always
-     * done and what the sweep gate needs (a board whose view a side effect clobbered down is not up).
+     * The query follows each component's own view, not the coordinator: the sweep gate needs a board
+     * whose view a side effect clobbered down to count as not up.
      */
     @Test
     fun theQueryFollowsTheViewNotTheCoordinator() {
@@ -178,10 +157,8 @@ class PanelBoardQueryTest {
     }
 
     /**
-     * CHARACTERISED, and deliberately unchanged: the inline autofill strip is in the component map
-     * but is not a board — except here, where it has always counted. `updateKeyHighlightedStates`
-     * skips it by name, `hideComponentsExcept` spares it by name, and this query does not. The
-     * split does not touch that; it only adds the two typing boards to the set the query skips.
+     * Characterised: the inline autofill strip is in the component map but is not a board, yet this
+     * query counts it (`updateKeyHighlightedStates` and `hideComponentsExcept` skip it by name).
      */
     @Test
     fun theAutofillStripStillCountsForThisQuery() {
@@ -190,10 +167,6 @@ class PanelBoardQueryTest {
 
         assertTrue("the autofill strip counts, as it always has", uim.isPanelBoardShowing())
     }
-
-    // ═══════════════════════════════════════════════════════════════════════
-    // 2. Site 1 — hideKeyboardOnKeyboardStateChange's gate
-    // ═══════════════════════════════════════════════════════════════════════
 
     @Test
     fun aLayoutChangeWithAPanelBoardUpSweepsIt() {
@@ -213,7 +186,7 @@ class PanelBoardQueryTest {
         assertEquals("nothing was hidden", 0, emoji.onHideCalls)
     }
 
-    /** An exempt board being up spares the whole sweep — the long-standing FCC semantics. */
+    /** An exempt board being up spares the whole sweep (the FCC semantics). */
     @Test
     fun anExemptPanelBoardBeingUpSparesTheWholeSweep() {
         val numberPad = register(NUMBER_PAD)
@@ -226,10 +199,6 @@ class PanelBoardQueryTest {
         assertEquals("and so does the board that is not exempt", 0, emoji.onHideCalls)
     }
 
-    // ═══════════════════════════════════════════════════════════════════════
-    // 3. Site 2 — the exclusive-open invariant
-    // ═══════════════════════════════════════════════════════════════════════
-
     @Test
     fun openingAPanelBoardClosesThePanelBoardThatWasOpen() {
         uim.requestBoard(CLIPBOARD)
@@ -240,10 +209,6 @@ class PanelBoardQueryTest {
         assertEquals("emoji opened", 1, emoji.onShowCalls)
         assertEquals(EMOJI, coordinator.activeBoard())
     }
-
-    // ═══════════════════════════════════════════════════════════════════════
-    // 4. Sites 3 and 4 — the painting pass and the slideboard's centre key
-    // ═══════════════════════════════════════════════════════════════════════
 
     /**
      * With nothing open the centre alphabet key is highlighted and the `hideOtherComponents(-37)`
@@ -273,9 +238,8 @@ class PanelBoardQueryTest {
     }
 
     /**
-     * Site 4. The slideboard's centre key is the settings key only while no board is open; with a
-     * board open the key goes back to the alphabet key. The two branches are told apart by which
-     * keycode the swap looks up: the settings branch asks for −3, the restore branch for −26.
+     * The slideboard's centre key is the settings key only while no board is open. The branches are
+     * told apart by the keycode the swap looks up: settings asks for −3, the restore branch for −26.
      */
     @Test
     fun theSlideboardGetsItsSettingsKeyWhenNoPanelBoardIsOpen() {
@@ -298,14 +262,9 @@ class PanelBoardQueryTest {
         Mockito.verify(keyboard, Mockito.atLeastOnce()).getKeyByCode(SLIDEBOARD_SETTINGS)
     }
 
-    // ═══════════════════════════════════════════════════════════════════════
-    // 5. The typing boards, once they are in the map
-    // ═══════════════════════════════════════════════════════════════════════
-
     /**
-     * The registry is the component map, so the two typing boards are in it — which is the whole
-     * point of the step. Everything after this test asserts that putting them there changed none
-     * of the four answers above.
+     * The registry is the component map, so both typing boards are in it; the tests after this assert
+     * that changed none of the four answers above.
      */
     @Test
     fun theTypingBoardsAreRegisteredInTheComponentMap() {
@@ -316,10 +275,7 @@ class PanelBoardQueryTest {
         assertEquals("the symbol board is registered", SYMBOL, components[SYMBOL]?.keyCode)
     }
 
-    /**
-     * The alphabet board is ALWAYS up — that is what made registration unsafe — and the panel
-     * query does not notice, which is what makes it safe.
-     */
+    /** The alphabet board is always up and the panel query does not notice, which makes registration safe. */
     @Test
     fun theAlwaysUpAlphabetBoardIsNotAPanelBoard() {
         val alphabet = AlphabetBoardController()
@@ -391,10 +347,8 @@ class PanelBoardQueryTest {
     }
 
     /**
-     * The bar's centre key keeps its legacy dispatch. Registration must not divert −3 into the
-     * coordinator's toggle: `handleKeyEvent` routes a keycode through `requestBoard` only when it
-     * is a PANEL board, so tapping the centre key still runs the `-3` branch — put the menu away,
-     * nothing opened.
+     * The centre key keeps its legacy dispatch: `handleKeyEvent` routes only PANEL boards through
+     * `requestBoard`, so tapping −3 still just puts the menu away.
      */
     @Test
     fun tappingTheCentreKeyStillTakesTheLegacyDispatchNotTheCoordinator() {

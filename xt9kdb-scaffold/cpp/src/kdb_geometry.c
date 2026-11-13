@@ -1,10 +1,7 @@
-/* kdb_geometry.c — key rectangles, readback, point->key resolution.
- *
- * The key model is VERIFIED on-device (GetKeyPositions / KeyInfo): English qwerty_pkb is
- * 30 keys on a 1080x324 grid. The fixture below is that exact layout — it is both the
- * bring-up default model and the golden data for the differential harness. point->key
- * (containment, else nearest center) is the core both ProcessTrace and ProcessTap use.
- */
+/* kdb_geometry.c: key rectangles, readback, point->key resolution.
+ * The fixture below is the engine's English qwerty_pkb (30 keys), used as the bring-up default
+ * model and the differential harness's golden data. point->key (containment, else nearest
+ * center) is shared by ProcessTrace and ProcessTap. */
 #include "et9kdb.h"
 #include "et9_context.h"
 #include "kdb_internal.h"
@@ -12,16 +9,12 @@
 #include <string.h>
 #include <math.h>
 
-/* --- verified English qwerty_pkb (captured from the live engine) ------------- */
-/* trailing: bias 0,0 then the symbol list — one code per key, the code itself (L13). */
+/* Trailing fields: bias 0,0, then a one-entry symbol list holding the code itself. */
 #define K(code,ty,l,t,r,b,cx,cy) { (ET9U16)(code), ty, l,t,r,b, cx,cy, 0,0, 1, { (ET9SYMB)(code) } }
-/* 128px rows (authored 1080x384). INCLUSIVE rects (matching the blob): right=left+w-1,
- * bottom=top+h-1, center=(left+(w-1)/2, top+(h-1)/2). 108w x 128h keys -> right=left+107,
- * bottom=top+127, cx=left+53, cy=top+63. KEY ORDER = the blob's (device-confirmed): all
- * regional/nonRegional keys first in document order, then the function keys (type 5)
- * appended — backspace/alt/enter land at 27/28/29. Load_XmlKDB's stable partition emits
- * this same order, so test/qwerty_pkb_even.xml round-trips this fixture index-for-index.
- * Types match the NKL (+0x04): 1=regional, 2=nonRegional ($), 5=function. */
+/* Authored 1080x384, 108x128 keys, inclusive rects (right=left+107, cx=left+53, cy=top+63).
+ * Engine key order: regional/nonRegional first, then function keys (backspace/alt/enter at
+ * 27/28/29), so test/qwerty_pkb_even.xml round-trips index-for-index.
+ * Types (NKL +0x04): 1=regional, 2=nonRegional ($), 5=function. */
 static const ET9KdbKey kQwertyPkbEn[30] = {
     K('q', 1,   0,  0, 107,127,   53, 63), K('w', 1, 108,  0, 215,127,  161, 63),
     K('e', 1, 216,  0, 323,127,  269, 63), K('r', 1, 324,  0, 431,127,  377, 63),
@@ -51,42 +44,27 @@ const ET9KdbLoaded XT9_QWERTY_PKB_EN = {
 const ET9KdbLoaded* g_kdb_model = &XT9_QWERTY_PKB_EN;   /* bring-up default */
 void xt9kdb_set_model(const ET9KdbLoaded* m) { if (m) g_kdb_model = m; }
 
-/* --- sensor/view -> authored mapping (RE-CONFIRMED from ET9KDB_GetKeyPositionByTap @0xc02d8) -----
- * The blob's exact transform (per axis):
- *     authored = (view - offset)                         when scale == 0   (pure translation)
- *     authored = (view - offset) * authoredDim / scale   when scale != 0   (scaled)
- * where offset = ctx+0xfc30/0xfc32  (set by SetKeyboardOffset),
- *       scale  = ctx+0xfc34/0xfc36  (set by SetKeyboardSize; 0 => no scaling),
- *       authoredDim = NKL+0x1a/0x1c (the KDB's authored width/height).
- * The inverse forward map (authored -> view, getKeys @0xb9200) is view = offset + round(scale*authored/dim).
- * We keep all four params so the owned module matches the blob in BOTH the (0,0)=no-scale config the
- * IME currently uses for the PKB AND a scaled config. The PKB-only gate on the OFFSET is our own
- * extension (the IME sets offset=0 for a VKB); the scale follows the blob unconditionally. */
-/* Both default to ZERO. The Y default was 50 for a while — an experiment aimed at a different
- * problem, kept as a bring-up default from the old 324-tall root layout. It is wrong for the
- * layouts we actually ship: the athena PKB is authored for a 1:1 sensor mapping ("offset 0, no
- * scale", see assets/kdb/keypad_pkb_athena_test.xml), and a 50px shift moves every point near a row
- * boundary a full row up — raw (453,312) is row 3 (V) but resolved as row 2 (G), which is where
- * the spurious keys in a decoded swipe path came from. Removed 2026-08-12.
- *
- * The mechanism stays: SetKeyboardOffset still sets these, and a device whose sensor genuinely has
- * a dead strip can use it. Nothing calls it at runtime today. */
+/* Sensor/view -> authored mapping (engine ET9KDB_GetKeyPositionByTap @0xc02d8), per axis:
+ *     authored = (view - offset)                         when scale == 0
+ *     authored = (view - offset) * authoredDim / scale   when scale != 0
+ * offset = ctx+0xfc30/0xfc32 (SetKeyboardOffset), scale = ctx+0xfc34/0xfc36 (SetKeyboardSize),
+ * authoredDim = NKL+0x1a/0x1c. Inverse (getKeys @0xb9200): view = offset + round(scale*authored/dim).
+ * Applying the offset only to a PKB is our own extension. Offsets default to zero: shipped
+ * layouts are authored 1:1 with the sensor, and any shift moves points near a row boundary
+ * into the wrong row. */
+
 static float g_calOffX = 0.0f, g_calOffY = 0.0f;   /* ctx+0xfc30 / ctx+0xfc32 */
 static int   g_scaleW  = 0,    g_scaleH  = 0;       /* ctx+0xfc34 / ctx+0xfc36 (0 = no scale) */
-/* The touch offset is a PHYSICAL-keyboard calibration. It is applied only when the active KDB is
- * a PKB; for a VKB (on-screen, coordinates already in the keyboard view's space) it is forced to
- * zero. Default 1 (this module's bring-up fixture is the pkb); SetKdbNum updates it per layout. */
+/* The touch offset is a physical-keyboard calibration, forced to zero for a VKB (coordinates
+ * already in view space). SetKdbNum updates this per layout; default 1 matches the fixture. */
 static int g_active_is_pkb = 1;
 void xt9kdb_set_active_pkb(int isPkb) { g_active_is_pkb = isPkb ? 1 : 0; }
 int  xt9kdb_active_pkb(void) { return g_active_is_pkb; }
 void xt9kdb_set_scale(int sw, int sh) { g_scaleW = sw; g_scaleH = sh; }   /* SetKeyboardSize */
 
-/* L2: the CONTEXT holds the authoritative scale (ctx+0xfc34/36); this global is only the ctx-less
- * mirror xt9kdb_sensor_to_authored reads. Refresh it from the gesturing context at TouchStart —
- * same reason and same shape as the model re-publish next to it in kdb_trace.c. */
-/* The scale a given context is configured with: ctx+0xfc34/36 when we own SetKeyboardSize and a
- * context was supplied, else the process-global mirror. Single reader for both the publish below
- * and the ctx-aware mapping — they must not drift apart. */
+/* The context holds the authoritative scale (ctx+0xfc34/36); the global is the ctx-less mirror
+ * that xt9kdb_sensor_to_authored reads, refreshed at TouchStart. This is the single reader for
+ * both the publish and the ctx-aware mapping so they cannot drift apart. */
 static void ctx_scale(ET9KDBInfoPtr ctx, int* sw, int* sh) {
 #if defined(XT9KDB_CUTOVER)
     if (ctx) {
@@ -96,7 +74,7 @@ static void ctx_scale(ET9KDBInfoPtr ctx, int* sw, int* sh) {
         return;
     }
 #else
-    (void)ctx;   /* DIFF: the blob owns SetKeyboardSize, so the global is the only scale we set */
+    (void)ctx;   /* DIFF: the engine owns SetKeyboardSize, so the global is our only scale */
 #endif
     *sw = g_scaleW;
     *sh = g_scaleH;
@@ -111,9 +89,7 @@ void xt9kdb_publish_ctx_scale(ET9KDBInfoPtr ctx) {
 #endif
 }
 
-/* The mapping proper, with the model and scale handed in. Everything about sensor->authored that
- * is not "which keyboard" lives here; the two public entry points differ only in where they get
- * that answer. */
+/* The mapping proper; the two public entry points differ only in where model and scale come from. */
 static void sensor_to_authored_with(const ET9KdbLoaded* m, int scaleW, int scaleH,
                                     float sx, float sy, float* ax, float* ay) {
     float aw = m ? (float)m->authoredWidth  : (float)ET9_KDB_AUTHORED_W;
@@ -122,7 +98,7 @@ static void sensor_to_authored_with(const ET9KdbLoaded* m, int scaleW, int scale
     float oy = g_active_is_pkb ? g_calOffY : 0.0f;
     float x = sx - ox;
     float y = sy - oy;
-    if (scaleW) x = aw * x / (float)scaleW;           /* blob: authoredW*(view-off)/scaleW */
+    if (scaleW) x = aw * x / (float)scaleW;           /* engine: authoredW*(view-off)/scaleW */
     if (scaleH) y = ah * y / (float)scaleH;
     if (x < 0.0f) x = 0.0f; else if (x > aw - 1.0f) x = aw - 1.0f;
     if (y < 0.0f) y = 0.0f; else if (y > ah - 1.0f) y = ah - 1.0f;
@@ -134,21 +110,16 @@ void xt9kdb_sensor_to_authored(float sx, float sy, float* ax, float* ay) {
     sensor_to_authored_with(g_kdb_model, g_scaleW, g_scaleH, sx, sy, ax, ay);
 }
 
-/* L4, second half (2026-09-20). The ctx-less form above is right for the GESTURE path, which
- * re-publishes the gesturing context's model and scale at TouchStart and then runs entirely
- * ctx-free. It is wrong for a one-shot QUERY on a handle: GetKeyPositionByTap and
- * GetKeyPositionByStoredTouch used to resolve against whichever model happened to be in the
- * global — so a query on the spellchecker's handle answered with the IME's keyboard. Give those
- * a context instead. Like GetKeyPositions (and unlike TouchStart) this does NOT re-publish: a
- * read-only query must not redirect the ctx-less consumers. */
+/* For one-shot queries on a handle (the ctx-less form suits only the gesture path, which
+ * re-publishes at TouchStart). Does not re-publish: a read-only query must not redirect the
+ * ctx-less consumers. */
 void xt9kdb_sensor_to_authored_ctx(ET9KDBInfoPtr ctx, float sx, float sy, float* ax, float* ay) {
     int sw = 0, sh = 0;
     ctx_scale(ctx, &sw, &sh);
     sensor_to_authored_with(xt9kdb_model_for_ctx_or_global(ctx), sw, sh, sx, sy, ax, ay);
 }
 
-/* The model a context should be answered with: its own if it has loaded one through us, else the
- * legacy global (the bring-up fixture, and every offline driver that never loads per-ctx). */
+/* The context's own model if it loaded one through us, else the legacy global (fixture/offline). */
 const ET9KdbLoaded* xt9kdb_model_for_ctx_or_global(ET9KDBInfoPtr ctx) {
     const ET9KdbLoaded* m = xt9kdb_model_for_ctx(ctx);
     return m ? m : g_kdb_model;
@@ -156,19 +127,16 @@ const ET9KdbLoaded* xt9kdb_model_for_ctx_or_global(ET9KDBInfoPtr ctx) {
 
 int xt9kdb_point_to_key(const ET9KdbLoaded* m, float x, float y) {
     if (!m || !m->keys || m->keyCount == 0) return -1;
-    /* RE-confirmed (resolver 0x5cbe8): the tap is rounded to integer via floor(v+0.5) before testing.
-     * Containment then nearest-center reproduces the blob's choice; the per-key protective core (bbox
-     * x0.6 @ key+0x20) is subsumed by containment, and the NKL bias data is all-zero (see XT9NKL dump),
-     * so the biased center (cx+biasX) equals the geometric center here. */
+    /* Engine resolver @0x5cbe8 rounds via floor(v+0.5), then containment, then nearest center.
+     * Its per-key protective core (bbox x0.6 @ key+0x20) is subsumed by containment, and NKL
+     * bias data is all-zero, so the biased center equals the geometric center. */
     x = floorf(x + 0.5f); y = floorf(y + 0.5f);
-    /* 1) exact containment (INCLUSIVE rects, matching the blob: x in [left,right], y in [top,bottom]) */
+    /* 1) exact containment (inclusive rects) */
     for (ET9U16 i = 0; i < m->keyCount; i++) {
         const ET9KdbKey* k = &m->keys[i];
         if (x >= k->left && x <= k->right && y >= k->top && y <= k->bottom) return (int)i;
     }
-    /* 2) nearest center, using the smart-touch BIASED center (cx+biasX, cy+biasY). With no bias
-     *    data loaded (biasX/biasY = 0) this is plain nearest-center; once Load_AttachBias is owned
-     *    the per-key bias pulls the effective center toward the engine's tuned hit point. */
+    /* 2) nearest biased center (cx+biasX, cy+biasY); plain nearest-center while bias is zero */
     int best = -1; float bestd = 0;
     for (ET9U16 i = 0; i < m->keyCount; i++) {
         const ET9KdbKey* k = &m->keys[i];
@@ -180,10 +148,9 @@ int xt9kdb_point_to_key(const ET9KdbLoaded* m, float x, float y) {
     return best;
 }
 
-/* Smart-touch AMBIGUOUS candidate set for a point (AUTHORED coords): the nearest LETTER keys to the
- * biased centers, within ~1.5 key-widths of the closest, nearest-first, with descending byte freqs.
- * This is the owned-side approximation of the blob's per-tap ambiguous set (resolver @0x5cbe8); the
- * AW side ingests it via ET9AddCustomSymbolSet(symbs, freqs, count). Returns the count (<= max). */
+/* Ambiguous candidate set for an authored point: nearest letter keys within ~1.5 key-widths,
+ * nearest-first with descending byte freqs, fed to AW via ET9AddCustomSymbolSet.
+ * Returns the count (<= max). */
 int xt9kdb_point_to_candidates(const ET9KdbLoaded* m, float x, float y,
                                ET9SYMB* symbs, ET9U8* freqs, int max) {
     if (!m || !m->keys || max <= 0) return 0;
@@ -201,11 +168,8 @@ int xt9kdb_point_to_candidates(const ET9KdbLoaded* m, float x, float y,
         }
     }
     if (n == 0) return 0;
-    /* Candidate-set radius. NOTE: the blob's TAP resolver (0x5cbe8) uses radius² = (Wp²+Hp²)/4 (half
-     * the key diagonal, ~84px) — but that is its VKB tap protective test (PKB taps are hardware
-     * keycodes, never coord-resolved). Our set feeds the GESTURE decoder -> AW, where we deliberately
-     * use a WIDER radius (~1.5 key-widths) so horizontal neighbors are included and AW's lexicon can
-     * recover the swiped word. This is an owned design choice, not a blob mismatch. */
+    /* Deliberately wider than the engine's VKB tap radius (half the key diagonal): the gesture
+     * decoder needs horizontal neighbors so AW's lexicon can recover the swiped word. */
     const ET9KdbKey* p0 = &m->keys[besti[0]];
     float kw = (float)(p0->right - p0->left); if (kw < 1.0f) kw = 108.0f;
     float rad2 = (1.5f * kw) * (1.5f * kw);
@@ -220,11 +184,9 @@ int xt9kdb_point_to_candidates(const ET9KdbLoaded* m, float x, float y,
     return out;
 }
 
-/* Attach a smart-touch bias to key[keyIdx], reversed from Load_AttachBias (@0xba0b0): the bias is
- * clamped to +/-((right-left+1)/2, (bottom-top+1)/2) — i.e. it can pull the effective center at most
- * to a key edge — then stored. The blob REJECTS an out-of-range bias (status 0x1a); we clamp, which
- * is safe for the owned model. The XML loader (Load_XmlKDB) calls this per key that carries bias
- * data; English qwerty_pkb ships none, so this stays inert there. point_to_key reads biasX/biasY. */
+/* Attach a smart-touch bias (Load_AttachBias @0xba0b0), clamped to half the key size so it
+ * moves the center at most to a key edge. The engine rejects out-of-range bias (0x1a); we clamp.
+ * Currently has no caller that applies data. */
 void xt9kdb_attach_bias(ET9KdbLoaded* m, ET9U16 keyIdx, ET9S16 biasX, ET9S16 biasY) {
     if (!m || !m->keys || keyIdx >= m->keyCount) return;
     ET9KdbKey* k = &m->keys[keyIdx];
@@ -236,11 +198,9 @@ void xt9kdb_attach_bias(ET9KdbLoaded* m, ET9U16 keyIdx, ET9S16 biasX, ET9S16 bia
     k->biasY = biasY;
 }
 
-/* --- exports --------------------------------------------------------------- */
-
-/* Project one authored coordinate to VIEW space, matching the blob's per-key writer @0xb9200:
+/* Authored -> view, as the engine's per-key writer @0xb9200:
  *     view = offset + (scale ? round(scale*authored/dim) : authored)
- * where round adds 1 iff remainder > dim/2 (blob: `cmp rem, dim,lsr#1 ; cset hi`). */
+ * where round adds 1 iff remainder > dim/2 (`cmp rem, dim,lsr#1 ; cset hi`). */
 static int xt9_proj(int v, int off, int scale, int dim) {
     if (scale == 0 || dim == 0) return off + v;
     int num = scale * v;
@@ -249,38 +209,26 @@ static int xt9_proj(int v, int off, int scale, int dim) {
     return off + q;
 }
 
-/* @0xbb314 — fill the caller's key-position array. REAL ABI (reversed 2026-07-05):
- *     GetKeyPositions(ctx, out[stride 0x30], capacity, *count)
- * The JNI getKeys (@0x20fc0) calls this with capacity=0x50 and reads exactly 7 fields per 0x30 record:
- *   keyCode@+0x0a, centerX@+0x20, centerY@+0x24, left@+0x28, top@+0x2a, right@+0x2c, bottom@+0x2e
- * — authored coords projected to view via the active offset/scale. We also fill type@+0x00 and index@+0x08
- * (the blob does; the JNI ignores them) and zero the rest. offset/scale come from our owned setters
- * (SetKeyboardOffset/SetKeyboardSize), matching what the IME pushed for this layout. */
+/* @0xbb314 GetKeyPositions(ctx, out[stride 0x30], capacity, *count). JNI getKeys (@0x20fc0)
+ * passes capacity=0x50 and reads keyCode@+0x0a, centerX@+0x20, centerY@+0x24, left@+0x28,
+ * top@+0x2a, right@+0x2c, bottom@+0x2e (view coords). type@+0x00 and index@+0x08 are filled but
+ * ignored; the rest is zeroed. */
 ET9STATUS XT9KDB(GetKeyPositions)(ET9KDBInfoPtr ctx, void* out, ET9U16 capacity, ET9U32* count) {
-    /* L4 (2026-09-20): take the MODEL from the caller's context too, not just the projection.
-     * Taking the model from the legacy global while projecting with the context's offset/scale
-     * meant a getKeys on the spellchecker's handle could return the IME's geometry projected
-     * through the spellchecker's scale. Unlike TouchStart and ProcessTap this does NOT re-publish
-     * to the global: a read-only query must not redirect the ctx-less consumers. The global stays
-     * the fallback for a context that has never loaded a KDB through us (the bring-up fixture,
-     * and every offline test that drives the default model). */
+    /* Model and projection both come from the caller's context. A read-only query does not
+     * re-publish to the global. */
     const ET9KdbLoaded* m = xt9kdb_model_for_ctx_or_global(ctx);
     if (!m || !m->keys) return ET9STATUS_KDB_NOT_LOADED;
     ET9U16 n = m->keyCount;
     if (n == 0) return ET9STATUS_KDB_NOT_LOADED;
-    /* The blob zeroes the count (a full 32-bit word, `str w0, [x23]` @0xbb3dc) as soon as the
-     * context checks pass and before the capacity test; keep that order so a too-small buffer
-     * never leaves a stale count behind either. The width matters: the JNI getKeys reads this slot
-     * with a 32-bit `ldr` into its loop bound (see et9kdb.h). */
+    /* Zero the full 32-bit count before the capacity test (engine `str w0, [x23]` @0xbb3dc), so a
+     * too-small buffer leaves no stale count; JNI getKeys reads it with a 32-bit `ldr`. */
     if (count) *count = 0;
-    if (out && capacity < n) return (ET9STATUS)0x1a;   /* buffer too small (blob returns 0x1a) */
+    if (out && capacity < n) return (ET9STATUS)0x1a;   /* buffer too small */
     if (count) *count = n;
     if (!out) return ET9STATUS_NONE;
 
-    /* Source the projection params from the CONTEXT, exactly as the blob's writer @0xb9200 does — NOT
-     * from our sensor-calibration globals (g_calOffX/Y are the PKB touch->authored offset, a different
-     * quantity). getKeys reads offset@ctx+0xfc30/32 and scale@ctx+0xfc34/36 (ldrh; 0 => no scale). For
-     * the PKB all four are 0, so view == authored and the output is byte-identical to the blob. */
+    /* Projection params come from the context (offset@ctx+0xfc30/32, scale@ctx+0xfc34/36, ldrh),
+     * not from g_calOffX/Y, which is the PKB touch->authored offset, a different quantity. */
     int offX = 0, offY = 0, scaleW = 0, scaleH = 0;
     if (ctx) {
         const unsigned char* c = (const unsigned char*)ctx;
@@ -313,42 +261,26 @@ ET9STATUS XT9KDB(GetKeyboardSize)(ET9KDBInfoPtr ctx, ET9U16* w, ET9U16* h) {
     if (h) *h = g_kdb_model ? g_kdb_model->authoredHeight : 0;
     return ET9STATUS_NONE;
 }
-/* RE-CONFIRMED (ET9KDB_SetKeyboardSize @0xbb668): stores w->ctx+0xfc34, h->ctx+0xfc36 (the scale
- * numerators). 0 means "no scaling" (the config the IME uses for the PKB). The sensor->authored map
- * and getKeys both branch on these being non-zero. We store them so the owned transform matches the
- * blob in either config. (Blob also validates that w==0 iff h==0, else returns BAD_PARAM 1.) */
+/* Engine @0xbb668: w->ctx+0xfc34, h->ctx+0xfc36; 0 means no scaling (the PKB config).
+ * w==0 must match h==0, else status 1. */
 ET9STATUS XT9KDB(SetKeyboardSize)(ET9KDBInfoPtr ctx, ET9U16 w, ET9U16 h) {
-    if ((w == 0) != (h == 0)) return ET9STATUS_ERROR;   /* mismatched: blob returns 1 */
+    if ((w == 0) != (h == 0)) return ET9STATUS_ERROR;
     XT9KDB_LOGD("SetKeyboardSize ctx=%p w=%u h=%u", (void*)ctx, (unsigned)w, (unsigned)h);
-    /* L2/L3 (2026-09-20): store it where the blob stores it — WITH THE CONTEXT. Two engine
-     * contexts exist (primary IME + spellchecker, NuanceSDKManager) and each runs its own
-     * syncKeyboardLayout -> setKeyboardSize, so a process-global made the last sync win
-     * process-wide; and our own GetKeyPositions already read ctx+0xfc34/36, so on a stretched
-     * VKB the recognition path scaled while getKeys handed back unprojected authored rects.
-     * No-op under DIFF, where the blob's own SetKeyboardSize owns the field. */
+    /* Stored per context: the IME and spellchecker contexts each sync their own size.
+     * No-op under DIFF, where the engine's SetKeyboardSize owns the field. */
     xt9kdb_ctx_set_scale(ctx, w, h);
-    /* The ctx-less mirror, for xt9kdb_sensor_to_authored between gestures. TouchStart refreshes
-     * it from the gesturing context (xt9kdb_publish_ctx_scale), so this is a starting value, not
-     * the source of truth. */
+    /* Ctx-less mirror; only a starting value, TouchStart refreshes it from the gesturing ctx. */
     xt9kdb_set_scale((int)w, (int)h);
     return ET9STATUS_NONE;
 }
 ET9STATUS XT9KDB(GetKeyboardDefaultSize)(ET9KDBInfoPtr ctx, ET9U16* w, ET9U16* h) { (void)ctx; if(w)*w=ET9_KDB_AUTHORED_W; if(h)*h=ET9_KDB_AUTHORED_H; return ET9STATUS_NONE; }
-/* Top/left dead-strip offset in SENSOR px. Zero for every layout we ship (athena included —
- * it is authored 1:1); kept for devices that need one. */
+/* Top/left dead-strip offset in sensor px; zero for every shipped layout. */
 ET9STATUS XT9KDB(SetKeyboardOffset)(ET9KDBInfoPtr ctx, ET9S16 x, ET9S16 y) {
     (void)ctx; g_calOffX = (float)x; g_calOffY = (float)y; return ET9STATUS_NONE;
 }
-/* Resolve a tap (RAW sensor x,y) to the key under it. FUNCTIONAL: sensor->authored translation
- * then containment/nearest. NOTE: the blob's ByTap (@0xc02d8) additionally applies the per-key
- * smart-touch bias (floating-point proximity weighting vs the active keyboard half-dims) — that
- * refinement is tracked separately; nearest-center is the correct first cut. `out` receives the
- * owned ET9KdbKey; the blob's out is the 0x30 record (match only for DIFF/CUTOVER).
- *
- * L4 (2026-09-20): model AND projection now both come from the caller's context — see
- * xt9kdb_sensor_to_authored_ctx. Reachability note: this symbol IS in the cutover contract, but
- * the blob's only reference to it is a tail call from GetKeyPositionByStoredTouch, which has no
- * callers at all (elf_cutover.py INERT_NO_CALLERS), so nothing on device calls it today. */
+/* Resolve a raw sensor tap to the key under it, using the caller's context. The engine's ByTap
+ * (@0xc02d8) also applies smart-touch proximity weighting, not done here. `out` receives an
+ * ET9KdbKey, not the engine's 0x30 record. Its only engine caller has no callers itself. */
 ET9STATUS XT9KDB(GetKeyPositionByTap)(ET9KDBInfoPtr ctx, ET9U16 x, ET9U16 y, void* out) {
     if (!ctx) return ET9STATUS_INVALID_MEMORY;
     const ET9KdbLoaded* m = xt9kdb_model_for_ctx_or_global(ctx);
@@ -361,8 +293,8 @@ ET9STATUS XT9KDB(GetKeyPositionByTap)(ET9KDBInfoPtr ctx, ET9U16 x, ET9U16 y, voi
     return ET9STATUS_NONE;
 }
 
-/* Resolve the idx-th stored gesture sample to its key (same resolution as ByTap). The PATH is
- * process-global (one gesture at a time, §3.1), so only the resolution is per-context. */
+/* Resolve the idx-th stored gesture sample like ByTap. The path is process-global (one gesture
+ * at a time); only the resolution is per-context. */
 ET9STATUS XT9KDB(GetKeyPositionByStoredTouch)(ET9KDBInfoPtr ctx, ET9U16 i, void* out) {
     if (!ctx) return ET9STATUS_INVALID_MEMORY;
     const ET9KdbLoaded* m = xt9kdb_model_for_ctx_or_global(ctx);
@@ -376,26 +308,19 @@ ET9STATUS XT9KDB(GetKeyPositionByStoredTouch)(ET9KDBInfoPtr ctx, ET9U16 i, void*
     if (out) *(ET9KdbKey*)out = m->keys[k];
     return ET9STATUS_NONE;
 }
-/* ---- Long-tail queries -----------------------------------------------------------------------
- * These are peripheral to the gesture/tap core and read context working regions that belong to
- * subsystems the owned module does not yet build (shift/page state, multitap tables). Each is
- * implemented with the same context validation the blob does and returns a well-defined EMPTY
- * result, which is safe for the CKB swipe/tap pipeline (it uses none of them). Full fidelity is a
- * CUTOVER item; the real multi-out ABIs are recorded below.
- */
+/* Long-tail queries for subsystems not built yet (shift/page state, multitap). Each validates
+ * the context and returns an empty result; the swipe/tap pipeline uses none of them. */
 
-/* Blob @0xba848 GetSwitchedKeys(ctx, out_active:u8*, out_count:?, out_sym:u16*, ...): reports keys
- * whose symbol changes under the current shift/page state, read from the ctx+0x18000 working area
- * (+1866 u8, +1868 u16). Owned: no shift-state subsystem yet -> report "no switched keys". */
+/* Engine @0xba848 GetSwitchedKeys(ctx, out_active:u8*, out_count:?, out_sym:u16*, ...): keys whose
+ * symbol changes under shift/page state, from ctx+0x18000 (+1866 u8, +1868 u16). Reports none. */
 ET9STATUS XT9KDB(GetSwitchedKeys)(ET9KDBInfoPtr ctx, void* out) {
     if (!ctx) return ET9STATUS_INVALID_MEMORY;
     if (out) *(ET9U8*)out = 0;   /* count of switched keys = 0 */
     return ET9STATUS_NONE;
 }
 
-/* Blob @0xbaff0 GetMultiTapSequence(ctx, symb, out): the multitap cycle for a symbol (phone-keypad
- * ABC input; symb gated < 0x1f). Owned: multitap tables not loaded (Load_AttachMultitapInfo stub)
- * and the CKB path never multitaps -> empty sequence. */
+/* Engine @0xbaff0 GetMultiTapSequence(ctx, symb, out): multitap cycle for a symbol (symb < 0x1f).
+ * No multitap tables are loaded, so the sequence is empty. */
 ET9STATUS XT9KDB(GetMultiTapSequence)(ET9KDBInfoPtr ctx, ET9SYMB s, void* out) {
     (void)s;
     if (!ctx) return ET9STATUS_INVALID_MEMORY;
@@ -403,8 +328,7 @@ ET9STATUS XT9KDB(GetMultiTapSequence)(ET9KDBInfoPtr ctx, ET9SYMB s, void* out) {
     return ET9STATUS_NONE;
 }
 
-/* Blob @0xbde90 GetTouchInfo(ctx, out_flag:u8*, out_val:u32*, out_ptr:void**, ...): basic touch
- * state; the blob zero-inits its three out-params. Owned: return the same zeroed defaults. */
+/* Engine @0xbde90 GetTouchInfo(ctx, out_flag:u8*, out_val:u32*, out_ptr:void**, ...): zeroed defaults. */
 ET9STATUS XT9KDB(GetTouchInfo)(ET9KDBInfoPtr ctx, void* out) {
     if (!ctx) return ET9STATUS_INVALID_MEMORY;
     if (out) *(ET9U32*)out = 0;

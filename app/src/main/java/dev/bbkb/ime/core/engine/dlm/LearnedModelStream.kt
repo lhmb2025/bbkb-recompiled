@@ -1,15 +1,11 @@
 package dev.bbkb.ime.core.engine.dlm
 
 /**
- * The engine's portable form of the learned model: the byte stream `ET9AWDLMExport` writes and
- * `ET9AWDLMImport` reads back (`NuanceSDK.exportDLM` / `importDLM`). Unlike the model file
- * (`alphadlm.bin`, two megabytes of memory-mapped structures with process pointers inside), the
- * stream is self-contained and checksummed, so it can be saved, carried to another phone and
- * read without the engine — which is what this object does: it reads the stream, so the app can
- * show each word's use count and validate a file before handing it to the engine, and it writes
- * changed use counts back into a stream the engine accepts.
+ * Reads and rewrites the engine's portable learned-model stream (`ET9AWDLMExport` / `ET9AWDLMImport`).
+ * Unlike `alphadlm.bin` (memory-mapped structures with process pointers), it is self-contained and
+ * checksummed, so it can be validated and edited without the engine.
  *
- * ## Layout (version 5, the one this engine writes; recovered from the engine's own reader and writer)
+ * ## Layout (version 5, the one this engine writes)
  *
  * All multi-byte values are big-endian.
  *
@@ -24,20 +20,16 @@ package dev.bbkb.ime.core.engine.dlm
  *      u8 · u32 · u16 k · k×(u16, u16)
  * u16  c · u16 · c×u32
  * u32  checksum of everything before it: h = h × 65599 + byte, 32-bit
- * then optional zero padding (the engine writes the stream into a buffer rounded up to a
- * kilobyte, and accepts the padding on import)
+ * then optional zero padding (the engine rounds its buffer up to a kilobyte and accepts it on import)
  * ```
  *
- * The use count is what the engine adds to on every use of a word and halves across the board
- * when any count would pass 65535, so it is a relative weight, not a lifetime total. Quality is
- * the record's status, a small signed number: 15 for a word the user added on purpose, 3 (or 2)
- * for a dictionary or contact word the model only tracks, 0 (or 1) for a word learned from
- * typing, −1 to −11 for a word typed once and not yet kept (the engine lowers it each time the
- * word is offered and passed over, and drops the word at −11; typing it again raises it to 0),
- * and −15 for a word the user deleted (kept so it stays suppressed) or a record due for cleaning.
- * The engine's own word list shows only qualities 0, 1 and 4 and up. The language is the engine's two-byte language id (0x0B09 for US English, 0x0119 for
- * Russian: the primary language in the low byte). The category is 0 for an ordinary learned word;
- * words in a category above 255 are neither counted up nor aged by the engine.
+ * Use count: a relative weight; the engine halves all counts when any would pass 65535.
+ * Quality (signed status): 15 added on purpose; 3 or 2 a dictionary or contact word only tracked;
+ * 0 or 1 learned from typing; −1 to −11 typed once, lowered each time it is passed over and dropped
+ * at −11 (typing it again sets 0); −15 deleted (kept to stay suppressed) or due for cleaning. The
+ * engine's own word list shows only qualities 0, 1 and 4 and up.
+ * Language: the two-byte engine id, primary language in the low byte (0x0B09 US English, 0x0119 Russian).
+ * Category: 0 for an ordinary learned word; above 255 is neither counted up nor aged.
  */
 object LearnedModelStream {
 
@@ -57,11 +49,7 @@ object LearnedModelStream {
     /** One learned-word category, kept opaque beyond its id and names. */
     class Category(val id: Int, val name: String, val label: String)
 
-    /**
-     * One learned word. [count] is the engine's use count, [quality] its status (see above),
-     * [flags] the record's flag byte; [countOffset] is where the record's count sits in the
-     * stream, for [withChanges].
-     */
+    /** One learned word; [countOffset] is where the record's count sits in the stream, for [withChanges]. */
     class Word(
         val text: String,
         val count: Int,
@@ -72,10 +60,7 @@ object LearnedModelStream {
         internal val countOffset: Int,
     )
 
-    /**
-     * A parsed stream. [bytes] is exactly the stream the engine wrote — through the checksum,
-     * without padding — so it can be handed back to the engine as it is.
-     */
+    /** A parsed stream; [bytes] runs through the checksum without padding, ready to hand back to the engine. */
     class Model(
         val version: Int,
         val updateCount: Long,
@@ -117,9 +102,8 @@ object LearnedModelStream {
     }
 
     /**
-     * Reads [bytes] as the engine's export stream. Throws [InvalidModelException] when it is not
-     * one: wrong version, truncated, a count the engine itself would refuse, a checksum that does
-     * not match, or data after the checksum that is not zero padding.
+     * Reads [bytes] as the engine's export stream. Throws [InvalidModelException] on a wrong version,
+     * truncation, a count the engine would refuse, a bad checksum, or non-zero data after it.
      */
     fun parse(bytes: ByteArray): Model {
         if (bytes.size > MAX_BYTES) throw InvalidModelException("too large to be a learned model (${bytes.size} bytes)")
@@ -182,10 +166,8 @@ object LearnedModelStream {
     private const val QUALITY_OFFSET = 7
 
     /**
-     * [model]'s stream with the use counts in [counts] (word index in [Model.words] to new count,
-     * 1..65535) and the qualities in [qualities] (word index to new quality, −15..15) written in
-     * place and the checksum recomputed. Everything else is byte-identical, so the engine reads
-     * it back as the same model with those records changed.
+     * [model]'s stream with [counts] (word index to count, 1..65535) and [qualities] (word index to
+     * quality, −15..15) written in place and the checksum recomputed; all else is byte-identical.
      */
     fun withChanges(model: Model, counts: Map<Int, Int> = emptyMap(), qualities: Map<Int, Int> = emptyMap()): ByteArray {
         val out = model.bytes.copyOf()

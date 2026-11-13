@@ -3,15 +3,9 @@ package dev.bbkb.ime.keyboard.inputboard.clipboard
 import android.content.Context
 import dev.bbkb.ime.core.settings.PrefsManager
 
-/**
- * The clipboard board's preferences: their keys, defaults and how a stored value is read.
- *
- * `AuxiliaryInputScreen` writes them and the board reads them through here. The settings search index
- * anchors on the keys, so they must not be renamed.
- */
+/** The clipboard board's preferences. The settings search index anchors on the keys: do not rename them. */
 object ClipboardPrefs {
-
-    /** Off stops capturing and wipes the stored history (see `AuxiliaryInputScreen`). */
+    /** Off stops capturing and wipes the stored history. */
     const val KEY_HISTORY_ENABLED = "pref_clipboard_history_enabled"
     const val DEFAULT_HISTORY_ENABLED = true
 
@@ -23,18 +17,16 @@ object ClipboardPrefs {
     const val RETENTION_7D = "7d"
     const val DEFAULT_RETENTION = RETENTION_1H
 
-    /** Fetch a title and thumbnail for copied https links. Off by default: it uses the network. */
+    /** Off by default: it uses the network. */
     const val KEY_LINK_PREVIEWS = "pref_clipboard_link_previews"
     const val DEFAULT_LINK_PREVIEWS = false
 
-    /** Search anchor of the "Clear history" action row, which has no preference of its own. */
-
-    /** The retention of [RETENTION_NEVER]: no unpinned clip expires. */
+    /** The retention of [RETENTION_NEVER]. */
     const val NO_EXPIRY = Long.MAX_VALUE
 
     private const val HOUR_MS = 60L * 60L * 1000L
 
-    /** The retention window for a stored value; an unknown value falls back to the default. */
+    /** An unknown value falls back to the default. */
     @JvmStatic
     fun retentionMillis(value: String?): Long = when (value) {
         RETENTION_NEVER -> NO_EXPIRY
@@ -56,8 +48,7 @@ object ClipboardPrefs {
     fun isLinkPreviewsEnabled(context: Context): Boolean =
         readBoolean(context, KEY_LINK_PREVIEWS, DEFAULT_LINK_PREVIEWS)
 
-    // Preferences in credential-protected storage throw before the user unlocks; the defaults
-    // stand in until then.
+    // Credential-protected prefs throw before unlock; the defaults stand in until then.
     private fun readBoolean(context: Context, key: String, default: Boolean): Boolean = try {
         PrefsManager.getPrefs(context).getBoolean(key, default)
     } catch (e: IllegalStateException) {

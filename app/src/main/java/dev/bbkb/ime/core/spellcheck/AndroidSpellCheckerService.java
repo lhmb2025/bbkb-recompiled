@@ -57,33 +57,26 @@ public final class AndroidSpellCheckerService extends SpellCheckerService implem
     private static final String[] EMPTY_STRING_ARRAY = new String[0];
 
     /**
-     * How many languages the spell checker's engine keeps loaded at once. A request in a language
-     * that is not loaded adds it rather than replacing the others, so two fields in different
-     * languages do not reload the engine on every check; past this many, the oldest are dropped.
+     * Languages kept loaded at once. A new language is added rather than replacing the others, so
+     * fields in different languages do not reload the engine on every check; the oldest drop off.
      */
     static final int MAX_LOADED_LANGUAGES = 4;
 
-    /**
-     * How long the engine stays loaded with no request before it is disposed (P-9): it holds a
-     * private copy of each loaded language's dictionary, 5 to 6 MB of native heap apiece, in the
-     * keyboard's own process. The next request loads it again.
-     */
+    /** Idle time before the dictionary is released (5 to 6 MB of native heap per language). */
     static final long ENGINE_IDLE_RELEASE_MS = 3 * 60 * 1000L;
 
     /** Preference: whether words the keyboard learned from typing count as spelled correctly. */
     static final String PREF_ACCEPT_LEARNED_WORDS = "pref_spellcheck_accept_learned_words";
 
     /**
-     * How long a binder thread waits for a language load on the engine loader thread. The load
-     * queues behind the keyboard's own loads there; past this the request has no opinion on its
-     * words and the load still lands for the next one.
+     * Binder-thread wait for a language load (it queues behind the keyboard's loads). On timeout
+     * the request has no opinion and the load still lands for the next one.
      */
     static final long LOAD_WAIT_MS = 30_000L;
 
     /**
-     * How long a binder thread waits for one dictionary answer on the engine thread, where it
-     * queues behind typing. A validity check that times out answers "valid" (a slow engine must
-     * not paint a red squiggle); a suggestion lookup answers none.
+     * Binder-thread wait for one dictionary answer (it queues behind typing). A timed-out validity
+     * check answers "valid" so a slow engine paints no squiggle; a suggestion lookup answers none.
      */
     static final long QUERY_WAIT_MS = 5_000L;
 
@@ -101,27 +94,20 @@ public final class AndroidSpellCheckerService extends SpellCheckerService implem
 
     private DictionaryLoader mDictionaryLoader = null;
 
-    /**
-     * The languages the engine holds, the dictionary's own language first; null when nothing is
-     * loaded. Written only with both dictionary permits held.
-     */
+    /** Languages the engine holds, the dictionary's own first; null when none. Written with both permits held. */
     private volatile List<Locale> mLoadedLocales = null;
 
     private final ConcurrentHashMap<Locale, Keyboard> mKeyboardCache = new ConcurrentHashMap<>();
 
     private final SuggestionStripSettings mSuggestionStripSettings = new SuggestionStripSettings(true, null, false);
 
-    /**
-     * Bumped whenever what the engine answers from may have changed under the sessions: a load of
-     * languages, or the engine's release. Sessions drop their cached verdicts when it moves.
-     */
+    /** Bumped on every language load or release; sessions drop cached verdicts when it moves. */
     private final AtomicInteger mEngineGeneration = new AtomicInteger();
 
     /**
-     * Session requests running now. The engine is released only while this is zero, read with
-     * both dictionary permits held: a request counts itself before its first engine call, and
-     * that call (the dictionary load) needs a permit, so it either stops the release or runs
-     * after it and loads a fresh engine. Nothing in a request touches a disposed engine.
+     * Requests running now. Release happens only while this is zero, read with both permits held: a
+     * request counts itself before its first (permit-taking) engine call, so it either blocks the
+     * release or runs after it and reloads. No request touches a released dictionary.
      */
     private final AtomicInteger mActiveRequests = new AtomicInteger();
 
@@ -146,7 +132,7 @@ public final class AndroidSpellCheckerService extends SpellCheckerService implem
         }
     }
 
-    @Override // android.app.Service
+    @Override
     public void onCreate() {
         super.onCreate();
         this.mIdleHandler = new Handler(Looper.getMainLooper());
@@ -159,14 +145,7 @@ public final class AndroidSpellCheckerService extends SpellCheckerService implem
         onSharedPreferenceChanged(defaultSharedPreferences, PREF_ACCEPT_LEARNED_WORDS);
     }
 
-    /**
-     * Audit GD-15/GX-25: onCreate registers this service as a preference-change
-     * listener and the class had no onDestroy at all - the only unbalanced
-     * registration in the tree. SharedPreferencesImpl holds listeners weakly, so the
-     * service is not leaked, but a destroyed-and-recreated service kept receiving
-     * onSharedPreferenceChanged on the dead instance until GC - and that callback
-     * acquires both dictionary permits and rebuilds the dictionary.
-     */
+    /** Unregisters the pref listener, which would otherwise rebuild the dictionary on a dead instance until GC. */
     @Override
     public void onDestroy() {
         PrefsManager.INSTANCE.getPrefs(this).unregisterOnSharedPreferenceChangeListener(this);
@@ -205,10 +184,7 @@ public final class AndroidSpellCheckerService extends SpellCheckerService implem
         }
     }
 
-    /**
-     * At most one countdown is posted; when it fires early (requests came and went since), it
-     * re-posts for the rest rather than every request moving it.
-     */
+    /** At most one countdown is posted; if it fires early it re-posts for the remainder. */
     private void scheduleIdleRelease(long delayMs) {
         final Handler handler = this.mIdleHandler;
         if (handler != null && this.mIdleReleasePosted.compareAndSet(false, true)) {
@@ -217,10 +193,8 @@ public final class AndroidSpellCheckerService extends SpellCheckerService implem
     }
 
     /**
-     * Releases the engine when no request has run for {@link #ENGINE_IDLE_RELEASE_MS}. Returns
-     * how long to wait before asking again, or 0 when there is nothing to wait for (released,
-     * or a request is running and its end restarts the countdown). Never blocks: it runs on the
-     * main thread, so a busy dictionary just means another try later.
+     * Releases after {@link #ENGINE_IDLE_RELEASE_MS} idle. Returns the delay before asking again, or 0
+     * (released, or a running request will restart the countdown). Main thread, so it never blocks.
      */
     long releaseEngineIfIdle(long nowMs) {
         if (this.mActiveRequests.get() > 0) {
@@ -244,11 +218,9 @@ public final class AndroidSpellCheckerService extends SpellCheckerService implem
     }
 
     /**
-     * Closes the dictionary; the next request's {@link #initDictionaryForLocale} loads the
-     * languages again. The engine itself is kept: disposing it while the typing engine is in
-     * use crashed the typing engine (see NuanceSDKManager.resetForTests), so the memory the
-     * release used to free stays allocated and only the generation the sessions key their
-     * cached verdicts on moves. Callers hold both permits and have seen no request running.
+     * Closes the dictionary and bumps the generation. The engine itself is never disposed: that
+     * crashes the typing engine (see NuanceSDKManager.resetForTests). Callers hold both permits
+     * and have seen no request running.
      */
     private void releaseEngineLocked() {
         this.mLoadedLocales = null;
@@ -270,18 +242,13 @@ public final class AndroidSpellCheckerService extends SpellCheckerService implem
             null /* 17 Sinhala */, "tamil", "telugu", "thai", "qwerty" /* 21 Vietnamese */};
 
     /**
-     * The keyboard layout the spell checker reads key positions from for {@code locale}, or null
-     * when it has none for that script. Null is not an error: the words are still checked, only
-     * without knowing which keys sit next to each other. (This used to throw, and the throw
-     * escaped session creation, so a session in, say, Chinese crashed the service.)
+     * Layout for key positions in {@code locale}, or null when the script has none. Null is not an
+     * error (words are checked without proximity); throwing here would crash session creation.
      */
     static String getKeyboardLayoutName(Locale locale) {
         final int script = ScriptUtils.getScriptFromLocale(locale);
         if (script == 3) {
-            // Cyrillic. This was a jadx-reconstructed String switch left as raw
-            // hash comparisons against 3141/3486/3489 with a char sentinel, which
-            // would silently mis-key the moment a language tag was added
-            // (audit GD-21).
+            // Cyrillic.
             switch (locale.getLanguage()) {
                 case "bg":
                     return "bulgarian";
@@ -296,7 +263,7 @@ public final class AndroidSpellCheckerService extends SpellCheckerService implem
         return script >= 0 && script < LAYOUT_BY_SCRIPT.length ? LAYOUT_BY_SCRIPT[script] : null;
     }
 
-    @Override // android.content.SharedPreferences.OnSharedPreferenceChangeListener
+    @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
         boolean useContacts;
         if ("pref_spellcheck_use_contacts".equals(key) && (useContacts = sharedPreferences.getBoolean("pref_spellcheck_use_contacts", true)) != this.mUseContacts) {
@@ -325,7 +292,7 @@ public final class AndroidSpellCheckerService extends SpellCheckerService implem
         }
     }
 
-    @Override // android.service.textservice.SpellCheckerService
+    @Override
     public SpellCheckerService.Session createSession() {
         return new AndroidSpellCheckerSession(this);
     }
@@ -339,21 +306,17 @@ public final class AndroidSpellCheckerService extends SpellCheckerService implem
     }
 
     /**
-     * No opinion on the word: neither in the dictionary nor a typo, so nothing is underlined.
-     * The answer while the session's language cannot be loaded (its pack is not installed), in
-     * place of checking the words against whichever language the engine held before.
+     * No opinion (nothing underlined): the answer while the session's language has no installed
+     * pack, instead of checking against whatever language the engine held.
      */
     public static SuggestionsInfo createUnknownResult() {
         return new SuggestionsInfo(0, EMPTY_STRING_ARRAY);
     }
 
     /**
-     * Whether the loaded dictionary knows {@code word}. The session asks only after
-     * {@link #initDictionaryForLocale} has succeeded; with no dictionary the answer is true, so
-     * a stray call never underlines a word. With learned words not accepted, the engine answers
-     * from its language dictionaries alone, and the personal dictionary's words and (when used)
-     * the contact names are added back from the lists the keyboard already keeps: the engine
-     * holds those in its learned model too.
+     * Whether the dictionary knows {@code word}; true with no dictionary. With learned words not
+     * accepted, the engine checks language dictionaries only, and personal words and contacts (which
+     * live in the same learned model) are added back from the keyboard's own lists.
      */
     public boolean isValidWord(String word) {
         this.mDictSemaphore.acquireUninterruptibly();
@@ -362,8 +325,7 @@ public final class AndroidSpellCheckerService extends SpellCheckerService implem
                 Logger.info("BlackBerrySpellChecker", "No dictionary loaded, can't check if word is valid");
                 return true;
             }
-            // The engine answers on the engine thread, bounded; the permit held here keeps the
-            // dictionary from being released or reloaded under the question.
+            // The held permit keeps the dictionary from being released or reloaded mid-query.
             final DictionaryLoader loader = this.mDictionaryLoader;
             if (this.mAcceptLearnedWords) {
                 return EngineThreads.query(() -> loader.isWordValid(word, false), QUERY_WAIT_MS, Boolean.TRUE);
@@ -377,16 +339,12 @@ public final class AndroidSpellCheckerService extends SpellCheckerService implem
     }
 
     /**
-     * Suggestions for the word the tracker {@code trackerFactory} builds. The factory runs on the
-     * engine thread, in the same op as the lookup, so the tracker's feeds and the lookup reach
-     * the engine as one group with nothing of the keyboard's in between. Null on a timeout.
+     * Suggestions for the word {@code trackerFactory} builds. The factory runs in the same engine-thread
+     * op as the lookup so no keyboard work lands between the feeds and the lookup. Null on timeout.
      */
     public SuggestionResult getSuggestions(Supplier<ComposingTextTracker> trackerFactory, PrevWordsInfo prevWordsInfo, ProximityGrid proximityGrid) throws Throwable {
         this.mDictSemaphore.acquireUninterruptibly();
-        // Audit GD-12: poll() returns null on an empty queue and sessionId.intValue()
-        // dereferenced it unguarded. The pool and the semaphore both hold 2, so this is
-        // balanced today, but any permit change turns it into an NPE inside the
-        // spell-checker binder call.
+        // Pool and semaphore both hold 2; the null check guards against them drifting apart.
         Integer sessionId = this.mSessionIdPool.poll();
         if (sessionId == null || this.mDictionaryLoader == null) {
             this.mDictSemaphore.release();
@@ -407,15 +365,9 @@ public final class AndroidSpellCheckerService extends SpellCheckerService implem
     }
 
     /**
-     * Makes sure the engine holds every language a session in {@code locale} checks against (see
-     * {@link #languagesForSession}). False when that cannot be done, chiefly because the session's
-     * own language has no installed pack; the session then has no opinion on its words.
-     *
-     * <p>Nothing is reloaded while those languages are all loaded already. That used to happen on
-     * every request: the check compared the session's language with the dictionary's own language
-     * only, so text in a keyboard's second language reloaded the dictionary each time, and the
-     * other languages were re-sent to the engine on every call. A reload holds the engine lock the
-     * keyboard also types through, so it could stall typing as well as the underlines.
+     * Ensures the engine holds every language of {@link #languagesForSession}; false when it cannot
+     * (chiefly no installed pack for the session's language). Nothing reloads while all are loaded:
+     * a reload holds the engine lock the keyboard types through.
      */
     public boolean initDictionaryForLocale(Locale locale) {
         final SubtypeManager subtypes = SubtypeManager.getInstance();
@@ -433,9 +385,7 @@ public final class AndroidSpellCheckerService extends SpellCheckerService implem
         } finally {
             this.mDictSemaphore.release();
         }
-        // Loading needs the engine to itself: no other session may be reading the dictionary.
-        // The load runs on the engine loader thread and takes both permits there, so a wait
-        // that times out leaves nothing unguarded; this binder thread only waits, bounded.
+        // The load takes both permits on the loader thread, so a timed-out wait here leaves nothing unguarded.
         final boolean useContacts = this.mUseContacts;
         final Future<Boolean> load = EngineThreads.load(() -> {
             this.mDictSemaphore.acquireUninterruptibly(2);
@@ -508,12 +458,9 @@ public final class AndroidSpellCheckerService extends SpellCheckerService implem
     }
 
     /**
-     * The languages a session in {@code sessionLocale} checks words against, its own first: when
-     * the session's language is one of the current keyboard's ({@code keyboardPrimary} or one of
-     * its {@code keyboardAdditional} extras), the rest of that keyboard's languages too, layout
-     * language first, then the extras in their order. Languages without an installed pack are
-     * left out. Empty when the session's own language is not installed: checking its words
-     * against another language would underline nearly all of them.
+     * Languages to check against: the session's own first, then, if it is one of the current
+     * keyboard's, that keyboard's other languages in order. Uninstalled ones are left out; empty when
+     * the session's own is not installed (another language would underline nearly every word).
      */
     static List<Locale> languagesForSession(Locale sessionLocale, Locale keyboardPrimary,
             Set<Locale> keyboardAdditional, Predicate<Locale> isInstalled) {
@@ -538,10 +485,8 @@ public final class AndroidSpellCheckerService extends SpellCheckerService implem
     }
 
     /**
-     * The languages to load for a request needing {@code wanted}: those first, in their order,
-     * then the languages already {@code loaded} that still fit under {@code max}, most recently
-     * loaded first. Keeping them means a field in another language next to this one does not
-     * reload the engine on each check.
+     * {@code wanted} first, then already {@code loaded} languages that still fit under {@code max},
+     * so a neighbouring field in another language does not reload the engine on each check.
      */
     static List<Locale> mergeLanguages(List<Locale> loaded, List<Locale> wanted, int max) {
         final List<Locale> result = new ArrayList<>(wanted);
@@ -558,7 +503,7 @@ public final class AndroidSpellCheckerService extends SpellCheckerService implem
         return result;
     }
 
-    @Override // android.app.Service
+    @Override
     public boolean onUnbind(Intent intent) {
         this.mDictSemaphore.acquireUninterruptibly(2);
         try {

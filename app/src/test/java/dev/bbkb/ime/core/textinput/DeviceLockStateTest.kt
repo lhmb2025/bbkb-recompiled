@@ -17,9 +17,8 @@ import org.robolectric.Shadows.shadowOf
 import org.robolectric.annotation.Config
 
 /**
- * The lock state the clipboard and the input menu honour is followed from screen and unlock
- * broadcasts instead of a TrustManager call per field (P-12), and is still right on the first
- * field, after the screen goes off, and on the lock screen's own field.
+ * The lock state the clipboard and input menu honour follows screen and unlock broadcasts (no
+ * TrustManager call per field) and is right on the first field, after screen off, and on the lock screen.
  */
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [34])
@@ -49,7 +48,7 @@ class DeviceLockStateTest {
         keyguard.setIsDeviceLocked(true)
         assertTrue(InputMethodHelper.isDeviceLocked())
         keyguard.setIsDeviceLocked(false)
-        // No event yet: the kept answer stands (this is the per-field call that went away).
+        // No event yet: the kept answer stands, with no per-field call.
         assertTrue(InputMethodHelper.isDeviceLocked())
     }
 

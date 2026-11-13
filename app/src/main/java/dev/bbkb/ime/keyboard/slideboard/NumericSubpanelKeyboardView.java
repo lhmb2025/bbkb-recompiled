@@ -33,29 +33,29 @@ public class NumericSubpanelKeyboardView extends SimplifiedKeyboardView implemen
 
     private SettingsManager settingsManager;
 
-    @Override // dev.bbkb.ime.keyboard.slideboard.SlideboardComponent
+    /** @param aVar unused */
+    @Override
     public void setListener(SlideboardComponent.Listener aVar) {
+        // The numeric pad never slides itself shut.
     }
 
     public NumericSubpanelKeyboardView(Context context, AttributeSet attributeSet) {
         this(context, attributeSet, R.attr.mainKeyboardViewStyle);
     }
 
+    /** @param i the default style attribute */
     public NumericSubpanelKeyboardView(Context context, AttributeSet attributeSet, int i) {
         super(context, attributeSet, i);
         this.gestureAvailability = new GestureInputAvailability();
         this.settingsManager = SettingsManager.getInstance();
     }
 
+    /** @param c0924a the shared gesture detector, or null on release */
     public void setGestureDetector(MultiPointerGestureDetector c0924a) {
         this.gestureDetector = c0924a;
     }
 
-    /**
-     * Real key surfaces in every style (not the aux bars' flat strip), painted in the
-     * slideboard colours: KeyboardView gives backgroundType slide / slideFunctional the
-     * palette's slide tones, and this view's own ground is the darker panel tone.
-     */
+    /** Real key surfaces in every style, in the palette's slide tones on the darker panel ground. */
     @Override
     protected boolean drawsFlatModernBackground() {
         return false;
@@ -66,11 +66,12 @@ public class NumericSubpanelKeyboardView extends SimplifiedKeyboardView implemen
         return KeyboardColorManager.INSTANCE.getSlideGroundColor();
     }
 
-    @Override // dev.bbkb.ime.keyboard.slideboard.SlideboardComponent
+    @Override
     public boolean isShowing() {
         return getVisibility() == View.VISIBLE;
     }
 
+    /** @param str the currency symbol */
     public void updateKey(String str) {
         Keyboard keyboard = getKeyboard();
         if (keyboard != null) {
@@ -78,7 +79,7 @@ public class NumericSubpanelKeyboardView extends SimplifiedKeyboardView implemen
         }
     }
 
-    /** Puts the currency setting's symbol on {@code keyboard}'s currency key. */
+    /** @param str the currency setting's symbol, put on the currency key */
     public static void updateCurrencyKey(Keyboard keyboard, String str) {
         Key keyM6597a;
         char cCharAt;
@@ -93,11 +94,9 @@ public class NumericSubpanelKeyboardView extends SimplifiedKeyboardView implemen
     }
 
     /**
-     * On-screen position (reading order, 4 rows of 5) -> index in the stored
-     * {@code custom_slideboard_symbols} list. The stored order is a historical accident (it was
-     * the order of {@link Keyboard#getKeys()}, which sorts by {@link Key#hashCode()} and so
-     * changes whenever a key's label does), so keys are matched by position, never by list index.
-     * The settings editor reads and writes through the same table.
+     * On-screen position (reading order, 4 rows of 5) to index in the stored
+     * {@code custom_slideboard_symbols} list. Match keys by position, never by
+     * {@link Keyboard#getKeys()} index (it changes with labels). The settings editor uses this too.
      */
     public static final int[] STORAGE_INDEX_FOR_POSITION = {
             15, 16, 17, 4, 5,
@@ -109,11 +108,7 @@ public class NumericSubpanelKeyboardView extends SimplifiedKeyboardView implemen
     /** On-screen position of the currency key (row 2, column 4). */
     public static final int CURRENCY_POSITION = 8;
 
-    /**
-     * Applies a customised pad. A currency slot still holding one of {@code currencyPlaceholders}
-     * (the shipped "$", or the locale's own symbol) is left alone, so the currency key keeps
-     * following the currency setting and the language.
-     */
+    /** A currency slot still holding a placeholder is left alone, so it keeps following the setting. */
     public void applyCustomKeys(List<String> stored, Set<String> currencyPlaceholders) {
         Keyboard keyboard = getKeyboard();
         if (keyboard == null || stored == null || stored.size() != STORAGE_INDEX_FOR_POSITION.length) {
@@ -135,10 +130,7 @@ public class NumericSubpanelKeyboardView extends SimplifiedKeyboardView implemen
         return keys;
     }
 
-    /**
-     * Puts {@code symbols} (reading order) on {@code keyboard}'s keys. The keyboard's own path,
-     * and the settings editor's preview, which draws the pad being edited.
-     */
+    /** Puts {@code symbols} (reading order) on the keys; also used by the settings editor's preview. */
     public static void applyKeysByPosition(Keyboard keyboard, List<String> symbols, Set<String> currencyPlaceholders) {
         List<Key> keys = keysByPosition(keyboard);
         if (keys.size() != symbols.size()) {
@@ -155,11 +147,12 @@ public class NumericSubpanelKeyboardView extends SimplifiedKeyboardView implemen
         keyboard.rebuildProximityGrid();
     }
 
+    /** @param str the symbol; empty keeps {@code key} */
     private static Key createReplacementKey(Keyboard keyboard, String str, Key key) {
         return str.length() == 0 ? key : new Key(new MoreKeySpec(str, 0, str.codePointAt(0), str), MoreKeySpec.getEmpty(), KeyHintPosition.HIDDEN, str, 0, key.getBackgroundType(), key.getX(), key.getY(), key.getWidth() + keyboard.mHorizontalGap, key.getHeight() + keyboard.mVerticalGap, keyboard.mHorizontalGap, keyboard.mVerticalGap, key.getOutputText(), null, key.getKeyLabelSet(), key.getMoreKeysFlags(), key.getActionFlags(), key.getScanCode());
     }
 
-    @Override // dev.bbkb.ime.keyboard.slideboard.SlideboardComponent
+    @Override
     public void show() {
         if (isShowing()) {
             return;
@@ -167,17 +160,17 @@ public class NumericSubpanelKeyboardView extends SimplifiedKeyboardView implemen
         setVisibility(View.VISIBLE);
     }
 
-    @Override // dev.bbkb.ime.keyboard.slideboard.SlideboardComponent
+    @Override
     public void hide() {
         setVisibility(View.GONE);
     }
 
-    @Override // dev.bbkb.ime.keyboard.slideboard.SlideboardComponent
+    @Override
     public int getSlideBoardWidth() {
         return ResourceConfigManager.getScreenWidthPixels(getResources()) / 2;
     }
 
-    @Override // dev.bbkb.ime.keyboard.SimplifiedKeyboardView, android.view.View
+    @Override
     @SuppressLint({"ClickableViewAccessibility"})
     public boolean onTouchEvent(MotionEvent motionEvent) {
         MultiPointerGestureDetector c0924a;
@@ -190,7 +183,8 @@ public class NumericSubpanelKeyboardView extends SimplifiedKeyboardView implemen
         return true;
     }
 
-    @Override // dev.bbkb.ime.keyboard.slideboard.SlideboardComponent
+    /** @param f the panel's x translation */
+    @Override
     public void setXTranslation(float f) {
         setTranslationX(f);
     }

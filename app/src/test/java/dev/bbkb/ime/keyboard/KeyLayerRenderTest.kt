@@ -23,11 +23,9 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.GraphicsMode
 
 /**
- * D-3: on a hardware canvas the main keyboard draws its keys at rest and then each key with per-tap
- * content (pressed, or the spacebar's word) in its own layer, which repaints the background and
- * frets under the key before the key. The composite must be exactly the pixels of the old full
- * redraw, in every key style. Rendered here through the software equivalents of both paths
- * ([KeyboardView.drawFullForTest], [KeyboardView.drawLayeredForTest]) with real Skia rendering.
+ * On a hardware canvas, keys with per-tap content (pressed, spacebar word) draw in their own layer
+ * over the resting keys. Pins that the composite is pixel-identical to a full redraw in every key
+ * style, via [KeyboardView.drawFullForTest] and [KeyboardView.drawLayeredForTest] on real Skia.
  */
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [34])

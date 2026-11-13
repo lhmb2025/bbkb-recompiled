@@ -3,11 +3,8 @@ package dev.bbkb.ime.keyboard.inputboard.emoji
 import java.io.BufferedReader
 
 /**
- * Reader for the compact emojibase asset that the `generateEmojibaseCompact` task in
- * app/build.gradle writes from node_modules/emojibase-data/en/data.json. It replaced a reflective
- * Gson parse of the 735 KB JSON with a 196 KB line-per-entry file split by hand, and produces the
- * same [EmojiData] list that Gson parse did, in the same order, except that a skin carries only its
- * emoji (nothing reads the rest); `EmojibaseCompactAssetTest` holds the two to that.
+ * Reader for the compact emojibase asset written by the `generateEmojibaseCompact` task in
+ * app/build.gradle from emojibase-data en/data.json. A skin carries only its emoji.
  *
  * Format (UTF-8, '\n' line ends):
  *
@@ -16,14 +13,11 @@ import java.io.BufferedReader
  *        0 emoji   1 hexcode   2 label   3 tags   4 shortcodes   5 group   6 subgroup
  *        7 version 8 order     9 type   10 gender 11 tone       12 skins (their emoji only)
  *
- * List fields join their items with U+001F, and an empty field is a missing list (null); the
- * generator rejects empty lists and strings containing a separator. Integer fields follow what
- * the Gson parse produced: EmojiData has no no-arg constructor, so Gson allocated it without
- * running Kotlin defaults and a missing non-null Int (group, subgroup, order) became 0, which the
- * generator writes out; a missing nullable Int (type, gender, tone) is an empty field. `version`
- * is the shortest round-trip decimal (Double.toString), which reads back to the same double. The
- * header text after the TAB is the dataset identity that keys [EmojiGlyphCache].
+ * List fields join items with U+001F; an empty field is a null list. A missing group, subgroup or
+ * order is written as 0; a missing type, gender or tone is an empty field. `version` is
+ * Double.toString. The header text after the TAB is the dataset identity that keys [EmojiGlyphCache].
  */
+
 internal object EmojibaseCompactFormat {
 
     const val ASSET = "emoji/emojibase-en.tsv"

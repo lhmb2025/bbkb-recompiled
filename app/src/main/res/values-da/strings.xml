@@ -721,7 +721,6 @@
     <string name="device_config_import_unreadable">Den fil er ikke en enhedskonfiguration</string>
     <string name="device_config_import_failed">Den fil kunne ikke importeres</string>
 
-    <!-- OTA app updates -->
     <string name="settings_updates_title">Opdateringer</string>
     <string name="settings_updates_summary">Se, om der findes en ny version af BBKB</string>
     <string name="settings_update_installed_version_title">Installeret version</string>
@@ -755,7 +754,6 @@
     <string name="settings_update_ready_title">Klar til installation</string>
     <string name="settings_update_version_details">Versionsdetaljer</string>
     <string name="settings_update_unknown_sources_title">Vil du give BBKB tilladelse til at installere opdateringer?</string>
-    <!-- Downloadable language packs (core/languagepack) -->
     <string name="language_packs_installed_header">Installeret</string>
     <string name="language_packs_available_header">Kan downloades</string>
     <string name="language_packs_download">Download</string>
@@ -877,7 +875,6 @@
     <string name="settings_voice_stop_on_pause_summary_off">Bliver ved med at lytte under pauser, indtil du trykker på mikrofonen, eller efter et halvt minuts stilhed</string>
     <string name="voice_status_listening_tap_to_stop">Lytter&#8230; Tryk på mikrofonen for at stoppe</string>
 
-    <!-- Settings text moved out of the code (2026-11) -->
     <string name="settings_common_save">Gem</string>
     <string name="settings_common_edit">Rediger</string>
     <string name="settings_common_back">Tilbage</string>

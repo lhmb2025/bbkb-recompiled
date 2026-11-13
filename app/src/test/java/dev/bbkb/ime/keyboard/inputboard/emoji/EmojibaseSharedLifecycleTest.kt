@@ -18,7 +18,10 @@ import java.util.concurrent.CountDownLatch
 import java.util.concurrent.Executor
 import java.util.concurrent.TimeUnit
 
-/** The process-wide dataset: release never blocks, preloads coalesce, a release is followed by a clean re-parse. */
+/**
+ * The process-wide dataset: release never blocks, preloads coalesce, a release is followed by a clean re-
+ * parse.
+ */
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [34])
 class EmojibaseSharedLifecycleTest {

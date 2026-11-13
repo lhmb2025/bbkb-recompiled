@@ -792,7 +792,6 @@
         <attr name="verticalGap" />
     </declare-styleable>
 
-    <!-- Keyboard-specific styleables for eliminating C1123a.java -->
     <declare-styleable name="MainKeyboardView">
         <attr name="altCodeKeyWhileTypingFadeinAnimator" />
         <attr name="altCodeKeyWhileTypingFadeoutAnimator" />
@@ -989,11 +988,5 @@
     <declare-styleable name="MoreKeysKeyboardView">
         <attr name="divider" />
     </declare-styleable>
-    
-    <!-- ============================================ -->
-    <!-- Control Key Attributes (merged from control_key_attrs.xml) -->
-    <!-- ============================================ -->
-    <!-- Control key attributes -->
-    
-    <!-- Define proper mapping between these attributes and corresponding strings -->
+
 </resources>

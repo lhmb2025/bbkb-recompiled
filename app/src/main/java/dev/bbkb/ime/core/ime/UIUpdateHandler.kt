@@ -44,12 +44,7 @@ class UIUpdateHandler(blackBerryIME: BlackBerryIME) : WeakOwnerHandler<BlackBerr
         private const val MSG_SET_COMPOSING_TEXT = 18
         private const val MSG_DEFERRED_CLEANUP_SAFETY = 99
 
-        /**
-         * How long start/finish-input events stay deferred after an orientation change — the
-         * window LC-2 was fixed inside. Audit CT-26: [MSG_ORIENTATION_DELAY] was declared and
-         * then never used; all five deferral sites wrote the raw literal `1`, so grepping for
-         * the name found only the declaration.
-         */
+        /** How long start/finish-input events stay deferred after an orientation change. */
         private const val ORIENTATION_DELAY_MS = 800L
     }
 
@@ -66,17 +61,14 @@ class UIUpdateHandler(blackBerryIME: BlackBerryIME) : WeakOwnerHandler<BlackBerr
     private var lastEditorInfo: EditorInfo? = null
 
     /**
-     * Non-zero while a suggestion reply is being shown. Showing one can re-show the input menu bar
-     * (`showAndRefreshForSlideboard`), which cancels pending suggestion updates; any update queued
-     * then is for text typed AFTER the reply was requested, so dropping it would leave the strip
-     * stale. [cancelPendingSuggestionUpdates] is a no-op while this is set.
+     * Non-zero while a reply is shown. Showing can re-show the input menu bar, which cancels pending
+     * updates; those are for newer text, so [cancelPendingSuggestionUpdates] is a no-op meanwhile.
      */
     private var suggestionDeliveryDepth: Int = 0
 
     fun initializeDelays() {
         val blackBerryIMEV = getOwner() ?: return
         val resources = blackBerryIMEV.getResources()
-        // PKB Optimization: Use faster suggestion delay for physical keyboard devices
         if (DeviceProfile.current().isPkbDevice()) {
             suggestionUpdateDelay = resources.getInteger(R.integer.config_delay_in_msec_to_update_suggestions_pkb)
             Logger.debug("UIUpdateHandler", "PKB device detected - using fast suggestion delay: ${suggestionUpdateDelay}ms")
@@ -103,11 +95,8 @@ class UIUpdateHandler(blackBerryIME: BlackBerryIME) : WeakOwnerHandler<BlackBerr
                 MSG_SHOW_SUGGESTIONS -> {
                     val words = message.obj as SuggestedWords
                     if (BuildConfig.DEBUG) Log.d("SUGG", "MSG_SHOW_SUGGESTIONS: arg1=${message.arg1} size=${words.size()} isEmpty=${words.isEmpty()}")
-                    // Audit DW-3: a reply dispatched under a previous input session must not be
-                    // delivered into this one. Dropping it HERE rather than filtering what it
-                    // writes is what keeps the gesture-commit channel intact: mCurrentSuggestions
-                    // doubles as that channel, and a gesture is not composing, so gating the
-                    // cache write on isComposing() would starve gesture commit.
+                    // Drop replies from an earlier session here, not by gating writes on isComposing():
+                    // mCurrentSuggestions is also the gesture-commit channel, and a gesture is not composing.
                     val currentGeneration = blackBerryIMEV.getInputLogic().getSessionGeneration()
                     if (message.arg2 != currentGeneration) {
                         if (BuildConfig.DEBUG) Log.d("SUGG",
@@ -138,9 +127,6 @@ class UIUpdateHandler(blackBerryIME: BlackBerryIME) : WeakOwnerHandler<BlackBerr
                     val words = message.obj as SuggestedWords
                     // Only the display is a delivery; the commit below may cancel and re-request.
                     deliveringSuggestions { blackBerryIMEV.displaySuggestions(words, true) }
-                    // Audit CT-6: the word list used to be built unconditionally here, on the
-                    // main thread once per swipe, even though its only consumers are inside
-                    // InputPathDebug.on() guards below — which fold to false in release.
                     val wordList: String = if (InputPathDebug.on()) {
                         val sb = StringBuilder()
                         for (i in 0 until words.size()) {
@@ -150,19 +136,9 @@ class UIUpdateHandler(blackBerryIME: BlackBerryIME) : WeakOwnerHandler<BlackBerr
                     } else {
                         ""
                     }
-                    // Audit EB-1: consume ONCE the gesture's prediction round-trip completes,
-                    // on BOTH branches. It used to be consumed only when words.size() > 0, so
-                    // a swipe that produced nothing (garbage swipe, or predictions disabled)
-                    // left the flag set forever — and every later empty-composing request then
-                    // skipped setContextBuffer AND the defensive clear() in the bridge,
-                    // dropping sentence context from next-word predictions until a later
-                    // gesture or a process restart.
-                    //
-                    // Audit DW-2: the return still matters. The flag is cleared on session
-                    // teardown, so false means "this gesture belongs to a session that is
-                    // gone" — display only, never commit.
-                    // An empty result carries no sequence: consume whatever is pending (legacy
-                    // path) instead of indexing word 0 of an empty list.
+                    // Consume the pending gesture on every result, empty too, or later requests skip
+                    // setContextBuffer. False means its session was torn down: display only.
+                    // An empty result has no sequence (-1 consumes whatever is pending).
                     val gestureSeq = if (words.size() > 0) words.getWordInfo(0)?.nuanceWordInfo?.gestureSeq ?: -1 else -1
                     val gestureStillPending = NuanceSDKManager.consumeGestureSeq(gestureSeq)
                     if (words.size() > 0) {
@@ -229,10 +205,6 @@ class UIUpdateHandler(blackBerryIME: BlackBerryIME) : WeakOwnerHandler<BlackBerr
                 MSG_COMMIT_TEXT -> {
                     blackBerryIMEV.setInsertAsString(true)
                     blackBerryIMEV.onTextInput(message.obj as String, 0L)
-                    // Audit CT-26: this was the only branch without a trailing return, so it fell
-                    // through to the "message is unhandled" diagnostic below — a false report
-                    // today and a double-execution bug the moment anything is added after the
-                    // `when`.
                     return
                 }
                 MSG_SET_COMPOSING_TEXT -> {
@@ -250,14 +222,15 @@ class UIUpdateHandler(blackBerryIME: BlackBerryIME) : WeakOwnerHandler<BlackBerr
         blackBerryIMEV.resetKeyboardState()
     }
 
+    /** @param str text to commit */
     fun postCommitText(str: String) {
         sendMessage(obtainMessage(MSG_COMMIT_TEXT, str))
     }
 
     /**
-     * A dictation partial result, shown as composing text. Queued behind [postCommitText] like
-     * everything else here, so the final result's commit lands after, and replaces, the last
-     * partial. Only the newest partial is worth showing, so an older one still queued is dropped.
+     * A dictation partial shown as composing text; queued with [postCommitText] so the final commit
+     * replaces it. An older queued partial is dropped.
+     * @param str the partial result text
      */
     fun postSetComposingText(str: String) {
         removeMessages(MSG_SET_COMPOSING_TEXT)
@@ -265,36 +238,30 @@ class UIUpdateHandler(blackBerryIME: BlackBerryIME) : WeakOwnerHandler<BlackBerr
     }
 
     /**
-     * The dictation session ended with no final result: drop any partial still queued and leave the
-     * one showing as ordinary text. Runs now rather than queued: a hardware key that closes the
-     * voice board is processed in the same turn, and it must not find a dictation partial still
-     * holding the composing region it is about to compose into.
+     * Dictation ended with no final result: keep the shown partial as text. Runs now, not queued: a
+     * hardware key closing the voice board in the same turn must not find the partial still composing.
      */
     fun finishVoiceComposingText() {
         removeMessages(MSG_SET_COMPOSING_TEXT)
         getOwner()?.getInputLogic()?.finishVoiceComposingText()
     }
 
-    /**
-     * Post [action] tagged with [token], so a single `removeCallbacksAndMessages(token)` cancels
-     * every piece of work posted under it (audit CT-24: deferred startup work used to go through
-     * a throwaway `Handler` that nothing could cancel at teardown).
-     *
-     * The callback is dispatched directly, so this never reaches [handleMessage].
-     */
+    /** Post [action] under [token], so `removeCallbacksAndMessages(token)` cancels it; bypasses [handleMessage]. */
     fun postTokenized(token: Any, delayMillis: Long, action: Runnable) {
         HandlerCompat.postDelayed(this, action, token, delayMillis)
     }
 
-
+    /** @param i update reason code forwarded to the worker */
     fun postUpdateSuggestions(i: Int) {
         sendMessageDelayed(obtainMessage(MSG_UPDATE_SUGGESTIONS, i, 0), suggestionUpdateDelay.toLong())
     }
 
+    /** @param i update reason code forwarded to the worker */
     fun postUpdateJapaneseSuggestions(i: Int) {
         sendMessageDelayed(obtainMessage(MSG_UPDATE_JAPANESE_SUGGESTIONS, i, 0), suggestionUpdateDelay.toLong())
     }
 
+    /** @param i update reason code forwarded to the worker */
     fun postUpdateGestureSuggestions(i: Int) {
         sendMessageDelayed(obtainMessage(MSG_UPDATE_GESTURE_SUGGESTIONS, i, 0), gestureInputSuggestionDelay.toLong())
     }
@@ -303,6 +270,11 @@ class UIUpdateHandler(blackBerryIME: BlackBerryIME) : WeakOwnerHandler<BlackBerr
         sendMessage(obtainMessage(MSG_LOAD_ADDITIONAL_LOCALES))
     }
 
+    /**
+     * Posts a recorrection pass (MSG_UPDATE_SHIFT_MODE) when the suggestion strip is active.
+     * @param z include the word under the cursor as the first suggestion
+     * @param z2 true to delay by the suggestion-update delay, false to post now
+     */
     fun postUpdateShiftState(z: Boolean, z2: Boolean) {
         val blackBerryIMEV = getOwner()
         if (blackBerryIMEV != null && blackBerryIMEV.isSuggestionStripActive()) {
@@ -315,6 +287,10 @@ class UIUpdateHandler(blackBerryIME: BlackBerryIME) : WeakOwnerHandler<BlackBerr
         }
     }
 
+    /**
+     * @param z true to update shift state after the connection reset
+     * @param i retries left
+     */
     fun postUpdateSwitchKeyboard(z: Boolean, i: Int) {
         removeMessages(MSG_SWITCH_KEYBOARD)
         sendMessage(obtainMessage(MSG_SWITCH_KEYBOARD, if (z) 1 else 0, i, null))
@@ -358,10 +334,8 @@ class UIUpdateHandler(blackBerryIME: BlackBerryIME) : WeakOwnerHandler<BlackBerr
     }
 
     /**
-     * Drops queued suggestion-update requests. Runs on every suggestion update, so it must never
-     * drop text on its way into the editor: the gesture and dictation commits are cancelled only
-     * at teardown, by [cancelPendingTextCommits]. A no-op while a reply is being shown (see
-     * [suggestionDeliveryDepth]).
+     * Runs on every suggestion update, so it must never drop text bound for the editor (that is
+     * [cancelPendingTextCommits], teardown only). No-op during [suggestionDeliveryDepth].
      */
     fun cancelPendingSuggestionUpdates() {
         if (suggestionDeliveryDepth > 0) return
@@ -370,15 +344,9 @@ class UIUpdateHandler(blackBerryIME: BlackBerryIME) : WeakOwnerHandler<BlackBerr
         removeMessages(MSG_UPDATE_JAPANESE_SUGGESTIONS)
     }
 
-    /**
-     * Teardown only: drops the queued messages that write text into the editor. They used to be in
-     * [cancelPendingSuggestionUpdates], which every suggestion update runs, so an unrelated update
-     * could drop a swipe's word or a dictation result before it was typed.
-     */
+    /** Teardown only: drop queued text writes so they cannot land in the next editor. */
     fun cancelPendingTextCommits() {
-        // Audit DW-2: a queued gesture commit must not outlive the field it was typed in.
         removeMessages(MSG_BATCH_INPUT_SUGGESTIONS)
-        // Audit DW-5: MSG_COMMIT_TEXT writes into whatever editor is current at delivery.
         removeMessages(MSG_COMMIT_TEXT)
     }
 
@@ -393,7 +361,6 @@ class UIUpdateHandler(blackBerryIME: BlackBerryIME) : WeakOwnerHandler<BlackBerr
 
     fun hasPendingSuggestionUpdate(): Boolean = hasMessages(MSG_UPDATE_SUGGESTIONS)
 
-    /** Drops a suggestion reply that has been posted but not yet shown. */
     fun cancelPendingSuggestionDelivery() {
         removeMessages(MSG_SHOW_SUGGESTIONS)
     }
@@ -407,37 +374,45 @@ class UIUpdateHandler(blackBerryIME: BlackBerryIME) : WeakOwnerHandler<BlackBerr
         sendMessageDelayed(obtainMessage(MSG_UPDATE_SHIFT_STATE), shiftStateUpdateDelay.toLong())
     }
 
+    /**
+     * Main-thread callers are in the current session.
+     * @param c0666ac the suggestions to show
+     */
     fun postShowSuggestions(c0666ac: SuggestedWords) {
-        // Main-thread callers are by definition in the current session.
         postShowSuggestions(c0666ac, getOwner()?.getInputLogic()?.getSessionGeneration() ?: 0)
     }
 
     /**
-     * Audit DW-3: [sessionGeneration] is the session the REQUEST was dispatched under, not the
-     * one current when it is posted — the worker posts after any teardown, so stamping at post
-     * time would always look current and drop nothing. Carried in arg2 and checked at delivery.
+     * Sync/gesture producer. [sessionGeneration] is the session the request was dispatched under
+     * (the worker may post after teardown); carried in arg2 and checked at delivery.
+     * @param c0666ac the suggestions to show
      */
     fun postShowSuggestions(c0666ac: SuggestedWords, sessionGeneration: Int) {
         removeMessages(MSG_SHOW_SUGGESTIONS)
         obtainMessage(MSG_SHOW_SUGGESTIONS, 2, sessionGeneration, c0666ac).sendToTarget()
     }
 
+    /**
+     * Main-thread callers are in the current session.
+     * @param c0666ac the suggestions to show
+     */
     fun postShowSuggestionStrip(c0666ac: SuggestedWords) {
-        // Main-thread callers are by definition in the current session.
         postShowSuggestionStrip(c0666ac, getOwner()?.getInputLogic()?.getSessionGeneration() ?: 0)
     }
 
     /**
-     * Audit DW-3. This is the OTHER producer of MSG_SHOW_SUGGESTIONS — the async typed path
-     * delivers through here, `postShowSuggestions` is the sync/gesture one. Both must stamp
-     * the session, because the handler drops anything whose stamp is not current: gating the
-     * message while leaving a producer unstamped drops every reply it posts.
+     * Async typed-path producer; must stamp the session too, or every reply it posts is dropped.
+     * @param c0666ac the suggestions to show
      */
     fun postShowSuggestionStrip(c0666ac: SuggestedWords, sessionGeneration: Int) {
         removeMessages(MSG_SHOW_SUGGESTIONS)
         obtainMessage(MSG_SHOW_SUGGESTIONS, 0, sessionGeneration, c0666ac).sendToTarget()
     }
 
+    /**
+     * @param c0666ac the gesture's suggestions; the top word is committed
+     * @param enumC0690f the input source of the gesture
+     */
     fun postBatchInputSuggestions(c0666ac: SuggestedWords, enumC0690f: InputSource) {
         obtainMessage(MSG_BATCH_INPUT_SUGGESTIONS, enumC0690f.getId(), 0, c0666ac).sendToTarget()
     }
@@ -461,11 +436,7 @@ class UIUpdateHandler(blackBerryIME: BlackBerryIME) : WeakOwnerHandler<BlackBerr
         pendingStartInput = false
     }
 
-    /**
-     * The view finishing and the view starting are where the text commits used to be cancelled
-     * (cleanupKeyboard and onStartInputView both ran [cancelPendingSuggestionUpdates] when it still
-     * held them), so they are cancelled here, next to each call.
-     */
+    /** Queued text commits are cancelled at view finish and view start. */
     private fun finishInputView(blackBerryIME: BlackBerryIME, finishingInput: Boolean) {
         cancelPendingTextCommits()
         blackBerryIME.finishInputViewInternal(finishingInput)
@@ -476,6 +447,7 @@ class UIUpdateHandler(blackBerryIME: BlackBerryIME) : WeakOwnerHandler<BlackBerr
         blackBerryIME.startInputViewInternal(editorInfo, restarting)
     }
 
+    /** @param z the restarting flag for a deferred start-input */
     private fun drainPendingInputEvents(blackBerryIME: BlackBerryIME, editorInfo: EditorInfo?, z: Boolean) {
         if (pendingFinishInputView) {
             finishInputView(blackBerryIME, pendingFinishInput)
@@ -489,6 +461,7 @@ class UIUpdateHandler(blackBerryIME: BlackBerryIME) : WeakOwnerHandler<BlackBerr
         resetPendingInputFlags()
     }
 
+    /** @param z true when restarting input in the same editor */
     fun handleStartInput(editorInfo: EditorInfo?, z: Boolean) {
         if (hasMessages(MSG_ORIENTATION_DELAY)) {
             pendingStartInput = true
@@ -505,12 +478,17 @@ class UIUpdateHandler(blackBerryIME: BlackBerryIME) : WeakOwnerHandler<BlackBerr
         }
     }
 
+    /**
+     * @param str first package name
+     * @param str2 second package name
+     */
     private fun equalsNullable(str: String?, str2: String?): Boolean {
         if (str == null && str2 == null) return true
         if (str == null || str2 == null) return false
         return str == str2
     }
 
+    /** @param z true when restarting input in the same editor */
     @Throws(Resources.NotFoundException::class)
     fun handleStartInputView(editorInfo: EditorInfo?, z: Boolean) {
         if (editorInfo != null) {
@@ -523,11 +501,8 @@ class UIUpdateHandler(blackBerryIME: BlackBerryIME) : WeakOwnerHandler<BlackBerr
             }
             lastPackageName = editorInfo.packageName
         }
-        // Audit LC-2: this swallow exists to absorb the redundant restart that follows an
-        // orientation change. It used to test only equivalentEditorInfo, which is true for
-        // ANY two fields sharing inputType/imeOptions — so a genuine switch to a similar
-        // field inside the 800 ms window was silently discarded along with its deferred
-        // finish/start work. Require the same editor instance instead.
+        // Absorbs the redundant restart after an orientation change. Same editor instance, not just
+        // equivalent inputType/imeOptions, or a real switch to a similar field would be lost.
         if (hasMessages(MSG_ORIENTATION_DELAY) && KeyboardId.sameEditor(editorInfo, lastEditorInfo)) {
             resetPendingInputFlags()
             return
@@ -545,6 +520,7 @@ class UIUpdateHandler(blackBerryIME: BlackBerryIME) : WeakOwnerHandler<BlackBerr
         }
     }
 
+    /** @param z true when input is finishing too, not just the view */
     fun handleFinishInputView(z: Boolean) {
         if (hasMessages(MSG_ORIENTATION_DELAY)) {
             pendingFinishInputView = true
@@ -577,12 +553,8 @@ class UIUpdateHandler(blackBerryIME: BlackBerryIME) : WeakOwnerHandler<BlackBerr
     }
 
     private fun executeDeferredCleanupSafety() {
-        // Audit LC-11: pendingStartInput was set by handleStartInput during the deferral
-        // window but had no branch here, so a start deferred with no onStartInputView
-        // following (window stays hidden) silently dropped superOnStartInput, work-profile
-        // detection and the keyboard-reload decision for that editor.
         if (!pendingFinishInputView && !pendingFinishInput && !pendingStartInput) {
-            return // Already consumed by CommitType normal onStartInput cycle
+            return // Already drained by the normal start-input cycle
         }
         Logger.info(BlackBerryIME.LOG_TAG, "Deferred cleanup safety: flushing pending finish events")
         val blackBerryIMEV = getOwner()
@@ -594,8 +566,7 @@ class UIUpdateHandler(blackBerryIME: BlackBerryIME) : WeakOwnerHandler<BlackBerr
                 blackBerryIMEV.finishInputInternal()
             }
             if (pendingStartInput) {
-                // Deferred start never got its view-start; run it now so the editor is not
-                // left half-initialised (audit LC-11).
+                // A deferred start with no view start (window stayed hidden): run it now.
                 blackBerryIMEV.startInputInternal(blackBerryIMEV.currentInputEditorInfo, true)
             }
         }

@@ -32,11 +32,7 @@ public final class ResourceLocaleUtils {
 
     private static volatile boolean sInitialized = false;
 
-    /**
-     * Application context, not a {@code Resources} handle: the IME's {@code Resources} is
-     * re-configured on every configuration change, so a cached instance would keep resolving
-     * against the config in force at first init.
-     */
+    /** Not a cached {@code Resources}: that would keep resolving against the config at first init. */
     private static volatile Context sAppContext;
 
     private static String[] sPredefinedLayouts;
@@ -85,11 +81,7 @@ public final class ResourceLocaleUtils {
         return context != null ? context.getResources() : null;
     }
 
-    /**
-     * @return the locale the UI is currently displayed in, falling back to the default locale
-     *         before {@link #init} has run. Single source for what used to be five copies of
-     *         {@code sResources.getConfiguration().locale}.
-     */
+    /** @return the UI locale, or the default locale before {@link #init} */
     private static Locale displayLocale() {
         final Resources resources = resources();
         return resources != null ? LocaleUtils.getConfigurationLocale(resources) : Locale.getDefault();
@@ -98,9 +90,7 @@ public final class ResourceLocaleUtils {
     private static void initLocked(Context context) throws Resources.NotFoundException {
         sAppContext = context.getApplicationContext();
         Resources resources = context.getResources();
-        // getIdentifier()'s defPackage is the *installed* package, not the R-class package, so it
-        // cannot be a literal: it used to read "com.blackberry.keyboard", which stopped being this
-        // app's id when it moved to dev.bbkb.ime (and had never matched the .debug build either).
+        // getIdentifier()'s defPackage is the installed package (differs per build type), not a literal.
         final String resPackage = context.getPackageName();
         String[] stringArray = resources.getStringArray(R.array.predefined_layouts);
         sPredefinedLayouts = stringArray;
@@ -128,14 +118,20 @@ public final class ResourceLocaleUtils {
         }
     }
 
+    /** @param str subtype locale string, e.g. {@code en_US} */
     public static boolean isExceptionalLocale(String str) {
         return sExceptionalLocaleToNameId.containsKey(str);
     }
 
+    /** @param str keyboard layout set name */
     private static final String getNoLanguageLayoutKey(String str) {
         return "zz_" + str;
     }
 
+    /**
+     * @param str subtype locale string
+     * @param str2 keyboard layout set name
+     */
     public static int getSubtypeNameResId(String str, String str2) {
         if (isExceptionalLocale(str)) {
             return sExceptionalLocaleToWithLayoutNameId.get(str).intValue();
@@ -147,6 +143,7 @@ public final class ResourceLocaleUtils {
         return num == null ? R.string.subtype_generic : num.intValue();
     }
 
+    /** @param str subtype locale string, e.g. {@code en_US} */
     private static Locale getDisplayLocale(String str) {
         if ("zz".equals(str)) {
             return displayLocale();
@@ -154,19 +151,23 @@ public final class ResourceLocaleUtils {
         return LocaleUtils.constructLocaleFromString(str);
     }
 
+    /** @param str subtype locale string, e.g. {@code en_US} */
     public static String getSubtypeLocaleDisplayName(String str) {
         return getSubtypeLocaleDisplayNameInternal(str, displayLocale());
     }
 
+    /** @param str subtype locale string, e.g. {@code en_US} */
     public static String getSubtypeLocaleDisplayNameInLocale(String str) {
         return getSubtypeLocaleDisplayNameInternal(str, getDisplayLocale(str));
     }
 
+    /** @param str subtype locale string, e.g. {@code en_US} */
     public static String getSubtypeLanguageDisplayName(String str) {
         Locale localeM5507a = LocaleUtils.constructLocaleFromString(str);
         return getSubtypeLocaleDisplayNameInternal(localeM5507a.getLanguage(), getDisplayLocale(str));
     }
 
+    /** @param str subtype locale string, e.g. {@code en_US} */
     private static String getSubtypeLocaleDisplayNameInternal(String str, Locale locale) {
         String displayName;
         if ("zz".equals(str)) {
@@ -229,7 +230,6 @@ public final class ResourceLocaleUtils {
 
     public static Locale getSubtypeLocale(InputMethodSubtype inputMethodSubtype) {
         if (inputMethodSubtype == null) {
-            // Fallback to current configuration locale if subtype is unavailable
             return displayLocale();
         }
         String localeStr = inputMethodSubtype.getLocale();
@@ -243,6 +243,7 @@ public final class ResourceLocaleUtils {
         return getKeyboardLayoutSetDisplayName(getKeyboardLayoutSetName(inputMethodSubtype));
     }
 
+    /** @param str keyboard layout set name */
     public static String getKeyboardLayoutSetDisplayName(String str) {
         return sLayoutToDisplayName.get(str);
     }
@@ -273,13 +274,8 @@ public final class ResourceLocaleUtils {
     }
 
     /**
-     * A multi-language keyboard's extra languages, in the order its extra value lists them
-     * ("de/es" is de, then es), each once; null for a keyboard without extras.
-     *
-     * <p>The order is the extra value's own. That string is part of the subtype's identity, so
-     * it is never rewritten here: {@code MultiLanguageConfig} writes the extras sorted by locale
-     * code, and that canonical order is what comes back. This used to be a TreeSet sorted by
-     * {@code Locale.toString()}, which re-sorted whatever the string said.
+     * Extra languages in the extra value's own order ("de/es": de, then es), each once; null for
+     * none. Never re-sorted: the string is part of the subtype's identity.
      */
     public static Set<Locale> getAdditionalLocales(InputMethodSubtype inputMethodSubtype) {
         String extraValueOf;
@@ -293,10 +289,7 @@ public final class ResourceLocaleUtils {
         return locales;
     }
 
-    /**
-     * Every language a keyboard types in: {@code primary} first, then {@code additional} (as
-     * {@link #getAdditionalLocales} returns it, so possibly null) in its order, each once.
-     */
+    /** {@code primary} first, then {@code additional} (possibly null) in its order, each once. */
     public static List<Locale> getKeyboardLocales(Locale primary, Set<Locale> additional) {
         Set<Locale> locales = new LinkedHashSet<>();
         if (primary != null) {

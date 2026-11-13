@@ -17,12 +17,8 @@ import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
 
 /**
- * What [UpdateJobService.sync] schedules, and what it refuses to.
- *
- * The tests run against the **debug** `BuildConfig`, so the honest default state of this app under
- * test is "no update channel" and therefore "no job" — which is itself one of the properties worth
- * pinning. `pref_distribution_channel_override` is how the other half is reached, exactly as a
- * developer previewing the release channel on a debug build would set it.
+ * What [UpdateJobService.sync] schedules, and what it refuses to. Under the debug `BuildConfig`
+ * the default is no channel and so no job; `pref_distribution_channel_override` reaches the rest.
  */
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [34])

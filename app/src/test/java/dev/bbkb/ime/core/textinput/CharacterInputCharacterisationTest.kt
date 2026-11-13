@@ -25,28 +25,10 @@ import org.robolectric.annotation.Config
 import java.util.Locale
 
 /**
- * CHARACTERISATION scenarios for the IN-WORD INSERTION stage of
- * [InputLogic.handleCharacterInput] — the branch that runs when the caret sits inside the
- * composing word and a new character arrives.
- *
- * ## Why this stage specifically
- *
- * It is the part of the character path with the longest bug history and the least coverage. The
- * tracker's own `insertCodePointAtCursor` is well tested in `ComposingTextTrackerTest`, but the
- * stage around it — which computes where the editor's composing region starts, re-sends the whole
- * word, and then places the editor caret inside that region — was tested nowhere. Two separate
- * defects lived in exactly that arithmetic:
- *
- *  * the branch used to truncate the buffer at the caret and fall through to the append path,
- *    which silently dropped every character after the caret (2026-05 composing spec #6);
- *  * it then used a plain `setSelection`, which left the RIC's text model holding the composing
- *    prefix in BOTH `mTextBeforeCursor` and `mComposingText` — corrupting caps mode, punctuation
- *    and backspace decisions until the next `resetConnection` (2026-06 audit F5). The fix is
- *    `setSelectionWithinComposing`, and the assertion that proves it is the four-copies invariant
- *    plus a `getCodePointBeforeCursor()` read.
- *
- * Both fixes are invisible in the final text of a single keystroke, which is why these scenarios
- * assert the RIC's view as well as the editor's.
+ * Characterises the in-word insertion stage of [InputLogic.handleCharacterInput] (caret inside the
+ * composing word): the region start, the full-word re-send and the caret placed back inside it via
+ * `setSelectionWithinComposing`. Asserts the RIC's view as well as the editor's, since a wrong text
+ * model does not show in the final text.
  */
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [34], manifest = Config.NONE, instrumentedPackages = ["com.blackberry.nuanceshim"])
@@ -92,10 +74,7 @@ class CharacterInputCharacterisationTest {
         ),
     )
 
-    /**
-     * Send one character through the real `handleCharacterInput`. It and its callers are private,
-     * so reflection is the way in — the same tactic the separator scenarios use.
-     */
+    /** Sends one character through the private `handleCharacterInput` by reflection. */
     private fun character(
         codePoint: Int,
         sv: SettingsValues = settings(),
@@ -117,18 +96,9 @@ class CharacterInputCharacterisationTest {
     }
 
     /**
-     * Arm a composing word with the caret parked [atCodePoint] code points into it.
-     *
-     * BOTH halves have to move, and that is the stage's unstated precondition: it derives the
-     * editor's composing-region start as `getCursorEnd() - charsBeforeCaretWithinComposing`, so
-     * moving only the tracker leaves it computing a region start past the end of the word. In
-     * production the two are moved together by `onUpdateSelection` → `moveCursorByCharCount`
-     * (the editor reports the tap, the tracker follows); here
-     * `setSelectionWithinComposing` is the equivalent, and it is the same call the stage itself
-     * makes — which also keeps the RIC text model from double-counting the prefix while arming.
-     *
-     * The word is composed at offset 0, so its region start is 0 and the editor caret is simply
-     * the char offset of [atCodePoint].
+     * Arm a composing word with the caret [atCodePoint] code points in. Both the editor and the
+     * tracker must move (the stage derives the region start as `getCursorEnd() - charsBeforeCaret`);
+     * `setSelectionWithinComposing` does that here as `onUpdateSelection` does in production.
      */
     private fun armComposingWithCaretInside(typed: String, atCodePoint: Int) {
         h.startSession("", 0)
@@ -151,12 +121,9 @@ class CharacterInputCharacterisationTest {
 
     private fun log(): String = h.editor.callLog.joinToString(" ")
 
-    // ── the in-word insertion stage ──────────────────────────────────────────────
-
     @Test
     fun aCharacterTypedInsideTheWord_isInsertedThereAndKeepsTheTail() {
-        // The 2026-05 spec #6 regression: the old code truncated at the caret, so "helXo" came
-        // out instead of "heXllo" — every character after the caret was dropped.
+        // Every character after the caret must survive: "heXllo", not "helXo".
         armComposingWithCaretInside("hello", atCodePoint = 2)
 
         character('X'.code)
@@ -177,10 +144,8 @@ class CharacterInputCharacterisationTest {
 
     @Test
     fun theWholeWordIsReSentAsOneComposingUpdate_notAnInsertAtTheCaret() {
-        // The editor call sequence is the load-bearing part: ONE setComposingText carrying the
-        // full new word (which replaces the existing region), then the selection write that puts
-        // the caret back inside it. Anything that inserted only the new character would leave the
-        // editor's region and the tracker disagreeing.
+        // One setComposingText with the full new word (replacing the region), then the selection write
+        // that puts the caret back inside it.
         armComposingWithCaretInside("hello", atCodePoint = 2)
 
         character('X'.code)
@@ -192,19 +157,10 @@ class CharacterInputCharacterisationTest {
 
     @Test
     fun theRicTextModelDoesNotDoubleCountTheComposingPrefix() {
-        // Audit F5, asserted where it is actually observable.
-        //
-        // The RIC models the field as (textBeforeRegion | composingRegion | textAfter), and
-        // `getTextBeforeCursor` returns `textBeforeRegion + composingRegion`. A plain
-        // `setSelection(3,3)` mid-region makes the editor report "heX" as its text-before-cursor,
-        // which lands in `mTextBeforeCursor` while `mComposingText` still holds the whole
-        // "heXllo" — so the prefix appears TWICE and every downstream reader (caps mode,
-        // punctuation, backspace) sees "heXheXllo". `setSelectionWithinComposing` trims the
-        // prefix back off, which is what this asserts.
-        //
-        // `getCodePointBeforeCursor()` is -1 here and that is correct, not a bug: with the word
-        // composed at offset 0 there genuinely is nothing before the REGION, and "he" is inside
-        // it rather than before it.
+        // The RIC models (textBeforeRegion | composingRegion | textAfter). A plain setSelection(3,3)
+        // mid-region would put "heX" in `mTextBeforeCursor` too, so readers (caps mode, punctuation,
+        // backspace) see "heXheXllo"; `setSelectionWithinComposing` trims it back off.
+        // `getCodePointBeforeCursor()` is -1 because the word sits at offset 0: "he" is inside the region.
         armComposingWithCaretInside("hello", atCodePoint = 2)
 
         character('X'.code)
@@ -230,9 +186,7 @@ class CharacterInputCharacterisationTest {
 
     @Test
     fun aSupplementaryCodePointInsertedMidWord_advancesTheCaretByTwoCharUnits() {
-        // The code-point vs char-unit distinction the SS-4 audit finding was about: the tracker
-        // counts code points, the editor counts UTF-16 units, and the caret arithmetic has to
-        // convert. An emoji is one code point and two char units.
+        // The tracker counts code points, the editor UTF-16 units: an emoji is one code point, two chars.
         armComposingWithCaretInside("hello", atCodePoint = 2)
 
         character(0x1F600)
@@ -247,8 +201,8 @@ class CharacterInputCharacterisationTest {
 
     @Test
     fun theStageRequestsASuggestionRefreshAndReturnsWithoutCommitting() {
-        // The branch ends in `setShouldUpdateSuggestions(); return;` — it must not fall through
-        // into the append / multi-tap / commitCharacter paths below it.
+        // The branch ends in `setShouldUpdateSuggestions(); return;` and must not fall through into
+        // the append / multi-tap / commitCharacter paths.
         armComposingWithCaretInside("hello", atCodePoint = 2)
 
         val ctx = character('X'.code)
@@ -260,13 +214,10 @@ class CharacterInputCharacterisationTest {
         )
     }
 
-    // ── the word is no longer in the editor ─────────────────────────────────────
-
     /**
-     * An app can change the text without moving the caret, and then no selection update comes.
-     * Messages, 2026-10-14: type "hi", cut it, undo (the recorrection re-opens "Hi" with the caret
-     * at 0), redo (the field empties, the caret stays at 0). Typing A then wrote the deleted word
-     * back as "AHi", because this stage rewrites the whole word from the tracker's copy.
+     * An app can change the text without moving the caret, so no selection update comes (Messages:
+     * type "hi", cut, undo, redo leaves the field empty with the caret at 0). Typing A must not
+     * rewrite the tracker's stale word back as "AHi".
      */
     @Test
     fun aWordTheAppEmptiedWithoutMovingTheCaret_isNotWrittenBack() {

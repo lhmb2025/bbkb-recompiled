@@ -1,5 +1,5 @@
-/* ldb_reader_android.c — ldb_reader.c's platform layer on the device: the blob's AAssetManager
- * and the NDK asset API. CUTOVER builds only (CMakeLists.txt). */
+/* ldb_reader_android.c: ldb_reader.c's device layer (the blob's AAssetManager + NDK asset API).
+ * CUTOVER builds only. */
 #include <android/asset_manager.h>
 #include <android/log.h>
 #include <link.h>
@@ -7,9 +7,8 @@
 #include <string.h>
 #include "ldb_reader.h"
 
-/* ldbIndexAssetManager stores AAssetManager_fromJava's result in this blob global (0x1e9cc) and
- * ldbReadDataAW reads it back with `adrp x8, 0x21a000; ldr x0, [x8, #0x8]` (0x1e7dc). Those two
- * words are checked before the global is trusted, so a different blob build reads nothing. */
+/* Blob global holding the AAssetManager (stored at 0x1e9cc, read at 0x1e7dc by
+ * `adrp x8, 0x21a000; ldr x0, [x8, #0x8]`). Those two words are checked first, so another blob build reads nothing. */
 #define BLOB_ASSET_MANAGER_VADDR 0x21a008u
 #define BLOB_READ_MGR_VADDR      0x1e7dcu
 static const uint32_t FP_READ_MGR[2] = {0x90000fe8u, 0xf9400500u};

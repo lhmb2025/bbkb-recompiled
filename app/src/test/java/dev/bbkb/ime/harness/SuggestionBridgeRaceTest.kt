@@ -18,18 +18,9 @@ import org.robolectric.annotation.Config
 import java.util.Locale
 
 /**
- * Executable proof for `EB-2` — the suggestion worker's engine read is not atomic against
- * main-thread engine writes (docs/2026-07_pipeline-audit-findings_reference.md).
- *
- * The first fix for this was REVERTED (`340b1901`) because it could not tell "the tracker moved
- * on" (normal at typing speed) from "the engine buffer was rewritten inside my read window" (the
- * actual defect). It discarded the list in both cases, and an empty return makes
- * SuggestionCoordinator merge with the PREVIOUS suggestions — the strip froze on stale duplicates.
- *
- * So this suite deliberately pins BOTH directions. [undisturbedRead_returnsListWithoutRetrying] is
- * the one that would have caught the reverted attempt: it fails if the guard fires on a normal
- * read. [mutationDuringRead_rereadsAndStillReturnsSuggestions] proves the defect is actually
- * caught, and that the response is a re-read rather than the empty list that caused the freeze.
+ * Pins the worker's guard against main-thread engine-buffer writes during a suggestion read,
+ * both ways: an undisturbed read is not retried, and a disturbed one is re-read once (never
+ * returned empty, which makes SuggestionCoordinator merge with stale suggestions).
  */
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [34], manifest = Config.NONE, instrumentedPackages = ["com.blackberry.nuanceshim"])
@@ -40,7 +31,7 @@ class SuggestionBridgeRaceTest {
     private lateinit var sdk: NuanceSDK
     private lateinit var bridge: NuanceSDKDictionaryBridge
 
-    /** Calls into the engine's input buffer that the shim counts (clear/processKeyBySymbol/…). */
+    /** Simulate an input-buffer write: bumps the epoch the shim advances on clear/processKeyBySymbol/… */
     private fun bumpEpoch() {
         val f = NuanceSDK::class.java.getDeclaredField("sInputBufferEpoch")
         f.isAccessible = true
@@ -88,9 +79,7 @@ class SuggestionBridgeRaceTest {
 
     @Test
     fun undisturbedRead_returnsListWithoutRetrying() {
-        // THE regression that killed attempt #1. A normal read — the tracker may well have
-        // advanced by delivery time, but nothing rewrote the engine buffer during the read —
-        // must return its list untouched and must NOT re-read.
+        // The tracker may have moved on, but nothing rewrote the engine buffer: no re-read.
         var builds = 0
         `when`(sdk.buildSelectionList()).thenAnswer { builds++; 0 }
 
@@ -102,9 +91,8 @@ class SuggestionBridgeRaceTest {
 
     @Test
     fun mutationDuringRead_rereadsAndStillReturnsSuggestions() {
-        // The real defect: the main thread rewrites the engine input buffer between our replay
-        // and our read of the scored list, so the candidates belong to a symbol stream that
-        // never existed.
+        // A buffer write between replay and reading the list yields candidates for a symbol
+        // stream that never existed.
         var builds = 0
         `when`(sdk.buildSelectionList()).thenAnswer {
             builds++

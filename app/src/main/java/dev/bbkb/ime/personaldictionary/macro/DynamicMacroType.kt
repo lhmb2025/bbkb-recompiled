@@ -9,7 +9,7 @@ import androidx.annotation.VisibleForTesting
 import java.util.Locale
 
 /**
- * Defines available dynamic macro types and their handlers.
+ * Built-in macro tags and their handlers.
  *
  * | Tag | Description |
  * |-----|-------------|
@@ -28,9 +28,7 @@ enum class DynamicMacroType(
     val canExpectNullOrEmpty: Boolean
 ) {
     DATE("%D", object : DateTimeMacro() {
-        // A genuine ICU *skeleton*, not a pattern: it must go through
-        // DateFormat.getBestDateTimePattern() or SimpleDateFormat renders it
-        // literally as "Saturday06September2026".
+        // An ICU skeleton, not a pattern (see DateTimeMacro).
         override fun getSkeleton(context: Context): String = "EEEEddMMMMyyyy"
         override val isSkeleton: Boolean = true
         override val isISO: Boolean = false
@@ -82,13 +80,7 @@ enum class DynamicMacroType(
     ;
 
     companion object {
-        /**
-         * Restored from the original APK decompile
-         * (`com.blackberry.basl.DynamicMacroType.TimeMacro`): a global identifier
-         * rename had replaced the trailing AM/PM pattern letter with the class name
-         * `SuggestedWordInfo`, which `SimpleDateFormat` rejects with
-         * `IllegalArgumentException` in every 12-hour locale.
-         */
+        /** The trailing `a` is the AM/PM letter; keep it out of identifier renames. */
         @VisibleForTesting
         const val TIME_FORMAT_12HR = "hh:mm:ss a"
 

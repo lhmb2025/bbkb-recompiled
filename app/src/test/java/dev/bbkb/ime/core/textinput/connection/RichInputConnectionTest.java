@@ -23,15 +23,9 @@ import org.robolectric.RobolectricTestRunner;
 import org.robolectric.annotation.Config;
 
 /**
- * Unit tests for {@link RichInputConnection}'s text model in the cursor-inside-composing
- * state (docs/archived/2026-06_fable-audits-and-gesture-rebuild/2026-06_composition-pipeline_audit.md F5).
- *
- * <p>The editor is a Mockito-scripted {@link InputConnection} whose before/after text is
- * held in mutable fields, updated between steps exactly as a real editor would after each
- * IME call. The test replays the real mid-word-insert flow from
- * {@code InputLogic.handleCharacterInput}: tap inside the word (resetConnection), insert a
- * character (setComposingText with the full new word), then reposition the cursor inside
- * the composing region.
+ * {@link RichInputConnection}'s text model and caches, mainly with the cursor inside the
+ * composing word. The editor is a Mockito {@link InputConnection} whose before/after text the
+ * test updates between steps as a real editor would.
  */
 @RunWith(RobolectricTestRunner.class)
 @Config(sdk = 34, manifest = Config.NONE, instrumentedPackages = {"com.blackberry.nuanceshim"})
@@ -91,7 +85,6 @@ public class RichInputConnectionTest {
         runMidWordInsertFlow();
 
         // Committed text + the full composing word, with no double-counted prefix.
-        // Before the fix this returned "Hello TeaTeastin".
         assertEquals("Hello Teastin", mRic.getTextBeforeCursor(100, 0).toString());
         assertEquals(9, mRic.getCursorStart());
     }
@@ -100,13 +93,9 @@ public class RichInputConnectionTest {
     public void midWordInsertKeepsCodePointBeforeCursorSemantics() {
         runMidWordInsertFlow();
 
-        // Same semantics as the cursor-at-end composing state: the last *committed*
-        // character before the composing word. Before the fix this returned 'a' (a
-        // character from inside the word).
+        // As with the cursor at the end: the last committed character before the composing word.
         assertEquals(' ', mRic.getCodePointBeforeCursor());
     }
-
-    // --- H3: synthesized backspace must delete a whole code point from the caches ---
 
     @Test
     public void synthesizedBackspaceDeletesWholeSurrogatePairFromComposingCache() {
@@ -117,7 +106,7 @@ public class RichInputConnectionTest {
 
         mRic.sendKeyEvent(new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_DEL));
 
-        // Before the fix the cache kept a lone high surrogate ("ab\uD83D").
+        // No lone high surrogate ("ab\uD83D") may stay in the cache.
         assertEquals("ab", mRic.getTextBeforeCursor(100, 0).toString());
     }
 
@@ -137,14 +126,9 @@ public class RichInputConnectionTest {
         assertEquals(' ', mRic.getCodePointBeforeCursor());
     }
 
-    // -- audit regressions ---------------------------------------------------
-
     /**
-     * Audit TI-2: {@code getPrevWordsInfo} used to write the current context into
-     * {@code PrevWordsInfo.EMPTY_PREV_WORDS_INFO} - a {@code public static final} singleton - and
-     * return it. There was therefore exactly one PrevWordsInfo in the process: every
-     * "context at commit time" snapshot held by a CommitEventRecord aliased it and was rewritten
-     * by the next keystroke.
+     * {@code getPrevWordsInfo} returns a fresh object and never writes into the shared
+     * {@code EMPTY_PREV_WORDS_INFO}, so a CommitEventRecord's snapshot survives the next keystroke.
      */
     @Test
     public void getPrevWordsInfoReturnsAFreshInstanceEachCall() {
@@ -169,11 +153,7 @@ public class RichInputConnectionTest {
         assertEquals("", PrevWordsInfo.EMPTY_PREV_WORDS_INFO.getContextBefore());
     }
 
-    /**
-     * Audit TI-35: the guard was {@code TextUtils.isEmpty(t) || ' ' != t.charAt(1)}, which only
-     * rules out length 0 while indexing position 1. With the cursor one character into the field
-     * this threw StringIndexOutOfBoundsException off the backspace path.
-     */
+    /** One character into the field, the backspace path's look at index 1 must not throw. */
     @Test
     public void revertSwapPunctuationWithOneCharacterBeforeCursorDoesNotThrow() {
         mEditorBefore = "a";
@@ -184,10 +164,8 @@ public class RichInputConnectionTest {
     }
 
     /**
-     * Audit TI-22: {@code getTextBeforeCursor} now builds only the requested suffix instead of
-     * copying both buffers in full and then deleting the front. Pin the boundaries - a request
-     * that lands inside the committed text, exactly on the composing boundary, and inside the
-     * composing text.
+     * {@code getTextBeforeCursor} builds only the requested suffix; pins requests ending inside
+     * the committed text, on the composing boundary, and inside the composing text.
      */
     @Test
     public void getTextBeforeCursorReturnsTheRequestedSuffixAcrossTheComposingBoundary() {
@@ -203,8 +181,6 @@ public class RichInputConnectionTest {
         assertEquals("Hello wor", mRic.getTextBeforeCursor(9, 0).toString());
         assertEquals("Hello wor", mRic.getTextBeforeCursor(100, 0).toString());
     }
-
-    // ── isSelectionUnchanged with the cursor unknown ─────────────────────────
 
     @Test
     public void isSelectionUnchanged_cursorUnknown_aRealJumpIsAChange() {
@@ -222,9 +198,6 @@ public class RichInputConnectionTest {
         mRic.invalidateConnection();
         assertTrue(mRic.isSelectionUnchanged(5, 5, 5, 5));
     }
-
-
-    // ── the add-to-dictionary highlight and the editor's spell check ────────
 
     @Test
     public void clearingAFinishedHighlight_asksTheEditorToSpellCheck() {
@@ -245,13 +218,9 @@ public class RichInputConnectionTest {
         verify(mIc, never()).performSpellCheck();
     }
 
-    // ── the cached text before the cursor stays bounded (audit B-10) ─────────
-
     /**
-     * Commits append to the cached text before the cursor and nothing shortened it, so a long
-     * session with no cursor move made every whole-buffer reader slower by the character. Past
-     * twice the load size the front is dropped; the tail stays exact, and a request for more
-     * than the cache holds goes to the editor, as it does right after a load.
+     * Past twice the load size the cache before the cursor drops its front; the tail stays exact,
+     * and a request for more than the cache holds goes to the editor.
      */
     @Test
     public void aLongRunOfCommitsKeepsTheCachedTextBounded() {
@@ -299,7 +268,7 @@ public class RichInputConnectionTest {
         }
     }
 
-    /** The word check reads the last one or two code points in place; same answers as before. */
+    /** The in-word check reads the last one or two code points in place. */
     @Test
     public void hasWordBeforeCursorReadsTheEndOfTheCachedText() {
         dev.bbkb.ime.core.settings.util.SpacingAndPunctuation rules =

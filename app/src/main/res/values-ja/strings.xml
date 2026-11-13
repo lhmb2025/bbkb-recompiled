@@ -721,7 +721,6 @@
     <string name="device_config_import_unreadable">このファイルは端末構成ではありません</string>
     <string name="device_config_import_failed">このファイルをインポートできませんでした</string>
 
-    <!-- OTA app updates -->
     <string name="settings_updates_title">アップデート</string>
     <string name="settings_updates_summary">BBKB の新しいバージョンを確認</string>
     <string name="settings_update_installed_version_title">インストール済みバージョン</string>
@@ -755,7 +754,6 @@
     <string name="settings_update_ready_title">インストールの準備完了</string>
     <string name="settings_update_version_details">バージョンの詳細</string>
     <string name="settings_update_unknown_sources_title">BBKB にアップデートのインストールを許可しますか?</string>
-    <!-- Downloadable language packs (core/languagepack) -->
     <string name="language_packs_installed_header">インストール済み</string>
     <string name="language_packs_available_header">ダウンロード可能</string>
     <string name="language_packs_download">ダウンロード</string>
@@ -877,7 +875,6 @@
     <string name="settings_voice_stop_on_pause_summary_off">途中で間が空いても、マイクをタップするか30秒間無音が続くまで聞き取りを続けます</string>
     <string name="voice_status_listening_tap_to_stop">聞き取り中&#8230; マイクをタップして停止</string>
 
-    <!-- Settings text moved out of the code (2026-11) -->
     <string name="settings_common_save">保存</string>
     <string name="settings_common_edit">編集</string>
     <string name="settings_common_back">戻る</string>

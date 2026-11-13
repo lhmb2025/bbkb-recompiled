@@ -12,16 +12,13 @@ import dev.bbkb.ime.keyboard.slideboard.NumericSubpanelKeyboardView
 /** The marker a blank slot is stored as, shared with `CustomSymbolRepository`. */
 internal const val EMPTY_SLOT = "\u0000"
 
-/** Index of the "Custom" tab in [CATEGORY_TABS] — the only one with an Add/Delete bar. */
+/** Index of the "Custom" tab in [CATEGORY_TABS], the only one with an Add/Delete bar. */
 internal const val CUSTOM_TAB = 8
 
 /** Index of the "Emoji" tab, the only category large enough to need paging. */
 internal const val EMOJI_TAB = 0
 
-/**
- * The nine palette categories, in the order `CustomSymbolRepository.loadCategorySymbols()`
- * numbers them. Tab index *is* the category index; do not reorder.
- */
+/** Palette categories; tab index is the `loadCategorySymbols()` index, so do not reorder. */
 internal val CATEGORY_TABS = listOf(
     R.string.symbol_list_category_emoji_title,
     R.string.symbol_list_category_alphanumeric_title,
@@ -42,13 +39,10 @@ internal data class Reset(
 )
 
 /**
- * Everything that differs between the three key-layout editors — the VKB symbol page, the PKB
- * symbol page and the slideboard numpad. [KeyLayoutEditorScreen] renders any of them.
- *
- * `load` and `save` speak in slots: reading order over the board's editable keys. The stored
- * order differs for the on-screen page and the pad (each has one table, shared with the keyboard);
- * getting one backwards silently scrambles every existing user's layout, so
- * `KeyLayoutEditorBehaviourTest` pins all three against the keyboard the editor draws.
+ * What differs between the three key-layout editors (VKB symbol page, PKB symbol page,
+ * slideboard numpad), all rendered by [KeyLayoutEditorScreen]. `load` and `save` speak in slots
+ * (reading order); the stored order differs per board and getting it backwards scrambles saved
+ * layouts, so `KeyLayoutEditorBehaviourTest` pins all three.
  */
 @Immutable
 internal class KeyEditorSpec(
@@ -57,24 +51,14 @@ internal class KeyEditorSpec(
     @StringRes val title: Int,
     /** The keyboard board drawn under the palette; its editable keys are the slots, in reading order. */
     val board: PreviewBoard,
-    /**
-     * For the number pad, which half of the keyboard strip it sits in: 0 left, 1 right (the
-     * user's numpad side). `null` for a board that spans the whole width.
-     */
+    /** Number pad side: 0 left, 1 right; `null` for a full-width board. */
     val half: (Context) -> Int?,
     val resets: List<Reset>,
     val load: (Context) -> List<String>,
     val save: (Context, List<String>) -> Unit,
-    /**
-     * Whether changing tab or applying a reset drops a pending palette selection. The slideboard
-     * editor does; the symbol pages keep it.
-     */
+    /** Whether changing tab or applying a reset drops a pending palette selection. */
     val clearsSymbolSelectionOnContextChange: Boolean,
 )
-
-// ============================================================================
-// The symbol pages
-// ============================================================================
 
 private fun symbolPageResets(isPkb: Boolean) = listOf(
     Reset(R.string.customized_symbols_page_reset_to_page_1) { c, _ ->
@@ -103,21 +87,13 @@ private fun symbolPageSpec(isPkb: Boolean) = KeyEditorSpec(
 /** On-screen keyboard: 26 editable slots, in rows of 10, 9 and 7. */
 internal val VkbSymbolPageSpec = symbolPageSpec(isPkb = false)
 
-/**
- * Physical keyboard: 27 editable slots, the shape of `rows_symbols_custom_pkb.xml` — ten, nine,
- * then eight (the seven letter keys and the currency key).
- */
+/** Physical keyboard: 27 editable slots, rows of 10, 9 and 8 (`rows_symbols_custom_pkb.xml`). */
 internal val PkbSymbolPageSpec = symbolPageSpec(isPkb = true)
-
-// ============================================================================
-// The slideboard numpad
-// ============================================================================
 
 private const val NUMPAD_PREF = "custom_slideboard_symbols"
 
 /**
- * Editor position -> storage index for the slideboard's 4x5 numpad. Shared with the keyboard,
- * which matches keys by on-screen position through the same table.
+ * Editor position -> storage index for the slideboard's 4x5 numpad, shared with the keyboard.
  *
  * ```
  *   visual   0..4  : 7  8  9  &  *
@@ -126,8 +102,7 @@ private const val NUMPAD_PREF = "custom_slideboard_symbols"
  *   visual  15..19 : 0  .  ,  ?  !
  * ```
  *
- * Load reads `storage[order[i]]` into editor slot `i`; save writes editor slot `i` back to
- * `storage[order[i]]`. Reversing that scrambles every customised numpad, in silence.
+ * Slot `i` reads and writes `storage[order[i]]`; reversing that scrambles saved pads.
  */
 private val NUMPAD_KEYBOARD_READ_ORDER = NumericSubpanelKeyboardView.STORAGE_INDEX_FOR_POSITION
 
@@ -147,8 +122,7 @@ internal val SlideboardNumpadSpec = KeyEditorSpec(
     ),
     load = { c ->
         val stored = SettingsManager.getStringListPref(PrefsManager.getPrefs(c), NUMPAD_PREF)
-        // Anything short of a complete, fully-populated pad is treated as "never customised" and
-        // falls back to the shipped defaults, which are already in visual order.
+        // Anything but a complete pad counts as never customised; the defaults are in visual order.
         if (stored.size != 20 || stored.any { it.isNullOrEmpty() }) {
             numpadDefaults(c)
         } else {

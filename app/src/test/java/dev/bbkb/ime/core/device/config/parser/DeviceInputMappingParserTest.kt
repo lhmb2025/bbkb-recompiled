@@ -15,12 +15,8 @@ import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
 
 /**
- * Unit tests for [DeviceInputMappingParser], the parser behind device_config_*.xml /
- * device_input_config.xml. Uses [DeviceInputMappingParser.parseConfigFromStream] with inline
- * XML so the tests cover exactly what a config author can write, including the newer
- * `<kdb-variant>` and `<ckb-key-grid>` elements.
- *
- * Runs under Robolectric for android.util.Xml (a real XmlPullParser on the JVM).
+ * [DeviceInputMappingParser] on inline XML, so the tests cover exactly what a device config author
+ * can write. Robolectric for android.util.Xml.
  */
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [34], manifest = Config.NONE)
@@ -35,8 +31,6 @@ class DeviceInputMappingParserTest {
         assertEquals("expected exactly one parsed device", 1, config.mappings.size)
         return config.mappings[0]
     }
-
-    // ── device matching ──────────────────────────────────────────────────────
 
     @Test
     fun exactDeviceNameMatch_parsesAndMatches() {
@@ -76,8 +70,6 @@ class DeviceInputMappingParserTest {
         assertFalse(m.forceTouchKeypad)
     }
 
-    // ── kdb-variant (device KDB variant feature) ─────────────────────────────
-
     @Test
     fun kdbVariant_parsedAndTrimmed() {
         val m = parseSingle("""<match><device-name exact="d"/></match>
@@ -106,8 +98,6 @@ class DeviceInputMappingParserTest {
             <kdb-variant>   </kdb-variant>""")
         assertNull(m.kdbVariant)
     }
-
-    // ── input mappings ───────────────────────────────────────────────────────
 
     @Test
     fun layoutOverrides_parsedIntoMap() {
@@ -147,8 +137,6 @@ class DeviceInputMappingParserTest {
         assertTrue(m.scancodeMappings.isEmpty())
     }
 
-    // ── multifunction key ────────────────────────────────────────────────────
-
     @Test
     fun multifunctionKey_parsesRoleDefaultActionAndAltChar() {
         val m = parseSingle("""<match><device-name exact="d"/></match>
@@ -186,8 +174,6 @@ class DeviceInputMappingParserTest {
         assertNull(m.getMultifunctionKeyMapping())
     }
 
-    // ── settings overrides ───────────────────────────────────────────────────
-
     @Test
     fun booleanSettingOverride_parsed() {
         val m = parseSingle("""<match><device-name exact="d"/></match>
@@ -212,8 +198,6 @@ class DeviceInputMappingParserTest {
         assertTrue(m.settingsOverrides.isEmpty())
     }
 
-    // ── ckb-key-grid ─────────────────────────────────────────────────────────
-
     @Test
     fun ckbKeyGrid_parsedWithDimensionsAndCells() {
         val m = parseSingle("""<match><device-name exact="d"/></match>
@@ -235,8 +219,6 @@ class DeviceInputMappingParserTest {
             <ckb-key-grid width="1080" height="525"/>""")
         assertNull(m.ckbKeyGridConfig)
     }
-
-    // ── multiple devices ─────────────────────────────────────────────────────
 
     @Test
     fun multipleDevices_allParsed() {

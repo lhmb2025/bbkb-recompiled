@@ -5,10 +5,8 @@ import dev.bbkb.ime.personaldictionary.macro.DynamicMacroType
 import dev.bbkb.ime.personaldictionary.model.WordSubstitution
 
 /**
- * Predefined filters for excluding words from AUD synchronization.
- *
- * - [DYNAMIC_WORD_SUBSTITUTION]: Excludes substitutions containing dynamic macros (`%D`, `%T`, etc.)
- * - [TOO_LONG_WORD_SUBSTITUTION]: Excludes words/keys exceeding AUD's 48-character limit
+ * Words excluded from AUD sync: [DYNAMIC_WORD_SUBSTITUTION] (dynamic macros such as `%D`) and
+ * [TOO_LONG_WORD_SUBSTITUTION] (word or key over AUD's 48-character limit).
  */
 enum class AudFilterType(val filter: AudFilter) {
     DYNAMIC_WORD_SUBSTITUTION(AudFilter { dictionaryWord ->

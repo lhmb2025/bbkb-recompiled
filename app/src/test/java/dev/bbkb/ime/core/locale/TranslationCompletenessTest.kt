@@ -6,20 +6,9 @@ import java.io.File
 import javax.xml.parsers.DocumentBuilderFactory
 
 /**
- * Completeness gate for the shipped translations.
- *
- * The app offers a keyboard subtype for every language listed in `res/xml/method.xml`. A user who
- * picks one of those keyboards is very likely running their phone in that same language, so every
- * one of those languages must carry a full set of UI strings -- a half-translated settings screen
- * reads worse than an English one.
- *
- * This test is data-driven from `method.xml`: adding a `<subtype>` for a new language adds the
- * requirement that `res/values-<lang>/strings.xml` be complete, and the test fails until it is.
- * Nothing here needs Robolectric or an Android runtime; the resources are parsed straight off disk.
- *
- * Deliberately *not* covered: `values-*` dirs for languages the app ships no subtype for (Amharic,
- * Kazakh, Greenlandic, Burmese, Nepali, Sinhala, Swahili, Urdu, Zulu). Those files are inherited
- * from an older BlackBerry build and are left as they are rather than half-maintained.
+ * Every language with a subtype in `res/xml/method.xml` must have complete UI strings and plurals
+ * in its `values-*` folders. Parsed straight off disk, no Android runtime. `values-*` folders for
+ * languages with no subtype (am, kk, kl, my, ne, si, sw, ur, zu) are not checked.
  */
 class TranslationCompletenessTest {
 
@@ -34,30 +23,20 @@ class TranslationCompletenessTest {
 
     private fun resDir() = File(mainDir(), "res")
 
-    // Plurals too, since 2026-11: a count's wording ("1 word", "3 words") is a translation like any other.
     private val stringNameRegex = Regex("""<(?:string|plurals)\s+name="([^"]+)"([^>]*?)(?:/>|>)""")
     private val subtypeLocaleRegex = Regex("""imeSubtypeLocale="([^"]+)"""")
 
-    /**
-     * Android resource qualifier for a `method.xml` subtype language. `fil` resolves to the legacy
-     * `tl` resource folder; `zz` is the no-language (plain alphabet) subtype, not a language.
-     */
+    /** `fil` lives in the legacy `tl` folder; `zz` is the plain-alphabet subtype, not a language. */
     private val subtypeLangToResLang = mapOf("fil" to "tl")
     private val notALanguage = setOf("zz")
 
     /**
-     * Subtype languages the repo has no `values-*` folder for at all -- a keyboard layout with no
-     * translated UI, so the user sees English. Empty since the 2026-09-20 pass filled in the last
-     * seven (bs, ca, cy, ga, jv, sq, su). A new entry here means a language shipping untranslated,
-     * so add the folder and translate it instead; only name a language here, with a reason, when
-     * that is genuinely impossible.
+     * Subtype languages with no `values-*` folder at all (the UI shows English). Add the folder and
+     * translate instead; list a language here, with a reason, only when that is impossible.
      */
     private val languagesWithNoResourceFolder = emptySet<String>()
 
-    /**
-     * Locale folders that are knowingly still incomplete. Empty on purpose -- if a translation pass
-     * has to leave a locale behind, name it here with the reason rather than weakening the test.
-     */
+    /** Locale folders knowingly incomplete; name one here with a reason rather than weakening the test. */
     private val incompleteLocaleAllowlist = emptySet<String>()
 
     /** Every `<string name=...>` and `<plurals name=...>` in the folder not marked `translatable="false"`. */
@@ -101,10 +80,7 @@ class TranslationCompletenessTest {
             ?.sortedBy { it.name }
             ?: emptyList()
 
-    /**
-     * Target folders: one language -> every `values-*` folder that serves it. English is excluded
-     * because `values/` already holds the English strings those folders fall back to.
-     */
+    /** Every `values-*` folder serving a subtype language; English is excluded (`values/` is English). */
     private fun targetFolders(): List<File> =
         subtypeLanguages().filter { it != "en" }.flatMap { foldersForLanguage(it) }.sortedBy { it.name }
 

@@ -1,50 +1,27 @@
 package dev.bbkb.ime.keyboard.auxbar;
 
-/**
- * States for the AuxBarView container.
- * Determines which child view is visible and what content is displayed.
- */
+/** Which child of AuxBarView is visible and what it shows. */
 public enum AuxBarState {
-    /**
-     * No auxiliary bar visible.
-     */
     NONE,
-    
-    /**
-     * Latin word suggestions displayed in UnifiedSuggestionView.
-     */
+
+    /** Shown in UnifiedSuggestionView. */
     LATIN_SUGGESTIONS,
-    
-    /**
-     * CJK character suggestions displayed in UnifiedSuggestionView.
-     */
+
+    /** Shown in UnifiedSuggestionView. */
     CJK_SUGGESTIONS,
-    
-    /**
-     * Password autofill suggestions displayed in UnifiedSuggestionView.
-     */
+
+    /** Password autofill, shown in UnifiedSuggestionView. */
     AUTOFILL,
-    
-    /**
-     * Unified Input Menu bar displayed in SharedKeyView.
-     * Uses keyboard layout 138.
-     */
+
+    /** Unified Input Menu in SharedKeyView, keyboard layout 138. */
     UNIFIED_INPUT_MENU,
-    
-    /**
-     * Arrow/cursor keys bar displayed in SharedKeyView.
-     * Uses keyboard layout 39.
-     */
+
+    /** Cursor keys in SharedKeyView, keyboard layout 39. */
     ARROW_BAR,
-    
-    /**
-     * Accent character selection bar displayed in SharedKeyView.
-     * Uses dynamically generated accent keyboard.
-     */
+
+    /** Accent picker in SharedKeyView, from a generated keyboard. */
     ACCENT_BAR,
 
-    /**
-     * The language-chip bar in UnifiedSuggestionView: this keyboard's languages, a tap switches.
-     */
+    /** This keyboard's languages in UnifiedSuggestionView; a tap switches. */
     LANGUAGE_CHIPS
 }

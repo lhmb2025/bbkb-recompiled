@@ -62,11 +62,7 @@ public final class KeyboardBuilder {
     /** Built keyboards kept between fields; see {@link KeyboardCacheKey} for what tells them apart. */
     private static final int KEYBOARD_CACHE_SIZE = 48;
 
-    /**
-     * Least recently used first, bounded, with soft values: a cleared value's entry is removed
-     * as soon as its reference is queued ({@link #purgeClearedKeyboards}), instead of the key
-     * staying in the map for the life of the process.
-     */
+    /** LRU, bounded, soft values; entries of collected keyboards are purged ({@link #purgeClearedKeyboards}). */
     private static final LinkedHashMap<KeyboardCacheKey, KeyboardReference> sKeyboardCache =
             new LinkedHashMap<KeyboardCacheKey, KeyboardReference>(16, 0.75f, true) {
                 @Override
@@ -99,7 +95,7 @@ public final class KeyboardBuilder {
 
     private final SharedPreferences mPrefs;
 
-    /** Custom-symbol page index from KeyboardState; misnamed by the decompiler as a theme id. */
+    /** Custom-symbol page index from KeyboardState. */
     private int mCustomSymbolPage = 0;
 
     
@@ -112,14 +108,11 @@ public final class KeyboardBuilder {
 
     
     public static final class Params {
-
-        /** The layout set's resource name: {@link #LAYOUT_SET_PREFIX} and the layout set. */
         String mKeyboardLayoutSetName;
 
         /**
-         * The layout set this keyboard is built from ({@code qwerty}, {@code colemak}), or null when
-         * none was given. Usually the subtype's own; a letter layout chosen for the language can
-         * stand in for it ({@link Builder#setKeyboardLayoutSet}).
+         * Layout set to build from ({@code qwerty}, {@code colemak}), or null. Usually the subtype's own;
+         * a letter layout chosen for the language can replace it ({@link Builder#setKeyboardLayoutSet}).
          */
         public String keyboardLayoutSet() {
             final String name = mKeyboardLayoutSetName;
@@ -162,6 +155,7 @@ public final class KeyboardBuilder {
 
         public final KeyboardId mKeyboardId;
 
+        /** @param c0977g the id of the keyboard that failed to build */
         public KeyboardLayoutSetException(Throwable th, KeyboardId c0977g) {
             super(th);
             this.mKeyboardId = c0977g;
@@ -184,7 +178,7 @@ public final class KeyboardBuilder {
         synchronized (sKeyboardCache) {
             sKeyboardCache.clear();
             while (sClearedKeyboards.poll() != null) {
-                // drained: their entries are gone with the map
+                // Drained only: their entries went with the map.
             }
         }
         sKeysCache.clear();
@@ -238,9 +232,8 @@ public final class KeyboardBuilder {
     }
 
     /**
-     * What {@link KeyboardId#equals} compares, copied out of it, so the cache key does not hold
-     * the {@link EditorInfo} of the field the keyboard was first built for (its extras and
-     * initial surrounding text included) for as long as the process lives.
+     * The fields {@link KeyboardId#equals} compares, copied so the cache key does not pin the
+     * first field's {@link EditorInfo} (extras, surrounding text) for the process lifetime.
      */
     static final class KeyboardCacheKey {
 
@@ -329,18 +322,22 @@ public final class KeyboardBuilder {
         this.mPrefs = PrefsManager.INSTANCE.getPrefs(this.mContext);
     }
 
+    /** @param i the requested element id */
     public Keyboard getKeyboard(int i) {
         return getKeyboardForShift(i, false);
     }
 
+    /**
+     * @param i the requested element id
+     * @param z true for the physical-keyboard family (pkb)
+     */
     public Keyboard getKeyboardForShift(int i, boolean z) {
         return getKeyboardInternal(i, z);
     }
 
     /**
-     * The PKB element that replaces a requested element in url/email, postal and password fields
-     * on a physical keyboard, or 0 when {@code mode} has no alias. Symbol pages (5..8) and the
-     * unified input menu (38) are exempt — see {@link #getKeyboardInternal}.
+     * PKB element replacing the requested one in url/email, postal and password fields, or 0.
+     * Symbol pages (5..8) and the input menu (38) are exempt, see {@link #getKeyboardInternal}.
      */
     private static int pkbAliasElement(int mode) {
         switch (mode) {
@@ -357,9 +354,7 @@ public final class KeyboardBuilder {
     }
 
     /**
-     * Resolves (input mode, requested element, pkb) to the element id recorded on the
-     * {@link KeyboardId} and the layout set's {@code <Element>} it is built from.
-     *
+     * Resolves (input mode, element, pkb) to the {@link KeyboardId} element id and its {@code <Element>}.
      * @param pkb selects the physical-keyboard family (+100), not "shifted"
      */
     public Keyboard getKeyboardInternal(int requested, boolean pkb) {
@@ -367,7 +362,7 @@ public final class KeyboardBuilder {
         final int element;
         if (mode == 4) {
             // Phone: everything is `phone`, except symbol page 0 -> `phoneSymbols`, which also
-            // drops the pkb flag, so `phoneSymbolsPkb` (110) is unreachable (audit §6 #15, kept).
+            // drops the pkb flag, so `phoneSymbolsPkb` (110) is unreachable (intended).
             element = requested == 5 ? 10 : 9;
             if (requested == 5) {
                 pkb = false;
@@ -411,8 +406,11 @@ public final class KeyboardBuilder {
         }
     }
 
+    /**
+     * @param bVar the layout set element to build from
+     * @param c0977g the id the keyboard gets
+     */
     private Keyboard buildKeyboard(ElementParams bVar, KeyboardId c0977g) {
-        // Add null check to prevent NPE
         if (bVar == null) {
             throw new IllegalStateException("No keyboard layout found for configuration: " + c0977g);
         }
@@ -455,12 +453,9 @@ public final class KeyboardBuilder {
 
 
     /**
-     * The stored custom symbol page, in the order its keys sit on the keyboard (row by row).
-     *
-     * <p>The physical page is stored in that order. The on-screen page is stored in the order the
-     * original app's key sorting produced, and the settings editor has always read and written it
-     * through that table; keys are sorted by position now, so the same table is applied here, or
-     * the page the keyboard draws is not the page the editor shows.
+     * The stored custom symbol page in on-keyboard order (row by row). The on-screen page is stored
+     * in a legacy order the settings editor maps through {@code vkbStorageToVisualOrder}; the same
+     * mapping applies here so the drawn page matches the editor.
      */
     private List<String> loadCustomSymbolList(boolean physicalKeyboard) {
         final List<String> stored = CustomSymbolRepository.loadSymbolList(
@@ -469,22 +464,14 @@ public final class KeyboardBuilder {
         return physicalKeyboard ? stored : CustomSymbolRepository.vkbStorageToVisualOrder(stored);
     }
 
-    /**
-     * Puts {@code labels} on {@code keyboard}'s custom-symbol keys, row by row. For the settings
-     * editor's preview, which draws the page being edited on a real keyboard.
-     */
+    /** Puts {@code labels} on {@code keyboard}'s custom-symbol keys, row by row, for the editor preview. */
     public void applyCustomSymbols(Keyboard keyboard, List<String> labels) {
         applySymbolList(keyboard, labels, this.mCustomSymbolPage);
     }
 
     /**
-     * Retitles this keyboard's custom-symbol keys from {@code labels}, in layout order.
-     *
-     * <p>Single implementation for all three entry points (initial build, cache-hit refresh and
-     * the explicit list overload): they had drifted, and only one of them carried the
-     * label-equality guard — without it every custom key was replaced on every page open, and
-     * {@link Keyboard#replaceKey} rebuilds the whole proximity grid per call.
-     *
+     * Retitles the custom-symbol keys from {@code labels}, in layout order. Shared by all entry points;
+     * the label-equality guard skips unchanged keys so a page open does not replace every key.
      * @param page the custom-symbol page index; page 1 is the letter page
      */
     private void applySymbolList(Keyboard keyboard, List<String> labels, int page) {
@@ -520,6 +507,11 @@ public final class KeyboardBuilder {
         }
     }
 
+    /**
+     * @param str the symbol to put on the key
+     * @param z true for a letter on the letter page (upper-cased spec, no case long-press)
+     * @param c0965e the keyboard the key belongs to
+     */
     private Key createCustomKey(Key key, String str, boolean z, Keyboard c0965e) {
         Key key2 = new Key(new MoreKeySpec(str, z, c0965e.mId.mLocale), MoreKeySpec.getEmpty(), KeyHintPosition.HIDDEN, key.getHintLabel(), 0, 1, key.getX(), key.getY(), key.getWidth() + c0965e.mHorizontalGap, key.getHeight() + c0965e.mVerticalGap, c0965e.mHorizontalGap, c0965e.mVerticalGap, "customSymbolKeyStyle", getMoreKeysForCustomKey(str, !z, c0965e.mId.mLocale), null, key.getMoreKeysFlags(), 8, key.getScanCode());
         if (str.equals("\u0000")) {
@@ -528,6 +520,10 @@ public final class KeyboardBuilder {
         return key2;
     }
 
+    /**
+     * @param str the key's symbol
+     * @param z true to upper-case a letter's long-press spec
+     */
     private MoreKeySpec[] getMoreKeysForCustomKey(String str, boolean z, Locale locale) {
         char[] charArray = str.toCharArray();
         if (charArray.length == 0) {
@@ -555,11 +551,9 @@ public final class KeyboardBuilder {
     }
 
     /**
-     * Long-press variants for a custom symbol key that holds an emoji, using the same
-     * source as the emoji board (EmojiKeyboardFactory): the skin-tone variants from the
-     * emojibase data set. The base emoji stays on the key; the popup lists only the
-     * variants. Returns null for non-emoji strings or emojis without variants, and only
-     * loads the (shared, cached) emoji data set when an emoji key is actually present.
+     * Skin-tone variants (from emojibase, as on the emoji board) for a custom symbol key holding an
+     * emoji, or null. The data set loads only when an emoji key is present.
+     * @param str the key's text
      */
     private MoreKeySpec[] getEmojiVariantMoreKeys(String str, Locale locale) {
         if (!EmojiTextAnalyzer.isEmoji(str)) {
@@ -577,9 +571,8 @@ public final class KeyboardBuilder {
     }
 
     /**
-     * The script id this layout set declares via {@code supportedScript} (latin = 14, han = 7,
-     * thai = 20, ...) — NOT a more-keys column count and NOT a {@link KeyboardId} element id.
-     * It feeds word-character classification in {@code RichInputConnection.getWordRangeAtCursor}.
+     * The layout set's {@code supportedScript} id (latin = 14, han = 7, thai = 20, ...), used for
+     * word-character classification in {@code RichInputConnection.getWordRangeAtCursor}.
      */
     public int getSupportedScriptId() {
         return this.mParams.mSupportedScriptId;
@@ -612,9 +605,8 @@ public final class KeyboardBuilder {
         }
 
         /**
-         * The fields of {@code editorInfo} a keyboard is built from, in a copy: the keyboard (and,
-         * through its id, the keyboard cache) keeps its EditorInfo, and the app's own one carries
-         * its extras and the text around the cursor.
+         * Copies the fields a keyboard is built from: the keyboard and its cache keep this EditorInfo,
+         * and the app's own carries extras and the text around the cursor.
          */
         static EditorInfo keyboardFieldsOf(EditorInfo editorInfo) {
             final EditorInfo copy = new EditorInfo();
@@ -628,6 +620,10 @@ public final class KeyboardBuilder {
             return copy;
         }
 
+        /**
+         * @param i keyboard width in pixels
+         * @param i2 keyboard height in pixels
+         */
         public Builder setKeyboardGeometry(int i, int i2) {
             Params dVar = this.mParams;
             dVar.mKeyboardWidth = i;
@@ -656,12 +652,9 @@ public final class KeyboardBuilder {
         }
 
         /**
-         * Builds the keyboard from the letter layout chosen for its language on the Language
-         * screen, when that layout has on-screen rows of its own (QWERTY, AZERTY, QWERTZ, Colemak, Dvorak:
-         * {@link LetterLayoutChoice#keyboardLayoutSet}); otherwise nothing changes. For the typing
-         * keyboard only: boards, the input menu and the spell checker's keyboards keep their own
-         * layout sets. Call after {@link #setSubtype}, so a field that forces the no-language
-         * keyboard gets that keyboard's choice.
+         * Uses the language's chosen letter layout when it has on-screen rows
+         * ({@link LetterLayoutChoice#keyboardLayoutSet}). Typing keyboard only. Call after
+         * {@link #setSubtype}, so a field that forces the no-language keyboard gets that choice.
          */
         public Builder useChosenLetterLayout() {
             final InputMethodSubtype subtype = this.mParams.mSubtype;
@@ -671,32 +664,37 @@ public final class KeyboardBuilder {
             return this;
         }
 
+        /** @param z true to enable the split layout */
         public Builder setSplitLayoutEnabled(boolean z) {
             this.mParams.mIsSplitLayout = z;
             return this;
         }
 
+        /** @param z true to show the voice input key */
         public Builder setVoiceInputKeyEnabled(boolean z) {
             this.mParams.mVoiceKeyEnabled = z;
             return this;
         }
 
+        /** @param z true to show the language switch key */
         public Builder setLanguageSwitchKeyEnabled(boolean z) {
             this.mParams.mLanguageSwitchKeyEnabled = z;
             return this;
         }
 
+        /** @param z true to show the language quick switch key */
         public Builder setLanguageQuickSwitchKeyEnabled(boolean z) {
             this.mParams.mLanguageQuickSwitchKeyEnabled = z;
             return this;
         }
 
+        /** @param z true to show the input board bar */
         public Builder setInputBoardBarEnabled(boolean z) {
             this.mParams.mInputBoardBarEnabled = z;
             return this;
         }
 
-
+        /** @param i the script id (latin = 14) */
         public void setSupportedScript(int i) {
             this.mParams.mSupportedScriptId = i;
         }
@@ -707,8 +705,7 @@ public final class KeyboardBuilder {
             }
             String str = this.mParams.mKeyboardLayoutSetName;
             try {
-                // The parsed layout set is shared between builders: every field focus used to
-                // resolve the name and parse the XML again for the same keyboard (P-12, D-10).
+                // Parsed layout sets are shared between builders so a field focus does not reparse.
                 final int resolvedId = DeviceProfile.resolveLayoutResource(this.mResources, layoutSetXmlId(str));
                 ParsedLayoutSet parsed;
                 synchronized (sLayoutSetCache) {
@@ -861,6 +858,7 @@ public final class KeyboardBuilder {
         this.mCustomSymbolPage = page;
     }
 
+    /** @param i the element id being built */
     private void updateLanguageQuickSwitchKey(int i) {
         if (i != 38) {
             switch (i) {
@@ -878,19 +876,7 @@ public final class KeyboardBuilder {
         this.mParams.mLanguageQuickSwitchKeyEnabled = false;
     }
 
-    /**
-     * Create a simple single-row keyboard from a list of character labels.
-     * Used by accent bar and similar auxiliary bars that need dynamic keyboards.
-     *
-     * @param context Context for resources
-     * @param labels List of character labels for keys
-     * @param keyHeight Height of keys in pixels
-     * @return A Keyboard with keys laid out in a single row
-     *
-     * <p>There is no page-navigation key. A former {@code includePageNav} flag appended one built
-     * from an empty spec, which MoreKeySpec rejects, so it always threw; nothing in the current
-     * aux bar pages or handles code -2 (the original APK's paging lived in its old AuxBarView).
-     */
+    /** A single-row keyboard of {@code labels}, for the accent bar and similar aux bars (no paging key). */
     public static Keyboard createFromLabels(Context context, List<CharSequence> labels,
             int keyHeight) {
         
@@ -899,36 +885,33 @@ public final class KeyboardBuilder {
         
         int screenWidth = context.getResources().getDisplayMetrics().widthPixels;
         int keyWidth = screenWidth / keyCount;
-        
-        // Create keyboard params
-        // Note: mOccupiedHeight (from mOccupiedHeight) and mOccupiedWidth (from mOccupiedWidth) are used in KeyboardView.onMeasure
+
+        // mOccupiedHeight/mOccupiedWidth size the view in KeyboardView.onMeasure.
         KeyboardParams params = new KeyboardParams();
-        params.mBaseWidth = screenWidth;  // keyboard width
-        params.mOccupiedHeight = keyHeight;    // mHeight - used by KeyboardView.onMeasure for height!
-        params.mOccupiedWidth = screenWidth;  // mWidth - used by KeyboardView.onMeasure for width
-        params.mBaseHeight = keyHeight;    // mBaseHeight
-        params.mHorizontalGap = 0;            // horizontal gap
-        params.mVerticalGap = 0;            // vertical gap
-        params.mMaxMoreKeysKeyboardColumn = keyCount;     // max more keys column
-        params.mGridWidth = keyWidth;     // grid width for ProximityGrid
-        params.mGridHeight = keyHeight;    // grid height for ProximityGrid
-        params.mMostCommonKeyHeight = keyHeight;    // key visual height (mMostCommonKeyHeight in Keyboard)
-        params.mMostCommonKeyWidth = keyHeight;    // key visual height 2 (mMostCommonKeyWidth in Keyboard)
-        
-        // Create a minimal KeyboardId with required EditorInfo
+        params.mBaseWidth = screenWidth;
+        params.mOccupiedHeight = keyHeight;
+        params.mOccupiedWidth = screenWidth;
+        params.mBaseHeight = keyHeight;
+        params.mHorizontalGap = 0;
+        params.mVerticalGap = 0;
+        params.mMaxMoreKeysKeyboardColumn = keyCount;
+        params.mGridWidth = keyWidth;
+        params.mGridHeight = keyHeight;
+        params.mMostCommonKeyHeight = keyHeight;
+        params.mMostCommonKeyWidth = keyHeight;
+
         Params dVar = new Params();
         dVar.mKeyboardWidth = screenWidth;
         dVar.mKeyboardHeight = keyHeight;
-        dVar.mEditorInfo = new EditorInfo(); // Required - KeyboardId accesses actionLabel
+        dVar.mEditorInfo = new EditorInfo(); // KeyboardId reads actionLabel
         params.mId = new KeyboardId(0, dVar);
-        
-        // Create keys
+
         int x = 0;
         Locale locale = Locale.getDefault();
         
         for (int i = 0; i < labels.size(); i++) {
             CharSequence label = labels.get(i);
-            // Result unused, but the read stays: it is what rejects an empty label (throws).
+            // Result unused: the read rejects an empty label by throwing.
             Character.codePointAt(label, 0);
             params.mSortedKeys.add(singleRowKey(label.toString(), x, keyWidth, keyHeight, locale));
             x += keyWidth;

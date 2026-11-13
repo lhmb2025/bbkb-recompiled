@@ -18,19 +18,10 @@ public final class LocaleUtils {
     private static final HashMap<String, Locale> sLocaleCache = new HashMap<>();
 
     /**
-     * The app's spelling of {@code locale}'s language code.
-     *
-     * <p>Everything this app keys by language uses the codes Java returned for twenty years:
-     * {@code res/xml/method.xml}, both language-pack catalogs, the installed-pack directories, the
-     * script and right-to-left tables, the keyboard XML {@code languageCode} cases, and the engine's
-     * own language table, which knows {@code in} and {@code iw} and nothing else. Since Java 17, and
-     * on Android 15+ for apps targeting API 35 (this app does), {@link Locale} no longer converts
-     * to those codes: {@code new Locale("in").getLanguage()} is {@code "id"}, Hebrew is {@code "he"}
-     * and Yiddish {@code "yi"}. So on Android 15 an Indonesian or Hebrew keyboard missed every
-     * table: no dictionary offer, no engine language, no right-to-left. Use this wherever a
-     * language code taken from a Locale is compared with, or handed to, the app's own tables or the
-     * engine. It is the identity for every other language, and on every Android version that still
-     * returns the old codes; the JVM tests run on a modern JDK, so they see the Android 15 form.
+     * The app's spelling of the language code: the old ISO codes ({@code in}, {@code iw},
+     * {@code ji}) that method.xml, pack catalogs and directories, script/RTL tables and the engine
+     * use. Android 15+ with targetSdk 35 (and Java 17) return {@code id}/{@code he}/{@code yi}.
+     * Use it wherever a Locale's language meets the app's tables or the engine.
      */
     public static String languageCode(Locale locale) {
         final String language = locale.getLanguage();
@@ -46,11 +37,7 @@ public final class LocaleUtils {
         }
     }
 
-    /**
-     * {@link Locale#toString()} with the language in the app's spelling ({@link #languageCode}):
-     * {@code in_ID}, {@code zh_TW_stroke}, {@code iw}. The form the keyboard text tables and the
-     * engine's layout sync are keyed by.
-     */
+    /** {@link Locale#toString()} in the app's spelling ({@code in_ID}, {@code zh_TW_stroke}), as the text tables and layout sync key it. */
     public static String localeString(Locale locale) {
         final String country = locale.getCountry();
         final String variant = locale.getVariant();
@@ -64,6 +51,7 @@ public final class LocaleUtils {
         return sb.toString();
     }
 
+    /** @param str locale string, {@code _} or {@code -} separated; {@code tl} becomes {@code fil} */
     public static Locale constructLocaleFromString(String str) {
         if (str == null) {
             return null;
@@ -170,20 +158,14 @@ public final class LocaleUtils {
         if (isChineseCangjie(locale)) {
             return SettingsManager.getInstance().getSettingsValues().cangjieMode == 0 ? NuanceSDK.CANGJIE_VARIANT : NuanceSDK.QUICK_CANGJIE_VARIANT;
         }
-        // The keyboard-layout sync (KeyboardSwitcher) needs the full locale string: the original
-        // getVariant() is empty for every non-Chinese locale. The engine's setInputMethod call is
-        // the one place that wants the variant, and it goes through toNuanceInputMethodName.
-        // The engine spells Indonesian and Hebrew the old way, so not Locale.toString() directly.
+        // The layout sync needs the full locale string (old ISO spelling); the engine's
+        // setInputMethod wants the variant and uses toNuanceInputMethodName.
         return localeString(locale);
     }
 
     /**
-     * The input-method name the engine's {@code setInputMethod} expects for a Chinese subtype: the
-     * locale VARIANT ("pinyin", "stroke", "zhuyin"), or the Cangjie mode the user chose. The
-     * original app passed {@code locale.getVariant()}; when {@link #toNuanceLocaleString} was
-     * changed to return the full locale string for the layout sync, this call went with it and the
-     * engine silently stayed in its default Pinyin mode, so stroke and Zhuyin keyboards produced no
-     * candidates on either Chinese pack (KEY2, 2026-09-28).
+     * For the engine's {@code setInputMethod}: the locale variant ("pinyin", "stroke", "zhuyin") or
+     * the chosen Cangjie mode. Not the full locale string, or the engine stays in Pinyin.
      */
     public static String toNuanceInputMethodName(Locale locale) {
         if (isChineseCangjie(locale)) {
@@ -192,20 +174,11 @@ public final class LocaleUtils {
         return locale.getVariant();
     }
 
-    /**
-     * Gets the primary locale from a Configuration (the first of its locale list).
-     * @param configuration The Configuration to get locale from
-     * @return The primary locale
-     */
+    /** The first of the configuration's locale list. */
     public static Locale getConfigurationLocale(Configuration configuration) {
         return ConfigurationCompat.getLocales(configuration).get(0);
     }
 
-    /**
-     * Gets the primary locale from Resources with proper API version handling.
-     * @param resources The Resources to get locale from
-     * @return The primary locale
-     */
     public static Locale getConfigurationLocale(Resources resources) {
         return getConfigurationLocale(resources.getConfiguration());
     }

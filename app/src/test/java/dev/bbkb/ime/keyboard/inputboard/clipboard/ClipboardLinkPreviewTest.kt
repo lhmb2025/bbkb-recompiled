@@ -13,25 +13,12 @@ import java.io.ByteArrayInputStream
 import java.io.InputStream
 
 /**
- * The clipboard board's link-preview stack, minus the network:
- *  - [UrlUtils]: which rows are treated as images, how a bare host becomes a URL, and the
- *    https-only guard every fetch goes through;
- *  - [OpenGraphMetadata.parse]: which meta tags become a title and a thumbnail;
- *  - [OpenGraphFetcher]'s bounds: the byte cap and deadline on a body read, and the decode
- *    subsampling;
- *  - [ClipboardWebImageProvider]'s bookkeeping, with a fake loader: results keyed by entry id,
- *    failures remembered, nothing fetched while the setting is off, nothing after release.
- *
- * The jsoup connection and the bitmap decode themselves stay uncovered: they need a network and a
- * real `Bitmap`. Plain JVM tests — the provider runs on [Dispatchers.Unconfined], so a fetch
- * completes inside the call that started it unless the fake loader suspends.
+ * The clipboard link-preview stack minus the network: [UrlUtils] image/scheme/https guards,
+ * [OpenGraphMetadata.parse], [OpenGraphFetcher]'s byte cap, deadline and subsampling, and
+ * [ClipboardWebImageProvider]'s bookkeeping with a fake loader. The provider runs on [Dispatchers.Unconfined],
+ * so a fetch completes inside the call that started it unless the fake loader suspends.
  */
 class ClipboardLinkPreviewTest {
-
-    // ═══════════════════════════════════════════════════════════════════════
-    // UrlUtils.isImageUrl — "this row IS the image, skip the Open Graph fetch"
-    // ═══════════════════════════════════════════════════════════════════════
-
     @Test
     fun theFourImageExtensionsAreRecognised() {
         assertTrue(UrlUtils.isImageUrl("https://example.com/a.jpg"))
@@ -83,10 +70,6 @@ class ClipboardLinkPreviewTest {
         assertFalse(UrlUtils.isImageUrl("ftp://example.com/a.png"))
     }
 
-    // ═══════════════════════════════════════════════════════════════════════
-    // UrlUtils.ensureScheme — how a bare host reaches the network
-    // ═══════════════════════════════════════════════════════════════════════
-
     @Test
     fun anAbsoluteUrlIsLeftAlone() {
         assertEquals("https://example.com/x", UrlUtils.ensureScheme("https://example.com/x"))
@@ -100,9 +83,9 @@ class ClipboardLinkPreviewTest {
 
     @Test
     fun anyStringJavaCanParseAsAUrlIsLeftAlone() {
-        // "valid" means java.net.URL accepts it, i.e. the scheme is one the JVM has a handler for —
-        // so ftp: and file: survive ensureScheme untouched. The fetchers no longer call ensureScheme
-        // directly: they go through httpsUrlOrNull, which refuses these (see below).
+        // "Valid" means java.net.URL accepts it, so ftp: and file: survive ensureScheme; the fetchers go
+        // through
+         // httpsUrlOrNull, which refuses them.
         assertEquals("file:///etc/passwd", UrlUtils.ensureScheme("file:///etc/passwd"))
         assertEquals("ftp://example.com/x", UrlUtils.ensureScheme("ftp://example.com/x"))
         assertEquals("mailto:someone@example.com", UrlUtils.ensureScheme("mailto:someone@example.com"))
@@ -116,10 +99,6 @@ class ClipboardLinkPreviewTest {
         assertNull(UrlUtils.ensureScheme(""))
         assertNull(UrlUtils.ensureScheme(null))
     }
-
-    // ═══════════════════════════════════════════════════════════════════════
-    // UrlUtils.httpsUrlOrNull — the only URLs the preview fetchers may request
-    // ═══════════════════════════════════════════════════════════════════════
 
     @Test
     fun httpsUrlsAndBareHostsAreFetchable() {
@@ -146,10 +125,6 @@ class ClipboardLinkPreviewTest {
         assertNull(UrlUtils.httpsUrlOrNull(null))
         assertNull("https with no host", UrlUtils.httpsUrlOrNull("https:///a.png"))
     }
-
-    // ═══════════════════════════════════════════════════════════════════════
-    // OpenGraphMetadata.parse — which meta tags become a preview
-    // ═══════════════════════════════════════════════════════════════════════
 
     private fun parse(html: String): OpenGraphMetadata =
         OpenGraphMetadata().apply { parse(Jsoup.parse(html, "https://example.com")) }
@@ -229,9 +204,8 @@ class ClipboardLinkPreviewTest {
 
     @Test
     fun parsingDoesNotOverwriteAnImageUrlSetByTheImageFastPath() {
-        // CHARACTERISED: the fast path in ClipboardWebImageProvider.loadPreview sets imageUrl from
-        // the row text and never parses, but if parse() ever ran afterwards on a document with no
-        // og:image the existing value would survive — parse only writes when the tag is present.
+        // parse() writes imageUrl only when og:image is present, so an existing value survives a page
+        // without one.
         val meta = OpenGraphMetadata()
         meta.imageUrl = "https://example.com/direct.png"
 
@@ -239,10 +213,6 @@ class ClipboardLinkPreviewTest {
 
         assertEquals("https://example.com/direct.png", meta.imageUrl)
     }
-
-    // ═══════════════════════════════════════════════════════════════════════
-    // OpenGraphFetcher bounds — what a hostile or slow server can make the keyboard do
-    // ═══════════════════════════════════════════════════════════════════════
 
     @Test
     fun aBodyWithinTheCapIsReadWhole() {
@@ -298,10 +268,6 @@ class ClipboardLinkPreviewTest {
         assertEquals("the shorter side decides", 2, OpenGraphFetcher.sampleSizeFor(4_000, 300, 147, 147))
         assertEquals("a zero target never loops", 1, OpenGraphFetcher.sampleSizeFor(4_000, 4_000, 0, 0))
     }
-
-    // ═══════════════════════════════════════════════════════════════════════
-    // ClipboardWebImageProvider — results by entry id, failures cached
-    // ═══════════════════════════════════════════════════════════════════════
 
     private val requested = mutableListOf<String>()
     private val ready = mutableListOf<Long>()

@@ -23,9 +23,7 @@ import json
 import os
 import re
 
-# ---------------------------------------------------------------------------
-# The filename grammar
-# ---------------------------------------------------------------------------
+# The filename grammar.
 
 #: The catalogue's language block: the UPPER-CASE run opening the locale group,
 #: e.g. `EN` in `_ENubUNUS_` and `SAT` in `_SATlsUNdevanagari_`. Its LENGTH is
@@ -33,13 +31,12 @@ import re
 LANGUAGE_BLOCK = re.compile(r"_([A-Z]{2,3})[a-z]{2}UN")
 
 #: The region suffix: an UPPER-CASE run immediately after the `UN` marker.
-#: Matched against the ORIGINAL case, which is what separates a region from
-#: vendor/script noise (`_ZHsbUNps_`, `_ESusUNlatam_`).
+#: Case-sensitive, which separates a region from vendor/script noise
+#: (`_ZHsbUNps_`, `_ESusUNlatam_`).
 COUNTRY_SUFFIX = re.compile(r"_[A-Z]{2,3}[a-z]{2}UN([A-Z0-9]{2,3})_")
 
-#: Everything after the `UN` marker up to the next `_`, in either case. Not part
-#: of the app's rules -- the publisher uses it to EXPLAIN a decision (see
-#: `marker_after_un`).
+#: Everything after the `UN` marker up to the next `_`, in either case. Not an
+#: app rule: the publisher uses it only to explain a decision.
 ANY_SUFFIX = re.compile(r"_([A-Z]{2,3})([a-z]{2})UN([A-Za-z0-9]*)_")
 
 #: Filename spelling -> the spelling the rest of the stack uses.
@@ -153,9 +150,7 @@ def marker_after_un(file_name):
     return suffix
 
 
-# ---------------------------------------------------------------------------
-# The engine's locale table
-# ---------------------------------------------------------------------------
+# The engine's locale table.
 
 ENGINE_TABLE_PATH = os.path.join("app", "src", "main", "assets", "ldb", "manifest.json")
 

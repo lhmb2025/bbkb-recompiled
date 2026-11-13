@@ -37,24 +37,14 @@ import dev.bbkb.ime.BuildConfig;
 
 
 /**
- * The construction half and the callback half of the input view, in one object.
- *
- * <p>{@link #setupInputView(View)} wires the views (it was {@code UISetupCoordinator}); the
- * listener implementations below are what those same views call back on (it was
- * {@code UICoordinator}). They were two files with two separate {@code BlackBerryIME}
- * back-references, and the setup half reached the callback half through
- * {@code ime.getUiCoordinator()}; merged 2026-09 per the package-rearchitecture plan §5.2.
- *
- * <p>The {@code BlackBerryIME} setters that exist only to serve the setup half
- * ({@code setRootInputView}, {@code setSwipeToDeleteAnimatorView}, {@code setAuxBarManager},
- * {@code setCjkSuggestionGridView}, {@code setFlickSuggestionView},
- * {@code setArrowBarController}) are deliberately left in place; removing them is separate work.
+ * Builds the input view ({@link #setupInputView(View)}) and implements the callbacks those views
+ * fire, including the aux bar's menu/strip choice ({@link AuxBarChoice}).
  */
 public class InputViewCoordinator implements KeyboardSwitcher.SwitcherCallbacks, ClipboardController.Listener, FccController.Listener, VoiceInputController.Listener, NumberPadController.Listener {
 
     private static final String TAG = "UICoordinator";
 
-    /** Kept distinct so the ARROW_BAR_DIAG / setup log lines read as they did before the merge. */
+    /** Separate tag for setup and ARROW_BAR_DIAG log lines. */
     private static final String SETUP_TAG = "UISetupCoord";
 
     private BlackBerryIME imeService;
@@ -65,14 +55,10 @@ public class InputViewCoordinator implements KeyboardSwitcher.SwitcherCallbacks,
 
     private SubtypeManager subtypeManager;
 
-    // Active views (not deprecated)
     private CJKSuggestionGridView cjkSuggestionGridView;
     private FlickSuggestionView flickSuggestionView;
 
-    /**
-     * Whether the user raised the menu (the hamburger, or the show-menu key) and has not put it
-     * away: what the bar goes back to when a board closes. Owner decision 2026-11-05.
-     */
+    /** Whether the user raised the menu (hamburger or show-menu key) and has not put it away: what a board close returns to. */
     private final AuxBarChoice barChoice = new AuxBarChoice();
 
 
@@ -90,7 +76,6 @@ public class InputViewCoordinator implements KeyboardSwitcher.SwitcherCallbacks,
         this.settingsManager = SettingsManager.getInstance();
         this.keyboardSwitcher = this.imeService.getKeyboardSwitcher();
         this.subtypeManager = SubtypeManager.getInstance();
-        // Active views only
         this.cjkSuggestionGridView = this.imeService.getCjkSuggestionGridView();
         this.flickSuggestionView = this.imeService.getFlickSuggestionView();
         this.arrowBarController = this.imeService.getArrowBarController();
@@ -120,9 +105,8 @@ public class InputViewCoordinator implements KeyboardSwitcher.SwitcherCallbacks,
             } else if (shouldShowUim()) {
                 uibm.show(false);
             } else if (uibm.isShowing() && !uibm.isPanelBoardShowing()) {
-                // A menu raised in the last field (the choice was reset for this one): new
-                // suggestions no longer take the menu down, so the field start does. A board still
-                // open keeps it, as before.
+                // A menu left from the last field: suggestions do not take it down, so the field
+                // start does. An open board keeps it.
                 uibm.hide();
             }
         }
@@ -133,13 +117,9 @@ public class InputViewCoordinator implements KeyboardSwitcher.SwitcherCallbacks,
     }
     
     /**
-     * PKB Optimization: Pre-show the suggestion strip immediately for faster perceived loading.
-     * Only shows if:
-     * - Predictions are enabled in settings
-     * - The current field supports suggestions (not password, URI, email, etc.)
-     * - "Show the suggestion bar" is not hiding the strip (a Chinese or Japanese one still shows)
-     * - The "Show or hide the input menu" key has not raised the menu, which owns the bar until
-     *   it is put away (the window coming up for that very key press starts the view after it)
+     * Shows an empty suggestion strip early on physical-keyboard devices, when predictions are on,
+     * the field takes suggestions, the bar is not hidden (CJK strips still show) and the show-menu
+     * key has not raised the menu (the window coming up for that key press starts after it).
      */
     private void preShowSuggestionStripForPkb() {
         if (SettingsValues.isInputMenuRequestedByKey()) {
@@ -147,8 +127,7 @@ public class InputViewCoordinator implements KeyboardSwitcher.SwitcherCallbacks,
         }
         SettingsValues settings = SettingsManager.getInstance().getSettingsValues();
         if (settings.isPkbSuggestionBarHidden()) {
-            // AuxBarView starts VISIBLE and empty until its first hide(), and nothing else takes
-            // it down when no strip or menu is coming.
+            // AuxBarView starts VISIBLE and empty, and nothing else hides it when no strip or menu is coming.
             if (auxBarManager != null) {
                 auxBarManager.hideSuggestionBar();
             }
@@ -171,14 +150,12 @@ public class InputViewCoordinator implements KeyboardSwitcher.SwitcherCallbacks,
         if (this.keyboardSwitcher == null) {
             return;
         }
-        
-        // UIBM.hide() handles: hiding all components, hiding AuxBarManager UIM view, clearing activeComponent
+
         UnifiedInputBoardManager uibm = this.keyboardSwitcher.getUnifiedInputBoardManager();
         if (uibm != null) {
             uibm.hide();
         }
-        
-        // Hide AuxBarView for non-UIM states (suggestions, autofill, etc.)
+
         if (auxBarManager != null) {
             auxBarManager.hide();
         }
@@ -209,19 +186,15 @@ public class InputViewCoordinator implements KeyboardSwitcher.SwitcherCallbacks,
         return this.barChoice;
     }
 
-    /**
-     * The menu was taken down (any {@code UnifiedInputBoardManager.hide()}), or a new field
-     * started: the bar goes back to the field's own bar.
-     */
+    /** Any {@code UnifiedInputBoardManager.hide()} or a new field: back to the field's own bar. */
     public void onMenuTakenDown() {
         this.barChoice.chooseFieldBar();
     }
 
     /**
-     * The bar this field shows when the user has chosen nothing: the menu where the field has no
-     * strip ({@link #shouldShowSuggestionStrip} says no and the menu is enabled), the strip where it
-     * has one and the strip can be drawn here (a physical-keyboard device, the only kind
-     * {@code AuxBarManager} draws a strip on), otherwise nothing.
+     * The field's default bar: the menu when there is no strip and the menu is enabled; the strip
+     * when there is one and the device has a physical keyboard ({@code AuxBarManager} draws strips
+     * only there); otherwise nothing.
      */
     public AuxBarChoice.FieldBar fieldBar() {
         SettingsValues settings = SettingsManager.getInstance().getSettingsValues();
@@ -234,10 +207,8 @@ public class InputViewCoordinator implements KeyboardSwitcher.SwitcherCallbacks,
     }
 
     /**
-     * The last open board has closed: the menu came up with it, so the bar goes back to what the
-     * user had chosen. Posted by {@code UnifiedInputBoardManager} after the close, and re-checks
-     * that nothing opened since (a switch from one board to another). A menu the user raised, or
-     * one the field shows as its own bar, stays.
+     * Posted by {@code UnifiedInputBoardManager} after the last board closes: returns the bar to the
+     * user's choice. Re-checks nothing opened since (board to board switch); a chosen menu stays.
      */
     public void uncoverAfterBoardsClosed() {
         UnifiedInputBoardManager uibm = this.keyboardSwitcher.getUnifiedInputBoardManager();
@@ -246,16 +217,12 @@ public class InputViewCoordinator implements KeyboardSwitcher.SwitcherCallbacks,
             return;
         }
         if (this.barChoice.isMenuChosen()) {
-            // The hamburger or the show-menu key raised it, and nothing has put it away since.
             return;
         }
         showFieldBarInPlaceOfMenu(uibm);
     }
 
-    /**
-     * The menu is up and nothing holds it any more (no board, not chosen): show the field's own bar
-     * in its place. The show-menu key's override ends with it.
-     */
+    /** Replaces an unheld menu with the field's own bar; ends the show-menu key's override. */
     private void showFieldBarInPlaceOfMenu(UnifiedInputBoardManager uibm) {
         SettingsValues.setInputMenuRequestedByKey(false);
         switch (fieldBar()) {
@@ -272,15 +239,12 @@ public class InputViewCoordinator implements KeyboardSwitcher.SwitcherCallbacks,
     }
 
     /**
-     * The user typed (owner decision 2026-11-05): a menu they raised goes, and the field's own bar
-     * comes back, with the words the hidden strip has kept current. New suggestions no longer do
-     * this; typing is the one thing that does.
+     * Typing (and only typing) puts a raised menu away and brings back the field's bar, whose words
+     * stayed current. Runs per edit, so the nothing-chosen case returns at once. On-screen input
+     * while a board is open comes from the board and is not typing; physical typing then defers the
+     * switch to the board's close.
      *
-     * <p>Called for every text-editing event, so the common case (nothing chosen) returns at once.
-     * {@code physical} is a physical key or a keypad swipe. On-screen input while a board is open
-     * comes from the board itself (it covers the on-screen keys) and is not typing. Typing while a
-     * board is open still puts the menu away for later: the board keeps the menu while it is up,
-     * and its close then uncovers the field's bar.
+     * @param physical true for a physical key or keypad swipe
      */
     public void onUserTyped(boolean physical) {
         if (!this.barChoice.isMenuChosen() && !SettingsValues.isInputMenuRequestedByKey()) {
@@ -302,13 +266,9 @@ public class InputViewCoordinator implements KeyboardSwitcher.SwitcherCallbacks,
     }
 
     /**
-     * The menu's keyboard key: put the menu away, back to the field's own bar. Where that is the
-     * strip, the strip comes back with its words as they are (they are current: they were kept up
-     * to date under any board, and anything else that changed them would have taken the menu down).
-     * This used to ask for the words again with {@code restoreSuggestionStrip(true, true)}, whose
-     * request often comes back empty: the "menu's keyboard key brings back a blank strip" report.
-     * Where the field's bar is the menu, or nothing, it does exactly that still, so the words over
-     * the on-screen keys are refreshed as before.
+     * The menu's keyboard key: back to the field's own bar. A strip returns with its words as they
+     * are (they stayed current); do not re-request them, the request often comes back empty and
+     * blanks the strip. Otherwise {@code restoreSuggestionStrip} refreshes the on-screen words.
      */
     public void putMenuAway() {
         this.barChoice.chooseFieldBar();
@@ -323,7 +283,7 @@ public class InputViewCoordinator implements KeyboardSwitcher.SwitcherCallbacks,
     }
 
     public void onAuxBarHeightChanged() {
-        // AuxBarView handles its own positioning
+        // AuxBarView positions itself.
     }
 
     public void hideAllAuxBars() {
@@ -341,6 +301,7 @@ public class InputViewCoordinator implements KeyboardSwitcher.SwitcherCallbacks,
         return auxBarManager;
     }
 
+    /** @param i a View visibility: {@code 0} (VISIBLE) hides the grid, {@code 8} (GONE) shows it */
     public void onCjkGridVisibilityChanged(int i) {
         if (i == 0) {
             getCjkSuggestionGrid().setVisible(false);
@@ -354,11 +315,8 @@ public class InputViewCoordinator implements KeyboardSwitcher.SwitcherCallbacks,
 
     @Override
     public void onFccPanelShown() {
-        // REMOVED: setFlickSuggestionVisibility(4) - Don't hide UIM when FCC opens from it
-        // REMOVED: hideSuggestionViews() - Don't hide aux bar (UIM) when FCC opens
-        // The UIM should stay visible above the FCC panel
-        
-        // Hide FlickSuggestionView when FCC opens to prevent overlay
+        // The UIM stays visible above the FCC panel; only the flick view would overlap it.
+
         if (this.flickSuggestionView != null) {
             this.flickSuggestionView.setVisibility(View.GONE);
         }
@@ -375,10 +333,8 @@ public class InputViewCoordinator implements KeyboardSwitcher.SwitcherCallbacks,
 
     @Override
     public void onVoicePanelShown() {
-        // Always run the keyboard state chain — needed to properly initialize keyboard
-        // state and expand keyboard_frame. VoiceInputView.show() uses bringToFront()
-        // to guarantee it renders on top of mainKeyboardView regardless of VKB state.
-        // This matches clipboard's onClipboardShown() pattern which also always runs the chain.
+        // Always run the keyboard state chain: it initializes keyboard state and expands
+        // keyboard_frame. VoiceInputView.show() brings itself to front over mainKeyboardView.
         this.keyboardSwitcher.onUnifiedInputBoardAction(0);
         setFlickSuggestionVisibility(4);
     }
@@ -421,16 +377,12 @@ public class InputViewCoordinator implements KeyboardSwitcher.SwitcherCallbacks,
         
         UnifiedInputBoardManager uimManager = this.keyboardSwitcher.getUnifiedInputBoardManager();
 
-        // Audit CT-21: uimManager was dereferenced four times below with no null check, while
-        // every OTHER access to the same getter in this file is guarded — and it genuinely
-        // returns null before KeyboardSwitcher builds it. This is the handler for the -23
-        // "show input menu" key and for the hamburger tap, which can fire before or after
-        // input-view recreation; an NPE here kills the IME.
+        // uimManager is null until KeyboardSwitcher builds it, and the -23 key or hamburger tap
+        // can fire before input-view recreation; an NPE here kills the IME.
         if (auxBarManager != null && uimManager != null) {
             boolean auxBarShowing = auxBarManager.isShowing();
             if (auxBarShowing && this.imeService.isUimEnabled()) {
-                // Straight over whatever the bar shows: the menu covers the strip without
-                // emptying it (it used to take the bar down first, which cleared the words).
+                // Show over the bar without taking it down first: the strip keeps its words.
                 uimManager.show(true);
                 if (uimManager.isShowing()) {
                     this.barChoice.chooseMenu();
@@ -459,13 +411,7 @@ public class InputViewCoordinator implements KeyboardSwitcher.SwitcherCallbacks,
         this.imeService.refreshSuggestionStripVisibility();
     }
 
-    /**
-     * Close whatever board the UIM currently owns, if the UIM exists yet.
-     *
-     * <p>Audit CT-21: the three board-hidden callbacks each called
-     * {@code getUnifiedInputBoardManager().closeActiveComponent()} unguarded, though the getter
-     * genuinely returns null before {@code KeyboardSwitcher} builds the manager.
-     */
+    /** Closes the UIM's board; the UIM is null until {@code KeyboardSwitcher} builds it. */
     private void closeUimComponent() {
         UnifiedInputBoardManager uim = this.keyboardSwitcher.getUnifiedInputBoardManager();
         if (uim != null) {
@@ -473,6 +419,7 @@ public class InputViewCoordinator implements KeyboardSwitcher.SwitcherCallbacks,
         }
     }
 
+    /** @param i the {@link View} visibility to set */
     private void setFlickSuggestionVisibility(int i) {
         FlickSuggestionView view = getFlickSuggestionView();
         if (view != null) {
@@ -485,13 +432,11 @@ public class InputViewCoordinator implements KeyboardSwitcher.SwitcherCallbacks,
     }
 
     public boolean shouldShowUim() {
-        // The key asked for the menu, so the menu is what the bar shows until it is put away.
+        // The show-menu key or the hamburger raised the menu: it stays the bar until put away
+        // (the arrow bar, accent bar and language chips hand back to it).
         if (SettingsValues.isInputMenuRequestedByKey()) {
             return true;
         }
-        // ...and so is the hamburger's (owner decision 2026-11-05): the menu is the bar while
-        // the user's choice holds it, which is what the arrow bar, the accent bar and the language
-        // chips hand back to.
         if (this.barChoice.isMenuChosen()) {
             return true;
         }
@@ -500,22 +445,11 @@ public class InputViewCoordinator implements KeyboardSwitcher.SwitcherCallbacks,
     }
 
     /**
-     * The "Show or hide the input menu" action of the multifunction key and of the Alt+Sym
-     * shortcut: the unified input menu bar comes up if it is not showing and goes away if it is.
-     *
-     * <p>It comes up even where its settings keep it off: "Enable unified input menu" off, or
-     * "Show the suggestion bar" off on a physical keyboard, which leaves no hamburger button to
-     * reach it. That is a session override ({@link SettingsValues#setInputMenuRequestedByKey}),
-     * not a change to the stored preferences, and while it is set the bar is an ordinary menu
-     * bar: its toggles open boards through the board coordinator, the board keys take the same
-     * route instead of their menu-off fallbacks, and a closed board leaves the menu up. See
-     * {@link SettingsValues#isInputMenuRequestedByKey()} for what ends it.
-     *
-     * <p>Going away closes the menu bar and any board open under it, as leaving the field would,
-     * then puts back what the settings give this field: the suggestion strip, or nothing at all
-     * when "Show the suggestion bar" is hiding the bar. Where the settings make the menu itself
-     * the bar (the menu on, no strip), the press still takes it away; it is back at the next field
-     * or the next press.
+     * "Show or hide the input menu" (multifunction key, Alt+Sym). Showing works even when settings
+     * keep the menu off, as a session override ({@link SettingsValues#setInputMenuRequestedByKey})
+     * under which the bar behaves as a normal menu bar. Hiding closes any board under it and
+     * restores the field's bar (strip or nothing); a settings-default menu also goes until the next
+     * field or press.
      */
     public void toggleInputMenu() {
         UnifiedInputBoardManager uibm = this.keyboardSwitcher.getUnifiedInputBoardManager();
@@ -526,8 +460,7 @@ public class InputViewCoordinator implements KeyboardSwitcher.SwitcherCallbacks,
             SettingsValues.setInputMenuRequestedByKey(false);
             this.barChoice.chooseFieldBar();
             if (fieldBar() == AuxBarChoice.FieldBar.STRIP) {
-                // Going away still closes any board under the menu, and uncovers the strip with
-                // the words it kept current behind the menu: nothing to empty, nothing to ask for.
+                // Uncover the strip, whose words stayed current behind the menu: nothing to re-request.
                 uibm.hideAllComponents();
                 uibm.lowerMenuOntoStrip();
                 return;
@@ -536,9 +469,7 @@ public class InputViewCoordinator implements KeyboardSwitcher.SwitcherCallbacks,
             if (DeviceProfile.current().isPkbDevice()) {
                 preShowSuggestionStripForPkb();
             }
-            // A strip that came back empty gets the words for wherever the cursor is, as it does
-            // when cursor mode ends (the menu covered whatever was there). With the bar hidden
-            // there is no strip to fill, and nothing to re-open the word at the cursor for.
+            // Refill an empty strip with words for the cursor position, as when cursor mode ends.
             if (this.imeService.isInputActive() && auxBarManager != null && auxBarManager.isShowing()) {
                 this.imeService.getUiUpdateHandler().postUpdateShiftState(true, true);
             }
@@ -547,58 +478,54 @@ public class InputViewCoordinator implements KeyboardSwitcher.SwitcherCallbacks,
         SettingsValues.setInputMenuRequestedByKey(true);
         this.barChoice.chooseMenu();
         if (!uibm.showMenuForKey()) {
-            // Nothing to show it in (no bar view yet): the settings keep their say.
+            // No bar view yet: the settings keep their say.
             SettingsValues.setInputMenuRequestedByKey(false);
             this.barChoice.chooseFieldBar();
         }
     }
 
+    /** @param c0804d the current settings */
     private boolean shouldShowPredictionsInStrip(SettingsValues c0804d) {
         return c0804d.shouldShowPredictionsInCandidateStrip();
     }
 
+    /**
+     * The main strip: never for Chinese or Japanese.
+     *
+     * @param c0804d the current settings
+     * @param z whether the on-screen keyboard is visible
+     */
     public boolean shouldShowLatinSuggestionStrip(SettingsValues c0804d, boolean z, InputMethodSubtype inputMethodSubtype) {
-        // FIXED: Real methods found in p.smali, not n.smali - decompiler incorrectly placed them here
-        // CORRECTED: Implementing original p.smali logic exactly - main strip for non-CJK, disabled for CJK
-        
-        // ORIGINAL SMALI LOGIC: Return false for Chinese/Japanese, true for others (enables main strip for English)
-        // This matches p.smali structure: locale checks, then calls DownloadCallback() method for non-CJK
         if (LocaleUtils.isCurrentSubtypeChinese() || LocaleUtils.isCurrentSubtypeJapanese()) {
-            return false;  // Disable main strip for CJK locales
+            return false;
         }
-        return shouldShowSuggestionStrip(c0804d, z, inputMethodSubtype);  // Enable main strip for non-CJK locales
-    }
-
-    public boolean shouldShowCjkSuggestionStrip(SettingsValues c0804d, boolean z, InputMethodSubtype inputMethodSubtype) {
-        // FIXED: Real methods found in p.smali, not n.smali - decompiler incorrectly placed them here
-        // CORRECTED: Implementing original p.smali logic exactly - CJK strip only for CJK locales
-        
-        // ORIGINAL SMALI LOGIC: Return true for Chinese/Japanese, false for others (enables CJK strip for CJK only)
-        // This matches p.smali structure: locale checks, then calls DownloadCallback() method for CJK
-        if (LocaleUtils.isCurrentSubtypeChinese() || LocaleUtils.isCurrentSubtypeJapanese()) {
-            return shouldShowSuggestionStrip(c0804d, z, inputMethodSubtype);  // Enable CJK strip for CJK locales
-        }
-        return false;  // Disable CJK strip for non-CJK locales
+        return shouldShowSuggestionStrip(c0804d, z, inputMethodSubtype);
     }
 
     /**
-     * Audit CT-25: every predicate used to be evaluated eagerly into a local before any of them
-     * was tested, defeating short-circuiting — on a method reached from {@code shouldShowUim()} on
-     * every {@code onStartInputView}, from {@code SuggestionStripPresenter} on every suggestion
-     * delivery, and from {@code refreshSuggestionStripVisibility}.
+     * The CJK candidate strip: only for Chinese or Japanese.
      *
-     * <p>The most expensive of them, {@code ImportantNoticeUtils.shouldShowImportantNotice}
-     * ({@code getSharedPreferences} plus a {@code Resources.getInteger}), is gone entirely:
-     * {@code config_important_notice_version} is {@code 0} in every values folder, so
-     * {@code hasNewImportantNotice()} is {@code 0 > 0} — permanently false. The whole notice
-     * subsystem was dead weight this predicate paid for on every call.
+     * @param c0804d the current settings
+     * @param z whether the on-screen keyboard is visible
+     */
+    public boolean shouldShowCjkSuggestionStrip(SettingsValues c0804d, boolean z, InputMethodSubtype inputMethodSubtype) {
+        if (LocaleUtils.isCurrentSubtypeChinese() || LocaleUtils.isCurrentSubtypeJapanese()) {
+            return shouldShowSuggestionStrip(c0804d, z, inputMethodSubtype);
+        }
+        return false;
+    }
+
+    /**
+     * Hot path (every start input view and suggestion delivery): keep the checks short-circuiting.
+     *
+     * @param c0804d the current settings
+     * @param z whether the on-screen keyboard is visible
      */
     public boolean shouldShowSuggestionStrip(SettingsValues c0804d, boolean z, InputMethodSubtype inputMethodSubtype) {
         if (c0804d.editorCapabilities.isPassword) {
             return false;
         }
-        // "Show the suggestion bar" is off. A Chinese or Japanese keyboard picks its words from
-        // the candidate strip, so that strip stays.
+        // "Show the suggestion bar" off: CJK keyboards still need their candidate strip.
         if (c0804d.isPkbSuggestionBarHidden() && !isChineseOrJapaneseSubtype()) {
             return false;
         }
@@ -612,8 +539,7 @@ public class InputViewCoordinator implements KeyboardSwitcher.SwitcherCallbacks,
         if (arrowBar != null && arrowBar.isShowing()) {
             return false;
         }
-        // The flick-suggestion view owns predictions instead of the strip when it is present and
-        // every one of its preconditions holds.
+        // The flick-suggestion view owns predictions instead of the strip when all of these hold.
         boolean flickViewOwnsPredictions = hasFlickSuggestionView()
                 && ResourceLocaleUtils.isNonCjkLanguage(inputMethodSubtype)
                 && c0804d.isPredictionsEnabled
@@ -623,36 +549,15 @@ public class InputViewCoordinator implements KeyboardSwitcher.SwitcherCallbacks,
         return !flickViewOwnsPredictions;
     }
 
-    /**
-     * CT-34: this took (isOnScreenKeyboardVisible, isFullscreenMode, currentSubtype) and read none
-     * of them, so three call sites computed arguments for nothing. All that survives AB-1 is the
-     * CJK-grid hide below, so the parameters are gone.
-     */
     public void updateSuggestionStripVisibility() {
-        // Audit AB-1: this used to force the aux-bar CONTAINER visible directly. Container
-        // visibility belongs to AuxBarView, which owns it together with its children and its
-        // AuxBarState as one coupled fact — it sets VISIBLE in showSuggestions/showAutofill/
-        // showKeys and GONE in hide(), where the comment records why: "prevents phantom space
-        // in layout and touch-event consumption when the bar is logically hidden".
-        //
-        // Forcing it visible from out here set the container without showing either child or
-        // updating the state, producing exactly what hide() guards against: a VISIBLE,
-        // empty, fixed-height container that is setClickable(true) (AuxBarView:79, so taps do
-        // not fall through to the app) and is unioned into the touchable region by
-        // onComputeInsets. In a field that declines suggestions that is a blank strip-height
-        // band which shifts app content up and silently eats every tap in it — reaching
-        // neither the keyboard nor the app.
-        //
-        // The predicate here (shouldShowLatin/CjkSuggestionStrip) was NOT the same predicate
-        // AuxBarManager.showSuggestionStrip applies, which is how the two came to disagree. The
-        // computation of both predicates went with the call: nothing read them.
+        // Never set the aux-bar container visible from here: AuxBarView owns that together with
+        // its children and state; a bare VISIBLE container is an empty band that eats taps.
         if (hasCjkSuggestionGrid()) {
             this.cjkSuggestionGridView.setVisible(false);
         }
     }
 
     public void hideSuggestionViews() {
-        // Hide all suggestion views
         if (auxBarManager != null) {
             auxBarManager.hide();
         }
@@ -664,13 +569,8 @@ public class InputViewCoordinator implements KeyboardSwitcher.SwitcherCallbacks,
         }
     }
 
-    /**
-     * CT-34: {@code showLatinSuggestionStripIfNeeded(boolean)} used to sit beside this and had an
-     * empty body (AuxBarManager owns the Latin strip since AB-1); it and its call below are gone.
-     * This one ignored its {@code boolean} too, so the parameter went with it.
-     */
+    /** Only hides the CJK grid; AuxBarManager owns the strips. */
     public void showCjkSuggestionStripIfNeeded() throws Resources.NotFoundException {
-        // Now handled by AuxBarManager — audit AB-1, as above.
         if (hasCjkSuggestionGrid()) {
             this.cjkSuggestionGridView.setVisible(false);
         }
@@ -700,27 +600,18 @@ public class InputViewCoordinator implements KeyboardSwitcher.SwitcherCallbacks,
     private boolean hasAuxBarManager() {
         return this.auxBarManager != null;
     }
-    
-    /**
-     * Set the AuxBarManager for unified aux bar control.
-     * This will eventually replace direct manipulation of individual aux bars.
-     */
+
     public void setAuxBarManager(dev.bbkb.ime.keyboard.auxbar.AuxBarManager manager) {
         this.auxBarManager = manager;
     }
 
-    // ==================== view setup (was UISetupCoordinator) ====================
-    /**
-     * Main entry point: wire up all UI components from the input view.
-     * Called from BlackBerryIME.setInputView().
-     */
+    /** Wires every UI component of a new input view; called from {@code BlackBerryIME.setInputView()}. */
     public void setupInputView(View view) {
         this.imeService.setRootInputView(view);
         SwipeToDeleteAnimatorView deleteAnimationView =
                 (SwipeToDeleteAnimatorView) view.findViewById(R.id.delete_animation_view);
-        // The overlay's drawable is the white key icon; the keys get their color from
-        // KeyboardView.applyIconTint, this view does not, so tint it here. A theme change
-        // recreates the input view, so a tint applied at bind time stays current.
+        // The overlay's white icon is not tinted by KeyboardView.applyIconTint; tint it here
+        // (a theme change recreates the input view, so this stays current).
         dev.bbkb.ime.keyboard.KeyboardColorManager.INSTANCE.tint(deleteAnimationView);
         this.imeService.setSwipeToDeleteAnimatorView(deleteAnimationView);
 
@@ -752,9 +643,8 @@ public class InputViewCoordinator implements KeyboardSwitcher.SwitcherCallbacks,
     private void initializeAuxBar(View view) {
         AuxBarView auxBarView = view.findViewById(R.id.aux_bar_view);
         if (auxBarView != null) {
-            // main_keyboard_frame.xml binds the container to the unscaled 40dp base. Apply the
-            // keyboard-height setting here; a height-mode change recreates the input view, so
-            // this re-runs and the container tracks the bars inside it.
+            // The layout uses the unscaled 40dp base; apply the keyboard-height setting here
+            // (a height-mode change recreates the input view, so this re-runs).
             android.view.ViewGroup.LayoutParams lp = auxBarView.getLayoutParams();
             if (lp != null) {
                 lp.height = dev.bbkb.ime.core.device.ResourceConfigManager
@@ -766,12 +656,8 @@ public class InputViewCoordinator implements KeyboardSwitcher.SwitcherCallbacks,
                 abm = new AuxBarManager(this.imeService);
                 this.imeService.setAuxBarManager(abm);
             }
-            // Audit CT-36 (completing AB-3): the AuxBarManager is deliberately reused across
-            // input-view recreations, so its cached arrow/diacritics/UIM keyboards — built at the
-            // PREVIOUS strip height and screen width — come with it. clearKeyboardCache() was
-            // wired into the two preference paths only; an orientation or display-size change
-            // recreates the input view without touching any preference, so the stale-geometry
-            // keyboards survived. Idempotent, and the strip height is re-derived just above.
+            // The manager outlives input-view recreation, so its cached keyboards carry the old
+            // strip height and width (rotation, display size): clear them on every bind.
             abm.clearKeyboardCache();
             abm.setAuxBarView(auxBarView);
             abm.setEventListener(this.imeService);
@@ -807,12 +693,8 @@ public class InputViewCoordinator implements KeyboardSwitcher.SwitcherCallbacks,
 
     private void initializeFlickSuggestions(View view) {
         FlickSuggestionView current = (FlickSuggestionView) view.findViewById(R.id.flick_suggestion_view);
-        // The flick view of an input view that has been replaced belongs to a tree that is no
-        // longer attached. It was only ever swapped out when the new view was given one, so
-        // after a turn to landscape and back the service and this coordinator kept the old one,
-        // the whole previous view tree with it, and went on sending suggestions to it. Only a
-        // view from another tree is let go: the same input view wired a second time keeps its
-        // flick view whatever the test below says then, as it always did.
+        // Release a flick view from a replaced (detached) input view, or it leaks the old tree and
+        // keeps receiving suggestions. The same input view wired again keeps its flick view.
         FlickSuggestionView previous = this.imeService.getFlickSuggestionView();
         if (previous != null && previous != current) {
             previous.init(null, null);

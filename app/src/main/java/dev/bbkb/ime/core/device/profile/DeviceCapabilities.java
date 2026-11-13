@@ -9,22 +9,9 @@ import dev.bbkb.ime.core.device.detection.KeyboardDeviceScanner;
 import dev.bbkb.ime.core.device.detection.KeypadLayoutDetector;
 import dev.bbkb.ime.core.device.detection.TouchKeypadInfo;
 
-/**
- * Immutable device capabilities. Created once at startup, never changes.
- *
- * <p>Audit W1-F: the 14-setter {@code Builder} had exactly one call site ({@link #detect()}),
- * which set every field, so it bought nothing over a constructor; and three of its fields were
- * write-only — {@code supportsSwipeTyping} / {@code supportsSlideboard} (nothing read them;
- * {@code DeviceProfile} answers both questions from {@code !isPkbDevice()}) and
- * {@code sdkVersion} (read only by {@code isPreMarshmallow()}, itself unreferenced).
- */
+/** Immutable device capabilities from the hardware probe. */
 public final class DeviceCapabilities {
-
-    /**
-     * How the hardware probe classified this device. Named apart from
-     * {@link DeviceProfile.DeviceType} (PKB/VKB), which is the coarser question the rest of
-     * the app asks; the two enums used to share a simple name in this same package.
-     */
+    /** The probe's classification; {@link DeviceProfile.DeviceType} is the coarser PKB/VKB answer. */
     public enum DetectedDeviceType { PKB, VKB, HYBRID, UNKNOWN }
 
     private final DetectedDeviceType deviceType;
@@ -65,23 +52,17 @@ public final class DeviceCapabilities {
     /**
      * Probes the hardware.
      *
-     * @param mapping the active device config's mapping, or null when none is resolved yet. Its
-     *        {@code keypadLayout} is the top-ranked source for {@link #getKeypadLayout()}, which
-     *        is why {@code DeviceProfile.initializeForDevice} now resolves the mapping <em>before</em>
-     *        calling this rather than after.
+     * @param mapping the active config's mapping, or null; its {@code keypadLayout} is the
+     *        top-ranked source for {@link #getKeypadLayout()}
      */
     public static DeviceCapabilities detect(DeviceInputMapping mapping) {
         return detect(mapping, null);
     }
 
-    /**
-     * {@link #detect(DeviceInputMapping)} with the user's own word on the keypad shape
-     * ({@code DeviceProfile.PREF_KEYPAD_LAYOUT}; null or empty for none), the top-ranked source.
-     */
+    /** As {@link #detect(DeviceInputMapping)}, with the user's keypad layout choice (null or empty for none) ranked first. */
     public static DeviceCapabilities detect(DeviceInputMapping mapping, String userKeypadLayout) {
         KeyboardDeviceScanner scanner = KeyboardDeviceScanner.getInstance();
-        // A config that names its pad lets the scanner find it by name; a config that names none
-        // (every one but the Titans') leaves the scan exactly as it was.
+        // A config that names its pad lets the scanner find it by name.
         scanner.setDeclaredTouchKeypadName(mapping != null && mapping.touchKeypad != null
                 ? mapping.touchKeypad.inputDeviceName : null);
         KeyboardDeviceInfo primary = scanner.getPrimaryKeyboard();
@@ -103,10 +84,7 @@ public final class DeviceCapabilities {
                 HardwareProbe.isEmulator());
     }
 
-    /**
-     * These capabilities with a different touch keypad: what a live re-scan found after the pad
-     * appeared, vanished or changed. Everything else is kept as detected.
-     */
+    /** A copy with the touch keypad a live re-scan found. */
     public DeviceCapabilities withTouchKeypad(TouchKeypadInfo touch) {
         return new DeviceCapabilities(deviceType, hasPhysicalKeyboard, keypadLayout,
                 keypadLayoutSource, keypadVariant, primaryKeyboard,
@@ -114,18 +92,9 @@ public final class DeviceCapabilities {
     }
 
     /**
-     * Builds capabilities directly instead of probing the hardware — the injection seam for tests
-     * that must run against a device shape a JVM cannot detect. {@link #detect()} on a JVM always
-     * reports the VKB shape (no InputDevices), which is why the physical-keyboard rendering of the
-     * settings screens has never been under test.
-     *
-     * <p>The fields not taken as parameters are fixed at their "no hardware pad" values:
-     * {@code primaryKeyboard} null, {@code touchKeypadDeviceId} -1, both touch-keypad floats 0,
-     * {@code isEmulator} false. A test needing the touch-keypad ids should drive them through a
-     * {@code DeviceInputMapping} with {@code forceTouchKeypad}, the way a forced-CKB config does.
-     *
-     * <p>Production never calls this; {@link #detect()} remains the only construction site on a
-     * device.
+     * Test seam: builds capabilities without probing (a JVM always detects VKB). Other fields take
+     * their no-pad values (no primary keyboard, pad id -1); drive pad ids through a mapping with
+     * {@code forceTouchKeypad} instead.
      */
     @VisibleForTesting
     public static DeviceCapabilities forShape(DetectedDeviceType deviceType,
@@ -142,7 +111,6 @@ public final class DeviceCapabilities {
         return DetectedDeviceType.HYBRID;  // External keyboard
     }
 
-    // All getters - no logic
     public DetectedDeviceType getDeviceType() { return deviceType; }
     public boolean hasPhysicalKeyboard() { return hasPhysicalKeyboard; }
     public boolean hasTouchKeypad() { return hasTouchKeypad; }

@@ -1,14 +1,10 @@
 package dev.bbkb.ime.personaldictionary;
 
-/**
- * Exception hierarchy for Personal Dictionary operations.
- * Includes exceptions for AUD sync failures, locale issues, and key/term conflicts.
- *
- * <p><TextChangeType>Renamed from:</TextChangeType> {@code BASLExceptions.java} (original {@code com.blackberry.basl} package)</p>
- */
+/** Personal dictionary exceptions: AUD failures, locale issues, key/term conflicts. */
 public class PersonalDictionaryExceptions {
 
     public static class BASLException extends Exception {
+        /** @param str the message */
         public BASLException(String str) {
             super(str);
         }
@@ -18,18 +14,21 @@ public class PersonalDictionaryExceptions {
     }
 
     public static class AudAddException extends BASLException {
+        /** @param str the message */
         public AudAddException(String str) {
             super(str);
         }
     }
 
     public static class AudDeleteException extends BASLException {
+        /** @param str the message */
         public AudDeleteException(String str) {
             super(str);
         }
     }
 
     public static class AudLocaleException extends BASLException {
+        /** @param str the message */
         public AudLocaleException(String str) {
             super(str);
         }
@@ -42,12 +41,15 @@ public class PersonalDictionaryExceptions {
         public KeyAlreadyDefinedException() {
         }
 
+        /** @param str the message */
+
         public KeyAlreadyDefinedException(String str) {
             super(str);
         }
     }
 
     public static class KeyNotFoundException extends BASLException {
+        /** @param str the message */
         public KeyNotFoundException(String str) {
             super(str);
         }
@@ -59,6 +61,8 @@ public class PersonalDictionaryExceptions {
     public static class TermAlreadyDefinedException extends BASLException {
         public TermAlreadyDefinedException() {
         }
+
+        /** @param str the message */
 
         public TermAlreadyDefinedException(String str) {
             super(str);

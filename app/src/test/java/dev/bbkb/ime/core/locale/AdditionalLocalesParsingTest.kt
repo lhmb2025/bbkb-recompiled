@@ -10,10 +10,8 @@ import org.robolectric.annotation.Config
 import java.util.Locale
 
 /**
- * A multi-language keyboard carries its extra prediction languages as one slash-joined extra
- * value ("de/es", "fr_CA"). The IME's pack loader used to build a single Locale from the whole
- * string, so a keyboard with two extras or a regional one asked the engine for a language such
- * as "de/es" and the engine refused the entire set. Both callers now share this parser.
+ * A multi-language keyboard's extra prediction languages are one slash-joined extra value
+ * ("de/es", "fr_CA"); each must reach the engine as its own Locale, or it refuses the whole set.
  */
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [34], manifest = Config.NONE)
@@ -43,10 +41,7 @@ class AdditionalLocalesParsingTest {
         assertNull(ResourceLocaleUtils.getAdditionalLocales(null))
     }
 
-    /**
-     * The extras come back in the order the extra value lists them. They used to go through a
-     * TreeSet sorted by Locale.toString(), so "fr/de/es" reached the engine as de, es, fr.
-     */
+    /** The extras keep the order the extra value lists them in (not sorted). */
     @Test
     fun extrasKeepTheOrderTheExtraValueListsThem() {
         assertEquals(

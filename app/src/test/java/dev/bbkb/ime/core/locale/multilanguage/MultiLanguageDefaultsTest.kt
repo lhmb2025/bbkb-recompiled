@@ -7,10 +7,7 @@ import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
 
-/**
- * The wizard's starting primary language, and dropping keyboards saved without a layout: the two
- * halves of the "Korean + English only types English" beta report.
- */
+/** The wizard's starting primary language, and dropping keyboards saved without a layout. */
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [34], manifest = Config.NONE)
 class MultiLanguageDefaultsTest {

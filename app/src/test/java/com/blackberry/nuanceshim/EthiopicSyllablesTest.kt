@@ -8,8 +8,7 @@ import java.util.Locale
 
 /**
  * The engine's Amharic dictionary stores a syllable as its first-order letter plus a Latin
- * marker for orders two to seven (u i a e ə o). On the KEY2 (2026-09-28) it offered "ሰለመu" for
- * ሰለሙ and predicted "ነወə" for ነው, so the shim translates in both directions.
+ * marker for orders two to seven (u i a e ə o), e.g. "ሰለመu" for ሰለሙ; the shim translates both ways.
  */
 class EthiopicSyllablesTest {
 

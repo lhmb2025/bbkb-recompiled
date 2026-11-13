@@ -13,25 +13,12 @@ import org.xmlpull.v1.XmlPullParserFactory
 import java.io.File
 
 /**
- * The built-in letter layouts (`assets/letter_layouts/<id>.xml`, written by
- * `xt9kdb-scaffold/tools/letter_layouts_gen.py`) type exactly the letters the engine decodes
- * against.
- *
- * The engine reads its key letters from `assets/kdb/<name>_pkb.xml`; the physical keys of the
- * seven languages with an alphabet of their own read theirs from the generated documents
- * ([PhysicalKeyResolver]), and `LetterLayoutEngineSync` compares a custom layout with the same
- * documents to tell whether it changes the engine's letters. If someone edits a generated file by
- * hand, or a KDB moves a letter without the generator being rerun, the keys and the engine
- * disagree: a tapped word is decoded against letters the user never typed. This test re-reads
- * both and fails on any difference.
- *
- * Both sides are read here with readers of the test's own, so the check does not lean on the code
- * it guards. The KDB position rules are the ones the old `HardwareScriptLayout.parse` used, and
- * the generator and [LetterLayoutKdb] use now: three rows on a 108dp grid in QWERTY order, row 3
- * starting with Alt, the key past M (row 3, column 8) is `KEYCODE_4` when it carries a letter,
- * function keys skipped, conjoining jamo read as compatibility jamo.
- *
- * Robolectric only for its `XmlPullParser`: the unit-test android.jar's is a stub.
+ * The generated built-in letter layouts (`assets/letter_layouts`, from `letter_layouts_gen.py`)
+ * type exactly the letters the engine decodes against in `assets/kdb/<name>_pkb.xml`; a hand edit
+ * or a moved KDB letter makes taps decode against letters never typed. Both sides use the test's
+ * own readers. KDB rules: three rows on a 108dp grid in QWERTY order, row 3 starts with Alt, the
+ * key past M is `KEYCODE_4` when it is a letter, function keys skipped, conjoining jamo read as
+ * compatibility jamo. Robolectric only for a real `XmlPullParser`.
  */
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [34], manifest = Config.NONE)
@@ -114,13 +101,8 @@ class LetterLayoutsMatchEngineTest {
         }
     }
 
-    // ── the readers ──────────────────────────────────────────────────────────────────────────────
-
     companion object {
-        /**
-         * The languages whose keys type their own alphabet, and the engine layout their letters
-         * come from: the generator's `SCRIPT_KDB` (the old `HardwareScriptLayouts.FILES`).
-         */
+        /** Languages whose keys type their own alphabet, and their engine layout (the generator's `SCRIPT_KDB`). */
         val SCRIPT_KDB = linkedMapOf(
             "ar" to "arabic", "ru" to "east_slavic", "uk" to "ukranian", "be" to "belarusian",
             "ky" to "east_slavic", "kk" to "east_slavic", "tg" to "east_slavic", "tt" to "east_slavic",
@@ -170,10 +152,7 @@ class LetterLayoutsMatchEngineTest {
         private fun referenceDir(): File =
             moduleFile("../xt9kdb-scaffold/reference/kdb_pkb", "xt9kdb-scaffold/reference/kdb_pkb")
 
-        /**
-         * The language's keypad KDB: the shipped file, or for a language whose file the app now
-         * builds ([KeypadKdbs]), the copy of the one it used to ship.
-         */
+        /** The language's keypad KDB: the shipped file, or for one the app builds ([KeypadKdbs]), the reference copy. */
         fun kdbFiles(name: String): List<File> =
             listOf(File(kdbDir(), "${name}_pkb.xml"), File(referenceDir(), "${name}_pkb.xml"))
                 .filter { it.isFile }

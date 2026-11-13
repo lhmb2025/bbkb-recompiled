@@ -1,96 +1,68 @@
 package dev.bbkb.ime.core.gesture.arbiter
 
 /**
- * Tunables for [GestureClassifier]. All distances are in **normalized** units
- * (fraction of the capture surface's reference dimension — see [TracePoint]).
- *
- * Defaults are starting points for the Gesture Lab; tune them against the test
- * corpus and the Lab readout. The philosophy: maximize tolerance for sloppy input
- * on benign actions, while letting the policy layer demand higher [Swipe.confidence]
- * for destructive ones (delete word, dismiss keyboard).
+ * Tunables for [GestureClassifier]; distances are normalized (see [TracePoint]). Tolerant of
+ * sloppy input; the policy layer demands higher [Swipe.confidence] for destructive actions.
  */
 data class GestureConfig(
-    /** Movement at or below this (normalized) is treated as stationary → tap / hold / double-tap. */
+    /** Movement at or below this is stationary (tap, hold, double-tap). */
     val tapSlop: Float = 0.06f,
 
-    /** A stationary contact held at least this long becomes a Hold (→ enter cursor/FCC mode). */
+    /** A stationary contact held this long becomes a Hold. */
     val holdMinDurationMs: Long = 280L,
 
-    /** Max gap between two taps to count as a double-tap. */
     val doubleTapMaxGapMs: Long = 300L,
-    /** Min gap so a single bounce isn't read as two taps. */
+    /** So a single bounce isn't read as two taps. */
     val doubleTapMinGapMs: Long = 40L,
-    /** Max distance between the two taps' locations to count as a double-tap. */
     val doubleTapSlop: Float = 0.12f,
 
-    /** Minimum straight-line displacement for a moving gesture to count as a swipe at all. */
     val minSwipeDistance: Float = 0.12f,
 
     /**
-     * Flick rescue: a stroke shorter than [minSwipeDistance] still counts as a swipe if it
-     * traveled at least this far AND at mean speed >= [flickRescueMinSpeed]. Real flicks are
-     * fast and short -- on this pad (normalized isotropically by the ~1080-unit width, only
-     * ~470 tall) a vertical flick physically cannot travel 0.12, and on-device capture showed
-     * genuine commit flicks at disp 0.077-0.089 / speed 1.8-3.6 dying as Taps. Keep
-     * [flickMinDistance] above tapSlop so sloppy taps stay taps.
+     * Flick rescue: a stroke shorter than [minSwipeDistance] is still a swipe if it travels this
+     * far at mean speed >= [flickRescueMinSpeed] (real flicks are short and fast). Keep it above
+     * tapSlop so sloppy taps stay taps.
      */
     val flickMinDistance: Float = 0.07f,
-    /** Mean speed (normalized units/sec) required for the short-stroke flick rescue.
-     *  0.65: the 56-sample labeled session had a real swipe-down at speed 0.69 die at the
-     *  previous 0.8; the slowest labeled non-gesture drift measured 0.47. */
+    /** Normalized units/sec; the slowest labeled non-gesture drift measured 0.47. */
     val flickRescueMinSpeed: Float = 0.65f,
 
     /**
-     * Distance-threshold scale for vertical-dominant strokes. Coordinates are normalized
-     * isotropically by the pad's larger (X) range, but the KEY2 pad is ~1080x470, so a
-     * vertical stroke physically cannot exceed ~0.44 and real vertical flicks measured
-     * 0.045-0.089 on device. Applied to tapSlop, minSwipeDistance and flickMinDistance
-     * when the stroke's dominant axis is vertical; horizontal thresholds are unchanged.
+     * Scales tapSlop, minSwipeDistance and flickMinDistance for vertical-dominant strokes: the pad
+     * (~1080x470) is normalized by its width, so a vertical stroke cannot exceed ~0.44.
      */
     val vDistanceScale: Float = 0.5f,
 
-    /** A moving gesture must be at least this straight to be a swipe (vs. a flow-typing trace). */
+    /** Minimum straightness for a swipe (vs. a flow-typing trace). */
     val swipeStraightnessMin: Float = 0.82f,
 
-    /** Below this straightness (and with enough arc length) a moving gesture is a flow-typing trace. */
+    /** Below this straightness (with enough arc length) a gesture is a flow trace. */
     val flowStraightnessMax: Float = 0.80f,
-    /** Minimum arc length before a low-straightness gesture is considered a flow trace. */
     val flowMinArcLength: Float = 0.20f,
 
-    // --- velocity breakpoints (normalized units/sec, straight-line mean speed) ---
-    // Separate breakpoints per axis, each a two-thumb range:
+    // Velocity breakpoints per dominant axis (normalized units/sec, mean speed):
     //   flow  |swipeMinVelocity|  swipe  |flickMinVelocity|  flick
-    // Horizontal gestures (L/R) collide with horizontal flow ("ah"), so they typically want a
-    // higher bar; vertical gestures (commit-up / symbols-down) rarely collide with flow and can
-    // fire more eagerly. The classifier picks the pair by the gesture's dominant axis.
+    // Horizontal strokes collide with horizontal flow ("ah"); vertical ones rarely do.
 
-    /** Horizontal lower breakpoint: a horizontal stroke slower than this falls back to flow. 0 disables. */
+    /** Slower horizontal strokes fall back to flow; 0 disables. */
     val hSwipeMinVelocity: Float = 0f,
-    /** Horizontal upper breakpoint: a horizontal swipe at/above this mean velocity is a flick. */
     val hFlickMinVelocity: Float = 4.5f,
 
-    /** Vertical lower breakpoint: a vertical stroke slower than this falls back to flow. 0 disables. */
+    /** Slower vertical strokes fall back to flow; 0 disables. */
     val vSwipeMinVelocity: Float = 0f,
-    /** Vertical upper breakpoint: a vertical swipe at/above this mean velocity is a flick. */
     val vFlickMinVelocity: Float = 2.5f,
 
-    /** Window (before lift-off) over which terminal speed is measured. */
+    /** Window before lift-off for terminal speed. */
     val terminalWindowMs: Long = 50L,
 
     /**
-     * Terminal-dwell threshold (normalized units/sec). A straight gesture whose terminal speed
-     * is **below** this settled on its final key → flow-typed word; at or above it the finger
-     * was still moving at release (ballistic) → an action swipe/flick.
-     *
-     * This is the sole geometric discriminator between flow and swipe for straight strokes, and
-     * it is independent of length: a long, fast, dead-straight flow like "ah" (A→H across the
-     * row) still settles on H, so it stays flow. (The genuinely hard case — a quick flow that
-     * never dwells — needs key-endpoint topology / engine arbitration, handled in the IME
-     * integration where the key grid is available.)
+     * The sole flow vs. swipe test for straight strokes, independent of length: terminal speed
+     * below this settled on a key (flow, e.g. "ah"); at or above it was ballistic (action).
+     * A quick flow that never dwells is left to key-grid arbitration in the IME.
      */
     val flowTerminalSpeedMax: Float = 0.6f,
 ) {
-    /** Persist the user-tunable fields (the ones the Gesture Lab exposes). */
+    /** Persists the fields the Gesture Lab exposes. */
     fun writeTo(prefs: android.content.SharedPreferences) {
         prefs.edit()
             .putFloat("ckb_cfg_tap_slop", tapSlop)
@@ -107,7 +79,7 @@ data class GestureConfig(
     }
 
     companion object {
-        /** Load the tunable fields from prefs; anything unset falls back to the data-class default. */
+        /** Unset fields fall back to the defaults. */
         fun fromPrefs(prefs: android.content.SharedPreferences): GestureConfig {
             val d = GestureConfig()
             return GestureConfig(

@@ -33,13 +33,8 @@ import java.util.concurrent.CountDownLatch
 import java.util.concurrent.TimeUnit
 
 /**
- * The system user dictionary (AUD) <-> personal dictionary bridge, end to end over a fake
- * `user_dictionary` provider.
- *
- * Found dead on the owner's KEY2 on 2026-09-21: `content://user_dictionary/words` was empty
- * while the on-disk personal dictionary held eight words, and an external insert produced no
- * `AudContentObserver` line at all. These tests pin the two directions that were unobserved:
- * a change arriving from outside reaches BASL, and our own add reaches AUD.
+ * The system user dictionary (AUD) <-> personal dictionary (BASL) bridge, end to end over a fake
+ * `user_dictionary` provider: outside changes reach BASL and our own adds reach AUD.
  */
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [34], instrumentedPackages = ["com.blackberry.nuanceshim"])
@@ -76,8 +71,7 @@ class AudSyncTest {
         val loaded = CountDownLatch(1)
         pdu.load(locales, CompletionListener { loaded.countDown() }, true, false)
         assertTrue("PDU load never completed", loaded.await(15, TimeUnit.SECONDS))
-        // load() registers the observer immediately after reporting completion, on the same
-        // coroutine; wait for the registration itself rather than racing it.
+        // load() registers the observer just after reporting completion; wait for it, don't race it.
         waitFor("AUD content observer registered") { pdu.isAudContentObserverRegisteredForTest }
     }
 
@@ -100,12 +94,7 @@ class AudSyncTest {
         throw AssertionError("timed out waiting for: $what")
     }
 
-    /**
-     * The break the owner saw from the outside: a word added to the system dictionary by
-     * something else (Settings, the framework's "Add to dictionary" popup, `adb content insert`)
-     * has to reach our personal dictionary, because that is the only route by which that popup
-     * can teach the engine.
-     */
+    /** A word added to AUD from outside (Settings, the framework "Add to dictionary" popup) reaches BASL. */
     @Test
     fun aWordInsertedIntoAudReachesBasl() {
         loadAndRegisterObserver()
@@ -117,7 +106,6 @@ class AudSyncTest {
         }
     }
 
-    /** ...and a shortcut arriving from AUD becomes a word substitution. */
     @Test
     fun aShortcutInsertedIntoAudReachesBasl() {
         loadAndRegisterObserver()
@@ -129,11 +117,7 @@ class AudSyncTest {
         }
     }
 
-    /**
-     * A multi-language keyboard's languages all pass the sync's locale filter: a shortcut saved
-     * in AUD for an extra language comes through, one for a language the keyboard does not have
-     * stays out.
-     */
+    /** Every keyboard language passes the sync's locale filter; other languages stay out. */
     @Test
     fun aShortcutForAnExtraKeyboardLanguageReachesBasl_andOneForAnotherLanguageDoesNot() {
         loadAndRegisterObserver(listOf(Locale.US, Locale.GERMAN))
@@ -149,12 +133,7 @@ class AudSyncTest {
             pdu.getWordSubstitutions().containsKey("zzfr"))
     }
 
-    /**
-     * The other direction, i.e. the one-tap add: `OneTapAddWord` -> `addWordSubstitution` ->
-     * `PersonalDictionaryUtil.add` has to land a row in AUD. On the KEY2 it did not, and
-     * `PersonalDictionaryUtil.add` reports that by throwing, so a silent AUD would have made
-     * every one-tap add fall back to the system dialog.
-     */
+    /** A one-tap add lands a row in AUD; a failed AUD write makes `add` throw (system dialog fallback). */
     @Test
     fun aOneTapAddWritesToAud() {
         val loaded = CountDownLatch(1)
@@ -175,11 +154,7 @@ class AudSyncTest {
         assertEquals("en_US", row?.locale)
     }
 
-    /**
-     * Wave 3: an add from the main thread (one-tap add, the add-word dialog) must not call the
-     * engine there. The `addWord` is posted to the engine thread: with that thread held busy the
-     * engine sees nothing, and once it is released the word arrives, on the engine thread.
-     */
+    /** An add from the main thread posts the engine `addWord` to the engine thread (held busy here). */
     @Test
     fun anAddFromTheMainThread_postsTheEngineAddWordToTheEngineThread() {
         val loaded = CountDownLatch(1)
@@ -202,23 +177,20 @@ class AudSyncTest {
     }
 
     /**
-     * The words stranded by the dead write path. AUD is the master in `syncDifferencesToBasl`,
-     * so without the one-shot push the first sync that finally works would *delete* the eight
-     * words the owner's device has on disk instead of publishing them.
+     * AUD is the master in `syncDifferencesToBasl`, so BASL-only words must be pushed to AUD once
+     * before the first diff sync or that sync deletes them.
      */
     @Test
     fun strandedBaslWordsArePushedToAudBeforeTheFirstDiffSync() {
         val loaded = CountDownLatch(1)
         pdu.load(listOf(Locale.US), CompletionListener { loaded.countDown() }, false, false)
         assertTrue(loaded.await(15, TimeUnit.SECONDS))
-        // A word that exists only in BASL, exactly like the eight on the device.
         pdu.addToBasl(WordSubstitution.createUserSubstitution("en_US", "zzqqx", "zzqqx", false), true)
 
         assertEquals(1, pdu.pushUserWordsToAud())
         assertTrue(provider.snapshot().any { it.word == "zzqqx" && it.shortcut == "zzqqx" })
 
-        // A refused batch reports -1 so the one-shot flag is not latched and the words keep
-        // their chance on the next registration.
+        // A refused batch reports -1 so the one-shot flag is not latched and the push retries.
         provider.failInserts = true
         assertEquals(-1, pdu.pushUserWordsToAud())
         provider.failInserts = false
@@ -232,12 +204,7 @@ class AudSyncTest {
             pdu.getWordSubstitutions().containsKey("zzqqx"))
     }
 
-    /**
-     * An unreachable provider must abort the reconciliation, not present itself as an empty
-     * AUD. `AudWrapper.getAudWordsWithoutSpacedKeys` used to flatten a null cursor to an empty
-     * list, and "missing from AUD" means "delete from BASL" - so the failure mode of the KEY2
-     * bug was one working sync away from erasing the whole personal dictionary.
-     */
+    /** An unreachable provider aborts the sync; read as an empty AUD it would delete all of BASL. */
     @Test
     fun anUnreachableAudDoesNotWipeBasl() {
         val loaded = CountDownLatch(1)
@@ -261,12 +228,8 @@ class AudSyncTest {
     }
 
     /**
-     * The root cause of the KEY2 breakage, as a manifest contract.
-     *
-     * The original APK targeted API 28, which predates package-visibility filtering. This port
-     * targets 36, where an undeclared provider is invisible: `query()` returns null and
-     * `applyBatch()` throws `IllegalArgumentException("Unknown authority user_dictionary")`.
-     * Nothing at runtime can compensate, so the declaration is the fix and this is its guard.
+     * Under package-visibility filtering (API 30+) an undeclared provider is invisible: `query()`
+     * returns null and `applyBatch()` throws "Unknown authority". Only the manifest can fix that.
      */
     @Test
     fun theManifestDeclaresTheUserDictionaryProviderAsQueryable() {

@@ -3,10 +3,9 @@ package dev.bbkb.ime.core.engine.dlm
 import java.util.Locale
 
 /**
- * Names for the engine's two-byte language ids, as they appear on learned-model records. The low
- * byte is the engine's primary language id, which follows the Windows primary language ids (English
- * 0x09, Russian 0x19, Kazakh 0x3f…); the high byte is the engine's regional variant and is ignored
- * here. 0xFFFF marks a word that belongs to no language (added on purpose rather than typed).
+ * Names for the engine's two-byte language ids on learned-model records. The low byte follows the
+ * Windows primary language ids (English 0x09, Russian 0x19); the high byte, the regional variant,
+ * is ignored. 0xFFFF marks a word that belongs to no language (added on purpose).
  */
 object EngineLanguages {
 

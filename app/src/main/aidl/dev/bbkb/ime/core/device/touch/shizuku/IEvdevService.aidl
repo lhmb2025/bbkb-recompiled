@@ -5,12 +5,9 @@ import dev.bbkb.ime.core.device.touch.shizuku.EvdevOpenResult;
 import dev.bbkb.ime.core.device.touch.shizuku.IEvdevCallback;
 
 /**
- * The Shizuku UserService that reads one input device for the IME (EvdevUserService). It runs
- * as shell (adb-started Shizuku) or root (root-started Shizuku) in its own ":evdev" process.
- *
- * Every method has an explicit transaction id because destroy() must: Shizuku sends transaction
- * 16777115 (FIRST_CALL_TRANSACTION + 16777114) when it tears a user service down, and AIDL only
- * accepts explicit ids on all methods or on none.
+ * The Shizuku UserService (EvdevUserService) that reads one input device for the IME, as shell or
+ * root in its own ":evdev" process. Every method has an explicit transaction id because destroy()
+ * must (Shizuku sends 16777115 = FIRST_CALL_TRANSACTION + 16777114) and AIDL wants all or none.
  */
 interface IEvdevService {
     /** Shizuku-reserved: the server calls this before it kills the process. */
@@ -20,11 +17,9 @@ interface IEvdevService {
     List<EvdevDeviceInfo> listDevices() = 1;
 
     /**
-     * Opens the first device (in node order) whose name equals `pattern`, or, when `isRegex`,
-     * contains a match for it (java.util.regex; anchor with ^...$ for a whole-name match).
-     * Replaces any stream already open. On success events flow to `callback` until close(),
-     * a newer open(), the device vanishing, or the callback's process dying (which also
-     * releases the grab).
+     * Opens the first device (node order) whose name equals `pattern`, or with `isRegex` contains a
+     * match (anchor with ^...$). Replaces any open stream; events flow to `callback` until close(),
+     * a newer open(), the device vanishing, or the callback's process dying (which releases the grab).
      */
     EvdevOpenResult open(String pattern, boolean isRegex, boolean grab, IEvdevCallback callback) = 2;
 

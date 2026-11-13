@@ -13,11 +13,8 @@ import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
 
 /**
- * The `letter-layout` document: what it reads, what it refuses (and that the refusal names the
- * key and the field), what the layout answers once read, and that what [LetterLayoutXml.serialize]
- * writes reads back to the same layout.
- *
- * Robolectric for the platform's pull parser; nothing here touches a keyboard.
+ * The `letter-layout` document: what it reads, what it refuses (naming the key and field), what
+ * the layout answers, and that [LetterLayoutXml.serialize] round-trips. Robolectric for the pull parser.
  */
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [34], manifest = Config.NONE)
@@ -36,7 +33,6 @@ class LetterLayoutXmlTest {
 
     private fun parse(xml: String): LetterLayout = LetterLayoutXml.parse(xml) { "generated-id" }
 
-    /** The string of [codePoints]. */
     private fun text(vararg codePoints: Int): String = String(codePoints, 0, codePoints.size)
 
     /** Asserts [xml] is refused with a message containing every one of [fragments]. */
@@ -64,8 +60,6 @@ class LetterLayoutXmlTest {
             $keys
         </letter-layout>
     """.trimIndent()
-
-    // ── reading ──────────────────────────────────────────────────────────────
 
     @Test
     fun readsEveryField() {
@@ -315,8 +309,6 @@ class LetterLayoutXmlTest {
         assertEquals("3row", again.binding.keypadType)
     }
 
-    // ── binding ──────────────────────────────────────────────────────────────
-
     @Test
     fun appliesToItsLanguagesOnItsKeypad() {
         val layout = parse(swapQw)
@@ -380,8 +372,6 @@ class LetterLayoutXmlTest {
         assertFalse(layout.appliesTo("zh_CN", "qwerty", null, null))
     }
 
-    // ── sequences and the swipe question ─────────────────────────────────────
-
     @Test
     fun multitapAndMoreKeysAreFoundByTheLetterTheKeyTyped() {
         val layout = parse(swapQw)
@@ -405,8 +395,6 @@ class LetterLayoutXmlTest {
         """))
         assertFalse(additionsOnly.changesLetters(latin))
     }
-
-    // ── refusals ─────────────────────────────────────────────────────────────
 
     @Test
     fun refusesSomebodyElsesDocument() {
@@ -540,8 +528,6 @@ class LetterLayoutXmlTest {
             assertTrue(e.message!!.contains("larger than"))
         }
     }
-
-    // ── engineKeys ───────────────────────────────────────────────────────────
 
     @Test
     fun engineKeysAreReadAsSingleCharacters_andWrittenBack() {

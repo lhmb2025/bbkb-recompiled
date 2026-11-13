@@ -721,7 +721,6 @@
     <string name="device_config_import_unreadable">Kyseinen tiedosto ei ole laitemääritys</string>
     <string name="device_config_import_failed">Kyseisen tiedoston tuonti epäonnistui</string>
 
-    <!-- OTA app updates -->
     <string name="settings_updates_title">Päivitykset</string>
     <string name="settings_updates_summary">Tarkista, onko BBKB:stä uusi versio</string>
     <string name="settings_update_installed_version_title">Asennettu versio</string>
@@ -755,7 +754,6 @@
     <string name="settings_update_ready_title">Valmis asennettavaksi</string>
     <string name="settings_update_version_details">Version tiedot</string>
     <string name="settings_update_unknown_sources_title">Sallitaanko BBKB:n asentaa päivityksiä?</string>
-    <!-- Downloadable language packs (core/languagepack) -->
     <string name="language_packs_installed_header">Asennettu</string>
     <string name="language_packs_available_header">Ladattavissa</string>
     <string name="language_packs_download">Lataa</string>
@@ -877,7 +875,6 @@
     <string name="settings_voice_stop_on_pause_summary_off">Kuuntelee myös taukojen ajan, kunnes napautat mikrofonia tai on ollut puoli minuuttia hiljaista</string>
     <string name="voice_status_listening_tap_to_stop">Kuunnellaan&#8230; Lopeta napauttamalla mikrofonia</string>
 
-    <!-- Settings text moved out of the code (2026-11) -->
     <string name="settings_common_save">Tallenna</string>
     <string name="settings_common_edit">Muokkaa</string>
     <string name="settings_common_back">Takaisin</string>

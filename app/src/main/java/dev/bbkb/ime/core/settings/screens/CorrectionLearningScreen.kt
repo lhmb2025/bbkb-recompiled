@@ -8,10 +8,6 @@ import dev.bbkb.ime.core.settings.ui.SettingsScreenHost
 import dev.bbkb.ime.core.settings.ui.drawableIcon
 import dev.bbkb.ime.R
 
-/**
- * Suggestion and Correction hub screen (primary settings category)
- * Links to: Suggestion, Correction, Learning, Spell checking
- */
 @Composable
 fun CorrectionLearningScreen(
     onNavigateToAutoCorrection: () -> Unit,
@@ -38,7 +34,7 @@ fun CorrectionLearningScreen(
             icon = drawableIcon(R.drawable.ic_settings_learning),
             onClick = { onNavigateToDictionaries() },
         ),
-        // Spell checking — launches its own activity
+        // Spell checking launches its own activity
         Nav(
             title = R.string.settings_spell_checker_title,
             summary = R.string.settings_spell_checker_summary,

@@ -16,7 +16,7 @@ public final class GestureInputAvailability {
     private boolean isValidKeyboardLayout;
     private boolean isVkbGestureEnabledByUser;
     private boolean isCkbGestureEnabledByUser;
-    private synchronized boolean areBaseGestureConditionsMet() {        // Fixed decompilation: All conditions must be true (AND logic) to return true
+    private synchronized boolean areBaseGestureConditionsMet() {
         if (this.isMainDictionaryAvailable && this.isValidKeyboardLayout && !LocaleUtils.isCurrentSubtypeChinese()) {
             return true;
         }
@@ -31,6 +31,7 @@ public final class GestureInputAvailability {
         this.isCkbGestureAvailable = z && this.isCkbGestureEnabledByUser;
     }
 
+    /** @param z true if the main dictionary is loaded */
     public synchronized void setMainDictionaryAvailable(boolean z) {
         if (this.isMainDictionaryAvailable != z) {
             this.isMainDictionaryAvailable = z;
@@ -40,6 +41,7 @@ public final class GestureInputAvailability {
         }
     }
 
+    /** @param z the user's on-screen keyboard swipe setting */
     public void setVkbGestureEnabledByUser(boolean z) {
         if (this.isVkbGestureEnabledByUser != z) {
             this.isVkbGestureEnabledByUser = z;
@@ -47,6 +49,7 @@ public final class GestureInputAvailability {
         }
     }
 
+    /** @param z the user's capacitive keypad swipe setting */
     public void setCkbGestureEnabledByUser(boolean z) {
         if (this.isCkbGestureEnabledByUser != z) {
             this.isCkbGestureEnabledByUser = z;
@@ -54,16 +57,7 @@ public final class GestureInputAvailability {
         }
     }
 
-    /**
-     * NOTE the inverted argument. The only caller is
-     * {@code MainKeyboardView.setKeyboard}, which passes {@code keyboard.mId.passwordInput()} —
-     * i.e. {@code true} means "this is a password field", which is precisely a layout gesture
-     * typing must NOT run on. The stored flag is therefore {@code !isPasswordInput}.
-     *
-     * <p>The decompiled body expressed the same thing as {@code if (field == z) field = !z;},
-     * which reads like a broken setter (it is not — for booleans {@code field != !z} is exactly
-     * {@code field == z}). Kept behaviour-identical, with the inversion made explicit.
-     */
+    /** Inverted argument: a password-field layout is not valid for gesture typing. */
     public void setValidKeyboardLayout(boolean isPasswordInput) {
         final boolean isValid = !isPasswordInput;
         if (this.isValidKeyboardLayout != isValid) {
@@ -91,11 +85,8 @@ public final class GestureInputAvailability {
         Keyboard c0965eM6834l = KeyboardSwitcher.getInstance().getCurrentKeyboard();
         boolean kbNonNull = c0965eM6834l != null;
         int elementId = kbNonNull ? c0965eM6834l.mId.mElementId : -1;
-        // supportsGestureInput() reads the XML proximity-correction flag (mAllowRedundantMoreKeys), which is
-        // NOT the same as gesture-typing support. On the original app CKB gesture input was
-        // gated by KeyboardId.isPkbKeyboard() — it returned true for every keyboard except the
-        // unified-input-menu IDs 38 and 138. We keep the dynamic flag as an OR so explicit
-        // XML declarations still work, but we must also allow all normal text-input keyboards.
+        // supportsGestureInput() reads an XML flag, not real gesture support: allow every
+        // keyboard except the input menu ids 38 and 138, or one whose XML enables it.
         boolean kbSupportsGesture = kbNonNull && (c0965eM6834l.supportsGestureInput() || !(elementId == 38 || elementId == 138));
         boolean result = this.isCkbGestureAvailable && kbNonNull && kbSupportsGesture;
         if (!result) {

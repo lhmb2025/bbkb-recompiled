@@ -15,12 +15,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * The menu a clipboard row opens, from a long-press on the row or a tap on its overflow button —
- * the same menu, anchored to the overflow button either way.
- *
- * <p>Built as an AppCompat {@link PopupMenu} on the IME's Material 3 theme. The input view's own
- * theme has no Material parent, so the popup must be given
- * {@code Theme_BlackberryKeyboard_IME} explicitly or it inflates unstyled (or not at all).
+ * A clipboard row's menu, anchored to its overflow button. The input view's theme has no Material
+ * parent, so the popup is given {@code Theme_BlackberryKeyboard_IME} explicitly or it inflates
+ * unstyled (or not at all).
  */
 final class ClipboardEntryMenu {
 
@@ -44,9 +41,8 @@ final class ClipboardEntryMenu {
     }
 
     /**
-     * The actions a row offers, in menu order. A masked (Password Keeper) row offers only Copy and
-     * Delete: pinning would keep a password past the purge, and Share or Show full text would
-     * reveal it. Show full text appears only while the row's text is cut off.
+     * Menu order. A masked row offers only Copy and Delete: pinning would outlive the purge, Share or
+     * Show full text would reveal it. Show full text appears only while the text is cut off.
      */
     static List<Integer> actionsFor(ClipEntry entry, boolean masked, boolean truncated) {
         List<Integer> actions = new ArrayList<>(5);
@@ -64,7 +60,7 @@ final class ClipboardEntryMenu {
         return actions;
     }
 
-    /** The popup for {@code actions}, anchored to {@code anchor}; the caller shows it. */
+    /** The caller shows it. */
     static PopupMenu build(View anchor, List<Integer> actions, Handler handler) {
         Context themed = new ContextThemeWrapper(anchor.getContext(), R.style.Theme_BlackberryKeyboard_IME);
         PopupMenu popup = new PopupMenu(themed, anchor, Gravity.END);

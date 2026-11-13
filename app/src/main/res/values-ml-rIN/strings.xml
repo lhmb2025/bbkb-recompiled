@@ -721,7 +721,6 @@
     <string name="device_config_import_unreadable">ആ ഫയൽ ഒരു ഉപകരണ കോൺഫിഗറേഷൻ അല്ല</string>
     <string name="device_config_import_failed">ആ ഫയൽ ഇറക്കുമതി ചെയ്യാനായില്ല</string>
 
-    <!-- OTA app updates -->
     <string name="settings_updates_title">അപ്‌ഡേറ്റുകൾ</string>
     <string name="settings_updates_summary">BBKB-യുടെ പുതിയ പതിപ്പ് പരിശോധിക്കുക</string>
     <string name="settings_update_installed_version_title">ഇൻസ്റ്റാൾ ചെയ്ത പതിപ്പ്</string>
@@ -755,7 +754,6 @@
     <string name="settings_update_ready_title">ഇൻസ്റ്റാൾ ചെയ്യാൻ തയ്യാർ</string>
     <string name="settings_update_version_details">പതിപ്പിന്റെ വിശദാംശങ്ങൾ</string>
     <string name="settings_update_unknown_sources_title">അപ്‌ഡേറ്റുകൾ ഇൻസ്റ്റാൾ ചെയ്യാൻ BBKB-യെ അനുവദിക്കണോ?</string>
-    <!-- Downloadable language packs (core/languagepack) -->
     <string name="language_packs_installed_header">ഇൻസ്റ്റാൾ ചെയ്തു</string>
     <string name="language_packs_available_header">ഡൗൺലോഡിന് ലഭ്യം</string>
     <string name="language_packs_download">ഡൗൺലോഡ്</string>
@@ -877,7 +875,6 @@
     <string name="settings_voice_stop_on_pause_summary_off">മൈക്രോഫോൺ ടാപ്പ് ചെയ്യുന്നത് വരെയോ അര മിനിറ്റ് നിശബ്ദമാകുന്നത് വരെയോ ഇടവേളകളിലും കേൾക്കുന്നത് തുടരും</string>
     <string name="voice_status_listening_tap_to_stop">കേൾക്കുന്നു&#8230; നിർത്താൻ മൈക്ക് ടാപ്പ് ചെയ്യുക</string>
 
-    <!-- Settings text moved out of the code (2026-11) -->
     <string name="settings_common_save">സംരക്ഷിക്കുക</string>
     <string name="settings_common_edit">തിരുത്തുക</string>
     <string name="settings_common_back">മടങ്ങുക</string>

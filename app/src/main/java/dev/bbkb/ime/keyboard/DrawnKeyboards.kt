@@ -10,12 +10,9 @@ import dev.bbkb.ime.core.layout.DrawnKeyboard
 object DrawnKeyboards {
 
     /**
-     * [alphabet], an on-screen alphabet keyboard, with [shifted] its Shift layer (null when there is
-     * none to read). Rows are the keyboard's keys grouped by their top edge; the last row (the space
-     * bar's) only counts its positions, and a row of nothing but digits (the number row some
-     * keyboards draw) is left out. A position is a key whose code is a character other than space,
-     * Enter and Tab, or a key that types a text (its [Key.getOutputText], else its label: a Hindi
-     * `क्ष` key).
+     * Rows are keys grouped by top edge; the space bar row only counts positions; an all-digit row is skipped.
+     * A position is a character key other than space/Enter/Tab, or a text key (output text, else label, e.g. `क्ष`).
+     * [shifted] is the Shift layer, or null when there is none.
      */
     @JvmStatic
     fun read(alphabet: Keyboard, shifted: Keyboard?): DrawnKeyboard? {

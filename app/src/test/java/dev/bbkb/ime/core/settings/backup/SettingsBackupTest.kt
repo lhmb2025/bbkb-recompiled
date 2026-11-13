@@ -17,11 +17,7 @@ import org.robolectric.annotation.Config
 
 /**
  * The settings backup document: what it writes, what it refuses to read, and what a round trip
- * has to preserve.
- *
- * Robolectric only for a real [SharedPreferences] — everything under test is plain JSON and plain
- * preference writes, which is the whole point of keeping the file pickers and the toasts out of
- * [SettingsBackup].
+ * preserves. Robolectric only for a real [SharedPreferences].
  */
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [34], manifest = Config.NONE)
@@ -46,8 +42,6 @@ class SettingsBackupTest {
         val backup = SettingsBackup.parse(json).getOrThrow()
         return SettingsBackup.apply(prefs, backup)
     }
-
-    // ── round trip ───────────────────────────────────────────────────────────
 
     @Test
     fun everyPreferenceTypeSurvivesARoundTrip() {
@@ -75,10 +69,8 @@ class SettingsBackupTest {
     }
 
     /**
-     * The reason every value carries a `type`: a restore that wrote everything back as a string
-     * would pass a round-trip test that only checked `getString`, and then throw
-     * `ClassCastException` the next time the keyboard read the key with its own getter. So this
-     * asserts the stored *types*, via `all`, not just the values.
+     * Asserts the stored types, not just values: a restore that wrote strings would pass a
+     * `getString` check and then throw ClassCastException in the keyboard's own typed getter.
      */
     @Test
     fun restoredValuesKeepTheirJavaTypes() {
@@ -123,8 +115,6 @@ class SettingsBackupTest {
 
         assertEquals(first, second)
     }
-
-    // ── header ───────────────────────────────────────────────────────────────
 
     @Test
     fun theHeaderNamesTheFormatVersionAndBuild() {
@@ -189,8 +179,6 @@ class SettingsBackupTest {
         assertNull(backup.app)
     }
 
-    // ── denylist ─────────────────────────────────────────────────────────────
-
     @Test
     fun transientKeysAreLeftOutOfTheExport() {
         source.edit()
@@ -223,10 +211,7 @@ class SettingsBackupTest {
         assertTrue(SettingsBackup.isDenied("ckb_key_grid_cache_v2"))
     }
 
-    /**
-     * Each speech recognizer remembers its own voice languages, under the cache prefix. Those lists
-     * describe this phone's recognisers, so none of them travel; the choice of recognizer does.
-     */
+    /** Per-recognizer voice language caches describe this phone, so they never travel; the recognizer choice does. */
     @Test
     fun everySpeechRecognizersLanguageCacheStaysOnThisDevice() {
         val claude = "com.anthropic.claude/com.anthropic.claude.voice.RecognitionService"
@@ -278,8 +263,6 @@ class SettingsBackupTest {
         )
     }
 
-    // ── apply ────────────────────────────────────────────────────────────────
-
     @Test
     fun applyReturnsTheNumberOfSettingsWritten() {
         source.edit()
@@ -292,7 +275,7 @@ class SettingsBackupTest {
         assertEquals(3, restoreInto(target, exportSource()))
     }
 
-    /** The documented choice: a restore adds and overwrites, it does not clear. */
+    /** A restore adds and overwrites; it does not clear. */
     @Test
     fun applyLeavesKeysTheBackupDoesNotMention() {
         target.edit()
@@ -337,8 +320,6 @@ class SettingsBackupTest {
         assertFalse(target.contains("null_value"))
         assertFalse(target.contains("not_an_entry"))
     }
-
-    // ── file name ────────────────────────────────────────────────────────────
 
     @Test
     fun theDefaultFileNameCarriesTheDate() {

@@ -10,14 +10,14 @@ import java.util.Comparator;
 
 
 public class LocaleItem extends Pair<String, String> implements Comparable<LocaleItem> {
-
-    /**
-     * Built once: Collator.getInstance() used to run per comparison, i.e. O(n log n) collator
-     * constructions per sort, and this comparator backs the TreeMap in MultiLanguageRepository.
-     */
+    /** Built once and shared (synchronized): this comparator backs the TreeMap in MultiLanguageRepository. */
     private static final Collator DISPLAY_NAME_COLLATOR = Collator.getInstance();
 
     public static final Comparator<LocaleItem> DISPLAY_NAME_COMPARATOR = new Comparator<LocaleItem>() {
+        /**
+         * @param c0711f first item, compared by display name
+         * @param c0711f2 second item
+         */
         @Override
         public int compare(LocaleItem c0711f, LocaleItem c0711f2) {
             synchronized (DISPLAY_NAME_COLLATOR) {
@@ -26,10 +26,15 @@ public class LocaleItem extends Pair<String, String> implements Comparable<Local
         }
     };
 
+    /**
+     * @param str locale id, e.g. "en_US"
+     * @param str2 display name
+     */
     public LocaleItem(String str, String str2) {
         super(str, str2);
     }
 
+    /** @param str locale id; the display name is looked up */
     public LocaleItem(String str) {
         this(str, ResourceLocaleUtils.getSubtypeLocaleDisplayName(str));
     }
@@ -39,6 +44,7 @@ public class LocaleItem extends Pair<String, String> implements Comparable<Local
         return (String) this.second;
     }
 
+    /** @param c0711f the item to compare by locale id */
     @Override // java.lang.Comparable
     public int compareTo(LocaleItem c0711f) {
         return ((String) this.first).compareTo((String) c0711f.first);

@@ -26,42 +26,12 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
 /**
- * The clipboard board's model: every clip the user copies, newest first, split into a pinned
- * section and a recent section.
- *
- * <h3>Capture</h3>
- * Registered as a system primary-clip listener from the constructor, so it hears every copy in
- * every app. A clip is captured unless:
- * <ul>
- *   <li>it has no text (only text is kept);</li>
- *   <li>this manager wrote it itself ({@link #copyToSystemClipboard}, or the promotion in
- *       {@link #removeEntry});</li>
- *   <li>the focused field is incognito ({@link #setNoPersonalizedLearning});</li>
- *   <li>its source marked it {@link ClipDescription#EXTRA_IS_SENSITIVE} (API 33+);</li>
- *   <li>the user turned clipboard history off ({@link ClipboardPrefs#KEY_HISTORY_ENABLED}).</li>
- * </ul>
- * Re-copying text that is already in the history refreshes that row instead of adding a second
- * one; a pinned row stays pinned and where it is.
- *
- * <h3>Retention</h3>
- * Unpinned rows older than {@link ClipboardPrefs#KEY_RETENTION} are pruned on capture, when the
- * board is shown, when input starts and on load ({@link #prune}); a timestamp in the future is
- * treated as now. At most {@link #MAX_UNPINNED} unpinned rows are kept, the oldest evicted first.
- * Pinned rows are exempt from both.
- *
- * <h3>Password Keeper</h3>
- * BlackBerry Password Keeper labels the passwords it copies {@code bb.pk}: such a row is kept,
- * shown masked, never persisted, never pinned, and purged as soon as any other clip arrives. A
- * {@code bb.pk.clear} clip is never stored and purges them.
- *
- * <h3>Persistence</h3>
- * Through {@link ClipboardHistoryStore}, which lives in credential-protected storage. It is read
- * lazily, the first time the history is needed once the user has unlocked, on a background
- * thread; clips copied before the read lands are held in memory and merged into what was stored.
- *
- * <p>Not thread-safe: everything here runs on the main thread, except the one background read,
- * whose result is merged back on the main thread. The store does its writing on its own thread
- * from immutable snapshots.
+ * The clipboard board's model: every copied clip in every app, newest first, pinned then recent.
+ * Not captured: clips without text, our own writes, incognito fields, clips marked
+ * {@link ClipDescription#EXTRA_IS_SENSITIVE}, or history off. Re-copying refreshes the existing row.
+ * Unpinned rows expire by {@link ClipboardPrefs#KEY_RETENTION} and are capped at {@link #MAX_UNPINNED}.
+ * Password Keeper clips ({@code bb.pk}) are masked, never persisted or pinned, and purged by the next
+ * clip; {@code bb.pk.clear} purges them. Main thread only, except the one background store read.
  */
 public class ClipboardHistoryManager implements ClipboardManager.OnPrimaryClipChangedListener {
 
@@ -69,9 +39,8 @@ public class ClipboardHistoryManager implements ClipboardManager.OnPrimaryClipCh
     static final int MAX_UNPINNED = 25;
 
     /**
-     * Clips longer than this are kept for the session but not written to disk: the whole file is
-     * read and decoded at every process start, and one pasted book should not make that slow.
-     * Of the unpinned ones only the newest is kept in memory ({@link #evictOverCap}).
+     * Longer clips are kept in memory only (the file is decoded at every process start); of the
+     * unpinned ones only the newest is kept ({@link #evictOverCap}).
      */
     static final int MAX_PERSISTED_CHARS = 100_000;
 
@@ -90,9 +59,8 @@ public class ClipboardHistoryManager implements ClipboardManager.OnPrimaryClipCh
     }
 
     /**
-     * Every manager not yet released, so the settings screen's "Clear history" reaches the
-     * keyboard's in-memory copy as well as the file. Weak: a manager that was dropped without
-     * {@link #release()} must not be kept alive by this.
+     * Unreleased managers, so settings' "Clear history" reaches in-memory copies too. Weak so a
+     * manager dropped without {@link #release()} is not kept alive.
      */
     private static final Set<ClipboardHistoryManager> sLiveManagers =
             Collections.newSetFromMap(new WeakHashMap<ClipboardHistoryManager, Boolean>());
@@ -128,12 +96,7 @@ public class ClipboardHistoryManager implements ClipboardManager.OnPrimaryClipCh
     /** The store has been read (or deliberately skipped); from here on every change is written. */
     private boolean mLoaded = false;
 
-    /**
-     * Where the stored history is read, and where the result is handed back; both null to read
-     * inline (the test constructor). The first input start after every process start used to
-     * read and decode the file on the main thread (up to MBs: 25 clips of up to 100k chars plus
-     * the pinned ones).
-     */
+    /** Where the stored history is read (the file can be MBs) and where the result is merged; both null to read inline. */
     @Nullable
     private final Executor mLoadExecutor;
 
@@ -156,17 +119,12 @@ public class ClipboardHistoryManager implements ClipboardManager.OnPrimaryClipCh
     private long mNextId = 1;
 
     /**
-     * Set before this manager writes the system clipboard so the primary-clip callback that write
-     * provokes is skipped instead of re-entering the history. One-shot: {@link #handleClip} clears
-     * it whether or not it fired.
+     * Set before we write the system clipboard so the callback it provokes is skipped. One-shot:
+     * {@link #handleClip} clears it whether or not it fired.
      */
     private boolean mInternalUpdate = false;
 
-    /**
-     * The focused field set {@code IME_FLAG_NO_PERSONALIZED_LEARNING}. The manager is global and
-     * hears every copy in every app, so the session pushes this in rather than the manager
-     * reading a field it has no view of; while set, nothing new enters the history.
-     */
+    /** The focused field set {@code IME_FLAG_NO_PERSONALIZED_LEARNING} (pushed in by the session); nothing is captured while set. */
     private boolean mNoPersonalizedLearning = false;
 
     public ClipboardHistoryManager(Context context) {
@@ -203,8 +161,6 @@ public class ClipboardHistoryManager implements ClipboardManager.OnPrimaryClipCh
         }
     }
 
-    // ── reading ──────────────────────────────────────────────────────────────
-
     /** The whole history in display order: the pinned section, then the recent one. */
     public List<ClipEntry> getHistory() {
         List<ClipEntry> all = new ArrayList<>(this.mPinned.size() + this.mRecent.size());
@@ -226,9 +182,7 @@ public class ClipboardHistoryManager implements ClipboardManager.OnPrimaryClipCh
         return entry.hasLabel(this.mPasswordAddLabel);
     }
 
-    // ── capture ──────────────────────────────────────────────────────────────
-
-    @Override // android.content.ClipboardManager.OnPrimaryClipChangedListener
+    @Override
     public void onPrimaryClipChanged() {
         ClipData primaryClip = this.mClipboardManager.getPrimaryClip();
         if (primaryClip == null) {
@@ -243,21 +197,18 @@ public class ClipboardHistoryManager implements ClipboardManager.OnPrimaryClipCh
         if (internal || this.mNoPersonalizedLearning || isSensitiveClip(clipData)) {
             return;
         }
-        // Announce only a change that happened: a refused clip (no text) leaves the list as it was.
         if (addToHistory(clipData)) {
             persist();
             notifyHistoryChanged();
         }
     }
 
+    /** @param z true if the focused field asked for no personalized learning */
     public void setNoPersonalizedLearning(boolean z) {
         this.mNoPersonalizedLearning = z;
     }
 
-    /**
-     * A clip its source marked {@link ClipDescription#EXTRA_IS_SENSITIVE} (a password manager, an
-     * OTP): never stored. The extra is API 33; older sources cannot set it.
-     */
+    /** Marked {@link ClipDescription#EXTRA_IS_SENSITIVE} (API 33+) by its source: never stored. */
     static boolean isSensitiveClip(ClipData clipData) {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU || clipData == null) {
             return false;
@@ -292,11 +243,8 @@ public class ClipboardHistoryManager implements ClipboardManager.OnPrimaryClipCh
     }
 
     /**
-     * If {@code text} is already in the history, refresh that row's copy time instead of storing
-     * a second copy: a recent row moves to the front of its section, a pinned row stays pinned
-     * where it is. The original row is kept (its id and label); only its time changes.
-     *
-     * <p>The comparison is verbatim: case and surrounding whitespace make a different clip.
+     * If {@code text} (compared verbatim) is already stored, refresh that row's time instead: a
+     * recent row moves to the front, a pinned row stays where it is. Id and label are kept.
      */
     private boolean refreshDuplicate(String text, long now) {
         for (int i = 0; i < this.mPinned.size(); i++) {
@@ -317,12 +265,7 @@ public class ClipboardHistoryManager implements ClipboardManager.OnPrimaryClipCh
         return false;
     }
 
-    // ── retention ────────────────────────────────────────────────────────────
-
-    /**
-     * Load if this is the first chance since unlock, then drop expired and surplus rows. Called
-     * when the board is shown and when input starts; capture does the same itself.
-     */
+    /** Load if this is the first chance since unlock, then drop expired and surplus rows. */
     public void prune() {
         if (refresh(this.mClock.nowMs())) {
             persist();
@@ -333,9 +276,8 @@ public class ClipboardHistoryManager implements ClipboardManager.OnPrimaryClipCh
     /** @return whether the visible history changed. */
     private boolean refresh(long now) {
         if (!ClipboardPrefs.isHistoryEnabled(this.mContext)) {
-            // History is off: hold nothing, and leave nothing on disk. The settings toggle deletes
-            // the file itself; this covers a preference that changed some other way (a restored
-            // backup). The file is deleted once, not on every prune while history stays off.
+            // History off: hold nothing. Covers a pref changed outside the toggle (a restored
+            // backup); the file is deleted once, not on every prune.
             boolean changed = !this.mPinned.isEmpty() || !this.mRecent.isEmpty();
             this.mPinned.clear();
             this.mRecent.clear();
@@ -361,11 +303,8 @@ public class ClipboardHistoryManager implements ClipboardManager.OnPrimaryClipCh
     }
 
     /**
-     * Read the stored history off the main thread, then merge it on the main thread. Until it
-     * lands the history holds only what was captured since the process started (it may be
-     * briefly empty); nothing is written meanwhile ({@link #persist} waits for {@link #mLoaded}),
-     * and the merge replays those captures over the stored rows exactly as it does for clips
-     * copied while the user was locked.
+     * Read the stored history off the main thread, then merge on it. Until then nothing is written
+     * ({@link #persist} waits for {@link #mLoaded}) and the merge replays captures made meanwhile.
      */
     private void startLoad() {
         if (this.mLoading) {
@@ -382,8 +321,7 @@ public class ClipboardHistoryManager implements ClipboardManager.OnPrimaryClipCh
 
     private void onStoredLoaded(int generation, List<ClipEntry> stored) {
         if (generation != this.mLoadGeneration) {
-            // Cleared or deleted while the read was in flight: what was read is gone. A newer
-            // read, if any, is the one that counts.
+            // Cleared while the read was in flight; a newer read, if any, is the one that counts.
             return;
         }
         this.mLoading = false;
@@ -411,10 +349,9 @@ public class ClipboardHistoryManager implements ClipboardManager.OnPrimaryClipCh
     }
 
     /**
-     * Merge what was stored with what was captured before it could be read (the clips copied
-     * while the user was locked), replaying the latter as captures over the former.
+     * Replay clips captured before the read (e.g. while locked) as captures over the stored rows.
      *
-     * @return whether there is anything to show (and therefore to write back).
+     * @return whether there is anything to show (and therefore to write back)
      */
     private boolean mergeStored(List<ClipEntry> stored) {
         List<ClipEntry> pending = new ArrayList<>(this.mPinned);
@@ -495,10 +432,8 @@ public class ClipboardHistoryManager implements ClipboardManager.OnPrimaryClipCh
     }
 
     /**
-     * Evict the oldest unpinned rows beyond {@link #MAX_UNPINNED}, and every unpinned row too
-     * long to be stored ({@link #MAX_PERSISTED_CHARS}) except the newest such row. Those rows
-     * live in memory only, and there was no bound on them: 25 copied logs or documents stayed
-     * whole for the life of the keyboard. The one the user copied last is the one still wanted.
+     * Evict unpinned rows beyond {@link #MAX_UNPINNED}, and every unpinned row over
+     * {@link #MAX_PERSISTED_CHARS} except the newest (memory-only rows would otherwise be unbounded).
      */
     private boolean evictOverCap() {
         boolean changed = false;
@@ -534,14 +469,9 @@ public class ClipboardHistoryManager implements ClipboardManager.OnPrimaryClipCh
         return removed;
     }
 
-    // ── user actions ─────────────────────────────────────────────────────────
-
     /**
-     * Pin or unpin a row. A pinned row moves to the top of the pinned section; an unpinned one to
-     * the top of the recent section, with a fresh retention window. Password Keeper rows cannot be
-     * pinned.
-     *
-     * @return whether anything changed.
+     * Pin or unpin a row; it moves to the top of its new section (unpinning restarts retention).
+     * Password Keeper rows cannot be pinned. Returns whether anything changed.
      */
     public boolean setPinned(long id, boolean pinned) {
         long now = this.mClock.nowMs();
@@ -565,11 +495,8 @@ public class ClipboardHistoryManager implements ClipboardManager.OnPrimaryClipCh
     }
 
     /**
-     * Delete one row. If it was the clip the system is currently holding, the most recently copied
-     * remaining row takes its place; if none is left, the system clipboard is blanked instead. A
-     * row the system is not holding leaves the system clipboard alone, even if it was the last.
-     *
-     * @return whether the row was found.
+     * Delete one row. If the system clipboard holds it, the newest remaining row replaces it (or the
+     * clipboard is blanked). Returns whether the row was found.
      */
     public boolean removeEntry(long id) {
         ClipEntry removed = removeById(id);
@@ -579,7 +506,6 @@ public class ClipboardHistoryManager implements ClipboardManager.OnPrimaryClipCh
         String live = ClipboardItem.getTextFromClipData(this.mClipboardManager.getPrimaryClip());
         if (removed.getText().equals(live)) {
             ClipEntry next = newestPromotable();
-            // Flagged as our own update, so the callback it provokes does not re-enter the history.
             this.mInternalUpdate = true;
             this.mClipboardManager.setPrimaryClip(
                     next != null ? next.toClipData(false) : ClipData.newPlainText("", ""));
@@ -589,10 +515,7 @@ public class ClipboardHistoryManager implements ClipboardManager.OnPrimaryClipCh
         return true;
     }
 
-    /**
-     * Put a row back on the system clipboard, without it re-entering the history as a new copy.
-     * A Password Keeper row goes back marked sensitive.
-     */
+    /** Put a row back on the system clipboard without re-capturing it; Password Keeper rows go back marked sensitive. */
     public void copyToSystemClipboard(ClipEntry entry) {
         this.mInternalUpdate = true;
         this.mClipboardManager.setPrimaryClip(entry.toClipData(isPasswordKeeperEntry(entry)));
@@ -614,10 +537,7 @@ public class ClipboardHistoryManager implements ClipboardManager.OnPrimaryClipCh
         }
     }
 
-    /**
-     * The settings screen's "Clear history", and what turning history off does: empty every live
-     * history and delete the stored file, whether or not the keyboard is running.
-     */
+    /** Empty every live history and delete the stored file, whether or not the keyboard is running. */
     public static void clearHistory(Context context) {
         List<ClipboardHistoryManager> live;
         synchronized (sLiveManagers) {
@@ -661,13 +581,9 @@ public class ClipboardHistoryManager implements ClipboardManager.OnPrimaryClipCh
         return -1;
     }
 
-    // ── persistence and listeners ────────────────────────────────────────────
-
     /**
-     * Write the history, minus what must never reach the disk: Password Keeper rows and clips over
-     * {@link #MAX_PERSISTED_CHARS}. With nothing left to write the file is deleted rather than
-     * left holding an empty list. Nothing is written before the stored history has been read, or
-     * the write would replace it.
+     * Write the history minus Password Keeper rows and clips over {@link #MAX_PERSISTED_CHARS}
+     * (empty deletes the file). Never before the stored history is read, or it would be replaced.
      */
     private void persist() {
         if (!this.mLoaded) {
@@ -686,10 +602,12 @@ public class ClipboardHistoryManager implements ClipboardManager.OnPrimaryClipCh
         }
     }
 
+    /** @param cVar the listener to add */
     public void addHistoryChangedListener(OnHistoryChangedListener cVar) {
         this.mChangeListeners.add(cVar);
     }
 
+    /** @param cVar the listener to remove */
     public void removeHistoryChangedListener(OnHistoryChangedListener cVar) {
         this.mChangeListeners.remove(cVar);
     }
@@ -707,6 +625,7 @@ public class ClipboardHistoryManager implements ClipboardManager.OnPrimaryClipCh
         }
     }
 
+    /** @param str the label to match against the clip description's label */
     public static boolean hasLabel(ClipData clipData, String str) {
         ClipDescription description;
         return clipData != null && (description = clipData.getDescription()) != null

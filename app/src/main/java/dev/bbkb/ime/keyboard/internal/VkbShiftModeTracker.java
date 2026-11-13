@@ -27,15 +27,9 @@ public final class VkbShiftModeTracker {
         }
     }
 
+    /** @param z true to shift on (AOSP AlphabetShiftState.setShifted semantics) */
     public void setShifted(boolean z) {
         int i = this.mState;
-        // FIX (BACKSPACE_GLITCH_REPORT §3a): the UNSHIFTED -> MANUAL_SHIFTED transition
-        // (i == 0 -> 1) must only happen when shifting ON (z == true). Previously it ran
-        // unconditionally, so setShifted(false) on an UNSHIFTED keyboard wrongly produced
-        // MANUAL_SHIFTED. Because the post-keystroke shift recompute calls setShiftMode(0) ->
-        // setShifted(false) after every key, the mode oscillated UNSHIFTED <-> MANUAL_SHIFTED, and on
-        // the MANUAL_SHIFTED presses isManualShiftAndShiftPressing() made Backspace forward-delete.
-        // Corrected to match AOSP AlphabetShiftState.setShifted semantics.
         if (z) {
             if (i == 0) {
                 this.mState = 1;          // UNSHIFTED -> MANUAL_SHIFTED
@@ -54,6 +48,7 @@ public final class VkbShiftModeTracker {
         }
     }
 
+    /** @param z true to lock shift */
     public void setShiftLocked(boolean z) {
         if (z) {
             this.mState = 4;

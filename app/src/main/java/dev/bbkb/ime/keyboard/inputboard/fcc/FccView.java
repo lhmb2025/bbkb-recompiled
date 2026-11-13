@@ -52,13 +52,13 @@ public final class FccView extends RelativeLayout {
 
     private ImageView mNub;
 
-    private ImageView mCopyButton;  // copy (top-left)
+    private ImageView mCopyButton;
 
-    private ImageView mCutButton;  // cut (top-right)
+    private ImageView mCutButton;
 
-    private ImageView mSelectButton;  // select (bottom-left)
-    
-    private ImageView mPasteButton;  // paste (bottom-right)
+    private ImageView mSelectButton;
+
+    private ImageView mPasteButton;
 
     private boolean mSelectMode;
 
@@ -98,12 +98,16 @@ public final class FccView extends RelativeLayout {
 
     
     public interface ActionListener {
+        /** @param i the key code, sent with Ctrl */
         void onKeyDown(int i);
 
+        /** @param enumC0992a the arrow pressed */
         void onMove(Direction enumC0992a);
 
+        /** @param i the key code, sent with Ctrl */
         void onKeyUp(int i);
 
+        /** @param i how to collapse a selection on exit: 1 to its end, 0 to its start, -1 leave it */
         void onToggleSelect(int i);
     }
 
@@ -148,7 +152,7 @@ public final class FccView extends RelativeLayout {
         return this.mSelectMode;
     }
 
-    @Override // android.view.View
+    @Override
     public Handler getHandler() {
         return this.mHandler;
     }
@@ -157,6 +161,7 @@ public final class FccView extends RelativeLayout {
         return this.mRepeatRunnable;
     }
 
+    /** @param z true while the nub is held down */
     public void setNubDepressed(boolean z) {
         this.mNubDepressed = z;
     }
@@ -169,6 +174,7 @@ public final class FccView extends RelativeLayout {
         return this.mOpening;
     }
 
+    /** @param z true while the board is being opened */
     public void setOpening(boolean z) {
         this.mOpening = z;
     }
@@ -177,6 +183,10 @@ public final class FccView extends RelativeLayout {
         return this.mIsToggling;
     }
 
+    /**
+     * @param interfaceC0993b receives the board's actions; null stops key repeat
+     * @param interfaceC0994c reports whether the editor has a selection
+     */
     public void setListeners(ActionListener interfaceC0993b, SelectionProvider interfaceC0994c) {
         if (interfaceC0993b == null) {
             stopRepeat();
@@ -193,7 +203,7 @@ public final class FccView extends RelativeLayout {
         this.mRepeatInterval = resources.getInteger(R.integer.config_key_repeat_interval);
         this.mNubOffset = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 15.0f, getResources().getDisplayMetrics());
         this.mResetNubRunnable = new Runnable() {
-            @Override // java.lang.Runnable
+            @Override
             public void run() {
                 FccView.this.resetNubPosition();
             }
@@ -203,7 +213,7 @@ public final class FccView extends RelativeLayout {
         this.mKeyboardHeight = BoardHeightPolicy.fallbackHeight(resources);
     }
 
-    @Override // android.view.View
+    @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
         this.mLeftArrow = (ImageView) findViewById(R.id.left_fcc_caret);
@@ -215,31 +225,25 @@ public final class FccView extends RelativeLayout {
         this.mCutButton = (ImageView) findViewById(R.id.cut);
         this.mSelectButton = (ImageView) findViewById(R.id.select);
         this.mPasteButton = (ImageView) findViewById(R.id.paste);
-        
-        // Apply colors from KeyboardColorManager
+
         if (KeyboardColorManager.INSTANCE.isInitialized()) {
             boolean modernBoards = KeyboardColorManager.styleSpec().getModernBoards();
-            // Modern boards share the keyboard's background surface; legacy keyColor.
             setBackgroundColor(modernBoards
                     ? KeyboardColorManager.INSTANCE.getBackgroundColor()
                     : KeyboardColorManager.INSTANCE.getKeyColor());
 
-            // Tint control icons with iconColorAlt (lighter secondary color)
             int iconColorAlt = KeyboardColorManager.INSTANCE.getIconColorAlt();
-            KeyboardColorManager.INSTANCE.tint(this.mLeftArrow, iconColorAlt); // left arrow
-            KeyboardColorManager.INSTANCE.tint(this.mRightArrow, iconColorAlt); // right arrow
-            KeyboardColorManager.INSTANCE.tint(this.mUpArrow, iconColorAlt); // up arrow
-            KeyboardColorManager.INSTANCE.tint(this.mDownArrow, iconColorAlt); // down arrow
-            // Legacy: mNub keeps its original asset color. (Under Material the whole
-            // legacy group — nub included — is replaced by the trackpad layout below;
-            // the split disc/rings drawables remain available should the nub return.)
-            KeyboardColorManager.INSTANCE.tint(this.mCopyButton, iconColorAlt); // copy
-            KeyboardColorManager.INSTANCE.tint(this.mCutButton, iconColorAlt); // cut
-            KeyboardColorManager.INSTANCE.tint(this.mSelectButton, iconColorAlt); // select
-            KeyboardColorManager.INSTANCE.tint(this.mPasteButton, iconColorAlt); // paste
+            KeyboardColorManager.INSTANCE.tint(this.mLeftArrow, iconColorAlt);
+            KeyboardColorManager.INSTANCE.tint(this.mRightArrow, iconColorAlt);
+            KeyboardColorManager.INSTANCE.tint(this.mUpArrow, iconColorAlt);
+            KeyboardColorManager.INSTANCE.tint(this.mDownArrow, iconColorAlt);
+            // The nub keeps its asset color.
+            KeyboardColorManager.INSTANCE.tint(this.mCopyButton, iconColorAlt);
+            KeyboardColorManager.INSTANCE.tint(this.mCutButton, iconColorAlt);
+            KeyboardColorManager.INSTANCE.tint(this.mSelectButton, iconColorAlt);
+            KeyboardColorManager.INSTANCE.tint(this.mPasteButton, iconColorAlt);
 
-            // Modern boards get the redesigned layout (trackpad + word jump + chips);
-            // legacy styles keep the original nub + corner-glyph layout.
+            // Modern boards: trackpad, word jump and chips; legacy: nub and corner glyphs.
             View legacyGroup = findViewById(R.id.fcc_legacy_group);
             View materialGroup = findViewById(R.id.fcc_material_group);
             legacyGroup.setVisibility(modernBoards ? View.GONE : View.VISIBLE);
@@ -248,7 +252,6 @@ public final class FccView extends RelativeLayout {
                 setupMaterialGroup();
             }
 
-            // Tint the axis/target with keyColorAlt
             android.widget.ImageView fccTarget = (android.widget.ImageView) findViewById(R.id.fcc_target);
             if (fccTarget != null) {
                 KeyboardColorManager.INSTANCE.tint(
@@ -266,8 +269,6 @@ public final class FccView extends RelativeLayout {
         button.setForeground(KeyboardColorManager.pressedHighlight());
     }
 
-    // ===== Material redesign: trackpad + word jump + labeled action chips =====
-
     private android.widget.LinearLayout mChipSelect;
     private android.widget.LinearLayout mChipCopy;
     private android.widget.LinearLayout mChipCut;
@@ -279,7 +280,6 @@ public final class FccView extends RelativeLayout {
         final float density = getResources().getDisplayMetrics().density;
         int hintColor = KeyboardColorManager.INSTANCE.getHintColor(KeyboardColorManager.ALPHA_FULL);
 
-        // Trackpad surface: rounded key-colored panel, faint affordance in the middle.
         View trackpad = findViewById(R.id.fcc_trackpad);
         android.graphics.drawable.GradientDrawable pad =
                 new android.graphics.drawable.GradientDrawable();
@@ -293,11 +293,10 @@ public final class FccView extends RelativeLayout {
                 .setTextColor(affordanceColor);
         trackpad.setOnTouchListener(createTrackpadListener(density));
 
-        // Word-jump keys: ctrl+dpad through the same listener path as the actions.
+        // Word jump: Ctrl+dpad left/right.
         setupJumpKey((ImageView) findViewById(R.id.fcc_jump_left), 21);
         setupJumpKey((ImageView) findViewById(R.id.fcc_jump_right), 22);
 
-        // Action chips
         this.mChipSelect = findViewById(R.id.fcc_chip_select);
         this.mChipCopy = findViewById(R.id.fcc_chip_copy);
         this.mChipCut = findViewById(R.id.fcc_chip_cut);
@@ -307,8 +306,7 @@ public final class FccView extends RelativeLayout {
         styleChip(this.mChipCut, false);
         styleChip(this.mChipPaste, false);
 
-        // Select: tap toggles selection mode, long-press selects all (mirrors the
-        // legacy select glyph's behavior).
+        // Tap toggles selection mode, long-press selects all (Ctrl+A).
         this.mChipSelect.setOnClickListener(v -> {
             if (mListener == null) return;
             toggleSelectMode(1);
@@ -340,7 +338,7 @@ public final class FccView extends RelativeLayout {
         });
     }
 
-    /** Copy/cut/paste chip behavior, mirroring the legacy corner buttons (minus toasts). */
+    /** Copy/cut/paste chips: like the legacy corner buttons, with a flash instead of a toast. */
     private void runChipAction(android.widget.LinearLayout chip, int keyCode, int collapseDirection) {
         if (mListener == null) return;
         playKeyFeedback();
@@ -353,7 +351,6 @@ public final class FccView extends RelativeLayout {
         flashChip(chip);
     }
 
-    /** Normal (or accent-active) chip styling. */
     private void styleChip(android.widget.LinearLayout chip, boolean active) {
         float density = getResources().getDisplayMetrics().density;
         android.graphics.drawable.GradientDrawable bg =
@@ -363,7 +360,6 @@ public final class FccView extends RelativeLayout {
                 : KeyboardColorManager.INSTANCE.getKeyColorAlt());
         bg.setCornerRadius(20 * density);
         chip.setBackground(bg);
-        // Press layer matches the pill outline (radius = height/2, no inset).
         chip.setForeground(KeyboardColorManager.pressedHighlight(20f, 0f));
         int contentColor = active
                 ? KeyboardColorManager.INSTANCE.getBackgroundColor()
@@ -372,7 +368,7 @@ public final class FccView extends RelativeLayout {
         ((android.widget.TextView) chip.getChildAt(1)).setTextColor(contentColor);
     }
 
-    /** Brief accent flash as the action confirmation (replaces the legacy toasts). */
+    /** Brief accent flash confirming the action. */
     private void flashChip(final android.widget.LinearLayout chip) {
         styleChip(chip, true);
         this.mHandler.postDelayed(() -> {
@@ -391,9 +387,8 @@ public final class FccView extends RelativeLayout {
     }
 
     /**
-     * Trackpad drag: emit one cursor step per threshold of movement, per axis.
-     * Vertical steps run coarser than horizontal so line jumps don't fire while
-     * scrubbing along a line.
+     * One cursor step per threshold of movement, per axis. Vertical steps are coarser so line
+     * jumps don't fire while scrubbing along a line.
      */
     private View.OnTouchListener createTrackpadListener(final float density) {
         final float stepX = 18 * density;
@@ -439,7 +434,7 @@ public final class FccView extends RelativeLayout {
         };
     }
 
-    @Override // android.view.ViewGroup, android.view.View
+    @Override
     protected void dispatchDraw(Canvas canvas) {
         super.dispatchDraw(canvas);
         if (this.mInitialized) {
@@ -453,7 +448,11 @@ public final class FccView extends RelativeLayout {
         this.mNub.setOnTouchListener(new FccCursorTouchListener(this));
     }
 
-    @Override // android.widget.RelativeLayout, android.view.View
+    /**
+     * @param i the width measure spec (ignored)
+     * @param i2 the height measure spec (ignored)
+     */
+    @Override
     protected void onMeasure(int i, int i2) {
         setMeasuredDimension(
                 BoardHeightPolicy.measuredWidth(this),
@@ -486,6 +485,7 @@ public final class FccView extends RelativeLayout {
         }
     }
 
+    /** @param i how to collapse a selection on exit: 1 to its end, 0 to its start, -1 leave it */
         void toggleSelectMode(int i) {
         this.mIsToggling = true;
         this.mSelectMode = true ^ this.mSelectMode;
@@ -499,8 +499,7 @@ public final class FccView extends RelativeLayout {
         } else {
             this.mSelectButton.setImageResource(R.drawable.ic_inputboard_fcc_shift);
         }
-        // Material: the select chip fills accent while selection mode is engaged —
-        // the icon swap alone gives no color cue that the mode is active.
+        // The icon swap alone gives no color cue, so the select chip fills accent.
         if (this.mMaterialGroupActive && this.mChipSelect != null) {
             styleChip(this.mChipSelect, this.mSelectMode);
         }
@@ -516,7 +515,7 @@ public final class FccView extends RelativeLayout {
 
     @SuppressLint("ClickableViewAccessibility")
     private void setupButtonListeners() {
-        // Copy button (top-left) - keycode 31
+        // Ctrl+C
         this.mCopyButton.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
@@ -542,8 +541,8 @@ public final class FccView extends RelativeLayout {
                 }
             }
         });
-        
-        // Cut button (top-right) - keycode 52
+
+        // Ctrl+X
         this.mCutButton.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
@@ -569,8 +568,8 @@ public final class FccView extends RelativeLayout {
                 }
             }
         });
-        
-        // Paste button (bottom-right) - keycode 50
+
+        // Ctrl+V
         this.mPasteButton.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
@@ -595,8 +594,8 @@ public final class FccView extends RelativeLayout {
                 }
             }
         });
-        
-        // Select button (bottom-left) - click toggles selection, long-press = select all
+
+        // Click toggles selection, long-press selects all.
         this.mSelectButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -608,19 +607,20 @@ public final class FccView extends RelativeLayout {
         this.mSelectButton.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View view) {
-                // Select All - keycode 29
+                // Ctrl+A
                 FccView.this.playKeyFeedback();
                 FccView.this.mListener.onKeyDown(29);
                 FccView.this.mListener.onKeyUp(29);
                 FccView.this.updateButtons();
-                return true; // consume the long click
+                return true;
             }
         });
     }
 
+    /** @param enumC0992a the arrow this listener drives */
     private View.OnTouchListener createArrowTouchListener(final Direction enumC0992a) {
         return new View.OnTouchListener() {
-            @Override // android.view.View.OnTouchListener
+            @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
                 switch (motionEvent.getAction()) {
                     case 0:
@@ -661,6 +661,10 @@ public final class FccView extends RelativeLayout {
         };
     }
 
+    /**
+     * @param enumC0992a which way to nudge the nub
+     * @param z true to spring it back when the nudge ends
+     */
         void animateNub(Direction enumC0992a, boolean z) {
         ViewPropertyAnimator viewPropertyAnimatorY;
         this.mCurrentDirection = enumC0992a;
@@ -693,10 +697,11 @@ public final class FccView extends RelativeLayout {
         return this.mNub.animate().x(this.mNubOriginalX).y(this.mNubOriginalY).setDuration(125L);
     }
 
+    /** @param enumC0992a the direction to repeat */
         void startRepeat(final Direction enumC0992a) {
         this.mHandler.removeCallbacks(this.mRepeatRunnable);
         this.mRepeatRunnable = new Runnable() {
-            @Override // java.lang.Runnable
+            @Override
             public void run() {
                 if (FccView.this.mListener != null) {
                     if (!FccView.this.mNubMoved) {
@@ -730,22 +735,18 @@ public final class FccView extends RelativeLayout {
     }
 
     public void updateButtons() {
-        boolean hasClipboard = hasClipboardContent();  // clipboard has pasteable content
-        boolean hasSelection = hasSelection();  // text is selected
+        boolean hasClipboard = hasClipboardContent();
+        boolean hasSelection = hasSelection();
 
-        // Paste button (bottom-right) - enabled when clipboard has content
         this.mPasteButton.setEnabled(hasClipboard);
         this.mPasteButton.setImageResource(R.drawable.ic_inputboard_fcc_paste);
 
-        // Copy button (top-left) - enabled when text is selected
         this.mCopyButton.setEnabled(hasSelection);
         this.mCopyButton.setImageResource(R.drawable.ic_inputboard_fcc_copy);
 
-        // Cut button (top-right) - enabled when text is selected
         this.mCutButton.setEnabled(hasSelection);
         this.mCutButton.setImageResource(R.drawable.ic_inputboard_fcc_cut);
 
-        // Material chips mirror the same enablement
         if (this.mMaterialGroupActive) {
             setChipEnabled(this.mChipPaste, hasClipboard);
             setChipEnabled(this.mChipCopy, hasSelection);

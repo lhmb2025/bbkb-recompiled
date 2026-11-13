@@ -3,10 +3,9 @@ package dev.bbkb.ime.keyboard.auxbar;
 import android.view.inputmethod.InputMethodSubtype;
 
 /**
- * One keyboard language on the language-chip bar: the row of this keyboard's enabled languages
- * the strip shows in place of suggestions when the user asks to change language (a long press
- * on the space bar, the globe key, Alt+Sym, the multifunction key's action). The current one is
- * first and bold; a tap on another switches to it.
+ * One language on the language-chip bar, which replaces suggestions when the user asks to change
+ * language (space bar long press, globe key, Alt+Sym, multifunction key). The current one is
+ * first and bold.
  */
 public final class LanguageChip {
     public final CharSequence displayName;

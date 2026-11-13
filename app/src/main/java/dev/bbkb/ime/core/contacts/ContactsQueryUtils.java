@@ -14,10 +14,7 @@ import java.util.ArrayList;
 
 
 public final class ContactsQueryUtils {
-
-    // getValidNames only reads the display name. TIMES_CONTACTED/LAST_TIME_CONTACTED are
-    // deprecated as of API 30 (they return bucketed constants) and IN_VISIBLE_GROUP was never
-    // read; three unused columns is real IPC payload on a large address book.
+    // Only the columns getValidNames reads; extra columns are real IPC payload on a large address book.
     static final String[] PROJECTION = {ContactsContract.Contacts._ID, ContactsContract.Contacts.DISPLAY_NAME_PRIMARY};
 
     static final String[] PROJECTION_ID_ONLY = {ContactsContract.Contacts._ID};
@@ -42,6 +39,8 @@ public final class ContactsQueryUtils {
      * Rejects empty names, anything containing '@' (an address, not a name) and single-token
      * hyphenated strings such as "foo-bar", which are far more often identifiers than names.
      * A multi-word name may contain hyphens ("Anne-Marie Smith") and is kept.
+     *
+     * @param str contact display name
      */
     static boolean isValidName(String str) {
         if (TextUtils.isEmpty(str) || str.indexOf('@') != -1) {

@@ -14,8 +14,6 @@ class GesturePolicyTest {
 
     private fun act(c: GestureClassification, mode: ModeState = normal) = policy.resolve(c, mode, assignments)
 
-    // --- typing windows: a finger that lands/rests while keys go down is typing ---
-
     private val typing = normal.copy(
         keyTiming = KeyTiming(startedInNoiseWindow = false, keyDuringContact = true, insideSuppressionWindow = false)
     )
@@ -29,8 +27,7 @@ class GesturePolicyTest {
     }
 
     @Test fun typingWindow_alsoHoldsBackTheReservedCommit() {
-        // The original never dispatched the up-swipe commit inside its windows either; a flick-up
-        // that is really a finger lifting off a key must not commit a suggestion.
+        // A flick-up that is really a finger lifting off a key must not commit a suggestion.
         assertEquals(PolicyOutcome.Yield, act(swipe(GestureDirection.UP, fast = true), typing))
     }
 
@@ -46,14 +43,12 @@ class GesturePolicyTest {
         assertEquals(PolicyOutcome.Act(GestureAction.DELETE_WORD), act(swipe(GestureDirection.LEFT, fast = true)))
     }
 
-    // --- reserved + folded directions ---
-
     @Test fun flickUp_isReservedCommit() {
         assertEquals(PolicyOutcome.Act(GestureAction.COMMIT_SUGGESTION), act(swipe(GestureDirection.UP, fast = true)))
     }
 
     @Test fun slowSwipeUp_alsoCommits() {
-        // Up is fully reserved now: flick OR swipe up both commit, so a slow up never dead-ends.
+        // Up is fully reserved: flick or swipe up both commit, so a slow up never dead-ends.
         assertEquals(PolicyOutcome.Act(GestureAction.COMMIT_SUGGESTION), act(swipe(GestureDirection.UP, fast = false)))
     }
 
@@ -64,8 +59,6 @@ class GesturePolicyTest {
     @Test fun swipeDown_isCycleSymbolsByDefault() {
         assertEquals(PolicyOutcome.Act(GestureAction.CYCLE_SYMBOLS), act(swipe(GestureDirection.DOWN, fast = false)))
     }
-
-    // --- horizontal: flick vs swipe distinct slots ---
 
     @Test fun flickLeft_usesFlickLeftSlot() {
         assertEquals(PolicyOutcome.Act(GestureAction.DELETE_WORD), act(swipe(GestureDirection.LEFT, fast = true)))
@@ -81,8 +74,6 @@ class GesturePolicyTest {
         assertEquals(PolicyOutcome.Act(GestureAction.EMOJI), policy.resolve(swipe(GestureDirection.RIGHT, false), normal, custom))
     }
 
-    // --- hold / double-tap ---
-
     @Test fun doubleTap_entersCursorModeByDefault() {
         assertEquals(PolicyOutcome.Act(GestureAction.ENTER_CURSOR_MODE), act(GestureClassification.DoubleTap))
     }
@@ -97,8 +88,6 @@ class GesturePolicyTest {
         // flick-right defaults to NONE → must yield rather than eat a possible gesture-typed word.
         assertEquals(PolicyOutcome.Yield, act(swipe(GestureDirection.RIGHT, fast = true)))
     }
-
-    // --- yields ---
 
     @Test fun tap_yields() {
         assertEquals(PolicyOutcome.Yield, act(GestureClassification.Tap))

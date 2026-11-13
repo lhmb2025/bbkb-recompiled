@@ -19,19 +19,10 @@ import java.io.File
 import java.util.Locale
 
 /**
- * The on-screen letter rows and the documents they are generated from agree: the round trip of
- * `xt9kdb-scaffold/tools/letter_layouts_gen.py`'s second direction, read back with a reader of the
- * test's own and the app's text tables.
- *
- * For every shipped document for the on-screen keyboard (Colemak, Dvorak, and QWERTY, AZERTY and
- * QWERTZ, whose rows are the app's own), the keys its `rows_<id>.xml` puts on each letter row —
- * the wrapper's own keys first, then the `rowkeys_<id>N.xml` — are, position by position, the
- * document's keys at the positions its rows template names; for a generated row also with the
- * document's hold lists once the `!text/` references are resolved in the English table (the table
- * the documents' lists come from), where the rows kept by hand hold the keyboard language's own
- * lists. An edit to a generated row, or to a document without rerunning the generator, fails here.
- * The rows template also has to match the engine's on-screen KDB of that name, which is what the
- * engine decodes the drawn keys against.
+ * The on-screen letter rows match their documents (`letter_layouts_gen.py`'s second direction): for
+ * every on-screen document, each letter row's keys (`rows_<id>.xml` then `rowkeys_<id>N.xml`) equal
+ * the document's keys position by position, and generated rows carry its hold lists once `!text/`
+ * is resolved in the English table. The rows template must also match the engine's on-screen KDB.
  */
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [34])
@@ -59,9 +50,8 @@ class LetterLayoutOnScreenRowsTest {
             .apply { setInput(file.reader(Charsets.UTF_8)) }
 
     /**
-     * The keys [file] contributes, in order, through `<include>`s; a `<switch>` contributes its
-     * `<default>`, the unshifted alphabet. Keys without a key spec (Shift, Delete) are not letter
-     * positions and are left out. Returned by row when [rows] is set: each `<Row>`'s keys.
+     * The keys [file] contributes through `<include>`s, a `<switch>` giving its `<default>`; keys
+     * without a key spec (Shift, Delete) are left out. Grouped per `<Row>` when [rows] is set.
      */
     private fun keysOf(file: File): List<RowKey> {
         val out = ArrayList<RowKey>()

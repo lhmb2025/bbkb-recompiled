@@ -1,20 +1,8 @@
 #!/usr/bin/env bash
-# check_interposition.sh — guard against the ELF symbol-interposition trap.
-#
-# THE BUG THIS EXISTS FOR (2026-08-03). ET9KDB_ProcessTrace is absent from elf_cutover.py's
-# CONTRACT, so the patched blob still exported it. libkb.so ALSO defined it and called it
-# internally through the PLT — and global symbol lookup gives the blob priority, so our own
-# TouchEnd's call landed in the blob's copy, which read gesture state we had intercepted and never
-# populated. Our store_trace_record was dead code at runtime for months and CKB swipe was silently
-# broken. See PROJECT_CURRENT.MD.
-#
-# THE TRAP SET is the intersection of three things:
-#   1. symbols libkb.so calls through the PLT (has a JUMP_SLOT/GLOB_DAT reloc for), AND
-#   2. symbols libkb.so also DEFINES itself, AND
-#   3. symbols the PATCHED blob still defines.
-# Any symbol in all three is one where we think we are calling our own code and are not.
-#
-# Usage: check_interposition.sh [libkb.so] [libnative-lib.so]     (exit 1 if the trap set is non-empty)
+# Guards against ELF symbol interposition: global lookup gives the blob priority, so a symbol that
+# libkb.so calls through the PLT (JUMP_SLOT/GLOB_DAT), defines itself, and the patched blob still
+# defines lands in the blob's copy.
+# Usage: check_interposition.sh [libkb.so] [libnative-lib.so]     (exit 1 if any symbol is trapped)
 set -euo pipefail
 HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 ROOT="$HERE/../.."

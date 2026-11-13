@@ -7,32 +7,11 @@ import androidx.annotation.Nullable;
 import dev.bbkb.ime.core.BlackBerryIME;
 
 /**
- * The skeleton every input board controller was writing out for itself.
- *
- * <p>{@link UnifiedInputBoardComponent} is a real abstraction, but with no base class behind it the
- * clipboard, FCC, voice and number-pad controllers each re-implemented the same five things: a
- * constant keycode, a back-reference to the IME and a one-method-pair {@code Listener}, a
- * {@code show}/{@code hide} pair guarded on "am I already in that state", an {@code onRefresh} that
- * relayouts the view when it is up, and a {@code destroy()} that nulls the lot. Between
- * {@code ClipboardController} and {@code NumberPadController} that was ~75% of both files (§3.6).
- *
- * <h3>What this class does not do</h3>
- *
- * <p>It does <strong>not</strong> decide, cache, or infer which board is open. That state has
- * exactly one owner, {@link UnifiedBoardCoordinator#activeBoard()}, and it has one owner because
- * deriving it from clobberable view state produced a reproducible on-device bug: a key-down side
- * effect hid the view between a board key's down and up, so the key-up handler saw "nothing open"
- * and reopened the board instead of closing it. {@link #isShowing()} stays abstract for that
- * reason — it answers "is my view up right now", which is a different question from "is my board
- * the active board", and each board answers it with its own view's own predicate (several of them
- * have an in-between opening/closing state). Nothing here reads {@code getVisibility()}.
- *
- * <h3>Template methods</h3>
- *
- * <p>{@link #show()} and {@link #hide()} apply the shared guard and then call {@link #onShow()} /
- * {@link #onHide()}. Both are overridable rather than final because voice legitimately breaks the
- * pattern: a recognizer session can outlive its view, so its {@code hide()} must run
- * unconditionally to release the microphone (§5.6 item 5 leaves that asymmetry alone).
+ * Shared skeleton for board controllers: keycode, IME and listener references, guarded show/hide,
+ * relayout on refresh, and teardown. It never decides which board is open (that is
+ * {@link UnifiedBoardCoordinator#activeBoard()}); {@link #isShowing()} only means "my view is up"
+ * and each board answers it with its own predicate. show/hide are not final because voice must
+ * hide unconditionally to release the microphone (its session can outlive the view).
  */
 public abstract class AbstractBoardController<L> implements UnifiedInputBoardComponent {
 
@@ -64,10 +43,8 @@ public abstract class AbstractBoardController<L> implements UnifiedInputBoardCom
     }
 
     /**
-     * The board's view if it has been inflated, without inflating it. Boards live behind a
-     * {@code ViewStub} and are re-created with the input view, so this must go back to the current
-     * holder (usually {@code KeyboardSwitcher}) rather than return a cached field that can outlive
-     * a {@code forceRecreateInputView()}.
+     * The board's view if inflated, without inflating it. Always read it from the current holder,
+     * never a cached field: boards are re-created with the input view.
      */
     @Nullable
     protected abstract View peekBoardView();
@@ -95,10 +72,8 @@ public abstract class AbstractBoardController<L> implements UnifiedInputBoardCom
     }
 
     /**
-     * Close the board if it is up, otherwise open it if {@link #isEnabled()}: the hardware board
-     * shortcuts' route while the unified input menu is off (or hidden with the suggestion bar),
-     * where there is no menu bar and no {@link UnifiedBoardCoordinator} toggle. A disabled board
-     * stays closed, as the menu's own pass would close it.
+     * Close if up, else open if enabled. Used by hardware board shortcuts while the input menu is
+     * off or hidden, where there is no {@link UnifiedBoardCoordinator} toggle.
      */
     public void toggle() {
         if (isShowing()) {
@@ -116,11 +91,7 @@ public abstract class AbstractBoardController<L> implements UnifiedInputBoardCom
         }
     }
 
-    /**
-     * Release the board. Subclasses override {@link #onDestroy()} for their own teardown; this
-     * drops the IME and listener references afterwards, which is the part that was identical
-     * everywhere and the part that leaks the IME if it is forgotten.
-     */
+    /** Runs {@link #onDestroy()}, then drops the IME and listener references so the IME cannot leak. */
     public final void destroy() {
         onDestroy();
         this.ime = null;
@@ -129,5 +100,6 @@ public abstract class AbstractBoardController<L> implements UnifiedInputBoardCom
 
     /** Subclass teardown, run before the shared references are dropped. */
     protected void onDestroy() {
+        // Default: nothing to release.
     }
 }

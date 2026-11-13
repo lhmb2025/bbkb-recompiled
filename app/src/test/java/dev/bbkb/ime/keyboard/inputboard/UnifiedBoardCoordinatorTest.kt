@@ -6,21 +6,15 @@ import org.junit.Assert.assertTrue
 import org.junit.Test
 
 /**
- * Unit tests for [UnifiedBoardCoordinator]'s toggle core.
- *
- * The coordinator owns its own active-board state; the fake host only records the
- * open/close side effects. The key regression — proven on-device — is that the UIM's
- * view/active-component state is cleared between a board key's down and up, so the
- * coordinator must NOT consult it: a second press must close from the coordinator's
+ * Pins [UnifiedBoardCoordinator]'s toggle core against a recording host. The UIM's view state can be
+ * cleared between a board key's down and up, so a second press must close from the coordinator's
  * own memory, never reopen.
  */
 class UnifiedBoardCoordinatorTest {
 
     /**
-     * Honors the BoardHost contract: the host reports the resulting state back via
-     * notifyBoardOpened/notifyBoardClosed (production funnels these through
-     * UnifiedInputBoardManager.setActiveComponent). The coordinator itself never
-     * assumes an open/close succeeded.
+     * Honors the BoardHost contract: reports the resulting state via notifyBoardOpened/notifyBoardClosed
+     * (production: UnifiedInputBoardManager.setActiveComponent). The coordinator never assumes success.
      */
     private class FakeHost : UnifiedBoardCoordinator.BoardHost {
         lateinit var coordinator: UnifiedBoardCoordinator
@@ -56,11 +50,7 @@ class UnifiedBoardCoordinatorTest {
         assertEquals(CLIPBOARD, coordinator.activeBoard())
     }
 
-    /**
-     * The toggle-reopen regression. Two presses of the same board key: the second
-     * must CLOSE — decided purely from the coordinator's own [activeBoard], with no
-     * dependence on any (possibly-cleared) view state.
-     */
+    /** Two presses of the same board key: the second closes, decided from [activeBoard] alone. */
     @Test
     fun requestBoard_secondPressClosesNeverReopens() {
         val host = FakeHost()
@@ -147,9 +137,8 @@ class UnifiedBoardCoordinatorTest {
 
     @Test
     fun notifyBoardClosed_thenKeyPressOpensImmediately() {
-        // Typing dismissed the board (dismissal reports notifyBoardClosed / uses
-        // onTextKeyPressed): the next board-key press must OPEN — previously the
-        // coordinator went stale and the press was dead.
+        // Typing dismissed the board (reported via notifyBoardClosed / onTextKeyPressed): the next
+        // board-key press must open.
         val host = FakeHost()
         val coordinator = coordinatorWith(host)
         coordinator.requestBoard(CLIPBOARD)

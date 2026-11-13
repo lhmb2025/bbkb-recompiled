@@ -16,15 +16,9 @@ import org.robolectric.RobolectricTestRunner;
 import org.robolectric.annotation.Config;
 
 /**
- * §5.4 step 13: {@code DeviceSettingsManager} and {@link DeviceProfile} were two facades over the
- * same resolved {@link DeviceInputMapping}, each with its own copy of the override rules and each
- * missing something the other had — {@code DeviceProfile} had no {@code isSettingHidden}, and
- * {@code DeviceSettingsManager} had none of the layout or alt-table accessors. They are one facade
- * now, and this pins the whole override contract in the surviving one.
- *
- * <p>The three questions are deliberately distinct and were the easiest thing to get wrong while
- * merging: <em>hidden</em> removes the control from the settings UI, <em>read-only</em> greys it
- * out, and a <em>forced value</em> implies read-only without being flagged as such.
+ * Pins the {@link DeviceProfile} setting-override contract. The three questions are distinct:
+ * <em>hidden</em> removes the control from the UI, <em>read-only</em> greys it out, and a
+ * <em>forced value</em> implies read-only without being flagged as such.
  */
 @RunWith(RobolectricTestRunner.class)
 @Config(sdk = 34, manifest = Config.NONE)
@@ -69,13 +63,9 @@ public class DeviceProfileSettingOverrideTest {
         return override;
     }
 
-    // ── the accessor the merge had to carry across ───────────────────────────
-
     @Test
     public void hiddenSettingIsHiddenButNotReadOnly() {
-        // isSettingHidden existed only on DeviceSettingsManager; ManagedPreferences uses it to
-        // drop the control entirely, so losing it in the merge would have silently un-hidden
-        // every hidden setting on every device config.
+        // ManagedPreferences drops hidden controls entirely.
         assertTrue(DeviceProfile.current().isSettingHidden(HIDDEN_KEY));
         assertFalse("hidden alone must not imply read-only",
                 DeviceProfile.current().isSettingReadOnly(HIDDEN_KEY));
@@ -97,8 +87,6 @@ public class DeviceProfileSettingOverrideTest {
         assertNull(DeviceProfile.current().getSettingOverride(HIDDEN_KEY));
     }
 
-    // ── read-only, explicit and implied ──────────────────────────────────────
-
     @Test
     public void explicitReadOnlyFlagIsHonoured() {
         assertTrue(DeviceProfile.current().isSettingReadOnly(READ_ONLY_KEY));
@@ -107,13 +95,10 @@ public class DeviceProfileSettingOverrideTest {
 
     @Test
     public void aForcedValueImpliesReadOnlyWithoutTheFlag() {
-        // The override is constructed with readOnly=false; the forced value is what makes it
-        // unchangeable. Both facades encoded this rule separately before the merge.
+        // The override has readOnly=false; the forced value is what makes it unchangeable.
         assertFalse(DeviceProfile.current().getSettingOverride(FORCED_BOOL_KEY).readOnly);
         assertTrue(DeviceProfile.current().isSettingReadOnly(FORCED_BOOL_KEY));
     }
-
-    // ── forced values are type-gated ─────────────────────────────────────────
 
     @Test
     public void forcedValuesAreReturnedForTheMatchingType() {
@@ -124,8 +109,7 @@ public class DeviceProfileSettingOverrideTest {
 
     @Test
     public void forcedValuesOfTheWrongTypeFallBackToTheCallersDefault() {
-        // Asking for the int override as a boolean must not coerce; each getter checks the
-        // declared SettingType first.
+        // No coercion: each getter checks the declared SettingType first.
         assertFalse(DeviceProfile.current().getForcedBooleanValue(FORCED_INT_KEY, false));
         assertEquals(7, DeviceProfile.current().getForcedIntegerValue(FORCED_BOOL_KEY, 7));
         assertEquals("x", DeviceProfile.current().getForcedStringValue(FORCED_INT_KEY, "x"));

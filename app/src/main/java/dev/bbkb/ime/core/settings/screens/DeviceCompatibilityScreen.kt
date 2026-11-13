@@ -16,12 +16,9 @@ import dev.bbkb.ime.core.settings.ui.boolPref
 import dev.bbkb.ime.R
 
 /**
- * Device Compatibility Screen
- * Configuration loader, device meta state override, the BBKB helper, the custom keypad layouts
- * and the Touch surface helper. The BBKB helper is greyed out where the profile says the phone
- * never needs it; the layouts are offered only where there is a keypad to lay out.
- * The last is shown only where the profile declares a touch surface over the keys.
- * Accessed from Advanced settings.
+ * Configuration loader, meta state override, BBKB helper (greyed out where the profile never
+ * needs it), custom keypad layouts (keypad phones only) and the Touch surface helper (only where
+ * the profile declares a touch surface).
  */
 @Composable
 fun DeviceCompatibilityScreen(
@@ -32,12 +29,10 @@ fun DeviceCompatibilityScreen(
     onNavigateToPhysicalLayouts: () -> Unit = {},
 ) {
     val hasPhysicalKeyboard = remember { DeviceProfile.current()?.hasPhysicalKeyboard() ?: false }
-    // This one key is declared in strings.xml rather than inline, and is read back through the
-    // same resource by SettingsValues — so it is resolved here rather than re-spelled.
+    // Key declared in strings.xml and read through the same resource by SettingsValues.
     val metaStateKey = LocalContext.current.getString(R.string.pref_override_device_meta_state_key)
     val touchSurface = rememberTouchSurfaceState()
-    // The profile says this phone never needs the BBKB helper (BlackBerry hardware): its system
-    // component is switched off there, so the row is greyed out rather than offering a dead end.
+    // BlackBerry hardware: the helper's component is switched off, so the row greys out.
     val helperNotRequired = remember { KeyInterceptorComponent.isNotRequiredOnThisPhone() }
 
     SettingsScreenHost(R.string.settings_device_compatibility_title, onNavigateBack, listOf(
@@ -47,18 +42,15 @@ fun DeviceCompatibilityScreen(
             icon = drawableIcon(R.drawable.ic_settings_m_phonelink_setup),
             onClick = { onNavigateToDeviceConfiguration() },
         ),
-        // Override Device Meta State. The default must match SettingsValues.overrideDeviceMetaState,
-        // which reads this key with a default of true: with false here the switch rendered OFF on a
-        // fresh install while the keyboard behaved as if it were ON.
+        // Default must match SettingsValues.overrideDeviceMetaState (true).
         ManagedToggle(
             store = boolPref(metaStateKey, true),
             title = R.string.pref_override_device_meta_state,
             summary = RowSummary.Res(R.string.pref_override_device_meta_state_summary),
             icon = drawableIcon(R.drawable.ic_settings_m_keyboard_capslock),
         ),
-        // The user's letter layouts for the physical keys (an etched Thai keypad, a layout of
-        // one's own): added from a file, shared, deleted; which keyboard uses one is chosen on
-        // the Language screen. Only a phone with a keypad has keys to lay out.
+        // User letter layouts for the physical keys; which keyboard uses one is chosen on the
+        // Language screen.
         Nav(
             title = R.string.settings_pkb_layouts_title,
             summary = R.string.settings_pkb_layouts_summary,
@@ -74,9 +66,7 @@ fun DeviceCompatibilityScreen(
             enabled = { !helperNotRequired },
             onClick = { onNavigateToKeyboardHelper() },
         ),
-        // Only where the profile describes a touch surface over the keys (the Unihertz Titans):
-        // hiding is for hardware, and on any other phone the row led to a screen holding one
-        // sentence. The summary is the live one-line status, re-read on resume.
+        // Only where the profile describes a touch surface (Unihertz Titans). Live status summary.
         Nav(
             title = R.string.touch_surface_helper_title,
             summary = touchSurface.statusLine,

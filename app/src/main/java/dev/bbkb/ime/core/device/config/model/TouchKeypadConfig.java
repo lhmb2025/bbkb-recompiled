@@ -5,8 +5,7 @@ import androidx.annotation.Nullable;
 import java.util.Locale;
 
 /**
- * A device config's {@code <touch-keypad>} block: the touch surface over the physical keys, as the
- * profile knows it before (or without) the OS enumerating it.
+ * A device config's {@code <touch-keypad>} block: the touch surface over the physical keys.
  *
  * <pre>
  * &lt;touch-keypad range-x="1440" range-y="720" contacts="single" native-min-sdk="36" source="auto"&gt;
@@ -15,24 +14,13 @@ import java.util.Locale;
  * </pre>
  *
  * <ul>
- *   <li>{@code input-device} — the pad's InputDevice name, {@code exact=} or {@code regex=}. Events
- *       from a device of that name count as keypad events, and the scanner picks the device up by
- *       name even when it does not advertise {@code SOURCE_TOUCHPAD}.</li>
- *   <li>{@code range-x} / {@code range-y} — the pad's coordinate extents in sensor units, used
- *       when the InputDevice reports no motion ranges (or does not exist, as for a synthesised
- *       source). An InputDevice that reports ranges always wins.</li>
- *   <li>{@code contacts} — {@code single} (the sensor merges fingers into one contact) or
- *       {@code multi}.</li>
- *   <li>{@code native-min-sdk} — the Android SDK level from which the OS delivers the pad's
- *       events to a focused IME window. Absent: the OS delivers them whenever it enumerates the
- *       pad.</li>
- *   <li>{@code source} — which touch source runs: {@code auto} (default), {@code native} (never
- *       a privileged reader on this device) or {@code shizuku} (always the privileged reader).</li>
+ *   <li>{@code input-device}: the pad's InputDevice name; matched by name even without {@code SOURCE_TOUCHPAD}.</li>
+ *   <li>{@code range-x} / {@code range-y}: sensor extents, used only when the InputDevice reports no ranges.</li>
+ *   <li>{@code contacts}: {@code single} (sensor merges fingers) or {@code multi}.</li>
+ *   <li>{@code native-min-sdk}: SDK from which the OS delivers pad events to the IME; absent means always.</li>
+ *   <li>{@code source}: {@code auto} (default), {@code native} or {@code shizuku}.</li>
  * </ul>
- *
- * <p>A profile that declares this block describes a pad whose geometry is not the KEY2 pad the
- * root KDB is authored for, so swipe typing on it stays off until the profile also names a
- * {@code <kdb-variant>}.
+ * Swipe typing stays off on such a pad until the profile also names a {@code <kdb-variant>}.
  */
 public final class TouchKeypadConfig {
 

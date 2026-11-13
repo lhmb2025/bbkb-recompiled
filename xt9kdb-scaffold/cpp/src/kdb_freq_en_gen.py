@@ -65,7 +65,7 @@ def _array(text, name):
 def from_header(path):
     text = open(path).read()
     m = re.search(r"kFreqWordsEn\[\]\s*=\s*\{(.*?)\};", text, re.S)
-    if m:   # the old layout: an array of string literals
+    if m:   # array-of-string-literals layout
         words = [s.replace("\\'", "'") for s in re.findall(r'"((?:[^"\\]|\\.)*)"', m.group(1))]
     else:
         m = re.search(r"kFreqWordsBlobEn\[\]\s*=\s*(.*?);", text, re.S)

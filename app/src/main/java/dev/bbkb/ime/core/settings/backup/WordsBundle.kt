@@ -10,44 +10,18 @@ import java.util.Locale
 import java.util.TimeZone
 
 /**
- * The user's words as one JSON document, and reading one back: the personal dictionary (plain
- * words and the text shortcuts that expand into a word or phrase) and the learned words — the
- * word list the engine's dynamic model has picked up from typing.
- *
- * ## Document shape
- *
- * ```json
- * {
- *   "format": "bbkb-words",
- *   "version": 1,
- *   "app": "5.0.0-beta.25",
- *   "versionCode": 1438,
- *   "created": "2026-10-09T14:02:11Z",
- *   "dictionary": [
- *     { "word": "BBKB", "locale": "", "fixedCase": true },
- *     { "word": "on my way", "shortcut": "omw", "locale": "en_US" }
- *   ],
- *   "learnedWords": ["athena", "keypad"]
- * }
- * ```
- *
- * A dictionary entry without a `shortcut` is a plain personal word; `locale` is `""` for an entry
- * that applies to every language. `learnedWords` is the portable form of the dynamic model: the
- * words only, not their counts, quality or pairs. That is deliberate — the raw model file is
- * tied to one phone's typing and carries its mistakes wholesale, so it never travels; replaying
- * the words through the engine's learn call on the other phone gives it a clean start with the
- * same vocabulary.
- *
- * Both sections are optional. A section the document leaves out is left alone on restore; a
- * section that is present replaces nothing — restoring adds words the phone does not have and
- * keeps everything it does, so a restore can never lose a word.
+ * The personal dictionary (words and text shortcuts) and learned words as one JSON document:
+ * `{"format":"bbkb-words","version":1,…,"dictionary":[{"word":"on my way","shortcut":"omw",
+ * "locale":"en_US","fixedCase":true}],"learnedWords":["athena"]}`. No `shortcut` means a plain word,
+ * `locale` `""` means every language. Learned words travel as words only, never the raw model
+ * (it carries one phone's mistakes); they are replayed through the engine's learn call. Restore only adds.
  */
 object WordsBundle {
 
     const val FORMAT: String = "bbkb-words"
     const val VERSION: Int = 1
 
-    /** Largest document [parse] reads: a dictionary of tens of thousands of words is a few MB. */
+    /** Largest document [parse] reads. */
     const val MAX_BYTES: Int = 8 * 1024 * 1024
     const val MAX_DICTIONARY_ENTRIES: Int = 50_000
     const val MAX_LEARNED_WORDS: Int = 200_000
@@ -59,11 +33,7 @@ object WordsBundle {
     private val KNOWN_FIELDS = setOf("format", "version", "app", "versionCode", "created", "dictionary", "learnedWords")
     private val LOCALE_PATTERN = Regex("[A-Za-z0-9_-]*")
 
-    /**
-     * What a words document holds. A null section is one the document does not carry. Dictionary
-     * entries are [DictionaryEntry] exactly as the dictionary screens use them (no `id`: that is
-     * a storage detail of the phone the entry came from).
-     */
+    /** A words document; a null section is absent. Entries carry no `id` (a per-phone storage detail). */
     class Words(
         val dictionary: List<DictionaryEntry>? = null,
         val learnedWords: List<String>? = null,
@@ -71,10 +41,8 @@ object WordsBundle {
         val isEmpty: Boolean get() = dictionary == null && learnedWords == null
     }
 
-    /** The document is not one this build can read; [message] says why, for the user to fix it. */
+    /** [message] says which field is wrong and why. */
     class InvalidWordsException(message: String) : Exception(message)
-
-    // ── export ───────────────────────────────────────────────────────────────
 
     fun serialize(
         words: Words,
@@ -90,7 +58,7 @@ object WordsBundle {
             .apply { timeZone = TimeZone.getTimeZone("UTC") }
             .format(Date(nowMillis)))
         words.dictionary?.let { entries ->
-            // Sorted so two exports of one unchanged dictionary are the same bytes.
+            // Sorted for deterministic output.
             put("dictionary", JSONArray().apply {
                 entries.sortedWith(compareBy({ it.locale }, { it.displayKey.lowercase(Locale.ROOT) }, { it.word }))
                     .forEach { put(entryJson(it)) }
@@ -101,16 +69,12 @@ object WordsBundle {
 
     private fun entryJson(entry: DictionaryEntry): JSONObject = JSONObject().apply {
         put("word", entry.word)
-        // A shortcut equal to the word is how the store spells "no shortcut"; the document says
-        // it by leaving the field out, as the dictionary screens show it.
+        // The store spells "no shortcut" as shortcut == word; the document omits the field.
         entry.shortcut?.takeIf { it != entry.word }?.let { put("shortcut", it) }
         put("locale", entry.locale)
         if (entry.fixedCase) put("fixedCase", true)
     }
 
-    // ── import ───────────────────────────────────────────────────────────────
-
-    /** Reads and validates a words document. Failures are [InvalidWordsException]s. */
     fun parse(json: String): Result<Words> = try {
         Result.success(parseOrThrow(json))
     } catch (e: InvalidWordsException) {
@@ -154,8 +118,7 @@ object WordsBundle {
                 is Boolean -> raw
                 else -> fail("dictionary[$i].fixedCase must be true or false")
             }
-            // The store keys a word by its shortcut (its own text when it has none) within a
-            // locale: two entries that collide there would silently become one on restore.
+            // The store keys entries by locale + shortcut (or word); a collision would merge on restore.
             if (!seen.add("$locale\u0000${shortcut ?: word}")) fail("dictionary[$i] repeats \"${shortcut ?: word}\"")
             entries += DictionaryEntry(word = word, shortcut = shortcut, locale = locale, fixedCase = fixedCase)
         }
@@ -168,7 +131,7 @@ object WordsBundle {
         val words = LinkedHashSet<String>(array.length())
         for (i in 0 until array.length()) {
             val word = checkText(array.opt(i), "learnedWords[$i]", MAX_WORD_LENGTH)
-            // A word with a space in it is a phrase the shortcut store holds, never a learned word.
+            // A learned word never contains whitespace (phrases belong to the shortcut store).
             if (word.any { it.isWhitespace() }) fail("learnedWords[$i] contains whitespace")
             words += word
         }

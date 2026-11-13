@@ -21,10 +21,6 @@ import dev.bbkb.ime.core.settings.ui.boolPref
 import dev.bbkb.ime.core.settings.ui.drawableIcon
 import dev.bbkb.ime.core.settings.ui.groupBreak
 
-/**
- * Slideboard settings (under On-screen keyboard): enable the slideboard, swap its sides,
- * customize the number pad, and edit the quick phrases.
- */
 @Composable
 fun SlideboardLayoutScreen(
     onNavigateToCustomizeSlideBoard: () -> Unit,
@@ -34,8 +30,7 @@ fun SlideboardLayoutScreen(
     val context = LocalContext.current
     val prefs = remember { PrefsManager.getPrefs(context) }
 
-    // Refreshed on resume: QuickPhrasesScreen writes these keys, and a summary read once would
-    // keep showing the old phrases on the way back.
+    // Refreshed on resume: QuickPhrasesScreen writes these keys.
     var quickPhrases by remember { mutableStateOf(readQuickPhrases(context, prefs)) }
     LifecycleEventEffect(Lifecycle.Event.ON_RESUME) {
         quickPhrases = readQuickPhrases(context, prefs)
@@ -62,9 +57,8 @@ fun SlideboardLayoutScreen(
             enabled = { it.bool("slideboard_active") },
             modifier = Modifier.settingsSearchAnchor("slideboard_numeric_location"),
         ),
-        // The two editors stay open while the slideboard is off: a switch greys out the settings
-        // that tune it, never a place where something is set up. The number pad and the phrases
-        // can be prepared first, and the link to this editor from Customize symbols always works.
+        // The editors stay enabled while the slideboard is off: a switch greys out tuning, never
+        // a place where something is set up (Customize symbols links here).
         Nav(
             title = R.string.settings_vkb_customize_numberpad_title,
             summary = R.string.settings_vkb_customize_numberpad_summary,
@@ -83,9 +77,9 @@ fun SlideboardLayoutScreen(
 }
 
 /**
- * "Swap slideboard locations" is one switch over two stored strings: the number pad's side
- * (`"0"` = left, the switch's on state) and the quick phrases' side, always the other one. The
- * anchor and the state key are the number pad's, as the switch was indexed before.
+ * "Swap slideboard locations": one switch over two stored strings, the number pad's side
+ * (`"0"` = left, the switch's on state) and the quick phrases' side (always the other). The
+ * anchor and state key are the number pad's.
  */
 private val swapLocationsStore: PrefStore<Boolean> = PrefStore(
     "slideboard_numeric_location",

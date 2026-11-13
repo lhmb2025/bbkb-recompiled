@@ -18,10 +18,9 @@ import org.robolectric.annotation.Config
 import java.io.InputStream
 
 /**
- * [LetterLayoutRegistry]: the user's files (save, list, delete, the active choice and the one-time
- * move of the preference it is kept in), and choosing a built-in for a keyboard from documents
- * handed in by the test, so the selection rules are checked apart from what the app ships
- * (`LetterLayoutAssetsParseTest` checks the shipped documents).
+ * [LetterLayoutRegistry]: the user's files (save, list, delete, active choice, one-time preference
+ * move) and built-in selection from test-supplied documents (`LetterLayoutAssetsParseTest` covers
+ * the shipped ones).
  */
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [34], manifest = Config.NONE)
@@ -72,8 +71,6 @@ class LetterLayoutRegistryTest {
             return byId[id]?.byteInputStream()
         }
     }
-
-    // ── the user's files ─────────────────────────────────────────────────────
 
     @Test
     fun savedLayoutsAreListedByNameAndReadBack() {
@@ -134,7 +131,7 @@ class LetterLayoutRegistryTest {
         val registry = LetterLayoutRegistry(context)
         registry.save(layout("good"))
         registry.fileFor("broken").writeText("<letter-layout version=\"9\"/>")
-        // The JSON letter maps of earlier builds lived elsewhere and are not read at all.
+        // JSON letter maps in the old location are not read.
         java.io.File(context.filesDir, "layouts/pkb").apply { mkdirs() }.resolve("old.json").writeText("{}")
         java.io.File(registry.directory, "notes.txt").writeText("hello")
 
@@ -156,8 +153,6 @@ class LetterLayoutRegistryTest {
         assertTrue(registry.list().isEmpty())
     }
 
-    // ── the retired active-layout preferences ────────────────────────────────
-
     @Test
     fun theOldestPreferenceIsMovedToTheRetiredOne_forTheChoicesMigration() {
         prefs.edit().putString(LetterLayoutRegistry.LEGACY_PREF_ACTIVE_LETTER_MAP, "kept").commit()
@@ -169,8 +164,6 @@ class LetterLayoutRegistryTest {
         LetterLayoutRegistry.migrateActivePreference(prefs)
         assertEquals("kept", prefs.getString(LetterLayoutRegistry.PREF_ACTIVE_LAYOUT, null))
     }
-
-    // ── built-ins ────────────────────────────────────────────────────────────
 
     private fun registryWith(vararg documents: Pair<String, String>) =
         Documents(documents.toMap()).let { it to LetterLayoutRegistry(context, it) }
@@ -278,11 +271,7 @@ class LetterLayoutRegistryTest {
         assertEquals("iw", registry.builtIn("he", "qwerty", null, "hebrew")?.id)
     }
 
-    /**
-     * The first selection for a language used to parse every built-in document to find the one
-     * bound to it. Now only each document's `<bind>` is read, once, and a document is parsed in
-     * full when its binding names the language.
-     */
+    /** Only each document's `<bind>` is read (once); a document is parsed in full only when it names the language. */
     @Test
     fun selectingForALanguageParsesOnlyTheDocumentsBoundToIt() {
         val (documents, registry) = registryWith(

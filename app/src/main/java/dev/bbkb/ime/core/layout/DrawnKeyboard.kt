@@ -3,15 +3,10 @@ package dev.bbkb.ime.core.layout
 import java.security.MessageDigest
 
 /**
- * The letters of an on-screen keyboard as it is drawn, read off the built keyboard
- * (`dev.bbkb.ime.keyboard.DrawnKeyboards`): what the engine's on-screen KDB is built from
- * ([OnScreenKdbs]).
- *
- * [rows] are the keyboard's rows above the space bar, top to bottom, without a row of digits;
- * each position is a key that is not a function key (Shift, Delete), left to right. A position's
- * [Position.codes] are the code points it stands for, primary first: the key's own, its Shift
- * layer's letter where that is another letter (an Arabic or Korean key), then the letters of its
- * long-press list. [Position.center] is the key's centre as a fraction of the keyboard's width,
+ * The letters of a drawn on-screen keyboard, the input to the engine's on-screen KDB ([OnScreenKdbs]).
+ * [rows]: rows above the space bar, top to bottom, no digit row, function keys excluded.
+ * [Position.codes]: primary code point, then the Shift layer's letter when it differs (Arabic,
+ * Korean), then the long-press letters. [Position.center]: key centre as a fraction of the width,
  * which tells apart two shipped files of the same row shape.
  */
 class DrawnKeyboard(
@@ -23,14 +18,10 @@ class DrawnKeyboard(
 ) {
     class Position(val codes: IntArray, val center: Float)
 
-    /** The number of positions in each row: the keyboard's row shape. */
+    /** Positions per row: the row shape. */
     val shape: List<Int> get() = rows.map { it.size }
 
-    /**
-     * Identifies the letters and the shape, nothing else: two keyboards with the same letters on the
-     * same rows build the same KDB. Centres are rounded to the 1/100 of the width that tells shapes
-     * apart.
-     */
+    /** Identifies letters and shape only (same letters on the same rows build the same KDB); centres rounded to 1/100. */
     val fingerprint: String by lazy {
         val text = buildString {
             append(layoutSet ?: "").append('|').append(spaceRowPositions).append('|')

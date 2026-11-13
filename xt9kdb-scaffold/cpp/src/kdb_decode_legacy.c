@@ -1,41 +1,22 @@
-/* kdb_decode_legacy.c — the SUPERSEDED first-cut gesture decoder.
- *
- * NOT IN THE SHIPPED LIBRARY. app/src/main/cpp/CMakeLists.txt lists this file only in the DIFF
- * branch (-DXT9KDB_CUTOVER=OFF, i.e. `gradle -Pxt9Diff`); the host suite builds it via
- * test/run_tests.sh's $SRC. The shipped CUTOVER libkb.so contains only owned_pst_v2
- * (kdb_decode.c segmentation + ambiguous smart-touch sets fed through ET9AddCustomSymbolSet).
- *
- * WHAT THIS IS. The first cut at owning gesture recognition (2026-08): a corner+dwell heuristic
- * over the raw path (decode_keyseq) producing ONE EXACT key per emitted position, fed to AW as
- * explicit symbols. It was the lowest-ABI-risk way to prove clear -> feed -> word end to end. It
- * is a different algorithm family from the shipped decoder — exact symbols where owned_pst_v2
- * feeds per-position AMBIGUOUS sets — and it is retained only because these still exercise it as
- * an independent check of the geometry + commit-sink plumbing:
- *   test/decode_drv.c      — synthetic curved paths must resolve through xt9kdb_decode_scratch
- *   test/owned_selftest.c  — [4] AW commit hook, [5] ambiguous smart-touch commit
- *   app/src/main/cpp/xt9kdb_jni.c — DIFF-only JNI self-check glue
- *
- * It used to be reachable on a shipped device via `setprop debug.et9.ownpst 1`; that A/B lever is
- * gone. Do not add one back here — this file is frozen reference, not a tunable path.
- *
- * The path buffer and the sensor->authored key resolver live in kdb_trace.c and are reached
- * through xt9kdb_stored_path() / xt9kdb_key_code_at().
- */
+/* kdb_decode_legacy.c: superseded corner+dwell gesture decoder emitting one exact key per position.
+ * Not in the shipped library: built only in the DIFF branch (-Pxt9Diff) and the host suite, as an
+ * independent check of the geometry and commit-sink plumbing (test/decode_drv.c, owned_selftest.c,
+ * DIFF-only xt9kdb_jni.c). Frozen reference; do not add a device lever. The shipped decoder is
+ * kdb_decode.c. Path buffer and key resolver: kdb_trace.c (xt9kdb_stored_path, xt9kdb_key_code_at). */
 #include "et9kdb.h"
 #include "et9_context.h"
 #include "kdb_internal.h"
 #include <string.h>
 #include <math.h>
 
-/* Resolved candidate key sequence from the last gesture (the decoder's output), with the AUTHORED
- * position of each emitted key so we can commit an ambiguous (smart-touch) set per position. */
+/* Last gesture's key sequence with each key's authored position (for per-position ambiguous sets). */
 #define MAX_KEYSEQ 64
 static ET9SYMB      g_keyseq[MAX_KEYSEQ];
 static float        g_keyseq_x[MAX_KEYSEQ];
 static float        g_keyseq_y[MAX_KEYSEQ];
 static ET9U32       g_keyseq_n;
 
-/* Append a key code + its authored position, collapsing consecutive duplicate codes. */
+/* Appends a key and its position, collapsing consecutive duplicates. */
 static void emit_key(ET9SYMB code, float ax, float ay) {
     if (g_keyseq_n && g_keyseq[g_keyseq_n - 1] == code) return;
     if (g_keyseq_n < MAX_KEYSEQ) {
@@ -44,7 +25,7 @@ static void emit_key(ET9SYMB code, float ax, float ay) {
     }
 }
 
-/* ---- decoder tuning (sensor-px; authored == sensor here apart from the 50px Y offset) -------- */
+/* Tuning in sensor px (authored == sensor apart from the 50px Y offset) */
 #define CORNER_WIN      90.0f    /* arc-length window each side of a sample (~one key width)        */
 #define CORNER_COS      0.55f    /* corner if cos(angle between in/out legs) < this (~57 deg turn)  */
 #define MIN_EMIT_SEP    66.0f    /* min authored-space gap between successive emits (NMS; < 1 key)  */
@@ -73,11 +54,8 @@ static int walk_fwd(const ET9KdbSample* g_buf, ET9U32 g_n, ET9U32 i, float D) {
     return -1;
 }
 
-/* Decode the path to a candidate key sequence: START + CORNER/DWELL keys + END (not every crossed
- * key). The lexicon (AW) absorbs the rest. Corners are detected with a DISTANCE-windowed curvature
- * test — the averaged incoming leg (~one key back) vs the outgoing leg (~one key forward) — so a
- * GRADUAL corner spread across many dense samples is still caught (a 3-sample angle test misses it;
- * that lost the 'n' in "one", the "gr" in "hungry"). Non-max suppression keeps one emit per corner. */
+/* Path -> start + corner/dwell keys + end. Corners use a distance-windowed curvature test (legs ~one
+ * key each way) so gradual corners over dense samples are caught; NMS keeps one emit per corner. */
 static void decode_keyseq(void) {
     ET9U32 g_n = 0;
     const ET9KdbSample* g_buf = xt9kdb_stored_path(&g_n);
@@ -85,8 +63,7 @@ static void decode_keyseq(void) {
     if (g_n == 0) return;
     float ax, ay;
 
-    /* START — denoise the touchdown (the noisiest sample) by averaging over the first ~START_ARC of
-     * travel, so a deliberate key press isn't lost to first-sample jitter at a column boundary. */
+    /* start: average the first START_ARC of travel to denoise the touchdown */
     {
         float sx = g_buf[0].x, sy = g_buf[0].y, acc = 0.0f; ET9U32 cnt = 1;
         for (ET9U32 i = 1; i < g_n; i++) {
@@ -100,7 +77,6 @@ static void decode_keyseq(void) {
     }
     float lastEX = ax, lastEY = ay;   /* authored pos of the last emitted key (for NMS) */
 
-    /* INTERIOR — windowed-curvature corners + dwell. */
     for (ET9U32 i = 1; i + 1 < g_n; i++) {
         int corner = 0;
         int jb = walk_back(g_buf, i, CORNER_WIN), jf = walk_fwd(g_buf, g_n, i, CORNER_WIN);
@@ -130,11 +106,8 @@ static void decode_keyseq(void) {
     if (ce >= 0) emit_key((ET9SYMB)ce, ax, ay);
 }
 
-/* Decode the accumulated path to a key sequence and feed it to AW via the commit hooks, WITHOUT
- * touching any context result block. Shared by ProcessTrace (after it writes the input record) and
- * the scratch/DIFF path (W3a), which runs on a NULL ctx and captures the committed sets. For LETTER
- * keys commit the AMBIGUOUS smart-touch set at that key's authored position (-> ET9AddCustomSymbolSet);
- * function keys commit exact. The lexical scoring stays the blob's — we only supply the sets. */
+/* Decodes the stored path and commits it through the hooks without touching any result block:
+ * letters as ambiguous sets at their authored position, other keys exact. ctx may be NULL (scratch). */
 ET9STATUS xt9kdb_decode_and_commit(ET9KDBInfoPtr ctx) {
     decode_keyseq();
     for (ET9U32 i = 0; i < g_keyseq_n; i++) {
@@ -147,16 +120,12 @@ ET9STATUS xt9kdb_decode_and_commit(ET9KDBInfoPtr ctx) {
     return ET9STATUS_NONE;
 }
 
-/* Run the decoder + commit on the accumulated buffer without any result-block write. Used by the
- * W3a scratch path: TouchStart/TouchMove accumulate, then this commits to the capture sinks. */
+/* Scratch path: decode + commit the accumulated buffer to the capture sinks (NULL ctx). */
 ET9STATUS xt9kdb_decode_scratch(void) { return xt9kdb_decode_and_commit((ET9KDBInfoPtr)0); }
 
-/* ---- first-cut AW feed (the old debug.et9.ownpst path) ----------------------------------------
- * Retained as reference for the explicit-symbol feed ABI. The guard below is NEVER satisfied for
- * this translation unit: XT9KDB_CUTOVER is defined only for the shipped build, which does not
- * compile this file. It is kept self-contained (blob base passed in, offsets declared here) so it
- * still expresses a buildable contract rather than rotting into something that could not compile.
- * The live feed is owned_pst_v2 in kdb_trace.c, which uses ET9AddCustomSymbolSet instead. */
+/* Reference for the explicit-symbol feed ABI. Never compiled: XT9KDB_CUTOVER builds exclude this
+ * file. Self-contained so it stays a buildable contract. The live feed (kdb_trace.c) uses
+ * ET9AddCustomSymbolSet. */
 #if defined(XT9KDB_CUTOVER) && defined(__ANDROID__)
 #include <stdint.h>
 #define BLOB_CLEAR_ALL_SYMBS   0xb5984u
@@ -165,7 +134,7 @@ ET9STATUS xt9kdb_decode_scratch(void) { return xt9kdb_decode_and_commit((ET9KDBI
 typedef ET9STATUS (*fn_clear_all)(void* wsi);
 typedef ET9STATUS (*fn_add_explicit)(void* wsi, ET9U16 symb, ET9U32 a2, ET9U32 a3, ET9U8 flag);
 
-/* Our decode + feed, standing in for ET9KDB_ProcessStoredTouch. ctx is the engine block. */
+/* Decode + feed in place of ET9KDB_ProcessStoredTouch; ctx = engine block, WordSymbInfo magic 0x1428. */
 static ET9STATUS owned_process_stored_touch(void* ctx, uintptr_t base) {
     if (!base || !ctx) { XT9KDB_LOGE("ownPSt: no base/ctx"); return ET9STATUS_ERROR; }
 
@@ -181,7 +150,7 @@ static ET9STATUS owned_process_stored_touch(void* ctx, uintptr_t base) {
     ET9STATUS st = clear_all(wsi);
     XT9KDB_LOGI("ownPSt: ClearAllSymbs -> %d", (int)st);
 
-    decode_keyseq();   /* fills g_keyseq[], g_keyseq_x/y[] from the accumulated samples */
+    decode_keyseq();
 
     char spell[MAX_KEYSEQ + 1]; ET9U32 sp = 0;
     for (ET9U32 i = 0; i < g_keyseq_n; i++) {

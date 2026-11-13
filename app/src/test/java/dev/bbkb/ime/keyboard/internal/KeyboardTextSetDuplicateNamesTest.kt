@@ -6,11 +6,9 @@ import org.junit.Test
 import java.util.Locale
 
 /**
- * [KeyboardTextSet.NAMES] repeats three names, exactly as the original APK's table does
- * (`morekeys_c` at 6/7, `morekeys_t` at 15/17, `morekeys_r` at 18/19). The name map is last-writer
- * wins, so only the later slot of each pair is ever read. That is harmless only while every locale
- * table holds the same value in both slots; this test fails the moment a table diverges, which is
- * when the shadowed slot would start silently hiding a real value.
+ * [KeyboardTextSet.NAMES] repeats three names (`morekeys_c` at 6/7, `morekeys_t` at 15/17,
+ * `morekeys_r` at 18/19) and the name map is last-writer wins, so only the later slot is read.
+ * Fails as soon as a locale table's two slots diverge, which would silently hide a real value.
  */
 class KeyboardTextSetDuplicateNamesTest {
 

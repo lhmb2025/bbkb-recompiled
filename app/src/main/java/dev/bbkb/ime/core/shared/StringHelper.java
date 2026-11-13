@@ -75,8 +75,7 @@ public final class StringHelper {
     }
     
     public static boolean isAllWhitespace(String str) {
-        // Walk char indices, advancing by the code point's char count. Bounding a char index by
-        // the *code point* count truncates the scan for any string containing a surrogate pair.
+        // Bound by char length, not code point count, or surrogate pairs truncate the scan.
         for (int i = 0; i < str.length(); ) {
             int codePoint = str.codePointAt(i);
             if (!Character.isWhitespace(codePoint)) {
@@ -350,8 +349,7 @@ public final class StringHelper {
     }
     
     public static CharSequence[] splitPreservingSpans(CharSequence charSequence, String pattern, boolean keepEmpty) {
-        // Compiling a Pattern twice under a race is harmless; both are equivalent and
-        // putIfAbsent keeps one.
+        // A racing double compile is harmless; putIfAbsent keeps one.
         Pattern compiled = SPLIT_PATTERN_CACHE.get(pattern);
         if (compiled == null) {
             final Pattern created = Pattern.compile(pattern);

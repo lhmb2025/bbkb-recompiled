@@ -6,19 +6,10 @@ import java.util.Objects;
 import java.util.function.LongSupplier;
 
 /**
- * A small LRU of "is this word in the dictionary" answers for one spell-checker session.
- *
- * <p>The framework re-sends the whole sentence on every edit, and most of its words are spelled
- * right, so without this every recheck asked the engine again for each of them (P-20). The
- * answers depend on the settings that change what counts as a word (accepting learned words,
- * using contacts), so those are part of the key; they also depend on which languages the engine
- * has loaded, so the cache empties when the service's engine generation moves (a language load or
- * the engine's release). Learned words and contact names can still change underneath without any
- * signal reaching the session, so answers also expire: "not a word" after
- * {@link #NEGATIVE_MAX_AGE_MS}, the same two minutes as before, so a word the keyboard has just
- * learned stops being underlined as soon as it used to; "a word" only after
- * {@link #POSITIVE_MAX_AGE_MS}, since the only change that turns it false is a learned word or
- * contact being removed, and those are nearly all of the answers a recheck asks for.
+ * Per-session LRU of "is this word in the dictionary" answers; the framework re-sends the whole
+ * sentence on every edit. Keyed by word plus the word-affecting settings; emptied when the engine
+ * generation moves. Learned words and contacts change without a signal, so answers expire: "not a
+ * word" soon (a just-learned word loses its underline), "a word" much later (only a removal flips it).
  */
 final class SpellVerdictCache {
 

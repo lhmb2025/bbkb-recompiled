@@ -13,7 +13,7 @@ import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
 
 /**
- * [SettingsBackup.apply] in replace mode — what a bundle restore uses: the phone ends up with
+ * [SettingsBackup.apply] in replace mode, as a bundle restore uses it: the phone ends up with
  * exactly the backup's settings, while the per-device keys and the keys the caller keeps stay.
  */
 @RunWith(RobolectricTestRunner::class)

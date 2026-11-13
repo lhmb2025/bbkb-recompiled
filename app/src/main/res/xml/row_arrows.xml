@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <merge xmlns:latin="http://schemas.android.com/apk/res-auto">
-    <!-- backgroundType="empty": the arrow bar replaces the suggestion strip in place, so
-         its keys paint no surface of their own and show the container's background,
-         matching the strip's flat look. -->
+    <!-- backgroundType="empty": the arrow bar replaces the suggestion strip in place and shows its background -->
     <Row
         latin:backgroundType="empty"
         latin:keyWidth="25%p">

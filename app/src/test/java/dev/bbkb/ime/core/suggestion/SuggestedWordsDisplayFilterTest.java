@@ -7,11 +7,9 @@ import java.util.ArrayList;
 import org.junit.Test;
 
 /**
- * {@link SuggestedWords#getSuggestedWordsForDisplay()} feeds the CJK candidate grid. The bridge
- * lists the typed word twice when it is also the engine's first candidate (the Latin strip shows
- * both), and for Chinese stroke input that is the normal case: "一" is what was typed and a real
- * character. The filter used to throw on the second entry and took the keyboard down on the first
- * stroke (KEY2, 2026-09-28).
+ * {@link SuggestedWords#getSuggestedWordsForDisplay()} (CJK candidate grid) must tolerate the typed
+ * word listed twice, which is the normal case for Chinese stroke input ("一" is typed and a real
+ * character).
  */
 public class SuggestedWordsDisplayFilterTest {
 

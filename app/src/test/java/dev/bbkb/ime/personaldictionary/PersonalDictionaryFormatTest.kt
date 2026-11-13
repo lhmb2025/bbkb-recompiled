@@ -15,12 +15,9 @@ import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
 
 /**
- * The on-disk format of the three personal-dictionary files, which is also the backup format.
- * Until 2026-11 Gson's reflective binding wrote and read them; what it wrote must keep loading,
- * and what is written now must keep the same fields so an older build restores a newer backup.
- *
- * Robolectric because the codec walks the framework's `org.json` and `android.util.JsonWriter`,
- * which are empty stubs on the plain JVM.
+ * The on-disk (and backup) format of the personal-dictionary files: files Gson wrote still load,
+ * and new files keep the same fields so an older build restores a newer backup. Robolectric for
+ * the real `org.json` and `android.util.JsonWriter` (empty stubs on the plain JVM).
  */
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [34], manifest = Config.NONE)
@@ -92,6 +89,7 @@ class PersonalDictionaryFormatTest {
                 ws(json)
                 fail("accepted $json")
             } catch (expected: JSONException) {
+                // expected
             }
         }
         for (notAnObject in listOf<Any?>(JSONObject.NULL, "a string", 5, JSONArray())) {
@@ -99,6 +97,7 @@ class PersonalDictionaryFormatTest {
                 PersonalDictionaryUtil.personalWordFromJson(notAnObject)
                 fail("accepted $notAnObject")
             } catch (expected: JSONException) {
+                // expected
             }
         }
     }
@@ -110,6 +109,7 @@ class PersonalDictionaryFormatTest {
             pw("""{"locale":"en","word":""}""")
             fail("accepted an empty word")
         } catch (expected: IllegalArgumentException) {
+            // expected
         }
     }
 

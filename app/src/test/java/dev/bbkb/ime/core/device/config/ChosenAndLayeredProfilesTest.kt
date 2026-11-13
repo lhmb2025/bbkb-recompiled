@@ -34,15 +34,9 @@ import org.robolectric.util.ReflectionHelpers
 import java.io.File
 
 /**
- * Three things a device profile could not do:
- *
- *  - be applied by hand. Picking a profile whose `<match>` rules fail on this phone gave the
- *    phone no profile at all, and a stored pick that no longer loaded switched detection off;
- *  - make the phone a keypad phone. `<device-type>PKB</device-type>` reached the per-key
- *    classifier only, so the app stayed in on-screen mode unless Android reported an alphabetic
- *    keyboard;
- *  - build on a shipped profile, or carry Alt characters of its own. A custom profile replaced
- *    the shipped one whole, and an Alt table could only be one built into the app.
+ * Device profiles can be applied by hand (even when `<match>` fails), `<device-type>PKB` makes the
+ * phone a keypad phone without Android reporting an alphabetic keyboard, and a custom profile can
+ * extend a shipped one and carry its own Alt characters.
  */
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [34], manifest = Config.NONE)
@@ -88,8 +82,6 @@ class ChosenAndLayeredProfilesTest {
         File(configDir, fileName).writeText(xml)
         return "custom:$fileName"
     }
-
-    // ── picked by hand ───────────────────────────────────────────────────────
 
     @Test
     fun aProfilePickedByHand_speaksForThePhoneEvenWhenItsRulesFail() {
@@ -167,8 +159,6 @@ class ChosenAndLayeredProfilesTest {
         assertEquals("default", prefs.getString("active_device_config_id", null))
     }
 
-    // ── the keypad declaration ───────────────────────────────────────────────
-
     @Test
     fun aProfileThatDeclaresAKeypad_makesThePhoneAKeypadPhone() {
         // What the scan reports when Android does not call the keypad an alphabetic keyboard.
@@ -192,8 +182,6 @@ class ChosenAndLayeredProfilesTest {
         assertFalse(DeviceProfile.current().isPkbDevice())
         assertFalse(DeviceProfile.current().hasPhysicalKeyboard())
     }
-
-    // ── building on a shipped profile ────────────────────────────────────────
 
     private val layeredOnTheMinimalPhone = """
         <device-input-config name="My Minimal Phone">
@@ -272,8 +260,8 @@ class ChosenAndLayeredProfilesTest {
 
     @Test
     fun onlyADeviceProfileCanBeBuiltOn() {
-        // An Alt table is an XML resource too, but it is not a profile: the device is then read
-        // on its own, and with no match rules of its own it is not a device at all.
+        // An Alt table is an XML resource but not a profile: read on its own, with no match rules
+        // it is not a device at all.
         val id = custom("odd.xml", """
             <device-input-config name="Odd"><device extends="device_alt_mappings_aw9523b">
               <device-type>PKB</device-type>

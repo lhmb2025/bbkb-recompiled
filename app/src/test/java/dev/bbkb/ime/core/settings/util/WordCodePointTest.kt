@@ -5,10 +5,8 @@ import org.junit.Assert.assertTrue
 import org.junit.Test
 
 /**
- * Combining marks are word content, whether they take space of their own or not. Until
- * 2026-09-28 only spacing marks counted, so a Tibetan vowel sign or subjoined letter, an Arabic
- * vowel point or a Thai vowel written above the line ended the word being typed: on the KEY2
- * the Tibetan keyboard committed "བྱ" as soon as ྱ was typed.
+ * Combining marks are word content whether or not they are spacing, so a Tibetan subjoined letter,
+ * an Arabic vowel point or a Thai vowel above the line does not end the word being typed.
  */
 class WordCodePointTest {
 

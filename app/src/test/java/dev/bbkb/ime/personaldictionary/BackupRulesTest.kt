@@ -9,16 +9,9 @@ import java.io.File
 import javax.xml.parsers.DocumentBuilderFactory
 
 /**
- * The backup allowlists must name the files the personal-dictionary store actually writes.
- *
- * Where the store writes: `DictionaryManager.doInitBasl` hands `context.getFilesDir()` to
- * `PersonalDictionaryManager`, `PersonalDictionaryUtil.setupPduDir` appends
- * [PersonalDictionaryUtil.PERSONAL_DICTIONARY_UTIL_DIR], and `doSave` writes one file per
- * [LoadConfig] there. `domain="file"` is `getFilesDir()`, so each include must be
- * `<pdu dir>/<LoadConfig filename>`.
- *
- * Both XML files are read from source, so no Android runtime is involved: an allowlist that names
- * a path nothing writes is silently a no-op on device, which is exactly how this broke.
+ * The backup allowlists name exactly the files the personal-dictionary store writes: one per
+ * [LoadConfig] under `filesDir/`[PersonalDictionaryUtil.PERSONAL_DICTIONARY_UTIL_DIR]
+ * (`domain="file"` is `getFilesDir()`). A wrong path is a silent no-op on device.
  */
 class BackupRulesTest {
 

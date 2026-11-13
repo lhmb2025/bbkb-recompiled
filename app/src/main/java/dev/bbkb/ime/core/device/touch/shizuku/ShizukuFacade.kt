@@ -13,11 +13,8 @@ import rikka.shizuku.Shizuku
  * logic ([ShizukuStatusTracker]) runs against a fake on the JVM.
  */
 interface ShizukuFacade {
-
-    /** Whether the Shizuku manager app (moe.shizuku.privileged.api) is installed. */
     fun isManagerInstalled(): Boolean
 
-    /** Whether a live Shizuku (or Sui) binder has been received. */
     fun pingBinder(): Boolean
 
     /** A server too old for the permission API and user services. Binder must be alive. */
@@ -32,10 +29,7 @@ interface ShizukuFacade {
     /** Shizuku shows its own dialog; the answer comes back through [Listener.onPermissionResult]. */
     fun requestPermission(requestCode: Int)
 
-    /**
-     * Registers (non-null) or removes (null) the three Shizuku listeners. The binder-received
-     * one is sticky: it fires at once if the binder is already here.
-     */
+    /** Registers (non-null) or removes (null) the listeners; binder-received is sticky. */
     fun setListener(listener: Listener?)
 
     /** Shizuku.bindUserService for [EvdevUserService]; callbacks arrive on the main thread. */
@@ -53,10 +47,10 @@ interface ShizukuFacade {
     companion object {
         const val MANAGER_PACKAGE = "moe.shizuku.privileged.api"
 
-        /** Name suffix of the service process: `<applicationId>:evdev`. */
+        /** Service process is `<applicationId>:evdev`. */
         const val PROCESS_SUFFIX = "evdev"
 
-        /** The facade for this device. Listener callbacks are posted to [handler]. */
+        /** Listener callbacks are posted to [handler]. */
         @JvmStatic
         fun create(context: Context, handler: Handler): ShizukuFacade =
             RealShizukuFacade(context.applicationContext, handler)
@@ -64,10 +58,9 @@ interface ShizukuFacade {
 }
 
 /**
- * The real thing: Shizuku's public static API, nothing private, no reflection, no
- * Shizuku.newProcess. Shizuku throws IllegalStateException when the binder is gone and wraps
- * RemoteException in RuntimeException; callers ([ShizukuStatusTracker], the engine) treat any
- * RuntimeException as "not available right now".
+ * Shizuku's public static API only (no reflection, no newProcess). Shizuku throws
+ * IllegalStateException when the binder is gone and wraps RemoteException in RuntimeException;
+ * callers treat any RuntimeException as "not available right now".
  */
 internal class RealShizukuFacade(
     private val context: Context,
@@ -83,10 +76,9 @@ internal class RealShizukuFacade(
     }
 
     /**
-     * Shizuku starts the class named here in a fresh app_process with this APK on its class path
-     * (R8 keeps its name and constructors, see proguard-rules.pro). daemon(false): the service
-     * dies with this process. version(): a different number restarts a running service, so an
-     * upgraded APK never talks to a stale reader.
+     * Shizuku starts this class in a fresh app_process (R8 keeps it, see proguard-rules.pro).
+     * daemon(false): dies with this process. version(): a new number restarts a running service,
+     * so an upgraded APK never talks to a stale reader.
      */
     private val userServiceArgs by lazy {
         Shizuku.UserServiceArgs(ComponentName(context.packageName, EvdevUserService::class.java.name))

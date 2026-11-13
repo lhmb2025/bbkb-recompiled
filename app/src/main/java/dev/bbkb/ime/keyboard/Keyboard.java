@@ -73,6 +73,7 @@ public class Keyboard {
 
     private final Locale mLocale;
 
+    /** @param c1025ah the parsed keyboard params */
     public Keyboard(KeyboardParams c1025ah) {
         this.mKeyCache = new SparseArray<>();
         this.mId = c1025ah.mId;
@@ -102,6 +103,7 @@ public class Keyboard {
         this.mDefaultKeyInterpretation = new KeyCharacterInterpreter.MetaMask(iM6595g, iM6595g);
     }
 
+    /** @param c0965e the keyboard to copy */
     protected Keyboard(Keyboard c0965e) {
         this.mKeyCache = new SparseArray<>();
         this.mId = c0965e.mId;
@@ -130,6 +132,7 @@ public class Keyboard {
         this.mDefaultKeyInterpretation = c0965e.mDefaultKeyInterpretation;
     }
 
+    /** @param i the key code */
     public boolean allowsGestureForCode(int i) {
         if (this.mAllowRedundantMoreKeys) {
             return (this.mId.mElementId == 0 || this.mId.mElementId == 2) || Character.isLetter(i);
@@ -141,11 +144,7 @@ public class Keyboard {
         return (this.mId.passwordInput() || this.mId.isNumberLayout() || this.mId.isPhoneLayout() || this.mId.isDateTimeLayout()) ? false : true;
     }
 
-    /**
-     * Returns true if the keyboard's XML definition explicitly enables gesture input support.
-     * This is the ground-truth capability flag, replacing the hardcoded KeyboardId checks
-     * that were introduced by decompilation errors.
-     */
+    /** True if the keyboard's XML definition enables gesture input. */
     public boolean supportsGestureInput() {
         return this.mAllowRedundantMoreKeys;
     }
@@ -158,6 +157,7 @@ public class Keyboard {
         return this.mSortedKeys;
     }
 
+    /** @param str the output text */
     public Key getKeyByOutputText(String str) {
         if (str == null) {
             return null;
@@ -170,6 +170,7 @@ public class Keyboard {
         return null;
     }
 
+    /** @param i the key code */
     public Key getKeyByCode(int i) {
         if (i == -21) {
             return null;
@@ -190,6 +191,7 @@ public class Keyboard {
         }
     }
 
+    /** @param i the code point */
     public Key getActionKeyForCode(int i) {
         String strM6239e;
         for (Key key : getKeys()) {
@@ -227,11 +229,8 @@ public class Keyboard {
     }
 
     /**
-     * Swap {@code key} for {@code key2} in place.
-     *
-     * <p>KT-10(b): this deliberately does NOT rebuild the proximity grid — that is a nested scan
-     * over all keys x all grid cells and callers replace keys in batches (up to ~30 custom symbol
-     * keys per page open). Call {@link #rebuildProximityGrid()} once after a batch.
+     * Swaps {@code key} for {@code key2} in place. Does not rebuild the proximity grid (a keys x cells
+     * scan; callers replace in batches): call {@link #rebuildProximityGrid()} once after a batch.
      */
     public boolean replaceKey(Key key, Key key2) {
         int iIndexOf = this.mSortedKeys.indexOf(key);
@@ -258,6 +257,10 @@ public class Keyboard {
         return this.mId.toString();
     }
 
+    /**
+     * @param i x
+     * @param i2 y
+     */
     public List<Key> getNearestKeys(int i, int i2) {
         return this.mProximityGrid.getKeysInColumns(Math.max(0, Math.min(i, this.mOccupiedWidth - 1)), Math.max(0, Math.min(i2, this.mOccupiedHeight - 1)));
     }
@@ -281,6 +284,7 @@ public class Keyboard {
         return this.mKeysByScanCode.get(i);
     }
 
+    /** @param i the key code */
     public String[] getKeyLabelSetForCode(int i) {
         Key keyM6604b = getKeyByCode(i);
         if (keyM6604b == null || !keyM6604b.isActive()) {
@@ -296,8 +300,7 @@ public class Keyboard {
     private int computeDefaultMetaState() {
         int i = 0;
         int i2 = this.mId.mElementId;
-        
-        // First switch on mElementId (input type)
+
         switch (i2) {
             case 5:
                 i = 512;
@@ -319,10 +322,9 @@ public class Keyboard {
                 i = 0;
                 break;
         }
-        
-        // Check if device type is not "unknown" using DeviceProfile
+
         if (!"unknown".equals(DeviceProfile.current().getEffectiveKeypadType())) {
-            // Second switch on mMode (variation type)
+            // mMode is the editor variation.
             switch (this.mId.mMode) {
                 case 4:
                 case 5:

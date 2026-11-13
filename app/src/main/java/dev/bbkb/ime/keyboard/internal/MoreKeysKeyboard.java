@@ -49,6 +49,17 @@ public final class MoreKeysKeyboard extends Keyboard {
 
         public int mColumnWidth;
 
+        /**
+         * @param i number of more keys
+         * @param i2 maximum columns
+         * @param i3 key width
+         * @param i4 row height
+         * @param i5 x of the parent key's center
+         * @param i6 keyboard width
+         * @param z true for a fixed column count
+         * @param z2 true for fixed key order
+         * @param i7 divider width, 0 for none
+         */
         public void setParameters(int i, int i2, int i3, int i4, int i5, int i6, boolean z, boolean z2, int i7) {
             int iM6344c;
             int iM6345d;
@@ -125,6 +136,7 @@ public final class MoreKeysKeyboard extends Keyboard {
             return (this.mNumRows == 1 || (i = this.mTopKeys) == 1 || this.mNumColumns % 2 == i % 2 || this.mLeftKeys == 0 || this.mRightKeys == 1) ? 0 : -1;
         }
 
+        /** @param i index of the more key */
         int getColumnPos(int i) {
             return this.mIsMoreKeysFixedOrder ? getFixedOrderColumnPos(i) : getAutoOrderColumnPos(i);
         }
@@ -197,15 +209,21 @@ public final class MoreKeysKeyboard extends Keyboard {
             return (this.mLeftKeys * this.mColumnWidth) + this.mLeftPadding;
         }
 
+        /**
+         * @param i index of the more key
+         * @param i2 row, 0 at the bottom
+         */
         public int getX(int i, int i2) {
             int iM6349a = (getColumnPos(i) * this.mColumnWidth) + getDefaultKeyCoordX();
             return isTopRow(i2) ? iM6349a + (this.mTopRowAdjustment * (this.mColumnWidth / 2)) : iM6349a;
         }
 
+        /** @param i row, 0 at the bottom */
         public int getY(int i) {
             return (((this.mNumRows - 1) - i) * this.mDefaultRowHeight) + this.mTopPadding;
         }
 
+        /** @param i row, 0 at the bottom */
         public void markAsEdgeKey(Key key, int i) {
             if (i == 0) {
                 key.setTopEdge(this);
@@ -222,11 +240,9 @@ public final class MoreKeysKeyboard extends Keyboard {
     }
 
     /**
-     * The more-keys template's parsed {@code <Keyboard>} attributes. The template is an empty
-     * keyboard whose attributes depend only on the theme and the parent's size, yet every popup
-     * used to re-parse it: a full KeyboardXMLParser (which enumerates the enabled subtypes in its
-     * constructor), two TypedArrays, every icon re-inflated and the keyboard texts reloaded under a
-     * temporary locale. Parsed once per (theme, template, size) now and copied into each popup.
+     * The more-keys template's parsed {@code <Keyboard>} attributes, which depend only on theme,
+     * template and parent size. Parsed once per combination (a full parse is expensive) and copied
+     * into each popup.
      */
     static final class TemplateAttributes {
 
@@ -378,6 +394,12 @@ public final class MoreKeysKeyboard extends Keyboard {
 
         private final Key mParentKey;
 
+        /**
+         * @param c0965e the parent keyboard
+         * @param z true for a single more key shown in the key preview's place
+         * @param i key preview visible width
+         * @param i2 key preview visible height
+         */
         public Builder(Context context, Key key, Keyboard c0965e, boolean z, int i, int i2, Paint paint) {
             this.mParams = new MoreKeysKeyboardParams();
             int iM6354a;
@@ -428,6 +450,13 @@ public final class MoreKeysKeyboard extends Keyboard {
 
     
     public static class MoreKeysDivider extends Key.SpacerKey {
+        /**
+         * @param c1025ah the popup's params
+         * @param i x
+         * @param i2 y
+         * @param i3 width
+         * @param i4 height
+         */
         public MoreKeysDivider(KeyboardParams c1025ah, int i, int i2, int i3, int i4) {
             super(c1025ah, i, i2, i3, i4);
         }

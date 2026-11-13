@@ -25,10 +25,7 @@ import java.util.zip.ZipOutputStream
 
 /**
  * The backup bundle: what a round trip preserves, which files it refuses, and that the single
- * documents earlier builds wrote still read.
- *
- * Robolectric only for a real `SharedPreferences` behind the settings part and the Android
- * `org.json`; the bundle itself is plain zip and plain JSON.
+ * documents earlier builds wrote still read. Robolectric for `SharedPreferences` and Android's `org.json`.
  */
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [34], manifest = Config.NONE)
@@ -91,8 +88,6 @@ class BackupBundleTest {
     }
 
     private fun read(bytes: ByteArray): Result<BackupBundle.Bundle> = BackupBundle.read(ByteArrayInputStream(bytes))
-
-    // ── round trip ───────────────────────────────────────────────────────────
 
     @Test
     fun aFullBundleRoundTrips() {
@@ -196,8 +191,6 @@ class BackupBundleTest {
         assertEquals(setOf(BackupBundle.Part.SETTINGS, BackupBundle.Part.LAYOUTS, BackupBundle.Part.WORDS), bundle.parts())
         assertTrue(bundle.letterLayouts.isEmpty())
     }
-
-    // ── refusals ─────────────────────────────────────────────────────────────
 
     @Test
     fun aTamperedPartIsRefusedByItsChecksum() {
@@ -307,8 +300,6 @@ class BackupBundleTest {
         assertTrue(other!!.message!!.contains("not a BBKB backup"))
     }
 
-    // ── the single documents earlier builds wrote ────────────────────────────
-
     @Test
     fun anOldSettingsDocumentReadsAsASettingsOnlyBundle() {
         val json = SettingsBackup.serialize(prefs, "5.0.0-beta.24", 1437)
@@ -352,8 +343,6 @@ class BackupBundleTest {
         assertEquals(listOf("athena", "keypad"), bundle.words!!.learnedWords)
     }
 
-    // ── selection ────────────────────────────────────────────────────────────
-
     @Test
     fun aSelectionIsLimitedToWhatTheBundleHolds() {
         val bundle = read(writeBytes(BackupBundle.Contents(wordsJson = WordsBundle.serialize(words(), "t", 1)))).getOrThrow()
@@ -367,8 +356,6 @@ class BackupBundleTest {
     fun theDefaultFileNameCarriesTheDate() {
         assertEquals("bbkb-backup-2023-11-14.zip", BackupBundle.defaultFileName(1_700_000_000_000L))
     }
-
-    // ── BackupOperations.writeTo(File): the phone-backup bundle on disk ──────
 
     @Test
     fun writingTheBundleFileReplacesItWholeAndLeavesNothingBeside() {
@@ -401,8 +388,6 @@ class BackupBundleTest {
         assertEquals(listOf("auto.zip"), dir.listFiles()!!.map { it.name })
         dir.deleteRecursively()
     }
-
-    // ── zip helpers ──────────────────────────────────────────────────────────
 
     private fun entriesOf(bytes: ByteArray): LinkedHashMap<String, ByteArray> {
         val entries = LinkedHashMap<String, ByteArray>()

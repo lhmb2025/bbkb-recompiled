@@ -25,12 +25,10 @@ import org.xmlpull.v1.XmlPullParser
 import java.io.File
 
 /**
- * Every shipped keyboard's on-screen keyboard, built headless from the real XML and read
- * ([DrawnKeyboards]), against the on-screen KDB the engine loaded for it when the app shipped one
- * per language (kept in `xt9kdb-scaffold/reference/kdb_vkb/`, or still shipped as a template).
- *
- * Which file a keyboard loaded is its engine id's, measured on the emulator on 2026-10-15 (the
- * Phase 2 table of the one-KDB-per-device plan): most Latin keyboards ask for English's.
+ * Every shipped keyboard's on-screen keyboard, built headless from the real XML ([DrawnKeyboards]),
+ * against the on-screen KDB the engine loaded for it when one was shipped per language (kept in
+ * `xt9kdb-scaffold/reference/kdb_vkb/`, or still shipped as a template). Most Latin keyboards
+ * loaded English's.
  */
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [34])

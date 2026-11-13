@@ -63,10 +63,7 @@ class TitanProfilesTest {
         fields.forEach { (field, value) -> ReflectionHelpers.setStaticField(Build::class.java, field, value) }
     }
 
-    /**
-     * The config the app would auto-select for a keyboard called [keyboardName]: the preloaded
-     * configs in the manager's own order (display name), first match wins.
-     */
+    /** The config auto-selected for [keyboardName]: preloaded configs by display name, first match wins. */
     private fun selectedConfig(keyboardName: String): String? {
         val manager = CustomDeviceConfigManager.getInstance(context)
         for (info in manager.availableConfigs) {
@@ -94,8 +91,6 @@ class TitanProfilesTest {
         assertEquals(1, config.mappings.size)
         return config.mappings[0]
     }
-
-    // ── selection ────────────────────────────────────────────────────────────
 
     @Test
     fun titan2_selectsTheTitan2Profile() {
@@ -153,8 +148,6 @@ class TitanProfilesTest {
         assertEquals(listOf("device_config_minimal"), allMatching("aw9523b-key"))
     }
 
-    // ── the Titan 2 profile's contents ───────────────────────────────────────
-
     @Test
     fun titan2_rolesPadAndDefaults() {
         val m = mapping(R.xml.device_config_titan2)
@@ -193,8 +186,8 @@ class TitanProfilesTest {
     }
 
     /**
-     * Alt arrives as ALT_RIGHT on scancode 100 (ALT_LEFT on 56 on the Elite): the key pipeline must
-     * read it as Alt — not as a board key, not as the Sym key — with the profile installed.
+     * Alt arrives as ALT_RIGHT on scancode 100 (ALT_LEFT on 56 on the Elite) and must read as Alt,
+     * not a board key or the Sym key, with the profile installed.
      */
     @Test
     fun titanAltKeys_areAltToTheKeyPipeline() {
@@ -257,12 +250,7 @@ class TitanProfilesTest {
         }
     }
 
-    // ── keypad layout ────────────────────────────────────────────────────────
-
-    /**
-     * The declared layout is what live detection already answered on these single-layout models
-     * (qwerty), so the effective layout is unchanged — it is now simply not left to detection.
-     */
+    /** The declared layout (qwerty) is what live detection already answered on these models. */
     @Test
     fun singleLayoutProfiles_effectiveKeypadLayoutIsQwerty() {
         for (resId in intArrayOf(

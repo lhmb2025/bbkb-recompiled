@@ -3,20 +3,11 @@ package com.blackberry.nuanceshim;
 import java.util.Locale;
 
 /**
- * Translates between the Ethiopic syllables the keyboard types and shows and the form the
- * engine's Amharic dictionary stores them in.
- *
- * <p>The XT9 Amharic language pack does not contain precomposed syllables. Each syllable is its
- * series' first-order letter followed, for orders two to seven, by one Latin marker letter:
- * {@code u i a e ə o}. Typed into the KEY2 with the precomposed layout (2026-09-28) the engine
- * offered "ሰለመu" for ሰለሙ and predicted "ነወə" (ነው) and "ለaየə" (ላይ). The engine has no notion of
- * the composition, so {@link NuanceSDK} decomposes every word it hands the engine while an
- * Ethiopic language is primary, and composes every word the engine hands back.
- *
- * <p>Only the seven regular orders take part. The eighth slot of a series (ሏ, ሟ, ቧ, the
- * labialised forms and the few irregular letters such as ሇ) has no marker and is passed through
- * untouched in both directions, as are the labiovelar series whose missing orders are unassigned
- * code points.
+ * Converts Ethiopic syllables to and from the engine's Amharic dictionary form: the first-order
+ * letter plus, for orders two to seven, one Latin marker ({@code u i a e ə o}), e.g. ሙ = መu.
+ * {@link NuanceSDK} decomposes words going in while an Ethiopic language is primary and composes
+ * words coming back. The eighth slot (ሏ, ሟ, labialised and irregular letters) has no marker and
+ * passes through unchanged.
  */
 public final class EthiopicSyllables {
 

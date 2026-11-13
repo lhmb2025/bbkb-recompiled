@@ -10,9 +10,8 @@ import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
 
 /**
- * The CKB stroke analyser's two numbers, which the original app baked in as 144 / 610 for the
- * KEY2's pad: they now come from the touch keypad's frame, and on the KEY2's frame they must be
- * exactly those literals so swipe typing there is unchanged.
+ * The CKB stroke analyser's two numbers come from the touch keypad's frame; on the KEY2's frame they
+ * must be exactly 144 / 610 so swipe typing there is unchanged.
  */
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [34], manifest = Config.NONE)

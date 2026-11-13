@@ -19,13 +19,9 @@ import java.lang.reflect.InvocationTargetException
 import java.lang.reflect.Method
 
 /**
- * Characterises the spell-checker session's apostrophe post-pass (`fixApostropheSuggestions`).
- *
- * For every word the per-word pass marked IN_THE_DICTIONARY that contains a straight apostrophe,
- * each non-empty apostrophe-separated part that is already in the suggestion cache (keyed with the
- * previous *in-dictionary* word) gets an empty override span appended after the original spans.
- * The override covers the part's own characters (its offset within the text, its length), and
- * carries the word's cookie/sequence.
+ * `fixApostropheSuggestions`: for each IN_THE_DICTIONARY word with an apostrophe, every non-empty
+ * part already in the suggestion cache (keyed with the previous in-dictionary word) gets an empty
+ * override span, appended after the originals, covering that part and carrying the word's cookie/sequence.
  */
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [34], manifest = Config.NONE)
@@ -47,8 +43,6 @@ class SpellCheckerApostropheFixTest {
     fun tearDown() {
         session.onClose()
     }
-
-    // ---- harness ---------------------------------------------------------------------------
 
     private fun findField(start: Class<*>, name: String): Field {
         var c: Class<*>? = start
@@ -117,8 +111,6 @@ class SpellCheckerApostropheFixTest {
     private val TYPO = SuggestionsInfo.RESULT_ATTR_LOOKS_LIKE_TYPO
     private val REC = SuggestionsInfo.RESULT_ATTR_HAS_RECOMMENDED_SUGGESTIONS
 
-    // ---- no-op cases -----------------------------------------------------------------------
-
     @Test
     fun textWithoutAnyApostropheReturnsNull() {
         cached("dont", null)
@@ -186,8 +178,6 @@ class SpellCheckerApostropheFixTest {
         cached("don", null)
         assertNull(fix("don't"))
     }
-
-    // ---- emission --------------------------------------------------------------------------
 
     @Test
     fun cachedPartGetsAnEmptyOverrideSpanCarryingTheWordsCookieAndSequence() {
@@ -279,8 +269,6 @@ class SpellCheckerApostropheFixTest {
             render(fix("a😀'b", W(0, 5, IN)))
         )
     }
-
-    // ---- previous-word keying --------------------------------------------------------------
 
     @Test
     fun cacheLookupIsKeyedWithThePreviousInDictionaryWord() {

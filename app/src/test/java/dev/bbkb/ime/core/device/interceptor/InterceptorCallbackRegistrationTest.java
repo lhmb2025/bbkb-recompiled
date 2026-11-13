@@ -26,23 +26,10 @@ import org.robolectric.RobolectricTestRunner;
 import org.robolectric.annotation.Config;
 
 /**
- * Which of {@link KeyInterceptorService}'s two callbacks depends on
- * {@code pref_key_interceptor_enabled}, and which does not.
- *
- * <p>They used to be registered and cleared together, gated on that one preference — default
- * <em>false</em>. That is wrong for the all-keys callback, which is not a feature at all: it is
- * the compensation for the service's Alt bleed-through block, which consumes hardware Alt and
- * relies on the callback to keep the IME's modifier tracker in sync. On a Minimal Phone MP01 the
- * tracker therefore saw none of the events the service was eating (beta triage #10, 2026-09).
- *
- * <p>The special-key callback <em>is</em> the feature the switch describes ("capture Emoji, SYM
- * and Voice keys"), and stays on the preference, so the switch keeps its user-visible meaning.
- *
- * <p>Asserted on the registrations themselves ({@code hasAllKeysCallback} /
- * {@code hasSpecialKeyCallback}), because the alternative — "was the key consumed?" — conflates
- * the registration with the IME's readiness: the service now honours the callback's answer, and
- * a callback belonging to an IME with no input view showing legitimately declines. The all-keys
- * half is cross-checked against the consumption behaviour it exists for.
+ * {@link KeyInterceptorService}'s special-key callback follows {@code pref_key_interceptor_enabled}
+ * (default off); the all-keys callback does not, because it keeps the IME's modifier tracker in
+ * sync with the hardware Alt the service consumes. Asserted on the registrations themselves, since
+ * a callback for an IME with no input view legitimately declines keys.
  */
 @RunWith(RobolectricTestRunner.class)
 @Config(sdk = 34, manifest = Config.NONE)
@@ -102,25 +89,20 @@ public class InterceptorCallbackRegistrationTest {
     /** Is the Alt bleed-through block being compensated, i.e. is the all-keys callback live? */
     private boolean altIsBeingCompensated() {
         boolean registered = KeyInterceptorService.hasAllKeysCallback();
-        // Cross-check against the behaviour the registration exists for: with no callback the
-        // block deliberately leaves hardware Alt to the system instead of eating it.
+        // Cross-check: with no callback the block leaves hardware Alt to the system.
         assertEquals("hasAllKeysCallback() disagrees with what the Alt block actually does",
                 registered, service.onKeyEvent(down(KeyEvent.KEYCODE_ALT_LEFT, SCANCODE_PLAIN_ALT)));
         return registered;
     }
 
-    /**
-     * Is "Enable special key support" in force? Asserted on the registration itself rather than
-     * on whether a SYM press is consumed: the service honours the callback's answer, and a
-     * callback attached to an IME with no input view showing legitimately declines.
-     */
+    /** Is "Enable special key support" in force? Asserted on the registration, not on SYM consumption. */
     private boolean symIsBeingCaptured() {
         return KeyInterceptorService.hasSpecialKeyCallback();
     }
 
     @Test
     public void theFeaturePreferenceStillDefaultsToOff() {
-        // The premise of the tests below, and the reason the old coupling bit so hard.
+        // The premise of the tests below.
         Context context = ApplicationProvider.getApplicationContext();
         PrefsManager.INSTANCE.getPrefs(context).edit()
                 .remove(KeyInterceptorManager.PREF_KEY_INTERCEPTOR_ENABLED).commit();
@@ -180,9 +162,8 @@ public class InterceptorCallbackRegistrationTest {
 
     @Test
     public void aDestroyedServiceDoesNotUnregisterALiveIme() {
-        // Toggling the accessibility service off and on in system settings destroys and recreates
-        // it while the IME keeps running. onDestroy() used to null the callbacks, so the IME went
-        // silently unregistered until its next loadSettings().
+        // Toggling the accessibility service in system settings recreates it while the IME keeps
+        // running; the callbacks must survive onDestroy() or the IME is silently unregistered.
         installPkbShape();
         setFeaturePref(true);
         bridge.registerInterceptorCallbacks();

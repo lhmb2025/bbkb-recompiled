@@ -9,26 +9,11 @@ import java.util.concurrent.Future;
 import dev.bbkb.ime.BuildConfig;
 
 /**
- * The engine-thread entry points callers use once they stop talking to {@link NuanceSDK}
- * directly (Wave 3 Phase A). Every method resolves the engine INSIDE the operation, on the thread
- * that runs it, so the main thread never joins an engine start and never takes the engine lock:
- *
- * <ul>
- *   <li>{@link #post}: fire-and-forget on the engine thread, in FIFO order with every other post
- *       and with the suggestion requests. A feed posted before a request is in the engine's buffer
- *       when the request runs; that order is the whole correctness model, so never add a delay.</li>
- *   <li>{@link #query}: run on the engine thread and wait, bounded. For the few results the caller
- *       needs now (a converter's composed text, a validity check that decides a revert). In steady
- *       state the engine thread is idle and the wait is one context switch; behind a language load
- *       it waits as the direct call used to, up to the timeout, then the fallback is returned.</li>
- *   <li>{@link #load}: run on the loader thread, which owns the seconds-long holds (language
- *       loads, contact imports, learned-model transfer and enumeration, dispose). Returns a future
- *       that only a non-main thread may wait on.</li>
- * </ul>
- *
- * The {@code Secondary} variants address the spell checker's engine ({@link
- * NuanceSDKManager#getSecondary()}); {@code peekSecondary} variants do nothing when it is not
- * loaded, for callers that must not create it (pack install, model re-attach).
+ * Engine ops that resolve the engine inside the op, on the thread that runs it, so main never joins
+ * an engine start or takes the engine lock. {@link #post} is FIFO with the suggestion requests
+ * (never add a delay); {@link #query} waits bounded; {@link #load} runs long holds on the loader
+ * (wait on its future only off main). {@code Secondary} variants use the spell checker's engine;
+ * {@code PeekSecondary} does nothing when it is not loaded.
  */
 public final class EngineOps {
 

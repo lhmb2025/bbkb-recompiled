@@ -10,12 +10,9 @@ import dev.bbkb.ime.core.locale.ResourceLocaleUtils
 import dev.bbkb.ime.BuildConfig
 
 /**
- * Puts a [SuggestedWords] result on screen: hands it to InputLogic's cache first (that ordering
- * is load-bearing: the strip must never show words the commit path does not know about), then
- * decides between the Latin strip, the CJK grid, the flick overlay and the neutral punctuation
- * strip, and keeps the input boards / slideboard consistent with what was shown.
- *
- * [SuggestionUpdater] is the request side of the same pipeline; this is the display side.
+ * Display side of the suggestion pipeline. Hands each result to InputLogic's cache first (the
+ * strip must never show words the commit path does not know), then picks the Latin strip, CJK
+ * grid, flick overlay or neutral punctuation strip, and keeps the boards and slideboard in step.
  */
 class SuggestionStripPresenter(private val ime: BlackBerryIME) {
 
@@ -60,8 +57,8 @@ class SuggestionStripPresenter(private val ime: BlackBerryIME) {
         val sv = ime.getSettingsManager().getSettingsValues()
         ime.getInputLogic().onSuggestionsReceived(words, sv, ime.getUiUpdateHandler())
         if (!ime.hasAuxBarView() || !ime.onEvaluateInputViewShown()) return
-        // A swipe's words never take the menu down or close a board (that used to hide both);
-        // typing is what puts the menu away. With a board open they go to the hidden strip.
+        // A swipe's words never take the menu down or close a board; with a board open they go
+        // to the hidden strip.
         if (ime.isUnifiedInputBoardShowing()) {
             refreshStripUnderBoard(words, sv)
             return
@@ -98,11 +95,8 @@ class SuggestionStripPresenter(private val ime: BlackBerryIME) {
         val showLatin = uiCoordinator.shouldShowLatinSuggestionStrip(sv, ime.isOnScreenKeyboardVisible(), subtype)
         val showCjk = uiCoordinator.shouldShowCjkSuggestionStrip(sv, ime.isOnScreenKeyboardVisible(), subtype)
         if (words.isEmpty()) ime.cjkSuggestionGridView?.setVisible(false)
-        // New words never take the menu down (owner decision 2026-11-05). They used to here,
-        // three times over, standing in for "the user is typing"; but FCC and Sym closing, a tap in
-        // the text, the dictionary loading and the app moving the cursor all ask for words too, and
-        // each one took down a menu the user had raised. Typing now puts the menu away itself
-        // (InputViewCoordinator.onUserTyped); with the menu up the words go to the hidden strip.
+        // New words never take the menu down: many non-typing events request words too. Typing
+        // puts the menu away itself (InputViewCoordinator.onUserTyped).
         if (sv.isPredictionsEnabled || sv.editorCapabilities.shouldShowChineseSuggestions || sv.shouldShowMoreKeys() || isAutoCorrectOrEmpty(sv, words)) {
             if (showLatin) putOnStrip(words, false)
             if (showCjk) {
@@ -115,10 +109,7 @@ class SuggestionStripPresenter(private val ime: BlackBerryIME) {
         updateFlickSuggestions(words, sv)
     }
 
-    /**
-     * The words onto the strip: shown if the strip is the bar, kept on the hidden strip if the
-     * menu covers it, so the strip is current whenever it comes back.
-     */
+    /** Shows the words, or keeps them on the hidden strip while the menu covers it. */
     private fun putOnStrip(words: SuggestedWords, isCjk: Boolean) {
         val auxBar = ime.auxBarManager ?: return
         if (ime.getKeyboardSwitcher().getUnifiedInputBoardManager()?.isShowing() == true) {
@@ -129,11 +120,8 @@ class SuggestionStripPresenter(private val ime: BlackBerryIME) {
     }
 
     /**
-     * A board is open, so the bar is the board's and nothing here may change it. Under the menu
-     * the board brought up, the hidden strip still takes the words, so it is current when the
-     * board closes and the bar goes back to it (owner decision 2026-11-05; it used to keep
-     * whatever it showed before the board opened). With the menu off the board sits under the
-     * strip itself, which is left as before: its hide calls would close the board.
+     * A board is open and owns the bar, so only the hidden strip is updated (current when the board
+     * closes). With the menu off the strip itself is left alone: its hide calls would close the board.
      */
     private fun refreshStripUnderBoard(words: SuggestedWords, sv: SettingsValues) {
         val uibm = ime.getKeyboardSwitcher().getUnifiedInputBoardManager() ?: return
@@ -162,9 +150,8 @@ class SuggestionStripPresenter(private val ime: BlackBerryIME) {
             if (flick.visibility == View.VISIBLE) flick.clear()
             return
         }
-        // No clear() first: showSuggestions clears only when the words or the keyboard changed,
-        // so an unchanged result no longer relays out the keyboard frame and re-records the
-        // keyboard (the GONE/VISIBLE flips and the "" -> word spacebar text).
+        // No clear() first: showSuggestions clears only on a change, so an unchanged result does
+        // not relayout the keyboard frame.
         flick.showSuggestions(words, ResourceLocaleUtils.isRtlLanguage(ime.getSubtypeManager().getCurrentSubtype()))
     }
 

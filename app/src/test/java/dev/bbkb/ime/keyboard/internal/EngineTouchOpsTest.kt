@@ -20,9 +20,8 @@ import org.robolectric.annotation.Config
 import java.util.concurrent.atomic.AtomicInteger
 
 /**
- * Wave 3 Phase B: what actually reaches the engine for a tap, a swipe, a contact the arbiter
- * takes, and two fingers at once. The ops run inline here, so the list is the engine's call
- * order.
+ * What reaches the engine for a tap, a swipe, a contact the arbiter takes, and two fingers at once.
+ * The ops run inline here, so the list is the engine's call order.
  */
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [34], manifest = Config.NONE, instrumentedPackages = ["com.blackberry.nuanceshim"])

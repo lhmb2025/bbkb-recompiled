@@ -9,40 +9,35 @@ import dev.bbkb.ime.core.device.touch.shizuku.ShizukuTouchStatus;
 import dev.bbkb.ime.core.device.touch.shizuku.TouchDeviceMatcher;
 
 /**
- * The slice of {@link ShizukuTouchEngine} that {@link ShizukuTouchSource} and
- * {@link KeypadTouchSources} use, behind an interface so both run against a fake on the JVM.
- * {@link #REAL} is the engine itself; every method has the engine's meaning and threading (call
- * on the main thread; listeners are called on it).
+ * The slice of {@link ShizukuTouchEngine} the touch sources use, as an interface so JVM tests can
+ * fake it. Main thread only; listeners are called on it.
  */
 public interface ShizukuTouchEngineFacade {
-
-    /** Stream the device {@code matcher} names, replacing any stream already started. */
+    /** Replaces any stream already started. */
     void start(@NonNull Context context, @NonNull TouchDeviceMatcher matcher, boolean grab,
                @NonNull ShizukuTouchEngine.TouchListener touches,
                @NonNull ShizukuTouchEngine.StatusListener statuses);
 
-    /** Take or release the exclusive grab on the running stream. */
     void setGrab(boolean grab);
 
-    /** Stop the stream; the {@link #start} listeners hear nothing more. */
+    /** The {@link #start} listeners hear nothing more. */
     void stop();
 
     @NonNull
     ShizukuTouchStatus status();
 
-    /** Re-read Shizuku's own state (an install or a start sends the app no event). */
+    /** An install or a start of Shizuku sends the app no event, hence this. */
     void refreshStatus(@NonNull Context context);
 
-    /** Ask Shizuku for access; false when there is nothing to ask or it would not ask. */
+    /** False when there is nothing to ask or Shizuku would not ask. */
     boolean requestPermission(@NonNull Context context);
 
-    /** Hear every status change, starting with the current one. */
+    /** Hears the current status first. */
     void addStatusListener(@NonNull Context context,
                            @NonNull ShizukuTouchEngine.StatusListener listener);
 
     void removeStatusListener(@NonNull ShizukuTouchEngine.StatusListener listener);
 
-    /** The engine. */
     ShizukuTouchEngineFacade REAL = new ShizukuTouchEngineFacade() {
         @Override
         public void start(@NonNull Context context, @NonNull TouchDeviceMatcher matcher, boolean grab,

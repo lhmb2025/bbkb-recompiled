@@ -27,33 +27,11 @@ import java.io.File
 import java.util.Locale
 
 /**
- * The golden fixture for the move to letter layouts (`src/test/resources/letter_layouts_golden.json`):
- * what the OLD physical-key path answered (the engine's script layouts through
- * `HardwareScriptLayouts`, and the label-keyed `pkbd_*.xml` tables through `PhysicalKeySpecTable`),
- * recorded before that path was deleted. It is frozen: nothing writes it any more.
- *
- * [theResolverGivesTheRecordedAnswers] asks [PhysicalKeyResolver], over the shipped documents,
- * the same questions for every keyboard and keypad the fixture covers, and holds it to the
- * recorded answers entry for entry:
- *
- *  - `scriptLayoutActive` — [PhysicalKeyResolver.isScriptLayoutActive];
- *  - `letters` — [PhysicalKeyResolver.letter] for `KEYCODE_A`..`KEYCODE_Z` and `KEYCODE_4`,
- *    unshifted and with Shift; `KEYCODE_4` both as the KEY2's currency key (its key map types `$`)
- *    and as a digit key;
- *  - `lists` — for every label the fixture recorded, and every label the documents make
- *    answerable (each key's letter, its upper case, its Shift legend, the currency symbols):
- *    `doubleTap` = [PhysicalKeyResolver.multitap], `hold` = [PhysicalKeyResolver.moreKeys],
- *    `shiftLegend` = [PhysicalKeyResolver.shiftLegend]. These are the answers the typing code
- *    received; the fixture's other list fields (`alternatesFor`, `getMultiTapSequence`,
- *    `getMultiTapAlternates`, `getCharacterMapKeys`) were the old path's inner workings, which the
- *    switcher composed into those three, and have no counterpart to ask. `element` is the
- *    keyboard builder's, not a physical-key answer.
- *
- * It also checks that [PhysicalKeyResolver.multitapTable] holds exactly the double-tap answers.
- *
- * Where the new answer is meant to differ, the difference is listed in [TOLERATED] with its
- * reason, and each tolerance holds an exact count: a difference no tolerance names fails the
- * test, and so does a tolerance whose count changes.
+ * Holds [PhysicalKeyResolver] over the shipped documents to a frozen fixture of the earlier
+ * physical-key path's answers (`src/test/resources/letter_layouts_golden.json`): `scriptLayoutActive`,
+ * `letters` (A..Z and KEYCODE_4, with and without Shift), and per label `doubleTap`, `hold` and
+ * `shiftLegend` (the fixture's other list fields have no counterpart). Intended differences sit in
+ * [TOLERATED] with exact counts: an unnamed difference fails, and so does a changed count.
  */
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [34])
@@ -81,7 +59,7 @@ class LetterLayoutGoldenTest {
         PhysicalKeyResolver.keypadTypeSource = { "4row" }
         PhysicalKeyResolver.layoutSetSource = { layoutSet }
         // The fixture's "alphabetSwitchOff" answers are what a language that chose the keypad's
-        // own letters gets today.
+        // own letters gets.
         PhysicalKeyResolver.keypadLettersSource = { _ -> !alphabetSwitch }
         // The fixture was recorded with the default (empty) "Default currency" setting.
         PhysicalKeyResolver.currencySettingSource = { "" }
@@ -234,18 +212,9 @@ class LetterLayoutGoldenTest {
         optJSONArray(name)?.let { a -> (0 until a.length()).map { a.getString(it) } }
 
     /**
-     * The generated documents say what the fixture recorded, for every keyboard that has one:
-     * an independent check of the generator, which reads the old tables as text, against what
-     * the app's own parser made of the compiled resources when the fixture was recorded.
-     *
-     * Each keyboard's document is the one its binding selects: bound to the keyboard's language
-     * and either to its layout set or to any (a named layout set first), as the registry chooses.
-     *
-     * Script documents: each key's letter and Shift letter (`characterMapKeys`, else the upper
-     * case) are the old path's; its `multitapKeys` are the double-tap answer for its letter, and
-     * its `moreKeys` the hold answer, entry for entry, ligatures (لا, צ׳, l·l) included. Latin
-     * documents: the old path leaves every letter to the key map, and the lists are compared the
-     * same way. Answers for upper-case labels are derived at run time and not compared.
+     * Each keyboard's generated document (the one its binding selects) agrees with the fixture:
+     * letters and Shift letters, `multitapKeys` as the double-tap and `moreKeys` as the hold answer,
+     * ligatures included. An independent check of the generator; upper-case labels are not compared.
      */
     @Test
     fun theGeneratedDocumentsCarryTheRecordedAnswers() {
@@ -261,8 +230,7 @@ class LetterLayoutGoldenTest {
             val layoutSet = name.substringAfter(':')
             val groups = entry.getJSONArray("keypads")
             val doc = documentFor(docs, language, layoutSet)
-            // Kyrgyz was recorded without a document (its keys typed Latin); its documents, on
-            // the Russian key map since 2026-10-17, are held to the engine file by
+            // Kyrgyz was recorded without a document; its documents are held to the engine file by
             // LetterLayoutsMatchEngineTest and to the fixture by the resolver test's tolerance.
             if (language == "ky") continue
             // The translit keyboards and Chinese pinyin and cangjie have documents of their own
@@ -333,11 +301,9 @@ class LetterLayoutGoldenTest {
     }
 
     /**
-     * The registry's choice among [docs] for a keyboard in [language] built from [layoutSet],
-     * every document being for any keypad: bound to the language, and to that layout set or to
-     * any; a named layout set first, then fewer languages, then the id that is the language,
-     * then the lowest id. Spelled out here rather than asking the registry, so a fault in either
-     * shows as a disagreement.
+     * The registry's choice among [docs]: bound to [language] and to [layoutSet] or any; a named
+     * layout set first, then fewer languages, then the id equal to the language, then the lowest id.
+     * Spelled out rather than asking the registry, so a fault in either shows as a disagreement.
      */
     private fun documentFor(
         docs: List<LetterLayoutsMatchEngineTest.Companion.Doc>,
@@ -383,13 +349,11 @@ class LetterLayoutGoldenTest {
         val TABLE_ENTRIES_NO_KEY_TYPES = setOf(
             // The Greek table keys its `:` to U+003B; the key types U+037E GREEK QUESTION MARK.
             Triple("el:greek", "hold", ";"),
-            // Turkish keyspec_i is ı, which no key types (the key map types i and I there). The
-            // old table also derived I's list from it, so Shift+I then hold offered İ Î Ï Ì Í Į Ī;
-            // the Turkish document has no key typing ı, so neither I nor ı has a list now.
+            // Turkish keyspec_i is ı, which no key types (the key map types i and I), so neither I
+            // nor ı has a hold list.
             Triple("tr:qwerty", "hold", "ı"), Triple("tr:qwerty", "hold", "I"),
-            // The translit table's second ж entry carries the currency list (a slip for the
-            // currency key); on Russian and Ukrainian translit ж is a double-tap alternate of д,
-            // never a key's letter, so holding a key never asked for it.
+            // The translit table's second ж entry carries the currency list by mistake; on ru/uk
+            // translit ж is a double-tap alternate of д, never a key's letter.
             Triple("ru:translit", "hold", "ж"), Triple("ru:translit", "hold", "Ж"),
             Triple("uk:translit", "hold", "ж"), Triple("uk:translit", "hold", "Ж"),
             // The be|uk case: і is a double-tap alternate on Ukrainian translit, not a key's letter.
@@ -402,18 +366,13 @@ class LetterLayoutGoldenTest {
          * difference is covered twice.
          */
         val TOLERATED: List<Tolerance> = listOf(
-            // The currency key's list (plan §7) is the resolver's now, the same on every keyboard:
-            // the old tables listed only some currency symbols per table ($ £ € ₺ ₫ in the Latin
-            // one, $ in the Arabic, € in the Greek, ₩ in the Korean, ₽ in the Cyrillic, none in
-            // Hebrew, translit, or a keyboard with no table). Every list the fixture recorded is
-            // still given exactly; these are the symbols that gain one.
+            // The currency key's list is the resolver's, the same on every keyboard; the old tables
+            // listed only some currency symbols each. These are the symbols that gain one.
             Tolerance("currency symbols the old table did not list", 1081) { d ->
                 d.field == "hold" && d.label in PhysicalKeyResolver.CURRENCY_SYMBOLS && d.recorded == null && d.now != null
             },
-            // The old tables answered characterMapKeys (or, without one, multitapKeys) for every
-            // label, but only a caseless script's letter ever read it: Shift on a Cyrillic letter
-            // types its capital (asserted in `letters`). The documents carry a legend only where
-            // Shift types it.
+            // The old tables answered characterMapKeys for every label, but Shift on a Cyrillic
+            // letter types its capital; the documents carry a legend only where Shift types it.
             Tolerance("Cyrillic legends Shift never typed", 150) { d ->
                 !d.switchOff && d.field == "shiftLegend" && d.subtype in CASED_CYRILLIC && d.recorded != null && d.now == null
             },
@@ -423,10 +382,8 @@ class LetterLayoutGoldenTest {
                 !d.switchOff && d.field == "shiftLegend" && d.recorded == null &&
                     (d.subtype to d.label) in LEGENDS_NOW_IN_THE_DOCUMENTS
             },
-            // Kyrgyz keys typed the key map's Latin letters when the fixture was recorded (no
-            // Kyrgyz engine layout, so the Cyrillic-keyed tables never matched a typed letter).
-            // Since 2026-10-17 it has a document on the Russian key map, with its own letters
-            // (ң ө ү) as hold lists: every answer the fixture recorded as nothing is Cyrillic now.
+            // Kyrgyz keys typed Latin when the fixture was recorded; it now has a document on the
+            // Russian key map with its own hold letters (ң ө ү), so those answers are Cyrillic.
             Tolerance("Kyrgyz types Cyrillic on the keypad now", 348) { d ->
                 !d.switchOff && d.subtype.startsWith("ky:") &&
                     !(d.field == "hold" && d.label in PhysicalKeyResolver.CURRENCY_SYMBOLS)

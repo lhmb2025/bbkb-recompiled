@@ -1,9 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <merge xmlns:latin="http://schemas.android.com/apk/res-auto">
-    <!-- Arabic, Persian, Hindi and Armenian used to put the input-menu key on the comma's
-         secondary slot instead of the mic, so those layouts had no on-screen way to dictate.
-         The input menu is reachable from the suggestion strip on every layout, so they now
-         share the cases below with everyone else. -->
     <switch>
         <case latin:languageQuickSwitchKeyEnabled="true">
             <switch>

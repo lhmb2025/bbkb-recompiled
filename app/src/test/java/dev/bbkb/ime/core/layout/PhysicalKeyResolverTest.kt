@@ -27,15 +27,10 @@ import java.io.InputStream
 import java.util.Locale
 
 /**
- * [PhysicalKeyResolver]: the user's letter layout, then the built-in document for the keyboard,
- * then the key map (0/null), for every question the typing path asks about a physical key.
- *
- * The keyboard state the resolver reads (the active user layout, the built-in documents, the
- * locale, layout set, keypad, the alphabet switch, the currency setting) comes in through its
- * sources, replaced here; the physical-keyboard check and the switcher's symbol page are the two
- * statics the tests mock, as `KeyIdentityCharacterisationTest` does. The shipped documents are
- * read from the app's assets for the keycap checks, which come from the KEY2 keycap photos
- * (Arabic, Russian and Korean units, 2026-09-30) and BlackBerry's Shift layer tables.
+ * [PhysicalKeyResolver]: user layout, then the built-in document, then the key map (0/null), for
+ * every physical-key question. Keyboard state comes through replaced sources; the physical-keyboard
+ * check and the switcher's symbol page are mocked statics. Keycap expectations follow the KEY2
+ * Arabic, Russian and Korean keycaps and the Shift layer tables.
  */
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [34])
@@ -95,8 +90,6 @@ class PhysicalKeyResolverTest {
         PrefsManager.getPrefs(context).edit().clear().commit()
         LetterLayoutRegistry.directoryOf(context).deleteRecursively()
     }
-
-    // ── helpers ──────────────────────────────────────────────────────────────
 
     /** The app's own documents, as the running keyboard reads them. */
     private fun shipped(): PhysicalKeyResolver.BuiltIns =
@@ -158,8 +151,6 @@ class PhysicalKeyResolverTest {
     }
 
     private fun row(keys: String): String = keys.map { letter(KeyEvent.keyCodeFromString("KEYCODE_$it")) ?: "·" }.joinToString("")
-
-    // ── the user's layout ────────────────────────────────────────────────────
 
     @Test
     fun aUserLayoutTypesItsLettersAndShiftLegendsOnALatinKeyboard() {
@@ -246,8 +237,6 @@ class PhysicalKeyResolverTest {
         assertEquals("w", letter(KeyEvent.KEYCODE_Q))
         assertEquals(0, layoutSetAsked)
     }
-
-    // ── the built-in documents ───────────────────────────────────────────────
 
     @Test
     fun arabicKeycapsRowByRowWithTheirShiftLayer() {
@@ -410,8 +399,6 @@ class PhysicalKeyResolverTest {
         assertArrayEquals(arrayOf("l·l", "ł"), PhysicalKeyResolver.moreKeys("l"))
     }
 
-    // ── the switch ───────────────────────────────────────────────────────────
-
     @Test
     fun theAlphabetSwitchTurnsTheBuiltInDocumentsOffAndLeavesAUserLayout() {
         keyboard(Locale("ru"), "east_slavic")
@@ -427,8 +414,6 @@ class PhysicalKeyResolverTest {
         assertEquals("ж", letter(KeyEvent.KEYCODE_Q))
         assertArrayEquals(arrayOf("з"), PhysicalKeyResolver.multitap("ж"))
     }
-
-    // ── modifiers and the other guards ───────────────────────────────────────
 
     @Test
     fun aModifierOtherThanShiftOrTheSymbolPageLeavesTheKeyToTheKeyMap() {
@@ -450,8 +435,6 @@ class PhysicalKeyResolverTest {
         assertNull("not a physical keyboard", letter(KeyEvent.KEYCODE_Q))
     }
 
-    // ── Alt ──────────────────────────────────────────────────────────────────
-
     @Test
     fun altComesFromTheUserLayoutForTheKeysItNames() {
         activeLayout = user()
@@ -461,8 +444,6 @@ class PhysicalKeyResolverTest {
         assertEquals('#'.code, PhysicalKeyResolver.altFor(altQ, altQ.metaState))
         assertEquals("not without Alt", 0, PhysicalKeyResolver.altFor(down(KeyEvent.KEYCODE_Q), 0))
     }
-
-    // ── double tap and hold ──────────────────────────────────────────────────
 
     @Test
     fun theUserLayoutsListsComeFirstAndAnEmptyOneFallsThrough() {
@@ -494,7 +475,7 @@ class PhysicalKeyResolverTest {
         assertArrayEquals(arrayOf("é", "è", "ě"), PhysicalKeyResolver.moreKeys("e"))
         assertArrayEquals(arrayOf("É", "È", "Ě"), PhysicalKeyResolver.moreKeys("E"))
         assertArrayEquals("an empty list joins the others", arrayOf("ď"), PhysicalKeyResolver.moreKeys("d"))
-        // Double taps are the primary language's alone, as they were.
+        // Double taps are the primary language's alone.
         extraLocales = null
         assertArrayEquals(arrayOf("é", "è"), PhysicalKeyResolver.moreKeys("e"))
     }
@@ -515,12 +496,10 @@ class PhysicalKeyResolverTest {
         assertArrayEquals(arrayOf("$", "€", "¥", "₱", "¢"), PhysicalKeyResolver.moreKeys("$"))
     }
 
-    // ── what the rest of the app asks ────────────────────────────────────────
-
     /** The Language screen offers the switch only when an enabled keyboard is one of these. */
     @Test
     fun onlyKeyboardsWithTheirOwnAlphabetOfferTheSwitch() {
-        // Kyrgyz, Kazakh, Tajik and Tatar type Cyrillic on the Russian key map since 2026-10-17.
+        // Kyrgyz, Kazakh, Tajik and Tatar type Cyrillic on the Russian key map.
         for (locale in listOf("ar", "ru", "uk", "be", "iw", "he", "iw_IL", "el", "ko", "ky", "kk", "tg", "tt")) {
             assertTrue("$locale should offer it", PhysicalKeyResolver.supportsLocale(locale))
         }
@@ -538,8 +517,6 @@ class PhysicalKeyResolverTest {
         assertArrayEquals("a list led by the 0 key's character is left alone",
             arrayOf("0", "1"), PhysicalKeyResolver.arrangeCurrencyList("$", arrayOf("0", "1"), "£", "0"))
     }
-
-    // ── switching layouts ────────────────────────────────────────────────────
 
     @Test
     fun theTypingPathFollowsTheChosenLayoutAndItsFile() {

@@ -16,37 +16,17 @@ import java.util.concurrent.Executor
 import java.util.concurrent.Executors
 
 /**
- * The clipboard history on disk: one JSON file, written through [AtomicFile] so a crash mid-write
- * leaves the previous version rather than a truncated one.
- *
- * ## Where it lives
- *
- * The app's `filesDir`, which is **credential-protected** storage: the manifest sets
- * `defaultToDeviceProtectedStorage`, but the platform ignores that for a non-system app, so the
- * ordinary context's files directory is the credential-protected one. (There is no public API to
- * ask for the credential-protected context explicitly; `createCredentialProtectedStorageContext`
- * is a system API.) So copied text is never readable before the user unlocks — and the file
- * cannot be read until then either: [ClipboardHistoryManager] keeps clips in memory and loads
- * lazily once the user is unlocked.
- *
- * ## Threads
- *
- * [load] is a plain synchronous read; [ClipboardHistoryManager] runs it once per process, on a
- * background thread, the first time the history is needed after unlock, and merges the result on
- * the main thread. The file is a few kilobytes. [save] and [delete] are queued on one
- * process-wide serial executor, so writes land in order and a delete is never overtaken by a save
- * queued before it — including a delete issued from the settings screen while the keyboard has a
- * save in flight.
- *
- * What gets persisted is the caller's decision: the manager filters out Password Keeper rows and
- * oversized clips before calling [save]. Sensitive clips never reach the history at all.
+ * The clipboard history on disk: one JSON file via [AtomicFile]. It lives in `filesDir`, which is
+ * credential-protected (the platform ignores the manifest's `defaultToDeviceProtectedStorage` for a
+ * non-system app), so it is unreadable until unlock. [load] is synchronous; [save] and [delete] go
+ * through one process-wide serial executor, so a delete (even from settings) is never overtaken by
+ * an earlier save. The caller decides what is persisted.
  */
 class ClipboardHistoryStore private constructor(
     private val fileProvider: () -> File,
     private val io: Executor,
 ) {
-
-    /** The stored history, newest-first within each section as saved; empty if none or unreadable. */
+    /** The stored history as saved; empty if none or unreadable. */
     fun load(): List<ClipEntry> {
         val file = atomicFile() ?: return emptyList()
         return try {
@@ -101,29 +81,23 @@ class ClipboardHistoryStore private constructor(
 
         const val FILE_NAME = "clipboard_history.json"
 
-        /** The file format. A file announcing any other version is ignored, not misread. */
+        /** A file announcing any other version is ignored, not misread. */
         const val VERSION = 1
 
-        /**
-         * One serial thread for every store in the process, so the settings screen's "Clear
-         * history" and the keyboard's own writes are ordered against each other.
-         */
+        /** Shared so settings' "Clear history" and the keyboard's writes are ordered. */
         private val SHARED_IO: Executor = Executors.newSingleThreadExecutor { runnable ->
             Thread(runnable, "clipboard-history-io").apply { isDaemon = true }
         }
 
-        /** The store for this app's clipboard history. */
         @JvmStatic
         fun forContext(context: Context): ClipboardHistoryStore {
             val app = context.applicationContext ?: context
             return ClipboardHistoryStore({ File(app.filesDir, FILE_NAME) }, SHARED_IO)
         }
 
-        /** A store on an explicit file and executor: tests pass a temp file and a direct executor. */
+        /** For tests: an explicit file and executor. */
         @JvmStatic
         fun forFile(file: File, io: Executor): ClipboardHistoryStore = ClipboardHistoryStore({ file }, io)
-
-        // ── format ───────────────────────────────────────────────────────────
 
         @JvmStatic
         fun encode(entries: List<ClipEntry>): String {
@@ -150,12 +124,9 @@ class ClipboardHistoryStore private constructor(
         }
 
         /**
-         * Walks the `org.json` tree and checks each field by hand rather than binding the JSON
-         * reflectively, for the reason `DistributionManifestParser` gives: reflective binding
-         * fills a missing field with null behind Kotlin's back. Forgiving per entry — one
-         * malformed row is dropped, the rest load — and strict about the envelope: not JSON
-         * (including anything after the object), not an object, or another version yields
-         * nothing.
+         * Checks each field by hand (reflective binding fills missing fields with null behind
+         * Kotlin's back). A malformed row is dropped; a bad envelope, trailing data or another
+         * version yields nothing.
          */
         @JvmStatic
         fun decode(json: String): List<ClipEntry> {
@@ -188,8 +159,8 @@ class ClipboardHistoryStore private constructor(
             )
         }
 
-        // Named apart from JSONObject's own optLong/optString/optBoolean, which coerce between
-        // types. A number with a fraction is truncated, as Gson's asLong truncated it.
+        // Unlike JSONObject's optLong/optString/optBoolean, these do not coerce between types.
+        // A number with a fraction is truncated.
 
         private fun JSONObject.longOrNull(key: String): Long? = (opt(key) as? Number)?.toLong()
 

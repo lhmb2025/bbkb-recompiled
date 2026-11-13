@@ -20,14 +20,10 @@ public class CoreTextUtilsTest {
         assertFalse(StringHelper.isAllWhitespace("  a  "));
     }
 
-    /**
-     * Regression: the scan used a char index bounded by the *code point* count, so it stopped
-     * short on any string containing a surrogate pair and reported an emoji-bearing string as
-     * all-whitespace once its non-whitespace characters fell past the truncated bound.
-     */
+    /** The scan must cover every char of a string with surrogate pairs, not stop at its code-point count. */
     @Test
     public void isAllWhitespaceIsNotFooledBySurrogatePairs() {
-        // 3 code points, 4 chars: the old loop only inspected indices 0..2.
+        // 3 code points, 4 chars.
         assertFalse(StringHelper.isAllWhitespace(" " + GRINNING_FACE + "x"));
         assertFalse(StringHelper.isAllWhitespace(GRINNING_FACE));
         assertFalse(StringHelper.isAllWhitespace("  " + GRINNING_FACE));
@@ -54,17 +50,13 @@ public class CoreTextUtilsTest {
         assertEquals(0.0f, GeometryUtils.getDistance(2f, 2f, 2f, 2f), 0.0001f);
     }
 
-    // ── the grapheme after the cursor: the emoji scan must stop at the emoji ────
-
     private static int graphemeAfter(String text) {
         return GraphemeUtils.getGraphemeLengthAfterCursor(text, text.codePointAt(0));
     }
 
     /**
-     * Regression: the leading-emoji scan only checked that the FIRST code point of a growing
-     * prefix was an emoji, so once the text started with one every longer prefix matched too
-     * and the whole string (capped at 20 chars) came back. One cursor step or forward delete
-     * over an emoji then took the text after it as well.
+     * The leading-emoji scan returns only the first emoji, not every longer prefix that starts
+     * with one, so a cursor step or forward delete over an emoji stops there.
      */
     @Test
     public void getGraphemeLengthAfterCursorStopsAtTheEndOfTheEmoji() {

@@ -196,8 +196,7 @@
         <item name="android:background">@android:color/transparent</item>
         <item name="keyLabelFlags">keepBackgroundAspectRatio</item>
     </style>
-    <!-- Material FCC action chips (colors applied at runtime by FccView).
-         Weighted 0dp widths so the row always fits, on any screen width. -->
+    <!-- Colours set at runtime by FccView; weighted 0dp widths so the row always fits -->
     <style name="FccMaterialChip" parent="">
         <item name="android:layout_width">0dp</item>
         <item name="android:layout_weight">1</item>
@@ -220,8 +219,7 @@
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_marginStart">6dp</item>
         <item name="android:textSize">13sp</item>
-        <!-- maxLines, not the deprecated singleLine: singleLine additionally forces the
-             horizontal-scroll transformation, which is never what these labels want. -->
+        <!-- maxLines, not singleLine, which also forces horizontal scrolling -->
         <item name="android:maxLines">1</item>
         <item name="android:ellipsize">end</item>
     </style>
@@ -235,8 +233,7 @@
         <item name="android:focusable">false</item>
         <item name="android:clickable">false</item>
         <item name="android:minWidth">@dimen/config_suggestion_min_width</item>
-        <!-- maxLines, not the deprecated singleLine (see FccMaterialChipLabel above).
-             ellipsize stays "none" here: the strip sizes itself to the word. -->
+        <!-- maxLines, not singleLine; ellipsize none: the strip sizes itself to the word -->
         <item name="android:maxLines">1</item>
         <item name="android:soundEffectsEnabled">false</item>
         <item name="android:hapticFeedbackEnabled">false</item>
@@ -246,12 +243,7 @@
     <style name="SuggestionWord.LXX" parent="@style/SuggestionWord">
         <item name="android:textColor">?android:attr/textColorPrimary</item>
     </style>
-    <!--
-        The Change-language menu (SubtypeSwitcherDialog) in BBKB's own colours: the Material 3
-        palette the settings screens use, light and dark, chosen at runtime from
-        pref_keyboard_theme_mode like BlackBerryTheme does. Framework AlertDialog, so the colours
-        go in through the platform attributes the dialog and its list rows read.
-    -->
+    <!-- SubtypeSwitcherDialog in BBKB colours (chosen at runtime from pref_keyboard_theme_mode) via platform AlertDialog attributes -->
     <style name="BbkbDialogTheme.Light" parent="@android:style/Theme.DeviceDefault.Light.Dialog.Alert">
         <item name="android:colorAccent">@color/m3_primary_light</item>
         <item name="android:colorPrimary">@color/m3_primary_light</item>
@@ -270,7 +262,6 @@
         <item name="android:textColorAlertDialogListItem">@color/m3_on_surface_dark</item>
         <item name="android:colorControlNormal">@color/m3_on_surface_variant_dark</item>
     </style>
-    <!-- Updated to use Material 3 Settings Theme -->
     <style name="platformSettingsTheme" parent="@style/Theme.BlackBerryKeyboard.Settings">
     </style>
     

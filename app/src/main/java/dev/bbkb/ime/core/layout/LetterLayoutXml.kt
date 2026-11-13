@@ -16,8 +16,7 @@ import java.lang.reflect.Modifier
 import java.util.Locale
 
 /**
- * Reads and writes the `letter-layout` document, version 1 with the v1.1 amendments: the one
- * format for every letter layout, the app's own and the user's.
+ * Reads and writes `letter-layout` documents (version 1), the format of every letter layout.
  *
  * ```xml
  * <?xml version="1.0" encoding="utf-8"?>
@@ -30,20 +29,10 @@ import java.util.Locale
  * </letter-layout>
  * ```
  *
- * The attribute names are the physical-key tables' own (`keySpec`, `characterMapKeys`,
- * `multitapKeys`, `moreKeys`), plus `alt` and `engineKeys` (letters the engine's word matching also
- * counts as the key, one character each: ñ on the Spanish n). The legends are one character each; the lists are
- * comma-separated entries of one to [MAX_ENTRY_CODE_POINTS] characters (the tables offer
- * ligatures such as لا and l·l), with `\,` for a literal comma and `\\` for a literal backslash.
- * The XML declaration is optional: the generated documents open with a comment instead, which
- * a declaration could not follow. The full rules are the format specification in the unified
- * layouts plan (§11 and §11.1); the generator that writes the built-in documents implements the
- * same text, so this reader accepts exactly what it allows.
- *
- * Reading is strict on purpose: the file is generated, hand-written or passed around, and a typo
- * that quietly did nothing (`KEYCODE_O` for `KEYCODE_0`, a two-letter `keySpec`, `shfit` for
- * `characterMapKeys`) is worse than a refusal that says which key and which field. Every refusal
- * is an [InvalidLetterLayoutException] whose message names the key's `code` and the attribute.
+ * Legends are one character; lists are comma-separated entries of 1 to [MAX_ENTRY_CODE_POINTS]
+ * characters (ligatures like لا), `\,` and `\\` escaping. The XML declaration is optional (generated
+ * files start with a comment). Must accept exactly what `letter_layouts_gen.py` writes. Reading is
+ * strict: a silent typo is worse than an [InvalidLetterLayoutException] naming the key and attribute.
  */
 object LetterLayoutXml {
 
@@ -52,25 +41,23 @@ object LetterLayoutXml {
     const val MIME_TYPE: String = "application/xml"
     const val FILE_SUFFIX: String = ".xml"
 
-    /** Largest document [parse] reads. A whole keypad with long-press lists is a few kilobytes. */
+    /** Largest document [parse] reads (a full keypad is a few KB). */
     const val MAX_BYTES: Int = 256 * 1024
 
     /** The engine's own ceiling on keys in one layout. */
     const val MAX_KEYS: Int = 80
 
-    /** Entries in one `multitapKeys` or `moreKeys` list. Vietnamese holds 17 on its a and o keys. */
+    /** Entries in one `multitapKeys` or `moreKeys` list (Vietnamese uses 17). */
     const val MAX_SEQUENCE: Int = 32
 
-    /** Characters in one list entry: enough for a ligature or a letter with its marks. */
+    /** Characters in one list entry: a ligature or a letter with its marks. */
     const val MAX_ENTRY_CODE_POINTS: Int = 8
     const val MAX_NAME_LENGTH: Int = 64
     const val MAX_LANGUAGES: Int = 32
 
     /**
-     * The geometry templates `<rows template>` may name: the on-screen letter rows' key counts,
-     * each with an engine KDB of the same shape, `assets/kdb/<template>_vkb.xml`. `qwerty` is
-     * 10/9/7; `spanish` is 10/10/7, the semicolon key ending the middle row (Colemak puts o there,
-     * Dvorak s).
+     * `<rows template>` values, each with a matching `assets/kdb/<template>_vkb.xml`: `qwerty` 10/9/7,
+     * `spanish` 10/10/7 (semicolon key ends the middle row: Colemak o, Dvorak s).
      */
     val ROWS_TEMPLATES: List<String> = listOf("qwerty", "spanish")
 
@@ -85,23 +72,15 @@ object LetterLayoutXml {
 
     private val LANGUAGE = Regex("^[A-Za-z]{2,3}([_-][A-Za-z0-9]{1,8}){0,2}$")
 
-    /**
-     * A keyboard layout set name as the app's resources spell them (`keyboard_layout_set_<name>`:
-     * `qwerty`, `east_slavic`, `hindi_compact`). Checked for shape only: the reader has no
-     * resources, and a user file may name a layout set this build does not ship yet.
-     */
+    /** Layout set name shape only: the reader has no resources, and a user file may name one this build lacks. */
     private val LAYOUT_SET = Regex("^[a-z0-9_]{1,64}$")
     private val SCAN_CODE = Regex("^[0-9]{1,10}$")
     private const val KEY_CODE_PREFIX = "KEYCODE_"
 
-    /** The list of a key that names none; empty, so sharing it cannot leak a change between keys. */
+    /** Shared empty list; empty, so sharing cannot leak a change between keys. */
     private val NO_ENTRIES: Array<String> = emptyArray()
 
-    /**
-     * Every `KEYCODE_*` name the running platform's [KeyEvent] declares, with its value: the names
-     * `KeyEvent.keyCodeFromString` accepts. Read from the class rather than through that method
-     * because its lookup is native and answers nothing in the JVM tests; the two agree on a phone.
-     */
+    /** Every `KEYCODE_*` in [KeyEvent], by reflection: `keyCodeFromString` is native and returns nothing in JVM tests. */
     private val KEY_CODES: Map<String, Int> by lazy {
         val names = LinkedHashMap<String, Int>()
         KeyEvent::class.java.fields
@@ -118,20 +97,16 @@ object LetterLayoutXml {
         HashMap<Int, String>().apply { KEY_CODES.forEach { (name, code) -> putIfAbsent(code, name) } }
     }
 
-    /** The key code a document names `KEYCODE_Q` by, or null when that is not a key code name. */
+    /** The key code for a name like `KEYCODE_Q`, or null. */
     @JvmStatic
     fun keyCodeOf(name: String): Int? = if (name.startsWith(KEY_CODE_PREFIX)) KEY_CODES[name] else null
 
-    /** The name a document uses for [keyCode]. */
     @JvmStatic
     fun nameOf(keyCode: Int): String = KEY_NAMES[keyCode] ?: "$KEY_CODE_PREFIX$keyCode"
 
-    // ── reading ──────────────────────────────────────────────────────────────
-
     /**
-     * Reads one document from [input], at most [MAX_BYTES] of it; the caller closes [input].
-     * [generateId] names a layout whose document has no `id` (allowed for [Origin.USER] only).
-     * @throws InvalidLetterLayoutException naming the first problem found
+     * Reads one document (at most [MAX_BYTES]); the caller closes [input]. [generateId] names a
+     * document without `id` ([Origin.USER] only).
      */
     @JvmStatic
     @JvmOverloads
@@ -148,7 +123,6 @@ object LetterLayoutXml {
         return read(parser, origin, generateId)
     }
 
-    /** [parse] for a document already in memory. */
     @JvmStatic
     @JvmOverloads
     @Throws(InvalidLetterLayoutException::class)
@@ -163,12 +137,7 @@ object LetterLayoutXml {
         return read(parser, origin, generateId)
     }
 
-    /**
-     * The `<bind>` of the document in [input] and nothing else: what comes before it is skipped
-     * unchecked and what comes after is not read. For choosing among many documents by language
-     * without parsing every one in full. Null when no `<bind>` can be read; [parse] then says
-     * what is wrong with the document.
-     */
+    /** Only the `<bind>` (nothing else checked), to choose among documents without full parses; null when unreadable. */
     @JvmStatic
     fun peekBinding(input: InputStream): LetterLayout.Binding? = try {
         val bytes = readCapped(input)
@@ -198,20 +167,15 @@ object LetterLayoutXml {
     }
 
     /**
-     * The platform's pull parser with namespace and DOCTYPE processing off, which the platform
-     * turns on by default. The format has no namespaces, so an `xmlns` declaration or a prefixed
-     * name is refused like any unknown attribute or element instead of being read past; and a
-     * DOCTYPE is refused outright, so its entities are never expanded.
+     * Namespace and DOCTYPE processing off (platform default is on): `xmlns` and prefixed names are
+     * refused as unknown, and a DOCTYPE is refused outright so entities never expand.
      */
     private fun newParser(): XmlPullParser = Xml.newPullParser().apply {
         setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, false)
         setFeature(XmlPullParser.FEATURE_PROCESS_DOCDECL, false)
     }
 
-    /**
-     * Whether [text] is an XML document rather than JSON: the first thing after any byte-order
-     * mark and white space is `<`. How the importers tell a layout file from a bundle.
-     */
+    /** Whether [text] is XML rather than JSON (first non-space after any BOM is `<`): layout file vs bundle. */
     @JvmStatic
     fun looksLikeXml(text: String): Boolean = text.removePrefix("\uFEFF").trimStart().startsWith("<")
 
@@ -231,8 +195,7 @@ object LetterLayoutXml {
     private fun read(parser: XmlPullParser, origin: Origin, generateId: () -> String): LetterLayout = try {
         readDocument(parser, origin, generateId)
     } catch (e: XmlPullParserException) {
-        // The parser's own message ends in its internal position and reader; the line is the part
-        // a person fixing the file needs.
+        // Drop the parser's internal position suffix; keep the line number.
         val reason = e.message.orEmpty().substringBefore(" (position:")
         fail(if (e.lineNumber > 0) "not well-formed XML on line ${e.lineNumber}: $reason" else "not well-formed XML: $reason")
     } catch (e: IOException) {
@@ -242,13 +205,11 @@ object LetterLayoutXml {
         fail("not well-formed XML: ${e.message}")
     }
 
-    /** Everything up to and including the root element, refusing anything but layout content. */
     private fun readDocument(parser: XmlPullParser, origin: Origin, generateId: () -> String): LetterLayout {
         var layout: LetterLayout? = null
         while (true) {
             when (parser.nextToken()) {
                 XmlPullParser.END_DOCUMENT -> break
-                // A DOCTYPE can declare entities; a layout has no use for one, so none is read.
                 XmlPullParser.DOCDECL -> fail("a DOCTYPE declaration is not allowed")
                 XmlPullParser.START_TAG -> {
                     if (layout != null) fail("a second root element <${parser.name}> on line ${parser.lineNumber}")
@@ -409,17 +370,13 @@ object LetterLayoutXml {
     private fun codePoint(parser: XmlPullParser, field: String, code: String): Int? =
         parser.getAttributeValue(null, field)?.let { singleCodePoint(it, "$code.$field") }
 
-    /** A comma list, as [sequence] reads one, whose entries are one character each: the engine holds one code per letter. */
+    /** A [sequence] of single characters: the engine holds one code per letter. */
     private fun codePoints(parser: XmlPullParser, field: String, code: String): IntArray {
         if (parser.getAttributeValue(null, field) == null) return LetterLayout.NO_CODE_POINTS
         return sequence(parser, field, code).map { singleCodePoint(it, "$code.$field") }.toIntArray()
     }
 
-    /**
-     * A comma list of entries of one to [MAX_ENTRY_CODE_POINTS] characters: `\,` is a comma and
-     * `\\` a backslash, and nothing else may follow a backslash, so a list means one thing however
-     * it was written.
-     */
+    /** A comma list; only `\,` and `\\` may follow a backslash, so a list has one reading. */
     private fun sequence(parser: XmlPullParser, field: String, code: String): Array<String> {
         val raw = parser.getAttributeValue(null, field) ?: return NO_ENTRIES
         val where = "$code.$field"
@@ -454,11 +411,8 @@ object LetterLayoutXml {
     }
 
     /**
-     * One list entry: one to [MAX_ENTRY_CODE_POINTS] characters, none of them a control character
-     * or half of one. An entry of more than one character may not begin or end with white space:
-     * that is a list written with spaces after its commas (`ŵ, ẁ`), not a ligature, and reading
-     * it as one would put an invisible space into what the key offers. A lone space stays a
-     * character like any other.
+     * Checks one list entry. A multi-character entry may not begin or end with white space: that is
+     * a list with spaces after commas (`ŵ, ẁ`), not a ligature. A lone space is allowed.
      */
     private fun checkEntry(entry: String, where: String) {
         if (entry.isEmpty()) fail("$where is empty")
@@ -477,7 +431,6 @@ object LetterLayoutXml {
         }
     }
 
-    /** The one code point [value] holds, refusing anything that is not exactly one character. */
     private fun singleCodePoint(value: String, where: String): Int {
         if (value.isEmpty()) fail("$where is empty")
         val codePoint = value.codePointAt(0)
@@ -514,7 +467,7 @@ object LetterLayoutXml {
         }
     }
 
-    /** White space between elements is layout; anything else is text the format has no place for. */
+    /** Refuses non-blank text between elements. */
     private fun rejectText(parser: XmlPullParser) {
         val text = parser.text.orEmpty()
         if (text.isNotBlank()) fail("unexpected text \"${text.trim().take(40)}\" on line ${parser.lineNumber}")
@@ -522,12 +475,7 @@ object LetterLayoutXml {
 
     private fun fail(message: String): Nothing = throw InvalidLetterLayoutException(message)
 
-    // ── writing ──────────────────────────────────────────────────────────────
-
-    /**
-     * The document for [layout], in the shape [parse] reads: attributes left out where they hold
-     * their default, so a written file says only what the layout changes.
-     */
+    /** The document for [layout]; attributes at their default are left out. */
     @JvmStatic
     fun serialize(layout: LetterLayout): String = buildString {
         append("<?xml version=\"1.0\" encoding=\"utf-8\"?>\n")
@@ -574,7 +522,6 @@ object LetterLayoutXml {
         append(' ').append(name).append("=\"").append(escape(value)).append('"')
     }
 
-    /** A list attribute: entries joined by commas, a comma or backslash inside an entry escaped. */
     private fun list(entries: Array<String>): String = entries.joinToString(",") { entry ->
         entry.replace("\\", "\\\\").replace(",", "\\,")
     }

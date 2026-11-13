@@ -6,16 +6,9 @@ import org.junit.Assert.assertTrue
 import org.junit.Test
 
 /**
- * CHARACTERISATION TEST — the rule that decides which editor an entry belongs to.
- *
- * `TextShortcutsScreen` lists the entries for which `isSubstitution` is true and
- * `UserDictionaryScreen` lists the ones for which `isPersonalWord` is true; both read the same
- * `DictionaryRepository`, which returns every entry for a locale and lets the screens sort it out.
- * So this single derived property is what keeps a personal word out of the shortcuts list and a
- * shortcut out of the dictionary — and it had no test.
- *
- * `displayKey` is the second half of the same rule: it is what `DictionaryRepository` sorts on, and
- * therefore the order the user sees.
+ * Which editor an entry belongs to: `TextShortcutsScreen` lists `isSubstitution` entries and
+ * `UserDictionaryScreen` lists `isPersonalWord` ones, from the same repository list. `displayKey`
+ * is what `DictionaryRepository` sorts on, so it is the order the user sees.
  */
 class DictionaryEntryTest {
 

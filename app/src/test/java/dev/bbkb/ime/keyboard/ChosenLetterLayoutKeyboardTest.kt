@@ -25,16 +25,10 @@ import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
 
 /**
- * The on-screen keyboard built from the letter layout chosen for its language
- * ([KeyboardBuilder.Builder.useChosenLetterLayout], [LetterLayoutChoice.keyboardLayoutSet]): the
- * real keyboard XML parsed headless, so the drawn rows are what the generated `rowkeys_*` files and
- * the hand-kept `rows_*` wrappers produce.
- *
- * An English keyboard with Colemak chosen draws Colemak, ten keys in the middle row within the
- * keyboard's width; with Dvorak, the punctuation keys first and q and z on the bottom row (the
- * shared comma and period keys switch on the layout set the keyboard is built from). Without a
- * choice, or with a custom layout, it draws its own QWERTY. The keyboard's identity carries the
- * layout set, so the cache never hands back the other layout's keyboard.
+ * Pins the on-screen keyboard built from the chosen letter layout
+ * ([KeyboardBuilder.Builder.useChosenLetterLayout]), parsed headless from the real XML. English with
+ * Colemak or Dvorak draws that layout; no choice or a custom layout draws QWERTY. The layout set is
+ * part of the keyboard's identity, so the cache never returns the other layout.
  */
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [34])

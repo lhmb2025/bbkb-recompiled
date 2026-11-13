@@ -1,22 +1,8 @@
-/* rank_prepare_selftest.c — the per-gesture prepared ranker must score BIT-IDENTICALLY to the
- * one-candidate-at-a-time scorer it replaced (P-11, 2026-11 performance audit).
- *
- * xt9kdb_rank_score used to copy, resample and re-measure the whole swipe for every candidate
- * word (up to ~1,560 per gesture); that word-independent half now runs once in
- * xt9kdb_rank_prepare, and word->key resolution goes through a letter table instead of a key
- * scan. Rankings, the decline guard and the deposit pick all compare these floats, so "close" is
- * not good enough: every score is compared as raw bits against the ORIGINAL implementation, kept
- * below verbatim as the oracle (the way kdb_trace.c keeps rc_build_index_reference).
- *
- * Coverage: real corpora on the KDBs they ran on (PKB even + athena, the on-screen layout), a
- * strided slice of the 59,878-word recall table plus words that exercise case folding,
- * apostrophes, letters missing from the layout and the unscorable paths, an over-cap path
- * (> 2503 points), one-point and zero-length paths, and a model with two keys for one letter (the
- * table must keep the FIRST, as the scan did). Negative control: a prepared path scored against
- * a different trace's reference must disagree, so the comparison can fail.
- *
- * Usage (from cpp/): rank_prepare_selftest            — run by run_tests.sh
- */
+/* rank_prepare_selftest.c: the prepared ranker (xt9kdb_rank_prepare + letter table) must score
+ * bit-identically to the per-candidate reference scorer kept below as the oracle; rankings, the
+ * decline guard and the deposit pick compare these floats. Covers real corpora, a strided slice of
+ * the recall table, case/apostrophe/missing-letter words, over-cap, one-point and zero-length paths,
+ * duplicate letter keys (first wins), plus a negative control. Run by run_tests.sh from cpp/. */
 #include "et9kdb.h"
 #include "et9_context.h"
 #include "kdb_internal.h"
@@ -27,7 +13,7 @@
 #include <math.h>
 #include "../src/kdb_freq_en.h"
 
-/* ---- the oracle: kdb_rank.c's scorer as of 28b6df6b, verbatim apart from names ---------------- */
+/* The oracle: the reference one-candidate scorer, verbatim apart from names. */
 #define REF_W_ANCHOR 1.5f
 #define REF_W_LIST   0.005f
 #define REF_W_LEN    0.6f
@@ -115,7 +101,6 @@ static float ref_rank_score(const ET9KdbLoaded* m, const Xt9DecParams* p,
     return shape + REF_W_ANCHOR * anchors + REF_W_LEN * lenMis + REF_W_LIST * (float)listIndex;
 }
 
-/* ---- harness ------------------------------------------------------------------------------- */
 static int g_fail = 0;
 static long g_compared = 0, g_mismatch = 0;
 #define WORD_STRIDE 97   /* ~620 of the 59,878 table words per trace */
@@ -200,8 +185,7 @@ static int run_corpus(const char* kdb, const char* corpus, int* negHits) {
         traces++;
     }
     fclose(fp);
-    /* Synthetic edges on this model: an over-cap path (the score reads only the first 2503
-     * points), a one-point path and a zero-length path. */
+    /* synthetic edges: over-cap path (only the first 2503 points are read), one point, zero length */
     static Xt9DecPt big[3000];
     for (int i = 0; i < 3000; i++) { big[i].x = 40.0f + (float)(i % 1000); big[i].y = 30.0f + (float)((i * 7) % 300); big[i].t = (ET9U32)i; }
     check_path(m, &p, big, 3000, 1);
@@ -213,8 +197,7 @@ static int run_corpus(const char* kdb, const char* corpus, int* negHits) {
     return traces;
 }
 
-/* Two keys carry 'e' (and one carries nothing): the table must resolve to the FIRST, as the scan
- * did, and a letter with no key must be skipped exactly as before. */
+/* Two keys carry 'e' (one carries nothing): the first wins, and a letter with no key is skipped. */
 static void run_duplicate_key_model(void) {
     static ET9KdbKey keys[4];
     memset(keys, 0, sizeof keys);

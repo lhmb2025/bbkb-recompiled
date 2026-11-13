@@ -1,9 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- The clipboard-with-slash glyph extracted from the full-bleed
-     ic_inputboard_clipboard_empty illustration (1342x755 canvas), scaled and
-     centered into a square 48dp canvas for the Material empty-state chip.
-     Glyph bounds in the source: x [539.4, 800.1], y [247.2, 493.6];
-     scale 40/260.7 = 0.1534, translation recenters with a 4dp margin. -->
+<!-- Glyph cut from ic_inputboard_clipboard_empty (source bounds x 539.4..800.1, y 247.2..493.6), scaled 0.1534 into 48dp with a 4dp margin -->
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
     android:width="48dp"
     android:height="48dp"

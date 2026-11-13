@@ -26,19 +26,9 @@ import java.util.Locale;
 import java.util.regex.Pattern;
 import dev.bbkb.ime.core.textinput.connection.CursorWordRange;
 
-/**
- * Encapsulates all recorrection and revert-auto-correction logic extracted from {@link InputLogic}.
- *
- * <p>Handles tapping on a previously committed word to re-open it for editing
- * ({@link #performRecorrection}), reverting an auto-correction back to the originally typed word
- * ({@link #revertAutoCorrection}), and the validation helpers used by those flows.</p>
- */
+/** Re-opening a committed word for editing, and reverting an auto-correction to the typed word. */
 class RecorrectionController {
-
-    /**
-     * How long the add-word decision after a revert waits for the engine's validity answer
-     * (Phase A); the engine thread is idle in steady state, this only bounds a language load.
-     */
+    /** Bounds the post-revert validity query; the engine thread only stalls during a language load. */
     private static final long RECORRECTION_VALIDITY_TIMEOUT_MS = 100L;
 
     private static final Pattern PUNCTUATION = Pattern.compile("\\p{Punct}");
@@ -50,13 +40,11 @@ class RecorrectionController {
     }
 
     /**
-     * Attempts to re-open the word at the cursor as composing text so the user can edit it.
-     * No-op when the cursor is mid-word, the locale forbids recorrection (CJK/Japanese), or
-     * the editor is not in a state that supports suggestions.
-     *
+     * Re-opens the word at the cursor as composing text. No-op mid-word, in CJK/Japanese, or
+     * when the editor does not support suggestions.
+     * @param z include the tapped word itself as the first suggestion
      * @param c0804d current settings values
-     * @param z      {@code true} to include the tapped word itself as the first suggestion
-     * @param i      symbol page order / shift state used for suggestion context
+     * @param i symbol page order / shift state used for suggestion context
      */
     public void performRecorrection(SettingsValues c0804d, final boolean z, int i) {
         CursorWordRange c0875apM5829b = null;
@@ -136,10 +124,6 @@ class RecorrectionController {
             }
 
             int[] codePoints = toCodePointArray((CharSequence) string);
-            // TI-19: a bare getPrevWordsInfo() call whose result was discarded used to sit here.
-            // It was not harmless: before TI-2, getPrevWordsInfo wrote into the process-wide
-            // EMPTY_PREV_WORDS_INFO singleton, so this "dead" statement rewrote the context the
-            // last CommitEventRecord was holding - on every ordinary keystroke that recorrects.
 
             int deletionLength = iM5853q - iM5646a;
             if (BuildConfig.DEBUG) Log.d("TEXT_EDIT_DEBUG", "performRecorrection: word='" + string + "' cursor=" + iM5853q + " wordStartOffset=" + iM5646a + " wordStartAbsolute=" + deletionLength + " regionEnd=" + (iM5853q + c0875apM5829b.getNumberOfCharsInWordAfterCursor()) + " charsAfterCursorInWord=" + c0875apM5829b.getNumberOfCharsInWordAfterCursor());
@@ -151,6 +135,9 @@ class RecorrectionController {
 
             if (arrayList.size() > 0) {
                 mInputLogic.mSuggestionRequestQueue.sendToWorkerThread(0, new SuggestionEngine.SuggestionCallback() {
+                    /**
+                     * @param c0666ac the suggestions for the recorrection word
+                     */
                     @Override
                     public void onSuggestionsReady(SuggestedWords c0666ac) {
                         if (c0666ac.size() > 1 && !z && !LocaleUtils.isCurrentSubtypeJapanese()) {
@@ -170,12 +157,11 @@ class RecorrectionController {
     }
 
     /**
-     * @param dropWhitespaceSeparator {@code true} for a keyboard backspace: a whitespace
-     *        separator committed with the correction is deleted rather than restored, so the
-     *        typed word comes back composing. The original keyboard needed two presses here (the
-     *        first deleted the space, the second reverted); this one press must end in the same
-     *        state, or the next space leaves two spaces after the word. Swipe-to-delete passes
-     *        {@code false} and keeps the separator.
+     * @param dropWhitespaceSeparator true for a keyboard backspace: a whitespace separator is
+     *        deleted, not restored, so the typed word comes back composing (else the next space
+     *        leaves two). Swipe-to-delete passes false and keeps it.
+     * @param c0920g the current input event context
+     * @param c0804d current settings values
      */
     void revertAutoCorrection(InputEventContext c0920g, SettingsValues c0804d, boolean dropWhitespaceSeparator) {
         String str;
@@ -201,8 +187,7 @@ class RecorrectionController {
             int iCodePointBefore = Character.codePointBefore(charSequenceM5815a, length3);
             if (!Character.isWhitespace(iCodePointBefore)) {
                 charSequence = charSequenceM5815a;
-                // Code-point-safe: the previous (char) cast truncated supplementary code
-                // points to a lone surrogate, misclassifying them.
+                // Whole code point, not a (char) cast that would yield a lone surrogate.
                 if (iCodePointBefore != 10 && (!PUNCTUATION.matcher(new String(Character.toChars(iCodePointBefore))).matches() || zMatches)) {
                     break;
                 }
@@ -304,14 +289,17 @@ class RecorrectionController {
         c0920g.setShouldUpdateSuggestions();
     }
 
+    /**
+     * @param c0713o the last commit record
+     * @param c0804d current settings values
+     */
     private boolean shouldShowAddToDictionary(CommitEventRecord c0713o, SettingsValues c0804d) {
         // An incognito field offers no add-to-dictionary: the word would outlive the session.
         if (mInputLogic.mIme.getDynamicLearningManager().isNoPersonalizedLearning()) {
             return false;
         }
         if (mInputLogic.mRichInputConnection.isMonitoringCursorUpdates() && c0804d.showUiToAcceptTypedWord && !TextUtils.isEmpty(c0713o.typedWord) && !TextUtils.equals(c0713o.typedWord, c0713o.committedWord)) {
-            // A bounded engine query (Phase A). On a timeout the word counts as known: no
-            // add-word highlight or hint, and the revert itself has already happened either way.
+            // Bounded engine query. On a timeout the word counts as known (no add-word hint).
             final String typedWord = c0713o.typedWord;
             final DictionaryLoader loader = mInputLogic.mDictionaryLoader;
             return !EngineThreads.query(() -> loader.isWordValid(typedWord, true),
@@ -320,6 +308,10 @@ class RecorrectionController {
         return false;
     }
 
+    /**
+     * @param c0804d current settings values
+     * @param str the candidate word
+     */
     private static boolean isValidRecorrectionWord(SettingsValues c0804d, String str) {
         if (str.isEmpty()) {
             return false;
@@ -328,6 +320,10 @@ class RecorrectionController {
         return (!c0804d.isWordCodePoint(iCodePointAt) || 39 == iCodePointAt || 45 == iCodePointAt) ? false : true;
     }
 
+    /**
+     * @param c0804d current settings values
+     * @param str the candidate word
+     */
     private static boolean isValidPinyinWord(SettingsValues c0804d, String str) {
         if (str.isEmpty()) {
             return false;

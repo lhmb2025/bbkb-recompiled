@@ -29,29 +29,10 @@ import org.robolectric.annotation.Config
 import java.util.Locale
 
 /**
- * CHARACTERISATION scenarios for every commit ENTRY POINT of the typing path — written before
- * the Phase-1c "ten entry points become one `CommitRequest` spec" consolidation, so the move can
- * be proved behaviour-preserving rather than asserted to be.
- *
- * ## Why the call log, and not just the resulting text
- *
- * Two commit paths can leave the editor holding the same string by very different routes — one
- * `commitText`, or a `setComposingText` followed by a `commitText`, or a commit plus a separate
- * separator commit. The difference is invisible in the final text but extremely visible to a
- * real editor (extra `onUpdateSelection` round trips, a composing region that briefly exists,
- * an undo stack with two entries instead of one). So each scenario pins
- * [dev.bbkb.ime.harness.FakeEditor.callLog] — the exact `InputConnection` call sequence — as
- * well as the resulting text, cursor and composing region.
- *
- * That makes these tests deliberately brittle in the one direction that matters: a refactor
- * that routes an entry point through a different sequence of editor calls fails here even when
- * the text comes out identical.
- *
- * ## The entry points pinned
- *
- * Committing is reached through eleven distinct methods on [CommitController] plus three more on
- * [InputLogic] that commit without going through it. Each `@Test` below names the one it covers;
- * the map lives in PHASE1C-SUMMARY.md at the worktree root.
+ * Characterises every commit entry point of the typing path ([CommitController] plus the
+ * [InputLogic] methods that commit directly; test names carry the epN number). Each scenario pins
+ * [dev.bbkb.ime.harness.FakeEditor.callLog] as well as text, cursor and region: the same final
+ * text reached by a different sequence of editor calls is a different result to a real editor.
  */
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [34], manifest = Config.NONE, instrumentedPackages = ["com.blackberry.nuanceshim"])
@@ -74,8 +55,8 @@ class CommitEntryPointsCharacterisationTest {
         settingsStatic = mockStatic(SettingsManager::class.java)
         settingsStatic.`when`<SettingsManager> { SettingsManager.getInstance() }.thenReturn(sm)
 
-        // commitGestureSuggestion ends by clearing the manual shift; the bare IME mock hands
-        // back null for the tracker and the path NPEs before it can be observed.
+        // commitGestureSuggestion ends by clearing the manual shift, which NPEs on the bare IME
+        // mock's null tracker.
         `when`(h.ime.getPhysicalKeyboardStateTracker())
             .thenReturn(mock(PhysicalKeyboardStateTracker::class.java))
     }
@@ -86,8 +67,6 @@ class CommitEntryPointsCharacterisationTest {
         subtypeStatic.close()
         h.close()
     }
-
-    // ── fixtures ────────────────────────────────────────────────────────────────
 
     private val NORMAL_FIELD = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_MULTI_LINE
 
@@ -127,7 +106,7 @@ class CommitEntryPointsCharacterisationTest {
     /** The exact `InputConnection` call sequence since the last arm/clear. */
     private fun log(): String = h.editor.callLog.joinToString(" ")
 
-    /** Alphabet page, no manual shift — the plain state every pick scenario here starts from. */
+    /** Alphabet page, no manual shift. */
     private fun symbolPages(): SymbolPageProvider = mock(SymbolPageProvider::class.java)
 
     private fun suggestions(vararg words: String): SuggestedWords {
@@ -141,8 +120,6 @@ class CommitEntryPointsCharacterisationTest {
         }
         return SuggestedWords(list, false, false, 0)
     }
-
-    // ── EP1: commitComposingOrReset(SettingsValues) ──────────────────────────────
 
     @Test
     fun ep1_commitComposingOrReset_whileComposing_commitsWordWithNoSeparator() {
@@ -167,8 +144,6 @@ class CommitEntryPointsCharacterisationTest {
         assertEquals("", log())
     }
 
-    // ── EP2: commitOrResetComposing(SettingsValues, InputSource) ─────────────────
-
     @Test
     fun ep2_commitOrResetComposing_whileComposing_commitsWord() {
         armComposing("world")
@@ -181,8 +156,8 @@ class CommitEntryPointsCharacterisationTest {
 
     @Test
     fun ep2_commitOrResetComposing_cursorMovedMidWord_resetsInsteadOfCommitting() {
-        // The tracker believes the caret sits inside the word, so this entry point abandons the
-        // commit and re-selects instead. The distinguishing trace is that no commitText is made.
+        // The tracker believes the caret is inside the word, so this abandons the commit and
+        // re-selects instead: no commitText is made.
         armComposing("world")
         h.inputLogic.mComposingTracker.setComposingCursorPosition(2)
         h.editor.callLog.clear()
@@ -197,12 +172,9 @@ class CommitEntryPointsCharacterisationTest {
         assertEquals("world", h.editor.text)
     }
 
-    // ── EP3: commitTypedWord(SettingsValues, String, InputSource) ────────────────
-
     @Test
     fun ep3_commitTypedWord_appendsSeparatorAsASecondCommit() {
-        // Load-bearing: the word and the separator are TWO commitText calls, not one. A
-        // consolidation that fuses them changes what the editor sees.
+        // The word and the separator are two commitText calls; fusing them changes what the editor sees.
         armComposing("hi")
 
         h.inputLogic.commitTypedWord(settings(), " ", InputSource.HARDWARE)
@@ -223,8 +195,7 @@ class CommitEntryPointsCharacterisationTest {
 
     @Test
     fun ep3_commitTypedWord_wordCharacterSeparator_isNotAppended() {
-        // The append gate in commitWordExtended requires the payload to be separator-class.
-        // A letter is not, so it is dropped — pinned so the spec move cannot start emitting it.
+        // The append gate in commitWordExtended requires a separator-class payload; a letter is dropped.
         armComposing("hi")
 
         h.inputLogic.commitTypedWord(settings(), "x", InputSource.HARDWARE)
@@ -232,8 +203,6 @@ class CommitEntryPointsCharacterisationTest {
         assertEquals("hi", h.editor.text)
         assertEquals("""commitText("hi",1)""", log())
     }
-
-    // ── EP4: commitWord(...) ────────────────────────────────────────────────────
 
     @Test
     fun ep4_commitWord_commitsGivenTextIgnoringTheTracker() {
@@ -257,12 +226,9 @@ class CommitEntryPointsCharacterisationTest {
         assertEquals(3, written)
     }
 
-    // ── EP5: commitWordExtended(..., forceSeparator) ─────────────────────────────
-
     @Test
     fun ep5_commitWordExtended_forceSeparator_appendsAWordCharacterPayload() {
-        // The `z` flag is the only way a non-separator payload gets appended. This is the gate
-        // CommitVoiceInputTest's letter-payload case rides on.
+        // The `z` flag is the only way a non-separator payload gets appended (CommitVoiceInputTest relies on it).
         armComposing("hi")
 
         commitController().commitWordExtended(
@@ -276,8 +242,8 @@ class CommitEntryPointsCharacterisationTest {
 
     @Test
     fun ep5_commitWordExtended_pendingAppendSpace_skipsTheSeparatorAndStepsTheCursor() {
-        // F9 / SS-3: mShouldAppendSpace means a separator already sits after the cursor, so the
-        // commit steps over it (newCursorPosition=2) and must NOT write one of its own.
+        // mShouldAppendSpace means a separator already follows the cursor, so the commit steps over
+        // it (newCursorPosition=2) and must not write one of its own.
         armComposing("hi", at = " ", cursor = 0)
         h.inputLogic.mShouldAppendSpace = true
         h.editor.callLog.clear()
@@ -293,8 +259,6 @@ class CommitEntryPointsCharacterisationTest {
         )
         assertFalse("the consume-once flag must be cleared", h.inputLogic.mShouldAppendSpace)
     }
-
-    // ── EP6: autoCorrectAndCommit / autoCorrectAndCommitExtended ────────────────
 
     @Test
     fun ep6_autoCorrectAndCommit_appliesTheCandidateAndReportsSeparatorConsumed() {
@@ -329,10 +293,8 @@ class CommitEntryPointsCharacterisationTest {
 
     @Test
     fun ep6_autoCorrectAndCommit_withNothingComposing_commitsNothingAndLeavesTheSeparatorToTheCaller() {
-        // With nothing composing, `getAutoCorrection()` is null and `getComposingText()` is "".
-        // This used to hit an "Impossible!" RuntimeException (unreachable only because every
-        // production caller checks isComposing() first). Owner decision 2026-09-22: it returns
-        // false — nothing was committed, the caller still owns the separator payload.
+        // With nothing composing there is no correction: returns false and the caller keeps the
+        // separator payload.
         armIdle("hi ", 3)
         val before = h.editor.text
 
@@ -385,8 +347,6 @@ class CommitEntryPointsCharacterisationTest {
         assertEquals("", log())
     }
 
-    // ── EP8: commitCharacter ────────────────────────────────────────────────────
-
     @Test
     fun ep8_commitCharacter_writesOneCodePointAsASingleCommit() {
         armIdle("hi", 2)
@@ -407,8 +367,6 @@ class CommitEntryPointsCharacterisationTest {
         assertEquals(0x1F600, h.editor.text.codePointAt(0))
     }
 
-    // ── EP9: commitTouchEventText ───────────────────────────────────────────────
-
     @Test
     fun ep9_commitTouchEventText_withNoActiveHighlight_isANoOp() {
         armIdle("hi", 2)
@@ -418,8 +376,6 @@ class CommitEntryPointsCharacterisationTest {
         assertEquals("hi", h.editor.text)
         assertEquals("", log())
     }
-
-    // ── EP10: handleManualPick ──────────────────────────────────────────────────
 
     @Test
     fun ep10_handleManualPick_commitsThePickAndItsSeparator() {
@@ -438,8 +394,8 @@ class CommitEntryPointsCharacterisationTest {
 
     @Test
     fun ep10_handleManualPick_separatorAlreadyAfterCursor_stepsOverItInstead() {
-        // The SS-3 cursor-skip commit: a space already follows the caret, so the pick must not
-        // add a second one — it commits with newCursorPosition=2 to land past the existing one.
+        // A space already follows the caret, so the pick commits with newCursorPosition=2 to land
+        // past it instead of adding a second one.
         armComposing("hel", at = " ", cursor = 0)
         h.inputLogic.mCurrentSuggestions = suggestions("hello")
         h.editor.callLog.clear()
@@ -457,8 +413,6 @@ class CommitEntryPointsCharacterisationTest {
         )
     }
 
-    // ── EP11: processClipboardMarker (the pre-commit text transform) ─────────────
-
     @Test
     fun ep11_processClipboardMarker_stripsBoundaryMarkers() {
         assertEquals("hello", h.inputLogic.processClipboardMarker("hello"))
@@ -468,8 +422,8 @@ class CommitEntryPointsCharacterisationTest {
 
     @Test
     fun ep11_processClipboardMarker_leadingLowerMarker_retiresTheRegionBeforeDeleting() {
-        // SS-5: the delete means "the char before the composing region" to a real editor, so the
-        // region has to be retired first or the cache and the editor disagree by one.
+        // The delete means "the char before the composing region" to a real editor, so the region
+        // has to be retired first or the cache and the editor disagree by one.
         armComposing("x")
 
         val cleaned = h.inputLogic.processClipboardMarker("%bhello")
@@ -481,16 +435,10 @@ class CommitEntryPointsCharacterisationTest {
         )
     }
 
-    // ── EP12: commitPredictionWord — the CJK / Japanese protocol ─────────────────
-
     /**
-     * Drive the prediction-word protocol with the locale predicates forced.
-     *
-     * The suite could not reach this path before: `handleManualPick` only routes here for a
-     * Chinese/Japanese subtype, and every locale predicate is a `LocaleUtils` static. Mocking
-     * that class is the only seam. `updateSuggestionsSync` is safe to let run — with
-     * `shouldShowLxxButton` at its default `false` it takes the "suggestions were not requested"
-     * branch and only calls the mock strip listener, so no worker thread is involved.
+     * Drives the prediction-word protocol with the `LocaleUtils` statics mocked (the only seam).
+     * `updateSuggestionsSync` is safe to run: with `shouldShowLxxButton` false it only calls the
+     * mock strip listener, so no worker thread is involved.
      */
     private fun predictionPick(
         word: String,
@@ -523,14 +471,9 @@ class CommitEntryPointsCharacterisationTest {
 
     @Test
     fun ep12_commitPredictionWord_chinese_commitsRawTextThenTheSeparator() {
-        // The pick is written with NO suggestion span, then the separator.
-        //
-        // The re-compose step in between (`setComposingTextInternal`) is CONDITIONAL and does
-        // not fire here: `createEventDispatcherForPickedSuggestion` consumed the whole composing
-        // buffer, so the tracker's text is empty and `setComposingTextWithHighlight` returns
-        // early on a zero-length sequence. It only reaches the editor when the pick covered
-        // part of the buffer and a remainder is left to keep composing — the phrase-split case
-        // at ComposingTextTracker's picked-suggestion branch.
+        // The pick is written with no suggestion span, then the separator. The re-compose step
+        // (`setComposingTextInternal`) does not fire: the pick consumed the whole buffer, and
+        // `setComposingTextWithHighlight` returns early on a zero-length sequence.
         armComposing("ni")
 
         predictionPick("你好")
@@ -544,18 +487,11 @@ class CommitEntryPointsCharacterisationTest {
 
     @Test
     fun ep12_commitPredictionWord_partialPick_reComposesTheRemainder() {
-        // The one scenario in which the prediction protocol's `setComposingTextInternal` step
-        // actually reaches the editor, and therefore the only test that can prove it survived
-        // the move into `executePredictionWord`.
-        //
-        // The tracker splits the composing buffer when the picked entry carries a Nuance
-        // `spell` SHORTER than what is being composed: "ni" out of "nihao" consumes the first
-        // two code points, and the remaining "hao" stays composing. So the editor sees the pick
-        // committed, then the leftover re-sent as a fresh composing region, then the separator.
-        //
-        // `getPointerSize() > splitIndex` is the second half of the split condition, which is
-        // why the buffer has to be seeded through `seedComposing` (it fills one coordinate pair
-        // per code point) rather than written straight to the editor.
+        // The only scenario where `setComposingTextInternal` reaches the editor: a pick whose
+        // `spell` ("ni") is shorter than the buffer ("nihao") splits it, so the editor sees the pick,
+        // then "hao" re-sent as a fresh composing region, then the separator.
+        // The split also needs `getPointerSize() > splitIndex`, hence `seedComposing` (one
+        // coordinate pair per code point) rather than writing to the editor directly.
         armComposing("nihao")
 
         val spelled = com.blackberry.nuanceshim.WordInfo().apply { word = "你"; spell = "ni" }
@@ -586,8 +522,8 @@ class CommitEntryPointsCharacterisationTest {
 
     @Test
     fun ep12_commitPredictionWord_japaneseKind7_clearsTheEngineAndTheTracker() {
-        // The one branch that discards state as part of committing: a kind-7 Japanese pick
-        // clears the engine buffer and the tracker, so the re-compose writes nothing back.
+        // A kind-7 Japanese pick clears the engine buffer and the tracker, so the re-compose writes
+        // nothing back.
         armComposing("ka")
 
         predictionPick("カ", kind = 7, chinese = false, japanese = true)
@@ -601,19 +537,11 @@ class CommitEntryPointsCharacterisationTest {
 
     @Test
     fun ep12_commitPredictionWord_underACjkLocaleALatinLetterCountsAsASeparator() {
-        // Not a typo in the fixture — this is what the separator test resolves to here, and it
-        // is worth pinning because it is the opposite of the Latin-script answer.
-        //
-        // `InputLogic.isWordSeparator` has two implementations: under a CJK locale it asks
-        // `isNotWordSeparatorForLocale(cp, subtypeLocale)` and negates it, everywhere else it
-        // asks `isWordCodePoint(cp)`. Under Chinese, an ASCII letter is NOT a word code point of
-        // the composing script, so it reads as a separator and the append gate lets it through.
-        // The same payload is dropped by the Latin-script word protocol
-        // (`ep3_commitTypedWord_wordCharacterSeparator_isNotAppended`).
-        //
-        // Also pins that the prediction protocol has no force-separator escape at all: unlike
-        // `executeWord` there is no `forceSeparator` term in its gate, so the locale's answer is
-        // the only thing that decides.
+        // Deliberate: under a CJK locale `isWordSeparator` negates
+        // `isNotWordSeparatorForLocale(cp, subtypeLocale)`, so an ASCII letter reads as a separator
+        // and is appended (the Latin path drops it, see
+        // `ep3_commitTypedWord_wordCharacterSeparator_isNotAppended`). The prediction gate has no
+        // forceSeparator term, so the locale alone decides.
         armComposing("ni")
 
         predictionPick("你", separator = "x")
@@ -621,12 +549,9 @@ class CommitEntryPointsCharacterisationTest {
         assertEquals("""commitText("你",1) commitText("x",1)""", log())
     }
 
-    // ── the four-copies invariant holds after every entry point ─────────────────
-
     @Test
     fun everyCommitEntryPoint_leavesTheCopiesConsistent() {
-        // The Phase-5 invariant, run after each protocol. It now covers the cursor rules too
-        // (see FourCopies R2/R3), which is what makes the cursor-skip cases below meaningful.
+        // Run after each protocol; FourCopies R2/R3 cover the cursor rules too.
         armComposing("hello")
         h.inputLogic.commitComposingOrReset(settings())
         h.fourCopies().assertConsistent()
@@ -651,10 +576,8 @@ class CommitEntryPointsCharacterisationTest {
 
     @Test
     fun cursorSkipCommit_keepsTheCachedCursorWithTheEditor() {
-        // Audit SS-3 as an INVARIANT rather than a hand-written assertion: the manual-pick path
-        // commits with newCursorPosition=2 to step over a separator already after the caret, and
-        // the RIC cache has to follow. FourCopies R2 is the rule; this is the scenario that puts
-        // the pipeline into the state where it can be broken.
+        // The manual-pick path commits with newCursorPosition=2 to step over a following separator,
+        // and the RIC cache has to follow (FourCopies R2).
         armComposing("hel", at = " ", cursor = 0)
         h.inputLogic.mCurrentSuggestions = suggestions("hello")
 

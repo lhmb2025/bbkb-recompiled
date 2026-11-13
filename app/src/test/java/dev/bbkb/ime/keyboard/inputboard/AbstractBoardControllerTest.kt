@@ -10,14 +10,9 @@ import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
 
 /**
- * §5.6 item 1: the board-controller skeleton the five boards were each re-implementing.
- *
- * The important thing this pins is what the base class must NOT do. `UnifiedBoardCoordinator`
- * exists because "which board is open" used to be derived from clobberable view state, and that
- * regression was proven on-device: a key-down side effect hid the view between a board key's down
- * and up, so the key-up handler saw "nothing open" and reopened the board instead of closing it.
- * The base class must not reintroduce any such derivation — no `getVisibility()`, no cached
- * "showing" flag of its own. It asks the subclass, every time.
+ * Pins what [AbstractBoardController] must not do: derive "which board is open" from view state (no
+ * `getVisibility()`, no cached showing flag). A side effect can hide the view between a board key's down and up;
+ * the base class must ask the subclass every time, or the key-up reopens the board instead of closing it.
  */
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [34], manifest = Config.NONE)
@@ -64,8 +59,6 @@ class AbstractBoardControllerTest {
         assertTrue(FakeBoard().isEnabled)
     }
 
-    // ── the show/hide guard ──────────────────────────────────────────────────
-
     @Test
     fun showOpensAClosedBoardExactlyOnce() {
         val board = FakeBoard()
@@ -99,8 +92,7 @@ class AbstractBoardControllerTest {
 
     @Test
     fun theBoardIsReopenableAfterHiding() {
-        // The regression UnifiedBoardCoordinator was created for: a board that has been hidden by
-        // a side effect must still open on the next request rather than getting stuck.
+        // A board hidden by a side effect must still open on the next request rather than getting stuck.
         val board = FakeBoard()
         board.show()
         board.viewIsUp = false // a side effect hid the view behind the controller's back
@@ -110,7 +102,7 @@ class AbstractBoardControllerTest {
         assertEquals(2, board.showCalls)
     }
 
-    // ── toggle: the board shortcuts' route with the input menu off ───────────
+    // Toggle: the board shortcuts' route with the input menu off.
 
     @Test
     fun toggleOpensAClosedBoardAndClosesItOnTheNextPress() {
@@ -157,8 +149,6 @@ class AbstractBoardControllerTest {
         assertTrue(board.isShowing)
     }
 
-    // ── no state of its own ──────────────────────────────────────────────────
-
     @Test
     fun theBaseClassCachesNoShowingState() {
         val board = FakeBoard()
@@ -176,9 +166,8 @@ class AbstractBoardControllerTest {
 
     @Test
     fun theBaseClassNeverDerivesShowingFromTheView() {
-        // peekBoardView() is only ever used to relayout. If the base class ever starts reading
-        // visibility off it, a board whose view was clobbered would report closed while open —
-        // exactly the on-device bug UnifiedBoardCoordinator was introduced to fix.
+        // peekBoardView() is only for relayout; reading visibility off it would report a clobbered board
+        // closed while open.
         val source = java.io.File("src/main/java/dev/bbkb/ime/keyboard/inputboard/AbstractBoardController.java")
             .takeIf { it.isFile }
             ?: java.io.File("app/src/main/java/dev/bbkb/ime/keyboard/inputboard/AbstractBoardController.java")
@@ -189,8 +178,6 @@ class AbstractBoardControllerTest {
         assertFalse("AbstractBoardController must not read getVisibility()", "getVisibility" in body)
         assertFalse("AbstractBoardController must not read isShown()", "isShown()" in body)
     }
-
-    // ── teardown ─────────────────────────────────────────────────────────────
 
     @Test
     fun destroyRunsSubclassTeardownAndThenDropsTheSharedReferences() {

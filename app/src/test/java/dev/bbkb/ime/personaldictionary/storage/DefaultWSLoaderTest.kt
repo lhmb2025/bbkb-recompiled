@@ -14,9 +14,7 @@ import java.util.Locale
 
 /**
  * The built-in shortcuts in assets/substitution_macros: each macros.json is a JSON array of
- * "<caps flag> <key> <expansion>" strings, read with org.json since Gson went.
- *
- * Robolectric for the real assets and the real `org.json` (an empty stub on the plain JVM).
+ * "<caps flag> <key> <expansion>" strings. Robolectric for the real assets and `org.json`.
  */
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [34])

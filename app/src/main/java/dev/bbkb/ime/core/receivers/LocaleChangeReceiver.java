@@ -14,10 +14,7 @@ import dev.bbkb.ime.core.locale.ResourceLocaleUtils;
 import java.util.List;
 import java.util.Locale;
 
-/**
- * BroadcastReceiver for handling system locale changes.
- * Extracted from BlackBerryIME to improve separation of concerns.
- */
+/** Switches to an enabled subtype matching a new system locale. */
 public class LocaleChangeReceiver extends BroadcastReceiver {
     
     private final BlackBerryIME ime;
@@ -34,9 +31,7 @@ public class LocaleChangeReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         List<InputMethodSubtype> listM4860a = RichInputMethodManager.getInstance().getEnabledSubtypesOfThisIme();
-        // Audit UT-7: Configuration.locale is deprecated (API 24) and disagrees with getLocales()[0]
-        // on a device whose primary locale is second in the LocaleList — which would misfire the
-        // subtype auto-switch this receiver performs. LocaleUtils is the project's helper.
+        // Not Configuration.locale: it can disagree with getLocales()[0] and misfire the switch.
         Locale locale = LocaleUtils.getConfigurationLocale(ime.getResources());
         if (locale.equals(ResourceLocaleUtils.getSubtypeLocale(subtypeManager.getCurrentSubtype()))) {
             return;

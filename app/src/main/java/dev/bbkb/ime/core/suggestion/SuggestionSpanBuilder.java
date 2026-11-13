@@ -29,9 +29,8 @@ public final class SuggestionSpanBuilder {
     }
 
     /**
-     * @param rememberPick whether a later pick from the editor's popup may be learned
-     *                     ({@link SuggestionPickLearner}); {@code false} when the session may not
-     *                     learn. The span and its alternatives are attached either way.
+     * @param rememberPick whether a pick from the popup may be learned ({@link SuggestionPickLearner});
+     *                     the span is attached either way
      */
     public static CharSequence getTextWithSuggestionSpan(Context context, String committedWord, SuggestedWords suggestedWords, boolean isBatchInput, boolean rememberPick) {
         if (TextUtils.isEmpty(committedWord) || suggestedWords.isEmpty() || suggestedWords.isValidInputStyle() || suggestedWords.isAutoCorrection()) {

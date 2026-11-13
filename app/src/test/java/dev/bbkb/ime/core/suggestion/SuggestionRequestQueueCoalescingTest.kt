@@ -20,19 +20,13 @@ import java.util.concurrent.CountDownLatch
 import java.util.concurrent.TimeUnit
 
 /**
- * The worker queue drops a queued request as soon as a newer one arrives, unless the request was
- * sent with `keep` (a sync update the main thread is parked on, a gesture-commit prediction).
- * Before this, a worker that fell behind ran every queued request, each a whole-word engine
- * replay for text that had already changed.
+ * The worker queue drops a queued request when a newer one arrives, unless it was sent with `keep`
+ * (a sync update the main thread waits on, a gesture-commit prediction).
  */
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [34], manifest = Config.NONE)
 class SuggestionRequestQueueCoalescingTest {
-
-    /**
-     * The queue's Handler is on the engine thread, which Robolectric runs for real. Park that
-     * thread until the requests are all queued, so none can run before the next one arrives.
-     */
+    /** Robolectric runs the engine thread for real; park it so all requests queue before any runs. */
     private fun <T> withEngineThreadParked(block: () -> T): T {
         val release = CountDownLatch(1)
         val parked = CountDownLatch(1)
@@ -54,7 +48,6 @@ class SuggestionRequestQueueCoalescingTest {
         val queue = SuggestionRequestQueue(ime, mock(InputLogic::class.java))
         val callback = mock(SuggestionEngine.SuggestionCallback::class.java)
         try {
-            // The engine thread is parked, so all four are queued together.
             withEngineThreadParked {
                 queue.sendToWorkerThread(10, callback)          // superseded by 11
                 queue.sendToWorkerThread(11, callback)          // superseded by 12

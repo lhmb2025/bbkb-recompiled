@@ -7,45 +7,30 @@ import dev.bbkb.ime.core.device.config.model.TouchKeypadConfig;
 import dev.bbkb.ime.core.device.config.model.TouchKeypadConfig.SourcePreference;
 
 /**
- * Which keypad touch source should run on this device. A pure function of the profile's
- * {@code <touch-keypad>}, the Android version and whether the OS has enumerated the pad, so it is
- * the same answer everywhere it is asked (the IME, and the Touch surface helper screen).
- *
- * <p>Selection is automatic, and a profile can pin it with {@code source}:
+ * Which keypad touch source runs: a pure function of the profile's {@code <touch-keypad>}, the SDK
+ * level and whether the pad is enumerated. The profile's {@code source} pin:
  * <ul>
- *   <li>{@code auto} (default) — the native source when the OS delivers the pad to a focused IME,
- *       otherwise the privileged (Shizuku) reader;</li>
- *   <li>{@code native} — the native source only; never the privileged reader on this device;</li>
- *   <li>{@code shizuku} — always the privileged reader (for its exclusive grab); the native
- *       source stays off.</li>
+ *   <li>{@code auto} (default): native when the OS delivers the pad to a focused IME, else Shizuku;</li>
+ *   <li>{@code native}: native only;</li>
+ *   <li>{@code shizuku}: always the Shizuku reader (for its exclusive grab).</li>
  * </ul>
- * "The OS delivers the pad" is {@code native-min-sdk <= SDK_INT} when the profile gives one, and
- * otherwise "the pad is enumerated".
- *
- * <p>A selection says which source runs, not how that source is doing: the reader's live state
- * (Shizuku installed, running, granted, streaming) belongs to {@link ShizukuTouchSource}, and
- * {@link Selection#shizukuStatus(TouchSourceStatus)} passes it through when the reader is the
- * choice.
+ * "The OS delivers the pad" is {@code native-min-sdk <= SDK_INT} when given, else "pad enumerated".
  */
 public final class TouchSourceSelector {
 
     private TouchSourceSelector() {}
 
-    /** The source that should run. */
     public enum Choice { NONE, NATIVE, SHIZUKU }
 
-    /** A selection and why it was made. */
     public static final class Selection {
         @NonNull public final Choice choice;
         @NonNull public final TouchSourceStatus.Reason reason;
-        /** The profile's pin, or null when the profile declares no touch keypad. */
+        /** Null when the profile declares no touch keypad. */
         @Nullable public final SourcePreference preference;
-        /** Whether the OS had enumerated the pad's InputDevice when this was decided. */
         public final boolean padEnumerated;
         /**
-         * Whether the native route can apply on this Android version at all: a declared pad, not
-         * pinned to the reader, and {@code native-min-sdk} (when given) reached. It may still wait
-         * for the pad to be enumerated (the Titan 2's Scroll assistant).
+         * A declared pad not pinned to Shizuku, with {@code native-min-sdk} (if given) reached. It may
+         * still wait for the pad to be enumerated (the Titan 2's Scroll assistant).
          */
         public final boolean nativeRouteApplies;
 
@@ -59,12 +44,7 @@ public final class TouchSourceSelector {
             this.nativeRouteApplies = nativeRouteApplies;
         }
 
-        /**
-         * The native source's status as far as the selection decides it. Chosen: IDLE until the
-         * source attaches, or UNAVAILABLE / PAD_NOT_ENUMERATED while the OS has not enumerated
-         * the pad (on the Titan 2 that is the OEM Scroll assistant being off). Not chosen:
-         * NOT_APPLICABLE, with the reason.
-         */
+        /** Chosen: IDLE, or PAD_NOT_ENUMERATED (Titan 2: Scroll assistant off). Else NOT_APPLICABLE. */
         @NonNull
         public TouchSourceStatus nativeStatus() {
             if (choice == Choice.NATIVE) {
@@ -76,11 +56,7 @@ public final class TouchSourceSelector {
             return TouchSourceStatus.of(TouchSourceStatus.State.NOT_APPLICABLE, reason);
         }
 
-        /**
-         * The privileged reader's status. Chosen: {@code reader}, the reader's own live status
-         * ({@link ShizukuTouchSource#statusOf}). Not chosen: NOT_APPLICABLE, with the reason it is
-         * not needed or not allowed.
-         */
+        /** Chosen: {@code reader}, the reader's live status. Else NOT_APPLICABLE with the reason. */
         @NonNull
         public TouchSourceStatus shizukuStatus(@NonNull TouchSourceStatus reader) {
             if (choice == Choice.SHIZUKU) {
@@ -103,10 +79,7 @@ public final class TouchSourceSelector {
         }
     }
 
-    /**
-     * Whether the OS hands the pad's events to a focused IME window: from {@code native-min-sdk}
-     * when the profile gives one, otherwise whenever the pad is enumerated.
-     */
+    /** Whether the OS hands the pad's events to a focused IME window. */
     public static boolean osDeliversPad(@NonNull TouchKeypadConfig declared, int sdkInt,
                                         boolean padEnumerated) {
         return declared.hasNativeMinSdk() ? sdkInt >= declared.nativeMinSdk : padEnumerated;
@@ -120,7 +93,6 @@ public final class TouchSourceSelector {
 
     /**
      * @param declared the profile's {@code <touch-keypad>}, or null
-     * @param sdkInt {@code Build.VERSION.SDK_INT}
      * @param padEnumerated whether the scanner found the pad's InputDevice
      */
     @NonNull

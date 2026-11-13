@@ -45,10 +45,8 @@ public final class ComposingTextTracker {
     private int mAutoCorrectionScore;
 
     /**
-     * Counts edits of the composing text; every site that drops the auto-correction candidate
-     * because the text changed bumps it. A suggestion request records the count it was made at,
-     * so a reply that arrives after a later keystroke can be told apart from a current one (the
-     * async race in {@code SuggestionCoordinator.flushPendingSuggestions}).
+     * Bumped by every edit that drops the auto-correction candidate. A suggestion request records it,
+     * so a reply arriving after a later keystroke can be told apart from a current one.
      */
     private int mEditCount;
 
@@ -87,28 +85,19 @@ public final class ComposingTextTracker {
 
     private InputMethodCallback mInputMethodConverter;
 
-    /**
-     * The engine, once resolved. Volatile: it is resolved inside an engine-thread op (see
-     * {@link #engine()}) and read again by later ops.
-     */
+    /** Volatile: resolved inside an engine-thread op ({@link #engine()}) and read by later ops. */
     private volatile NuanceSDK mNuanceSDK;
 
     /**
-     * The engine this tracker was built with, or null for the IME's tracker, which resolves the
-     * primary engine inside each op ({@link #mEngineSource}). The spell checker's tracker is built
-     * over the secondary engine and must keep addressing that one.
+     * The engine this tracker was built with (the spell checker's secondary engine), or null for the
+     * IME's tracker, which resolves the primary inside each op ({@link #mEngineSource}).
      */
     private final NuanceSDK mFixedSdk;
 
     /**
-     * Wave 3 Phase A: the tracker never calls the engine on the calling thread. Every engine call a
-     * tracker method makes is recorded here as a step, with its symbols and shift state computed
-     * on the caller and captured as values, and the steps of one tracker call are posted to the
-     * engine thread as ONE op ({@link #flushEngineSteps}), in FIFO order with every other op, so
-     * nothing (a suggestion request, a learn op) can land between a clear and its re-feed. A call
-     * that needs a result from the engine (a converter's composed text) runs the pending steps and
-     * its read in one bounded query instead ({@link #queryEngine}). Guarded by this tracker's
-     * monitor, like the rest of its state.
+     * Engine calls never run on the calling thread: each is recorded here with values captured on the
+     * caller, and one tracker call's steps post as a single FIFO op ({@link #flushEngineSteps}) so nothing
+     * lands between a clear and its re-feed. Reads use {@link #queryEngine}. Guarded by this monitor.
      */
     private final ArrayList<EngineStep> mPendingSteps = new ArrayList<>();
 
@@ -116,9 +105,8 @@ public final class ComposingTextTracker {
     private int mBatchDepth;
 
     /**
-     * How long a converter language (Korean, Vietnamese Telex, Japanese Romaji) waits for its
-     * composed text. Steady state is one context switch; this only bounds a wait behind a language
-     * load on the loader thread, after which the unconverted text stays.
+     * How long a converter language (Korean, Telex, Romaji) waits for its composed text. Only bounds a
+     * wait behind a language load; after it the unconverted text stays.
      */
     private static final long CONVERTER_QUERY_TIMEOUT_MS = 2000L;
 
@@ -144,10 +132,8 @@ public final class ComposingTextTracker {
     }
 
     /**
-     * Where the engine comes from when it was not handed over at construction. The IME's tracker
-     * is built in the service constructor, before the engine exists (audit P-6: creating it there
-     * loaded the native library on the main thread before onCreate), so it asks for the engine at
-     * its first real use instead. Null for a tracker constructed with an engine.
+     * Engine supplier for a tracker built without one: the IME's tracker is built in the service
+     * constructor, before the engine exists, so it resolves the engine at first real use. Null otherwise.
      */
     private final EngineSource mEngineSource;
 
@@ -160,12 +146,6 @@ public final class ComposingTextTracker {
 
     private TouchPointerCoordTracker mCoordinateTracker = new TouchPointerCoordTracker(48);
 
-    
-    /**
-     * TI-39: tri-state for the URL/email caches below. Was the jadx name {@code a}, and public -
-     * the last un-renamed public type in this package's de-obfuscation scope. Nothing outside this
-     * class ever used it, so it is private now.
-     */
     private enum TriState {
         NOT_INITIALIZED,
         FALSE,
@@ -213,12 +193,6 @@ public final class ComposingTextTracker {
         CONVERTER_REGISTRY.put("RomajiConverter", RomajiInputProcessor.class);
     }
 
-    /**
-     * Constructs a new ComposingTextTracker bound to the given NuanceSDK instance.
-     * Resets all composing, prediction, and recorrection state to initial values.
-     *
-     * @param nuanceSDK the NuanceSDK instance used to process key symbols and shift state
-     */
     public ComposingTextTracker(NuanceSDK nuanceSDK) {
         this(nuanceSDK, null);
     }
@@ -248,9 +222,8 @@ public final class ComposingTextTracker {
     }
 
     /**
-     * The engine this tracker drives, resolved on first use when it was not given at construction.
-     * Resolving can wait for the engine's background start (NuanceSDKManager), which is why it is
-     * not done in the constructor. Only called inside engine-thread ops.
+     * Resolved on first use, which can wait for the engine's background start. Only called inside
+     * engine-thread ops.
      */
     private NuanceSDK engine() {
         NuanceSDK sdk = this.mNuanceSDK;
@@ -320,11 +293,9 @@ public final class ComposingTextTracker {
     }
 
     /**
-     * Runs the pending steps and then {@code query} in one engine-thread op and waits for the
-     * answer, up to {@link #CONVERTER_QUERY_TIMEOUT_MS}. Returns {@code fallback} on a timeout (the
-     * op still runs later, after everything posted before it, so the feeds are never lost) or when
-     * there is no engine. The op touches nothing of this tracker but the values captured for it:
-     * the caller holds this tracker's monitor while it waits.
+     * Runs the pending steps then {@code query} in one engine op, waiting up to the timeout. Returns
+     * {@code fallback} on a timeout (the op still runs later, so feeds are never lost) or with no engine.
+     * The op may touch only captured values: the caller holds this monitor while it waits.
      */
     private <T> T queryEngine(final T fallback, final EngineQuery<T> query) {
         final EngineStep[] steps = drainEngineSteps();
@@ -351,11 +322,8 @@ public final class ComposingTextTracker {
     }
 
     /**
-     * Debug builds: the engine thread must never read the IME's tracker. The main thread can hold
-     * this tracker's monitor while it waits for an engine query, so a read from the engine thread
-     * would deadlock until that query timed out; the request path reads a {@link ComposingSnapshot}
-     * instead. The spell checker's tracker (built over a fixed engine) is legitimately read on the
-     * engine thread, inside its own query.
+     * Debug builds: the engine thread must never read the IME's tracker (it would deadlock, see
+     * {@link ComposingSnapshot}). The spell checker's fixed-engine tracker is read there legitimately.
      */
     private void assertNotReadOnEngineThread(String what) {
         if (BuildConfig.DEBUG && this.mFixedSdk == null && EngineThreads.onEngineThread()) {
@@ -364,12 +332,6 @@ public final class ComposingTextTracker {
         }
     }
 
-    /**
-     * Returns whether a language-specific input method converter (e.g. Hangul, Vietnamese Telex)
-     * is currently installed and active.
-     *
-     * @return {@code true} if an input method converter is set
-     */
     public synchronized boolean hasInputMethodConverter() {
         assertNotReadOnEngineThread("hasInputMethodConverter");
         return this.mInputMethodConverter != null;
@@ -381,32 +343,19 @@ public final class ComposingTextTracker {
     }
 
     /**
-     * Installs the given input method converter. Called directly when a converter instance
-     * is available rather than looking it up by name.
-     *
      * @param abstractC0679d the converter to install, or {@code null} to remove the current one
      */
     public void setInputMethodConverter(AbstractInputProcessor abstractC0679d) {
         this.mInputMethodConverter = abstractC0679d;
     }
 
-    /**
-     * Returns the type of the currently active input method converter.
-     *
-     * @return the converter type enum value, or {@link InputMethodCallback.ConverterType#NOT_DEFINED} if
-     *         no converter is installed
-     */
     public synchronized InputMethodCallback.ConverterType getConverterType() {
         return this.mInputMethodConverter != null ? this.mInputMethodConverter.getConverterType() : InputMethodCallback.ConverterType.NOT_DEFINED;
     }
 
     /**
-     * Looks up a converter by its registered name and installs it. Known names are
-     * {@code "VietnameseTelexConverter"}, {@code "HangulConverter"}, and
-     * {@code "RomajiConverter"}. Passing an empty or null name removes the current converter.
-     *
+     * Installs the converter registered under {@code str}; empty, null or unknown names clear it.
      * @param str the converter name, or empty/null to clear the converter
-     * @throws RuntimeException if the name is non-empty but not registered, or instantiation fails
      */
     public synchronized void setConverterByName(String str) {
         if (TextUtils.isEmpty(str)) {
@@ -416,10 +365,7 @@ public final class ComposingTextTracker {
         }
         if (!str.equals(this.mConverterName)) {
             this.mConverterName = str;
-            // TI-9: Class.newInstance() is deprecated since Java 9 - it propagates checked
-            // exceptions without declaring them, which is why this needed three catch clauses,
-            // one of them for the NPE thrown by an unknown registry key. An unknown converter is
-            // a configuration problem, not a reason to crash the IME on a locale switch.
+            // An unknown converter is a configuration problem, not a reason to crash on a locale switch.
             Class<? extends InputMethodCallback> converterClass = CONVERTER_REGISTRY.get(this.mConverterName);
             if (converterClass == null) {
                 if (BuildConfig.DEBUG) android.util.Log.w("ComposingTextTracker", "Converter " + str + " is requested, but it is not listed in IME");
@@ -434,11 +380,7 @@ public final class ComposingTextTracker {
         }
     }
 
-    /**
-     * Resets all composing-session state: clears the composing text buffer, coordinate tracker,
-     * auto-correction, shift state, prediction mode, and recorrection tracking. Also resets
-     * the NuanceSDK shift state to 0.
-     */
+    /** Resets all composing-session state, including the engine's shift state. */
     public synchronized void clearAll() {
         this.mComposingText.clear();
         this.mCoordinateTracker.reset();
@@ -457,29 +399,16 @@ public final class ComposingTextTracker {
         this.mPickedSuggestion = null;
         this.mCodePointCount = 0;
         this.mShiftState = 0;
-        // Audit EB-5: was NuanceSDKManager.getInstance() — the PRIMARY engine — while every other
-        // engine call in this class uses the injected instance. The spell-checker runs in this
-        // same process on a tracker wrapping the SECONDARY engine, so each spellCheckWord zeroed
-        // the IME's primary shift state from an IPC thread while leaving the secondary's untouched.
-        // Same-value suppression in setShiftState then kept it un-repaired until the tracker's own
-        // shift value genuinely changed. IME behaviour is unchanged: InputLogic's tracker wraps
-        // getInstance() anyway (InputLogic.java:167). Posted to this tracker's engine (Phase A).
+        // This tracker's engine, never the primary: the spell checker's tracker wraps the secondary
+        // engine, and zeroing the primary from its IPC thread broke the IME's shift state.
         engineStep(sdk -> sdk.setShiftState(0));
         this.mRecorrectionState.reset();
         recalculateTextStats(false);
     }
 
     /**
-     * Inserts the given code point at the in-composing cursor position, preserving any
-     * characters on either side. Advances {@link #mComposingCursorPos} past the inserted
-     * code point. Rebuilds {@link #mNuanceSDK} state from scratch (NuanceSDK is append-only,
-     * so insert-in-middle requires a clear + re-feed of the full buffer).
-     *
-     * <p>Use this when the user types a character with the cursor inside an active
-     * composing word; the previous behaviour (truncate-then-append) silently dropped
-     * every character after the cursor.
-     *
-     * @param codePoint Unicode code point to insert
+     * Inserts {@code codePoint} at the composing cursor and advances it. The engine is append-only,
+     * so a mid-buffer edit clears and re-feeds the whole buffer.
      */
     public final synchronized void insertCodePointAtCursor(int codePoint) {
         if (!Character.isValidCodePoint(codePoint)) {
@@ -494,9 +423,8 @@ public final class ComposingTextTracker {
         }
         this.mComposingText.insert(charIndex, inserted);
         this.mComposingCursorPos += 1;
-        // Force a full stats recount: recalculateTextStats(false) only recounts when the
-        // buffer shrank, and the append path's incremental counting in
-        // updateCoordinatesAndCaps does not run for this insert.
+        // Full recount: the false path only recounts when the buffer shrank, and the append path's
+        // incremental counting does not run for this insert.
         recalculateTextStats(true);
         // The append path clears any pending auto-correction on every event; the candidate
         // computed for the pre-edit text must not survive the edit either.
@@ -504,21 +432,12 @@ public final class ComposingTextTracker {
         rebuildNuanceFromComposing();
     }
 
-    /**
-     * Deletes one code point immediately before the in-composing cursor position,
-     * preserving any characters after the cursor. Moves the cursor back by one. Rebuilds
-     * {@link #mNuanceSDK} state from scratch (same constraint as
-     * {@link #insertCodePointAtCursor(int)}).
-     *
-     * <p>No-op if the cursor is at the start of composing or composing is empty.
-     */
+    /** Deletes the code point before the composing cursor (no-op at the start) and re-feeds the engine. */
     public final synchronized void deleteCodePointBeforeCursor() {
         if (this.mComposingCursorPos <= 0 || this.mComposingText.length() == 0) {
             return;
         }
         int charIndexAfter = Character.offsetByCodePoints(this.mComposingText, 0, this.mComposingCursorPos);
-        // TI-23: the CharSequence overload reads the code point in place; the old
-        // mComposingText.toString().codePointBefore(...) copied the whole buffer first.
         int deletedCp = Character.codePointBefore(this.mComposingText, charIndexAfter);
         int charIndexBefore = charIndexAfter - Character.charCount(deletedCp);
         if (BuildConfig.DEBUG) {
@@ -528,29 +447,22 @@ public final class ComposingTextTracker {
         this.mComposingText.delete(charIndexBefore, charIndexAfter);
         this.mComposingCursorPos -= 1;
         recalculateTextStats(false);
-        // Same rationale as insertCodePointAtCursor: the pending auto-correction was
-        // computed for the pre-edit text and must not survive the edit.
+        // The pending auto-correction was computed for the pre-edit text.
         clearAutoCorrection();
         rebuildNuanceFromComposing();
     }
 
     /**
-     * Clears the NuanceSDK character buffer and re-feeds the entire composing buffer in
-     * order. NuanceSDK is append-only — there is no "insert/delete at position N" entry
-     * point — so any mid-buffer edit requires a full clear + re-feed to keep engine state
-     * coherent. This is a soft regression for CJK mid-word-edit candidate quality (the
-     * engine rebuilds without knowing where the edit happened) but is correct for
-     * non-CJK locales.
+     * Clears the engine and re-feeds the composing buffer (the engine is append-only). CJK candidates
+     * can be worse after a mid-word edit, since the engine does not know where it happened.
      */
     private void rebuildNuanceFromComposing() {
-        // One op: the clear and the whole re-feed, so nothing can run between them (Phase A).
+        // One op, so nothing can run between the clear and the re-feed.
         final InputMethodCallback converter = this.mInputMethodConverter;
         InputMethodCallback.ConverterType type = converter != null ? converter.getConverterType() : InputMethodCallback.ConverterType.NOT_DEFINED;
         if (type == InputMethodCallback.ConverterType.HANGUL || type == InputMethodCallback.ConverterType.VIETNAMESE_TELEX) {
-            // Same routing as processNuanceAndConverter: these converters feed the engine jamo,
-            // or base letters plus explicit accents, never the composed characters. Feeding "한"
-            // as one symbol leaves the engine unable to attach the next jamo to it. processSymbols
-            // only feeds; it keeps no converter state, so it may run on the engine thread.
+            // These converters feed the engine jamo or base letters plus accents, never composed
+            // characters. processSymbols keeps no converter state, so it may run on the engine thread.
             final String text = this.mComposingText.toString();
             engineStep(sdk -> {
                 sdk.clear();
@@ -566,7 +478,6 @@ public final class ComposingTextTracker {
             int cp = Character.codePointAt(this.mComposingText, i);
             if (cp <= 0xFFFF) {
                 char c = (char) cp;
-                // TI-37: see processNuanceAndConverter - one lookup, one box.
                 Character strokeKey = STROKE_TO_NUMBER_MAP.get(c);
                 Character cangjieKey = CANGJIE_RADICAL_TO_KEY_MAP.get(c);
                 if (strokeMode && strokeKey != null) {
@@ -588,6 +499,9 @@ public final class ComposingTextTracker {
         });
     }
 
+    /**
+     * @param z true to recount digits and capitals even if the text grew
+     */
     private final synchronized void recalculateTextStats(boolean z) {
         int i = this.mCodePointCount;
         TriState aVar = TriState.NOT_INITIALIZED;
@@ -611,47 +525,22 @@ public final class ComposingTextTracker {
         }
     }
 
-    /**
-     * Returns the number of Unicode code points currently in the composing text buffer.
-     *
-     * @return code point count, 0 if not composing
-     */
     public synchronized int getCodePointCount() {
         return this.mCodePointCount;
     }
 
-    /**
-     * Returns {@code true} if the composing text contains exactly one Unicode code point.
-     * Used to decide whether to show single-character suggestions.
-     *
-     * @return {@code true} if code point count equals 1
-     */
     public synchronized boolean isSingleCodePoint() {
         return getCodePointCount() == 1;
     }
 
-    /**
-     * Returns {@code true} if there is any active composing text (i.e., at least one code point).
-     *
-     * @return {@code true} if composing text is non-empty
-     */
     public synchronized boolean isComposing() {
         assertNotReadOnEngineThread("isComposing");
         return getCodePointCount() > 0;
     }
 
-    /**
-     * Returns {@code true} if every non-whitespace character in the composing text is a digit.
-     * Used to suppress auto-correction in numeric input sequences.
-     *
-     * @return {@code true} if composing is non-empty and entirely digits
-     */
+    /** True if composing is non-empty and every non-whitespace character is a digit. */
     public synchronized boolean isAllDigits() {
         if (getCodePointCount() > 0) {
-            // TI-10: this used to be
-            // `mDigitCount == mComposingText.toString().replaceAll("\\s+", "").length()`, which
-            // compiled a Pattern and made two full string copies to obtain a length - once per
-            // key-repeat tick on the backspace path.
             int nonWhitespace = 0;
             for (int k = 0; k < this.mComposingText.length(); k++) {
                 if (!Character.isWhitespace(this.mComposingText.charAt(k))) {
@@ -663,20 +552,11 @@ public final class ComposingTextTracker {
         return false;
     }
 
-    /**
-     * Returns the touch pointer coordinate tracker associated with the current composing session.
-     * Coordinates are used by the NuanceSDK for gesture and touch-based suggestion scoring.
-     *
-     * @return the active {@link TouchPointerCoordTracker}
-     */
     public synchronized TouchPointerCoordTracker getCoordinateTracker() {
         return this.mCoordinateTracker;
     }
 
     /**
-     * Processes an input event and updates the composing text buffer, using shift state 0.
-     * Delegates to {@link #processInputEventWithShift(InputEvent, int)}.
-     *
      * @param c0914a the input event to process (key press or backspace)
      */
     public synchronized void processInputEvent(InputEvent c0914a) {
@@ -684,12 +564,8 @@ public final class ComposingTextTracker {
     }
 
     /**
-     * Processes an input event and updates the composing text buffer with the given shift state.
-     * Handles backspace (removes last code point or delegates to converter), appends typed text,
-     * updates coordinates, updates NuanceSDK, and runs any active converter transform.
-     *
+     * @param i keyboard shift state (from {@code InputEventContext.symbolPageOrder})
      * @param c0914a the input event to process
-     * @param i      the current keyboard shift state (from {@code InputEventContext.symbolPageOrder})
      */
     public synchronized void processInputEventWithShift(InputEvent c0914a, int i) {
         if (c0914a == null) {
@@ -703,7 +579,11 @@ public final class ComposingTextTracker {
         }
     }
 
-    /** {@link #processInputEventWithShift}; its engine calls become one op (see {@link #mPendingSteps}). */
+    /**
+     * {@link #processInputEventWithShift}; its engine calls become one op (see {@link #mPendingSteps}).
+     * @param c0914a the input event to process (key press or backspace)
+     * @param i the shift state to apply
+     */
     private void processInputEventInBatch(InputEvent c0914a, int i) {
         int iM4319b;
         boolean z;
@@ -738,8 +618,10 @@ public final class ComposingTextTracker {
         processNuanceAndConverter(z ? false : true, c0914a, iM4319b);
     }
 
+    /**
+     * @param i the current composing text length
+     */
     private void deleteLastCodePoint(int i) {
-        // TI-23: no full-buffer String copy just to read one code point.
         int iCodePointBefore = Character.codePointBefore(this.mComposingText, i);
         if (i == 1 && !HangulInputProcessor.isHangulSyllable(iCodePointBefore)) {
             this.mComposingText.clear();
@@ -754,10 +636,8 @@ public final class ComposingTextTracker {
     }
 
     private boolean processConverterBackspace() {
-        // The Telex converter ends its revert with an engine clearOneSymbol, so the revert runs on
-        // the engine thread (with copies of the text and coordinates) and its result is awaited.
-        // On a timeout it counts as "nothing reverted" and the plain delete below runs; the late
-        // revert then still pops its history, which is the one place a 2 s stall can misstep.
+        // The Telex revert ends with an engine clearOneSymbol, so it runs on the engine thread on copies
+        // and is awaited. A timeout counts as nothing reverted; the late revert still pops its history.
         final InputMethodCallback converter = this.mInputMethodConverter;
         final String text = this.mComposingText.toString();
         final TouchPointerCoordTracker coords = copyCoordinates();
@@ -773,6 +653,9 @@ public final class ComposingTextTracker {
         return true;
     }
 
+    /**
+     * @param c0914a the input event to process (key press or backspace)
+     */
     private int appendInputEventText(InputEvent c0914a) {
         CharSequence charSequenceM5933n = c0914a.getOutputText();
         int iCodePointCount = Character.codePointCount(charSequenceM5933n, 0, charSequenceM5933n.length());
@@ -782,6 +665,11 @@ public final class ComposingTextTracker {
         return iCodePointCount;
     }
 
+    /**
+     * @param c0914a the input event to process (key press or backspace)
+     * @param i the number of code points just added
+     * @param i2 the char offset where they start
+     */
     private void updateCoordinatesAndCaps(InputEvent c0914a, int i, int i2) {
         boolean z;
         if (i > 0) {
@@ -821,6 +709,11 @@ public final class ComposingTextTracker {
         }
     }
 
+    /**
+     * @param z true to feed the converter (false when it already handled a backspace)
+     * @param c0914a the input event to process (key press or backspace)
+     * @param i the code point count change (negative for a delete)
+     */
     private void processNuanceAndConverter(boolean z, InputEvent c0914a, int i) {
         final InputMethodCallback converter = this.mInputMethodConverter;
         CharSequence charSequenceM5933n = c0914a.getOutputText();
@@ -831,10 +724,8 @@ public final class ComposingTextTracker {
                 final String text = charSequenceM5933n.toString();
                 feed = sdk -> converter.processSymbols(text, sdk);
             } else {
-                // Which symbol each character feeds is decided here, from the published facts
-                // (no engine call), and the op only replays the decision.
-                // B-5: the script lookup allocates (String[] + Locales), so resolve it only when a
-                // character actually reaches that branch.
+                // Each character's symbol is decided here from the published facts (no engine call)
+                // and the op only replays it. The script lookup allocates, so it is resolved lazily.
                 int iM5599a = Integer.MIN_VALUE;
                 Boolean strokeMode = null;
                 final int n = charSequenceM5933n.length();
@@ -842,8 +733,6 @@ public final class ComposingTextTracker {
                 final boolean[] explicit = new boolean[n];
                 for (int i2 = 0; i2 < n; i2++) {
                     char cCharAt = charSequenceM5933n.charAt(i2);
-                    // TI-37: single map lookup each instead of containsKey()+get(), and one
-                    // Character box per lookup instead of two.
                     Character strokeKey = STROKE_TO_NUMBER_MAP.get(cCharAt);
                     Character cangjieKey = CANGJIE_RADICAL_TO_KEY_MAP.get(cCharAt);
                     if (strokeKey != null && (strokeMode != null ? strokeMode
@@ -873,9 +762,8 @@ public final class ComposingTextTracker {
         }
         updateRecorrectionSnapshot();
         if (converter != null && z) {
-            // A converter language shows the engine's composed text, so the feed and the
-            // conversion run as one bounded query (the converter only ever runs inside it, on
-            // copies of the text and coordinates). On a timeout the unconverted text stays.
+            // A converter language shows the engine's composed text, so feed and conversion run as
+            // one bounded query on copies. On a timeout the unconverted text stays.
             final EngineStep feedStep = feed;
             final String composing = this.mComposingText.toString();
             final TouchPointerCoordTracker coords = copyCoordinates();
@@ -900,21 +788,13 @@ public final class ComposingTextTracker {
     }
 
     /**
-     * Sets the cursor position within the composing text, in code point units.
-     * A position equal to the code point count means the cursor is at the end.
-     *
+     * In code point units; equal to the code point count means at the end.
      * @param i the new in-composing cursor position (0 = before first character)
      */
     public synchronized void setComposingCursorPosition(int i) {
         this.mComposingCursorPos = i;
     }
 
-    /**
-     * Returns {@code true} if the in-composing cursor has been moved away from the end
-     * of the composing text (i.e., the user navigated backwards within the composing span).
-     *
-     * @return {@code true} if cursor position differs from code point count
-     */
     public synchronized boolean isCursorMoved() {
         return this.mComposingCursorPos != this.mCodePointCount;
     }
@@ -924,19 +804,9 @@ public final class ComposingTextTracker {
     }
 
     /**
-     * Moves the in-composing cursor by the given number of code points.
-     * Positive values move forward; negative values move backward.
-     * Returns {@code false} if the movement cannot be satisfied exactly (e.g., hits a boundary
-     * or a supplementary character boundary misalignment).
-     *
-     * <p>A successful move that lands on position 0 (immediately before the first character)
-     * returns {@code true}. The original implementation returned {@code false} there, which
-     * made {@code onUpdateSelection} treat the move as a failure and commit the word —
-     * inconsistent with every other in-word position, which keeps the word composing.
-     * Deliberate divergence from the original; see docs/archived/2026-06_fable-audits-and-gesture-rebuild/2026-06_composition-pipeline_audit.md F4.
-     *
+     * Moves the composing cursor by {@code i} UTF-16 chars (positive is right); false unless the move
+     * is exact. Landing on position 0 returns true so {@code onUpdateSelection} keeps the word composing.
      * @param i the number of code points to move (positive = right, negative = left)
-     * @return {@code true} if the cursor moved by exactly {@code i} code points
      */
     public synchronized boolean moveCursorByCharCount(int i) {
         int i2;
@@ -981,21 +851,14 @@ public final class ComposingTextTracker {
         return true;
     }
 
-    /**
-     * Switches to prediction mode. In this mode the composing text represents a just-committed
-     * word that is being held open for bigram-based next-word prediction, rather than live
-     * character composition. Clears gesture and auto-correct flags.
-     */
+    /** The composing text now holds a just-committed word kept open for next-word prediction. */
     public synchronized void enterPredictionMode() {
         this.mIsPredictionMode = true;
         this.mIsGestureInput = false;
         this.wasAutoCorrected = false;
     }
 
-    /**
-     * Exits prediction mode and clears gesture-input and auto-correct flags.
-     * Does not clear the composing text buffer itself.
-     */
+    /** Leaves prediction mode; does not clear the composing text. */
     public synchronized void resetPredictionState() {
         this.mIsGestureInput = false;
         this.mIsPredictionMode = false;
@@ -1004,17 +867,14 @@ public final class ComposingTextTracker {
     }
 
     /**
-     * Rebuilds the composing text buffer from arrays of code points, touch coordinates, and
-     * upper-case override flags. Used when re-opening a committed word for recorrection.
-     * Clears all existing state first, then replays the code points as touch events.
-     *
-     * @param iArr  array of Unicode code points
-     * @param iArr2 flattened coordinate array (x,y pairs per pointer) from
-     *              {@link dev.bbkb.ime.core.shared.CoordinateUtils}
+     * Rebuilds the composing text by replaying code points as touch events. {@code iArr2} holds
+     * {@link CoordinateUtils} x,y pairs; a non-zero {@code iArr3} entry forces upper case.
+     * @param iArr array of Unicode code points
+     * @param iArr2 flattened coordinate array (x,y pairs per pointer) from {@link dev.bbkb.ime.core.shared.CoordinateUtils}
      * @param iArr3 per-code-point upper-case override flags (non-zero = force upper case)
      */
     public synchronized void setComposingFromCodePoints(int[] iArr, int[] iArr2, int[] iArr3) {
-        // One engine op for the whole rebuild (the clear and every feed), see mPendingSteps.
+        // One engine op for the whole rebuild.
         beginEngineBatch();
         try {
             setComposingFromCodePointsInBatch(iArr, iArr2, iArr3);
@@ -1023,6 +883,11 @@ public final class ComposingTextTracker {
         }
     }
 
+    /**
+     * @param iArr the code points
+     * @param iArr2 interleaved x,y coordinates per code point
+     * @param iArr3 per code point, nonzero forces upper case
+     */
     private void setComposingFromCodePointsInBatch(int[] iArr, int[] iArr2, int[] iArr3) {
         clearAll();
         int length = iArr.length;
@@ -1039,46 +904,23 @@ public final class ComposingTextTracker {
             processInputEvent(InputEvent.createTouchEvent(iArr[i], CoordinateUtils.xFromArray(iArr2, i), CoordinateUtils.yFromArray(iArr2, i), z));
             i++;
         }
-        // NOTE: this method rebuilds composing text from code points + coordinates and is called
-        // ONLY by non-gesture paths — recorrection (RecorrectionController.performRecorrection,
-        // which runs on ordinary typing via UIUpdateHandler), the spell checker, and accent
-        // substitution. The real swipe path never routes through here; it goes through the engine's
-        // trace recogniser and commits its result separately. This site used to set
-        // mIsGestureInput = true unconditionally, which mislabelled every recorrection rebuild as a
-        // swipe. Because isGestureInput() gates auto-correction (SuggestionEngine cond_notGesture),
-        // that silently disabled auto-correct for TYPED words after the first recorrection pass.
-        // mIsGestureInput is only ever meaningfully true on the batch path; this method must not
-        // touch it. (Confirmed 2026-08-12: notGesture=false on every keystroke traced back here.)
+        // Must not set mIsGestureInput: only non-gesture paths (recorrection, spell checker, accent
+        // substitution) rebuild here, and the flag gates auto-correction.
     }
 
     /**
-     * Rebuilds the composing text buffer from arrays of code points and touch coordinates,
-     * with no upper-case override flags. Delegates to
-     * {@link #setComposingFromCodePoints(int[], int[], int[])}.
-     *
-     * @param iArr  array of Unicode code points
+     * @param iArr array of Unicode code points
      * @param iArr2 flattened coordinate array (x,y pairs per pointer)
      */
     public synchronized void setComposingFromCodePoints(int[] iArr, int[] iArr2) {
         setComposingFromCodePoints(iArr, iArr2, new int[0]);
     }
 
-    /**
-     * Returns the full current composing text as a plain {@link String}.
-     *
-     * @return the composing text, or an empty string if not composing
-     */
     public synchronized String getComposingText() {
         assertNotReadOnEngineThread("getComposingText");
         return this.mComposingText.toString();
     }
 
-    /**
-     * Returns the portion of the composing text that precedes the in-composing cursor.
-     * When the cursor is at the end, this is identical to {@link #getComposingText()}.
-     *
-     * @return composing text up to the in-composing cursor position
-     */
     public synchronized String getComposingTextBeforeCursor() {
         if (this.mComposingCursorPos >= this.mCodePointCount) {
             return getComposingText();
@@ -1087,27 +929,16 @@ public final class ComposingTextTracker {
     }
 
     /**
-     * Returns {@code true} if the first character of the next committed word should be
-     * capitalized. During composition, this reflects whether the first typed letter was
-     * uppercase. During prediction, this is true only for sentence-start shift states (1 or 5).
-     *
-     * @return {@code true} if the word should start with a capital letter
+     * While composing: the first typed letter was uppercase. Otherwise only the sentence-start shift
+     * states (1, 5).
      */
     public synchronized boolean shouldCapitalizeFirstLetter() {
-        // FIX: For predictions (not composing), only return true for start-of-sentence states (1 or 5)
-        // Previously returned true for ANY non-zero state, causing incorrect capitalization after
-        // committing a suggestion mid-sentence
         boolean isComposing = isComposing();
         boolean result = isComposing ? this.mFirstLetterUppercase : (this.mShiftState == 1 || this.mShiftState == 5);
         return result;
     }
 
-    /**
-     * Returns {@code true} if all composing characters are uppercase, or if the shift state
-     * indicates caps-lock (states 3 or 7). Used to decide whether to commit words in all-caps.
-     *
-     * @return {@code true} if the word is in all-caps
-     */
+    /** All composing letters uppercase or, for one letter or less, caps lock (shift state 3 or 7). */
     public synchronized boolean isAllCaps() {
         if (getCodePointCount() <= 1) {
             return this.mShiftState == 7 || this.mShiftState == 3;
@@ -1115,13 +946,7 @@ public final class ComposingTextTracker {
         return this.mUpperCaseCount == getCodePointCount();
     }
 
-    /**
-     * Returns {@code true} if the current shift state indicates the start of a sentence
-     * (auto-caps after sentence separator, or manual shift at sentence start).
-     * Corresponds to shift states 1 (MANUAL_SHIFTED) and 5 (AUTO_SHIFTED).
-     *
-     * @return {@code true} if the cursor is at a sentence-start position
-     */
+    /** Shift state 1 (manual) or 5 (auto) at a sentence start. */
     public synchronized boolean isStartOfSentence() {
         boolean z;
         z = true;
@@ -1133,38 +958,24 @@ public final class ComposingTextTracker {
         return z;
     }
 
-    /**
-     * Returns {@code true} if more than one uppercase letter has been typed in the current
-     * composing session. Used to detect intentional all-caps words (e.g. acronyms).
-     *
-     * @return {@code true} if upper-case count exceeds 1
-     */
     public synchronized boolean hasMultipleUpperCase() {
         return this.mUpperCaseCount > 1;
     }
 
-    /**
-     * Returns {@code true} if at least one digit character has been typed in the current
-     * composing session. Used to suppress certain auto-corrections for mixed words.
-     *
-     * @return {@code true} if digit count is greater than 0
-     */
     public synchronized boolean hasDigits() {
         return this.mDigitCount > 0;
     }
 
     /**
-     * Sets the keyboard shift state for the current composing session and propagates it
-     * to the NuanceSDK. Has no effect if the value is unchanged.
-     *
-     * @param i the shift state integer (0 = unshifted, 1 = manual shifted, 3 = caps-lock,
-     *          5 = auto-shifted, 7 = auto caps-lock)
+     * Shift states: 0 unshifted, 1 manual shift, 3 caps lock, 5 auto shift, 7 auto caps lock. No-op
+     * if unchanged.
+     * @param i the shift state integer (0 = unshifted, 1 = manual shifted, 3 = caps-lock, 5 = auto-shifted, 7 = auto caps-lock)
      */
     public synchronized void setShiftState(int i) {
         if (this.mShiftState != i) {
             this.mShiftState = i;
             final int nuanceState = getKeyboardShiftState();
-            // Posted to this tracker's engine (Phase A); the op skips a missing engine (FIX-D2).
+            // The op skips a missing engine.
             engineStep(sdk -> sdk.setShiftState(nuanceState));
         }
     }
@@ -1173,7 +984,10 @@ public final class ComposingTextTracker {
         return toEngineShiftState(this.mShiftState);
     }
 
-    /** The engine's shift state (0 none, 1 shift, 2 lock) for a tracker shift state. */
+    /**
+     * The engine's shift state (0 none, 1 shift, 2 lock) for a tracker shift state.
+     * @param i the tracker shift state
+     */
     public static int toEngineShiftState(int i) {
         int nuanceState;
         if (i == 1) {
@@ -1191,26 +1005,20 @@ public final class ComposingTextTracker {
     }
 
     /**
-     * Sets the keyboard shift state only if there is currently no active composing text.
-     * A no-op when composition is in progress, to avoid overwriting the composing shift state.
-     *
+     * No-op while composing, so the composing shift state is not overwritten.
      * @param i the shift state to apply when not composing
      */
     public synchronized void setShiftStateIfNotComposing(int i) {
         if (!isComposing()) {
-            // Delegate so the NuanceSDK shift state stays in sync with the tracker's;
-            // previously this set mShiftState directly and the engine kept the old state
-            // until the next setShiftState call.
+            // Delegate so the engine's shift state stays in sync.
             setShiftState(i);
         }
     }
 
     /**
-     * Stores the current auto-correction candidate and its confidence score.
-     * Pass {@code null}/0 to clear any pending auto-correction.
-     *
+     * Pass {@code null}/0 to clear; a score of 0 means none.
      * @param str the auto-correction word, or {@code null} to clear
-     * @param i   confidence score (0 = disabled/none)
+     * @param i confidence score (0 = disabled/none)
      */
     public synchronized void setAutoCorrection(String str, int i) {
         setAutoCorrection(str, i, this.mEditCount);
@@ -1220,6 +1028,8 @@ public final class ComposingTextTracker {
      * Stores the auto-correction candidate from a suggestion request made at {@code editCount}
      * (see {@link #getEditCount()}). A request made before the latest edit leaves
      * {@link #hasAutoCorrectionForComposingText()} false.
+     * @param str the auto-correction word, or {@code null} to clear
+     * @param i confidence score (0 = disabled/none)
      */
     public synchronized void setAutoCorrection(String str, int i, int editCount) {
         this.mAutoCorrection = str;
@@ -1248,51 +1058,25 @@ public final class ComposingTextTracker {
         return this.mAutoCorrectionEditCount == this.mEditCount;
     }
 
-    /**
-     * Returns the current auto-correction candidate word, or {@code null} if none is set.
-     *
-     * @return auto-correction candidate, or {@code null}
-     */
     public synchronized String getAutoCorrection() {
         return this.mAutoCorrection;
     }
 
-    /**
-     * Returns the confidence score of the current auto-correction candidate.
-     * A score of 0 means no auto-correction is available or it is disabled.
-     *
-     * @return auto-correction confidence score
-     */
+    /** 0 means no auto-correction or it is disabled. */
     public synchronized int getAutoCorrectionScore() {
         return this.mAutoCorrectionScore;
     }
 
-    /**
-     * Stores the suggestion word that is currently highlighted in the suggestion strip
-     * as the pending pick for CJK commit-on-separator logic.
-     *
-     * @param suggestedWordInfoVar the highlighted suggestion, or {@code null} to clear
-     */
+    /** The highlighted suggestion, kept as the pending pick for CJK commit-on-separator. */
     public synchronized void setPickedSuggestion(SuggestedWords.SuggestedWordInfo suggestedWordInfoVar) {
         this.mPickedSuggestion = suggestedWordInfoVar;
     }
 
-    /**
-     * Returns the suggestion word that was last set via {@link #setPickedSuggestion}, or
-     * {@code null} if none is pending.
-     *
-     * @return the pending picked suggestion, or {@code null}
-     */
     public synchronized SuggestedWords.SuggestedWordInfo getPickedSuggestion() {
         return this.mPickedSuggestion;
     }
 
-    /**
-     * Returns {@code true} if the composing text appears to be part of a URL.
-     * The result is cached; it is recomputed only after the composing text changes.
-     *
-     * @return {@code true} if composing text looks like a URL fragment
-     */
+    /** Cached until the composing text changes. */
     public synchronized boolean looksLikeURL() {
         if (this.mCachedUrlCheck == TriState.NOT_INITIALIZED) {
             this.mCachedUrlCheck = StringHelper.looksLikeURL(this.mComposingText) ? TriState.TRUE : TriState.FALSE;
@@ -1300,12 +1084,7 @@ public final class ComposingTextTracker {
         return this.mCachedUrlCheck == TriState.TRUE;
     }
 
-    /**
-     * Returns {@code true} if the composing text appears to be part of an email address.
-     * The result is cached; it is recomputed only after the composing text changes.
-     *
-     * @return {@code true} if composing text looks like an email address fragment
-     */
+    /** Cached until the composing text changes. */
     public synchronized boolean looksLikeEmail() {
         if (this.mCachedEmailCheck == TriState.NOT_INITIALIZED) {
             this.mCachedEmailCheck = StringHelper.looksLikeEmail(this.mComposingText) ? TriState.TRUE : TriState.FALSE;
@@ -1313,90 +1092,47 @@ public final class ComposingTextTracker {
         return this.mCachedEmailCheck == TriState.TRUE;
     }
 
-    /**
-     * Returns {@code true} if the current composing text was built from a gesture (swipe)
-     * path rather than individual key presses.
-     *
-     * @return {@code true} if gesture input is active
-     */
     public synchronized boolean isGestureInput() {
         assertNotReadOnEngineThread("isGestureInput");
         return this.mIsGestureInput;
     }
 
-    /**
-     * Clears all recorrection tracking state: cursor position, original word, and current-word
-     * snapshot. Called when a recorrection session ends or is abandoned.
-     */
     public synchronized void resetRecorrection() {
         this.mRecorrectionState.reset();
     }
 
     /**
-     * Records the start cursor position and original word for the current recorrection session.
-     * Called when the user taps on a previously committed word to re-edit it.
-     *
-     * @param i   cursor position at which recorrection begins (in characters before cursor)
-     * @param str the original word text before any edits
+     * @param i recorrection start position, in characters before the cursor
+     * @param str the typed word before any edits
      */
     public synchronized void setRecorrectionInfo(int i, String str) {
         this.mRecorrectionState.setInfo(i, str);
     }
 
-    /**
-     * Snapshots the current composing text into the recorrection tracker when the event index
-     * matches the recorrection cursor position. Called after each key event during recorrection
-     * to keep the current-word snapshot up to date.
-     */
     public synchronized void updateRecorrectionSnapshot() {
         this.mRecorrectionState.updateSnapshot(this.mComposingText.toString(), this.mEventIndex);
     }
 
-    /**
-     * Returns {@code true} if the user has modified the recorrected word from its original text.
-     * Used to decide whether to submit a dictionary learning update.
-     *
-     * @return {@code true} if the current-word snapshot differs from the original word
-     */
+    /** Whether the recorrected word changed (decides a dictionary learning update). */
     public synchronized boolean hasRecorrectionChanged() {
         return this.mRecorrectionState.hasChanged();
     }
 
-    /**
-     * Returns the cursor start position that was recorded when the current recorrection session
-     * began (in characters-before-cursor units).
-     *
-     * @return recorrection start position, or -1 if not in recorrection
-     */
+    /** In characters-before-cursor units, or -1 outside recorrection. */
     public synchronized int getRecorrectionCursorPosition() {
         return this.mRecorrectionState.getCursorPosition();
     }
 
-    /**
-     * Returns the original word text that was present when recorrection began, before any
-     * user edits in the current session.
-     *
-     * @return original recorrection word, or {@code null} if not in recorrection
-     */
     public synchronized String getRecorrectionOriginalWord() {
         return this.mRecorrectionState.getOriginalWord();
     }
 
-    /**
-     * Returns the most recent snapshot of the composing text during the current recorrection
-     * session, updated by {@link #updateRecorrectionSnapshot()}.
-     *
-     * @return current recorrection word snapshot, or {@code null} if not in recorrection
-     */
     public synchronized String getRecorrectionCurrentWord() {
         return this.mRecorrectionState.getCurrentWord();
     }
 
     /**
-     * Sets the event index counter used to synchronize recorrection snapshots with cursor
-     * position. Typically set to the number of characters between the recorrection start
-     * and the current cursor position.
-     *
+     * Typically the character count between the recorrection start and the cursor.
      * @param i the new event index value
      */
     public synchronized void setEventIndex(int i) {
@@ -1404,18 +1140,9 @@ public final class ComposingTextTracker {
     }
 
     /**
-     * Creates an {@link CommitEventRecord} that captures the just-committed word's metadata
-     * (typed text, committed text, separator, context, coordinates, shift state, commit type)
-     * for auto-correction revert and learning, then clears the composing state.
-     * <p>
-     * The dispatcher's learning flag is disabled for DECIDED_WORD, MANUAL_PICK, and
-     * BATCH_INPUT_WORD commit types (since those already represent final decisions).
-     *
-     * @param commitTypeVar         the commit type enum value
-     * @param charSequence the committed text (the final word as displayed)
-     * @param str          the word separator that followed the committed word
-     * @param prevWordsInfo context words preceding this word for n-gram learning
-     * @return a populated {@link CommitEventRecord} for this commit event
+     * Records the just-committed word for auto-correction revert and learning, then clears the
+     * composing state. Revert stays enabled only for DECIDED_WORD, MANUAL_PICK and BATCH_INPUT_WORD.
+     * @param str the word separator that followed the committed word
      */
     public synchronized CommitEventRecord createEventDispatcher(CommitEventRecord.CommitType commitTypeVar, CharSequence charSequence, String str, PrevWordsInfo prevWordsInfo) {
         CommitEventRecord c0713o;
@@ -1428,17 +1155,9 @@ public final class ComposingTextTracker {
     }
 
     /**
-     * Creates an {@link CommitEventRecord} for a picked suggestion word. Handles partial-word
-     * splits for CJK pinyin/stroke/BPMF and prediction scenarios where the typed prefix is
-     * shorter than the composing buffer. Updates the input connection wrapper with the typed
-     * and picked word strings for learning purposes.
-     *
-     * @param commitTypeVar               the commit type (typically DECIDED_WORD or MANUAL_PICK)
-     * @param suggestedWordInfoVar2 the suggestion word info that was picked
-     * @param prevWordsInfo      context words preceding this word
-     * @param c0841t             the input connection wrapper used to record the typed/picked pair
-     * @param z                  {@code true} if learning should be skipped for this commit
-     * @return a populated {@link CommitEventRecord} for this pick event
+     * Record for a picked suggestion. When the pick covers only a prefix of the composing buffer (CJK
+     * pinyin/stroke/BPMF, Japanese inline word), that prefix is split off and the rest stays composing.
+     * @param z {@code true} if learning should be skipped for this commit
      */
     public synchronized CommitEventRecord createEventDispatcherForPickedSuggestion(CommitEventRecord.CommitType commitTypeVar, SuggestedWords.SuggestedWordInfo suggestedWordInfoVar2, PrevWordsInfo prevWordsInfo, boolean z) {
         String string;
@@ -1478,10 +1197,7 @@ public final class ComposingTextTracker {
             CommitEventRecord c0713o2 = new CommitEventRecord(c0697mM4701c, string3, str, "", prevWordsInfo, this.mShiftState, commitTypeVar, z2);
             this.mCoordinateTracker.dropFirstSamples(iIndexOf);
             this.mComposingText.delete(0, iIndexOf);
-            // Audit SS-4: this branch used mComposingText.length() — a UTF-16 CHAR count — where
-            // the canonical form elsewhere is Character.codePointCount, and it skipped the stats
-            // refresh, leaving upper/digit counts and the URL/email caches describing the
-            // pre-split word. Wrong for any supplementary-plane text (emoji, rare CJK).
+            // Code points, not UTF-16 chars, and refresh the stats for the post-split word.
             this.mCodePointCount = Character.codePointCount(this.mComposingText, 0, this.mComposingText.length());
             this.mComposingCursorPos = this.mCodePointCount;
             recalculateTextStats(false);
@@ -1496,6 +1212,9 @@ public final class ComposingTextTracker {
         return c0713o;
     }
 
+    /**
+     * @param str the spell prefix the pick consumed
+     */
     private synchronized int getChineseSpellLength(String str, SuggestedWords.SuggestedWordInfo suggestedWordInfoVar) {
         EngineFacts engineFacts = facts();
         if (engineFacts.isChineseStrokeMode()) {
@@ -1529,50 +1248,29 @@ public final class ComposingTextTracker {
         return this.mComposingText.toString().toLowerCase(Locale.getDefault()).indexOf(str.toLowerCase(Locale.getDefault())) + str.length();
     }
 
-    /**
-     * Returns {@code true} if prediction mode is currently active (entered via
-     * {@link #enterPredictionMode()}).
-     *
-     * @return {@code true} if in prediction mode
-     */
     public synchronized boolean isPredictionMode() {
         assertNotReadOnEngineThread("isPredictionMode");
         return this.mIsPredictionMode;
     }
 
     /**
-     * Records the most recently committed word. Used as context for downstream bigram
-     * prediction requests.
-     *
+     * Context for next-word prediction requests; {@code null} clears.
      * @param str the word that was just committed, or {@code null} to clear
      */
     public synchronized void setLastCommittedWord(String str) {
         this.mLastCommittedWord = str;
     }
 
-    /**
-     * Returns the most recently committed word as recorded by {@link #setLastCommittedWord},
-     * or {@code null} if none has been set this session.
-     *
-     * @return last committed word, or {@code null}
-     */
     public synchronized String getLastCommittedWord() {
         return this.mLastCommittedWord;
     }
 
-    /**
-     * Returns {@code true} if the last committed word was the result of an auto-correction
-     * rather than exactly what the user typed. Used to decide whether to allow revert-on-backspace.
-     *
-     * @return {@code true} if the last commit was an auto-correction
-     */
+    /** Whether the last commit was an auto-correction (allows revert on backspace). */
     public synchronized boolean wasAutoCorrected() {
         return this.wasAutoCorrected;
     }
 
     /**
-     * Sets the flag indicating whether the last committed word was auto-corrected.
-     *
      * @param z {@code true} if the word was auto-corrected, {@code false} if it was user-typed
      */
     public synchronized void setWasAutoCorrected(boolean z) {

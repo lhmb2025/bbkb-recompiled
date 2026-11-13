@@ -32,79 +32,53 @@ import dev.bbkb.ime.core.shared.StartupTiming;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
-/**
- * Main API for device profile queries.
- * Combines immutable capabilities with mutable runtime state.
- * This is the new canonical DeviceProfile in the device package.
- */
+/** Device profile queries: immutable capabilities plus mutable runtime state. */
 public final class DeviceProfile {
 
     private static volatile DeviceProfile current;
 
     /**
-     * Application context captured by {@link #initialize(Context)}. Device queries that need a
-     * Context but are reached from a callback that has none (KeyEventDeviceClassifier, on the
-     * per-key path) read it from here instead of passing null and silently getting no mapping.
-     * Null until the IME has initialized the profile.
+     * Application context captured by {@link #initialize(Context)}, for callers with no Context
+     * (KeyEventDeviceClassifier on the per-key path). Null until initialized.
      */
     private static volatile Context sAppContext;
 
-    /** Debug preference key to force VKB mode for testing */
     public static final String PREF_DEBUG_FORCE_VKB_MODE = "debug_force_vkb_mode";
 
     /**
-     * Open while a {@link #startInitialize} load is in flight; null otherwise. Every static entry
-     * point that reads {@link #current} waits on it first, so moving the load off the main thread
-     * cannot let a consumer observe the {@link #current()} auto-detect fallback (a VKB-shaped
-     * profile) in place of the real one.
+     * Open while a {@link #startInitialize} load is in flight. Every static reader of
+     * {@link #current} waits on it so none sees the auto-detect fallback (a VKB-shaped profile).
      */
     private static volatile CountDownLatch sInitLatch;
 
-    /**
-     * The thread running that load. The loader itself reaches {@link #initializeForDevice} and
-     * everything below it, so the wait has to be a no-op there or the load would join itself.
-     */
+    /** The loader thread; the wait is a no-op on it or the load would join itself. */
     private static volatile Thread sInitThread;
 
-    /**
-     * Upper bound on the wait. The load is a device scan plus one config XML parse (~250 ms on a
-     * KEY2); five seconds means something is badly wrong, and proceeding with the auto-detect
-     * fallback beats wedging the IME's main thread forever.
-     */
+    /** The load takes ~250 ms; past this, the auto-detect fallback beats wedging the main thread. */
     private static final long INIT_WAIT_TIMEOUT_MS = 5000L;
 
     private static final String TAG = "DeviceProfile";
 
-    /**
-     * Not final: a live re-scan of the touch keypad (the pad appearing or vanishing after start-up,
-     * see {@link #onScannedTouchKeypadChanged}) swaps in a copy with the new pad. Everything else
-     * in it stays as detected.
-     */
+    /** Not final: {@link #onScannedTouchKeypadChanged} swaps in a copy with the new pad. */
     private volatile DeviceCapabilities capabilities;
     private final DeviceRuntimeState runtimeState;
     private DeviceInputMapping deviceMapping;
 
     /**
      * {@link #getTouchKeypadGeometry()}'s answer with the measured pad it was resolved against;
-     * dropped whenever the profile's own inputs change, and stale as soon as
-     * {@link SyntheticTouchSources#measuredPad()} is a different object.
+     * stale once {@link SyntheticTouchSources#measuredPad()} is a different object.
      */
     private volatile GeometryCache touchKeypadGeometry;
 
     /** {@link #getTouchSourceSelection()}'s answer, dropped with the geometry. */
     private volatile TouchSourceSelector.Selection touchSourceSelection;
 
-    /**
-     * Per input-device id: is it the pad the config names? {@link #isFromTouchKeypad} asks this
-     * for events from any device other than the scanned pad, so the answer is cached; it is
-     * cleared when the device set changes (ids can be reused).
-     */
+    /** Per device id: is it the pad the config names? Cleared when devices change (ids are reused). */
     private final SparseBooleanArray namedPadDevices = new SparseBooleanArray(2);
 
     /** Registered once, the first time a profile is initialised with a Context. */
     private static boolean sTouchKeypadListenersRegistered;
 
-    // Display configuration (mutable — updated on config change)
     private int displayOrientation = Configuration.ORIENTATION_PORTRAIT;
     private boolean isHardwareKeyboardHidden = false;
 
@@ -113,11 +87,6 @@ public final class DeviceProfile {
         this.runtimeState = state;
     }
 
-    // ==================== Initialization ====================
-
-    /**
-     * Initialize with context and configuration (backward-compatible signature).
-     */
     public static DeviceProfile initialize(Context context, Configuration configuration) {
         awaitInitialized();
         initialize(context);
@@ -127,9 +96,6 @@ public final class DeviceProfile {
         return current;
     }
 
-    /**
-     * Create a DeviceProfile (backward-compatible). Returns current().
-     */
     public static DeviceProfile create(Context context, Configuration configuration) {
         awaitInitialized();
         if (current == null) {
@@ -140,9 +106,6 @@ public final class DeviceProfile {
         return current;
     }
 
-    /**
-     * Create from SettingsValues (backward-compatible).
-     */
     public static DeviceProfile fromSettings(Context context, SettingsValues settings) {
         awaitInitialized();
         if (current == null) {
@@ -150,10 +113,7 @@ public final class DeviceProfile {
         }
         if (settings != null) {
             current.displayOrientation = settings.displayOrientation;
-            // The hidden flag comes from the live Configuration under the same rule as
-            // updateConfiguration(). It used to be derived from settings.hasHardwareKeyboard
-            // (keyboard == NOKEYS || hidden == YES), so this writer and initialize() disagreed
-            // on NOKEYS-without-YES and the swipe gate followed whichever ran last.
+            // Same rule as updateConfiguration(), so every writer agrees on the swipe gate.
             if (context != null) {
                 current.isHardwareKeyboardHidden =
                         isHardKeyboardHidden(context.getResources().getConfiguration());
@@ -163,11 +123,8 @@ public final class DeviceProfile {
     }
 
     /**
-     * The one rule for {@link #isHardwareKeyboardHidden()}: the framework says the hardware
-     * keyboard is hidden. This is the original APK's swipe-gate test ({@code ad.a(Context)}), and
-     * the same test {@link #isPhysicalKeyboardAvailable(Context)} uses. "No keyboard at all" is
-     * deliberately not folded in: {@link #isHardwareKeyboardActive()} already ANDs in
-     * {@link #hasPhysicalKeyboard()}, and the framework reports hidden=YES for NOKEYS anyway.
+     * The one rule for {@link #isHardwareKeyboardHidden()} (also the swipe gate). "No keyboard" is
+     * not folded in: {@link #isHardwareKeyboardActive()} ANDs {@link #hasPhysicalKeyboard()}.
      */
     static boolean isHardKeyboardHidden(Configuration config) {
         return config.hardKeyboardHidden == Configuration.HARDKEYBOARDHIDDEN_YES;
@@ -179,38 +136,12 @@ public final class DeviceProfile {
 
     /**
      * Starts {@link #initialize(Context, Configuration)} on a background thread and returns at
-     * once. Every reader below joins the load before it can observe {@link #current}, so this is
-     * a pure overlap: the device scan, the active-config XML parse and the debug-override pref
-     * read stop sitting on the IME's {@code onCreate} main thread and run alongside
-     * {@code super.onCreate()}, the themed context and the colour manager instead.
-     *
-     * <p><b>Ordering.</b> The consumers, and when each first runs:
-     * <ul>
-     *   <li>{@code SettingsValues} ({@code loadAutoCorrectionMode},
-     *       {@code isGestureInputEnabledForDevice}) and
-     *       {@code SettingsManager.loadSettings -> fromSettings}: first at
-     *       {@code BlackBerryIME.initializeLearningManagers()}, two steps after this call and
-     *       still inside {@code onCreate}. Joins through {@link #current()} / {@link #fromSettings}.
-     *       That is where the main thread pays whatever of the load is left, and it is the
-     *       happens-before edge every later main-thread reader inherits.</li>
-     *   <li>{@code HardwareKeyBridge.registerInterceptorCallbacks()}: posted at 0 ms on the IME
-     *       handler, so after {@code onCreate} returns. Joins through {@link #current()}.</li>
-     *   <li>{@code KeyEventProcessor} on the first physical key: after {@code onCreate}. Joins
-     *       through {@link #appContext()} and {@link #current()} - and because
-     *       {@link #appContext()} waits, its {@code appContext() == null} "never initialized"
-     *       test cannot come back true merely because the load is still running, so it cannot
-     *       fire a redundant second {@link #initializeForDevice}.</li>
-     *   <li>{@code initializeBackgroundPreloading()}'s alt-mappings prewarm and PKB branch: end
-     *       of {@code onCreate}, after {@code loadSettings()} has already joined.</li>
-     *   <li>The keyboard build ({@code KeyboardSwitcher} / {@code KeyboardBuilder}) and the
-     *       settings screens: {@code onCreateInputView} / activity launch, far later.</li>
-     *   <li>{@code Xt9KdbVariant.apply} and {@code GestureEventProcessor.setEngineYWarp} are
-     *       performed <em>inside</em> {@link #initializeForDevice}, so they complete before the
-     *       latch opens; the KDB side additionally has its own {@code awaitReady} barrier.</li>
-     * </ul>
-     *
-     * <p>Idempotent in the sense that matters: a second call while a load is in flight joins the
-     * first one instead of starting a second.
+     * once. Every static reader joins the load first; the first join is
+     * {@code SettingsManager.loadSettings -> fromSettings} inside {@code onCreate}, which is the
+     * happens-before edge later main-thread readers inherit. {@link #appContext()} also waits, so
+     * {@code KeyEventProcessor} cannot see null mid-load and start a second init.
+     * {@code Xt9KdbVariant.apply} and {@code setEngineYWarp} run inside the load. A second call
+     * while a load is in flight is a no-op.
      */
     public static void startInitialize(final Context context, final Configuration configuration) {
         if (sInitLatch != null) {
@@ -239,7 +170,7 @@ public final class DeviceProfile {
         try {
             loader.start();
         } catch (Throwable t) {
-            // Could not spawn: fall back to the synchronous behaviour this replaced.
+            // Could not spawn: initialize synchronously.
             sInitLatch = null;
             latch.countDown();
             initialize(context, configuration);
@@ -278,13 +209,8 @@ public final class DeviceProfile {
     }
 
     /**
-     * As {@link #initialize(Context)}, but resolving the device mapping against one specific
-     * input-device id instead of scanning every physical keyboard.
-     *
-     * <p>{@code DeviceSettingsManager} was the only caller of the targeted form, from
-     * {@code KeyEventProcessor} on the first physical key event. It survives the merge (§5.4) so
-     * that path keeps its meaning: with two physical keyboards attached, the id picks which one
-     * the overrides come from, where the scan takes whichever matches first.
+     * As {@link #initialize(Context)}, but resolving the mapping against one input-device id; with
+     * two physical keyboards attached the id picks which one the overrides come from.
      */
     public static void initializeForDevice(Context context, int deviceId) {
         awaitInitialized();
@@ -292,21 +218,18 @@ public final class DeviceProfile {
         if (context != null) {
             sAppContext = context.getApplicationContext();
         }
-        // Resolved BEFORE the capability probe, not after it as this used to be: the config's
-        // optional <keypad-layout> is the top-ranked source for KeypadLayoutDetector, which runs
-        // inside DeviceCapabilities.detect(). resolveInputMapping caches per device id, so the
-        // move costs nothing on the repeat calls this method takes.
+        // Resolved before the capability probe: the config's <keypad-layout> is the top-ranked
+        // source for KeypadLayoutDetector inside DeviceCapabilities.detect(). Cached per device id.
         DeviceInputMapping mapping = context != null
                 ? DeviceInputResolver.resolveInputMapping(context, deviceId)
                 : null;
-        // This object is the phone's profile whichever keyboard's key asked for it: a device no
-        // profile matches (a side-key device, an external keyboard) leaves the phone's in place.
+        // This is the phone's profile whichever keyboard asked: an unmatched device (side keys,
+        // an external keyboard) leaves the phone's in place.
         if (mapping == null && context != null && deviceId != DeviceInputResolver.ALL_DEVICES) {
             mapping = DeviceInputResolver.resolveInputMapping(context, DeviceInputResolver.ALL_DEVICES);
         }
 
-        // The user's own word on the keypad shape (Physical keyboard > Keypad layout), when the
-        // config offers a choice; it outranks every detection source.
+        // The user's Keypad layout choice, when the config offers one, outranks every detection source.
         String userKeypadLayout = null;
         if (context != null && mapping != null && !mapping.keypadLayoutOptions.isEmpty()) {
             String chosen = dev.bbkb.ime.core.settings.PrefsManager.INSTANCE.getPrefs(context)
@@ -318,41 +241,35 @@ public final class DeviceProfile {
         DeviceProfile profile = new DeviceProfile(caps, state);
         profile.deviceMapping = mapping;
 
-        // Check for debug VKB override
         if (context != null) {
             SharedPreferences prefs =
                     dev.bbkb.ime.core.settings.PrefsManager.INSTANCE.getPrefs(context);
-            // The switch lives on the Debug screen, which release builds no longer show
-            // (2026-10-20): a user who turned it on with an earlier beta would be stuck in
-            // on-screen mode with no way back. Release builds therefore drop the preference on
-            // every start, so an upgrade clears it; debug builds keep honouring it.
+            // Release builds do not show the Debug screen, so they drop the pref on every start
+            // or a user who set it earlier would be stuck in on-screen mode.
             if (!dev.bbkb.ime.BuildConfig.DEBUG && prefs.contains(PREF_DEBUG_FORCE_VKB_MODE)) {
                 prefs.edit().remove(PREF_DEBUG_FORCE_VKB_MODE).apply();
             }
-            // Standing debug override — set unconditionally so a pref flipped off also clears it.
+            // Set unconditionally so a pref flipped off also clears it.
             state.setDebugForceVkbMode(prefs.getBoolean(PREF_DEBUG_FORCE_VKB_MODE, false));
         }
 
-        // Apply what the resolved device mapping drives outside the profile object itself.
+        // Applied here so start-up and config switches both run it, before the next layout sync.
         if (context != null) {
-            // Device KDB variant: route the engine's layout loads through assets/kdb/<variant>/
-            // (owned KDB module; per-layout override with root fallback). Runs here so it covers
-            // both IME startup and config switches, before the next keyboard layout sync.
+            // Device KDB variant: route layout loads through assets/kdb/<variant>/ (root fallback).
             com.blackberry.nuanceshim.Xt9KdbVariant.apply(context,
                     profile.deviceMapping != null ? profile.deviceMapping.kdbVariant : null);
-            // Retail swipe config (§8.7.12): the piecewise sensor->engine Y warp for the CKB
-            // gesture feed rides the same lifecycle as the variant (startup + config switches).
+            // Piecewise sensor->engine Y warp for the CKB gesture feed.
             dev.bbkb.ime.keyboard.internal.GestureEventProcessor.setEngineYWarp(
                     profile.deviceMapping != null ? profile.deviceMapping.ckbYWarp : null);
-            // ...and so does the stroke analyser's frame (144 / 610 on the KEY2's pad).
+            // The stroke analyser's frame (144 / 610 on the KEY2's pad).
             dev.bbkb.ime.keyboard.internal.GestureEventProcessor.setKeypadGeometry(
                     profile.getTouchKeypadGeometry());
-            // The BBKB helper: switched off, and so absent from the system's Accessibility list,
-            // on phones whose profile says they never need it; the manifest default elsewhere.
+            // The BBKB helper is switched off (hidden from Accessibility) where the profile says
+            // it is never needed.
             dev.bbkb.ime.core.device.interceptor.KeyInterceptorComponent.apply(context,
                     profile.deviceMapping);
-            // A pad that appears or vanishes later (the Titan 2's, when the OEM Scroll assistant
-            // is toggled) is picked up without a restart. Touch keypad only: no key config reset.
+            // A pad that appears or vanishes later (Titan 2 Scroll assistant toggle) is picked up
+            // without a restart. Touch keypad only: no key config reset.
             KeyboardDeviceScanner.getInstance().registerDeviceListener(context);
             registerTouchKeypadListeners();
         }
@@ -379,11 +296,7 @@ public final class DeviceProfile {
         SyntheticTouchSources.addListener(DeviceProfile::onSyntheticTouchSourcesChanged);
     }
 
-    /**
-     * A synthetic source started or stopped (the Shizuku reader), so the frame may now come from
-     * the ranges it measured, or no longer does. The geometry cache notices that by itself; the
-     * stroke analyser holds its own copy of the frame, so it is pushed again here.
-     */
+    /** A synthetic source (Shizuku) started or stopped; the stroke analyser's frame copy is re-pushed. */
     private static void onSyntheticTouchSourcesChanged() {
         final DeviceProfile profile = current;
         if (profile == null) return;
@@ -394,11 +307,7 @@ public final class DeviceProfile {
                 + ", geometry=" + profile.getTouchKeypadGeometry());
     }
 
-    /**
-     * The scanner's live re-scan found a different touch keypad: fold it into the current
-     * profile. Only the touch keypad changes — the device mapping, the scancode roles and the
-     * rest of the capabilities stay exactly as they were.
-     */
+    /** A live re-scan found a different touch keypad; only the pad changes in the profile. */
     @VisibleForTesting
     static void onScannedTouchKeypadChanged(@Nullable TouchKeypadInfo touchKeypad) {
         final DeviceProfile profile = current;
@@ -422,16 +331,8 @@ public final class DeviceProfile {
 
     /**
      * Rebuilds the profile after {@code KeypadLayoutDetector.observeKeyEvent} proved a different
-     * physical keypad layout than the one currently in force.
-     *
-     * <p>Same shape as the rebuild {@code CustomDeviceConfigManager.setActiveConfigId} does when
-     * an imported config changes the answer — {@link #initializeForDevice}, which re-runs
-     * {@link DeviceCapabilities#detect(DeviceInputMapping)} and so picks the detector's upgraded
-     * answer up — minus that path's {@code DeviceInputResolver.resetConfig()} /
-     * {@code KeyEventDeviceClassifier.clearCache()} / scanner refresh. Those three exist there
-     * because the *config file* changed; nothing about the device did. This runs from inside the
-     * hardware key path, where dropping the scancode-role resolver and the per-event device
-     * classification mid-keystroke would be a real hazard for no gain.
+     * keypad layout. Unlike a config switch it does not reset the resolver or classifier cache:
+     * this runs inside the hardware key path, where dropping them mid-keystroke is a hazard.
      */
     public static void reinitializeForKeypadLayoutChange(Context context, int deviceId) {
         Logger.info(TAG, "keypad layout changed by observation; rebuilding device profile");
@@ -457,18 +358,9 @@ public final class DeviceProfile {
     }
 
     /**
-     * Installs a profile over the given capabilities, bypassing the hardware scan. The injection
-     * seam for {@link #current()}, which is otherwise a static singleton with no way in: on a JVM
-     * {@link DeviceCapabilities#detect()} always reports the VKB shape, so anything that branches
-     * on {@link #isPkbDevice()} (most of the settings screens, among others) can only ever be
-     * exercised in one of its two shapes.
-     *
-     * <p>Shares the process-wide {@link DeviceRuntimeState} with a detected profile, so the
-     * force-VKB levers keep working across an installed shape exactly as they do on a device — and
-     * a test that sets one must clear it again. {@link #initialize(Context)} discards whatever was
-     * installed and goes back to detection.
-     *
-     * <p>Production never calls this.
+     * Test seam: installs a profile over the given capabilities, bypassing the scan (on a JVM
+     * detection always reports VKB). Shares the process-wide {@link DeviceRuntimeState}, so a
+     * test that sets a force-VKB lever must clear it. {@link #initialize(Context)} discards it.
      */
     @VisibleForTesting
     public static void installForTest(DeviceCapabilities capabilities) {
@@ -476,7 +368,6 @@ public final class DeviceProfile {
         current = new DeviceProfile(capabilities, DeviceRuntimeState.getInstance());
     }
 
-    /** Update display configuration (called on config change) */
     public void updateConfiguration(Configuration config) {
         if (config != null) {
             this.displayOrientation = config.orientation;
@@ -484,21 +375,13 @@ public final class DeviceProfile {
         }
     }
 
-    // ==================== Device Type Enum ====================
-
     public enum DeviceType {
         PKB, VKB, UNKNOWN
     }
 
-    // ==================== Capability Queries ====================
-
     /**
-     * Whether this is a keypad phone: the scan found an alphabetic physical keyboard, or the
-     * phone's profile declares one ({@code <device-type>PKB</device-type>} or {@code CKB}).
-     *
-     * <p>The declaration used to reach only the per-key classifier. A keypad that Android does not
-     * report as an alphabetic keyboard (its key character map says otherwise on some ROMs) then
-     * left the app in on-screen mode with the keypad settings hidden, whatever the profile said.
+     * Whether this is a keypad phone: the scan found an alphabetic keyboard, or the profile
+     * declares one ({@code <device-type>} PKB or CKB), since some ROMs misreport the keypad.
      */
     public boolean isPkbDevice() {
         if (runtimeState.isForceVkbMode()) return false;
@@ -521,10 +404,8 @@ public final class DeviceProfile {
     }
 
     /**
-     * Whether touch-keypad events can actually reach the IME: the config forces CKB, the scan
-     * found a pad, the native source applies (the OS delivers a declared pad on this Android
-     * version), or a synthetic source has registered its device id. Contrast
-     * {@link #declaresTouchKeypad()}, which only says the profile describes one.
+     * Whether touch-keypad events can reach the IME (forced CKB, scanned pad, native source, or a
+     * synthetic source). Contrast {@link #declaresTouchKeypad()}.
      */
     public boolean hasTouchKeypad() {
         if (deviceMapping != null && deviceMapping.forceTouchKeypad) return true;
@@ -537,9 +418,8 @@ public final class DeviceProfile {
     }
 
     /**
-     * Whether the matched profile describes a touch surface over its keys ({@code <touch-keypad>}),
-     * whether or not its events can reach the IME right now. Settings that only make sense on such
-     * a device key on this; behaviour keys on {@link #hasTouchKeypad()}.
+     * Whether the profile declares {@code <touch-keypad>}, reachable or not. Settings key on this;
+     * behaviour keys on {@link #hasTouchKeypad()}.
      */
     public boolean declaresTouchKeypad() {
         return deviceMapping != null && deviceMapping.touchKeypad != null;
@@ -562,11 +442,7 @@ public final class DeviceProfile {
         return s;
     }
 
-    /**
-     * The touch keypad's coordinate frame (see {@link TouchKeypadGeometry} for the precedence:
-     * a running synthetic source's measured ranges, the pad's InputDevice, the profile's
-     * {@code <touch-keypad>} ranges, the forced-CKB warp, the KEY2's pad).
-     */
+    /** The touch keypad's coordinate frame; precedence in {@link TouchKeypadGeometry}. */
     public TouchKeypadGeometry getTouchKeypadGeometry() {
         final TouchKeypadInfo measured = SyntheticTouchSources.measuredPad();
         GeometryCache cache = touchKeypadGeometry;
@@ -592,10 +468,8 @@ public final class DeviceProfile {
     }
 
     /**
-     * Whether type-by-swiping on the touch keypad has engine geometry to decode against. The
-     * root KDB is authored for the KEY2's pad; a profile that declares a {@code <touch-keypad>}
-     * describes a different pad, so it needs its own {@code <kdb-variant>} first. Profiles that
-     * declare no pad (the KEY2, the emulator rig, every unknown device) are unaffected.
+     * Whether keypad swipe typing has engine geometry. The root KDB is authored for the KEY2's
+     * pad, so a profile declaring {@code <touch-keypad>} also needs its own {@code <kdb-variant>}.
      */
     public boolean isTouchKeypadSwipeTypingSupported() {
         return deviceMapping == null || deviceMapping.touchKeypad == null
@@ -607,10 +481,7 @@ public final class DeviceProfile {
         return deviceMapping != null && deviceMapping.hasQuirk(quirk);
     }
 
-    /**
-     * Whether the device's screen is e-ink ({@code <quirk name="eink-display"/>}, the MP01), so
-     * views should avoid cosmetic repaints. False on every other device and when no profile matched.
-     */
+    /** E-ink screen ({@code eink-display} quirk): views should avoid cosmetic repaints. */
     public boolean isEinkDisplay() {
         return hasQuirk(DeviceQuirk.EINK_DISPLAY);
     }
@@ -619,8 +490,7 @@ public final class DeviceProfile {
         if (deviceMapping != null && deviceMapping.forceTouchKeypad) {
             int hwId = capabilities.getTouchKeypadDeviceId();
             if (hwId != -1) return hwId;
-            // Hardware scan found no touch keypad; on a forced-CKB device the capacitive
-            // overlay shares the same device ID as the primary keyboard.
+            // On a forced-CKB device the capacitive overlay shares the primary keyboard's id.
             KeyboardDeviceInfo primary = capabilities.getPrimaryKeyboard();
             if (primary != null) {
                 Logger.info("CKB_DEBUG", "getTouchKeypadDeviceId: forceTouchKeypad, hw=-1, using primaryKeyboard.deviceId=" + primary.getDeviceId());
@@ -630,31 +500,23 @@ public final class DeviceProfile {
         return capabilities.getTouchKeypadDeviceId();
     }
 
-    /**
-     * The pad's reported resolution (0 when no InputDevice reports one), through
-     * {@link #getTouchKeypadGeometry()}. {@code SettingsValues} scales its touch thresholds by it.
-     */
+    /** The pad's resolution (0 if unreported); {@code SettingsValues} scales touch thresholds by it. */
     public float getTouchKeypadResolution() {
         return getTouchKeypadGeometry().resolution();
     }
 
     /**
-     * The pad's sensor Y extent, or 0 when nothing but the KEY2 default stands behind it. Through
-     * {@link #getTouchKeypadGeometry()}: the scanned pad's range, else the profile's
-     * {@code <touch-keypad range-y>}, else — forced-CKB profile with no hardware pad, the W2
-     * emulator posing as a KEY2 — the last sensor breakpoint of the config's own
-     * {@code <ckb-y-warp>} ("0:0,450:324" -> 450). Real CKB hardware never reaches that
-     * fallback — its scanner supplies the value.
+     * The pad's sensor Y extent, or 0 with only the KEY2 default: the scanned range, else
+     * {@code <touch-keypad range-y>}, else (forced CKB, no pad) the last {@code <ckb-y-warp>}
+     * sensor breakpoint ("0:0,450:324" -> 450).
      */
     public float getTouchKeypadYMax() {
         return getTouchKeypadGeometry().sensorYMax();
     }
 
     /**
-     * The physical keypad layout — "qwerty", "qwertz" or "azerty". Resolved once per
-     * {@link #initializeForDevice} by {@code KeypadLayoutDetector} from the active device
-     * config, the keypad's InputDevice name, the firmware system properties, the loaded
-     * KeyCharacterMap and any scancode observation, in that order; there is no user setting.
+     * The physical keypad layout ("qwerty", "qwertz" or "azerty"), resolved per
+     * {@link #initializeForDevice} by {@code KeypadLayoutDetector}.
      */
     public String getKeypadLayout() {
         return capabilities.getKeypadLayout();
@@ -663,18 +525,12 @@ public final class DeviceProfile {
     /** Physical keyboard > Keypad layout: the shape the user chose, {@code ""} for automatic. */
     public static final String PREF_KEYPAD_LAYOUT = "pref_pkb_keypad_layout";
 
-    /**
-     * The keypad shapes the device config lists for this model ({@code <keypad-layouts>}): what
-     * the Keypad layout choice offers. Empty when there is nothing to choose.
-     */
+    /** The config's {@code <keypad-layouts>}, offered by the Keypad layout choice; may be empty. */
     public java.util.List<String> getKeypadLayoutOptions() {
         return deviceMapping != null ? deviceMapping.keypadLayoutOptions : java.util.Collections.emptyList();
     }
 
-    /**
-     * The keypad shape detection alone would give, with the user's choice set aside: what the
-     * Keypad layout choice's "Automatic" row names.
-     */
+    /** The keypad shape detection alone gives, named by the "Automatic" row. */
     public String getDetectedKeypadLayout() {
         if (capabilities.getKeypadLayoutSource() != dev.bbkb.ime.core.device.detection.KeypadLayoutDetector.Source.USER) {
             return getKeypadLayout();
@@ -713,22 +569,16 @@ public final class DeviceProfile {
         return KeyboardDeviceScanner.getInstance().hasExternalKeyboard();
     }
 
-    // ==================== Display ====================
-
     public int getDisplayOrientation() { return displayOrientation; }
     public boolean isLandscape() { return displayOrientation == Configuration.ORIENTATION_LANDSCAPE; }
     public boolean isPortrait() { return displayOrientation == Configuration.ORIENTATION_PORTRAIT; }
     public boolean isHardwareKeyboardHidden() { return isHardwareKeyboardHidden; }
     public boolean isHardwareKeyboardActive() { return hasPhysicalKeyboard() && !isHardwareKeyboardHidden; }
 
-    // ==================== Fullscreen ====================
-
     public boolean shouldUseFullscreenMode(boolean fullscreenEnabledInSettings) {
         if (isPkbDevice()) return false;
         return fullscreenEnabledInSettings;
     }
-
-    // ==================== Meta/Sym Handling ====================
 
     public boolean usesMetaSymHandling() {
         if (!isPkbDevice()) return false;
@@ -739,13 +589,9 @@ public final class DeviceProfile {
         return isPkbDevice() && !isBlackBerryDevice();
     }
 
-    // ==================== Touch Keypad ====================
-
     /**
-     * Whether a MotionEvent comes from the touch keypad: its device id is the scanned pad's (as it
-     * always was), or it comes from an InputDevice whose name the profile's {@code <touch-keypad>}
-     * names (the pad may not be the device the scan settled on, or may have appeared later), or it
-     * carries a device id a synthetic source registered in {@link SyntheticTouchSources}.
+     * Whether a MotionEvent comes from the touch keypad: the scanned pad's id, an InputDevice the
+     * profile's {@code <touch-keypad>} names, or an id registered in {@link SyntheticTouchSources}.
      */
     public boolean isFromTouchKeypad(MotionEvent motionEvent) {
         if (!hasTouchKeypad() || motionEvent == null) {
@@ -771,10 +617,7 @@ public final class DeviceProfile {
         return result;
     }
 
-    /**
-     * Whether input device {@code deviceId} is the pad the profile names. False at once when the
-     * profile names none (every config but the Titans'), so the KEY2 path pays one field read.
-     */
+    /** Whether {@code deviceId} is the pad the profile names; one field read when it names none. */
     private boolean isDeclaredTouchKeypadDevice(int deviceId) {
         final TouchKeypadConfig pad = getTouchKeypadConfig();
         if (pad == null || pad.inputDeviceName == null) return false;
@@ -789,8 +632,6 @@ public final class DeviceProfile {
         }
         return named;
     }
-
-    // ==================== Device Mapping / Override Methods ====================
 
     @Nullable
     public DeviceInputMapping getDeviceMapping() {
@@ -819,14 +660,7 @@ public final class DeviceProfile {
         return AltMappingsParser.tableFor(context, deviceMapping);
     }
 
-    /**
-     * Get the layout-specific alt override mappings table for the given layout.
-     * Loaded from the device config's <layout-alt-overrides> section.
-     *
-     * @param context Application context
-     * @param layout Active keypad layout (e.g. "azerty", "qwertz")
-     * @return AltMappingsTable for the layout override, or null if none configured
-     */
+    /** The config's {@code <layout-alt-overrides>} table for {@code layout} ("azerty"...), or null. */
     @Nullable
     public AltMappingsTable getLayoutAltOverridesTable(Context context, String layout) {
         if (deviceMapping == null || layout == null) {
@@ -855,25 +689,16 @@ public final class DeviceProfile {
         return override.hasForcedValue() || override.readOnly;
     }
 
-    /**
-     * Whether a setting should be hidden from the settings UI entirely, rather than shown
-     * disabled. Distinct from {@link #isSettingReadOnly}: read-only greys the control out, hidden
-     * removes it.
-     *
-     * <p>Came from {@code DeviceSettingsManager}, the second facade over this same
-     * {@code DeviceInputMapping}, when the two were merged (§5.4).
-     */
+    /** Whether a setting is removed from the UI; {@link #isSettingReadOnly} only greys it out. */
     public boolean isSettingHidden(String settingKey) {
         DeviceSettingOverride override = getSettingOverride(settingKey);
         return override != null && override.hidden;
     }
 
     /**
-     * The active profile's override for a setting, or null: what {@code ProfileForcedPrefs} lays
-     * over the stored preferences on every read. Unlike {@link #current()} it neither waits for
-     * a profile that is still loading nor builds one, because preferences are read from inside
-     * the profile's own initialisation and on every thread. A read that races the first load
-     * sees the stored value.
+     * The active profile's override for a setting, or null (used by {@code ProfileForcedPrefs}).
+     * Unlike {@link #current()} it never waits or builds: prefs are read inside the profile's own
+     * init and on every thread. A read racing the first load sees the stored value.
      */
     @Nullable
     public static DeviceSettingOverride peekSettingOverride(String settingKey) {
@@ -899,11 +724,7 @@ public final class DeviceProfile {
         return defaultValue;
     }
 
-    /**
-     * The device's default for a string setting ({@code <setting default-value="...">}), or
-     * {@code appDefault} when the profile gives none. Not a forced value: the user's own choice,
-     * once stored, still wins wherever the setting is read.
-     */
+    /** The profile's {@code default-value} for a string setting, else {@code appDefault}; a stored user choice still wins. */
     public String getDefaultStringValue(String settingKey, String appDefault) {
         DeviceSettingOverride override = getSettingOverride(settingKey);
         String deviceDefault = override != null ? override.getDefaultStringValue() : null;
@@ -931,17 +752,11 @@ public final class DeviceProfile {
         invalidateTouchKeypadCaches();
     }
 
-    // ==================== Runtime State ====================
-
     public static void setOnScreenKeyboardShowing(boolean showing) {
         DeviceRuntimeState.getInstance().setOnScreenKeyboardShowing(showing);
     }
 
-    /**
-     * As {@link #setOnScreenKeyboardShowing(boolean)}, publishing separately whether an on-screen
-     * keyboard is part of it or only an input board open over the physical keys
-     * ({@link #isOnScreenTypingKeyboardVisible()}).
-     */
+    /** Also publishes whether a typing keyboard, not only an input board, is showing. */
     public static void setOnScreenKeyboardShowing(boolean showing, boolean typingKeyboardShowing) {
         DeviceRuntimeState.getInstance().setOnScreenKeyboardShowing(showing, typingKeyboardShowing);
     }
@@ -950,10 +765,7 @@ public final class DeviceProfile {
         return DeviceRuntimeState.getInstance().isOnScreenKeyboardShowing() || current().isVkbDevice();
     }
 
-    /**
-     * {@link #isOnScreenKeyboardVisible()} without the input boards: an input board (clipboard,
-     * cursor control, number pad, voice) open over the physical keys counts there, and not here.
-     */
+    /** {@link #isOnScreenKeyboardVisible()} not counting input boards (clipboard, number pad, voice...). */
     public static boolean isOnScreenTypingKeyboardVisible() {
         return DeviceRuntimeState.getInstance().isOnScreenTypingKeyboardShowing() || current().isVkbDevice();
     }
@@ -972,8 +784,7 @@ public final class DeviceProfile {
         DeviceRuntimeState.getInstance().setLanguageForceVkbMode(force);
     }
 
-    /** Live setter for the Debug settings "Force touchscreen-only mode" toggle (no IME restart
-     *  needed; survives hideWindow(), which clears only the transient force). */
+    /** Debug "Force touchscreen-only mode" toggle; survives hideWindow(), unlike the transient force. */
     public static void setDebugForceVkbMode(boolean force) {
         DeviceRuntimeState.getInstance().setDebugForceVkbMode(force);
     }
@@ -990,20 +801,13 @@ public final class DeviceProfile {
         DeviceRuntimeState.getInstance().removeVkbForcedPackage(packageName);
     }
 
-    // ==================== Key Character Map ====================
-
-    /**
-     * Get the KeyCharacterMap for the primary physical keyboard (device 0).
-     * Returns null if no physical keyboard is present.
-     */
+    /** The KeyCharacterMap of device 0, or null without a physical keyboard. */
     @Nullable
     public static KeyCharacterMap getKeyCharacterMap() {
         if (!current().hasPhysicalKeyboard()) return null;
         android.view.InputDevice device = android.view.InputDevice.getDevice(0);
         return device != null ? device.getKeyCharacterMap() : null;
     }
-
-    // ==================== Context-Aware Checks ====================
 
     public static boolean isPhysicalKeyboardAvailable(Context context) {
         boolean hasPkb = current().hasPhysicalKeyboard();
@@ -1021,15 +825,7 @@ public final class DeviceProfile {
         return isPhysicalKeyboardAvailable(context) && current().isPkbDevice();
     }
 
-    // ==================== Layout Resolution ====================
-
-    /**
-     * Resolve a layout resource ID, applying the matched device's
-     * {@code <layout-overrides>} from the device config. Consolidated from the legacy
-     * DeviceLayoutOverrideResolver (which re-parsed the config with its own parser and its own
-     * device detection); the DeviceInputResolver-matched {@link #deviceMapping} is the single
-     * authority now.
-     */
+    /** Resolves a layout resource id through the matched config's {@code <layout-overrides>}. */
     public static int resolveLayoutResource(android.content.res.Resources resources, int originalResourceId) {
         DeviceProfile profile = current();
         if (profile.deviceMapping == null
@@ -1049,12 +845,10 @@ public final class DeviceProfile {
                 Logger.warn("DeviceProfile", "Layout override resource not found: " + overrideName);
             }
         } catch (android.content.res.Resources.NotFoundException ignored) {
-            // Unresolvable id — fall through to the original.
+            // Unresolvable id: fall through to the original.
         }
         return originalResourceId;
     }
-
-    // ==================== Legacy Compat ====================
 
     public boolean isPkbWithoutAlphabeticKeyboard() {
         return isPkbDevice() && !hasAlphabeticKeyboard();
@@ -1070,7 +864,6 @@ public final class DeviceProfile {
                 com.blackberry.nuanceshim.NuanceSDK.DEVICE_VENICE.equals(Build.DEVICE);
     }
 
-    // Convenience static accessors
     public static boolean isPkb() { return current().isPkbDevice(); }
     public static boolean isVkb() { return current().isVkbDevice(); }
 

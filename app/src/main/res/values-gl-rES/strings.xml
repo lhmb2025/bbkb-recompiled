@@ -721,7 +721,6 @@
     <string name="device_config_import_unreadable">Ese ficheiro non é unha configuración de dispositivo</string>
     <string name="device_config_import_failed">Non se puido importar ese ficheiro</string>
 
-    <!-- OTA app updates -->
     <string name="settings_updates_title">Actualizacións</string>
     <string name="settings_updates_summary">Buscar unha nova versión de BBKB</string>
     <string name="settings_update_installed_version_title">Versión instalada</string>
@@ -755,7 +754,6 @@
     <string name="settings_update_ready_title">Listo para instalar</string>
     <string name="settings_update_version_details">Detalles da versión</string>
     <string name="settings_update_unknown_sources_title">Queres permitir que BBKB instale actualizacións?</string>
-    <!-- Downloadable language packs (core/languagepack) -->
     <string name="language_packs_installed_header">Instalados</string>
     <string name="language_packs_available_header">Dispoñibles para descargar</string>
     <string name="language_packs_download">Descargar</string>
@@ -877,7 +875,6 @@
     <string name="settings_voice_stop_on_pause_summary_off">Segue escoitando durante as pausas ata que toques o micrófono ou tras medio minuto de silencio</string>
     <string name="voice_status_listening_tap_to_stop">Escoitando&#8230; Toca o micrófono para deter</string>
 
-    <!-- Settings text moved out of the code (2026-11) -->
     <string name="settings_common_save">Gardar</string>
     <string name="settings_common_edit">Editar</string>
     <string name="settings_common_back">Atrás</string>

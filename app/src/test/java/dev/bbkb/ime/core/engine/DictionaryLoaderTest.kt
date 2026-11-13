@@ -34,25 +34,12 @@ import java.util.concurrent.AbstractExecutorService
 import java.util.concurrent.TimeUnit
 
 /**
- * CHARACTERISATION of [DictionaryLoader]'s load/reload/threading contract — Wave 3b package G1.
- *
- * The loader runs on `EngineThreads.loader()` (the persistent engine loader thread) during IME
- * startup and on every locale change. These tests replace that executor with a manual queue so the
- * window *between* `initDictionary` returning and the background load finishing is observable, and
- * pin what callers see in it:
- *
- *  - the new locale is visible at once; the dictionary is null and not ready until the task runs;
- *  - the OLD dictionary is closed on the executor, before the new one is created — not inline;
- *  - a load whose locale was superseded closes its own product and still fires the callback;
- *  - the spell-checker prefix (`"spellcheck_"`) loads synchronously on the SECONDARY engine and
- *    never touches the executor;
- *  - the reload predicate: locale change, additional-locale change, force, or a kept dictionary
- *    that reports `!isInitialized()`.
- *
- * Rows marked `CHARACTERISED QUIRK` / `CHARACTERISED BUG` assert what ships today. Do not "fix" them
- * here — a rewrite must reproduce them.
- *
- * Static mocks are thread-scoped, which is why the queue is drained on the test thread.
+ * [DictionaryLoader]'s load/reload/threading contract. `EngineThreads.loader()` is replaced by a
+ * manual queue so the window between `initDictionary` and the background load is observable: new
+ * locale visible at once, old dictionary closed on the executor, superseded loads close their own
+ * product, the `"spellcheck_"` prefix loads synchronously on the secondary engine, and the reload
+ * predicate. `CHARACTERISED QUIRK` rows assert current behavior. Static mocks are thread-scoped,
+ * hence draining on the test thread.
  */
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [34], manifest = Config.NONE, instrumentedPackages = ["com.blackberry.nuanceshim"])
@@ -124,8 +111,6 @@ class DictionaryLoaderTest {
         executor.drain()
     }
 
-    // ---- fresh state ------------------------------------------------------------------------
-
     @Test
     fun freshLoader_hasNothing() {
         assertNull(loader.locale)
@@ -133,8 +118,6 @@ class DictionaryLoaderTest {
         assertFalse(loader.isDictionaryReady)
         assertFalse(loader.isWordValid("the", true))
     }
-
-    // ---- the async window -------------------------------------------------------------------
 
     @Test
     fun initDictionary_newLocale_isVisibleBeforeTheLoadFinishes() {
@@ -225,8 +208,6 @@ class DictionaryLoaderTest {
         verify(cbFr).onDictionaryInitialized(true)
     }
 
-    // ---- reload predicate -------------------------------------------------------------------
-
     @Test
     fun sameLocale_loadedAndInitialised_keepsTheDictionary() {
         val d = dict()
@@ -298,7 +279,7 @@ class DictionaryLoaderTest {
         // The null-locale load (FallbackDictionary in production) is installed and serves.
         assertSame(fallback, loader.mainDictionary)
         verify(fallback, never()).close()
-        // Once for the en load, once for the null-locale load (the old guard reported false here).
+        // Once for the en load, once for the null-locale load.
         verify(callback, org.mockito.Mockito.times(2)).onDictionaryInitialized(true)
         assertFalse(loader.initDictionary(ctx, null, false, false, callback))
         assertSame(fallback, loader.mainDictionary)
@@ -335,8 +316,8 @@ class DictionaryLoaderTest {
 
     @Test
     fun sameLocaleWhileLoadPending_withAdditionalLocales_doesNotQueueASecondLoad() {
-        // The pending load's group records the additional locales it was started for, so a repeat
-        // init for the same locale and set does not queue a second load (which used to leak).
+        // The pending load's group records its additional locales, so a repeat init for the
+        // same locale and set does not queue (and leak) a second load.
         `when`(subtypes.currentSubtypeAdditionalLocales).thenReturn(setOf(fr))
         val d = dict()
         primaryWillCreate(en, d)
@@ -384,8 +365,6 @@ class DictionaryLoaderTest {
         verify(second, never()).close()
     }
 
-    // ---- spell-checker prefix ---------------------------------------------------------------
-
     @Test
     fun spellcheckPrefix_loadsSynchronouslyOnTheSecondaryEngine() {
         val d = dict()
@@ -404,9 +383,8 @@ class DictionaryLoaderTest {
 
     @Test
     fun spellcheckPrefix_reload_doesNotCloseTheOldDictionary() {
-        // CHARACTERISED QUIRK: only the async path closes the previous dictionary. Unreachable
-        // today — AndroidSpellCheckerService builds a fresh DictionaryLoader per init and calls
-        // closeAndReset() on the old one itself.
+        // CHARACTERISED QUIRK: only the async path closes the previous dictionary. Unreachable:
+        // AndroidSpellCheckerService builds a fresh loader per init and closes the old one itself.
         val old = dict()
         secondaryWillCreate(en, old)
         loader.initDictionaryWithPrefix(ctx, en, false, false, null, "spellcheck_")
@@ -434,8 +412,6 @@ class DictionaryLoaderTest {
         executor.drain()
         factoryStatic.verify { DictionaryFactory.createDictionary(ctx, en) }
     }
-
-    // ---- closeAndReset ----------------------------------------------------------------------
 
     @Test
     fun closeAndReset_closesSynchronously_andEmptiesTheLoader() {
@@ -470,8 +446,6 @@ class DictionaryLoaderTest {
         loader.closeAndReset()
         assertTrue(loader.initDictionary(ctx, en, false, false, callback))
     }
-
-    // ---- generateSuggestions ----------------------------------------------------------------
 
     private val tracker: ComposingTextTracker = mock(ComposingTextTracker::class.java)
     private val strip: SuggestionStripSettings = mock(SuggestionStripSettings::class.java)
@@ -532,8 +506,6 @@ class DictionaryLoaderTest {
         assertEquals(en, r.locale)
     }
 
-    // ---- isWordValid ------------------------------------------------------------------------
-
     @Test
     fun isWordValid_emptyOrNull_isFalseWithoutConsulting() {
         val d = dict()
@@ -548,7 +520,7 @@ class DictionaryLoaderTest {
         val tr = Locale("tr")
         val d = dict()
         loaded(tr, d)
-        // Turkish lower-cases 'I' to dotless 'ı' — proves the loader's locale is used.
+        // Turkish lower-cases 'I' to dotless 'ı', which proves the loader's locale is used.
         `when`(d.isValidWord("ıs")).thenReturn(true)
 
         assertFalse(loader.isWordValid("Is", false))
@@ -565,8 +537,6 @@ class DictionaryLoaderTest {
         loader.initDictionary(ctx, en, false, false, callback)
         assertFalse(loader.isWordValid("the", true))
     }
-
-    // ---- updateAdditionalLocales ------------------------------------------------------------
 
     @Test
     fun updateAdditionalLocales_nullSet_isFalse() {
@@ -636,12 +606,9 @@ class DictionaryLoaderTest {
         verify(callback).onLocalesUpdated()
     }
 
-    // ---- multi-language order ---------------------------------------------------------------
-
     @Test
     fun updateAdditionalLocales_handsTheEngineTheExtrasInTheSubtypesOrder() {
-        // ResourceLocaleUtils.getAdditionalLocales keeps the extra value's order now; the loader
-        // must pass the set through as it is, not re-sort it.
+        // getAdditionalLocales keeps the extra value's order; the loader must not re-sort it.
         val d = dict()
         loaded(en, d)
         var handed: List<Locale>? = null
@@ -654,9 +621,8 @@ class DictionaryLoaderTest {
 
     @Test
     fun additionalLocales_areComparedAsASet_soTheSameLanguagesInAnotherOrderDoNotReload() {
-        // The recorded set and the active one used to be TreeSets on both sides; now the active
-        // one keeps the extra value's order. Equality must stay order-blind, or a set recorded in
-        // one order would reload on every init.
+        // The active set keeps the extra value's order; equality must stay order-blind or a set
+        // recorded in another order would reload on every init.
         val d = dict()
         loaded(en, d)
         `when`(d.addLocales(any())).thenReturn(true)
@@ -670,8 +636,6 @@ class DictionaryLoaderTest {
         assertTrue(executor.tasks.isEmpty())
         assertSame(d, loader.mainDictionary)
     }
-
-    // ---- unlearning (2026-10-12) ------------------------------------------------------------
 
     @Test
     fun unlearnWord_reachesTheLoadedDictionary() {

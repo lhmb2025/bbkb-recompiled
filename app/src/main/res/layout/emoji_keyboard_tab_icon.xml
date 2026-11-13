@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- One category tab's icon: the custom view of a TabLayout tab. android:id/icon is the id
-     TabLayout looks for to apply its icon tint; inflated without a parent, so the tab view gives
-     it its own default size (full tab width, the icon centred at its intrinsic size). -->
+<!-- android:id/icon is the id TabLayout tints; inflated without a parent so the tab gives it its default size -->
 <ImageView xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@android:id/icon"
     android:layout_width="match_parent"

@@ -12,9 +12,8 @@ import org.robolectric.annotation.Config
 import kotlin.random.Random
 
 /**
- * topHit and searchEmojis score only the bigram-index candidates and memoise (audit P-10). Their
- * answers must be exactly the full scan's, ties included, which this checks against a brute-force
- * copy of the old code over the real dataset and a few thousand queries.
+ * topHit and searchEmojis score only bigram-index candidates and memoise; their answers must equal a full scan's,
+ * ties included, checked against a brute-force copy over the real dataset and a few thousand queries.
  */
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [34])
@@ -29,7 +28,7 @@ class EmojibaseTopHitIndexTest {
         EmojibaseDataProvider(context).apply { applyDataset(entries) { BooleanArray(it.size) { true } } }
     }
 
-    // ---- the pre-index implementation, verbatim in behaviour
+    // The full-scan reference implementation.
 
     private fun bruteTopHit(query: String, minRelevance: Int): EmojiData? {
         val q = query.trim().lowercase()

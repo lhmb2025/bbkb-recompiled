@@ -97,15 +97,11 @@ import kotlinx.coroutines.withContext
 import java.util.Locale
 
 /**
- * The consolidated Languages screen (preview, alongside the three screens it is meant to
- * replace): the keyboards the user switches between, adding a language (which fetches its
- * dictionary), a keyboard's extra prediction languages (what the multi-language wizard did), and
- * links to the switching options and the raw dictionary files.
- *
- * Built for Android 14+, where [SubtypeEnabler.setEnabledList] lets the app edit its own enabled
- * keyboards. Before that every add/remove still works but ends in Android's language list.
- * All state that says which keyboards are on is re-read from the framework ([KeyboardLanguages.read])
- * on resume and after every edit; nothing here is the source of truth.
+ * The Languages screen: the keyboards the user switches between, adding a language (which fetches
+ * its dictionary), per-keyboard extra prediction languages, and links to switching options and
+ * dictionary files. On Android 14+ [SubtypeEnabler.setEnabledList] edits the enabled keyboards
+ * directly; before that edits end in Android's language list. Enabled state is re-read
+ * ([KeyboardLanguages.read]) on resume and after every edit; nothing here is the source of truth.
  */
 @Composable
 fun LanguagesHubScreen(
@@ -126,15 +122,13 @@ fun LanguagesHubScreen(
     var reloads by remember { mutableIntStateOf(0) }
 
     var showPicker by remember { mutableStateOf(false) }
-    // The keyboard whose sheet is open: its extra prediction languages and its removal.
     var sheetFor by remember { mutableStateOf<KeyboardLanguages.Keyboard?>(null) }
 
     val downloads = remember { PackDownloadManager.getInstance(context) }
     val downloadStates by downloads.states.collectAsStateWithLifecycle()
 
-    // The letter layouts a keyboard's layout rows offer: the shipped ones and the user's.
     var layoutDocuments by remember { mutableStateOf<LayoutDocuments?>(null) }
-    // Bumped when a keyboard's layout is chosen, so its sheet reads the choices again.
+    // Bumped when a layout is chosen, so the sheet re-reads the choices.
     var layoutChoices by remember { mutableIntStateOf(0) }
 
     fun reload() { reloads++ }
@@ -157,9 +151,8 @@ fun LanguagesHubScreen(
     fun toast(text: String) = Toast.makeText(context, text, Toast.LENGTH_LONG).show()
 
     /**
-     * [turnOn]: whether each language should also become a keyboard of its own when it installs.
-     * True only when the user is adding that language; a dictionary fetched for a keyboard that
-     * is already on, or as an extra prediction language, must not add a second keyboard.
+     * [turnOn]: each language also becomes its own keyboard on install. Only when adding that
+     * language; a dictionary for an existing keyboard or an extra language must not add a keyboard.
      */
     fun download(entries: List<PackEntry>, turnOn: Boolean) {
         val catalogue = packs ?: return
@@ -172,9 +165,7 @@ fun LanguagesHubScreen(
     ) { padding ->
         val current = snapshot
         val spacing = LocalSpacing.current
-        // Three groups in one list: the follow-the-phone rows, the keyboards with the Add row,
-        // and the two links. The list carries the group inset and gap; each group's first and
-        // last row take the group's outer corners (groupOuterCorners).
+        // Three groups: follow-the-phone rows, keyboards plus the Add row, and the two links.
         val topCount = if (!direct) 2 else 1
         val keyboards = current?.keyboards.orEmpty()
         val keyboardsCount = keyboards.size + 1 // the Add row closes the group
@@ -199,8 +190,7 @@ fun LanguagesHubScreen(
                 }
                 item(key = "follow") {
                     val follows = current?.followsSystem == true
-                    // SwitchPreference and PreferenceScreen take no edge, so the item paints the
-                    // group's outer corners around them instead.
+                    // SwitchPreference and PreferenceScreen take no edge, so the item paints the group corners.
                     Box(modifier = Modifier.groupOuterCorners(groupEdge(topCount - 1, topCount))) {
                         SwitchPreference(
                             title = stringResource(R.string.languages_hub_follow_system_title),
@@ -245,8 +235,7 @@ fun LanguagesHubScreen(
                         keyboard = keyboard,
                         edge = groupEdge(index, keyboardsCount),
                         dictionaryLine = dictionaryLine(context, needed, downloadStates),
-                        // Offered while nothing is downloading: a Download that queues a duplicate
-                        // would read as a button that did nothing.
+                        // Offered while nothing is downloading: a duplicate Download would look like it did nothing.
                         downloadable = needed.filter { downloadStates[it.locale] !is PackState.Downloading },
                         onDownload = { download(it, turnOn = false) },
                         onOpen = { sheetFor = keyboard },
@@ -300,9 +289,8 @@ fun LanguagesHubScreen(
         val physicalRows = remember(keyboard, layoutDocuments, hasPhysicalKeyboard) {
             if (!hasPhysicalKeyboard) emptyList() else layoutDocuments?.rowsFor(context, keyboard, language, LetterLayout.Target.PKB).orEmpty()
         }
-        // A choice whose layout is gone (deleted, or no longer offered) leaves the keyboard its
-        // default, so that is the row shown chosen: the on-screen list's first row, or on the
-        // physical keys the language's alphabet document, else the keypad's letters.
+        // A choice whose layout is gone leaves the keyboard its default, so show that row chosen: the
+        // on-screen list's first row, or on the keypad the alphabet document, else the keypad's letters.
         fun chosenIn(rows: List<LayoutChoiceRow>, target: LetterLayout.Target, default: String): String =
             LetterLayoutChoice.chosenId(prefs, language, target).takeIf { id -> rows.any { it.id == id } } ?: default
         val chosenOnScreen = remember(keyboard, layoutChoices, onScreenRows) { chosenIn(onScreenRows, LetterLayout.Target.VKB, "") }
@@ -346,7 +334,7 @@ fun LanguagesHubScreen(
                         KeyboardLanguages.ExtrasResult.FAILED -> toast(context.getString(R.string.languages_hub_failed))
                     }
                     reload()
-                    // Extra languages are only as good as their dictionaries: fetch what is missing.
+                    // Extra languages need their dictionaries: fetch what is missing.
                     val catalogue = packs
                     if (catalogue != null && extras.isNotEmpty()) {
                         val needed = withContext(Dispatchers.IO) {
@@ -386,8 +374,7 @@ fun LanguagesHubScreen(
                     val subtype = candidate.subtype
                     when {
                         subtype == null -> {
-                            // No keyboard until the pack installs; the installer registers it and,
-                            // on Android 14+, turns it on.
+                            // No keyboard until the pack installs; the installer registers it (and turns it on, 14+).
                             candidate.pack?.let { download(listOf(it), turnOn = true) }
                             toast(context.getString(R.string.languages_hub_downloading_then_on, candidate.name))
                         }
@@ -412,11 +399,7 @@ fun LanguagesHubScreen(
     }
 }
 
-/**
- * Lays an item out [inset] wider on each side than the list gives it, so a category label inside
- * a list that carries the group inset sits where a label does on every other screen rather than a
- * second inset further in.
- */
+/** Lays an item out [inset] wider on each side, undoing the list's group inset for a category label. */
 private fun Modifier.outsideGroupInset(inset: Dp): Modifier = layout { measurable, constraints ->
     val extra = inset.roundToPx() * 2
     val wider = if (constraints.hasBoundedWidth) {
@@ -449,15 +432,12 @@ private fun dictionaryLine(
 }
 
 /**
- * One keyboard, as the navigation row it is: tapping opens [KeyboardEditorScreen] for its extra
- * prediction languages and its removal. The trailing chevron is the Material signal for that. A
- * missing dictionary gets its own Download button here, since that is the row's primary call to
- * action rather than a secondary one.
+ * One keyboard as a navigation row opening its sheet. A missing dictionary gets its own Download
+ * button here, as the row's primary action.
  */
 @Composable
 private fun KeyboardRow(
     keyboard: KeyboardLanguages.Keyboard,
-    /** The row's place in the keyboards group. */
     edge: GroupEdge,
     dictionaryLine: String?,
     downloadable: List<PackEntry>,
@@ -492,16 +472,9 @@ private fun KeyboardRow(
     )
 }
 
-/**
- * The letter layouts a keyboard's Layout row can offer, read once per load of the screen (the
- * built-in documents parse once per process; the user's are a directory listing).
- */
+/** The letter layouts a keyboard's Layout row can offer, read once per screen load. */
 private class LayoutDocuments(val registry: LetterLayoutRegistry, val builtIns: List<LetterLayout>, val custom: List<LetterLayout>) {
-
-    /**
-     * The rows of [keyboard]'s layout list for its [target] keyboard, in [language]: its default
-     * first, then what [LetterLayoutChoice.options] offers. Empty without a language.
-     */
+    /** [keyboard]'s layout rows for [target] in [language]: its default, then [LetterLayoutChoice.options]. Empty without a language. */
     fun rowsFor(
         context: Context,
         keyboard: KeyboardLanguages.Keyboard,
@@ -523,27 +496,22 @@ private class LayoutDocuments(val registry: LetterLayoutRegistry, val builtIns: 
         val keypad = DeviceProfile.current()?.keypadLayout
         val keypadName = ResourceLocaleUtils.getKeyboardLayoutSetDisplayName(keypad) ?: keypad?.uppercase() ?: ""
         val latin = MultiLanguageRepository.isLatinScript(keyboard.locale)
-        // The letters' name: the language's ("English", "Arabic"), without the region.
         val letters = ResourceLocaleUtils.getSubtypeLocaleDisplayName(language) ?: keyboard.name
         fun named(arrangement: String) = context.getString(R.string.layout_choice_name, arrangement, letters)
-        // The keyboard's own arrangement: its layout set's name (QWERTY, AZERTY, QWERTZ); a Latin
-        // set with no name of its own (Spanish, Nordic) is a QWERTY arrangement.
+        // The layout set's name (QWERTY, AZERTY, QWERTZ); an unnamed Latin set (Spanish, Nordic) is QWERTY.
         val ownArrangement = ResourceLocaleUtils.getKeyboardLayoutSetDisplayName(ownSet) ?: if (latin) "QWERTY" else null
         return layoutChoiceRows(
             options,
             // "QWERTY (English)"; a keyboard in a script of its own is named by its keyboard: "Arabic".
             ownTitle = ownArrangement?.let(::named) ?: keyboard.name,
-            // The Physical layouts screen's words for the same thing, so the screens agree.
+            // The Physical layouts screen's wording, so the screens agree.
             ownSummary = context.getString(R.string.settings_pkb_layouts_none_summary),
             keypadLettersTitle = context.getString(R.string.languages_hub_layout_keypad_letters, keypadName),
             name = { layout ->
                 when {
-                    // A shipped arrangement for the screen (Colemak, AZERTY…) carries this keyboard's letters.
                     target == LetterLayout.Target.VKB && layout.origin == LetterLayout.Origin.BUILT_IN -> named(layout.name)
-                    // The language's own alphabet document on the keypad: its letters on the keypad's keys.
                     target == LetterLayout.Target.PKB && layout.origin == LetterLayout.Origin.BUILT_IN &&
                         !layout.optIn && layout.binding.isLanguageBound -> named(keypadName)
-                    // An etched keypad's layout, or the user's own: the name it carries.
                     else -> layout.name
                 }
             },
@@ -574,16 +542,8 @@ private class LayoutDocuments(val registry: LetterLayoutRegistry, val builtIns: 
 }
 
 /**
- * Everything about one keyboard, as a modal bottom sheet over the list it was tapped in: its
- * letter layout, its extra prediction languages (Latin-script keyboards only) and, at the bottom,
- * its removal.
- *
- * A sheet rather than a page or a dialog: it is the Material surface for a short set of options
- * about the item just tapped, it keeps the list in view, and a keyboard with nothing to combine
- * gets a small sheet instead of an empty page.
- *
- * A layout row shows only when there is something to choose: a keyboard in a script of its own
- * on a phone without custom layouts has nothing but its default.
+ * One keyboard's sheet: letter layout, extra prediction languages (Latin-script keyboards only)
+ * and removal. The layout row shows only when there is something to choose.
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -612,8 +572,7 @@ private fun KeyboardSheet(
     var chooseLayout by remember { mutableStateOf<LetterLayout.Target?>(null) }
     val changed = selected != initial
 
-    // Chosen-when-opened first, then the rest, each alphabetical. Grouped by the opening state
-    // so a row does not jump to another group under the finger that just ticked it.
+    // Grouped by the state when opened so a row does not jump groups under the finger that ticked it.
     val (chosen, available) = remember(choices, initial) {
         choices.sortedBy { it.toString() }.partition { it.first in initial }
     }
@@ -621,14 +580,11 @@ private fun KeyboardSheet(
     val shownChosen = chosen.filter(::matches)
     val shownAvailable = available.filter(::matches)
 
-    // The sheet is as tall as its content, capped so it never outgrows the screen: on the KEY2's
-    // short display a fixed-height list pushed the Remove row off the bottom. The list takes
-    // whatever height is left within that cap and scrolls inside it.
+    // As tall as its content, capped so the Remove row stays on short screens; the list scrolls.
     val maxSheetHeight = (LocalConfiguration.current.screenHeightDp * 0.88f).dp
     ModalBottomSheet(onDismissRequest = onDismiss, sheetState = sheetState) {
         Column(modifier = Modifier.fillMaxWidth().heightIn(max = maxSheetHeight)) {
-            // Title row: the keyboard's name, and Done: applies a changed extras selection, else
-            // closes the sheet.
+            // Done applies a changed extras selection, else closes the sheet.
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -722,8 +678,7 @@ private fun KeyboardSheet(
             }
 
             HorizontalDivider(modifier = Modifier.padding(top = spacing.small))
-            // The destructive action last, as a list row in the error colour. Disabled for the
-            // last keyboard: an empty list would mean "follow the phone".
+            // Disabled for the last keyboard: an empty list would mean "follow the phone".
             ListItem(
                 headlineContent = { Text(stringResource(R.string.languages_hub_sheet_remove)) },
                 supportingContent = if (canRemove) null else {

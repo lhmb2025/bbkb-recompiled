@@ -12,45 +12,20 @@ import dev.bbkb.ime.core.device.detection.KeyEventDeviceClassifier;
 import dev.bbkb.ime.core.device.state.MetaKeyStateTracker;
 
 /**
- * One answer to "which key is this", resolved once per {@link KeyEvent} and passed down.
- *
- * <p>Phase 1e of the typing-path consolidation, and deliberately only its first slice: key
- * <b>identity</b>. {@link KeyEventProcessor} used to resolve identity three ways inside one
- * method — the framework key code, the two pseudo-keycodes {@link #PSEUDO_KEYCODE_EMOJI} /
- * {@link #PSEUDO_KEYCODE_VOICE}, and a scancode&rarr;{@link KeyRole} lookup — and it did so more
- * than once per event: the physical-keyboard classification was recomputed after every
- * {@code remapKeyEvent}, and {@code onKeyUpInternal} resolved the same scancode mapping twice.
- * Each of those is a chance for two branches in the same method to disagree about what key the
- * user pressed, which is the bug class this type exists to remove.
- *
- * <h3>What it deliberately does NOT hold</h3>
- * <ul>
- *   <li><b>Modifier state.</b> Ask {@link ModifierState} through
- *       {@code PhysicalKeyboardStateTracker.getModifierState(event)}. Identity is a property of
- *       the key; which modifiers are up or down is not.</li>
- *   <li><b>The emoji / mic / multifunction down-up pairing.</b> That is per-<em>press</em> state,
- *       not per-event: it outlives the event that armed it, by design. Phase 1g gave it an owner
- *       of its own in {@link BoardKeyPressTracker}, keyed by this type's {@link Identity}, and it
- *       does not belong in a value that is built and dropped once per event.</li>
- * </ul>
- *
- * <h3>Instances are per-event and not thread safe</h3>
- * One is built per key event on the key thread, read a handful of times, and dropped. The
- * multifunction action is resolved lazily (it reads settings) so that building a
- * {@code ResolvedKey} costs exactly what the old inline code cost: one device classification and
- * one scancode-mapping lookup.
+ * Key identity (key code, scancode, pseudo-keycodes, device-config role), resolved once per
+ * {@link KeyEvent} so branches cannot disagree about which key was pressed. Holds no modifier
+ * state (see {@link ModifierState}) and no per-press pairing (see {@link BoardKeyPressTracker}).
+ * Built per event on the key thread; not thread safe. The multifunction action is lazy.
  */
 public final class ResolvedKey {
 
     /**
-     * The emoji key's pseudo-keycode. Not an Android {@code KEYCODE_*}: it is the Minimal Phone's
-     * raw {@code .kl} scancode (666), which its ROM also hands through as the key code, so the
-     * IME sees a "key code" far outside the framework's range. Treated as the emoji board key
-     * wherever it appears, whatever the device config says (see {@link #isEmojiKey()}).
+     * Emoji pseudo-keycode: the Minimal Phone's raw {@code .kl} scancode, which its ROM passes as
+     * the key code. Always treated as the emoji key, whatever the device config says.
      */
     public static final int PSEUDO_KEYCODE_EMOJI = 666;
 
-    /** The mic/voice key's pseudo-keycode, the same story as {@link #PSEUDO_KEYCODE_EMOJI}. */
+    /** Mic/voice pseudo-keycode, like {@link #PSEUDO_KEYCODE_EMOJI}. */
     public static final int PSEUDO_KEYCODE_VOICE = 667;
 
     /** The emoji board's own key code, used when the device config names no board id. */
@@ -65,7 +40,6 @@ public final class ResolvedKey {
     @Nullable private final ScancodeMapping mapping;
     @Nullable private final KeyRole role;
 
-    /** Lazily resolved; see {@link #getMultifunctionAction()}. */
     @Nullable private String multifunctionAction;
     private boolean multifunctionActionResolved;
 
@@ -79,10 +53,8 @@ public final class ResolvedKey {
     }
 
     /**
-     * Resolve the identity of {@code event}. Call this once per event, on the event the rest of
-     * the path will act on — which after a remap is the <em>remapped</em> event, because the
-     * remap can change the key code (a MULTIFUNCTION key configured as Ctrl becomes
-     * {@code KEYCODE_CTRL_LEFT}) and, in principle, the device it is attributed to.
+     * Call once per event, on the event the path acts on: after a remap that is the remapped
+     * event, since a remap can change the key code (a MULTIFUNCTION key as Ctrl).
      */
     public static ResolvedKey of(KeyEvent event) {
         final int keyCode = event.getKeyCode();
@@ -94,49 +66,35 @@ public final class ResolvedKey {
                 DeviceInputResolver.keyRole(scanCode, keyCode, event.getDeviceId()));
     }
 
-    /** The same resolution with both singletons supplied, for tests that drive them directly. */
     @VisibleForTesting
     public static ResolvedKey forTest(int keyCode, int scanCode, boolean physical,
             @Nullable ScancodeMapping mapping) {
         return new ResolvedKey(keyCode, scanCode, physical, mapping);
     }
 
-    // ===================================================================== raw identity
-
-    /** The framework key code, after any remap. */
+    /** After any remap. */
     public int keyCode() {
         return keyCode;
     }
 
-    /** The raw hardware scancode. This, not the key code, is what identifies a physical key. */
+    /** This, not the key code, identifies a physical key. */
     public int scanCode() {
         return scanCode;
     }
 
-    /** Whether the event came from a physical keyboard. */
     public boolean isPhysical() {
         return physical;
     }
 
-    /**
-     * Which physical key this is, as a value that can be compared and used as a map key — what
-     * {@link BoardKeyPressTracker} keys a pending action by, so that a key-DOWN and the key-UP
-     * that follows it can be recognised as the same press.
-     */
+    /** Map key used by {@link BoardKeyPressTracker} to pair a key-down with its key-up. */
     public Identity identity() {
         return new Identity(keyCode, scanCode);
     }
 
     /**
-     * The identity of a physical key: its key code and its scancode, and nothing else.
-     *
-     * <p>Both halves are needed. The scancode alone is not enough because the same key can arrive
-     * with a rewritten key code — a MULTIFUNCTION key configured as Ctrl becomes
-     * {@code KEYCODE_CTRL_LEFT} on both its down and its up — and the key code alone is not enough
-     * because a ROM can attach one key code to several keys (the MP01 sends
-     * {@code KEYCODE_ALT_RIGHT} for both its Sym key and its emoji key, on scancodes 249 and 250).
-     * Neither the device nor the meta state is part of it: a key held while the modifiers change is
-     * still the same key.
+     * Key code plus scancode. Both are needed: a remap rewrites the key code (MULTIFUNCTION as
+     * Ctrl), and a ROM can give several keys one key code (MP01 sends KEYCODE_ALT_RIGHT for Sym
+     * and emoji, scancodes 249/250). Device and meta state are deliberately excluded.
      */
     public static final class Identity {
 
@@ -148,7 +106,6 @@ public final class ResolvedKey {
             this.scanCode = scanCode;
         }
 
-        /** The identity of the key {@code event} belongs to. */
         public static Identity of(KeyEvent event) {
             return new Identity(event.getKeyCode(), event.getScanCode());
         }
@@ -184,46 +141,32 @@ public final class ResolvedKey {
         }
     }
 
-    /** The device config's mapping for this key, or {@code null} if none matched. */
     @Nullable
     public ScancodeMapping mapping() {
         return mapping;
     }
 
-    /** The device config's role for this key, or {@code null} if the config is silent. */
     @Nullable
     public KeyRole role() {
         return role;
     }
 
-    // ===================================================================== pseudo-keycodes
-
-    /** This key arrived as the emoji pseudo-keycode 666. */
     public boolean isPseudoEmojiKeyCode() {
         return keyCode == PSEUDO_KEYCODE_EMOJI;
     }
 
-    /** This key arrived as the voice pseudo-keycode 667. */
     public boolean isPseudoVoiceKeyCode() {
         return keyCode == PSEUDO_KEYCODE_VOICE;
     }
 
-    /** Either pseudo-keycode. */
     public boolean isPseudoBoardKeyCode() {
         return isPseudoEmojiKeyCode() || isPseudoVoiceKeyCode();
     }
 
-    // ===================================================================== roles
-
     /**
-     * A key the IME consumes whole: a board key (emoji / voice / sym) or a MULTIFUNCTION key,
-     * by device-config role or by pseudo-keycode.
-     *
-     * <p>Two things hang on this. On the way down it exempts the key from the "an ordinary text
-     * key went down" behaviours — board dismissal, cursor-mode disable, the Alt symbol-long-press
-     * fallthrough — because its key-UP is what performs the action, and disabling on key-down
-     * clears the state that decision reads. On the way up it keeps the key's base character from
-     * leaking through the symbol-long-press and extra-key fallthroughs.
+     * A key the IME consumes whole (emoji/voice/sym board or MULTIFUNCTION), by role or
+     * pseudo-keycode. Exempt on key-down from board dismissal, cursor-mode disable and the Alt
+     * long-press fallthrough, since key-up acts on that state; on key-up its base char must not leak.
      */
     public boolean isBoardKey() {
         return isPseudoBoardKeyCode() || isRoleBoardKey();
@@ -235,10 +178,8 @@ public final class ResolvedKey {
     }
 
     /**
-     * The emoji board key: the {@link KeyRole#BOARD_EMOJI} role, a MULTIFUNCTION key whose
-     * configured action is the emoji board (its down-event arms the same
-     * {@link PendingKeyAction#EMOJI_BOARD}, so it has to take the same key-up path), or the legacy
-     * pseudo-keycode.
+     * BOARD_EMOJI role, the pseudo-keycode, or a MULTIFUNCTION key set to the emoji board (it arms
+     * the same {@link PendingKeyAction#EMOJI_BOARD}, so it needs the same key-up path).
      */
     public boolean isEmojiKey() {
         return role == KeyRole.BOARD_EMOJI
@@ -246,22 +187,17 @@ public final class ResolvedKey {
                 || isPseudoEmojiKeyCode();
     }
 
-    /** The voice board key, by device-config role. */
     public boolean isVoiceKey() {
         return role == KeyRole.BOARD_VOICE;
     }
 
-    /** A user-mappable MULTIFUNCTION key. */
     public boolean isMultifunctionKey() {
         return role == KeyRole.MULTIFUNCTION;
     }
 
     /**
-     * Whether this is the Sym key, by either of the two names it answers to: a real
-     * {@link KeyEvent#KEYCODE_SYM} (BlackBerry hardware) or a device config that gives its
-     * scancode the {@link KeyRole#BOARD_SYM} role (the MP01, whose ROM attaches
-     * {@code KEYCODE_ALT_RIGHT} to scancode 249). The scancode is what identifies the key; the
-     * key code is just what the {@code .kl} file says.
+     * A real KEYCODE_SYM (BlackBerry) or a scancode the device config gives the BOARD_SYM role
+     * (MP01: KEYCODE_ALT_RIGHT on scancode 249).
      */
     public boolean isSymKey() {
         return isSymBoardKey(keyCode, mapping);
@@ -270,53 +206,38 @@ public final class ResolvedKey {
     /** @see #isSymKey() */
     public static boolean isSymBoardKey(int keyCode, @Nullable ScancodeMapping mapping) {
         if (mapping != null && mapping.role != null) {
-            // The config is authoritative: a key it gives another role to is not the Sym key,
-            // whatever key code the ROM attached to it.
+            // The config's role wins over whatever key code the ROM attached.
             return mapping.role == KeyRole.BOARD_SYM;
         }
         return keyCode == KeyEvent.KEYCODE_SYM;
     }
 
-    // ===================================================================== key-code classes
-
-    /** The Enter / confirm key. */
     public boolean isEnterKey() {
         return keyCode == KeyEvent.KEYCODE_ENTER;
     }
 
-    /** Backspace. */
     public boolean isBackspaceKey() {
         return keyCode == KeyEvent.KEYCODE_DEL;
     }
 
-    /** The navigation BACK key. */
     public boolean isBackKey() {
         return keyCode == KeyEvent.KEYCODE_BACK;
     }
 
-    /** The FUNCTION key, which this path always hands back to the framework. */
+    /** This path always hands FUNCTION back to the framework. */
     public boolean isFunctionKey() {
         return keyCode == KeyEvent.KEYCODE_FUNCTION;
     }
 
-    /** A physical Shift key, by key code. */
     public boolean isShiftKey() {
         return MetaKeyStateTracker.isShiftKey(keyCode);
     }
 
-    /** A physical Alt key, by key code. */
     public boolean isAltKey() {
         return MetaKeyStateTracker.isAltKey(keyCode);
     }
 
-    // ===================================================================== config payload
-
-    /**
-     * The user-configured action for a MULTIFUNCTION key, or {@code null} for any other key.
-     *
-     * <p>Resolved lazily and memoised: it reads settings, and the key-down path has never needed
-     * it, so building a {@code ResolvedKey} must not pay for it.
-     */
+    /** Configured action of a MULTIFUNCTION key, else null. Memoised lazily: it reads settings. */
     @Nullable
     public String getMultifunctionAction() {
         if (role != KeyRole.MULTIFUNCTION) {
@@ -329,12 +250,7 @@ public final class ResolvedKey {
         return multifunctionAction;
     }
 
-    /**
-     * The board this key opens: the device config's own board id when it names one, otherwise
-     * {@code fallbackBoardId}.
-     *
-     * @param fallbackBoardId {@link #DEFAULT_EMOJI_BOARD_ID} or {@link #DEFAULT_VOICE_BOARD_ID}
-     */
+    /** The config's board id if set, else {@code fallbackBoardId} (a DEFAULT_*_BOARD_ID). */
     public int boardId(int fallbackBoardId) {
         return (mapping != null && mapping.boardId != 0) ? mapping.boardId : fallbackBoardId;
     }

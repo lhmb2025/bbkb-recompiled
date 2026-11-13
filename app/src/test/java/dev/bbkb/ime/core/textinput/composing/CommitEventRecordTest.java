@@ -11,9 +11,7 @@ import org.junit.Test;
 
 import java.lang.reflect.Field;
 
-/**
- * Regression tests for audit findings TI-21 and TI-29 on {@link CommitEventRecord}.
- */
+/** {@link CommitEventRecord}: the shared IDLE record stays immutable; the coordinate tracker is lazy. */
 public class CommitEventRecordTest {
 
     private static boolean revertEligibleOf(CommitEventRecord record) throws Exception {
@@ -22,12 +20,7 @@ public class CommitEventRecordTest {
         return f.getBoolean(record);
     }
 
-    /**
-     * TI-29: {@link CommitEventRecord#IDLE} is a process-wide shared singleton, and
-     * {@code InputLogic} assigns it to {@code mEventDispatcher} and then calls
-     * {@code disableRevert()} on it — permanently mutating shared state. Benign only because
-     * {@code isRevertEligible()} already short-circuits on the empty committed word.
-     */
+    /** {@code InputLogic} calls {@code disableRevert()} on the shared {@link CommitEventRecord#IDLE}. */
     @Test
     public void disableRevertDoesNotMutateTheIdleSingleton() throws Exception {
         assertTrue(revertEligibleOf(CommitEventRecord.IDLE));
@@ -49,11 +42,7 @@ public class CommitEventRecordTest {
         assertFalse(revertEligibleOf(record));
     }
 
-    /**
-     * TI-21: every record used to allocate a {@code TouchPointerCoordTracker(48)} — six
-     * {@code IntArrayList(48)} backing arrays, ~1.1 KB — on every word commit, including when
-     * there was no source tracker to copy from and nothing was ever written into it.
-     */
+    /** A {@code TouchPointerCoordTracker(48)} is ~1.1 KB, so a record allocates one only to copy into. */
     @Test
     public void coordinateTrackerIsOnlyAllocatedWhenThereIsSomethingToCopy() {
         assertNull(CommitEventRecord.IDLE.coordinateTracker);

@@ -150,9 +150,8 @@ public final class MainKeyboardView extends KeyboardView implements GestureEvent
     private final ObjectAnimator mAltCodeKeyWhileTypingFadeoutAnimator;
 
     /**
-     * The device's screen is e-ink (DeviceProfile): every repaint is visible and slow, so this
-     * view skips the cosmetic ones - no pressed-key highlight, no fade animations, no animated
-     * key previews, no gesture trail. Read on each keyboard set; off on every other device.
+     * E-ink screen (DeviceProfile): every repaint is visible and slow, so skip pressed highlights,
+     * fades, animated previews and the gesture trail. Read on each keyboard set.
      */
     private boolean mEinkDisplay;
 
@@ -179,6 +178,7 @@ public final class MainKeyboardView extends KeyboardView implements GestureEvent
         this(context, attributeSet, R.attr.mainKeyboardViewStyle);
     }
 
+    /** @param i default style attribute */
     public MainKeyboardView(Context context, AttributeSet attributeSet, int i) throws Resources.NotFoundException {
         super(context, attributeSet, i);
         this.mAutoCorrectionText = "";
@@ -239,6 +239,10 @@ public final class MainKeyboardView extends KeyboardView implements GestureEvent
         this.mDrawingPreviewPlacerView.setHardwareAcceleratedDrawingEnabled(enabled);
     }
 
+    /**
+     * @param i animator resource id, 0 for none
+     * @param obj the animation target
+     */
     private ObjectAnimator loadObjectAnimator(int i, Object obj) {
         if (i == 0) {
             return null;
@@ -280,9 +284,8 @@ public final class MainKeyboardView extends KeyboardView implements GestureEvent
     }
 
     /**
-     * Only the PC-QWERTY layout has alt-code-while-typing keys. Everywhere else the 3 s fade-out
-     * and 1 s fade-in ticked every frame per typing burst and repainted nothing, so skip them
-     * there, and leave the alpha at rest so a later PC-QWERTY keyboard starts from full.
+     * Only PC-QWERTY has alt-code-while-typing keys; elsewhere the fades would tick every frame for
+     * nothing. Skipped there with the alpha left at rest so a later PC-QWERTY board starts full.
      */
     private boolean skipAltCodeWhileTypingAnimation() {
         Keyboard keyboard = getKeyboard();
@@ -300,12 +303,8 @@ public final class MainKeyboardView extends KeyboardView implements GestureEvent
     }
 
     /**
-     * Animation target for {@code res/anim/alt_code_key_while_typing_fade{in,out}.xml}.
-     *
-     * DO NOT DELETE AS UNUSED. ObjectAnimator resolves this by name through reflection, so it has
-     * no static callers and looks dead to a call-graph sweep. R8 keeps it via the
-     * `public void set*` rule on Views in proguard-rules.pro; only a source-level sweep can
-     * break it again.
+     * Animation target for {@code res/anim/alt_code_key_while_typing_fade{in,out}.xml}. Not unused:
+     * ObjectAnimator finds it by reflection; R8 keeps it via the View {@code set*} rule in proguard-rules.pro.
      */
     public void setAltCodeKeyWhileTypingAnimAlpha(int alpha) {
         if (this.mAltCodeKeyWhileTypingAnimAlpha == alpha) {
@@ -322,20 +321,24 @@ public final class MainKeyboardView extends KeyboardView implements GestureEvent
         }
     }
 
+    /** @param interfaceC0976f the key action listener */
     public void setKeyboardActionListener(KeyboardActionListenerInterface interfaceC0976f) {
         this.mKeyboardActionListener = interfaceC0976f;
         PointerTracker.setKeyboardActionListener(interfaceC0976f);
         GestureEventProcessor.setKeyboardActionListener(interfaceC0976f);
     }
 
+    /** @param c0924a the multi-pointer gesture detector */
     public void setGestureDetector(MultiPointerGestureDetector c0924a) {
         this.mGestureDetector = c0924a;
     }
 
+    /** @param i touch x coordinate */
     public int getKeyX(int i) {
         return Constants.isValidCoordinate(i) ? this.mKeyDetector.getTouchX(i) : i;
     }
 
+    /** @param i touch y coordinate */
     public int getKeyY(int i) {
         return Constants.isValidCoordinate(i) ? this.mKeyDetector.getTouchY(i) : i;
     }
@@ -371,10 +374,23 @@ public final class MainKeyboardView extends KeyboardView implements GestureEvent
         }
     }
 
+    /**
+     * @param z true to show key previews
+     * @param i preview linger timeout in ms
+     */
     public void setKeyPreviewPopupEnabled(boolean z, int i) {
         this.mKeyPreviewChoreographer.setPopupEnabled(z, i);
     }
 
+    /**
+     * @param z true to use these custom params
+     * @param f show-up start scale x
+     * @param f2 show-up start scale y
+     * @param i show-up duration in ms
+     * @param f3 dismiss end scale x
+     * @param f4 dismiss end scale y
+     * @param i2 dismiss duration in ms
+     */
     public void setKeyPreviewAnimationParams(boolean z, float f, float f2, int i, float f3, float f4, int i2) {
         this.mKeyPreviewChoreographer.setAnimationParams(z, f, f2, i, f3, f4, i2);
     }
@@ -458,6 +474,7 @@ public final class MainKeyboardView extends KeyboardView implements GestureEvent
         }
     }
 
+    /** @param z true to show the sliding key input preview */
     public void setSlidingKeyInputPreviewEnabled(boolean z) {
         this.mGestureFloatingPreviewText.setPreviewEnabled(z);
     }
@@ -482,6 +499,7 @@ public final class MainKeyboardView extends KeyboardView implements GestureEvent
         this.mGestureFloatingPreviewText.dismissGestureTrail();
     }
 
+    /** @param z true if the gesture trail is requested */
     private void setVkbGesturePreviewMode(boolean z) {
         this.mVkbGesturePreviewRequested = z;
         // No gesture trail on e-ink: it would refresh the panel every frame of a swipe.
@@ -498,15 +516,18 @@ public final class MainKeyboardView extends KeyboardView implements GestureEvent
         this.mGestureTrailsDrawingPreview.setGestureStroke(c1084t);
     }
 
+    /** @param z true if on-screen swipe typing is on */
     public void setVkbGestureHandlingEnabledByUser(boolean z) {
         this.mGestureInputAvailability.setVkbGestureEnabledByUser(z);
         setVkbGesturePreviewMode(z);
     }
 
+    /** @param z true if capacitive gestures are on */
     public void setCkbGestureHandlingEnabledByUser(boolean z) {
         this.mGestureInputAvailability.setCkbGestureEnabledByUser(z);
     }
 
+    /** @param z true if the main dictionary is available */
     public void setMainDictionaryAvailability(boolean z) {
         this.mGestureInputAvailability.setMainDictionaryAvailable(z);
     }
@@ -535,31 +556,25 @@ public final class MainKeyboardView extends KeyboardView implements GestureEvent
 
     @Override // dev.bbkb.ime.keyboard.KeyboardView, android.view.View
     protected void onDetachedFromWindow() {
-        // Before super: a pending long-press or preview-dismiss message would otherwise fire
-        // onLongPress -> showMoreKeysPanel on a view that is no longer in the window, leaving
-        // mMoreKeysPanel non-null and undismissable.
+        // Before super: a pending long-press would otherwise show a more-keys panel on a detached
+        // view, leaving mMoreKeysPanel non-null and undismissable.
         cancelAllOngoingEvents();
         super.onDetachedFromWindow();
         this.mDrawingPreviewPlacerView.removeAllViews();
-        // The placer lives in the window's content view, not under this view: left there, every
-        // forceRecreateInputView (theme or height change) stacked another full-window placer,
-        // with its trail buffer, on top of the input area. Removed one message later, because
-        // this can run while the window's own detach is iterating the content view's children.
-        // Its own onDetachedFromWindow then frees the drawing previews.
+        // The placer lives in the window's content view; left there, each input view recreation
+        // would stack another full-window placer. Removed one message later because the window's
+        // detach may be iterating the content view's children; its own detach frees the previews.
         sMainHandler.post(this.mRemovePlacerIfDetached);
-        // KI2-17/KT-11: PointerTracker holds this view in static fields; drop them so a detached
-        // input view (and its themed Context) is not retained for the process lifetime.
+        // PointerTracker holds this view in static fields; drop them so a detached input view
+        // (and its themed Context) is not retained for the process lifetime.
         PointerTracker.release();
         GestureEventProcessor.releaseGestureKeyboardChecker(this);
     }
 
     /**
-     * The keyboard the long-pressed key actually belongs to. PointerTracker routes input
-     * boards (the number pad) through this view too, but their keys are NOT part of
-     * getKeyboard() — and on the physical pad the main keyboard is the collapsed
-     * zero-height element, whose mMostCommonKeyHeight of 0 drives the MoreKeysKeyboard
-     * geometry negative (ArithmeticException in ProximityGrid). Deriving the popup
-     * from the key's own keyboard gives correct sizing on every surface.
+     * The keyboard the long-pressed key belongs to. Input boards (the number pad) route through this
+     * view but are not getKeyboard(), which on the PKB is a zero-height element whose geometry would
+     * make the popup's ProximityGrid divide by zero.
      */
     private Keyboard moreKeysSourceKeyboardFor(Key key) {
         Keyboard main = getKeyboard();
@@ -630,6 +645,7 @@ public final class MainKeyboardView extends KeyboardView implements GestureEvent
         }
     }
 
+    /** @param c1084t the pointer that long-pressed */
     private void openMoreKeysPanel(Key key, PointerTracker c1084t) {
         int iMo6216ab;
         MoreKeysPanel interfaceC1071mM6289a = onCreateMoreKeysKeyboard(key, getContext());
@@ -720,6 +736,7 @@ public final class MainKeyboardView extends KeyboardView implements GestureEvent
         GestureEventProcessor.onKeyUp(keyEvent);
     }
 
+    /** @param z true if gesture handling is active */
     public void updateGestureHandlingState(boolean z) {
         GestureEventProcessor.updateGestureHandlingState(z);
     }
@@ -728,10 +745,12 @@ public final class MainKeyboardView extends KeyboardView implements GestureEvent
         return GestureEventProcessor.isGestureHandlingActive();
     }
 
+    /** @param z true to mark gesture handling active */
     public void setGestureInputStartsBeforeRunningShift(boolean z) {
         GestureEventProcessor.setGestureHandlingActive(z);
     }
 
+    /** @param c1083e the slide board manager */
     public void setSlideBoardViewManager(SlideboardManager c1083e) {
         this.mSlideboardManager = c1083e;
     }
@@ -786,8 +805,8 @@ public final class MainKeyboardView extends KeyboardView implements GestureEvent
 
     public void closing() {
         cancelAllOngoingEvents();
-        // The popup cache survives: its popups are tied to their parent keyboards, not to the
-        // field. The trail buffer (2.7 MB portrait) does not need to outlive the keyboard.
+        // The popup cache survives (popups belong to parent keyboards, not the field); the trail
+        // buffer (2.7 MB portrait) need not outlive the keyboard.
         this.mGestureTrailsDrawingPreview.releaseOffscreenBuffer();
     }
 
@@ -796,7 +815,10 @@ public final class MainKeyboardView extends KeyboardView implements GestureEvent
         this.mGestureTrailsDrawingPreview.releaseOffscreenBuffer();
     }
 
-    /** KeyboardState calls both setters at the end of every shift update, changed or not. */
+    /**
+     * KeyboardState calls both setters at the end of every shift update, changed or not.
+     * @param z true if shifted
+     */
     public void setShiftKeyState(boolean z) {
         if (this.mShiftKeyState == z) {
             return;
@@ -837,6 +859,7 @@ public final class MainKeyboardView extends KeyboardView implements GestureEvent
         return super.labelFor(key);
     }
 
+    /** @param z true to enable the code -7 key */
     public void setFunctionalKeyEnabled(boolean z) {
         Key keyM6604b;
         Keyboard keyboard = getKeyboard();
@@ -852,9 +875,8 @@ public final class MainKeyboardView extends KeyboardView implements GestureEvent
     }
 
     /**
-     * The "%B" bold marker is stripped HERE, once per prediction change, rather than by a
-     * freshly compiled regex on every spacebar repaint (the spacebar repaints continuously
-     * while a prediction is showing).
+     * Strips the "%B" bold marker once per prediction change, not on every spacebar repaint.
+     * @param str the prediction text, may hold %B markers
      */
     public void setAutoCorrectionText(String str) {
         String stripped = str == null ? "" : PERCENT_B_MARKER.matcher(str).replaceAll("");
@@ -866,6 +888,7 @@ public final class MainKeyboardView extends KeyboardView implements GestureEvent
         invalidateKeyState(this.mSpaceKey);
     }
 
+    /** @param z true to dim */
     private void dimEntireKeyboard(boolean z) {
         boolean z2 = this.mNeedsToDimEntireKeyboard != z;
         this.mNeedsToDimEntireKeyboard = z;
@@ -942,8 +965,7 @@ public final class MainKeyboardView extends KeyboardView implements GestureEvent
         // The autocorrect word has already been painted over the spacebar, so the base class
         // must not paint the key's own label (or the spacebar icon) on top of it.
         super.drawKeyContent(key, canvas, paint, formatter, autoCorrectionDrawn);
-        // Draw shift state indicator bar based on actual shift state flag (mShiftKeyState)
-        // This works on VKB where backgroundType doesn't change between shift states
+        // Shift indicator bar from mShiftKeyState: on the VKB backgroundType does not change with shift.
         if (iM6232c == -1 && KeyboardColorManager.INSTANCE.isInitialized()) {
             float density = getDensity();
             Paint indicatorPaint = this.mShiftIndicatorPaint;
@@ -957,10 +979,7 @@ public final class MainKeyboardView extends KeyboardView implements GestureEvent
             float indicatorHeight = (insetCaps ? 3 : 2) * density;
             float indicatorWidth = 18 * density;
             int keyWidth = key.getWidth();
-            // The bar sits inset from the TOP of the key (above the arrow icon).
-            // Cap styles: the cap top sits keyInsetVDp below the key bounds, so clear
-            // that plus 4dp of padding to keep the bar inside the cap. Full-bleed
-            // styles (inset 0) get the same 4dp visual clearance from the key top.
+            // The bar sits keyInsetVDp + 4dp below the key top, inside the cap (above the arrow icon).
             float indicatorY = (spec.getKeyInsetVDp() + 4) * density;
             float indicatorX = (keyWidth - indicatorWidth) / 2.0f;
             if (insetCaps) {
@@ -974,13 +993,14 @@ public final class MainKeyboardView extends KeyboardView implements GestureEvent
         }
     }
 
-    /** Same settings the draw path used to allocate on every shift-key repaint. */
+    /** Shift indicator paint, created once rather than per repaint. */
     static Paint newShiftIndicatorPaint() {
         Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
         paint.setStyle(Paint.Style.FILL);
         return paint;
     }
 
+    /** @param i the spacebar width */
     private String getAutoCorrectionText(Paint paint, int i) {
         return SpacebarTextUtils.truncateTextToWidth(i - (this.mLanguageOnSpacebarHorizontalMargin * 2), this.mAutoCorrectionText, this.mAutoCorrectionSpacebarTextSize, this.mMinimumScaleOfSpacebarText, paint);
     }
@@ -994,8 +1014,7 @@ public final class MainKeyboardView extends KeyboardView implements GestureEvent
         String strM6290a = getAutoCorrectionText(paint, iM6204Z);
         float fDescent = paint.descent();
         float f = (iM6215aa / 2) + (((-paint.ascent()) + fDescent) / 2.0f);
-        // Pull-at-draw when the spec asks for the accent word (BB10's blue spacebar
-        // prediction); other styles keep the static autoCorrectionOnSpacebarTextColor attr.
+        // Accent word read at draw when the spec asks; else the static autoCorrectionOnSpacebarTextColor.
         paint.setColor(KeyboardColorManager.styleSpec().getAccentSpacebarPrediction()
                 ? KeyboardColorManager.INSTANCE.getAccentColor()
                 : this.mAutoCorrectionSpacebarTextColor);
@@ -1006,9 +1025,7 @@ public final class MainKeyboardView extends KeyboardView implements GestureEvent
     private void drawShiftKeyIcon(Key key, Canvas canvas) {
         Drawable drawable = this.mShiftKeyState ? this.mShiftKeyIcons[3] : this.mShiftKeyIcons[1];
         if (drawable != null) {
-            // Tint at draw like every other key icon (KeyboardView.drawKeyContent): this overlay
-            // is drawn before the base class re-tints the shared drawable, so it used to paint
-            // with whatever tint the previous frame or palette left on it.
+            // Tint here: this overlay draws before the base class re-tints the shared drawable.
             if (KeyboardColorManager.INSTANCE.isInitialized()) {
                 applyIconTint(key, drawable);
             }
@@ -1041,6 +1058,7 @@ public final class MainKeyboardView extends KeyboardView implements GestureEvent
         GestureEventProcessor.releaseGestureKeyboardChecker(this);
     }
 
+    /** @param z true if pressed */
     public void setKeyPressed(Key key, boolean z) {
         synchronized (this.mPressedKeys) {
             if (z) {

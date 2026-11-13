@@ -53,7 +53,7 @@ import dev.bbkb.ime.core.settings.ui.SwitchPreference
 import dev.bbkb.ime.core.settings.ui.drawableIcon
 import kotlinx.coroutines.launch
 
-/** Search anchors for the rows on the Backup and restore screen; spelled as literals in the screen for the sync test. */
+/** Search anchors for this screen's rows; spelled as literals in the screen for the sync test. */
 object BackupAnchors {
     const val SAVE = "backup_save"
     const val RESTORE = "backup_restore_file"
@@ -61,14 +61,9 @@ object BackupAnchors {
 }
 
 /**
- * Backup and restore (Advanced > Manage data). Three kinds of data — settings, layouts, words
- * ([BackupBundle.Part]) — go into one file the user saves, or come back out of one; and the same
- * bundle rides along with the phone's own backup, whichever service keeps it (Google on phones
- * with Play services, Seedvault on LineageOS, CalyxOS and GrapheneOS, or another).
- *
- * Nothing is applied before it is read in full and validated, and the user picks what to put
- * back from what the file holds ([RestoreDialog]). While a save or restore runs the rows stay
- * put and a progress line shows at the top; a restore of a large dictionary takes a few seconds.
+ * Backup and restore: the [BackupBundle.Part]s go into one user-saved file, and the same bundle
+ * rides along with the phone's own backup service. Nothing is applied before the file is read in
+ * full and validated; the user picks what to restore in [RestoreDialog].
  */
 @Composable
 fun BackupRestoreScreen(
@@ -119,7 +114,6 @@ fun BackupRestoreScreen(
     SettingsScreenHost(R.string.settings_backup_restore_title, onNavigateBack, listOf(
         Custom(visible = { busy }) { LinearProgressIndicator(modifier = Modifier.fillMaxWidth()) },
 
-        // ── Back up: pick the parts, then write the file ─────────────────────
         Category(R.string.backup_category_back_up),
         Custom(inGroup = true) {
             PartCheckboxRow(BackupBundle.Part.SETTINGS, includeSettings, enabled = !busy) { includeSettings = it }
@@ -145,7 +139,6 @@ fun BackupRestoreScreen(
             },
         ),
 
-        // ── Restore: read, show what is in the file, then apply what is chosen ──
         Category(R.string.backup_category_restore),
         Simple(
             title = R.string.backup_restore_file_title,
@@ -153,12 +146,11 @@ fun BackupRestoreScreen(
             icon = drawableIcon(R.drawable.ic_settings_m_file_open),
             // Literal (== BackupAnchors.RESTORE).
             modifier = Modifier.settingsSearchAnchor("backup_restore_file"),
-            // The zip type plus JSON for the single-document backups earlier builds wrote, plus
-            // "*/*" because storage providers often call either application/octet-stream.
+            // JSON for legacy single-document backups; "*/*" because providers often report
+            // application/octet-stream.
             onClick = { if (!busy) restoreLauncher.launch(arrayOf(BackupBundle.MIME_TYPE, "application/json", "*/*")) },
         ),
 
-        // ── Phone backup: the same bundle, carried by Android's backup to whichever service is on ──
         Category(R.string.backup_category_phone),
         Custom(inGroup = true) {
             SwitchPreference(
@@ -189,7 +181,7 @@ fun BackupRestoreScreen(
         Nav(
             title = R.string.backup_phone_settings_title,
             summary = R.string.backup_phone_settings_summary,
-            // It leaves the app for Android's own page; the gear is the Settings part's icon above.
+            // Leaves the app; the gear is already the Settings part's icon.
             icon = drawableIcon(R.drawable.ic_settings_m_open_in_new),
             onClick = ::openPhoneBackupSettings,
         ),
@@ -251,8 +243,8 @@ private fun partSummary(part: BackupBundle.Part): Int = when (part) {
 }
 
 /**
- * What the file holds and what to put back. A part the file lacks is shown unchecked and
- * disabled with "Not in this file", so the user sees what an older or partial backup carries.
+ * What the file holds and what to restore. A part the file lacks shows unchecked and disabled
+ * with "Not in this file".
  */
 @Composable
 private fun RestoreDialog(
@@ -363,11 +355,8 @@ private fun localDateTime(context: Context, millis: Long): String =
     )
 
 /**
- * Where "Phone backup settings" goes, first that opens wins. Android's own Backup page comes
- * first because it forwards to the page of whichever backup service is on, so the button lands on
- * Google's page on phones with Play services and on Seedvault's on LineageOS, CalyxOS and
- * GrapheneOS (seen 2026-11-07: on Android 14 it forwarded to Google's page; on Android 8 with the
- * local service it showed Android's own page).
+ * Where "Phone backup settings" goes; first that opens wins. Android's Backup page comes first
+ * because it forwards to whichever backup service is on.
  *  1. Android 11 and later: Settings > System > Backup (exported).
  *  2. Android 8 to 10: the same page under its older name, reached by its action.
  *  3. Phones whose Settings app has neither (some manufacturers): Google's page, when Play
@@ -391,7 +380,7 @@ internal fun openPhoneBackupSettings(context: Context) {
         } catch (e: ActivityNotFoundException) {
             // try the next
         } catch (e: SecurityException) {
-            // a ROM that exports the page but guards it
+            // exported but guarded on some ROMs
         }
     }
     toast(context, R.string.backup_phone_settings_unavailable)

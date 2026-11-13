@@ -6,9 +6,8 @@ import org.junit.Assert.assertTrue
 import org.junit.Test
 
 /**
- * The three typing windows the original applied to CKB gestures, now judged by [KeyTypingGuard]:
- * 150 ms touch-noise after a key, cancel-on-key during a contact, 350 ms suppression before the
- * gesture's end (or start).
+ * The three typing windows [KeyTypingGuard] applies to CKB gestures: 150 ms touch-noise after a
+ * key, cancel-on-key during a contact, 350 ms suppression before the gesture's end (or start).
  */
 class KeyTypingGuardTest {
 

@@ -4,99 +4,49 @@ import android.view.KeyEvent
 import java.util.Locale
 
 /**
- * The engine's key letters, rewritten from a letter layout.
+ * Rewrites the engine's KDB key letters from a letter layout, so taps and swipes decode against the
+ * letters the keys actually type. A text rewrite: every byte the layout does not change is copied
+ * through; a changed key has only `keyLabel`, `keyCodes` and `keyType` rewritten in place. Geometry
+ * and the `<keyboard>` header are never touched.
  *
- * The engine decodes taps and swipes against its own keyboard description, a KDB file
- * (`assets/kdb/<name>_pkb.xml`, or the device variant's copy): three `<area>` rows of key boxes in
- * QWERTY order, each key carrying the letters it stands for. A custom layout changes what the
- * physical keys type but not those files, so without this the engine would decode a swipe across
- * the keypad in the keypad's old letters. [rewrite] produces the KDB the engine should have while a
- * layout is active: every key at a position the layout names gets the layout's letters, every
- * other byte stays as it was. [LetterLayoutEngineSync] registers the result with the engine.
+ * Loader rules (`kdb_load_xml.c`, `key_codes_of`): a single ASCII-letter `keyLabel` is the primary
+ * (lower-cased) and `keyCodes` then holds only alternates; otherwise the first `keyCodes` entry is the
+ * primary. Non-ASCII-letter `keyLabel`s are ignored, so non-ASCII primaries must be codes. Alternates
+ * are the Shift legend (when not plain upper case), multitap letters and [LetterLayout.Key.engineKeys];
+ * a named key's own KDB alternates are replaced, not merged. Codes are lower case; Hangul is stored as
+ * conjoining jamo ([toConjoining]).
  *
- * ## What a key's letters are, in a KDB
+ * `keyType`: letters and combining marks are `regional` (tap correction and swipe), symbols
+ * `nonRegional`; the type flips only when a key moves between letter and non-letter.
  *
- * The owned loader (`xt9kdb-scaffold/cpp/src/kdb_load_xml.c`, `key_codes_of`) reads a key's symbol
- * list, primary first, from one of two forms:
- * - `keyLabel="Q"`: a single ASCII letter, read as its lower case, is the primary; a `keyCodes` list
- *   on the same key then holds only alternates (the Nordic `keyLabel="A" keyCodes="0x00E5, 0x00E6"`).
- * - otherwise `keyCodes="0x0635, 0x0636"`: the first code is the primary, the rest alternates.
- *
- * A rewritten key uses the first form when its new primary is an ASCII letter (`keyLabel`
- * upper-case, as every shipped KDB writes it, plus `keyCodes` only when there are alternates) and
- * the second for anything else, because the loader ignores a `keyLabel` that is not an ASCII
- * letter: a Dvorak apostrophe or an Arabic letter must be a code. The primary is the layout's
- * `keySpec`; the alternates are its Shift legend when that is not simply the upper case (ض on the
- * ص key) and then its double-tap letters. Codes are lower-cased, as the engine keeps letters
- * case-free, and Hangul compatibility jamo become the conjoining jamo the Korean KDB holds
- * ([toConjoining]; [toCompatibility] reads them back). A named key's letters come from the layout
- * alone: the KDB's own alternates on that key (å and æ on the Danish A) are replaced, not merged.
- *
- * The key's `keyType` follows the files' own convention when the layout moves a key between a
- * letter and a non-letter: letters (and combining marks) sit on `regional` keys, which take part in
- * tap correction and swipe decoding, while symbols are `nonRegional`, like the `$` key. So a letter
- * put on the KEY2's `$` key makes it regional, as the Arabic and Cyrillic KDBs already have it, and
- * Dvorak's punctuation on a letter position makes that key non-regional; a key that stays a letter
- * (or stays a symbol) keeps whatever type its file gave it. Geometry (`keyLeft`, `keyTop`,
- * `keyWidth`, `keyHeight`, bias) and the `<keyboard>` header are never touched.
- *
- * ## What stays byte-identical
- *
- * This is a text rewrite, not a re-serialisation: comments, white space, attribute order and every
- * key the layout does not name are copied through untouched, and so is a named key whose letters
- * and type already are what the layout says. A key that changes has only its `keyLabel`, `keyCodes`
- * and `keyType` attributes rewritten, in place.
- *
- * Positions follow the keyboard the file describes ([Template]). On the physical keypad
- * ([Template.PKB]): row 1 Q–P, row 2 A–L, row 3 Alt then Z–M and the extra key past M (the KEY2's
- * `$` key, named by `KEYCODE_4`), function keys skipped; the column is the key's centre over its
- * width. The generator (`xt9kdb-scaffold/tools/letter_layouts_gen.py`) reads the same files by the
- * same rules when it writes the built-in documents. On the on-screen keyboard ([Template.VKB]) the
- * keys of each of the first three rows, left to right and function keys skipped, are Q–P, A–L
- * then the semicolon key for a tenth key (the `spanish` rows), and Z–M; the fourth row (comma,
- * space, period) has no positions. A layout key that names some other key code (Space, a digit,
- * punctuation keys) has no position in a KDB and changes nothing here.
- *
- * ## The on-screen keyboard
- *
- * The on-screen KDB's letters come from the keyboard actually drawn ([DrawnKeyboard]), whatever
- * it was drawn from, and its key boxes from the shipped on-screen file of the same row shape
- * ([OnScreenKdbs]). [forDrawnKeyboard] puts each drawn row's letters on that file's keys of the
- * same row, left to right ([screenRows]): every key that is not a function key is a position, the
- * punctuation of a Dvorak row included.
+ * Positions ([Template]): PKB row 1 Q to P, row 2 A to L, row 3 Alt then Z to M plus the extra key
+ * past M (`KEYCODE_4`), by key centre on the grid (same rules as `letter_layouts_gen.py`). VKB: the
+ * first three rows left to right, Q to P, A to L (+ semicolon as a tenth key), Z to M; the fourth row
+ * has no positions. [forDrawnKeyboard] instead fills every non-function key from [DrawnKeyboard] rows.
  */
 object LetterLayoutKdb {
-
-    /** The geometry a KDB file describes, which decides how its keys map to key codes. */
+    /** The keyboard a KDB file describes, which decides how its keys map to key codes. */
     enum class Template(
-        /** The suffix of the KDB files of this kind under `assets/kdb/`. */
+        /** File suffix under `assets/kdb/`. */
         val fileSuffix: String,
     ) {
-        /** The physical keypad: `<name>_pkb.xml`, positions by key centre on the keypad's grid. */
+        /** Physical keypad: positions by key centre on the grid. */
         PKB("_pkb.xml"),
 
-        /** The on-screen keyboard: `<name>_vkb.xml`, positions by order within each letter row. */
+        /** On-screen keyboard: positions by order within each letter row. */
         VKB("_vkb.xml"),
     }
 
     /** The prefix of the engine variant a layout's generated KDBs are registered under. */
     const val VARIANT_PREFIX: String = "layout:"
 
-    /**
-     * The engine variant name for [layout]'s generated KDBs. One name for both keyboards: the
-     * engine keys a variant's files by their ids as well, and the physical keypad's files
-     * (secondaryId 6) never share ids with the on-screen keyboard's.
-     */
+    /** One variant name serves both keyboards: the engine also keys files by id, and PKB (secondaryId 6) never shares ids with VKB. */
     @JvmStatic
     @JvmOverloads
     @Suppress("UNUSED_PARAMETER")
     fun variantName(layout: LetterLayout, template: Template = Template.PKB): String = VARIANT_PREFIX + layout.id
 
-    /**
-     * The prefix of a built-in document's variant: what the engine loads for a keyboard no chosen or
-     * imported layout applies to. A layout id cannot contain `:`, so no user layout's
-     * [variantName] can ever equal one of these.
-     */
+    /** Prefix for built-in documents' variants; a layout id cannot contain `:`, so no [variantName] collides. */
     const val BUILT_IN_VARIANT_PREFIX: String = VARIANT_PREFIX + "builtin:"
 
     /** The variant the keypad KDBs built from the built-in [layout] are registered under. */
@@ -104,10 +54,8 @@ object LetterLayoutKdb {
     fun builtInVariantName(layout: LetterLayout): String = BUILT_IN_VARIANT_PREFIX + layout.id
 
     /**
-     * [template], an on-screen KDB, with the letters of [rows] on its keys: row by row, left to
-     * right, each position's code points (primary first) as the engine keeps them (lower case,
-     * Hangul in conjoining jamo). Rows past [rows] keep their keys. Null when a row of [rows] has
-     * a different number of positions than the template's row, or the template has fewer rows.
+     * On-screen KDB [template] with [rows]' code points (primary first) on its keys, left to right.
+     * Extra template rows are kept. Null when a row's position count differs or rows are missing.
      */
     @JvmStatic
     fun forDrawnKeyboard(template: String, rows: List<List<IntArray>>): String? {
@@ -128,10 +76,7 @@ object LetterLayoutKdb {
         return out.toString()
     }
 
-    /**
-     * The positions of on-screen KDB [xml], row by row (every `<area>`), left to right: the centre
-     * of each key that is not a function key, as a fraction of the file's `defaultLayoutWidth`.
-     */
+    /** Non-function key centres of on-screen KDB [xml] per `<area>`, as fractions of `defaultLayoutWidth`. */
     @JvmStatic
     fun screenRows(xml: String): List<List<Float>> {
         val width = Regex("defaultLayoutWidth\\s*=\\s*\"(\\d+)\"").find(COMMENT.replace(xml, ""))
@@ -149,11 +94,7 @@ object LetterLayoutKdb {
     private val PRIMARY_ID = Regex("(\\bprimaryId\\s*=\\s*\")(\\d+)(\")")
     private val SECONDARY_ID = Regex("(\\bsecondaryId\\s*=\\s*\")(\\d+)(\")")
 
-    /**
-     * The `primaryId` and `secondaryId` of [xml]'s `<keyboard>` element: what the engine selects a
-     * KDB by (the language, and 6 for the physical keypad or 1 for the on-screen keyboard). Null
-     * when the element or either id is missing.
-     */
+    /** `primaryId` (language) and `secondaryId` (6 keypad, 1 on-screen) of [xml]'s `<keyboard>`, or null. */
     @JvmStatic
     fun engineIds(xml: String): Pair<Int, Int>? {
         val keyboard = KEYBOARD_ELEMENT.find(COMMENT.replace(xml) { " ".repeat(it.value.length) }) ?: return null
@@ -175,10 +116,7 @@ object LetterLayoutKdb {
         return xml.replaceRange(keyboard.range, element)
     }
 
-    /**
-     * [xml], a KDB file of [template], with the letters of every key [layout] names replaced by the
-     * layout's; see the class doc for exactly what changes. Returns [xml] itself when nothing does.
-     */
+    /** [xml] with every key [layout] names given the layout's letters (see the class doc); [xml] itself when unchanged. */
     @JvmStatic
     @JvmOverloads
     fun rewrite(xml: String, layout: LetterLayout, template: Template = Template.PKB): String {
@@ -193,29 +131,21 @@ object LetterLayoutKdb {
         return out.toString()
     }
 
-    /**
-     * The symbol list the engine reads for each letter-carrying key of [xml], primary first, by the
-     * key code of its position. Hangul stays in the conjoining jamo the file holds.
-     */
+    /** The engine's symbol list per position key code, primary first (Hangul as conjoining jamo). */
     @JvmStatic
     @JvmOverloads
     fun codesByKeyCode(xml: String, template: Template = Template.PKB): Map<Int, IntArray> =
         keys(xml, template).associate { it.keyCode to it.codes }
 
-    /**
-     * The letter the engine has on each position of [xml]: its primary, in the compatibility jamo a
-     * letter layout uses for Hangul. What [LetterLayout.changesLetters] compares a layout against.
-     */
+    /** Each position's primary, Hangul as compatibility jamo: what [LetterLayout.changesLetters] compares against. */
     @JvmStatic
     @JvmOverloads
     fun lettersByKeyCode(xml: String, template: Template = Template.PKB): Map<Int, Int> =
         codesByKeyCode(xml, template).filterValues { it.isNotEmpty() }.mapValues { toCompatibility(it.value[0]) }
 
-    // ── reading the file ─────────────────────────────────────────────────────
-
     /** One `name="value"` inside a key element, as offsets into the whole file. */
     private class Attribute(
-        /** Where the attribute's leading white space starts: removing [spanStart] until [end] removes it cleanly. */
+        /** Start of the leading white space, so removing [spanStart] until [end] is clean. */
         val spanStart: Int,
         val valueStart: Int,
         val valueEnd: Int,
@@ -245,10 +175,7 @@ object LetterLayoutKdb {
 
     private val ROWS = arrayOf("QWERTYUIOP", "ASDFGHJKL", "ZXCVBNM")
 
-    /**
-     * The on-screen letter rows by position, left to right: the `spanish` rows' tenth middle key is
-     * the one right of L on a QWERTY board, which a layout names `KEYCODE_SEMICOLON`.
-     */
+    /** On-screen letter rows by position; the `spanish` rows' tenth middle key is `KEYCODE_SEMICOLON`. */
     private val VKB_ROWS: Array<IntArray> = arrayOf(
         ROWS[0].map { KeyEvent.KEYCODE_A + (it - 'A') }.toIntArray(),
         (ROWS[1].map { KeyEvent.KEYCODE_A + (it - 'A') } + KeyEvent.KEYCODE_SEMICOLON).toIntArray(),
@@ -265,14 +192,12 @@ object LetterLayoutKdb {
     private const val MAX_ENGINE_CODE = 0xFFFF
 
     private fun keys(xml: String, template: Template): List<KdbKey> {
-        // Comments are blanked (same length, so offsets hold) before anything is matched: a
-        // commented-out key must not count as one.
+        // Blank comments at equal length (offsets hold) so a commented-out key does not count.
         val masked = COMMENT.replace(xml) { " ".repeat(it.value.length) }
         val keys = ArrayList<KdbKey>()
         AREA.findAll(masked).forEachIndexed { row, area ->
             if (row >= ROWS.size) return@forEachIndexed
-            // The on-screen rows are numbered left to right, so their keys are placed once the
-            // whole row is read; the keypad's are placed by their own grid column.
+            // On-screen keys are placed once the whole row is read; keypad keys by grid column.
             val rowKeys = ArrayList<Pair<Int, KdbKey>>()
             val body = area.groups[1]!!.range
             for (match in KEY.findAll(masked, body.first)) {
@@ -372,8 +297,6 @@ object LetterLayoutKdb {
             digits.takeWhile { it in '0'..'9' || it in 'a'..'f' || it in 'A'..'F' }.toIntOrNull(16)?.takeIf { it > 0 }
         }
 
-    // ── rewriting one key ────────────────────────────────────────────────────
-
     /** The edits that give [key] the letters of [entry], or null when it already has them (or cannot). */
     private fun rewriteKey(key: KdbKey, entry: LetterLayout.Key): List<Edit>? {
         val codes = LinkedHashSet<Int>().apply { add(engineCode(entry.keySpec)) }
@@ -383,20 +306,15 @@ object LetterLayoutKdb {
         return rewriteKeyCodes(key, codes.toList())
     }
 
-    /**
-     * The edits that give [key] the engine codes [codes], primary first, or null when it already has
-     * them (or cannot).
-     */
+    /** The edits that give [key] engine [codes] (primary first), or null when it already has them (or cannot). */
     private fun rewriteKeyCodes(key: KdbKey, codes: List<Int>): List<Edit>? {
         val primary = codes.firstOrNull() ?: return null
-        // A primary the engine cannot hold leaves the key as it was: dropping its letter
-        // altogether would make the key a dead spot for the decoder.
+        // An unholdable primary leaves the key as is: dropping its letter would make a decoder dead spot.
         if (primary <= 0 || primary > MAX_ENGINE_CODE) return null
         val wanted = codes.filter { it in 1..MAX_ENGINE_CODE }.distinct().take(MAX_KEY_CODES)
 
         val labelForm = primary in 'a'.code..'z'.code
-        // The type changes only when the layout moves a key between letter and non-letter, so a
-        // key the files deliberately typed otherwise (a regional danda) keeps its type.
+        // Flip only on a letter/non-letter move, so deliberate types (a regional danda) survive.
         val oldType = key.attributes["keyType"]
         val oldIsLetter = key.codes.firstOrNull()?.let(::isLetter) ?: false
         val newType = when {
@@ -409,8 +327,7 @@ object LetterLayoutKdb {
 
         val edits = ArrayList<Edit>()
         if (oldType != null && newType != null) edits += Edit(oldType.valueStart, oldType.valueEnd, newType)
-        // The letters: both attributes come out, the new ones go in where the first of them was
-        // (after keyType when the key had neither), so attribute order stays as the files have it.
+        // Replace at the first old attribute's spot (after keyType if none) to keep attribute order.
         val label = key.attributes["keyLabel"]
         val list = key.attributes["keyCodes"]
         val removed = listOfNotNull(label, list).sortedBy { it.spanStart }
@@ -445,14 +362,9 @@ object LetterLayoutKdb {
             else -> false
         }
 
-    /**
-     * The double-tap entries of a key that are one code point each, which is all a KDB key code can
-     * be: a ligature entry (lam-alef, a letter with geresh) has no single code to give the engine.
-     */
+    /** Multitap entries that are a single code point; ligatures (lam-alef) have no KDB code. */
     private fun singleCodePoints(entries: Array<String>): List<Int> =
         entries.filter { it.isNotEmpty() && it.codePointCount(0, it.length) == 1 }.map { it.codePointAt(0) }
-
-    // ── Hangul ───────────────────────────────────────────────────────────────
 
     /** Compatibility jamo (U+3131..) of the conjoining choseong U+1100..U+1112, in order. */
     private val CHOSEONG_COMPATIBILITY = intArrayOf(
@@ -463,11 +375,7 @@ object LetterLayoutKdb {
     private const val CONJOINING_VOWELS = 0x1161
     private const val VOWEL_COUNT = 21
 
-    /**
-     * The conjoining jamo the engine's Korean KDB holds for a compatibility jamo (`ㅂ` → `ᄇ`, `ㅏ` →
-     * `ᅡ`); anything else, including the compatibility consonant clusters that have no initial
-     * form, is returned unchanged. The inverse of [toCompatibility].
-     */
+    /** Compatibility jamo to the conjoining jamo the Korean KDB holds (`ㅂ` to `ᄇ`); others, clusters included, unchanged. */
     @JvmStatic
     fun toConjoining(codePoint: Int): Int {
         val consonant = CHOSEONG_COMPATIBILITY.indexOf(codePoint)

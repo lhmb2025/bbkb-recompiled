@@ -18,28 +18,11 @@ import org.robolectric.annotation.Config
 import java.util.Locale
 
 /**
- * GOLDEN-STRING CHARACTERISATION TEST — READ THIS BEFORE "FIXING" A FAILURE.
- *
- * Every literal in this file was read out of the running code and pasted in. None of them is
- * computed by re-implementing [SubtypeFactory]'s logic. That is deliberate: a test that rebuilt the
- * expected string from the same rules would agree with any future change and would prove nothing.
- *
- * **A failure here is a COMPATIBILITY BREAK, not a bug in the test.**
- *
- * `InputMethodSubtype` identity is the extra-value string together with the locale and mode. The
- * subtype id this factory hands to `InputMethodSubtypeCompat.newInputMethodSubtype` *is*
- * `Arrays.hashCode({locale, "keyboard", extraValue, false, false})`, and that id is what
- * `InputMethodSubtype.hashCode()` returns and what the framework persists in the enabled-subtype
- * list. Change one character of an extra value and every subtype the user had enabled becomes a
- * different subtype on the next boot: their enabled-language selection silently resets. So if a
- * change makes a row below fail, the change is wrong — or it is an intentional, migration-carrying
- * break that has to be signed off, never papered over by editing the golden.
- *
- * Coverage: all 89 `imeSubtypeLocale` values in `res/xml/method.xml`, paired with the keyboard
- * layout set each one actually resolves to. Twenty-one of the manifest subtypes carry no
- * `KeyboardLayoutSet=` in their own extra value and get their layout from
- * `R.array.locale_and_extra_value_to_keyboard_layout_set_map` at runtime; those pairings are the
- * ones marked `[map]` in the tables below.
+ * Golden extra-value strings and subtype ids for [SubtypeFactory], pasted from the running code. A
+ * failure is a compatibility break, not a test bug: the subtype id is derived from the extra value
+ * and persisted by the framework, so any change resets the user's enabled languages. Covers all 89
+ * `method.xml` locales; `[map]` rows get their layout from
+ * `locale_and_extra_value_to_keyboard_layout_set_map`.
  */
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [34])
@@ -61,14 +44,10 @@ class SubtypeFactoryExtraValueGoldenTest {
         ResourceLocaleUtils.reinit(ApplicationProvider.getApplicationContext<Context>())
     }
 
-    // ══════════════════════════════════════════════════════════════════════════════════════════
-    // 1a — createSubtype(locale, layout): the two-argument path, used by the board factories
-    // (number pad, unified input menu, arrow bar, slide numeric sub-panel) and by the spell
-    // checker. AsciiCapable = false, EmojiCapable = false.
-    // ══════════════════════════════════════════════════════════════════════════════════════════
+    // createSubtype(locale, layout): board factories and spell checker. Not ASCII- or emoji-capable.
 
     private val CREATE_SUBTYPE_GOLDEN = listOf(
-        // [map] — layout comes from locale_and_extra_value_to_keyboard_layout_set_map, not method.xml
+        // [map]: layout comes from locale_and_extra_value_to_keyboard_layout_set_map, not method.xml
         G("en_US", "qwerty", "KeyboardLayoutSet=qwerty,UntranslatableReplacementStringInSubtypeName=QWERTY,isAdditionalSubtype", 251056975),
         G("en_GB", "qwerty", "KeyboardLayoutSet=qwerty,UntranslatableReplacementStringInSubtypeName=QWERTY,isAdditionalSubtype", -165450996),
         G("af", "qwerty", "KeyboardLayoutSet=qwerty,isAdditionalSubtype", 2109119710),
@@ -92,9 +71,8 @@ class SubtypeFactoryExtraValueGoldenTest {
         G("en_SG", "qwerty", "KeyboardLayoutSet=qwerty,isAdditionalSubtype", 659487715),
         G("en_ZA", "qwerty", "KeyboardLayoutSet=qwerty,isAdditionalSubtype", 854350646),
         G("es", "spanish", "KeyboardLayoutSet=spanish,isAdditionalSubtype", -1912061013), // [map]
-        // CHARACTERISED BUG: es_US is an exceptional locale but "spanish" is not a predefined
-        // layout, so getKeyboardLayoutSetDisplayName returns null and the literal text "null" is
-        // persisted into the extra value. Same for zh_CN_pinyin and zh_HK_cangjie below.
+        // CHARACTERISED BUG: "spanish" is not a predefined layout, so the display name is null and
+        // the literal "null" is persisted. Same for zh_CN_pinyin and zh_HK_cangjie below.
         G("es_US", "spanish", "KeyboardLayoutSet=spanish,UntranslatableReplacementStringInSubtypeName=null,isAdditionalSubtype", -390216163),
         G("es_419", "spanish", "KeyboardLayoutSet=spanish,isAdditionalSubtype", 2032541384),
         G("et_EE", "nordic", "KeyboardLayoutSet=nordic,isAdditionalSubtype", -1968498530),
@@ -104,8 +82,7 @@ class SubtypeFactoryExtraValueGoldenTest {
         G("fi", "nordic", "KeyboardLayoutSet=nordic,isAdditionalSubtype", -1837222479), // [map]
         G("fil", "spanish", "KeyboardLayoutSet=spanish,isAdditionalSubtype", -1472946810),
         G("fr", "azerty", "KeyboardLayoutSet=azerty,isAdditionalSubtype", 634039896), // [map]
-        // fr_CA's layout is qwerty, not fr's azerty — a locale whose layout differs from its
-        // language code, and one of the four the collisionHack touches.
+        // fr_CA's layout differs from fr's, and it is one of the four collisionHack locales.
         G("fr_CA", "qwerty", "KeyboardLayoutSet=qwerty,isAdditionalSubtype", 1064699754), // [map]
         G("fr_BE", "azerty", "KeyboardLayoutSet=azerty,isAdditionalSubtype", -589543134),
         G("nl_BE", "azerty", "KeyboardLayoutSet=azerty,isAdditionalSubtype", 263762928),
@@ -195,10 +172,8 @@ class SubtypeFactoryExtraValueGoldenTest {
     }
 
     /**
-     * The subtype id is derived from the extra value, so the two can never drift apart: this is the
-     * invariant `SubtypeFactory.computeSubtypeHash`'s javadoc describes. Two subtypes must not
-     * collide, the same inputs must always give the same id, and none may be 0 (a 0 id makes
-     * `InputMethodSubtype` fall back to its own field hash, which is not what was persisted).
+     * Ids are unique, stable and never 0 (a 0 id makes `InputMethodSubtype` fall back to its own
+     * field hash, which is not what was persisted).
      */
     @Test
     fun subtypeId_isStableAndDistinguishesLocales() {
@@ -216,10 +191,8 @@ class SubtypeFactoryExtraValueGoldenTest {
     }
 
     /**
-     * `isAdditionalSubtype` is on every string this factory builds — including the ones the board
-     * factories make for the number pad and the unified input menu, which are not "additional
-     * subtypes" in any user-facing sense. Pinned because [SubtypeFactory.isAdditionalSubtype] is
-     * what `MultiLanguageRepository` and `SubtypeSwitcherDialog` filter on.
+     * `isAdditionalSubtype` is on every string, even number pad and input menu boards, because
+     * `MultiLanguageRepository` and `SubtypeSwitcherDialog` filter on it.
      */
     @Test
     fun everySubtypeThisFactoryBuildsIsFlaggedAdditional() {
@@ -231,14 +204,8 @@ class SubtypeFactoryExtraValueGoldenTest {
         }
     }
 
-    // ══════════════════════════════════════════════════════════════════════════════════════════
-    // 1b — createLanguageSubtype: the multi-language path (MultiLanguageConfig.toSubtype).
-    // AsciiCapable = true, EmojiCapable = true, plus the collisionHack suffix and AdditionalLocales.
-    //
-    // The collisionHack values (1f = 31, 11 = 17, 7) are hex-formatted ints appended to defeat
-    // InputMethodSubtype hash collisions between multi-language configurations. They are persisted
-    // exactly like everything else here.
-    // ══════════════════════════════════════════════════════════════════════════════════════════
+    // createLanguageSubtype (multi-language path): ASCII- and emoji-capable, plus the collisionHack
+    // suffix (hex ints 1f, 11, 7 that defeat hash collisions between configs) and AdditionalLocales.
 
     private val LANGUAGE_SUBTYPE_GOLDEN = listOf(
         L("en_US", "qwerty", "KeyboardLayoutSet=qwerty,AsciiCapable,UntranslatableReplacementStringInSubtypeName=QWERTY,EmojiCapable,isAdditionalSubtype,AdditionalLocales=de/es"),
@@ -362,10 +329,8 @@ class SubtypeFactoryExtraValueGoldenTest {
     }
 
     /**
-     * The collisionHack table, stated as membership rather than as whole strings, so a rewrite that
-     * reorders the if/else-if chain fails here loudly and specifically. The three sets are written
-     * out by hand from the literals in `SubtypeFactory.createLanguageSubtype`; the exhaustive
-     * 89-row table above is what proves no *other* locale grew a collisionHack.
+     * The collisionHack table as membership, so reordering the if/else-if chain fails here. The
+     * 89-row table above proves no other locale has one.
      */
     @Test
     fun collisionHack_bucketsAreFrozen() {
@@ -381,8 +346,7 @@ class SubtypeFactoryExtraValueGoldenTest {
             actual.getOrPut(hack) { mutableSetOf() }.add(l.locale)
         }
         assertEquals(expected, actual)
-        // 31, 17 and 7 are what the production code hex-formats. Spelled out so that a "tidy"
-        // replacing Integer.toHexString(31) with a literal has to keep producing "1f", not "31".
+        // Spelled out so replacing Integer.toHexString(31) with a literal must still produce "1f".
         assertEquals("1f", Integer.toHexString(31))
         assertEquals("11", Integer.toHexString(17))
         assertEquals("7", Integer.toHexString(7))
@@ -400,8 +364,7 @@ class SubtypeFactoryExtraValueGoldenTest {
             SubtypeFactory.createLanguageSubtype("en_US", arrayListOf("fr", "de", "es"), "qwerty")!!
                 .getExtraValueOf("AdditionalLocales")
         )
-        // collisionHack is emitted BEFORE AdditionalLocales. Token order is part of the string,
-        // so it is part of the identity.
+        // collisionHack precedes AdditionalLocales; token order is part of the identity.
         assertEquals(
             "KeyboardLayoutSet=qwerty,AsciiCapable,EmojiCapable,isAdditionalSubtype," +
                 "collisionHack=1f,AdditionalLocales=fr/de",
@@ -410,10 +373,8 @@ class SubtypeFactoryExtraValueGoldenTest {
     }
 
     /**
-     * The extras in the string are the ones [MultiLanguageConfig] hands over, and it sorts them by
-     * locale code first, so the same languages picked in any order are the same keyboard. Reading
-     * them back keeps that written order (getAdditionalLocales used to re-sort through a TreeSet);
-     * the string itself must not change.
+     * [MultiLanguageConfig] sorts extras by locale code, so any pick order gives the same keyboard.
+     * Reading back keeps the written order; the string must not change.
      */
     @Test
     fun multiLanguageConfig_writesItsExtrasSortedByCode_andTheyReadBackInThatOrder() {
@@ -450,37 +411,18 @@ class SubtypeFactoryExtraValueGoldenTest {
         assertNull(SubtypeFactory.createLanguageSubtype("en_US", arrayListOf(), "qwerty"))
     }
 
-    // ══════════════════════════════════════════════════════════════════════════════════════════
-    // 1c — createSubtypesFromPref: parses the persisted `custom_input_styles` preference and
-    // R.array.predefined_builtin_keyboard_subtypes. AsciiCapable comes from the optional third
-    // field; EmojiCapable is always set on this path.
-    // ══════════════════════════════════════════════════════════════════════════════════════════
+    // createSubtypesFromPref: parses `custom_input_styles` and predefined_builtin_keyboard_subtypes.
+    // AsciiCapable comes from the optional third field; EmojiCapable is always set.
 
     private val PREF_GOLDEN = listOf(
-        // The four entries of R.array.predefined_builtin_keyboard_subtypes — these are seeded into
-        // the pref on first run by SettingsManager, so their ids are persisted on every install.
+        // R.array.predefined_builtin_keyboard_subtypes: seeded into the pref on first run, so these
+        // ids are persisted on every install.
         P("be:translit", 1, "KeyboardLayoutSet=translit,EmojiCapable,isAdditionalSubtype", -182254513, R.string.subtype_generic_translit),
         P("ky:translit", 1, "KeyboardLayoutSet=translit,EmojiCapable,isAdditionalSubtype", 93878266, R.string.subtype_generic_translit),
         P("ru:translit", 1, "KeyboardLayoutSet=translit,EmojiCapable,isAdditionalSubtype", 290588239, R.string.subtype_generic_translit),
         P("uk:translit", 1, "KeyboardLayoutSet=translit,EmojiCapable,isAdditionalSubtype", 367240482, R.string.subtype_generic_translit),
-        //
-        // The nameResIds below were 0 until 2026-09-21 — NOT because the resources were missing,
-        // but because ResourceLocaleUtils resolved them with
-        // `getIdentifier(name, null, "com.blackberry.keyboard")`, and getIdentifier's defPackage
-        // is the *installed* package, which the debug build has never been (it is `.debug`
-        // suffixed) and the app no longer is at all (dev.bbkb.ime). Every lookup missed and the
-        // subtypes carried nameResId 0, i.e. no display name in the system's subtype list. The
-        // literal is now `context.getPackageName()`, so these resolve the way they did in the
-        // original APK, whose applicationId happened to equal the literal.
-        //
-        // This is NOT a compatibility break: the subtype id is
-        // hashCode({locale, "keyboard", extraValue, false, false}) and carries no resId, so every
-        // id below is unchanged and nobody's enabled-language selection moves. Only the label the
-        // framework draws changes — from nothing to the right string.
-        //
-        // Two fields: AsciiCapable off, EmojiCapable on. en_US and es_US are *exceptional*
-        // locales (R.array.subtype_locale_exception_keys), so they name subtype_with_layout_<loc>
-        // rather than subtype_generic_<layout>.
+        // nameResId resolves via getIdentifier with context.getPackageName(); it carries no part of
+        // the id. en_US and es_US are exceptional locales, so they name subtype_with_layout_<loc>.
         P("en_US:qwerty", 1, "KeyboardLayoutSet=qwerty,UntranslatableReplacementStringInSubtypeName=QWERTY,EmojiCapable,isAdditionalSubtype", -1341559595, R.string.subtype_with_layout_en_US),
         // Three fields, third is exactly "AsciiCapable": the flag goes on, and the id changes.
         P("en_US:qwerty:AsciiCapable", 1, "KeyboardLayoutSet=qwerty,AsciiCapable,UntranslatableReplacementStringInSubtypeName=QWERTY,EmojiCapable,isAdditionalSubtype", -1402186410, R.string.subtype_with_layout_en_US),
@@ -489,16 +431,12 @@ class SubtypeFactoryExtraValueGoldenTest {
         // "zz" is the no-language subtype: the layout key is rewritten to zz_<layout>, so it
         // names subtype_no_language_qwerty, not subtype_generic_qwerty.
         P("zz:qwerty:AsciiCapable", 1, "KeyboardLayoutSet=qwerty,AsciiCapable,EmojiCapable,isAdditionalSubtype", 1433648132, R.string.subtype_no_language_qwerty),
-        // CHARACTERISED BUG: any third field that is not literally "AsciiCapable" is swallowed
-        // silently — same string, same id as the two-field form. A typo in the persisted pref
-        // downgrades the subtype instead of being reported.
+        // CHARACTERISED BUG: any third field other than "AsciiCapable" is silently swallowed (same
+        // string and id as the two-field form), so a typo downgrades the subtype unreported.
         P("en_US:qwerty:Nonsense", 1, "KeyboardLayoutSet=qwerty,UntranslatableReplacementStringInSubtypeName=QWERTY,EmojiCapable,isAdditionalSubtype", -1341559595, R.string.subtype_with_layout_en_US),
         P("de:qwertz", 1, "KeyboardLayoutSet=qwertz,EmojiCapable,isAdditionalSubtype", -1069895133, R.string.subtype_generic_qwertz),
-        // Layouts with no subtype_generic_<layout> string (east_slavic and arabic are not in
-        // R.array.predefined_layouts) name plain subtype_generic, "%s". That used to be the drop
-        // signal, so the twelve side-loaded non-Latin languages never became keyboards. Since
-        // 2026-09-28 a layout SideloadedSubtypes places a language on is kept with that name; a
-        // spec on an unknown layout is still dropped (see below).
+        // Layouts with no subtype_generic_<layout> string name plain subtype_generic. A layout
+        // SideloadedSubtypes places a language on is kept; an unknown layout is still dropped.
         P("ru:east_slavic", 1, "KeyboardLayoutSet=east_slavic,EmojiCapable,isAdditionalSubtype", 2083644684, R.string.subtype_generic),
         P("ar:arabic", 1, "KeyboardLayoutSet=arabic,EmojiCapable,isAdditionalSubtype", -1154930848, R.string.subtype_generic),
         P("xx:nonsense_layout", 0, null, null, null),

@@ -22,16 +22,13 @@ import kotlin.collections.HashSet
 import kotlin.collections.LinkedHashSet
 
 /**
- * Synchronizes dictionary data with Android's User Dictionary (AUD).
- *
- * Handles bidirectional sync: pushes word substitutions/personal words to AUD,
- * and pulls external changes from AUD back to the personal dictionary.
- * Uses Kotlin coroutines for async operations and SuggestedWordInfo [ReentrantLock] for thread safety.
+ * Two-way sync with Android's User Dictionary (AUD): pushes our words to AUD and pulls external
+ * changes back. AUD is the master; all access is serialised by [AUD_SYNC_LOCK].
  */
 class AudSyncer private constructor() {
     private val scope = CoroutineScope(Dispatchers.IO + SupervisorJob())
 
-    /** In-flight + queued sync launches; see syncDifferencesToBasl (audit PD-15). */
+    /** In-flight plus queued sync launches; see [syncDifferencesToBasl]. */
     private val pendingSyncs = java.util.concurrent.atomic.AtomicInteger(0)
 
     companion object {
@@ -40,11 +37,7 @@ class AudSyncer private constructor() {
         private const val TAG = "AudSyncer"
         private const val EXTRA_SPACE_FOR_MAPS = 30
 
-        /**
-         * Back-pressure cap on queued sync launches. Each one blocks on the fair
-         * AUD_SYNC_LOCK inside a Dispatchers.IO thread, so an unbounded queue starves
-         * the IO dispatcher (audit PD-15).
-         */
+        /** Cap on queued syncs: each blocks an IO thread on the fair lock, so unbounded starves IO. */
         private const val MAX_PENDING_SYNCS = 2
 
         @Volatile
@@ -59,15 +52,7 @@ class AudSyncer private constructor() {
         
         @JvmStatic
         fun shouldSync(dictionaryWord: DictionaryWord): Boolean {
-            // AudFilterType logic would go here. 
-            // In original code:
-            // for (AudFilterType audFilterType : AudFilterType.values()) {
-            //     AudFilter filter = audFilterType.getFilter();
-            //     if (filter.filter(dictionaryWord)) ...
-            // }
-            // Since we haven't deleted AudFilterType, we can call it.
-            // entries, not values(): values() clones the backing array on every
-            // call and this runs once per word in the sync loops (audit PD-37).
+            // entries, not values(): values() clones the array, and this runs per word.
             for (type in AudFilterType.entries) {
                  if (type.filter.filter(dictionaryWord)) {
                      LogUtil.d(TAG, "Filtered DW will not be synced to AUD: $dictionaryWord")
@@ -83,14 +68,8 @@ class AudSyncer private constructor() {
         personalDictionaryUtil: PersonalDictionaryUtil,
         completionListener: CompletionListener
     ): Boolean {
-        // Audit PD-15: this used to `return true` unconditionally, so both "queue
-        // full" branches (PersonalDictionaryUtil.syncAudDifferencesToBasl and
-        // AudContentObserver) were dead - the bounded executor that produced `false`
-        // had been replaced by an unbounded scope.launch, and every launch then blocks
-        // on the fair AUD_SYNC_LOCK inside a Dispatchers.IO thread. A burst of AUD
-        // writes (exactly what AudWrapper.addBatch produces during a locale switch)
-        // queued one lock-blocked IO coroutine per notification with no back-pressure
-        // and no way for a caller to learn it had been dropped. Keep the contract.
+        // Returns false when the queue is full: a burst of AUD writes (a locale switch) would
+        // otherwise queue one lock-blocked IO coroutine per notification.
         if (pendingSyncs.incrementAndGet() > MAX_PENDING_SYNCS) {
             pendingSyncs.decrementAndGet()
             LogUtil.w(TAG, "AUD sync queue full - dropping request")
@@ -104,8 +83,7 @@ class AudSyncer private constructor() {
                     throwIfInactive()
                     val counts = doSyncDifferencesToBasl(context, personalDictionaryUtil)
                     success = true
-                    // INFO, not DEBUG: this one line is how a working AUD bridge is told apart
-                    // from a dead one on a release build (2026-09-21).
+                    // INFO: tells a working AUD bridge from a dead one on a release build.
                     LogUtil.i(TAG, "AUD -> personal dictionary sync complete: $counts")
                 } catch (e: CancellationException) {
                     LogUtil.w(TAG, "Sync cancelled")
@@ -130,11 +108,7 @@ class AudSyncer private constructor() {
         return true
     }
 
-    /**
-     * What one AUD -> BASL reconciliation moved. Logged at INFO on every completed sync: this
-     * is the line the owner reads on the device to tell a working sync from a dead one
-     * (2026-09-21 - the whole path was previously silent below DEBUG).
-     */
+    /** What one AUD -> BASL reconciliation moved; logged at INFO on every completed sync. */
     data class SyncCounts(
         var substitutionsAdded: Int = 0,
         var substitutionsRemoved: Int = 0,
@@ -180,9 +154,8 @@ class AudSyncer private constructor() {
     ) {
         LogUtil.d(TAG, "Checking AUD...")
         throwIfInactive()
-        // null, not empty: an unreachable provider must abort the reconciliation rather than
-        // present itself as an empty AUD, because "missing from AUD" means "delete from BASL"
-        // below - the user's whole personal dictionary (audit 2026-09-21).
+        // null, not empty: an unreachable provider must abort, since "missing from AUD" means
+        // "delete from BASL" below.
         val audWords = AudWrapper.getAudWordsWithoutSpacedKeys(context) ?: throw AudUnavailableException()
         for (dictionaryWord in audWords) {
             if (dictionaryWord is WordSubstitution) {
@@ -298,12 +271,9 @@ class AudSyncer private constructor() {
             }
         }
 
-        // Keys (ignoring case, as the dictionary compares them) of our entries that AUD still
-        // holds as they are. An AUD row under one of these keys in another case is not a change
-        // to take in: it is a second row beside ours, such as the one a refused duplicate add
-        // used to leave behind. Taking it in replaced our entry, the next pass put ours back
-        // (AUD holds both), and the shown entry flipped between "zorbix" and "ZORBIX" on every
-        // sync. Such a row is left where it is: AUD is shared and nothing says which app wrote it.
+        // Keys (case-insensitive) of our entries AUD still holds unchanged. An AUD row under one of
+        // these keys in another case is a second row beside ours, not a change: taking it in makes
+        // the entry flip case on every sync. It is left in AUD, which other apps share.
         val heldInAud = TreeSet(String.CASE_INSENSITIVE_ORDER)
         for (ws in baslSet) {
             if (ws in audSet) heldInAud.add(ws.key)
@@ -376,23 +346,10 @@ class AudSyncer private constructor() {
         localesToAdd: List<Locale>,
         deletedKeys: Set<String>
     ): Boolean {
-        // Since this method uses AUD_SYNC_LOCK in Java, we must respect it.
-        // However, we are running it inside a coroutine if called from PDU.
-        // If called synchronously, we might block. 
-        // Based on analysis, this is called from PDU which puts it on executor.
-        // We will make this method block the caller (which is fine if caller is background thread)
-        // or launch a coroutine?
-        // The return type is boolean indicating success of submitting? No, in Java it was synchronous logic inside a lock.
-        // Wait, the Java version took the lock and ran synchronously.
-        // But PDU called it from `syncDefaultWsToAudThenAudDifferencesToBasl` which is called from PDU's executor.
-        // So we can run synchronously here.
-        
+        // Synchronous under the lock: callers are on a background thread.
         AUD_SYNC_LOCK.lock()
         try {
             LogUtil.d(TAG, "Starting default WS sync")
-            // We can't check for interrupts easily in a blocking method unless we check Thread.interrupted()
-            // But we are moving to coroutines.
-            // For now, let's assume this is called from a context where we can block.
             doSyncDefaultWordSubstitutions(context, resourceDir, localesToRemove, localesToAdd, deletedKeys)
             return true
         } catch (e: IllegalStateException) {
@@ -459,16 +416,8 @@ class AudSyncer private constructor() {
     }
 
     /**
-     * Audit PD-41: this was named `ensureActive`, shadowing kotlinx.coroutines'
-     * own `CoroutineScope.ensureActive` (imported here via `kotlinx.coroutines.*`),
-     * so a reader - and the call inside `scope.launch` - reasonably expected the
-     * coroutine-aware one. Renamed to say what it does.
-     *
-     * Note it checks the *singleton's* scope rather than the current coroutine's job,
-     * and `Thread.interrupted()` clears the flag on a shared Dispatchers.IO thread.
-     * Fixing those properly means making the sync functions `suspend` and using
-     * `coroutineContext.ensureActive`; left as-is here because the interrupt is
-     * still the abort signal for the blocking ContentResolver calls underneath.
+     * Checks the singleton's scope (not the current job) and the thread interrupt, which is the
+     * abort signal for the blocking ContentResolver calls. Note `Thread.interrupted()` clears it.
      */
     private fun throwIfInactive() {
         if (!scope.isActive) throw CancellationException()

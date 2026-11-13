@@ -21,13 +21,9 @@ import dev.bbkb.ime.R
 private val PKB_SWITCH_ANCHORS = arrayOf("pref_multifunction_key_action", "pref_alt_sym_shortcut_action")
 
 /**
- * Language Switching Settings Screen (Subpage of Languages & Input).
- *
- * Two sections, by keyboard. **On-screen keyboard**: every option here is about the touch
- * keyboard's language key and space bar. **Physical keyboard** (devices that have one): links to
- * where a physical key or a capacitive-keyboard gesture is set to switch language, rather than a
- * second copy of those settings — the shortcut link lands on Physical keyboard with the
- * multifunction key and Alt+Sym rows highlighted.
+ * On-screen keyboard section: the language key and space bar. Physical keyboard section: links to
+ * where a key or capacitive gesture is set to switch language (not a second copy of those
+ * settings); the shortcut link lands on Physical keyboard with [PKB_SWITCH_ANCHORS] highlighted.
  */
 @Composable
 fun LanguageSwitchingScreen(
@@ -66,8 +62,7 @@ fun LanguageSwitchingScreen(
                 onNavigateToPhysicalKeyboard()
             },
         ),
-        // Under the Physical keyboard header, so only where that header shows; and there whether
-        // the gestures are on or off, since nothing is hidden because of a switch.
+        // Shown whether the gestures are on or off: nothing is hidden because of a switch.
         Nav(
             title = R.string.settings_lang_assign_ckb_gesture_title,
             icon = drawableIcon(R.drawable.ic_settings_swipe_typing),

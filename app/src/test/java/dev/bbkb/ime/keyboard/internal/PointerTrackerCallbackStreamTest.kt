@@ -38,15 +38,9 @@ import org.robolectric.annotation.Config
 import org.robolectric.shadows.ShadowLog
 
 /**
- * Characterises the VKB typing path through [PointerTracker]: synthetic down/move/up/cancel
- * sequences are driven exactly the way `MainKeyboardView.processMotionEvent` drives them, and the
- * complete, ordered stream of everything the tracker tells its collaborators is pinned — the
- * keyboard action listener (onPressKey / onCodeInput / onReleaseKey / onFinishSlidingInput /
- * onCancelInput / batch callbacks), the key timers, the batch-update timer, the drawing proxy and
- * the Nuance engine touch calls.
- *
- * The streams were recorded against the code as it stood before any Wave 3b change; they are the
- * contract, not a description of what the code "should" do.
+ * Characterises the VKB typing path through [PointerTracker]: down/move/up/cancel sequences driven as
+ * `MainKeyboardView.processMotionEvent` drives them, pinning the full ordered stream sent to the
+ * action listener, key timers, batch-update timer, drawing proxy and engine touch calls.
  */
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [34], manifest = Config.NONE, instrumentedPackages = ["com.blackberry.nuanceshim"])
@@ -63,7 +57,7 @@ class PointerTrackerCallbackStreamTest {
     private var gestureEnabled = false
     private val t0 = 1_000L
 
-    // ---- layout: one row, keys 100px wide, 100px tall ------------------------------------------
+    // One row, keys 100px wide, 100px tall.
 
     private class Spec(val key: Key, val x0: Int, val x1: Int)
 
@@ -93,8 +87,6 @@ class PointerTrackerCallbackStreamTest {
     private val keyD by lazy { key('d'.code, 500, moreKeys = true) }
 
     private fun code(k: Key?) = k?.code?.toString() ?: "null"
-
-    // ---- collaborators ------------------------------------------------------------------------
 
     private val timers = object : TimerProxy {
         override fun startTypingStateTimer(key: Key) { log += "timer.startTypingState(${code(key)})" }
@@ -144,8 +136,6 @@ class PointerTrackerCallbackStreamTest {
         override fun onCancelInput() { log += "L.onCancelInput" }
     }
 
-    // ---- fixtures -----------------------------------------------------------------------------
-
     private fun unsafeAllocate(c: Class<*>): Any {
         val unsafeClass = Class.forName("sun.misc.Unsafe")
         val theUnsafe = unsafeClass.getDeclaredField("theUnsafe").apply { isAccessible = true }.get(null)
@@ -188,8 +178,8 @@ class PointerTrackerCallbackStreamTest {
     @Before
     fun setUp() {
         resetStatics()
-        // The touch samples are engine-thread ops now (Wave 3); inline, they reach the mock on
-        // this thread, in the order they were posted, so the golden streams still show them.
+        // Touch samples are engine-thread ops; run inline, they reach the mock on this thread in posting
+        // order, so the golden streams still show them.
         dev.bbkb.ime.core.engine.EngineThreads.setInlineForTests(true)
         val sm = mock(SettingsManager::class.java)
         val sv = settings()
@@ -208,11 +198,9 @@ class PointerTrackerCallbackStreamTest {
             .`when`(nuance).touchCancel(anyLong())
         sdkStatic = mockStatic(NuanceSDKManager::class.java)
         sdkStatic.`when`<NuanceSDK> { NuanceSDKManager.getInstance() }.thenReturn(nuance)
-        // The touch call sites go through the null-checked choke point (audit L8), not through
-        // getInstance() directly. mockStatic stubs EVERY static, so an unstubbed sdkOrWarn would
-        // hand them null and every sdk.* line would silently vanish from the golden stream —
-        // which is exactly what a real engine-load failure looks like, and why the streams below
-        // are the regression test for the null handling as well.
+        // Touch call sites go through the null-checked `sdkOrWarn`. mockStatic stubs every static, so an
+        // unstubbed one would silently drop every sdk.* line from the golden stream, which is also what an
+        // engine-load failure looks like; the streams therefore pin the null handling too.
         sdkStatic.`when`<NuanceSDK> { NuanceSDKManager.sdkOrWarn(anyString()) }.thenReturn(nuance)
 
         val app = ApplicationProvider.getApplicationContext<Context>()
@@ -252,11 +240,11 @@ class PointerTrackerCallbackStreamTest {
         for (name in listOf("sInGesture", "sInMoreKeysPanel", "sSuppressSlideboard")) {
             setField(PointerTracker::class.java, PointerTracker::class.java, name, false)
         }
-        // Every stream starts with no swipe session in the engine (Wave 3 Phase B).
+        // Every stream starts with no swipe session in the engine.
         EngineTouch.resetForTests()
     }
 
-    // ---- event plumbing (mirrors MainKeyboardView.processMotionEvent) --------------------------
+    // Event plumbing, mirroring MainKeyboardView.processMotionEvent.
 
     private data class P(val id: Int, val x: Int, val y: Int)
 
@@ -299,8 +287,6 @@ class PointerTrackerCallbackStreamTest {
         assertEquals(expected.trimIndent(), actual)
     }
 
-    // ---- build-time constants the move path depends on -----------------------------------------
-
     /**
      * `PointerTracker` only lets a finger re-select keys by dragging when
      * `keySelectionByDraggingFinger` resolves true; with it true, the "sliding finger while multi
@@ -316,8 +302,6 @@ class PointerTrackerCallbackStreamTest {
             ta.recycle()
         }
     }
-
-    // ---- single pointer -----------------------------------------------------------------------
 
     @Test
     fun tapLetter() {
@@ -748,8 +732,6 @@ class PointerTrackerCallbackStreamTest {
         )
     }
 
-    // ---- two pointers -------------------------------------------------------------------------
-
     @Test
     fun rolloverFirstFingerLiftsFirst() {
         down(1000, 50)
@@ -994,8 +976,6 @@ class PointerTrackerCallbackStreamTest {
             """
         )
     }
-
-    // ---- gesture (VKB swipe) ------------------------------------------------------------------
 
     private fun swipeAcross(from: Long, id: Int = 0) {
         var t = from
@@ -1493,9 +1473,8 @@ class PointerTrackerCallbackStreamTest {
     }
 
     /**
-     * A held, repeating key whose finger jiggles enough to look like a path. The lift ends no
-     * swipe, so the engine is told to drop the contact; it used to be sent a touchEnd, which
-     * decoded the jiggle as a swipe that no request was waiting for.
+     * A held, repeating key whose finger jiggles enough to look like a path. The lift ends no swipe,
+     * so the engine is told to drop the contact, not sent a touchEnd that would decode a stray swipe.
      */
     @Test
     fun gestureEnabledHeldRepeatKeyIsCancelledNeverDecoded() {
@@ -1575,7 +1554,7 @@ class PointerTrackerCallbackStreamTest {
         )
     }
 
-    // ---- debug log text (grep targets for adb recipes) -----------------------------------------
+    // Debug log text: grep targets for adb recipes.
 
     @Test
     fun debugLogLinesAreStable() {

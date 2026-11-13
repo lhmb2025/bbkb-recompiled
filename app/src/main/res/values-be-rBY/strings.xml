@@ -721,7 +721,6 @@
     <string name="device_config_import_unreadable">Гэты файл не з\'яўляецца канфігурацыяй прылады</string>
     <string name="device_config_import_failed">Не ўдалося імпартаваць гэты файл</string>
 
-    <!-- OTA app updates -->
     <string name="settings_updates_title">Абнаўленні</string>
     <string name="settings_updates_summary">Праверыць новую версію BBKB</string>
     <string name="settings_update_installed_version_title">Устаноўленая версія</string>
@@ -755,7 +754,6 @@
     <string name="settings_update_ready_title">Гатова да ўстаноўкі</string>
     <string name="settings_update_version_details">Звесткі пра версію</string>
     <string name="settings_update_unknown_sources_title">Дазволіць BBKB устанаўліваць абнаўленні?</string>
-    <!-- Downloadable language packs (core/languagepack) -->
     <string name="language_packs_installed_header">Устаноўлена</string>
     <string name="language_packs_available_header">Даступна для спампоўкі</string>
     <string name="language_packs_download">Спампаваць</string>
@@ -877,7 +875,6 @@
     <string name="settings_voice_stop_on_pause_summary_off">Працягвае слухаць падчас паўз, пакуль вы не націснеце мікрафон або не пройдзе паўхвіліны цішыні</string>
     <string name="voice_status_listening_tap_to_stop">Слухаю&#8230; Націсніце мікрафон, каб спыніць</string>
 
-    <!-- Settings text moved out of the code (2026-11) -->
     <string name="settings_common_save">Захаваць</string>
     <string name="settings_common_edit">Рэдагаваць</string>
     <string name="settings_common_back">Назад</string>

@@ -60,10 +60,7 @@ private const val TAG = "VoiceLanguageSelection"
 /** The preference both voice screens read and write. */
 internal const val VOICE_LANGUAGE_PREF = "voice_input_language_list"
 
-/**
- * A language code as the language itself names it — "Français (France)" for `fr-FR`. Falls back
- * to the raw code for anything [Locale] cannot parse.
- */
+/** A language code in its own language ("Français (France)" for `fr-FR`); the raw code if unparseable. */
 internal fun voiceLanguageDisplayName(code: String): String = try {
     val locale = Locale.forLanguageTag(code.replace("_", "-"))
     val name = locale.getDisplayName(locale)
@@ -73,9 +70,8 @@ internal fun voiceLanguageDisplayName(code: String): String = try {
 }
 
 /**
- * One language of the picker: its recogniser tag, its name as the language writes it, that name in
- * the phone's language when the two differ (the row's second line, and something to search by),
- * and whether the recogniser has it on the phone.
+ * One picker row: recogniser tag, native name, the name in the phone's language when different
+ * (second line and search key), and whether the recogniser has it offline.
  */
 internal data class VoiceLanguageRow(
     val code: String,
@@ -96,9 +92,8 @@ internal fun voiceLanguageLocalName(code: String, nativeName: String, phone: Loc
 private fun sameVoiceTag(a: String, b: String) = a.replace("_", "-").equals(b.replace("_", "-"), ignoreCase = true)
 
 /**
- * The languages listed first, under "Your languages": the one chosen now, then the recogniser's
- * language for each keyboard the user has switched on. Each is the recogniser's own spelling of the
- * tag, so a keyboard's bare "fr" pins "fr-FR"; one the recogniser does not offer is left out.
+ * The "Your languages" rows: the current choice, then the recogniser's tag for each enabled
+ * keyboard in its own spelling (bare "fr" pins "fr-FR"). Tags the recogniser lacks are left out.
  */
 internal fun pinnedVoiceLanguages(
     selected: String,
@@ -124,15 +119,10 @@ internal fun enabledKeyboardLanguageTags(context: android.content.Context): List
 }
 
 /**
- * Full-screen list of the voice-recognition languages this device offers.
- *
- * The list is long (well over a hundred languages with Google's recogniser), so: the top bar
- * searches it, by a language's own name, its name in the phone's language or its tag; the language
- * chosen now and the languages of the user's keyboards are repeated first, under "Your languages";
- * and "All languages" below is in alphabetical order of what the rows show. A language the
- * recogniser has on the phone carries the same Voice chip as on Language packs. Where the device
- * cannot say which those are (the pre-API-33 discovery path, the built-in fallback list) no row
- * carries one.
+ * The voice-recognition languages this device offers (often over a hundred). Searchable by native
+ * name, phone-language name or tag; the current choice and the keyboards' languages repeat first
+ * under "Your languages". Offline languages carry the Voice chip, except where the device cannot
+ * tell (pre-API-33 discovery, the fallback list).
  */
 @Composable
 fun VoiceLanguageSelectionScreen(
@@ -148,7 +138,6 @@ fun VoiceLanguageSelectionScreen(
         )
     }
 
-    // Dynamically detected voice input languages
     var availableLanguages by remember { mutableStateOf<List<String>>(emptyList()) }
     var offlineLanguages by remember { mutableStateOf<List<String>>(emptyList()) }
     var isLoading by remember { mutableStateOf(true) }
@@ -156,7 +145,6 @@ fun VoiceLanguageSelectionScreen(
     val recognizer = remember { InstalledVoiceRecognizers.resolve(context) }
     val keyboardTags = remember { enabledKeyboardLanguageTags(context) }
 
-    // Detect available voice recognition languages using appropriate API
     LaunchedEffect(Unit) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             fetchLanguagesModernForSelection(context, recognizer) { supported, offline ->
@@ -173,7 +161,6 @@ fun VoiceLanguageSelectionScreen(
         }
     }
 
-    // Every language as a row, in alphabetical order of the name shown.
     val rows: List<VoiceLanguageRow> = remember(availableLanguages, offlineLanguages) {
         val collator = Collator.getInstance()
         availableLanguages.distinct().map { code ->
@@ -187,7 +174,7 @@ fun VoiceLanguageSelectionScreen(
         }.sortedWith { a, b -> collator.compare(a.name, b.name) }
     }
     val pinned: List<VoiceLanguageRow> = remember(rows, keyboardTags) {
-        // Read once: the choice made on this screen closes it, so the pins never move under a tap.
+        // Read once: a choice here closes the screen, so the pins never move under a tap.
         pinnedVoiceLanguages(selectedLanguage, keyboardTags, rows.map { it.code })
             .mapNotNull { code -> rows.firstOrNull { it.code == code } }
     }
@@ -240,11 +227,10 @@ fun VoiceLanguageSelectionScreen(
                 )
             }
 
-            // Each section is a group laid out by the list itself: the rows paint themselves as
-            // cards, a section's first and last row carry the group's outer corners, and the rows
-            // take the group inset themselves so the section headers keep their page-level alignment.
+            // Each section is one group; rows paint themselves as cards with the group inset so the headers
+            // keep page-level alignment.
             else -> CompositionLocalProvider(LocalInGroup provides true) {
-                // While searching: the matches alone, with no headers and no repeats.
+                // While searching: the matches alone, no headers and no repeats.
                 val sections: List<Triple<String, String?, List<VoiceLanguageRow>>> = if (search.filtering) {
                     listOf(Triple("found", null, matching))
                 } else {
@@ -280,7 +266,6 @@ fun VoiceLanguageSelectionScreen(
     }
 }
 
-/** The loading and empty states: a centred column below the app bar. */
 @Composable
 private fun CenteredMessage(
     paddingValues: PaddingValues,
@@ -298,17 +283,12 @@ private fun CenteredMessage(
     }
 }
 
-/** A section subhead, in the app's own [PreferenceCategory]. */
 @Composable
 private fun SectionHeader(title: String) {
     PreferenceCategory(title = title)
 }
 
-/**
- * One language, on [PreferenceItem]: a radio button in the leading column, as the one-of-many list
- * on Device configuration has, the language's own name, its name in the phone's language under it
- * when that differs, and the Voice chip after the name when the recogniser has it on the phone.
- */
+/** One language on [PreferenceItem]: radio, native name, local name when different, Voice chip when offline. */
 @Composable
 private fun LanguageListItem(
     row: VoiceLanguageRow,
@@ -335,9 +315,8 @@ private fun LanguageListItem(
 }
 
 /**
- * Fetch supported languages using modern API 33+ checkRecognitionSupport, asked of the recogniser
- * the "Speech recognizer" setting chooses rather than always the system default. The callbacks
- * run on the main thread.
+ * API 33+ checkRecognitionSupport, asked of the recogniser the "Speech recognizer" setting chooses.
+ * Callbacks run on the main thread.
  */
 @RequiresApi(Build.VERSION_CODES.TIRAMISU)
 private fun fetchLanguagesModernForSelection(
@@ -357,10 +336,8 @@ private fun fetchLanguagesModernForSelection(
             override fun onSupportResult(support: RecognitionSupport) {
                 val installedLanguages = support.installedOnDeviceLanguages
                 val supportedLanguages = support.supportedOnDeviceLanguages
-                // The languages the service recognises over the network. Leaving them out listed
-                // only what could run on the device, so a recogniser with few or no on-device
-                // models showed a short list (or the built-in fallback) for languages it does
-                // support. Anything not installed lands under "Requires Network".
+                // Include network languages, or a recogniser with few on-device models shows a short list.
+                // Anything not installed lands under "Requires Network".
                 val onlineLanguages = support.onlineLanguages
                 val allLanguages = (installedLanguages + supportedLanguages + onlineLanguages).distinct()
 
@@ -394,8 +371,8 @@ private fun fetchLanguagesModernForSelection(
 }
 
 /**
- * Fetch supported languages using legacy broadcast method (pre-API 33). With an app chosen as the
- * speech recognizer the broadcast goes to that app alone, so another recogniser cannot answer it.
+ * Pre-API-33 broadcast discovery. With an app chosen as the speech recognizer the broadcast goes
+ * to that app alone.
  */
 private fun fetchLanguagesLegacyForSelection(
     context: android.content.Context,
@@ -439,11 +416,8 @@ private fun fetchLanguagesLegacyForSelection(
 }
 
 /**
- * What the picker shows when discovery fails: the last real answer this recogniser gave, or, before
- * there ever was one, every language this keyboard declares a subtype for plus the regional
- * list below. The old static list alone omitted Hebrew, Greek, Ukrainian, Swedish, Czech,
- * Hungarian, Romanian, Finnish, Danish, Norwegian, Bulgarian and Persian, all of which have
- * keyboards here.
+ * The list when discovery fails: this recogniser's last real answer or, before there is one, every
+ * language this keyboard declares a subtype for plus the regional list below.
  */
 internal fun fallbackLanguages(
     context: android.content.Context,
@@ -454,10 +428,7 @@ internal fun fallbackLanguages(
 internal fun composeFallback(cached: List<String>, keyboard: List<String>): List<String> =
     if (cached.isNotEmpty()) cached else (keyboard + getDefaultLanguageList()).distinct().sorted()
 
-/**
- * Each recogniser remembers its own list ([VoiceRecognizerChoice.languageCacheKey]), so after a
- * switch the picker never offers the previous recogniser's languages.
- */
+/** Per-recogniser cache ([VoiceRecognizerChoice.languageCacheKey]), so a switch never shows the previous one's list. */
 private fun cachedLanguages(
     context: android.content.Context,
     selection: VoiceRecognizerChoice.Selection,

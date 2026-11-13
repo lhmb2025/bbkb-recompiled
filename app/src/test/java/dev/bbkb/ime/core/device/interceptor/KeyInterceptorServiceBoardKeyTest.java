@@ -30,18 +30,10 @@ import org.robolectric.RobolectricTestRunner;
 import org.robolectric.annotation.Config;
 
 /**
- * Beta triage #10, Minimal Phone MP01: "Sym key does nothing".
- *
- * <p>The MP01's ROM maps the Sym key's scancode 249 to {@code KEY_RIGHTALT}, so a Sym press
- * reaches {@link KeyInterceptorService#onKeyEvent} as {@code scanCode=249 +
- * KEYCODE_ALT_RIGHT}. The service used to run its Alt-keycode block first and consume that
- * event as a sticky Alt, so the scancode was never looked at and the symbol board never opened.
- *
- * <p>The invariant these tests pin is the ordering: <em>what a key is</em> comes from the device
- * config (or, absent one, the built-in scancode table), not from whichever keycode the ROM's key
- * layout attached to it. The negative half matters as much as the positive half — a Sym press
- * must not reach the all-keys callback, because that is the path that feeds
- * {@code PhysicalKeyboardStateTracker} and latches Alt.
+ * The Minimal Phone ROM maps Sym (scancode 249) to {@code KEY_RIGHTALT}. What a key is comes from
+ * the device config (or the built-in scancode table), checked before the Alt-keycode block. A Sym
+ * press must also not reach the all-keys callback, which feeds {@code PhysicalKeyboardStateTracker}
+ * and would latch Alt.
  */
 @RunWith(RobolectricTestRunner.class)
 @Config(sdk = 34, manifest = Config.NONE)
@@ -55,8 +47,6 @@ public class KeyInterceptorServiceBoardKeyTest {
     private KeyInterceptorService service;
     private RecordingSpecialKeyCallback specialKeys;
     private RecordingAllKeysCallback allKeys;
-
-    // ── callbacks ────────────────────────────────────────────────────────────
 
     private static final class RecordingSpecialKeyCallback
             implements KeyInterceptorService.KeyEventCallback {
@@ -91,8 +81,6 @@ public class KeyInterceptorServiceBoardKeyTest {
             return false;
         }
     }
-
-    // ── fixture ──────────────────────────────────────────────────────────────
 
     @Before
     public void setUp() {
@@ -135,8 +123,6 @@ public class KeyInterceptorServiceBoardKeyTest {
                 /* deviceId */ 3, scanCode, /* flags */ 0, InputDevice.SOURCE_KEYBOARD);
     }
 
-    // ── the MP01 Sym key, via the device config ──────────────────────────────
-
     @Test
     public void symScancodeFromTheDeviceConfigBeatsItsAltKeycode() {
         installMinimalPhoneConfig();
@@ -164,16 +150,13 @@ public class KeyInterceptorServiceBoardKeyTest {
                 service.onKeyEvent(symEvent(KeyEvent.ACTION_UP)));
         assertTrue(allKeys.events.isEmpty());
 
-        // …and only that one: a second, unpaired release is not swallowed.
+        // Only that one: a second, unpaired release is not swallowed.
         assertFalse(service.onKeyEvent(symEvent(KeyEvent.ACTION_UP)));
     }
 
-    // ── the same key on a phone with no device profile ───────────────────────
-
     @Test
     public void symScancodeStillBeatsItsAltKeycodeWithoutAProfile() {
-        // No profile is installed here. The built-in scancode table knows 249 just as well, and
-        // it too must be consulted before the Alt block.
+        // No profile: the built-in scancode table knows 249 and is also consulted before the Alt block.
         assertTrue(service.onKeyEvent(symEvent(KeyEvent.ACTION_DOWN)));
 
         assertEquals(1, specialKeys.types.size());
@@ -182,8 +165,6 @@ public class KeyInterceptorServiceBoardKeyTest {
                 specialKeys.mappings.get(0));
         assertTrue(allKeys.events.isEmpty());
     }
-
-    // ── the callback's answer is honoured ────────────────────────────────────
 
     @Test
     public void aDeclinedSymPressIsNotConsumed() {
@@ -201,14 +182,10 @@ public class KeyInterceptorServiceBoardKeyTest {
         installMinimalPhoneConfig();
         KeyInterceptorService.setCallback(null);
 
-        // It used to be consumed here and dropped on the floor — the key was dead rather than
-        // merely un-enhanced. Now it reaches the system, and from there the IME's ordinary
-        // onKeyDown pipeline, which has its own SYM handling.
+        // Not consumed: it reaches the system and the IME's ordinary onKeyDown SYM handling.
         assertFalse(service.onKeyEvent(symEvent(KeyEvent.ACTION_DOWN)));
         assertTrue("and it still must not be mistaken for an Alt press", allKeys.events.isEmpty());
     }
-
-    // ── an ordinary Alt key is untouched ─────────────────────────────────────
 
     @Test
     public void aRealAltKeyStillGoesThroughTheAltBleedThroughBlock() {

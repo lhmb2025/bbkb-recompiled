@@ -721,7 +721,6 @@
     <string name="device_config_import_unreadable">ওই ফাইলটি ডিভাইস কনফিগারেশন নয়</string>
     <string name="device_config_import_failed">ওই ফাইলটি ইমপোর্ট করা যায়নি</string>
 
-    <!-- OTA app updates -->
     <string name="settings_updates_title">আপডেট</string>
     <string name="settings_updates_summary">BBKB-এর নতুন সংস্করণ খুঁজুন</string>
     <string name="settings_update_installed_version_title">ইনস্টল করা সংস্করণ</string>
@@ -755,7 +754,6 @@
     <string name="settings_update_ready_title">ইনস্টলের জন্য প্রস্তুত</string>
     <string name="settings_update_version_details">সংস্করণের বিবরণ</string>
     <string name="settings_update_unknown_sources_title">BBKB-কে আপডেট ইনস্টল করার অনুমতি দেবেন?</string>
-    <!-- Downloadable language packs (core/languagepack) -->
     <string name="language_packs_installed_header">ইনস্টল করা আছে</string>
     <string name="language_packs_available_header">ডাউনলোডের জন্য উপলব্ধ</string>
     <string name="language_packs_download">ডাউনলোড</string>
@@ -877,7 +875,6 @@
     <string name="settings_voice_stop_on_pause_summary_off">মাইক্রোফোনে আলতো না চাপা পর্যন্ত বা আধা মিনিট নীরবতা না থাকা পর্যন্ত বিরতির মধ্যেও শুনতে থাকে</string>
     <string name="voice_status_listening_tap_to_stop">শোনা হচ্ছে&#8230; থামাতে মাইকে আলতো চাপুন</string>
 
-    <!-- Settings text moved out of the code (2026-11) -->
     <string name="settings_common_save">সেভ করুন</string>
     <string name="settings_common_edit">সম্পাদনা করুন</string>
     <string name="settings_common_back">ফিরে যান</string>

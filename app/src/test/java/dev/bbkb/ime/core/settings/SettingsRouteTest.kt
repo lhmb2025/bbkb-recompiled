@@ -10,22 +10,9 @@ import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
 
 /**
- * §5.8 item 6: [SettingsRoute] carried twelve duplicate-identity objects — `Keyboard` and
- * `TouchScreenKeyboard` for the same page as `OnScreenKeyboard`, `Credits` for `About`, and eight
- * more. Nothing outside the file referenced them, so they were deleted; the *route strings* are the
- * part that has to survive, because they are what a deep link and the `"screen"` intent extra
- * carry into [SettingsRoute.fromRoute], which validates the start destination for
- * `ComposeSettingsActivity`.
- *
- * The list below is the exact set `fromRoute` accepted before the tidy. It is written out by hand
- * rather than derived, because deriving it from the class under test would make the test agree with
- * any future deletion.
- *
- * Contract: every string here must still resolve, and must resolve to a destination the NavHost
- * actually registers. Six of them ("personalization", "learned_words", "feedback_haptics",
- * "personal_dictionary", "word_substitutions", "unified_dictionary") used to resolve to objects
- * with no registration, which crashed the activity; they now resolve to the page that replaced
- * each one, so an old intent or shortcut still lands somewhere sensible.
+ * Route strings carried by deep links and the `"screen"` extra into [SettingsRoute.fromRoute] must
+ * keep resolving, to a destination the NavHost registers. The list is written out by hand: deriving
+ * it from the class under test would make the test agree with any future deletion.
  */
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [34], manifest = Config.NONE)
@@ -33,7 +20,7 @@ class SettingsRouteTest {
 
     private val acceptedBeforeTheTidy = listOf(
         "main",
-        // Primary destinations, plus the four legacy spellings that never had an object.
+        // Primary destinations, plus four legacy spellings.
         "languages", "languages_input",
         "suggestion_correction", "prediction_correction", "correction_learning",
         "preferences", "customization",
@@ -116,14 +103,11 @@ class SettingsRouteTest {
         assertEquals(SettingsRoute.UserDictionary, SettingsRoute.fromRoute("personal_dictionary"))
         assertEquals(SettingsRoute.TextShortcuts, SettingsRoute.fromRoute("word_substitutions"))
         assertEquals(SettingsRoute.Learning, SettingsRoute.fromRoute("unified_dictionary"))
-        // The Language page replaced the old Languages menu and the multi-language keyboards
-        // list and wizard (2026-09-29).
+        // The Language page covers the Languages menu and the multi-language keyboards list and wizard.
         assertEquals(SettingsRoute.LanguagesHub, SettingsRoute.fromRoute("languages"))
         assertEquals(SettingsRoute.LanguagesHub, SettingsRoute.fromRoute("languages_input"))
         assertEquals(SettingsRoute.LanguagesHub, SettingsRoute.fromRoute("multi_language_keyboards"))
         assertEquals(SettingsRoute.LanguagesHub, SettingsRoute.fromRoute("multi_language_wizard_add"))
-        // Physical layouts listed only the imported ones, under this route, until the built-in
-        // layouts joined them (2026-10).
         assertEquals(SettingsRoute.PhysicalLayouts, SettingsRoute.fromRoute("custom_physical_layouts"))
     }
 
@@ -143,11 +127,10 @@ class SettingsRouteTest {
             "Keyboard", "TouchScreenKeyboard", "Credits", "LanguagesInput", "Customization",
             "CorrectionLearning", "PredictionCorrection", "Prediction", "PredictionsSuggestions",
             "DictionaryLearning", "DictionariesLearning", "AutoCorrection",
-            // Accepted by fromRoute but never registered in the NavHost; their strings now alias
-            // the page that replaced each one.
+            // Their strings alias the page that replaced each one.
             "Personalization", "LearnedWords", "FeedbackHaptics", "PersonalDictionary",
             "WordSubstitutions", "UnifiedDictionary",
-            // Pages removed when the Language page replaced them (2026-09-29).
+            // Replaced by the Language page.
             "Languages", "MultiLanguageKeyboards", "MultiLanguageWizardAdd", "MultiLanguageWizardEdit",
         )
         val mainJava = sequenceOf("src/main/java", "app/src/main/java", "../app/src/main/java")

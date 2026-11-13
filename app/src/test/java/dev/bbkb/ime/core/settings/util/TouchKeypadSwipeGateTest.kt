@@ -21,11 +21,9 @@ import org.robolectric.annotation.Config
 import java.util.Locale
 
 /**
- * The touch-keypad swipe-typing gate's device term: `SettingsValues.isCkbGestureInputEnabledForLocale`
- * is off on a pad the engine has no key geometry for — a profile that declares its own
- * `<touch-keypad>` (the Titans) and no `<kdb-variant>` — and unchanged everywhere else, the KEY2
- * included. Same set-up as [CustomLayoutSwipeGateTest], which shows that a custom letter layout
- * is no longer one of the terms; no layout is active here, so only the device decides.
+ * The touch-keypad swipe gate's device term: off on a pad the engine has no key geometry for (a
+ * profile declaring its own `<touch-keypad>` and no `<kdb-variant>`, the Titans), unchanged
+ * elsewhere including the KEY2. Same set-up as [CustomLayoutSwipeGateTest]; no layout is active.
  */
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [34], manifest = Config.NONE)
