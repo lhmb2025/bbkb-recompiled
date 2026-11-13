@@ -62,7 +62,9 @@ class PackDownloadManager internal constructor(
                 try {
                     queue.withLock { run(packs, entry, turnOn) }
                 } finally {
-                    synchronized(jobs) { jobs.remove(entry.locale) }
+                    // Usually already gone (finish() drops it with the final state); only this
+                    // job's own entry, never a newer request for the same locale.
+                    synchronized(jobs) { jobs.remove(entry.locale, coroutineContext[Job]) }
                 }
             }
         }
@@ -100,7 +102,7 @@ class PackDownloadManager internal constructor(
                     }
                 },
             ).getOrElse { failure ->
-                fail(entry.locale, failure)
+                fail(entry.locale, failure, job)
                 return
             }
 
@@ -112,15 +114,16 @@ class PackDownloadManager internal constructor(
                 group = entry.group,
                 turnOn = turnOn,
             ).getOrElse { failure ->
-                fail(entry.locale, failure)
+                fail(entry.locale, failure, job)
                 return
             }
 
-            put(
+            finish(
                 entry.locale,
                 PackState.Installed(
                     if (installed.isVariant) PackState.Origin.VARIANT_ACTIVE else PackState.Origin.CUSTOM
-                )
+                ),
+                job,
             )
             Logger.info(TAG, "Installed ${entry.locale} from the catalogue")
         } catch (cancelled: CancellationException) {
@@ -129,7 +132,7 @@ class PackDownloadManager internal constructor(
             clear(entry.locale)
             throw cancelled
         } catch (unexpected: RuntimeException) {
-            fail(entry.locale, TransportException("Could not install ${entry.locale}", unexpected))
+            fail(entry.locale, TransportException("Could not install ${entry.locale}", unexpected), job)
         } finally {
             // Always a throwaway copy (the installer copied it into nuance/); several MB each.
             destination.delete()
@@ -137,9 +140,20 @@ class PackDownloadManager internal constructor(
         }
     }
 
-    private fun fail(locale: String, error: Throwable) {
+    private fun fail(locale: String, error: Throwable, job: Job?) {
         Logger.warn(TAG, "Pack $locale failed: $error")
-        put(locale, PackState.Failed(error))
+        finish(locale, PackState.Failed(error), job)
+    }
+
+    /**
+     * Publish a final state and drop the job in one step under the [jobs] lock, so a screen that
+     * sees Installed or Failed never also sees [isBusy] still true.
+     */
+    private fun finish(locale: String, state: PackState, job: Job?) {
+        synchronized(jobs) {
+            jobs.remove(locale, job)
+            put(locale, state)
+        }
     }
 
     private fun put(locale: String, state: PackState) {
