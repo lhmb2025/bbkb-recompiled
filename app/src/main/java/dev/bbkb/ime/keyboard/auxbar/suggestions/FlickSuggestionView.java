@@ -108,7 +108,6 @@ public final class FlickSuggestionView extends RelativeLayout {
     private boolean mShownSupported;
     private boolean mShownOnKey;
     private boolean mShownEmojiBoard;
-    private boolean mShownGesture;
     private boolean mShownEmojiPredictions;
     private Object mShownStyleSpec;
     private final int[] mShownKeyboardLocation = new int[2];
@@ -233,10 +232,6 @@ public final class FlickSuggestionView extends RelativeLayout {
     private boolean isOnKeyPredictionEnabled() {
         SettingsValues settingsValues = SettingsManager.getInstance().getSettingsValues();
         return settingsValues.isOnKeyPredictionsEnabled && settingsValues.isPredictionsEnabled;
-    }
-
-    private boolean isGestureInputEnabled() {
-        return SettingsManager.getInstance().getSettingsValues().isVkbGestureInputEnabledForLocale();
     }
 
     /** @param word unused */
@@ -370,7 +365,6 @@ public final class FlickSuggestionView extends RelativeLayout {
         if (isSupportedKeyboard() != this.mShownSupported
                 || isOnKeyPredictionEnabled() != this.mShownOnKey
                 || isEmojiKeyboardShowing() != this.mShownEmojiBoard
-                || isGestureInputEnabled() != this.mShownGesture
                 || isEmojiPredictionsEnabled() != this.mShownEmojiPredictions
                 || KeyboardColorManager.styleSpec() != this.mShownStyleSpec) {
             return false;
@@ -391,7 +385,6 @@ public final class FlickSuggestionView extends RelativeLayout {
         this.mShownSupported = isSupportedKeyboard();
         this.mShownOnKey = isOnKeyPredictionEnabled();
         this.mShownEmojiBoard = isEmojiKeyboardShowing();
-        this.mShownGesture = isGestureInputEnabled();
         this.mShownEmojiPredictions = isEmojiPredictionsEnabled();
         this.mShownStyleSpec = KeyboardColorManager.styleSpec();
         int[] location = keyboardLocationInWindow();
@@ -409,9 +402,6 @@ public final class FlickSuggestionView extends RelativeLayout {
             Key keyM6604b = keyboard.getKeyByCode(32);
             if (keyM6604b != null) {
                 setSpacebarText(suggestedWords.getWord(1));
-                if (isGestureInputEnabled()) {
-                    return;
-                }
                 String strMo4284a = suggestedWords.getWord(0);
                 this.mPredictionViews.get(this.mVisibleCount).setPrediction(0, (keyM6604b.getWidth() / 2) + keyM6604b.getX(), keyM6604b.getY(), true, strMo4284a, strMo4284a);
                 this.mPredictionViews.get(this.mVisibleCount).setVisibility(View.VISIBLE);

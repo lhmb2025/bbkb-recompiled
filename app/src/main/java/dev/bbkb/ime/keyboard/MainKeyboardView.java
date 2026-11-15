@@ -783,7 +783,13 @@ public final class MainKeyboardView extends KeyboardView implements GestureEvent
         MultiPointerGestureDetector c0924a;
         int pointerId = motionEvent.getPointerId(motionEvent.getActionIndex());
         PointerTracker c1084tM7596a = PointerTracker.getPointerTracker(pointerId);
-        if ((!this.mGestureInputAvailability.isVkbGestureInputEnabled() || this.mSettings.getSettingsValues().isVkbSwipeGesturesEnabled) && !isShowingMoreKeysPanel() && !c1084tM7596a.isSlideboardDragging() && (c0924a = this.mGestureDetector) != null && c0924a.onTouchEvent(motionEvent)) {
+        // With swipe typing on, the fling detector still runs for the on-key prediction flick;
+        // VkbGestureListener then accepts only that flick unless swipe gestures are on too.
+        dev.bbkb.ime.core.settings.util.SettingsValues sv = this.mSettings.getSettingsValues();
+        boolean flingsWanted = !this.mGestureInputAvailability.isVkbGestureInputEnabled()
+                || sv.isVkbSwipeGesturesEnabled
+                || (sv.isOnKeyPredictionsEnabled && sv.isPredictionsEnabled);
+        if (flingsWanted && !isShowingMoreKeysPanel() && !c1084tM7596a.isSlideboardDragging() && (c0924a = this.mGestureDetector) != null && c0924a.onTouchEvent(motionEvent)) {
             dev.bbkb.ime.keyboard.internal.EngineTouch.cancel("MainKeyboardView.multiPointer", pointerId);
             c1084tM7596a.cancelTracking();
             return true;

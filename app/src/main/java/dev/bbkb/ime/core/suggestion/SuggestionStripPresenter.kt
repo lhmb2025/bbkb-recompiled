@@ -159,7 +159,7 @@ class SuggestionStripPresenter(private val ime: BlackBerryIME) {
         if (!ime.hasAuxBarView()) return false
         val auxBarHidden = ime.auxBarManager?.getAuxBarView()?.visibility != View.VISIBLE
         if (!(auxBarHidden || DeviceProfile.isOnScreenKeyboardVisible())) return false
-        if (sv.isVkbGestureInputEnabledForLocale() || !sv.isPredictionsEnabled) return false
+        if (!sv.isPredictionsEnabled) return false
         if (LocaleUtils.isCurrentSubtypeChinese() || LocaleUtils.isCurrentSubtypeJapanese()) return false
         return ime.isOnScreenKeyboardVisible()
     }

@@ -532,8 +532,7 @@ public class InputViewCoordinator implements KeyboardSwitcher.SwitcherCallbacks,
                 && ResourceLocaleUtils.isNonCjkLanguage(inputMethodSubtype)
                 && settingsValues.isPredictionsEnabled
                 && settingsValues.isOnKeyPredictionsEnabled
-                && isOnScreenKeyboardVisible
-                && !settingsValues.isVkbGestureInputEnabledForLocale();
+                && isOnScreenKeyboardVisible;
         return !flickViewOwnsPredictions;
     }
 

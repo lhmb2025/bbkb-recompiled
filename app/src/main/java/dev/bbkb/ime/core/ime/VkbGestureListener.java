@@ -14,7 +14,9 @@ import dev.bbkb.ime.core.BlackBerryIME;
 
 /**
  * On-screen keyboard fling gestures, fed from MainKeyboardView and NumericSubpanelKeyboardView
- * (gated by isVkbSwipeGesturesEnabled there). Capacitive-keypad gestures live in core/gesture/arbiter.
+ * (gated there by isVkbSwipeGesturesEnabled; MainKeyboardView also runs it for the on-key
+ * prediction flick, and with swipe typing on and swipe gestures off only that upward flick is
+ * accepted). Capacitive-keypad gestures live in core/gesture/arbiter.
  *  - horizontal: backward (RTL-aware) deletes a word (-18); forward on the spacebar switches
  *    language; forward elsewhere closes an open slideboard translation
  *  - vertical: down dismiss-or-symbols (-19), up prediction selection (-17, FlickSuggestionView)
@@ -60,6 +62,8 @@ public final class VkbGestureListener extends MultiPointerGestureDetector.Simple
         }
         int actionIndex = motionEvent.getActionIndex();
         int actionIndex2 = endEvent.getActionIndex();
+        // Swipe typing on, swipe gestures off: only the upward prediction flick is a gesture.
+        boolean predictionFlickOnly = this.settings.isVkbGestureInputEnabledForLocale() && !this.settings.isVkbSwipeGesturesEnabled;
         float x = endEvent.getX(actionIndex2) - motionEvent.getX(actionIndex);
         float y = endEvent.getY(actionIndex2) - motionEvent.getY(actionIndex);
         float fAbs = Math.abs(x);
@@ -68,6 +72,9 @@ public final class VkbGestureListener extends MultiPointerGestureDetector.Simple
         double d2 = fAbs;
         boolean z = true;
         if (d <= this.settings.horizontalSwipeTanTheta * d2) {
+            if (predictionFlickOnly) {
+                return false;
+            }
             if (this.ime.shouldHandleGestureEvent(motionEvent) && d > (this.settings.horizontalSwipeTanTheta / 8.0d) * d2) {
                 if (BuildConfig.DEBUG) Logger.info("VKBGesture", "onFling: horizontal swipe ignored - exceeded flow typing's reduced threshold");
             } else if (this.ime.shouldHandleGestureEvent(motionEvent) && endEvent.getEventTime() - motionEvent.getEventTime() > this.settings.swipeGestureTimeout) {
@@ -109,6 +116,9 @@ public final class VkbGestureListener extends MultiPointerGestureDetector.Simple
             }
             if (z) {
                 if (y > 0.0f) {
+                    if (predictionFlickOnly) {
+                        return false;
+                    }
                     if (this.ime.shouldHandleGestureEvent(motionEvent) && (d2 > (this.settings.verticalSwipeTanTheta / 8.0d) * d && fAbs4 <= this.settings.flowModeVerticalSwipeMinVelocity)) {
                         if (BuildConfig.DEBUG) Logger.info("VKBGesture", "onFling: vertical swipe ignored - exceeded flow typing's reduced threshold");
                     } else {
