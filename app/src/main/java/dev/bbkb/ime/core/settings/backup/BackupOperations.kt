@@ -268,6 +268,8 @@ object BackupOperations {
                     // Layout keys belong to the Layouts part, restored or not.
                     report.settings = SettingsBackup.apply(PrefsManager.getPrefs(app), it,
                         replace = true, keepKeys = LayoutsBundle.PREF_KEYS)
+                    // A backup from before the swipe-gesture slots carries the old switches.
+                    dev.bbkb.ime.core.gesture.arbiter.VkbGestureAssignments.migrate(app)
                 }
                 bundle.macros?.let {
                     CustomMacroRepository(app).replaceAll(it)

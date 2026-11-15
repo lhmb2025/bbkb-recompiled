@@ -316,10 +316,10 @@
     <string name="settings_vkb_slideboard_swap_summary_default">Gyors kifejezések balra, számbillentyűzet jobbra</string>
     <string name="settings_vkb_slideboard_swap_summary_swapped">Számbillentyűzet balra, gyors kifejezések jobbra</string>
     <string name="settings_vkb_slideboard_swap_title">A Slideboard helyeinek felcserélése</string>
-    <string name="settings_vkb_swipe_down_dismiss_summary">Csúsztasson lefelé a billentyűzeten az elrejtéséhez</string>
-    <string name="settings_vkb_swipe_down_dismiss_title">Bezárás lefelé csúsztatással</string>
-    <string name="settings_vkb_swipe_gestures_summary">Csúsztasson balra a szó törléséhez, lefelé pedig a szimbólumok megjelenítéséhez</string>
     <string name="settings_vkb_swipe_gestures_title">Csúsztatásos kézmozdulatok</string>
+    <string name="settings_vkb_swipe_gestures_switch_summary">Csúsztatás balra, jobbra és lefelé a billentyűzeten</string>
+    <string name="vkb_gestures_configure_title">Csúsztatásos kézmozdulatok beállítása</string>
+    <string name="vkb_gestures_reserved_note">A felfelé csúsztatás kiválasztja a billentyű feletti szót</string>
     <string name="settings_vkb_type_by_swiping_summary">Csúsztassa az ujját a billentyűkön egy szó beírásához</string>
     <string name="settings_vkb_type_by_swiping_title">Gépelés az ujj csúsztatásával</string>
     <string name="vkb_control_key_summary">Tartsa lenyomva a ?123 gombot a Ctrl mód bekapcsolásához</string>

@@ -4,6 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import dev.bbkb.ime.core.locale.LocaleUtils
+import dev.bbkb.ime.core.gesture.arbiter.VkbGestureAssignments
 import dev.bbkb.ime.core.settings.search.settingsSearchAnchor
 import dev.bbkb.ime.core.settings.ui.Category
 import dev.bbkb.ime.core.settings.ui.Custom
@@ -22,7 +23,9 @@ fun TouchScreenKeyboardScreen(
     onNavigateBack: () -> Unit,
     onNavigateToKeyPressFeedback: () -> Unit = {},
     onNavigateToSlideboard: () -> Unit = {},
+    onNavigateToVkbGestures: () -> Unit = {},
 ) {
+
     // Chinese locale disables swipe typing (NuanceSDK limitation)
     val isChineseLocale = remember { LocaleUtils.isCurrentSubtypeChinese() }
 
@@ -60,18 +63,18 @@ fun TouchScreenKeyboardScreen(
         ),
         Custom(visible = { isChineseLocale }) { ChineseLocaleSwipeWarning() },
         Toggle(
-            store = boolPref("swipe_gesture_vkb", R.bool.config_vkb_swipe_gestures_enabled_by_build_config),
+            store = boolPref(VkbGestureAssignments.KEY_ENABLED, R.bool.config_vkb_swipe_gestures_enabled_by_build_config),
             title = R.string.settings_vkb_swipe_gestures_title,
             icon = drawableIcon(R.drawable.ic_settings_gesture_ckb),
-            summary = RowSummary.Res(R.string.settings_vkb_swipe_gestures_summary),
+            summary = RowSummary.Res(R.string.settings_vkb_swipe_gestures_switch_summary),
             modifier = Modifier.settingsSearchAnchor("swipe_gesture_vkb"),
         ),
-        Toggle(
-            store = boolPref("swipe_down_vkb", true),
-            title = R.string.settings_vkb_swipe_down_dismiss_title,
-            icon = drawableIcon(R.drawable.ic_settings_swipe_down_dismiss),
-            summary = RowSummary.Res(R.string.settings_vkb_swipe_down_dismiss_summary),
-            modifier = Modifier.settingsSearchAnchor("swipe_down_vkb"),
+        Nav(
+            title = R.string.vkb_gestures_configure_title,
+            icon = drawableIcon(R.drawable.ic_settings_gesture_ckb_configure),
+            summary = R.string.ckb_gestures_configure_summary,
+            // Enabled while gestures are off so assignments can be made first.
+            onClick = { onNavigateToVkbGestures() },
         ),
 
         // The emoji board opens filtered by the composing word. The physical keyboard has its own

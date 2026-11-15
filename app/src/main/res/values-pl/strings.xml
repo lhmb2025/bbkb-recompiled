@@ -316,10 +316,10 @@
     <string name="settings_vkb_slideboard_swap_summary_default">Szybkie frazy po lewej, klawiatura numeryczna po prawej</string>
     <string name="settings_vkb_slideboard_swap_summary_swapped">Klawiatura numeryczna po lewej, szybkie frazy po prawej</string>
     <string name="settings_vkb_slideboard_swap_title">Zamień strony Slideboardu</string>
-    <string name="settings_vkb_swipe_down_dismiss_summary">Przesuń palcem w dół po klawiaturze, aby ją ukryć</string>
-    <string name="settings_vkb_swipe_down_dismiss_title">Przesunięcie w dół ukrywa klawiaturę</string>
-    <string name="settings_vkb_swipe_gestures_summary">Przesunięcie w lewo usuwa słowo, a w dół pokazuje symbole</string>
     <string name="settings_vkb_swipe_gestures_title">Gesty przesuwania</string>
+    <string name="settings_vkb_swipe_gestures_switch_summary">Przesunięcia w lewo, w prawo i w dół na klawiaturze</string>
+    <string name="vkb_gestures_configure_title">Skonfiguruj gesty przesuwania</string>
+    <string name="vkb_gestures_reserved_note">Przesunięcie w górę wybiera słowo nad klawiszem</string>
     <string name="settings_vkb_type_by_swiping_summary">Przesuń palcem po klawiszach, aby wpisać słowo</string>
     <string name="settings_vkb_type_by_swiping_title">Wpisuj, przesuwając palcem</string>
     <string name="vkb_control_key_summary">Przytrzymaj ?123, aby włączyć tryb Ctrl</string>

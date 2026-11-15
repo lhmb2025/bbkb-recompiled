@@ -316,10 +316,10 @@
     <string name="settings_vkb_slideboard_swap_summary_default">Frasa pantas di kiri, pad nombor di kanan</string>
     <string name="settings_vkb_slideboard_swap_summary_swapped">Pad nombor di kiri, frasa pantas di kanan</string>
     <string name="settings_vkb_slideboard_swap_title">Tukar lokasi Slideboard</string>
-    <string name="settings_vkb_swipe_down_dismiss_summary">Leret ke bawah pada papan kekunci untuk menyembunyikannya</string>
-    <string name="settings_vkb_swipe_down_dismiss_title">Leret ke bawah untuk menutup</string>
-    <string name="settings_vkb_swipe_gestures_summary">Leret ke kiri untuk memadam perkataan dan leret ke bawah untuk menunjukkan simbol</string>
     <string name="settings_vkb_swipe_gestures_title">Gerak isyarat leret</string>
+    <string name="settings_vkb_swipe_gestures_switch_summary">Leret ke kiri, kanan dan bawah pada papan kekunci</string>
+    <string name="vkb_gestures_configure_title">Konfigurasikan gerak isyarat leret</string>
+    <string name="vkb_gestures_reserved_note">Leret ke atas memilih perkataan di atas kekunci</string>
     <string name="settings_vkb_type_by_swiping_summary">Leret merentas kekunci untuk menaip perkataan</string>
     <string name="settings_vkb_type_by_swiping_title">Menaip dengan meleret</string>
     <string name="vkb_control_key_summary">Tekan dan tahan ?123 untuk mendayakan mod Ctrl</string>

@@ -376,25 +376,15 @@ class CkbGestureBridge(private val ime: BlackBerryIME) {
     /** [trace] gives the position (suggestion slot, delete sweep). */
     private fun executeGestureAction(action: GestureAction, trace: GestureTrace) {
         if (InputPathDebug.perGesture()) Logger.info(TAG, "execute ${action.key}")
-        when (action) {
-            GestureAction.NONE -> {}
-            GestureAction.COMMIT_SUGGESTION -> commitSuggestionAt(trace.start.x)
+        if (action == GestureAction.COMMIT_SUGGESTION) {
+            commitSuggestionAt(trace.start.x)
+            return
+        }
+        ime.gestureActionRunner.run(action, fromKeypad = true) {
             // Not deleteSurroundingText: the editor deletes around a composing region, not it.
             // A firmware key has no trace, so it gets a fixed right-to-left sweep.
-            GestureAction.DELETE_WORD ->
-                if (trace.isDegenerate) ime.onCkbSwipeDelete(0.75f, 0.25f)
-                else ime.onCkbSwipeDelete(trace.start.x, trace.end.x)
-            GestureAction.ENTER_CURSOR_MODE -> ime.toggleCursorMode()
-            GestureAction.NEXT_LANGUAGE -> ime.updateSuggestionsFromSubtype(InputSource.SOFTWARE)
-            GestureAction.CYCLE_SYMBOLS -> {
-                // Leaving the Alt page clears Alt state only; Shift and held keys stay.
-                ime.getPhysicalKeyboardStateTracker()
-                    .resetModifiers(dev.bbkb.ime.core.keyevent.ModifierResetReason.ALT_PAGE_LEFT)
-                ime.getKeyboardSwitcher().onSymbolShiftToggle(ime.getCurrentInputType(), ime.getCurrentImeOptions(), true, true)
-            }
-            GestureAction.DISMISS_KEYBOARD -> ime.dismissKeyboard()
-            GestureAction.EMOJI, GestureAction.UNDO ->
-                Logger.warn(TAG, "action ${action.key} not yet implemented")
+            if (trace.isDegenerate) ime.onCkbSwipeDelete(0.75f, 0.25f)
+            else ime.onCkbSwipeDelete(trace.start.x, trace.end.x)
         }
     }
 

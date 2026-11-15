@@ -316,10 +316,10 @@
     <string name="settings_vkb_slideboard_swap_summary_default">Hızlı ifadeler solda, numara tuşları sağda</string>
     <string name="settings_vkb_slideboard_swap_summary_swapped">Numara tuşları solda, hızlı ifadeler sağda</string>
     <string name="settings_vkb_slideboard_swap_title">Slideboard konumlarını değiştir</string>
-    <string name="settings_vkb_swipe_down_dismiss_summary">Gizlemek için klavyede aşağı kaydır</string>
-    <string name="settings_vkb_swipe_down_dismiss_title">Aşağı kaydırarak kapat</string>
-    <string name="settings_vkb_swipe_gestures_summary">Kelime silmek için sola, sembolleri göstermek için aşağı kaydır</string>
     <string name="settings_vkb_swipe_gestures_title">Kaydırma hareketleri</string>
+    <string name="settings_vkb_swipe_gestures_switch_summary">Klavyede sola, sağa ve aşağı kaydırma</string>
+    <string name="vkb_gestures_configure_title">Kaydırma hareketlerini yapılandır</string>
+    <string name="vkb_gestures_reserved_note">Yukarı kaydırma tuşun üstündeki kelimeyi seçer</string>
     <string name="settings_vkb_type_by_swiping_summary">Kelime yazmak için tuşların üzerinde kaydır</string>
     <string name="settings_vkb_type_by_swiping_title">Kaydırarak yazma</string>
     <string name="vkb_control_key_summary">Ctrl modunu etkinleştirmek için ?123 tuşunu basılı tutun</string>

@@ -316,10 +316,10 @@
     <string name="settings_vkb_slideboard_swap_summary_default">இடதுபுறம் விரைவு சொற்றொடர்கள், வலதுபுறம் எண் பேடு</string>
     <string name="settings_vkb_slideboard_swap_summary_swapped">இடதுபுறம் எண் பேடு, வலதுபுறம் விரைவு சொற்றொடர்கள்</string>
     <string name="settings_vkb_slideboard_swap_title">Slideboard இடங்களை இடமாற்று</string>
-    <string name="settings_vkb_swipe_down_dismiss_summary">விசைப்பலகையை மறைக்க அதில் கீழ்நோக்கி ஸ்வைப் செய்யவும்</string>
-    <string name="settings_vkb_swipe_down_dismiss_title">மறைக்க கீழ்நோக்கி ஸ்வைப்</string>
-    <string name="settings_vkb_swipe_gestures_summary">சொல்லை நீக்க இடப்புறம் ஸ்வைப் செய்யவும், குறியீடுகளைக் காட்ட கீழ்நோக்கி ஸ்வைப் செய்யவும்</string>
     <string name="settings_vkb_swipe_gestures_title">ஸ்வைப் சைகைகள்</string>
+    <string name="settings_vkb_swipe_gestures_switch_summary">விசைப்பலகையில் இடப்புறம், வலப்புறம், கீழ்நோக்கி ஸ்வைப்கள்</string>
+    <string name="vkb_gestures_configure_title">ஸ்வைப் சைகைகளை அமை</string>
+    <string name="vkb_gestures_reserved_note">மேல்நோக்கி ஸ்வைப் செய்தால் விசைக்கு மேலுள்ள சொல் தேர்ந்தெடுக்கப்படும்</string>
     <string name="settings_vkb_type_by_swiping_summary">ஒரு சொல்லைத் தட்டச்சு செய்ய விசைகளின் மீது விரலை நகர்த்தவும்</string>
     <string name="settings_vkb_type_by_swiping_title">ஸ்வைப் செய்து தட்டச்சு செய்</string>
     <string name="vkb_control_key_summary">Ctrl பயன்முறையை இயக்க ?123 ஐ அழுத்திப் பிடிக்கவும்</string>

@@ -316,10 +316,10 @@
     <string name="settings_vkb_slideboard_swap_summary_default">ಎಡಕ್ಕೆ ತ್ವರಿತ ನುಡಿಗಟ್ಟುಗಳು, ಬಲಕ್ಕೆ ಸಂಖ್ಯಾ ಪ್ಯಾಡ್</string>
     <string name="settings_vkb_slideboard_swap_summary_swapped">ಎಡಕ್ಕೆ ಸಂಖ್ಯಾ ಪ್ಯಾಡ್, ಬಲಕ್ಕೆ ತ್ವರಿತ ನುಡಿಗಟ್ಟುಗಳು</string>
     <string name="settings_vkb_slideboard_swap_title">Slideboard ಸ್ಥಳಗಳನ್ನು ಅದಲುಬದಲು ಮಾಡಿ</string>
-    <string name="settings_vkb_swipe_down_dismiss_summary">ಕೀಬೋರ್ಡ್ ಮರೆಮಾಡಲು ಅದರ ಮೇಲೆ ಕೆಳಕ್ಕೆ ಸ್ವೈಪ್ ಮಾಡಿ</string>
-    <string name="settings_vkb_swipe_down_dismiss_title">ಮುಚ್ಚಲು ಕೆಳಕ್ಕೆ ಸ್ವೈಪ್</string>
-    <string name="settings_vkb_swipe_gestures_summary">ಪದವನ್ನು ಅಳಿಸಲು ಎಡಕ್ಕೆ ಸ್ವೈಪ್ ಮಾಡಿ ಮತ್ತು ಚಿಹ್ನೆಗಳನ್ನು ತೋರಿಸಲು ಕೆಳಕ್ಕೆ ಸ್ವೈಪ್ ಮಾಡಿ</string>
     <string name="settings_vkb_swipe_gestures_title">ಸ್ವೈಪ್ ಗೆಸ್ಚರ್‌ಗಳು</string>
+    <string name="settings_vkb_swipe_gestures_switch_summary">ಕೀಬೋರ್ಡ್‌ನಲ್ಲಿ ಎಡಕ್ಕೆ, ಬಲಕ್ಕೆ ಮತ್ತು ಕೆಳಕ್ಕೆ ಸ್ವೈಪ್</string>
+    <string name="vkb_gestures_configure_title">ಸ್ವೈಪ್ ಗೆಸ್ಚರ್‌ಗಳನ್ನು ಕಾನ್ಫಿಗರ್ ಮಾಡಿ</string>
+    <string name="vkb_gestures_reserved_note">ಮೇಲಕ್ಕೆ ಸ್ವೈಪ್ ಮಾಡಿದರೆ ಕೀಲಿಯ ಮೇಲಿನ ಪದ ಆಯ್ಕೆಯಾಗುತ್ತದೆ</string>
     <string name="settings_vkb_type_by_swiping_summary">ಪದವನ್ನು ಟೈಪ್ ಮಾಡಲು ಕೀಗಳ ಮೇಲೆ ಬೆರಳು ಜಾರಿಸಿ</string>
     <string name="settings_vkb_type_by_swiping_title">ಸ್ವೈಪ್ ಮಾಡಿ ಟೈಪ್ ಮಾಡಿ</string>
     <string name="vkb_control_key_summary">Ctrl ಮೋಡ್ ಸಕ್ರಿಯಗೊಳಿಸಲು ?123 ಒತ್ತಿ ಹಿಡಿಯಿರಿ</string>

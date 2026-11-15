@@ -316,10 +316,10 @@
     <string name="settings_vkb_slideboard_swap_summary_default">Greitosios frazės kairėje, skaičių klaviatūra dešinėje</string>
     <string name="settings_vkb_slideboard_swap_summary_swapped">Skaičių klaviatūra kairėje, greitosios frazės dešinėje</string>
     <string name="settings_vkb_slideboard_swap_title">Sukeisti Slideboard vietas</string>
-    <string name="settings_vkb_swipe_down_dismiss_summary">Perbraukite klaviatūra žemyn, kad ją paslėptumėte</string>
-    <string name="settings_vkb_swipe_down_dismiss_title">Perbraukti žemyn, kad būtų paslėpta</string>
-    <string name="settings_vkb_swipe_gestures_summary">Perbraukite kairėn, kad ištrintumėte žodį, ir žemyn, kad būtų rodomi simboliai</string>
     <string name="settings_vkb_swipe_gestures_title">Perbraukimo gestai</string>
+    <string name="settings_vkb_swipe_gestures_switch_summary">Perbraukimai kairėn, dešinėn ir žemyn klaviatūroje</string>
+    <string name="vkb_gestures_configure_title">Konfigūruoti perbraukimo gestus</string>
+    <string name="vkb_gestures_reserved_note">Perbraukus aukštyn pasirenkamas žodis virš klavišo</string>
     <string name="settings_vkb_type_by_swiping_summary">Braukite per klavišus, kad parašytumėte žodį</string>
     <string name="settings_vkb_type_by_swiping_title">Rašymas braukiant</string>
     <string name="vkb_control_key_summary">Palaikykite ?123, kad įjungtumėte Ctrl režimą</string>

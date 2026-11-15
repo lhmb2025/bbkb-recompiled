@@ -316,10 +316,10 @@
     <string name="settings_vkb_slideboard_swap_summary_default">Snabbfraser till vänster, siffersats till höger</string>
     <string name="settings_vkb_slideboard_swap_summary_swapped">Siffersats till vänster, snabbfraser till höger</string>
     <string name="settings_vkb_slideboard_swap_title">Byt plats på Slideboard-sidorna</string>
-    <string name="settings_vkb_swipe_down_dismiss_summary">Svep nedåt på tangentbordet för att dölja det</string>
-    <string name="settings_vkb_swipe_down_dismiss_title">Svep nedåt för att dölja</string>
-    <string name="settings_vkb_swipe_gestures_summary">Svep åt vänster för att radera ett ord och nedåt för att visa symboler</string>
     <string name="settings_vkb_swipe_gestures_title">Svepgester</string>
+    <string name="settings_vkb_swipe_gestures_switch_summary">Svep åt vänster, åt höger och nedåt på tangentbordet</string>
+    <string name="vkb_gestures_configure_title">Konfigurera svepgester</string>
+    <string name="vkb_gestures_reserved_note">Svep uppåt väljer ordet ovanför tangenten</string>
     <string name="settings_vkb_type_by_swiping_summary">Dra över tangenterna för att skriva ett ord</string>
     <string name="settings_vkb_type_by_swiping_title">Dra för att skriva</string>
     <string name="vkb_control_key_summary">Håll ?123 nedtryckt för att aktivera Ctrl-läge</string>

@@ -316,10 +316,10 @@
     <string name="settings_vkb_slideboard_swap_summary_default">Ātrās frāzes pa kreisi, ciparu panelis pa labi</string>
     <string name="settings_vkb_slideboard_swap_summary_swapped">Ciparu panelis pa kreisi, ātrās frāzes pa labi</string>
     <string name="settings_vkb_slideboard_swap_title">Samainīt Slideboard vietas</string>
-    <string name="settings_vkb_swipe_down_dismiss_summary">Velciet pa tastatūru lejup, lai to paslēptu</string>
-    <string name="settings_vkb_swipe_down_dismiss_title">Vilkt lejup, lai paslēptu</string>
-    <string name="settings_vkb_swipe_gestures_summary">Velciet pa kreisi, lai dzēstu vārdu, un lejup, lai rādītu simbolus</string>
     <string name="settings_vkb_swipe_gestures_title">Vilkšanas žesti</string>
+    <string name="settings_vkb_swipe_gestures_switch_summary">Vilkšana pa kreisi, pa labi un lejup uz tastatūras</string>
+    <string name="vkb_gestures_configure_title">Konfigurēt vilkšanas žestus</string>
+    <string name="vkb_gestures_reserved_note">Vilkšana augšup izvēlas vārdu virs taustiņa</string>
     <string name="settings_vkb_type_by_swiping_summary">Velciet pa taustiņiem, lai uzrakstītu vārdu</string>
     <string name="settings_vkb_type_by_swiping_title">Rakstīšana velkot</string>
     <string name="vkb_control_key_summary">Turiet nospiestu ?123, lai ieslēgtu Ctrl režīmu</string>

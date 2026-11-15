@@ -316,10 +316,10 @@
     <string name="settings_vkb_slideboard_swap_summary_default">Брзи фрази лево, нумеричка тастатура десно</string>
     <string name="settings_vkb_slideboard_swap_summary_swapped">Нумеричка тастатура лево, брзи фрази десно</string>
     <string name="settings_vkb_slideboard_swap_title">Замена на местата на Slideboard</string>
-    <string name="settings_vkb_swipe_down_dismiss_summary">Повлечете надолу по тастатурата за да ја скриете</string>
-    <string name="settings_vkb_swipe_down_dismiss_title">Повлекување надолу за криење</string>
-    <string name="settings_vkb_swipe_gestures_summary">Повлекување налево за бришење збор и повлекување надолу за прикажување симболи</string>
     <string name="settings_vkb_swipe_gestures_title">Гестови со повлекување</string>
+    <string name="settings_vkb_swipe_gestures_switch_summary">Повлекувања налево, надесно и надолу на тастатурата</string>
+    <string name="vkb_gestures_configure_title">Конфигурирај гестови со повлекување</string>
+    <string name="vkb_gestures_reserved_note">Повлекувањето нагоре го избира зборот над копчето</string>
     <string name="settings_vkb_type_by_swiping_summary">Лизнете преку копчињата за да напишете збор</string>
     <string name="settings_vkb_type_by_swiping_title">Пишување со повлекување</string>
     <string name="vkb_control_key_summary">Задржете ?123 за да вклучите режим Ctrl</string>

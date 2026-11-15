@@ -316,10 +316,10 @@
     <string name="settings_vkb_slideboard_swap_summary_default">ఎడమవైపు త్వరిత పదబంధాలు, కుడివైపు నంబర్ ప్యాడ్</string>
     <string name="settings_vkb_slideboard_swap_summary_swapped">ఎడమవైపు నంబర్ ప్యాడ్, కుడివైపు త్వరిత పదబంధాలు</string>
     <string name="settings_vkb_slideboard_swap_title">Slideboard స్థానాలను మార్చు</string>
-    <string name="settings_vkb_swipe_down_dismiss_summary">కీబోర్డ్‌ను దాచడానికి దానిపై కిందికి స్వైప్ చేయండి</string>
-    <string name="settings_vkb_swipe_down_dismiss_title">దాచడానికి కిందికి స్వైప్</string>
-    <string name="settings_vkb_swipe_gestures_summary">పదాన్ని తొలగించడానికి ఎడమవైపు స్వైప్ చేయండి, చిహ్నాలను చూపడానికి కిందికి స్వైప్ చేయండి</string>
     <string name="settings_vkb_swipe_gestures_title">స్వైప్ సంజ్ఞలు</string>
+    <string name="settings_vkb_swipe_gestures_switch_summary">కీబోర్డ్‌పై ఎడమవైపు, కుడివైపు మరియు కిందికి స్వైప్‌లు</string>
+    <string name="vkb_gestures_configure_title">స్వైప్ సంజ్ఞలను కాన్ఫిగర్ చేయి</string>
+    <string name="vkb_gestures_reserved_note">పైకి స్వైప్ చేస్తే కీ పైన ఉన్న పదం ఎంచుకోబడుతుంది</string>
     <string name="settings_vkb_type_by_swiping_summary">పదాన్ని టైప్ చేయడానికి కీలపై వేలిని జారించండి</string>
     <string name="settings_vkb_type_by_swiping_title">స్వైప్ చేస్తూ టైప్ చేయి</string>
     <string name="vkb_control_key_summary">Ctrl మోడ్ ప్రారంభించడానికి ?123 నొక్కి పట్టుకోండి</string>

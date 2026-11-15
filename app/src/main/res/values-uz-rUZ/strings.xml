@@ -316,10 +316,10 @@
     <string name="settings_vkb_slideboard_swap_summary_default">Tezkor iboralar chapda, raqam paneli o‘ngda</string>
     <string name="settings_vkb_slideboard_swap_summary_swapped">Raqam paneli chapda, tezkor iboralar o‘ngda</string>
     <string name="settings_vkb_slideboard_swap_title">Slideboard tomonlarini almashtirish</string>
-    <string name="settings_vkb_swipe_down_dismiss_summary">Yashirish uchun klaviaturada pastga suring</string>
-    <string name="settings_vkb_swipe_down_dismiss_title">Yopish uchun pastga surish</string>
-    <string name="settings_vkb_swipe_gestures_summary">So‘zni o‘chirish uchun chapga, belgilarni ko‘rsatish uchun pastga suring</string>
     <string name="settings_vkb_swipe_gestures_title">Surish ishoralari</string>
+    <string name="settings_vkb_swipe_gestures_switch_summary">Klaviaturada chapga, o‘ngga va pastga surish</string>
+    <string name="vkb_gestures_configure_title">Surish ishoralarini sozlash</string>
+    <string name="vkb_gestures_reserved_note">Yuqoriga surish tugma ustidagi so‘zni tanlaydi</string>
     <string name="settings_vkb_type_by_swiping_summary">Tugmalar ustidan surib so‘z yozish</string>
     <string name="settings_vkb_type_by_swiping_title">Surib yozish</string>
     <string name="vkb_control_key_summary">Ctrl rejimini yoqish uchun ?123 ni bosib turing</string>

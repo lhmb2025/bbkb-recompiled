@@ -356,10 +356,10 @@
     <string name="settings_vkb_slideboard_swap_summary_default">Quick phrases on left, number pad on right</string>
     <string name="settings_vkb_slideboard_swap_summary_swapped">Number pad on left, quick phrases on right</string>
     <string name="settings_vkb_slideboard_swap_title">Swap slideboard locations</string>
-    <string name="settings_vkb_swipe_down_dismiss_summary">Swipe down on the keyboard to hide it</string>
-    <string name="settings_vkb_swipe_down_dismiss_title">Swipe down to dismiss</string>
-    <string name="settings_vkb_swipe_gestures_summary">Swipe left to delete a word and swipe down to show symbols</string>
     <string name="settings_vkb_swipe_gestures_title">Swipe gestures</string>
+    <string name="settings_vkb_swipe_gestures_switch_summary">Swipes left, right, and down on the keyboard</string>
+    <string name="vkb_gestures_configure_title">Configure swipe gestures</string>
+    <string name="vkb_gestures_reserved_note">Swiping up picks the word above the key</string>
     <string name="settings_vkb_type_by_swiping_summary">Slide across the keys to type a word</string>
     <string name="settings_vkb_type_by_swiping_title">Type by swiping</string>
     <string name="vkb_control_key_summary">Press and hold ?123 to enable Ctrl mode</string>

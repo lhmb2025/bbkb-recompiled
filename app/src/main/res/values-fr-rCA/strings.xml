@@ -316,10 +316,10 @@
     <string name="settings_vkb_slideboard_swap_summary_default">Phrases rapides à gauche, pavé numérique à droite</string>
     <string name="settings_vkb_slideboard_swap_summary_swapped">Pavé numérique à gauche, phrases rapides à droite</string>
     <string name="settings_vkb_slideboard_swap_title">Inverser les positions du Slideboard</string>
-    <string name="settings_vkb_swipe_down_dismiss_summary">Glissez vers le bas sur le clavier pour le masquer</string>
-    <string name="settings_vkb_swipe_down_dismiss_title">Glisser vers le bas pour masquer</string>
-    <string name="settings_vkb_swipe_gestures_summary">Glissez vers la gauche pour supprimer un mot et vers le bas pour afficher les symboles</string>
     <string name="settings_vkb_swipe_gestures_title">Gestes de glissement</string>
+    <string name="settings_vkb_swipe_gestures_switch_summary">Glissements vers la gauche, la droite et le bas sur le clavier</string>
+    <string name="vkb_gestures_configure_title">Configurer les gestes de glissement</string>
+    <string name="vkb_gestures_reserved_note">Le glissement vers le haut choisit le mot au-dessus de la touche</string>
     <string name="settings_vkb_type_by_swiping_summary">Faites glisser le doigt sur les touches pour taper un mot</string>
     <string name="settings_vkb_type_by_swiping_title">Taper en glissant</string>
     <string name="vkb_control_key_summary">Maintenez ?123 enfoncée pour activer le mode Ctrl</string>

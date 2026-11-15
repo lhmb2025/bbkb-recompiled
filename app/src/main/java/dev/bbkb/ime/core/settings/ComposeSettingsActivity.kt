@@ -29,6 +29,7 @@ import dev.bbkb.ime.core.settings.screens.CustomizationScreen
 import dev.bbkb.ime.core.settings.screens.DebugSettingsScreen
 import dev.bbkb.ime.core.settings.screens.GestureLabScreen
 import dev.bbkb.ime.core.settings.screens.CkbGesturesScreen
+import dev.bbkb.ime.core.settings.screens.VkbGesturesScreen
 import dev.bbkb.ime.core.settings.screens.DeviceCompatibilityScreen
 import dev.bbkb.ime.core.settings.screens.DictionariesLearningScreen
 import dev.bbkb.ime.core.settings.screens.KeyPressFeedbackScreen
@@ -202,7 +203,12 @@ fun SettingsNavHost(
                 onNavigateBack = back,
                 onNavigateToKeyPressFeedback = go(SettingsRoute.TouchFeedback),
                 onNavigateToSlideboard = go(SettingsRoute.SlideboardSettings),
+                onNavigateToVkbGestures = go(SettingsRoute.VkbGestures),
             )
+        }
+
+        composable(SettingsRoute.VkbGestures.route) {
+            VkbGesturesScreen(onNavigateBack = back)
         }
 
         composable(SettingsRoute.AuxiliaryInput.route) {

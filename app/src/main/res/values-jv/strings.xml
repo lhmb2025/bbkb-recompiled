@@ -316,10 +316,10 @@
     <string name="settings_vkb_slideboard_swap_summary_default">Frasa cepet ing kiwa, papan angka ing tengen</string>
     <string name="settings_vkb_slideboard_swap_summary_swapped">Papan angka ing kiwa, frasa cepet ing tengen</string>
     <string name="settings_vkb_slideboard_swap_title">Ijolake posisi Slideboard</string>
-    <string name="settings_vkb_swipe_down_dismiss_summary">Geser mudhun ing papan tombol kanggo ndhelikake</string>
-    <string name="settings_vkb_swipe_down_dismiss_title">Geser mudhun kanggo nutup</string>
-    <string name="settings_vkb_swipe_gestures_summary">Geser ngiwa kanggo mbusak tembung lan geser mudhun kanggo nuduhake simbol</string>
     <string name="settings_vkb_swipe_gestures_title">Gerakan geser</string>
+    <string name="settings_vkb_swipe_gestures_switch_summary">Geser ngiwa, nengen lan mudhun ing papan tombol</string>
+    <string name="vkb_gestures_configure_title">Atur gerakan geser</string>
+    <string name="vkb_gestures_reserved_note">Geser munggah milih tembung ing sadhuwure tombol</string>
     <string name="settings_vkb_type_by_swiping_summary">Geser ing tombol-tombol kanggo ngetik tembung</string>
     <string name="settings_vkb_type_by_swiping_title">Ngetik kanthi geser</string>
     <string name="vkb_control_key_summary">Pencet suwe ?123 kanggo ngaktifake mode Ctrl</string>

@@ -316,10 +316,10 @@
     <string name="settings_vkb_slideboard_swap_summary_default">Brze fraze lijevo, numerička tastatura desno</string>
     <string name="settings_vkb_slideboard_swap_summary_swapped">Numerička tastatura lijevo, brze fraze desno</string>
     <string name="settings_vkb_slideboard_swap_title">Zamijeni strane Slideboarda</string>
-    <string name="settings_vkb_swipe_down_dismiss_summary">Prevucite prema dolje po tastaturi da je sakrijete</string>
-    <string name="settings_vkb_swipe_down_dismiss_title">Prevlačenje prema dolje zatvara tastaturu</string>
-    <string name="settings_vkb_swipe_gestures_summary">Prevucite ulijevo da obrišete riječ, a prema dolje da prikažete simbole</string>
     <string name="settings_vkb_swipe_gestures_title">Geste prevlačenja</string>
+    <string name="settings_vkb_swipe_gestures_switch_summary">Prevlačenja ulijevo, udesno i prema dolje na tastaturi</string>
+    <string name="vkb_gestures_configure_title">Konfiguriraj geste prevlačenja</string>
+    <string name="vkb_gestures_reserved_note">Prevlačenje prema gore bira riječ iznad tipke</string>
     <string name="settings_vkb_type_by_swiping_summary">Prevucite preko tipki da upišete riječ</string>
     <string name="settings_vkb_type_by_swiping_title">Pisanje prevlačenjem</string>
     <string name="vkb_control_key_summary">Pritisnite i držite ?123 da uključite Ctrl način</string>

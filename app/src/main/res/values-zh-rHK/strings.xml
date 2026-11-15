@@ -316,10 +316,10 @@
     <string name="settings_vkb_slideboard_swap_summary_default">快速短語在左，數字鍵盤在右</string>
     <string name="settings_vkb_slideboard_swap_summary_swapped">數字鍵盤在左，快速短語在右</string>
     <string name="settings_vkb_slideboard_swap_title">對調 Slideboard 位置</string>
-    <string name="settings_vkb_swipe_down_dismiss_summary">在鍵盤上向下滑動即可隱藏鍵盤</string>
-    <string name="settings_vkb_swipe_down_dismiss_title">向下滑動關閉鍵盤</string>
-    <string name="settings_vkb_swipe_gestures_summary">向左滑動可刪除字詞，向下滑動可顯示符號</string>
     <string name="settings_vkb_swipe_gestures_title">滑動手勢</string>
+    <string name="settings_vkb_swipe_gestures_switch_summary">在鍵盤上向左、向右及向下滑動</string>
+    <string name="vkb_gestures_configure_title">設定滑動手勢</string>
+    <string name="vkb_gestures_reserved_note">向上滑動可選取按鍵上方的字詞</string>
     <string name="settings_vkb_type_by_swiping_summary">在按鍵上滑過即可輸入字詞</string>
     <string name="settings_vkb_type_by_swiping_title">滑動輸入</string>
     <string name="vkb_control_key_summary">長按 ?123 以啟用 Ctrl 模式</string>

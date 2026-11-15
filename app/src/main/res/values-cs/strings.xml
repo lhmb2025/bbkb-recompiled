@@ -316,10 +316,10 @@
     <string name="settings_vkb_slideboard_swap_summary_default">Rychlé fráze vlevo, číselník vpravo</string>
     <string name="settings_vkb_slideboard_swap_summary_swapped">Číselník vlevo, rychlé fráze vpravo</string>
     <string name="settings_vkb_slideboard_swap_title">Prohodit strany Slideboardu</string>
-    <string name="settings_vkb_swipe_down_dismiss_summary">Přejetím dolů po klávesnici ji skryjete</string>
-    <string name="settings_vkb_swipe_down_dismiss_title">Skrýt přejetím dolů</string>
-    <string name="settings_vkb_swipe_gestures_summary">Přejetí doleva smaže slovo, přejetí dolů zobrazí symboly</string>
     <string name="settings_vkb_swipe_gestures_title">Gesta přejetím</string>
+    <string name="settings_vkb_swipe_gestures_switch_summary">Přejetí doleva, doprava a dolů na klávesnici</string>
+    <string name="vkb_gestures_configure_title">Nastavit gesta přejetím</string>
+    <string name="vkb_gestures_reserved_note">Přejetí nahoru vybere slovo nad klávesou</string>
     <string name="settings_vkb_type_by_swiping_summary">Přejeďte po klávesách a napište slovo</string>
     <string name="settings_vkb_type_by_swiping_title">Psaní pomocí přejetí prstem</string>
     <string name="vkb_control_key_summary">Podržením ?123 zapnete režim Ctrl</string>

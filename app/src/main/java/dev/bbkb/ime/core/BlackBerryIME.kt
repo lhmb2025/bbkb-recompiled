@@ -135,6 +135,8 @@ import dev.bbkb.ime.core.ime.UIUpdateHandler
 import dev.bbkb.ime.core.ime.ControlModeController
 import dev.bbkb.ime.core.ime.HardwareKeyBridge
 import dev.bbkb.ime.core.ime.CkbGestureBridge
+import dev.bbkb.ime.core.ime.GestureActionRunner
+import dev.bbkb.ime.core.gesture.arbiter.GestureAction
 import dev.bbkb.ime.core.ime.ImeInsets
 import dev.bbkb.ime.core.ime.ThemePrefsListener
 import dev.bbkb.ime.core.ime.InputViewCoordinator
@@ -567,6 +569,7 @@ class BlackBerryIME : InputMethodService(),
         PrefsManager.init(this)
         val prefs = PrefsManager.getPrefs()
         PrefsManager.migrateThemePrefs(prefs)
+        dev.bbkb.ime.core.gesture.arbiter.VkbGestureAssignments.migrate(this)
         KeyboardColorManager.init(
             this,
             KeyboardColorManager.Style.fromPref(
@@ -2239,57 +2242,52 @@ class BlackBerryIME : InputMethodService(),
         return gestureDetector
     }
 
-    /** @param gestureCode the swipe code: -18 delete, -19 down, -17 prediction pick */
-    fun handleSwipeGesture(gestureCode: Int, motionEvent: MotionEvent, endEvent: MotionEvent) {
-        val actionIndex = motionEvent.actionIndex
-        var str = ""
-        var zM5299a = false
-        if (gestureCode == -18) {
-            controlMode.clearControlState()
-            val rawX = motionEvent.rawX
-            val y = motionEvent.getY(actionIndex)
-            val rawX2 = endEvent.rawX
-            if (inputLogic.hasSelectionOrCursor()) {
-                updateSwipeToDelete(rawX, y, rawX2)
-                if (onSwipeDelete()) {
-                    str = "dev.bbkb.ime.SWIPE_DELETE_VKB"
-                    zM5299a = true
-                } else {
-                    Logger.warn("IMEGesture", "Delete gesture at valid position did nothing!")
-                }
+    /** Runs assigned gesture actions for both keyboards. */
+    val gestureActionRunner by lazy(LazyThreadSafetyMode.NONE) { GestureActionRunner(this) }
+
+    /**
+     * An on-screen swipe that [VkbGestureListener] resolved to [action] (a slot of
+     * [dev.bbkb.ime.core.gesture.arbiter.VkbGestureAssignments]).
+     * @return true when the action did something (the swipe is then consumed)
+     */
+    fun handleVkbSwipeAction(action: GestureAction, motionEvent: MotionEvent, endEvent: MotionEvent): Boolean {
+        if (action == GestureAction.NONE) return false
+        controlMode.clearControlState()
+        val done = gestureActionRunner.run(action, fromKeypad = false) {
+            if (!inputLogic.hasSelectionOrCursor()) {
+                false
+            } else {
+                updateSwipeToDelete(motionEvent.rawX, motionEvent.getY(motionEvent.actionIndex), endEvent.rawX)
+                onSwipeDelete().also { if (!it) Logger.warn("IMEGesture", "Delete gesture at valid position did nothing!") }
             }
-        } else if (gestureCode == -19) {
-            val swipeSettings = settingsManager.getSettingsValues()
-            run {
-                if (swipeSettings.isVkbSwipeDownEnabled) {
-                    Logger.info(LOG_TAG, "Swipe-down dismiss: isCkb=false")
-                    controlMode.clearControlState()
-                    dismissKeyboard()
-                    str = "dev.bbkb.ime.SWIPE_DISMISS_VKB"
-                    zM5299a = true
-                } else {
-                    controlMode.clearControlState()
-                    cjkSuggestionGridView?.setVisible(false)
-                    str = "dev.bbkb.ime.SWIPE_SYMBOLS_VKB"
-                    if (zM5299a) {
-                        physicalKeyboardStateTracker.resetModifiers(ModifierResetReason.ALT_PAGE_LEFT)
-                    }
-                    zM5299a = keyboardSwitcher.onSymbolShiftToggle(getCurrentInputType(), getCurrentImeOptions(), true, zM5299a)
-                }
-            }
-        } else if (gestureCode == -17) {
-            controlMode.clearControlState()
-            val flick = flickSuggestionView
-            if (flick != null && flick.isShown) {
-                val x2 = motionEvent.getX(actionIndex)
-                val y3 = motionEvent.getY(actionIndex)
-                Logger.debug(LOG_TAG, "Swipe for prediction selection: starting at x $x2, y $y3")
-                zM5299a = flick.handleFlick(x2, y3, settingsManager.getSettingsValues().inLetterMaxSwipeToWordDistance)
-            }
-            str = "dev.bbkb.ime.SWIPE_PREDICT_VKB"
         }
-        if (zM5299a) AudioAndHapticFeedbackManager.getInstance().performAudioFeedback(gestureCode)
-        if (str.isNotEmpty()) sendPrivateCommand(str, null)
+        if (!done) return false
+        // The editor broadcasts and sounds the on-screen swipes have always used.
+        val command = when (action) {
+            GestureAction.DELETE_WORD -> "dev.bbkb.ime.SWIPE_DELETE_VKB"
+            GestureAction.DISMISS_KEYBOARD -> "dev.bbkb.ime.SWIPE_DISMISS_VKB"
+            GestureAction.CYCLE_SYMBOLS -> "dev.bbkb.ime.SWIPE_SYMBOLS_VKB"
+            else -> ""
+        }
+        AudioAndHapticFeedbackManager.getInstance().performAudioFeedback(if (action == GestureAction.DELETE_WORD) -18 else -19)
+        if (command.isNotEmpty()) sendPrivateCommand(command, null)
+        return true
+    }
+
+    /** Swipe up on the on-screen keyboard: picks the prediction shown above the key under the finger. */
+    fun handlePredictionFlick(motionEvent: MotionEvent) {
+        controlMode.clearControlState()
+        var picked = false
+        val flick = flickSuggestionView
+        if (flick != null && flick.isShown) {
+            val actionIndex = motionEvent.actionIndex
+            val x = motionEvent.getX(actionIndex)
+            val y = motionEvent.getY(actionIndex)
+            Logger.debug(LOG_TAG, "Swipe for prediction selection: starting at x $x, y $y")
+            picked = flick.handleFlick(x, y, settingsManager.getSettingsValues().inLetterMaxSwipeToWordDistance)
+        }
+        if (picked) AudioAndHapticFeedbackManager.getInstance().performAudioFeedback(-17)
+        sendPrivateCommand("dev.bbkb.ime.SWIPE_PREDICT_VKB", null)
     }
 
     fun onSwipeDelete(): Boolean {

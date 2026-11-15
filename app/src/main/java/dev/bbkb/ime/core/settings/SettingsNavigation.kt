@@ -37,6 +37,7 @@ sealed class SettingsRoute(val route: String, val title: String) {
     object GestureLab : SettingsRoute("gesture_lab", "Gesture Lab")
     object ShakeTuning : SettingsRoute("shake_tuning", "Shake gesture tuning")
     object CkbGestures : SettingsRoute("ckb_gestures", "CKB Gestures")
+    object VkbGestures : SettingsRoute("vkb_gestures", "Swipe gestures")
     object AnimationParameters : SettingsRoute("animation_parameters", "Animation Parameters")
     object PersonalLearnedWords : SettingsRoute("personal_learned_words", "Learned words")
     object UserDictionary : SettingsRoute("user_dictionary", "User Dictionary")
@@ -100,6 +101,7 @@ sealed class SettingsRoute(val route: String, val title: String) {
                 GestureLab.route -> GestureLab
                 ShakeTuning.route -> ShakeTuning
                 CkbGestures.route -> CkbGestures
+                VkbGestures.route -> VkbGestures
                 AnimationParameters.route -> AnimationParameters
                 PersonalLearnedWords.route, "learned_words" -> PersonalLearnedWords
                 UserDictionary.route, "personal_dictionary" -> UserDictionary

@@ -812,10 +812,6 @@ public final class SettingsManager implements SharedPreferences.OnSharedPreferen
 
 
 
-    public static boolean isVkbSwipeDownEnabled(SharedPreferences sharedPreferences) {
-        return sharedPreferences.getBoolean("swipe_down_vkb", true);
-    }
-
     public static boolean isEmojiDynamicSearchEnabled(SharedPreferences sharedPreferences) {
         // Falls back to the legacy "pref_emoji_search_mode": only "dynamic" maps to enabled.
         if (sharedPreferences.contains("pref_emoji_dynamic_search")) {

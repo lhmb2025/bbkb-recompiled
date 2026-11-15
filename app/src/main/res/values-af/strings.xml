@@ -316,10 +316,10 @@
     <string name="settings_vkb_slideboard_swap_summary_default">Kitsfrases links, syferblok regs</string>
     <string name="settings_vkb_slideboard_swap_summary_swapped">Syferblok links, kitsfrases regs</string>
     <string name="settings_vkb_slideboard_swap_title">Ruil die Slideboard-kante om</string>
-    <string name="settings_vkb_swipe_down_dismiss_summary">Vee af op die toetsbord om dit te verberg</string>
-    <string name="settings_vkb_swipe_down_dismiss_title">Vee af om te verberg</string>
-    <string name="settings_vkb_swipe_gestures_summary">Vee links om ’n woord te skrap en vee af om simbole te wys</string>
     <string name="settings_vkb_swipe_gestures_title">Veeggebare</string>
+    <string name="settings_vkb_swipe_gestures_switch_summary">Vee links, regs en af op die toetsbord</string>
+    <string name="vkb_gestures_configure_title">Stel veeggebare op</string>
+    <string name="vkb_gestures_reserved_note">Opwaarts vee kies die woord bo die sleutel</string>
     <string name="settings_vkb_type_by_swiping_summary">Gly oor die toetse om ’n woord te tik</string>
     <string name="settings_vkb_type_by_swiping_title">Tik deur te vee</string>
     <string name="vkb_control_key_summary">Druk en hou ?123 om Ctrl-modus te aktiveer</string>

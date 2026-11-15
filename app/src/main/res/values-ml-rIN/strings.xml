@@ -316,10 +316,10 @@
     <string name="settings_vkb_slideboard_swap_summary_default">ഇടത്ത് ദ്രുത വാക്യങ്ങൾ, വലത്ത് നമ്പർ പാഡ്</string>
     <string name="settings_vkb_slideboard_swap_summary_swapped">ഇടത്ത് നമ്പർ പാഡ്, വലത്ത് ദ്രുത വാക്യങ്ങൾ</string>
     <string name="settings_vkb_slideboard_swap_title">Slideboard സ്ഥാനങ്ങൾ പരസ്പരം മാറ്റുക</string>
-    <string name="settings_vkb_swipe_down_dismiss_summary">കീബോർഡ് മറയ്‌ക്കാൻ അതിൽ താഴേക്ക് സ്വൈപ്പ് ചെയ്യുക</string>
-    <string name="settings_vkb_swipe_down_dismiss_title">അടയ്‌ക്കാൻ താഴേക്ക് സ്വൈപ്പ്</string>
-    <string name="settings_vkb_swipe_gestures_summary">വാക്ക് ഇല്ലാതാക്കാൻ ഇടത്തേക്കും ചിഹ്നങ്ങൾ കാണാൻ താഴേക്കും സ്വൈപ്പ് ചെയ്യുക</string>
     <string name="settings_vkb_swipe_gestures_title">സ്വൈപ്പ് ജെസ്ചറുകൾ</string>
+    <string name="settings_vkb_swipe_gestures_switch_summary">കീബോർഡിൽ ഇടത്തേക്കും വലത്തേക്കും താഴേക്കും സ്വൈപ്പ്</string>
+    <string name="vkb_gestures_configure_title">സ്വൈപ്പ് ജെസ്ചറുകൾ കോൺഫിഗർ ചെയ്യുക</string>
+    <string name="vkb_gestures_reserved_note">മുകളിലേക്ക് സ്വൈപ്പ് ചെയ്താൽ കീയുടെ മുകളിലുള്ള വാക്ക് തിരഞ്ഞെടുക്കും</string>
     <string name="settings_vkb_type_by_swiping_summary">ഒരു വാക്ക് ടൈപ്പ് ചെയ്യാൻ കീകൾക്ക് മുകളിലൂടെ വിരൽ നീക്കുക</string>
     <string name="settings_vkb_type_by_swiping_title">സ്വൈപ്പ് ചെയ്ത് ടൈപ്പ് ചെയ്യുക</string>
     <string name="vkb_control_key_summary">Ctrl മോഡ് പ്രവർത്തനക്ഷമമാക്കാൻ ?123 അമർത്തിപ്പിടിക്കുക</string>

@@ -316,10 +316,10 @@
     <string name="settings_vkb_slideboard_swap_summary_default">Cụm từ nhanh ở bên trái, bảng số ở bên phải</string>
     <string name="settings_vkb_slideboard_swap_summary_swapped">Bảng số ở bên trái, cụm từ nhanh ở bên phải</string>
     <string name="settings_vkb_slideboard_swap_title">Hoán đổi vị trí Slideboard</string>
-    <string name="settings_vkb_swipe_down_dismiss_summary">Vuốt xuống trên bàn phím để ẩn bàn phím</string>
-    <string name="settings_vkb_swipe_down_dismiss_title">Vuốt xuống để đóng</string>
-    <string name="settings_vkb_swipe_gestures_summary">Vuốt sang trái để xóa một từ và vuốt xuống để hiển thị biểu tượng</string>
     <string name="settings_vkb_swipe_gestures_title">Cử chỉ vuốt</string>
+    <string name="settings_vkb_swipe_gestures_switch_summary">Vuốt sang trái, sang phải và xuống trên bàn phím</string>
+    <string name="vkb_gestures_configure_title">Thiết lập cử chỉ vuốt</string>
+    <string name="vkb_gestures_reserved_note">Vuốt lên sẽ chọn từ phía trên phím</string>
     <string name="settings_vkb_type_by_swiping_summary">Trượt ngón tay qua các phím để nhập một từ</string>
     <string name="settings_vkb_type_by_swiping_title">Nhập bằng cách vuốt</string>
     <string name="vkb_control_key_summary">Nhấn giữ ?123 để bật chế độ Ctrl</string>

@@ -316,10 +316,10 @@
     <string name="settings_vkb_slideboard_swap_summary_default">बाईं ओर त्वरित वाक्यांश, दाईं ओर नंबर पैड</string>
     <string name="settings_vkb_slideboard_swap_summary_swapped">बाईं ओर नंबर पैड, दाईं ओर त्वरित वाक्यांश</string>
     <string name="settings_vkb_slideboard_swap_title">Slideboard के स्थान बदलें</string>
-    <string name="settings_vkb_swipe_down_dismiss_summary">कीबोर्ड छिपाने के लिए उस पर नीचे स्वाइप करें</string>
-    <string name="settings_vkb_swipe_down_dismiss_title">खारिज करने के लिए नीचे स्वाइप करें</string>
-    <string name="settings_vkb_swipe_gestures_summary">शब्द हटाने के लिए बाएं स्वाइप करें और प्रतीक दिखाने के लिए नीचे स्वाइप करें</string>
     <string name="settings_vkb_swipe_gestures_title">स्वाइप जेस्चर</string>
+    <string name="settings_vkb_swipe_gestures_switch_summary">कीबोर्ड पर बाएं, दाएं और नीचे स्वाइप</string>
+    <string name="vkb_gestures_configure_title">स्वाइप जेस्चर कॉन्फ़िगर करें</string>
+    <string name="vkb_gestures_reserved_note">ऊपर स्वाइप करने पर कुंजी के ऊपर वाला शब्द चुना जाता है</string>
     <string name="settings_vkb_type_by_swiping_summary">कोई शब्द टाइप करने के लिए कुंजियों पर उंगली सरकाएं</string>
     <string name="settings_vkb_type_by_swiping_title">स्वाइप करके टाइप करें</string>
     <string name="vkb_control_key_summary">Ctrl मोड चालू करने के लिए ?123 दबाकर रखें</string>

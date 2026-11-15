@@ -316,10 +316,10 @@
     <string name="settings_vkb_slideboard_swap_summary_default">왼쪽에 빠른 문구, 오른쪽에 숫자 패드</string>
     <string name="settings_vkb_slideboard_swap_summary_swapped">왼쪽에 숫자 패드, 오른쪽에 빠른 문구</string>
     <string name="settings_vkb_slideboard_swap_title">Slideboard 위치 바꾸기</string>
-    <string name="settings_vkb_swipe_down_dismiss_summary">키보드를 아래로 스와이프하여 숨깁니다</string>
-    <string name="settings_vkb_swipe_down_dismiss_title">아래로 스와이프하여 닫기</string>
-    <string name="settings_vkb_swipe_gestures_summary">왼쪽으로 스와이프하여 단어를 삭제하고 아래로 스와이프하여 기호를 표시합니다</string>
     <string name="settings_vkb_swipe_gestures_title">스와이프 제스처</string>
+    <string name="settings_vkb_swipe_gestures_switch_summary">키보드에서 왼쪽, 오른쪽, 아래로 스와이프</string>
+    <string name="vkb_gestures_configure_title">스와이프 제스처 구성</string>
+    <string name="vkb_gestures_reserved_note">위로 스와이프하면 키 위의 단어를 선택합니다</string>
     <string name="settings_vkb_type_by_swiping_summary">키 위로 손가락을 밀어서 단어를 입력합니다</string>
     <string name="settings_vkb_type_by_swiping_title">밀어서 입력</string>
     <string name="vkb_control_key_summary">\?123을 길게 누르면 Ctrl 모드가 켜집니다</string>

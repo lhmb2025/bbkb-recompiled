@@ -162,7 +162,9 @@ object SettingsSearchIndex {
         // Typing & input: On-screen keyboard
         SearchableSetting(R.string.settings_vkb_type_by_swiping_title, "swipe glide type trace", SettingsRoute.OnScreenKeyboard.route, TYPING, "type_by_swiping_vkb"),
         SearchableSetting(R.string.settings_vkb_swipe_gestures_title, "swipe gesture", SettingsRoute.OnScreenKeyboard.route, TYPING, "swipe_gesture_vkb"),
-        SearchableSetting(R.string.settings_vkb_swipe_down_dismiss_title, "swipe down dismiss hide", SettingsRoute.OnScreenKeyboard.route, TYPING, "swipe_down_vkb"),
+        SearchableSetting(R.string.ckb_gesture_slot_swipe_left, "on-screen keyboard swipe gesture left delete word action", SettingsRoute.VkbGestures.route, TYPING, "vkb_gesture_swipe_left"),
+        SearchableSetting(R.string.ckb_gesture_slot_swipe_right, "on-screen keyboard swipe gesture right action", SettingsRoute.VkbGestures.route, TYPING, "vkb_gesture_swipe_right"),
+        SearchableSetting(R.string.ckb_gesture_slot_swipe_down, "on-screen keyboard swipe gesture down dismiss hide symbols action", SettingsRoute.VkbGestures.route, TYPING, "vkb_gesture_swipe_down"),
         SearchableSetting(R.string.vkb_control_key_title, "ctrl control key", SettingsRoute.OnScreenKeyboard.route, TYPING, "vkb_control_mode_enabled"),
         SearchableSetting(R.string.prefs_key_longpress_delay_title, "long press delay hold timeout alternates accents popup", SettingsRoute.OnScreenKeyboard.route, TYPING, "pref_key_longpress_timeout"),
 
@@ -345,6 +347,7 @@ object SettingsSearchIndex {
         SearchableScreen(R.string.settings_vkb_quick_phrases_title, "quick phrases canned slideboard", SettingsRoute.QuickPhrases.route, listOf(TYPING, ON_SCREEN, SLIDEBOARD)),
         SearchableScreen(R.string.settings_touch_feedback_title, "touch key press keypress feedback haptic vibration sound popup", SettingsRoute.TouchFeedback.route, listOf(TYPING, ON_SCREEN)),
         SearchableScreen(PHYSICAL, "physical hardware keypad keys pkb", SettingsRoute.PhysicalKeyboard.route, listOf(TYPING), DeviceRequirement.PHYSICAL_KEYBOARD),
+        SearchableScreen(R.string.vkb_gestures_configure_title, "on-screen keyboard swipe gestures configure assign action", SettingsRoute.VkbGestures.route, listOf(TYPING, ON_SCREEN)),
         SearchableScreen(R.string.ckb_gestures_configure_title, "ckb capacitive keypad gestures flick swipe configure", SettingsRoute.CkbGestures.route, listOf(TYPING, PHYSICAL), DeviceRequirement.TOUCH_KEYPAD),
         SearchableScreen(AUXILIARY, "auxiliary input menu clipboard shake gestures motion", SettingsRoute.AuxiliaryInput.route, listOf(TYPING)),
         SearchableScreen(R.string.settings_customize_menu_title, "unified input menu order reorder customize", SettingsRoute.CustomizeMenu.route, listOf(TYPING, AUXILIARY)),

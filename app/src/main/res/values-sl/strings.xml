@@ -316,10 +316,10 @@
     <string name="settings_vkb_slideboard_swap_summary_default">Hitre fraze levo, številska tipkovnica desno</string>
     <string name="settings_vkb_slideboard_swap_summary_swapped">Številska tipkovnica levo, hitre fraze desno</string>
     <string name="settings_vkb_slideboard_swap_title">Zamenjaj strani Slideboarda</string>
-    <string name="settings_vkb_swipe_down_dismiss_summary">S podrsanjem navzdol po tipkovnici jo skrijete</string>
-    <string name="settings_vkb_swipe_down_dismiss_title">Skrij s podrsanjem navzdol</string>
-    <string name="settings_vkb_swipe_gestures_summary">S podrsanjem v levo izbrišete besedo, s podrsanjem navzdol prikažete simbole</string>
     <string name="settings_vkb_swipe_gestures_title">Poteze s podrsanjem</string>
+    <string name="settings_vkb_swipe_gestures_switch_summary">Podrsanje v levo, v desno in navzdol na tipkovnici</string>
+    <string name="vkb_gestures_configure_title">Nastavitev potez s podrsanjem</string>
+    <string name="vkb_gestures_reserved_note">Podrsanje navzgor izbere besedo nad tipko</string>
     <string name="settings_vkb_type_by_swiping_summary">Podrsajte po tipkah, da natipkate besedo</string>
     <string name="settings_vkb_type_by_swiping_title">Tipkanje s podrsanjem</string>
     <string name="vkb_control_key_summary">Pridržite ?123, da vklopite način Ctrl</string>

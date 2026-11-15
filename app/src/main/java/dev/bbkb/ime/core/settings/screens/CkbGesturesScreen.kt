@@ -22,10 +22,8 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
 import dev.bbkb.ime.R
 import dev.bbkb.ime.core.gesture.arbiter.CkbKeyGridCapture
-import dev.bbkb.ime.core.gesture.arbiter.GestureAction
 import dev.bbkb.ime.core.gesture.arbiter.GestureAssignments
 import dev.bbkb.ime.core.settings.search.settingsSearchAnchor
-import dev.bbkb.ime.core.settings.ui.ListPreference
 import dev.bbkb.ime.core.settings.ui.LocalSpacing
 import dev.bbkb.ime.core.settings.ui.PreferenceCategory
 import dev.bbkb.ime.core.settings.ui.PreferenceGroup
@@ -36,18 +34,6 @@ import dev.bbkb.ime.core.settings.ui.SliderPreference
 import dev.bbkb.ime.core.settings.ui.SwitchPreference
 
 /** Human label resource for an assignable action. */
-private fun GestureAction.labelRes(): Int = when (this) {
-    GestureAction.NONE -> R.string.ckb_action_none
-    GestureAction.DELETE_WORD -> R.string.ckb_action_delete_word
-    GestureAction.ENTER_CURSOR_MODE -> R.string.ckb_action_cursor_mode
-    GestureAction.NEXT_LANGUAGE -> R.string.ckb_action_next_language
-    GestureAction.CYCLE_SYMBOLS -> R.string.ckb_action_cycle_symbols
-    GestureAction.DISMISS_KEYBOARD -> R.string.ckb_action_dismiss
-    GestureAction.UNDO -> R.string.ckb_action_undo
-    GestureAction.EMOJI -> R.string.ckb_action_emoji
-    GestureAction.COMMIT_SUGGESTION -> R.string.ckb_action_none // reserved; never listed
-}
-
 /**
  * Debug flag revealing the DEVELOPER category: decoder instrumentation (a `<ckb-key-grid>` export
  * to app files and a logcat visualizer). Nothing else on the screen is gated.
@@ -186,33 +172,4 @@ fun CkbGesturesScreen(onNavigateBack: () -> Unit) {
             Spacer(modifier = Modifier.height(LocalSpacing.current.extraLarge))
         }
     }
-}
-
-@Composable
-private fun GestureSlot(
-    labelRes: Int,
-    prefKey: String,
-    default: GestureAction,
-    prefs: android.content.SharedPreferences,
-    modifier: Modifier = Modifier,
-    /** The slot's icon; a slot without one keeps the icon column so the titles line up. */
-    iconRes: Int? = null,
-) {
-    val context = LocalContext.current
-    val options = remember { GestureAction.assignableActions }
-    var current by remember { mutableStateOf(GestureAction.fromKey(prefs.getString(prefKey, default.key))) }
-    ListPreference(
-        title = stringResource(labelRes),
-        summary = stringResource(current.labelRes()),
-        icon = iconRes?.let { ImageVector.vectorResource(it) },
-        iconSpaceReserved = iconRes == null,
-        entries = options.map { context.getString(it.labelRes()) },
-        entryValues = options.map { it.key },
-        value = current.key,
-        modifier = modifier,
-        onValueChange = { key ->
-            current = GestureAction.fromKey(key)
-            prefs.edit().putString(prefKey, key).apply()
-        }
-    )
 }

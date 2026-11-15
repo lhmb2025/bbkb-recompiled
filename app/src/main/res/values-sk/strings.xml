@@ -316,10 +316,10 @@
     <string name="settings_vkb_slideboard_swap_summary_default">Rýchle frázy vľavo, numerická klávesnica vpravo</string>
     <string name="settings_vkb_slideboard_swap_summary_swapped">Numerická klávesnica vľavo, rýchle frázy vpravo</string>
     <string name="settings_vkb_slideboard_swap_title">Vymeniť strany Slideboardu</string>
-    <string name="settings_vkb_swipe_down_dismiss_summary">Potiahnutím nadol po klávesnici ju skryjete</string>
-    <string name="settings_vkb_swipe_down_dismiss_title">Skryť potiahnutím nadol</string>
-    <string name="settings_vkb_swipe_gestures_summary">Potiahnutím doľava odstránite slovo, potiahnutím nadol zobrazíte symboly</string>
     <string name="settings_vkb_swipe_gestures_title">Gestá potiahnutia</string>
+    <string name="settings_vkb_swipe_gestures_switch_summary">Potiahnutia doľava, doprava a nadol na klávesnici</string>
+    <string name="vkb_gestures_configure_title">Nastaviť gestá potiahnutia</string>
+    <string name="vkb_gestures_reserved_note">Potiahnutie nahor vyberie slovo nad klávesom</string>
     <string name="settings_vkb_type_by_swiping_summary">Potiahnutím po klávesoch napíšete slovo</string>
     <string name="settings_vkb_type_by_swiping_title">Písanie potiahnutím</string>
     <string name="vkb_control_key_summary">Podržaním ?123 zapnete režim Ctrl</string>

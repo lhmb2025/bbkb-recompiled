@@ -316,10 +316,10 @@
     <string name="settings_vkb_slideboard_swap_summary_default">Frasa gancang di kénca, papan angka di katuhu</string>
     <string name="settings_vkb_slideboard_swap_summary_swapped">Papan angka di kénca, frasa gancang di katuhu</string>
     <string name="settings_vkb_slideboard_swap_title">Tukeurkeun posisi Slideboard</string>
-    <string name="settings_vkb_swipe_down_dismiss_summary">Usap ka handap dina papan tombol pikeun nyumputkeunana</string>
-    <string name="settings_vkb_swipe_down_dismiss_title">Usap ka handap pikeun nutup</string>
-    <string name="settings_vkb_swipe_gestures_summary">Usap ka kénca pikeun mupus kecap jeung usap ka handap pikeun némbongkeun simbol</string>
     <string name="settings_vkb_swipe_gestures_title">Gerak usapan</string>
+    <string name="settings_vkb_swipe_gestures_switch_summary">Usap ka kénca, katuhu jeung handap dina papan tombol</string>
+    <string name="vkb_gestures_configure_title">Atur gerak usapan</string>
+    <string name="vkb_gestures_reserved_note">Usap ka luhur milih kecap di luhureun tombol</string>
     <string name="settings_vkb_type_by_swiping_summary">Usap kana tombol-tombol pikeun ngetik kecap</string>
     <string name="settings_vkb_type_by_swiping_title">Ngetik ku usapan</string>
     <string name="vkb_control_key_summary">Pencét lila ?123 pikeun ngaktipkeun mode Ctrl</string>

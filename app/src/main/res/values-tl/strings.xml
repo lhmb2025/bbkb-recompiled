@@ -316,10 +316,10 @@
     <string name="settings_vkb_slideboard_swap_summary_default">Mga mabilisang parirala sa kaliwa, number pad sa kanan</string>
     <string name="settings_vkb_slideboard_swap_summary_swapped">Number pad sa kaliwa, mga mabilisang parirala sa kanan</string>
     <string name="settings_vkb_slideboard_swap_title">Palitan ang mga lokasyon ng Slideboard</string>
-    <string name="settings_vkb_swipe_down_dismiss_summary">Mag-swipe pababa sa keyboard para itago ito</string>
-    <string name="settings_vkb_swipe_down_dismiss_title">I-swipe pababa para isara</string>
-    <string name="settings_vkb_swipe_gestures_summary">I-swipe pakaliwa para magtanggal ng salita at i-swipe pababa para ipakita ang mga simbolo</string>
     <string name="settings_vkb_swipe_gestures_title">Mga galaw na swipe</string>
+    <string name="settings_vkb_swipe_gestures_switch_summary">Mga swipe pakaliwa, pakanan at pababa sa keyboard</string>
+    <string name="vkb_gestures_configure_title">I-configure ang mga galaw na swipe</string>
+    <string name="vkb_gestures_reserved_note">Pinipili ng pag-swipe pataas ang salita sa itaas ng key</string>
     <string name="settings_vkb_type_by_swiping_summary">I-slide sa mga key para mag-type ng salita</string>
     <string name="settings_vkb_type_by_swiping_title">Mag-type sa pamamagitan ng swipe</string>
     <string name="vkb_control_key_summary">Pindutin nang matagal ang ?123 para i-enable ang Ctrl mode</string>

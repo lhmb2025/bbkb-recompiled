@@ -783,8 +783,8 @@ public final class MainKeyboardView extends KeyboardView implements GestureEvent
         MultiPointerGestureDetector c0924a;
         int pointerId = motionEvent.getPointerId(motionEvent.getActionIndex());
         PointerTracker c1084tM7596a = PointerTracker.getPointerTracker(pointerId);
-        // With swipe typing on, the fling detector still runs for the on-key prediction flick;
-        // VkbGestureListener then accepts only that flick unless swipe gestures are on too.
+        // With swipe typing on, the fling detector runs only for something it can act on: the
+        // swipe-gesture slots or the on-key prediction flick. VkbGestureListener decides the rest.
         dev.bbkb.ime.core.settings.util.SettingsValues sv = this.mSettings.getSettingsValues();
         boolean flingsWanted = !this.mGestureInputAvailability.isVkbGestureInputEnabled()
                 || sv.isVkbSwipeGesturesEnabled

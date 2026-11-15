@@ -316,10 +316,10 @@
     <string name="settings_vkb_slideboard_swap_summary_default">ឃ្លារហ័សនៅឆ្វេង បន្ទះលេខនៅស្ដាំ</string>
     <string name="settings_vkb_slideboard_swap_summary_swapped">បន្ទះលេខនៅឆ្វេង ឃ្លារហ័សនៅស្ដាំ</string>
     <string name="settings_vkb_slideboard_swap_title">ប្ដូរទីតាំង Slideboard</string>
-    <string name="settings_vkb_swipe_down_dismiss_summary">អូសចុះក្រោមលើក្ដារចុចដើម្បីលាក់វា</string>
-    <string name="settings_vkb_swipe_down_dismiss_title">អូសចុះក្រោមដើម្បីបិទ</string>
-    <string name="settings_vkb_swipe_gestures_summary">អូសទៅឆ្វេងដើម្បីលុបពាក្យ និងអូសចុះក្រោមដើម្បីបង្ហាញនិមិត្តសញ្ញា</string>
     <string name="settings_vkb_swipe_gestures_title">កាយវិការអូស</string>
+    <string name="settings_vkb_swipe_gestures_switch_summary">អូសទៅឆ្វេង ស្ដាំ និងចុះក្រោមលើក្ដារចុច</string>
+    <string name="vkb_gestures_configure_title">កំណត់កាយវិការអូស</string>
+    <string name="vkb_gestures_reserved_note">ការអូសឡើងលើជ្រើសរើសពាក្យនៅពីលើគ្រាប់ចុច</string>
     <string name="settings_vkb_type_by_swiping_summary">អូសកាត់គ្រាប់ចុចដើម្បីវាយពាក្យ</string>
     <string name="settings_vkb_type_by_swiping_title">វាយបញ្ចូលដោយការអូស</string>
     <string name="vkb_control_key_summary">ចុចឱ្យជាប់ ?123 ដើម្បីបើករបៀប Ctrl</string>

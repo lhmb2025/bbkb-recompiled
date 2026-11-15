@@ -316,10 +316,10 @@
     <string name="settings_vkb_slideboard_swap_summary_default">Frásaí tapa ar chlé, eochaircheap uimhreacha ar dheis</string>
     <string name="settings_vkb_slideboard_swap_summary_swapped">Eochaircheap uimhreacha ar chlé, frásaí tapa ar dheis</string>
     <string name="settings_vkb_slideboard_swap_title">Malartaigh taobhanna an Slideboard</string>
-    <string name="settings_vkb_swipe_down_dismiss_summary">Svaidhpeáil síos ar an méarchlár chun é a fholú</string>
-    <string name="settings_vkb_swipe_down_dismiss_title">Svaidhpeáil síos chun dúnadh</string>
-    <string name="settings_vkb_swipe_gestures_summary">Svaidhpeáil ar chlé chun focal a scriosadh agus síos chun siombailí a thaispeáint</string>
     <string name="settings_vkb_swipe_gestures_title">Gothaí svaidhpeála</string>
+    <string name="settings_vkb_swipe_gestures_switch_summary">Svaidhpeanna ar chlé, ar dheis agus síos ar an méarchlár</string>
+    <string name="vkb_gestures_configure_title">Cumraigh gothaí svaidhpeála</string>
+    <string name="vkb_gestures_reserved_note">Roghnaíonn svaidhpeáil suas an focal os cionn na heochrach</string>
     <string name="settings_vkb_type_by_swiping_summary">Sleamhnaigh thar na heochracha chun focal a chlóscríobh</string>
     <string name="settings_vkb_type_by_swiping_title">Clóscríobh le svaidhpeáil</string>
     <string name="vkb_control_key_summary">Brúigh agus coinnigh ?123 chun mód Ctrl a chumasú</string>

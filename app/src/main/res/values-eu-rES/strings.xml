@@ -316,10 +316,10 @@
     <string name="settings_vkb_slideboard_swap_summary_default">Esaldi azkarrak ezkerrean, zenbaki-teklatua eskuinean</string>
     <string name="settings_vkb_slideboard_swap_summary_swapped">Zenbaki-teklatua ezkerrean, esaldi azkarrak eskuinean</string>
     <string name="settings_vkb_slideboard_swap_title">Trukatu Slideboard-aren kokalekuak</string>
-    <string name="settings_vkb_swipe_down_dismiss_summary">Lerratu behera teklatuan ezkutatzeko</string>
-    <string name="settings_vkb_swipe_down_dismiss_title">Lerratu behera ixteko</string>
-    <string name="settings_vkb_swipe_gestures_summary">Lerratu ezkerrera hitz bat ezabatzeko eta behera ikurrak erakusteko</string>
     <string name="settings_vkb_swipe_gestures_title">Lerratze-keinuak</string>
+    <string name="settings_vkb_swipe_gestures_switch_summary">Ezkerrera, eskuinera eta behera lerratzeak teklatuan</string>
+    <string name="vkb_gestures_configure_title">Konfiguratu lerratze-keinuak</string>
+    <string name="vkb_gestures_reserved_note">Gorantz lerratzeak teklaren gaineko hitza aukeratzen du</string>
     <string name="settings_vkb_type_by_swiping_summary">Lerratu hatza teklen gainean hitz bat idazteko</string>
     <string name="settings_vkb_type_by_swiping_title">Idatzi hatza lerratuz</string>
     <string name="vkb_control_key_summary">Eduki sakatuta ?123 Ctrl modua gaitzeko</string>

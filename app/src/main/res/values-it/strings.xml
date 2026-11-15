@@ -316,10 +316,10 @@
     <string name="settings_vkb_slideboard_swap_summary_default">Frasi rapide a sinistra, tastierino numerico a destra</string>
     <string name="settings_vkb_slideboard_swap_summary_swapped">Tastierino numerico a sinistra, frasi rapide a destra</string>
     <string name="settings_vkb_slideboard_swap_title">Inverti le posizioni della Slideboard</string>
-    <string name="settings_vkb_swipe_down_dismiss_summary">Scorri verso il basso sulla tastiera per nasconderla</string>
-    <string name="settings_vkb_swipe_down_dismiss_title">Scorri verso il basso per chiudere</string>
-    <string name="settings_vkb_swipe_gestures_summary">Scorri a sinistra per eliminare una parola e verso il basso per mostrare i simboli</string>
     <string name="settings_vkb_swipe_gestures_title">Gesti di scorrimento</string>
+    <string name="settings_vkb_swipe_gestures_switch_summary">Scorrimenti verso sinistra, verso destra e verso il basso sulla tastiera</string>
+    <string name="vkb_gestures_configure_title">Configura i gesti di scorrimento</string>
+    <string name="vkb_gestures_reserved_note">Lo scorrimento verso l\'alto sceglie la parola sopra il tasto</string>
     <string name="settings_vkb_type_by_swiping_summary">Scorri sui tasti per digitare una parola</string>
     <string name="settings_vkb_type_by_swiping_title">Digita scorrendo</string>
     <string name="vkb_control_key_summary">Tieni premuto ?123 per attivare la modalità Ctrl</string>

@@ -316,10 +316,10 @@
     <string name="settings_vkb_slideboard_swap_summary_default">Kiirfraasid vasakul, numbriklahvistik paremal</string>
     <string name="settings_vkb_slideboard_swap_summary_swapped">Numbriklahvistik vasakul, kiirfraasid paremal</string>
     <string name="settings_vkb_slideboard_swap_title">Vaheta Slideboardi külgi</string>
-    <string name="settings_vkb_swipe_down_dismiss_summary">Peitmiseks libistage klaviatuuril alla</string>
-    <string name="settings_vkb_swipe_down_dismiss_title">Libista alla peitmiseks</string>
-    <string name="settings_vkb_swipe_gestures_summary">Libistage vasakule sõna kustutamiseks ja alla sümbolite kuvamiseks</string>
     <string name="settings_vkb_swipe_gestures_title">Libistusžestid</string>
+    <string name="settings_vkb_swipe_gestures_switch_summary">Libistamised vasakule, paremale ja alla klaviatuuril</string>
+    <string name="vkb_gestures_configure_title">Seadista libistusžestid</string>
+    <string name="vkb_gestures_reserved_note">Üles libistamine valib klahvi kohal oleva sõna</string>
     <string name="settings_vkb_type_by_swiping_summary">Libistage üle klahvide, et sõna kirjutada</string>
     <string name="settings_vkb_type_by_swiping_title">Kirjutamine libistades</string>
     <string name="vkb_control_key_summary">Ctrl-režiimi lubamiseks hoia all ?123</string>

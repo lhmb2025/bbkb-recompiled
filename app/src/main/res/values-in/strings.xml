@@ -316,10 +316,10 @@
     <string name="settings_vkb_slideboard_swap_summary_default">Frasa cepat di kiri, tombol angka di kanan</string>
     <string name="settings_vkb_slideboard_swap_summary_swapped">Tombol angka di kiri, frasa cepat di kanan</string>
     <string name="settings_vkb_slideboard_swap_title">Tukar lokasi Slideboard</string>
-    <string name="settings_vkb_swipe_down_dismiss_summary">Gesek ke bawah pada keyboard untuk menyembunyikannya</string>
-    <string name="settings_vkb_swipe_down_dismiss_title">Gesek ke bawah untuk menutup</string>
-    <string name="settings_vkb_swipe_gestures_summary">Gesek ke kiri untuk menghapus kata dan gesek ke bawah untuk menampilkan simbol</string>
     <string name="settings_vkb_swipe_gestures_title">Gestur gesek</string>
+    <string name="settings_vkb_swipe_gestures_switch_summary">Gesek ke kiri, kanan, dan bawah pada keyboard</string>
+    <string name="vkb_gestures_configure_title">Konfigurasikan gestur gesek</string>
+    <string name="vkb_gestures_reserved_note">Gesek ke atas memilih kata di atas tombol</string>
     <string name="settings_vkb_type_by_swiping_summary">Geser di atas tombol untuk mengetik kata</string>
     <string name="settings_vkb_type_by_swiping_title">Mengetik dengan menggesek</string>
     <string name="vkb_control_key_summary">Tekan lama ?123 untuk mengaktifkan mode Ctrl</string>

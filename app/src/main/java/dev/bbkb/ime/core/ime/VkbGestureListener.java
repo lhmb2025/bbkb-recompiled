@@ -11,15 +11,18 @@ import dev.bbkb.ime.core.gesture.MultiPointerGestureDetector;
 import dev.bbkb.ime.BuildConfig;
 import dev.bbkb.ime.core.locale.RichInputMethodManager;
 import dev.bbkb.ime.core.BlackBerryIME;
+import dev.bbkb.ime.core.gesture.arbiter.GestureAction;
+import dev.bbkb.ime.core.gesture.arbiter.VkbGestureAssignments;
+import dev.bbkb.ime.core.gesture.arbiter.VkbSwipe;
 
 /**
- * On-screen keyboard fling gestures, fed from MainKeyboardView and NumericSubpanelKeyboardView
- * (gated there by isVkbSwipeGesturesEnabled; MainKeyboardView also runs it for the on-key
- * prediction flick, and with swipe typing on and swipe gestures off only that upward flick is
- * accepted). Capacitive-keypad gestures live in core/gesture/arbiter.
- *  - horizontal: backward (RTL-aware) deletes a word (-18); forward on the spacebar switches
- *    language; forward elsewhere closes an open slideboard translation
- *  - vertical: down dismiss-or-symbols (-19), up prediction selection (-17, FlickSuggestionView)
+ * On-screen keyboard fling gestures, fed from MainKeyboardView and NumericSubpanelKeyboardView.
+ * Capacitive-keypad gestures live in core/gesture/arbiter.
+ *  - horizontal: an open slideboard closes first; forward on the spacebar switches language
+ *    (its own setting); otherwise the swipe-left (backward, RTL-aware) or swipe-right slot
+ *  - down: the swipe-down slot; up: prediction selection (FlickSuggestionView)
+ *  - the slots ({@link VkbGestureAssignments}) run only under the "Swipe gestures" main switch;
+ *    a slot set to None lets the stroke through as typing or a word swipe
  *  - suppressed within vkbGestureSuppressionTimeout of a key event
  */
 public final class VkbGestureListener extends MultiPointerGestureDetector.SimpleOnGestureListener {
@@ -62,8 +65,6 @@ public final class VkbGestureListener extends MultiPointerGestureDetector.Simple
         }
         int actionIndex = motionEvent.getActionIndex();
         int actionIndex2 = endEvent.getActionIndex();
-        // Swipe typing on, swipe gestures off: only the upward prediction flick is a gesture.
-        boolean predictionFlickOnly = this.settings.isVkbGestureInputEnabledForLocale() && !this.settings.isVkbSwipeGesturesEnabled;
         float x = endEvent.getX(actionIndex2) - motionEvent.getX(actionIndex);
         float y = endEvent.getY(actionIndex2) - motionEvent.getY(actionIndex);
         float fAbs = Math.abs(x);
@@ -72,9 +73,6 @@ public final class VkbGestureListener extends MultiPointerGestureDetector.Simple
         double d2 = fAbs;
         boolean z = true;
         if (d <= this.settings.horizontalSwipeTanTheta * d2) {
-            if (predictionFlickOnly) {
-                return false;
-            }
             if (this.ime.shouldHandleGestureEvent(motionEvent) && d > (this.settings.horizontalSwipeTanTheta / 8.0d) * d2) {
                 if (BuildConfig.DEBUG) Logger.info("VKBGesture", "onFling: horizontal swipe ignored - exceeded flow typing's reduced threshold");
             } else if (this.ime.shouldHandleGestureEvent(motionEvent) && endEvent.getEventTime() - motionEvent.getEventTime() > this.settings.swipeGestureTimeout) {
@@ -87,7 +85,7 @@ public final class VkbGestureListener extends MultiPointerGestureDetector.Simple
                             this.ime.getKeyboardSwitcher().getMainKeyboardView().setSlideTranslation(0.0f, true);
                             return true;
                         }
-                        return dispatchSwipeGesture(-18, motionEvent, endEvent);
+                        return dispatchSlot(VkbSwipe.LEFT, motionEvent, endEvent);
                     }
                     if (isSpacebarLanguageSwitchSwipe(motionEvent, endEvent)) {
                         return switchToNextLanguage();
@@ -96,6 +94,7 @@ public final class VkbGestureListener extends MultiPointerGestureDetector.Simple
                         this.ime.getKeyboardSwitcher().getMainKeyboardView().setSlideTranslation(0.0f, true);
                         return true;
                     }
+                    return dispatchSlot(VkbSwipe.RIGHT, motionEvent, endEvent);
                 } else {
                     if (BuildConfig.DEBUG) Logger.info("VKBGesture", "onFling: horizontal swipe ignored - too slow/short");
                 }
@@ -116,16 +115,17 @@ public final class VkbGestureListener extends MultiPointerGestureDetector.Simple
             }
             if (z) {
                 if (y > 0.0f) {
-                    if (predictionFlickOnly) {
-                        return false;
-                    }
                     if (this.ime.shouldHandleGestureEvent(motionEvent) && (d2 > (this.settings.verticalSwipeTanTheta / 8.0d) * d && fAbs4 <= this.settings.flowModeVerticalSwipeMinVelocity)) {
                         if (BuildConfig.DEBUG) Logger.info("VKBGesture", "onFling: vertical swipe ignored - exceeded flow typing's reduced threshold");
                     } else {
-                        return dispatchSwipeGesture(-19, motionEvent, endEvent);
+                        return dispatchSlot(VkbSwipe.DOWN, motionEvent, endEvent);
                     }
                 } else if (y < 0.0f && this.ime.isInputViewShown()) {
-                    return dispatchSwipeGesture(-17, motionEvent, endEvent);
+                    if (!isOutsideSuppression(motionEvent, endEvent)) {
+                        return false;
+                    }
+                    this.ime.handlePredictionFlick(motionEvent);
+                    return true;
                 }
             }
         }
@@ -156,10 +156,25 @@ public final class VkbGestureListener extends MultiPointerGestureDetector.Simple
         this.settings = settingsValues;
     }
 
-    /** @param gestureCode swipe gesture code (-17 up, -18 delete word, -19 down) */
-    private boolean dispatchSwipeGesture(int gestureCode, MotionEvent motionEvent, MotionEvent endEvent) {
-        if (this.settings.vkbGestureSuppressionTimeout <= (this.settings.applySwipeSuppressionToEnd ? endEvent.getEventTime() : motionEvent.getEventTime()) - this.lastKeyEventTime) {
-            this.ime.handleSwipeGesture(gestureCode, motionEvent, endEvent);
+    /**
+     * Runs the slot's action. False (the stroke goes on as typing or a word swipe) when the main
+     * switch is off, the slot is None, or a key was typed too recently.
+     */
+    private boolean dispatchSlot(VkbSwipe swipe, MotionEvent motionEvent, MotionEvent endEvent) {
+        if (!this.settings.isVkbSwipeGesturesEnabled) {
+            return false;
+        }
+        GestureAction action = this.settings.vkbGestureAssignments.forSwipe(swipe);
+        if (action == GestureAction.NONE || !isOutsideSuppression(motionEvent, endEvent)) {
+            return false;
+        }
+        this.ime.handleVkbSwipeAction(action, motionEvent, endEvent);
+        return true;
+    }
+
+    private boolean isOutsideSuppression(MotionEvent motionEvent, MotionEvent endEvent) {
+        long since = (this.settings.applySwipeSuppressionToEnd ? endEvent.getEventTime() : motionEvent.getEventTime()) - this.lastKeyEventTime;
+        if (this.settings.vkbGestureSuppressionTimeout <= since) {
             return true;
         }
         if (BuildConfig.DEBUG) Logger.info("VKBGesture", "Suppressing gesture around key event");
@@ -176,8 +191,11 @@ public final class VkbGestureListener extends MultiPointerGestureDetector.Simple
     }
 
     private boolean isSpacebarLanguageSwitchSwipe(MotionEvent motionEvent, MotionEvent endEvent) {
+        if (!this.settings.isSpacebarLanguageSwitchingEnabled) {
+            return false;
+        }
         RichInputMethodManager c0910yM5863a = RichInputMethodManager.getInstance();
-        if (c0910yM5863a == null || !c0910yM5863a.hasMultipleEnabledSubtypesInThisIme(false) || !this.settings.isSpacebarLanguageSwitchingEnabled) {
+        if (c0910yM5863a == null || !c0910yM5863a.hasMultipleEnabledSubtypesInThisIme(false)) {
             return false;
         }
         float x = motionEvent.getX(motionEvent.getActionIndex());

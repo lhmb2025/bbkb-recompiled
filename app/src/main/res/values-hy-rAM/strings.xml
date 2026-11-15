@@ -316,10 +316,10 @@
     <string name="settings_vkb_slideboard_swap_summary_default">Արագ արտահայտությունները ձախում, թվային վահանակը՝ աջում</string>
     <string name="settings_vkb_slideboard_swap_summary_swapped">Թվային վահանակը ձախում, արագ արտահայտությունները՝ աջում</string>
     <string name="settings_vkb_slideboard_swap_title">Փոխանակել Slideboard-ի կողմերը</string>
-    <string name="settings_vkb_swipe_down_dismiss_summary">Սահեցրեք ներքև ստեղնաշարի վրա՝ այն թաքցնելու համար</string>
-    <string name="settings_vkb_swipe_down_dismiss_title">Սահեցնել ներքև՝ փակելու համար</string>
-    <string name="settings_vkb_swipe_gestures_summary">Սահեցրեք ձախ՝ բառ ջնջելու, և ներքև՝ նշանները ցուցադրելու համար</string>
     <string name="settings_vkb_swipe_gestures_title">Սահեցման ժեստեր</string>
+    <string name="settings_vkb_swipe_gestures_switch_summary">Սահեցումներ ձախ, աջ և ներքև ստեղնաշարի վրա</string>
+    <string name="vkb_gestures_configure_title">Կարգավորել սահեցման ժեստերը</string>
+    <string name="vkb_gestures_reserved_note">Վերև սահեցումն ընտրում է ստեղնի վերևում գտնվող բառը</string>
     <string name="settings_vkb_type_by_swiping_summary">Սահեցնել մատը ստեղների վրայով՝ բառ մուտքագրելու համար</string>
     <string name="settings_vkb_type_by_swiping_title">Մուտքագրում սահեցումով</string>
     <string name="vkb_control_key_summary">Սեղմած պահեք ?123՝ Ctrl ռեժիմը միացնելու համար</string>

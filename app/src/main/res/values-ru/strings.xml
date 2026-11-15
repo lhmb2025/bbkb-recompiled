@@ -316,10 +316,10 @@
     <string name="settings_vkb_slideboard_swap_summary_default">Быстрые фразы слева, цифровая панель справа</string>
     <string name="settings_vkb_slideboard_swap_summary_swapped">Цифровая панель слева, быстрые фразы справа</string>
     <string name="settings_vkb_slideboard_swap_title">Поменять местами панели Slideboard</string>
-    <string name="settings_vkb_swipe_down_dismiss_summary">Смахните вниз по клавиатуре, чтобы скрыть её</string>
-    <string name="settings_vkb_swipe_down_dismiss_title">Смахивание вниз скрывает клавиатуру</string>
-    <string name="settings_vkb_swipe_gestures_summary">Смахните влево, чтобы удалить слово, и вниз, чтобы показать символы</string>
     <string name="settings_vkb_swipe_gestures_title">Жесты смахивания</string>
+    <string name="settings_vkb_swipe_gestures_switch_summary">Смахивания влево, вправо и вниз на клавиатуре</string>
+    <string name="vkb_gestures_configure_title">Настроить жесты смахивания</string>
+    <string name="vkb_gestures_reserved_note">Смахивание вверх выбирает слово над клавишей</string>
     <string name="settings_vkb_type_by_swiping_summary">Проведите по клавишам, чтобы ввести слово</string>
     <string name="settings_vkb_type_by_swiping_title">Ввод текста с помощью жестов</string>
     <string name="vkb_control_key_summary">Удерживайте ?123, чтобы включить режим Ctrl</string>

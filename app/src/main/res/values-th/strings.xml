@@ -316,10 +316,10 @@
     <string name="settings_vkb_slideboard_swap_summary_default">วลีด่วนอยู่ทางซ้าย แป้นตัวเลขอยู่ทางขวา</string>
     <string name="settings_vkb_slideboard_swap_summary_swapped">แป้นตัวเลขอยู่ทางซ้าย วลีด่วนอยู่ทางขวา</string>
     <string name="settings_vkb_slideboard_swap_title">สลับตำแหน่ง Slideboard</string>
-    <string name="settings_vkb_swipe_down_dismiss_summary">กวาดนิ้วลงบนแป้นพิมพ์เพื่อซ่อน</string>
-    <string name="settings_vkb_swipe_down_dismiss_title">กวาดนิ้วลงเพื่อปิด</string>
-    <string name="settings_vkb_swipe_gestures_summary">กวาดนิ้วไปทางซ้ายเพื่อลบคำ และกวาดนิ้วลงเพื่อแสดงสัญลักษณ์</string>
     <string name="settings_vkb_swipe_gestures_title">ท่าทางกวาดนิ้ว</string>
+    <string name="settings_vkb_swipe_gestures_switch_summary">กวาดนิ้วไปทางซ้าย ขวา และลงบนแป้นพิมพ์</string>
+    <string name="vkb_gestures_configure_title">ตั้งค่าท่าทางกวาดนิ้ว</string>
+    <string name="vkb_gestures_reserved_note">การกวาดนิ้วขึ้นจะเลือกคำที่อยู่เหนือปุ่ม</string>
     <string name="settings_vkb_type_by_swiping_summary">ลากนิ้วผ่านปุ่มต่างๆ เพื่อพิมพ์คำ</string>
     <string name="settings_vkb_type_by_swiping_title">พิมพ์โดยการกวาดนิ้ว</string>
     <string name="vkb_control_key_summary">กด ?123 ค้างไว้เพื่อเปิดโหมด Ctrl</string>

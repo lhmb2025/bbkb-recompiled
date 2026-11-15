@@ -316,10 +316,10 @@
     <string name="settings_vkb_slideboard_swap_summary_default">Hurtigfraser til venstre, nummertastatur til høyre</string>
     <string name="settings_vkb_slideboard_swap_summary_swapped">Nummertastatur til venstre, hurtigfraser til høyre</string>
     <string name="settings_vkb_slideboard_swap_title">Bytt plassering på Slideboard</string>
-    <string name="settings_vkb_swipe_down_dismiss_summary">Sveip ned på tastaturet for å skjule det</string>
-    <string name="settings_vkb_swipe_down_dismiss_title">Sveip ned for å lukke</string>
-    <string name="settings_vkb_swipe_gestures_summary">Sveip mot venstre for å slette et ord og sveip ned for å vise symboler</string>
     <string name="settings_vkb_swipe_gestures_title">Sveipebevegelser</string>
+    <string name="settings_vkb_swipe_gestures_switch_summary">Sveip mot venstre, mot høyre og ned på tastaturet</string>
+    <string name="vkb_gestures_configure_title">Konfigurer sveipebevegelser</string>
+    <string name="vkb_gestures_reserved_note">Sveip opp velger ordet over tasten</string>
     <string name="settings_vkb_type_by_swiping_summary">Skli over tastene for å skrive et ord</string>
     <string name="settings_vkb_type_by_swiping_title">Skriv ved å sveipe</string>
     <string name="vkb_control_key_summary">Hold inne ?123 for å slå på Ctrl-modus</string>

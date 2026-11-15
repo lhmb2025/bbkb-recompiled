@@ -566,6 +566,18 @@ class SettingsScreenRenderTest(private val screenName: String) {
             ),
         ),
         Case(
+            name = "VkbGesturesScreen",
+            route = SettingsRoute.VkbGestures.route,
+            title = "Swipe gestures",
+            // The defaults: left deletes a word, right does nothing, down dismisses the keyboard.
+            resources = setOf(
+                "settings_vkb_swipe_gestures_title", "vkb_gestures_reserved_note",
+                "ckb_gesture_slot_swipe_left", "ckb_gesture_slot_swipe_right", "ckb_gesture_slot_swipe_down",
+                "ckb_action_delete_word", "ckb_action_none", "ckb_action_dismiss",
+            ),
+            literals = emptySet(),
+        ),
+        Case(
             name = "CorrectionLearningScreen",
             route = SettingsRoute.SuggestionCorrection.route,
             title = "Assistance",
@@ -1037,8 +1049,8 @@ class SettingsScreenRenderTest(private val screenName: String) {
                  "settings_screen_type_by_swiping",
                 "settings_slideboard_hub_summary", "settings_slideboard_settings_title",
                 "settings_touch_feedback_summary", "settings_touch_feedback_title",
-                "settings_vkb_swipe_down_dismiss_summary", "settings_vkb_swipe_down_dismiss_title",
-                "settings_vkb_swipe_gestures_summary", "settings_vkb_swipe_gestures_title",
+                "settings_vkb_swipe_gestures_switch_summary", "settings_vkb_swipe_gestures_title",
+                "vkb_gestures_configure_title", "ckb_gestures_configure_summary",
                 "settings_vkb_type_by_swiping_summary", "vkb_control_key_summary", "settings_pkb_multifunction_action_ctrl",
                 "settings_pred_flick_animation_summary", "settings_pred_flick_animation_title",
                 "prefs_key_longpress_delay_title", "settings_category_on_screen_keyboard",

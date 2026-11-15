@@ -316,10 +316,10 @@
     <string name="settings_vkb_slideboard_swap_summary_default">ביטויים מהירים משמאל, לוח ספרות מימין</string>
     <string name="settings_vkb_slideboard_swap_summary_swapped">לוח ספרות משמאל, ביטויים מהירים מימין</string>
     <string name="settings_vkb_slideboard_swap_title">החלף את מיקומי Slideboard</string>
-    <string name="settings_vkb_swipe_down_dismiss_summary">החלק מטה על המקלדת כדי להסתיר אותה</string>
-    <string name="settings_vkb_swipe_down_dismiss_title">החלקה מטה לסגירה</string>
-    <string name="settings_vkb_swipe_gestures_summary">החלק שמאלה כדי למחוק מילה והחלק מטה כדי להציג סמלים</string>
     <string name="settings_vkb_swipe_gestures_title">מחוות החלקה</string>
+    <string name="settings_vkb_swipe_gestures_switch_summary">החלקות שמאלה, ימינה ומטה על המקלדת</string>
+    <string name="vkb_gestures_configure_title">הגדר מחוות החלקה</string>
+    <string name="vkb_gestures_reserved_note">החלקה למעלה בוחרת את המילה שמעל המקש</string>
     <string name="settings_vkb_type_by_swiping_summary">החלק על פני המקשים כדי להקליד מילה</string>
     <string name="settings_vkb_type_by_swiping_title">הקלד על-ידי החלקה</string>
     <string name="vkb_control_key_summary">לחיצה ארוכה על ?123 מפעילה מצב Ctrl</string>

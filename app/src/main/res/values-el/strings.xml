@@ -316,10 +316,10 @@
     <string name="settings_vkb_slideboard_swap_summary_default">Γρήγορες φράσεις αριστερά, αριθμητικό πληκτρολόγιο δεξιά</string>
     <string name="settings_vkb_slideboard_swap_summary_swapped">Αριθμητικό πληκτρολόγιο αριστερά, γρήγορες φράσεις δεξιά</string>
     <string name="settings_vkb_slideboard_swap_title">Εναλλαγή θέσεων Slideboard</string>
-    <string name="settings_vkb_swipe_down_dismiss_summary">Σύρσιμο προς τα κάτω στο πληκτρολόγιο για απόκρυψή του</string>
-    <string name="settings_vkb_swipe_down_dismiss_title">Απόκρυψη με σύρσιμο προς τα κάτω</string>
-    <string name="settings_vkb_swipe_gestures_summary">Σύρσιμο αριστερά για διαγραφή λέξης και προς τα κάτω για εμφάνιση συμβόλων</string>
     <string name="settings_vkb_swipe_gestures_title">Κινήσεις συρσίματος</string>
+    <string name="settings_vkb_swipe_gestures_switch_summary">Σύρσιμο αριστερά, δεξιά και προς τα κάτω στο πληκτρολόγιο</string>
+    <string name="vkb_gestures_configure_title">Διαμόρφωση κινήσεων συρσίματος</string>
+    <string name="vkb_gestures_reserved_note">Το σύρσιμο προς τα πάνω επιλέγει τη λέξη πάνω από το πλήκτρο</string>
     <string name="settings_vkb_type_by_swiping_summary">Σύρσιμο πάνω στα πλήκτρα για πληκτρολόγηση λέξης</string>
     <string name="settings_vkb_type_by_swiping_title">Πληκτρολόγηση με σύρσιμο</string>
     <string name="vkb_control_key_summary">Πατήστε παρατεταμένα το ?123 για λειτουργία Ctrl</string>

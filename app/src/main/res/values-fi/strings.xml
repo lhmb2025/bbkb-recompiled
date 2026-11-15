@@ -316,10 +316,10 @@
     <string name="settings_vkb_slideboard_swap_summary_default">Pikalauseet vasemmalla, numeronäppäimistö oikealla</string>
     <string name="settings_vkb_slideboard_swap_summary_swapped">Numeronäppäimistö vasemmalla, pikalauseet oikealla</string>
     <string name="settings_vkb_slideboard_swap_title">Vaihda Slideboardin paikat</string>
-    <string name="settings_vkb_swipe_down_dismiss_summary">Piilota näppäimistö pyyhkäisemällä sitä alas</string>
-    <string name="settings_vkb_swipe_down_dismiss_title">Sulje pyyhkäisemällä alas</string>
-    <string name="settings_vkb_swipe_gestures_summary">Poista sana pyyhkäisemällä vasemmalle ja näytä symbolit pyyhkäisemällä alas</string>
     <string name="settings_vkb_swipe_gestures_title">Pyyhkäisyeleet</string>
+    <string name="settings_vkb_swipe_gestures_switch_summary">Pyyhkäisyt vasemmalle, oikealle ja alas näppäimistöllä</string>
+    <string name="vkb_gestures_configure_title">Määritä pyyhkäisyeleet</string>
+    <string name="vkb_gestures_reserved_note">Pyyhkäisy ylös valitsee näppäimen yläpuolella olevan sanan</string>
     <string name="settings_vkb_type_by_swiping_summary">Kirjoita sana liu\'uttamalla näppäinten yli</string>
     <string name="settings_vkb_type_by_swiping_title">Kirjoita pyyhkäisemällä</string>
     <string name="vkb_control_key_summary">Pidä ?123 painettuna ottaaksesi Ctrl-tilan käyttöön</string>

@@ -316,10 +316,10 @@
     <string name="settings_vkb_slideboard_swap_summary_default">Sürətli ifadələr solda, rəqəm paneli sağda</string>
     <string name="settings_vkb_slideboard_swap_summary_swapped">Rəqəm paneli solda, sürətli ifadələr sağda</string>
     <string name="settings_vkb_slideboard_swap_title">Slideboard-un yerlərini dəyişin</string>
-    <string name="settings_vkb_swipe_down_dismiss_summary">Gizlətmək üçün klaviaturada aşağı sürüşdürün</string>
-    <string name="settings_vkb_swipe_down_dismiss_title">Bağlamaq üçün aşağı sürüşdürün</string>
-    <string name="settings_vkb_swipe_gestures_summary">Sözü silmək üçün sola, simvolları göstərmək üçün aşağı sürüşdürün</string>
     <string name="settings_vkb_swipe_gestures_title">Sürüşdürmə jestləri</string>
+    <string name="settings_vkb_swipe_gestures_switch_summary">Klaviaturada sola, sağa və aşağı sürüşdürmə</string>
+    <string name="vkb_gestures_configure_title">Sürüşdürmə jestlərini tənzimləyin</string>
+    <string name="vkb_gestures_reserved_note">Yuxarı sürüşdürmə düymənin üstündəki sözü seçir</string>
     <string name="settings_vkb_type_by_swiping_summary">Söz yazmaq üçün klavişlər üzərində sürüşdürün</string>
     <string name="settings_vkb_type_by_swiping_title">Sürüşdürərək yazma</string>
     <string name="vkb_control_key_summary">Ctrl rejimini aktiv etmək üçün ?123 düyməsini basıb saxlayın</string>

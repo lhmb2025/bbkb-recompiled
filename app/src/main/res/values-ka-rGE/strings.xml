@@ -316,10 +316,10 @@
     <string name="settings_vkb_slideboard_swap_summary_default">სწრაფი ფრაზები მარცხნივ, ციფრული პანელი მარჯვნივ</string>
     <string name="settings_vkb_slideboard_swap_summary_swapped">ციფრული პანელი მარცხნივ, სწრაფი ფრაზები მარჯვნივ</string>
     <string name="settings_vkb_slideboard_swap_title">Slideboard-ის მხარეების შეცვლა</string>
-    <string name="settings_vkb_swipe_down_dismiss_summary">დასამალად გადაასრიალეთ ქვემოთ კლავიატურაზე</string>
-    <string name="settings_vkb_swipe_down_dismiss_title">ქვემოთ გადასრიალებით დახურვა</string>
-    <string name="settings_vkb_swipe_gestures_summary">მარცხნივ გადასრიალება წაშლის სიტყვას, ქვემოთ გადასრიალება აჩვენებს სიმბოლოებს</string>
     <string name="settings_vkb_swipe_gestures_title">გადასრიალების ჟესტები</string>
+    <string name="settings_vkb_swipe_gestures_switch_summary">გადასრიალება მარცხნივ, მარჯვნივ და ქვემოთ კლავიატურაზე</string>
+    <string name="vkb_gestures_configure_title">გადასრიალების ჟესტების კონფიგურაცია</string>
+    <string name="vkb_gestures_reserved_note">ზემოთ გადასრიალება ირჩევს კლავიშის ზემოთ არსებულ სიტყვას</string>
     <string name="settings_vkb_type_by_swiping_summary">სიტყვის აკრეფა კლავიშებზე თითის გასრიალებით</string>
     <string name="settings_vkb_type_by_swiping_title">აკრეფა გადასრიალებით</string>
     <string name="vkb_control_key_summary">Ctrl რეჟიმის ჩასართავად ხანგრძლივად დააჭირეთ ?123-ს</string>

@@ -316,10 +316,10 @@
     <string name="settings_vkb_slideboard_swap_summary_default">Snelle zinnen links, numeriek toetsenblok rechts</string>
     <string name="settings_vkb_slideboard_swap_summary_swapped">Numeriek toetsenblok links, snelle zinnen rechts</string>
     <string name="settings_vkb_slideboard_swap_title">Slideboard-posities omwisselen</string>
-    <string name="settings_vkb_swipe_down_dismiss_summary">Veeg omlaag op het toetsenbord om het te verbergen</string>
-    <string name="settings_vkb_swipe_down_dismiss_title">Omlaag vegen om te sluiten</string>
-    <string name="settings_vkb_swipe_gestures_summary">Veeg naar links om een woord te verwijderen en omlaag om symbolen te tonen</string>
     <string name="settings_vkb_swipe_gestures_title">Veeggebaren</string>
+    <string name="settings_vkb_swipe_gestures_switch_summary">Vegen naar links, naar rechts en omlaag op het toetsenbord</string>
+    <string name="vkb_gestures_configure_title">Veeggebaren configureren</string>
+    <string name="vkb_gestures_reserved_note">Omhoog vegen kiest het woord boven de toets</string>
     <string name="settings_vkb_type_by_swiping_summary">Over de toetsen glijden om een woord te typen</string>
     <string name="settings_vkb_type_by_swiping_title">Typen door te vegen</string>
     <string name="vkb_control_key_summary">Houd ?123 ingedrukt om de Ctrl-modus in te schakelen</string>

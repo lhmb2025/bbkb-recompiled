@@ -316,10 +316,10 @@
     <string name="settings_vkb_slideboard_swap_summary_default">عبارت‌های سریع در چپ، صفحه اعداد در راست</string>
     <string name="settings_vkb_slideboard_swap_summary_swapped">صفحه اعداد در چپ، عبارت‌های سریع در راست</string>
     <string name="settings_vkb_slideboard_swap_title">جابه‌جایی مکان‌های Slideboard</string>
-    <string name="settings_vkb_swipe_down_dismiss_summary">برای پنهان کردن صفحه کلید، روی آن به پایین بکشید</string>
-    <string name="settings_vkb_swipe_down_dismiss_title">کشیدن به پایین برای بستن</string>
-    <string name="settings_vkb_swipe_gestures_summary">برای حذف یک کلمه به چپ و برای نمایش نمادها به پایین بکشید</string>
     <string name="settings_vkb_swipe_gestures_title">اشاره‌های کشیدن</string>
+    <string name="settings_vkb_swipe_gestures_switch_summary">کشیدن به چپ، راست و پایین روی صفحه کلید</string>
+    <string name="vkb_gestures_configure_title">پیکربندی اشاره‌های کشیدن</string>
+    <string name="vkb_gestures_reserved_note">کشیدن به بالا کلمه بالای کلید را انتخاب می‌کند</string>
     <string name="settings_vkb_type_by_swiping_summary">کشیدن انگشت روی کلیدها برای تایپ یک کلمه</string>
     <string name="settings_vkb_type_by_swiping_title">تایپ با کشیدن انگشت</string>
     <string name="vkb_control_key_summary">برای فعال‌کردن حالت Ctrl، ?123 را نگه دارید</string>

@@ -316,10 +316,10 @@
     <string name="settings_vkb_slideboard_swap_summary_default">Ыкчам сөз айкаштары солдо, сандык панель оңдо</string>
     <string name="settings_vkb_slideboard_swap_summary_swapped">Сандык панель солдо, ыкчам сөз айкаштары оңдо</string>
     <string name="settings_vkb_slideboard_swap_title">Slideboard тараптарын алмаштыруу</string>
-    <string name="settings_vkb_swipe_down_dismiss_summary">Жашыруу үчүн баскычтопто ылдый сүрүңүз</string>
-    <string name="settings_vkb_swipe_down_dismiss_title">Жабуу үчүн ылдый сүрүү</string>
-    <string name="settings_vkb_swipe_gestures_summary">Сөздү өчүрүү үчүн солго, символдорду көрсөтүү үчүн ылдый сүрүңүз</string>
     <string name="settings_vkb_swipe_gestures_title">Сүрүү жаңсоолору</string>
+    <string name="settings_vkb_swipe_gestures_switch_summary">Баскычтопто солго, оңго жана ылдый сүрүү</string>
+    <string name="vkb_gestures_configure_title">Сүрүү жаңсоолорун жөндөө</string>
+    <string name="vkb_gestures_reserved_note">Жогору сүрүү баскычтын үстүндөгү сөздү тандайт</string>
     <string name="settings_vkb_type_by_swiping_summary">Баскычтардын үстүнөн сүрүп сөз терүү</string>
     <string name="settings_vkb_type_by_swiping_title">Сүрүп терүү</string>
     <string name="vkb_control_key_summary">Ctrl режимин күйгүзүү үчүн ?123 басып туруңуз</string>

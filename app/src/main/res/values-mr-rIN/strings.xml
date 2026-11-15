@@ -316,10 +316,10 @@
     <string name="settings_vkb_slideboard_swap_summary_default">डावीकडे झटपट वाक्यांश, उजवीकडे नंबर पॅड</string>
     <string name="settings_vkb_slideboard_swap_summary_swapped">डावीकडे नंबर पॅड, उजवीकडे झटपट वाक्यांश</string>
     <string name="settings_vkb_slideboard_swap_title">Slideboard च्या जागा अदलाबदल करा</string>
-    <string name="settings_vkb_swipe_down_dismiss_summary">कीबोर्ड लपवण्यासाठी त्यावर खाली स्वाइप करा</string>
-    <string name="settings_vkb_swipe_down_dismiss_title">डिसमिस करण्यासाठी खाली स्वाइप करा</string>
-    <string name="settings_vkb_swipe_gestures_summary">शब्द हटवण्यासाठी डावीकडे स्वाइप करा आणि चिन्हे दाखवण्यासाठी खाली स्वाइप करा</string>
     <string name="settings_vkb_swipe_gestures_title">स्वाइप जेश्चर</string>
+    <string name="settings_vkb_swipe_gestures_switch_summary">कीबोर्डवर डावीकडे, उजवीकडे आणि खाली स्वाइप</string>
+    <string name="vkb_gestures_configure_title">स्वाइप जेश्चर कॉन्फिगर करा</string>
+    <string name="vkb_gestures_reserved_note">वर स्वाइप केल्यास कीच्या वरचा शब्द निवडला जातो</string>
     <string name="settings_vkb_type_by_swiping_summary">शब्द टाइप करण्यासाठी कीवरून बोट सरकवा</string>
     <string name="settings_vkb_type_by_swiping_title">स्वाइप करून टाइप करा</string>
     <string name="vkb_control_key_summary">Ctrl मोड सुरू करण्यासाठी ?123 दाबून धरा</string>

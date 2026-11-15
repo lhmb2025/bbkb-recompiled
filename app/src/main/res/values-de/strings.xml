@@ -316,10 +316,10 @@
     <string name="settings_vkb_slideboard_swap_summary_default">Schnellphrasen links, Ziffernblock rechts</string>
     <string name="settings_vkb_slideboard_swap_summary_swapped">Ziffernblock links, Schnellphrasen rechts</string>
     <string name="settings_vkb_slideboard_swap_title">Slideboard-Seiten tauschen</string>
-    <string name="settings_vkb_swipe_down_dismiss_summary">Auf der Tastatur nach unten streichen, um sie auszublenden</string>
-    <string name="settings_vkb_swipe_down_dismiss_title">Zum Ausblenden nach unten streichen</string>
-    <string name="settings_vkb_swipe_gestures_summary">Nach links streichen, um ein Wort zu löschen, und nach unten, um Symbole anzuzeigen</string>
     <string name="settings_vkb_swipe_gestures_title">Streichgesten</string>
+    <string name="settings_vkb_swipe_gestures_switch_summary">Streichen nach links, rechts und unten auf der Tastatur</string>
+    <string name="vkb_gestures_configure_title">Streichgesten konfigurieren</string>
+    <string name="vkb_gestures_reserved_note">Nach oben streichen wählt das Wort über der Taste</string>
     <string name="settings_vkb_type_by_swiping_summary">Über die Tasten gleiten, um ein Wort zu tippen</string>
     <string name="settings_vkb_type_by_swiping_title">Per Streichgeste tippen</string>
     <string name="vkb_control_key_summary">\?123 gedrückt halten, um den Strg-Modus zu aktivieren</string>

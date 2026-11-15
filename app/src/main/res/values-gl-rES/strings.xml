@@ -316,10 +316,10 @@
     <string name="settings_vkb_slideboard_swap_summary_default">Frases rápidas á esquerda, teclado numérico á dereita</string>
     <string name="settings_vkb_slideboard_swap_summary_swapped">Teclado numérico á esquerda, frases rápidas á dereita</string>
     <string name="settings_vkb_slideboard_swap_title">Intercambiar as posicións do Slideboard</string>
-    <string name="settings_vkb_swipe_down_dismiss_summary">Desliza cara abaixo no teclado para ocultalo</string>
-    <string name="settings_vkb_swipe_down_dismiss_title">Deslizar cara abaixo para pechar</string>
-    <string name="settings_vkb_swipe_gestures_summary">Desliza á esquerda para eliminar unha palabra e cara abaixo para mostrar os símbolos</string>
     <string name="settings_vkb_swipe_gestures_title">Xestos de deslizamento</string>
+    <string name="settings_vkb_swipe_gestures_switch_summary">Deslizamentos á esquerda, á dereita e cara abaixo no teclado</string>
+    <string name="vkb_gestures_configure_title">Configurar xestos de deslizamento</string>
+    <string name="vkb_gestures_reserved_note">Deslizar cara arriba escolle a palabra que hai sobre a tecla</string>
     <string name="settings_vkb_type_by_swiping_summary">Desliza o dedo polas teclas para escribir unha palabra</string>
     <string name="settings_vkb_type_by_swiping_title">Escribir deslizando</string>
     <string name="vkb_control_key_summary">Mantén premido ?123 para activar o modo Ctrl</string>

@@ -316,10 +316,10 @@
     <string name="settings_vkb_slideboard_swap_summary_default">Expresii rapide în stânga, tastatură numerică în dreapta</string>
     <string name="settings_vkb_slideboard_swap_summary_swapped">Tastatură numerică în stânga, expresii rapide în dreapta</string>
     <string name="settings_vkb_slideboard_swap_title">Inversați pozițiile pe Slideboard</string>
-    <string name="settings_vkb_swipe_down_dismiss_summary">Glisați în jos pe tastatură pentru a o ascunde</string>
-    <string name="settings_vkb_swipe_down_dismiss_title">Glisați în jos pentru închidere</string>
-    <string name="settings_vkb_swipe_gestures_summary">Glisați spre stânga pentru a șterge un cuvânt și în jos pentru a afișa simbolurile</string>
     <string name="settings_vkb_swipe_gestures_title">Gesturi de glisare</string>
+    <string name="settings_vkb_swipe_gestures_switch_summary">Glisări spre stânga, spre dreapta și în jos pe tastatură</string>
+    <string name="vkb_gestures_configure_title">Configurați gesturile de glisare</string>
+    <string name="vkb_gestures_reserved_note">Glisarea în sus alege cuvântul de deasupra tastei</string>
     <string name="settings_vkb_type_by_swiping_summary">Glisați peste taste pentru a tasta un cuvânt</string>
     <string name="settings_vkb_type_by_swiping_title">Tastați trăgând cu degetul</string>
     <string name="vkb_control_key_summary">Ține apăsat ?123 pentru a activa modul Ctrl</string>

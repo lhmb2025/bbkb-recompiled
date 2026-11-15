@@ -316,10 +316,10 @@
     <string name="settings_vkb_slideboard_swap_summary_default">العبارات السريعة على اليسار ولوحة الأرقام على اليمين</string>
     <string name="settings_vkb_slideboard_swap_summary_swapped">لوحة الأرقام على اليسار والعبارات السريعة على اليمين</string>
     <string name="settings_vkb_slideboard_swap_title">تبديل مواضع Slideboard</string>
-    <string name="settings_vkb_swipe_down_dismiss_summary">مرّر للأسفل على لوحة المفاتيح لإخفائها</string>
-    <string name="settings_vkb_swipe_down_dismiss_title">التمرير للأسفل للإخفاء</string>
-    <string name="settings_vkb_swipe_gestures_summary">مرّر لليسار لحذف كلمة ومرّر للأسفل لعرض الرموز</string>
     <string name="settings_vkb_swipe_gestures_title">إيماءات التمرير</string>
+    <string name="settings_vkb_swipe_gestures_switch_summary">التمرير لليسار ولليمين وللأسفل على لوحة المفاتيح</string>
+    <string name="vkb_gestures_configure_title">تكوين إيماءات التمرير</string>
+    <string name="vkb_gestures_reserved_note">التمرير للأعلى يختار الكلمة الموجودة فوق المفتاح</string>
     <string name="settings_vkb_type_by_swiping_summary">تمرير الإصبع عبر المفاتيح لكتابة كلمة</string>
     <string name="settings_vkb_type_by_swiping_title">الكتابة بالتمرير</string>
     <string name="vkb_control_key_summary">اضغط مطولاً على ?123 لتفعيل وضع Ctrl</string>

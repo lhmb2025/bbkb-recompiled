@@ -316,10 +316,10 @@
     <string name="settings_vkb_slideboard_swap_summary_default">Frases ràpides a l\'esquerra, teclat numèric a la dreta</string>
     <string name="settings_vkb_slideboard_swap_summary_swapped">Teclat numèric a l\'esquerra, frases ràpides a la dreta</string>
     <string name="settings_vkb_slideboard_swap_title">Intercanvia les posicions del Slideboard</string>
-    <string name="settings_vkb_swipe_down_dismiss_summary">Llisqueu cap avall sobre el teclat per amagar-lo</string>
-    <string name="settings_vkb_swipe_down_dismiss_title">Llisca cap avall per tancar</string>
-    <string name="settings_vkb_swipe_gestures_summary">Llisca cap a l\'esquerra per suprimir una paraula i cap avall per mostrar els símbols</string>
     <string name="settings_vkb_swipe_gestures_title">Gestos de lliscada</string>
+    <string name="settings_vkb_swipe_gestures_switch_summary">Lliscades cap a l\'esquerra, cap a la dreta i cap avall al teclat</string>
+    <string name="vkb_gestures_configure_title">Configura els gestos de lliscada</string>
+    <string name="vkb_gestures_reserved_note">Lliscar cap amunt tria la paraula que hi ha sobre la tecla</string>
     <string name="settings_vkb_type_by_swiping_summary">Llisqueu per les tecles per escriure una paraula</string>
     <string name="settings_vkb_type_by_swiping_title">Escriptura lliscant</string>
     <string name="vkb_control_key_summary">Mantén premut ?123 per activar el mode Ctrl</string>

@@ -316,10 +316,10 @@
     <string name="settings_vkb_slideboard_swap_summary_default">Түргэн хэллэг зүүнд, тооны самбар баруунд</string>
     <string name="settings_vkb_slideboard_swap_summary_swapped">Тооны самбар зүүнд, түргэн хэллэг баруунд</string>
     <string name="settings_vkb_slideboard_swap_title">Slideboard-ын байрлалыг солих</string>
-    <string name="settings_vkb_swipe_down_dismiss_summary">Гарыг нуухын тулд доош шудрах</string>
-    <string name="settings_vkb_swipe_down_dismiss_title">Доош шударч хаах</string>
-    <string name="settings_vkb_swipe_gestures_summary">Зүүн тийш шударвал үг устаж, доош шударвал тэмдэгт харагдана</string>
     <string name="settings_vkb_swipe_gestures_title">Шудрах зангаа</string>
+    <string name="settings_vkb_swipe_gestures_switch_summary">Гар дээр зүүн, баруун, доош шудрах</string>
+    <string name="vkb_gestures_configure_title">Шудрах зангааг тохируулах</string>
+    <string name="vkb_gestures_reserved_note">Дээш шудрахад товчлуурын дээрх үгийг сонгоно</string>
     <string name="settings_vkb_type_by_swiping_summary">Товчнууд дээгүүр шударч үг бичих</string>
     <string name="settings_vkb_type_by_swiping_title">Шударч бичих</string>
     <string name="vkb_control_key_summary">Ctrl горимыг идэвхжүүлэхийн тулд ?123-г удаан дарна</string>

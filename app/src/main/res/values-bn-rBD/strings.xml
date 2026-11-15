@@ -316,10 +316,10 @@
     <string name="settings_vkb_slideboard_swap_summary_default">বাঁয়ে দ্রুত বাক্যাংশ, ডানে নম্বর প্যাড</string>
     <string name="settings_vkb_slideboard_swap_summary_swapped">বাঁয়ে নম্বর প্যাড, ডানে দ্রুত বাক্যাংশ</string>
     <string name="settings_vkb_slideboard_swap_title">Slideboard-এর অবস্থান অদলবদল করুন</string>
-    <string name="settings_vkb_swipe_down_dismiss_summary">কীবোর্ড লুকাতে তার ওপর নিচের দিকে সোয়াইপ করুন</string>
-    <string name="settings_vkb_swipe_down_dismiss_title">লুকাতে নিচে সোয়াইপ</string>
-    <string name="settings_vkb_swipe_gestures_summary">শব্দ মুছতে বাঁয়ে সোয়াইপ, প্রতীক দেখাতে নিচে সোয়াইপ</string>
     <string name="settings_vkb_swipe_gestures_title">সোয়াইপ অঙ্গভঙ্গি</string>
+    <string name="settings_vkb_swipe_gestures_switch_summary">কীবোর্ডে বাঁয়ে, ডানে ও নিচে সোয়াইপ</string>
+    <string name="vkb_gestures_configure_title">সোয়াইপ অঙ্গভঙ্গি কনফিগার করুন</string>
+    <string name="vkb_gestures_reserved_note">উপরে সোয়াইপ করলে কী-এর উপরের শব্দটি বেছে নেওয়া হয়</string>
     <string name="settings_vkb_type_by_swiping_summary">একটি শব্দ লিখতে কী-গুলোর ওপর দিয়ে আঙুল টানুন</string>
     <string name="settings_vkb_type_by_swiping_title">সোয়াইপ করে লিখুন</string>
     <string name="vkb_control_key_summary">Ctrl মোড চালু করতে ?123 চেপে ধরে রাখুন</string>

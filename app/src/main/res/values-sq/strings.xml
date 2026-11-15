@@ -316,10 +316,10 @@
     <string name="settings_vkb_slideboard_swap_summary_default">Frazat e shpejta majtas, tastiera numerike djathtas</string>
     <string name="settings_vkb_slideboard_swap_summary_swapped">Tastiera numerike majtas, frazat e shpejta djathtas</string>
     <string name="settings_vkb_slideboard_swap_title">Ndërro anët e Slideboard</string>
-    <string name="settings_vkb_swipe_down_dismiss_summary">Rrëshqit poshtë mbi tastierë për ta fshehur</string>
-    <string name="settings_vkb_swipe_down_dismiss_title">Rrëshqit poshtë për ta mbyllur</string>
-    <string name="settings_vkb_swipe_gestures_summary">Rrëshqit majtas për të fshirë një fjalë dhe poshtë për të parë simbolet</string>
     <string name="settings_vkb_swipe_gestures_title">Gjestet e rrëshqitjes</string>
+    <string name="settings_vkb_swipe_gestures_switch_summary">Rrëshqitje majtas, djathtas dhe poshtë në tastierë</string>
+    <string name="vkb_gestures_configure_title">Konfiguro gjestet e rrëshqitjes</string>
+    <string name="vkb_gestures_reserved_note">Rrëshqitja lart zgjedh fjalën mbi tastin</string>
     <string name="settings_vkb_type_by_swiping_summary">Rrëshqit mbi tastet për të shkruar një fjalë</string>
     <string name="settings_vkb_type_by_swiping_title">Shkrim me rrëshqitje</string>
     <string name="vkb_control_key_summary">Mbaje shtypur ?123 për të aktivizuar modalitetin Ctrl</string>

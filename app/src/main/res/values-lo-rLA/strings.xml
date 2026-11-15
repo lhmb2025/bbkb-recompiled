@@ -316,10 +316,10 @@
     <string name="settings_vkb_slideboard_swap_summary_default">ວະລີດ່ວນຢູ່ຊ້າຍ, ແປ້ນຕົວເລກຢູ່ຂວາ</string>
     <string name="settings_vkb_slideboard_swap_summary_swapped">ແປ້ນຕົວເລກຢູ່ຊ້າຍ, ວະລີດ່ວນຢູ່ຂວາ</string>
     <string name="settings_vkb_slideboard_swap_title">ສະຫຼັບຕຳແໜ່ງ Slideboard</string>
-    <string name="settings_vkb_swipe_down_dismiss_summary">ປັດລົງເທິງແປ້ນພິມເພື່ອເຊື່ອງມັນ</string>
-    <string name="settings_vkb_swipe_down_dismiss_title">ປັດລົງເພື່ອປິດ</string>
-    <string name="settings_vkb_swipe_gestures_summary">ປັດຊ້າຍເພື່ອລຶບຄຳ ແລະ ປັດລົງເພື່ອສະແດງສັນຍາລັກ</string>
     <string name="settings_vkb_swipe_gestures_title">ທ່າທາງການປັດ</string>
+    <string name="settings_vkb_swipe_gestures_switch_summary">ປັດຊ້າຍ, ຂວາ ແລະ ລົງເທິງແປ້ນພິມ</string>
+    <string name="vkb_gestures_configure_title">ຕັ້ງຄ່າທ່າທາງການປັດ</string>
+    <string name="vkb_gestures_reserved_note">ການປັດຂຶ້ນຈະເລືອກຄຳທີ່ຢູ່ເທິງປຸ່ມ</string>
     <string name="settings_vkb_type_by_swiping_summary">ລາກນິ້ວຜ່ານປຸ່ມຕ່າງໆເພື່ອພິມຄຳ</string>
     <string name="settings_vkb_type_by_swiping_title">ພິມດ້ວຍການປັດ</string>
     <string name="vkb_control_key_summary">ກົດ ?123 ຄ້າງໄວ້ເພື່ອເປີດໂໝດ Ctrl</string>

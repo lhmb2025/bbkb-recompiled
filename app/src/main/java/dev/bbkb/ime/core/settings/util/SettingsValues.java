@@ -294,12 +294,11 @@ public final class SettingsValues {
 
     public final boolean isVkbGestureInputEnabled;
 
+    /** The on-screen keyboard's "Swipe gestures" main switch. */
     public final boolean isVkbSwipeGesturesEnabled;
 
-
-
-
-    public final boolean isVkbSwipeDownEnabled;
+    /** What swipe left, right and down do on the on-screen keyboard. */
+    public final dev.bbkb.ime.core.gesture.arbiter.VkbGestureAssignments vkbGestureAssignments;
 
 
     public final boolean shouldShowLxxButton;
@@ -373,7 +372,8 @@ public final class SettingsValues {
         this.autoCorrectionMode = currentAutoCorrectionMode();
         this.isVkbGestureInputEnabled = SettingsManager.isVkbTypeBySwipingEnabled(sharedPreferences, resources);
         this.isCkbGestureInputEnabled = SettingsManager.isCbkTypeBySwipingEnabled(sharedPreferences, resources);
-        this.isVkbSwipeDownEnabled = SettingsManager.isVkbSwipeDownEnabled(sharedPreferences);
+        this.vkbGestureAssignments = dev.bbkb.ime.core.gesture.arbiter.VkbGestureAssignments.Companion.fromPrefs(
+                sharedPreferences, dev.bbkb.ime.core.gesture.arbiter.VkbGestureAssignments.Companion.deviceDefaults());
         this.isVkbSwipeGesturesEnabled = SettingsManager.isVkbSwipeGesturesEnabled(sharedPreferences, resources);
         this.autoCorrectionSwitchedOn = SettingsManager.isAutoCorrectionSwitchedOn(sharedPreferences);
         this.isAutoCorrectEnabled = this.autoCorrectionSwitchedOn
@@ -610,7 +610,7 @@ public final class SettingsValues {
         this.isBigramPredictionEnabled = base.isBigramPredictionEnabled;
         this.isVkbGestureInputEnabled = base.isVkbGestureInputEnabled;
         this.isVkbSwipeGesturesEnabled = base.isVkbSwipeGesturesEnabled;
-        this.isVkbSwipeDownEnabled = base.isVkbSwipeDownEnabled;
+        this.vkbGestureAssignments = base.vkbGestureAssignments;
         this.isSlidingKeyInputPreviewEnabled = base.isSlidingKeyInputPreviewEnabled;
         this.keyLongpressTimeoutMs = base.keyLongpressTimeoutMs;
         this.keyboardHeightMode = base.keyboardHeightMode;

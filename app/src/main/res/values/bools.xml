@@ -17,7 +17,7 @@
     <bool name="config_default_vibration_enabled">true</bool>
 
     <bool name="config_ckb_type_by_swiping_enabled_by_build_config">false</bool>
-    <bool name="config_vkb_swipe_gestures_enabled_by_build_config">false</bool>
+    <bool name="config_vkb_swipe_gestures_enabled_by_build_config">true</bool>
     <bool name="config_vkb_type_by_swiping_enabled_by_build_config">false</bool>
 
     <!-- The one default for offensive-word masking in dictation (SettingsManager and the voice settings row) -->

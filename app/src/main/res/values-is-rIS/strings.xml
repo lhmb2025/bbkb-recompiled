@@ -316,10 +316,10 @@
     <string name="settings_vkb_slideboard_swap_summary_default">Skyndisetningar til vinstri, talnaborð til hægri</string>
     <string name="settings_vkb_slideboard_swap_summary_swapped">Talnaborð til vinstri, skyndisetningar til hægri</string>
     <string name="settings_vkb_slideboard_swap_title">Víxla staðsetningum Slideboard</string>
-    <string name="settings_vkb_swipe_down_dismiss_summary">Strjúktu niður á lyklaborðinu til að fela það</string>
-    <string name="settings_vkb_swipe_down_dismiss_title">Strjúka niður til að fela</string>
-    <string name="settings_vkb_swipe_gestures_summary">Strjúktu til vinstri til að eyða orði og niður til að sýna tákn</string>
     <string name="settings_vkb_swipe_gestures_title">Strokbendingar</string>
+    <string name="settings_vkb_swipe_gestures_switch_summary">Strokur til vinstri, hægri og niður á lyklaborðinu</string>
+    <string name="vkb_gestures_configure_title">Stilla strokbendingar</string>
+    <string name="vkb_gestures_reserved_note">Að strjúka upp velur orðið fyrir ofan lykilinn</string>
     <string name="settings_vkb_type_by_swiping_summary">Renndu yfir lyklana til að skrifa orð</string>
     <string name="settings_vkb_type_by_swiping_title">Skrifa með stroki</string>
     <string name="vkb_control_key_summary">Haltu ?123 inni til að kveikja á Ctrl-ham</string>

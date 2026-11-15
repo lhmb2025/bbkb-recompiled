@@ -316,10 +316,10 @@
     <string name="settings_vkb_slideboard_swap_summary_default">Бързи фрази отляво, цифров блок отдясно</string>
     <string name="settings_vkb_slideboard_swap_summary_swapped">Цифров блок отляво, бързи фрази отдясно</string>
     <string name="settings_vkb_slideboard_swap_title">Размяна на местата в Slideboard</string>
-    <string name="settings_vkb_swipe_down_dismiss_summary">Плъзнете надолу по клавиатурата, за да я скриете</string>
-    <string name="settings_vkb_swipe_down_dismiss_title">Плъзгане надолу за скриване</string>
-    <string name="settings_vkb_swipe_gestures_summary">Плъзгане наляво за изтриване на дума и плъзгане надолу за показване на символите</string>
     <string name="settings_vkb_swipe_gestures_title">Жестове с плъзгане</string>
+    <string name="settings_vkb_swipe_gestures_switch_summary">Плъзгане наляво, надясно и надолу по клавиатурата</string>
+    <string name="vkb_gestures_configure_title">Конфигуриране на жестовете с плъзгане</string>
+    <string name="vkb_gestures_reserved_note">Плъзгането нагоре избира думата над клавиша</string>
     <string name="settings_vkb_type_by_swiping_summary">Плъзнете по клавишите, за да въведете дума</string>
     <string name="settings_vkb_type_by_swiping_title">Писане с плъзгане</string>
     <string name="vkb_control_key_summary">Задръжте ?123, за да включите режим Ctrl</string>
