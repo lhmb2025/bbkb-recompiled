@@ -105,7 +105,7 @@
     <string name="ckb_gestures_export_summary">เขียนตารางปุ่มที่บันทึกไว้เป็นข้อความ &lt;ckb-key-grid&gt; ลงในไฟล์ของแอป เพื่อนำไปวางในการกำหนดค่าอุปกรณ์ เปิดแป้นพิมพ์หนึ่งครั้งก่อนเพื่อให้บันทึกได้</string>
     <string name="ckb_gestures_export_title">ส่งออกเรขาคณิต CKB</string>
     <string name="ckb_gestures_export_written">เขียน %s แล้ว</string>
-    <string name="ckb_gestures_reserved_note">การกวาดนิ้วขึ้น (ยืนยันคำแนะนำใต้นิ้วของคุณ) ถูกสงวนไว้</string>
+    <string name="ckb_gestures_reserved_note">การกวาดนิ้วหรือสะบัดนิ้วขึ้นถูกสงวนไว้สำหรับยืนยันคำแนะนำที่แสดงเหนือแป้นพิมพ์</string>
     <string name="ckb_gestures_screen_title">ท่าทางคาปาซิทีฟ</string>
     <string name="settings_gesture_accent_max_speed_summary">ตัวคูณความเร็วสูงสุดสำหรับการเปลี่ยนสำเนียง</string>
     <string name="settings_gesture_accent_max_speed_title">ตัวคูณความเร็วสูงสุดของการเลื่อนเปลี่ยนสำเนียง</string>
@@ -319,7 +319,7 @@
     <string name="settings_vkb_swipe_gestures_title">ท่าทางกวาดนิ้ว</string>
     <string name="settings_vkb_swipe_gestures_switch_summary">กวาดนิ้วไปทางซ้าย ขวา และลงบนแป้นพิมพ์</string>
     <string name="vkb_gestures_configure_title">ตั้งค่าท่าทางกวาดนิ้ว</string>
-    <string name="vkb_gestures_reserved_note">การกวาดนิ้วขึ้นจะเลือกคำที่อยู่เหนือปุ่ม</string>
+    <string name="vkb_gestures_reserved_note">การกวาดนิ้วหรือสะบัดนิ้วขึ้นถูกสงวนไว้สำหรับยืนยันคำแนะนำที่แสดงบนแป้นพิมพ์</string>
     <string name="settings_vkb_type_by_swiping_summary">ลากนิ้วผ่านปุ่มต่างๆ เพื่อพิมพ์คำ</string>
     <string name="settings_vkb_type_by_swiping_title">พิมพ์โดยการกวาดนิ้ว</string>
     <string name="vkb_control_key_summary">กด ?123 ค้างไว้เพื่อเปิดโหมด Ctrl</string>

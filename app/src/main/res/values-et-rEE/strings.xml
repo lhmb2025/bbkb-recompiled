@@ -105,7 +105,7 @@
     <string name="ckb_gestures_export_summary">Kirjutab salvestatud klahviruudustiku &lt;ckb-key-grid&gt; katkendina rakenduse failidesse, et seda seadme konfiguratsiooni kleepida. Avage esmalt klaviatuur, et see saaks ruudustiku salvestada.</string>
     <string name="ckb_gestures_export_title">Ekspordi CKB geomeetria</string>
     <string name="ckb_gestures_export_written">Kirjutatud %s</string>
-    <string name="ckb_gestures_reserved_note">Üles libistamine (sõrme all oleva soovituse kinnitamine) on reserveeritud</string>
+    <string name="ckb_gestures_reserved_note">Üles libistamine või viipamine on reserveeritud klaviatuuri kohal kuvatavate soovituste kinnitamiseks</string>
     <string name="ckb_gestures_screen_title">Mahtuvuslikud žestid</string>
     <string name="settings_gesture_accent_max_speed_summary">Maksimaalne kiiruskordaja rõhumärkide vahetamisel</string>
     <string name="settings_gesture_accent_max_speed_title">Rõhumärkide kerimise maks. kiiruskordaja</string>
@@ -319,7 +319,7 @@
     <string name="settings_vkb_swipe_gestures_title">Libistusžestid</string>
     <string name="settings_vkb_swipe_gestures_switch_summary">Libistamised vasakule, paremale ja alla klaviatuuril</string>
     <string name="vkb_gestures_configure_title">Seadista libistusžestid</string>
-    <string name="vkb_gestures_reserved_note">Üles libistamine valib klahvi kohal oleva sõna</string>
+    <string name="vkb_gestures_reserved_note">Üles libistamine või viipamine on reserveeritud klaviatuuril kuvatavate soovituste kinnitamiseks</string>
     <string name="settings_vkb_type_by_swiping_summary">Libistage üle klahvide, et sõna kirjutada</string>
     <string name="settings_vkb_type_by_swiping_title">Kirjutamine libistades</string>
     <string name="vkb_control_key_summary">Ctrl-režiimi lubamiseks hoia all ?123</string>

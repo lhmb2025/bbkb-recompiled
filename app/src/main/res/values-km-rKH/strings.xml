@@ -105,7 +105,7 @@
     <string name="ckb_gestures_export_summary">សរសេរក្រឡាចត្រង្គគ្រាប់ចុចដែលបានថតជាកូដ &lt;ckb-key-grid&gt; ទៅក្នុងឯកសារកម្មវិធី ដើម្បីបិទភ្ជាប់ទៅក្នុងការកំណត់ឧបករណ៍។ សូមបើកក្ដារចុចម្ដងជាមុនសិន ដើម្បីឱ្យវាអាចថតបាន។</string>
     <string name="ckb_gestures_export_title">នាំចេញធរណីមាត្រ CKB</string>
     <string name="ckb_gestures_export_written">បានសរសេរ %s</string>
-    <string name="ckb_gestures_reserved_note">ការអូសឡើងលើ (បញ្ចូលពាក្យណែនាំនៅក្រោមម្រាមដៃ) ត្រូវបានបម្រុងទុក</string>
+    <string name="ckb_gestures_reserved_note">ការអូស ឬបោចឡើងលើ ត្រូវបានបម្រុងទុកសម្រាប់បញ្ចូលពាក្យណែនាំដែលបង្ហាញនៅពីលើក្តារចុច</string>
     <string name="ckb_gestures_screen_title">កាយវិការកាប៉ាស៊ីទីវ</string>
     <string name="settings_gesture_accent_max_speed_summary">មេគុណល្បឿនអតិបរមាសម្រាប់ការប្ដូរសញ្ញាសង្កត់</string>
     <string name="settings_gesture_accent_max_speed_title">មេគុណល្បឿនអតិបរមានៃការរមូរប្ដូរសញ្ញាសង្កត់</string>
@@ -319,7 +319,7 @@
     <string name="settings_vkb_swipe_gestures_title">កាយវិការអូស</string>
     <string name="settings_vkb_swipe_gestures_switch_summary">អូសទៅឆ្វេង ស្ដាំ និងចុះក្រោមលើក្ដារចុច</string>
     <string name="vkb_gestures_configure_title">កំណត់កាយវិការអូស</string>
-    <string name="vkb_gestures_reserved_note">ការអូសឡើងលើជ្រើសរើសពាក្យនៅពីលើគ្រាប់ចុច</string>
+    <string name="vkb_gestures_reserved_note">ការអូស ឬបោចឡើងលើ ត្រូវបានបម្រុងទុកសម្រាប់បញ្ចូលពាក្យណែនាំដែលបង្ហាញនៅលើក្តារចុច</string>
     <string name="settings_vkb_type_by_swiping_summary">អូសកាត់គ្រាប់ចុចដើម្បីវាយពាក្យ</string>
     <string name="settings_vkb_type_by_swiping_title">វាយបញ្ចូលដោយការអូស</string>
     <string name="vkb_control_key_summary">ចុចឱ្យជាប់ ?123 ដើម្បីបើករបៀប Ctrl</string>

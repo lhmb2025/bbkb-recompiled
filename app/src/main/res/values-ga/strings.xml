@@ -105,7 +105,7 @@
     <string name="ckb_gestures_export_summary">Scríobhann sé an ghreille eochracha a gabhadh mar mhír &lt;ckb-key-grid&gt; i gcomhaid na haipe, le greamú i gcumraíocht an ghléis. Oscail an méarchlár uair amháin ar dtús chun go bhféadfaidh sé í a ghabháil.</string>
     <string name="ckb_gestures_export_title">Easpórtáil céimseata an CKB</string>
     <string name="ckb_gestures_export_written">Scríobhadh %s</string>
-    <string name="ckb_gestures_reserved_note">Tá svaidhpeáil suas (glacadh leis an moladh faoi do mhéar) in áirithe</string>
+    <string name="ckb_gestures_reserved_note">Tá svaidhpeáil nó flicceáil suas in áirithe chun glacadh leis na moltaí a thaispeántar os cionn an mhéarchláir</string>
     <string name="ckb_gestures_screen_title">Gothaí toillteacha</string>
     <string name="settings_gesture_accent_max_speed_summary">An t-iolraitheoir luais is airde d\'athruithe aicinn</string>
     <string name="settings_gesture_accent_max_speed_title">Iolraitheoir luais is airde agus na haicinn á scrollú</string>
@@ -319,7 +319,7 @@
     <string name="settings_vkb_swipe_gestures_title">Gothaí svaidhpeála</string>
     <string name="settings_vkb_swipe_gestures_switch_summary">Svaidhpeanna ar chlé, ar dheis agus síos ar an méarchlár</string>
     <string name="vkb_gestures_configure_title">Cumraigh gothaí svaidhpeála</string>
-    <string name="vkb_gestures_reserved_note">Roghnaíonn svaidhpeáil suas an focal os cionn na heochrach</string>
+    <string name="vkb_gestures_reserved_note">Tá svaidhpeáil nó flicceáil suas in áirithe chun glacadh leis na moltaí a thaispeántar ar an méarchlár</string>
     <string name="settings_vkb_type_by_swiping_summary">Sleamhnaigh thar na heochracha chun focal a chlóscríobh</string>
     <string name="settings_vkb_type_by_swiping_title">Clóscríobh le svaidhpeáil</string>
     <string name="vkb_control_key_summary">Brúigh agus coinnigh ?123 chun mód Ctrl a chumasú</string>

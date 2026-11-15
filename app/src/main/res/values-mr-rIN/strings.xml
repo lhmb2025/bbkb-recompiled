@@ -105,7 +105,7 @@
     <string name="ckb_gestures_export_summary">कॅप्चर केलेली की ग्रिड &lt;ckb-key-grid&gt; स्निपेट म्हणून अ‍ॅप फाइलमध्ये लिहा, जेणेकरून ती डिव्हाइस कॉन्फिगमध्ये पेस्ट करता येईल. कीबोर्ड कॅप्चर करू शकेल यासाठी आधी तो एकदा उघडा.</string>
     <string name="ckb_gestures_export_title">CKB भूमिती एक्सपोर्ट करा</string>
     <string name="ckb_gestures_export_written">%s लिहिले</string>
-    <string name="ckb_gestures_reserved_note">वर स्वाइप करणे (बोटाखालील सूचना स्वीकारणे) राखीव आहे</string>
+    <string name="ckb_gestures_reserved_note">वर स्वाइप किंवा फ्लिक करणे कीबोर्डच्या वर दाखवलेल्या सूचना स्वीकारण्यासाठी राखीव आहे</string>
     <string name="ckb_gestures_screen_title">कॅपेसिटिव्ह जेश्चर</string>
     <string name="settings_gesture_accent_max_speed_summary">स्वरचिन्ह बदलांसाठी कमाल गती गुणक</string>
     <string name="settings_gesture_accent_max_speed_title">स्क्रोलने स्वरचिन्ह बदलण्याचा कमाल गती गुणक</string>
@@ -319,7 +319,7 @@
     <string name="settings_vkb_swipe_gestures_title">स्वाइप जेश्चर</string>
     <string name="settings_vkb_swipe_gestures_switch_summary">कीबोर्डवर डावीकडे, उजवीकडे आणि खाली स्वाइप</string>
     <string name="vkb_gestures_configure_title">स्वाइप जेश्चर कॉन्फिगर करा</string>
-    <string name="vkb_gestures_reserved_note">वर स्वाइप केल्यास कीच्या वरचा शब्द निवडला जातो</string>
+    <string name="vkb_gestures_reserved_note">वर स्वाइप किंवा फ्लिक करणे कीबोर्डवर दाखवलेल्या सूचना स्वीकारण्यासाठी राखीव आहे</string>
     <string name="settings_vkb_type_by_swiping_summary">शब्द टाइप करण्यासाठी कीवरून बोट सरकवा</string>
     <string name="settings_vkb_type_by_swiping_title">स्वाइप करून टाइप करा</string>
     <string name="vkb_control_key_summary">Ctrl मोड सुरू करण्यासाठी ?123 दाबून धरा</string>

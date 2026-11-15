@@ -105,7 +105,7 @@
     <string name="ckb_gestures_export_summary">Schrijf het vastgelegde toetsenraster als een &lt;ckb-key-grid&gt;-fragment naar de app-bestanden, om in de toestelconfiguratie te plakken. Open eerst één keer het toetsenbord zodat het kan worden vastgelegd.</string>
     <string name="ckb_gestures_export_title">CKB-geometrie exporteren</string>
     <string name="ckb_gestures_export_written">%s geschreven</string>
-    <string name="ckb_gestures_reserved_note">Omhoog vegen (de suggestie onder uw vinger bevestigen) is gereserveerd</string>
+    <string name="ckb_gestures_reserved_note">Omhoog vegen of flicken is gereserveerd voor het bevestigen van suggesties die boven het toetsenbord worden getoond</string>
     <string name="ckb_gestures_screen_title">Capacitieve gebaren</string>
     <string name="settings_gesture_accent_max_speed_summary">Maximale snelheidsfactor voor accentwijzigingen</string>
     <string name="settings_gesture_accent_max_speed_title">Max. snelheidsfactor voor accentwijziging bij scrollen</string>
@@ -319,7 +319,7 @@
     <string name="settings_vkb_swipe_gestures_title">Veeggebaren</string>
     <string name="settings_vkb_swipe_gestures_switch_summary">Vegen naar links, naar rechts en omlaag op het toetsenbord</string>
     <string name="vkb_gestures_configure_title">Veeggebaren configureren</string>
-    <string name="vkb_gestures_reserved_note">Omhoog vegen kiest het woord boven de toets</string>
+    <string name="vkb_gestures_reserved_note">Omhoog vegen of flicken is gereserveerd voor het bevestigen van suggesties die op het toetsenbord worden getoond</string>
     <string name="settings_vkb_type_by_swiping_summary">Over de toetsen glijden om een woord te typen</string>
     <string name="settings_vkb_type_by_swiping_title">Typen door te vegen</string>
     <string name="vkb_control_key_summary">Houd ?123 ingedrukt om de Ctrl-modus in te schakelen</string>

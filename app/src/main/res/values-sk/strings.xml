@@ -105,7 +105,7 @@
     <string name="ckb_gestures_export_summary">Zapíše zachytenú mriežku klávesov ako útržok &lt;ckb-key-grid&gt; do súborov aplikácie, ktorý môžete vložiť do konfigurácie zariadenia. Najskôr raz otvorte klávesnicu, aby ju mohla zachytiť.</string>
     <string name="ckb_gestures_export_title">Exportovať geometriu CKB</string>
     <string name="ckb_gestures_export_written">Zapísané do %s</string>
-    <string name="ckb_gestures_reserved_note">Potiahnutie nahor (potvrdenie návrhu pod prstom) je vyhradené</string>
+    <string name="ckb_gestures_reserved_note">Potiahnutie alebo švihnutie nahor je vyhradené na potvrdenie návrhov zobrazených nad klávesnicou</string>
     <string name="ckb_gestures_screen_title">Kapacitné gestá</string>
     <string name="settings_gesture_accent_max_speed_summary">Maximálny násobič rýchlosti pri zmene diakritiky</string>
     <string name="settings_gesture_accent_max_speed_title">Max. násobič rýchlosti posúvania diakritiky</string>
@@ -319,7 +319,7 @@
     <string name="settings_vkb_swipe_gestures_title">Gestá potiahnutia</string>
     <string name="settings_vkb_swipe_gestures_switch_summary">Potiahnutia doľava, doprava a nadol na klávesnici</string>
     <string name="vkb_gestures_configure_title">Nastaviť gestá potiahnutia</string>
-    <string name="vkb_gestures_reserved_note">Potiahnutie nahor vyberie slovo nad klávesom</string>
+    <string name="vkb_gestures_reserved_note">Potiahnutie alebo švihnutie nahor je vyhradené na potvrdenie návrhov zobrazených na klávesnici</string>
     <string name="settings_vkb_type_by_swiping_summary">Potiahnutím po klávesoch napíšete slovo</string>
     <string name="settings_vkb_type_by_swiping_title">Písanie potiahnutím</string>
     <string name="vkb_control_key_summary">Podržaním ?123 zapnete režim Ctrl</string>

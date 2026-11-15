@@ -105,7 +105,7 @@
     <string name="ckb_gestures_export_summary">Enregistre la grille de touches capturée sous forme d\'extrait &lt;ckb-key-grid&gt; dans les fichiers de l\'application, à coller dans la configuration de l\'appareil. Ouvrez d\'abord le clavier une fois pour permettre la capture.</string>
     <string name="ckb_gestures_export_title">Exporter la géométrie CKB</string>
     <string name="ckb_gestures_export_written">%s enregistré</string>
-    <string name="ckb_gestures_reserved_note">Le glissement vers le haut (valider la suggestion sous votre doigt) est réservé</string>
+    <string name="ckb_gestures_reserved_note">Le glissement ou le balayage rapide vers le haut est réservé à la validation des suggestions affichées au-dessus du clavier</string>
     <string name="ckb_gestures_screen_title">Gestes capacitifs</string>
     <string name="settings_gesture_accent_max_speed_summary">Multiplicateur de vitesse maximal pour le changement d\'accent</string>
     <string name="settings_gesture_accent_max_speed_title">Multiplicateur de vitesse max. du changement d\'accent</string>
@@ -319,7 +319,7 @@
     <string name="settings_vkb_swipe_gestures_title">Gestes de glissement</string>
     <string name="settings_vkb_swipe_gestures_switch_summary">Glissements vers la gauche, la droite et le bas sur le clavier</string>
     <string name="vkb_gestures_configure_title">Configurer les gestes de glissement</string>
-    <string name="vkb_gestures_reserved_note">Le glissement vers le haut choisit le mot au-dessus de la touche</string>
+    <string name="vkb_gestures_reserved_note">Le glissement ou le balayage rapide vers le haut est réservé à la validation des suggestions affichées sur le clavier</string>
     <string name="settings_vkb_type_by_swiping_summary">Faites glisser le doigt sur les touches pour saisir un mot</string>
     <string name="settings_vkb_type_by_swiping_title">Saisie par glissement</string>
     <string name="vkb_control_key_summary">Maintenez ?123 enfoncée pour activer le mode Ctrl</string>

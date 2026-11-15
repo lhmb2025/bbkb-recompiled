@@ -105,7 +105,7 @@
     <string name="ckb_gestures_export_summary">Тартылган баскыч торун &lt;ckb-key-grid&gt; үзүндүсү катары колдонмонун файлдарына жазып, түзмөктүн конфигурациясына коюңуз. Адегенде баскычтопту бир жолу ачыңыз, ошондо ал торду тарта алат.</string>
     <string name="ckb_gestures_export_title">CKB геометриясын экспорттоо</string>
     <string name="ckb_gestures_export_written">%s жазылды</string>
-    <string name="ckb_gestures_reserved_note">Жогору сүрүү (манжаңыздын астындагы сунушту колдонуу) ээленген</string>
+    <string name="ckb_gestures_reserved_note">Жогору сүрүү же ийкөө клавиатуранын үстүндө көрсөтүлгөн сунуштарды колдонуу үчүн сакталган</string>
     <string name="ckb_gestures_screen_title">Сыйымдуу жаңсоолор</string>
     <string name="settings_gesture_accent_max_speed_summary">Акцентти алмаштыруу үчүн максималдуу ылдамдык көбөйткүчү</string>
     <string name="settings_gesture_accent_max_speed_title">Акцент алмашууда жылдыруунун макс. ылдамдык көбөйткүчү</string>
@@ -319,7 +319,7 @@
     <string name="settings_vkb_swipe_gestures_title">Сүрүү жаңсоолору</string>
     <string name="settings_vkb_swipe_gestures_switch_summary">Баскычтопто солго, оңго жана ылдый сүрүү</string>
     <string name="vkb_gestures_configure_title">Сүрүү жаңсоолорун жөндөө</string>
-    <string name="vkb_gestures_reserved_note">Жогору сүрүү баскычтын үстүндөгү сөздү тандайт</string>
+    <string name="vkb_gestures_reserved_note">Жогору сүрүү же ийкөө клавиатурада көрсөтүлгөн сунуштарды колдонуу үчүн сакталган</string>
     <string name="settings_vkb_type_by_swiping_summary">Баскычтардын үстүнөн сүрүп сөз терүү</string>
     <string name="settings_vkb_type_by_swiping_title">Сүрүп терүү</string>
     <string name="vkb_control_key_summary">Ctrl режимин күйгүзүү үчүн ?123 басып туруңуз</string>

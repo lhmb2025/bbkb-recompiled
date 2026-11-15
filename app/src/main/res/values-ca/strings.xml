@@ -105,7 +105,7 @@
     <string name="ckb_gestures_export_summary">Escriu la graella de tecles capturada com a fragment &lt;ckb-key-grid&gt; als fitxers de l\'aplicació, per enganxar-lo a la configuració del dispositiu. Obriu el teclat un cop perquè la pugui capturar.</string>
     <string name="ckb_gestures_export_title">Exporta la geometria del CKB</string>
     <string name="ckb_gestures_export_written">S\'ha escrit %s</string>
-    <string name="ckb_gestures_reserved_note">Lliscar cap amunt (confirmar el suggeriment que hi ha sota el dit) està reservat</string>
+    <string name="ckb_gestures_reserved_note">Lliscar o fer un gest ràpid cap amunt està reservat per confirmar els suggeriments que es mostren a sobre del teclat</string>
     <string name="ckb_gestures_screen_title">Gestos capacitius</string>
     <string name="settings_gesture_accent_max_speed_summary">Multiplicador de velocitat màxim per al canvi d\'accents</string>
     <string name="settings_gesture_accent_max_speed_title">Multiplicador de velocitat màxim en desplaçar els accents</string>
@@ -319,7 +319,7 @@
     <string name="settings_vkb_swipe_gestures_title">Gestos de lliscada</string>
     <string name="settings_vkb_swipe_gestures_switch_summary">Lliscades cap a l\'esquerra, cap a la dreta i cap avall al teclat</string>
     <string name="vkb_gestures_configure_title">Configura els gestos de lliscada</string>
-    <string name="vkb_gestures_reserved_note">Lliscar cap amunt tria la paraula que hi ha sobre la tecla</string>
+    <string name="vkb_gestures_reserved_note">Lliscar o fer un gest ràpid cap amunt està reservat per confirmar els suggeriments que es mostren al teclat</string>
     <string name="settings_vkb_type_by_swiping_summary">Llisqueu per les tecles per escriure una paraula</string>
     <string name="settings_vkb_type_by_swiping_title">Escriptura lliscant</string>
     <string name="vkb_control_key_summary">Mantén premut ?123 per activar el mode Ctrl</string>

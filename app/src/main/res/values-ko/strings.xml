@@ -105,7 +105,7 @@
     <string name="ckb_gestures_export_summary">수집된 키 배열을 &lt;ckb-key-grid&gt; 스니펫으로 앱 파일에 기록하여 기기 구성에 붙여넣을 수 있게 합니다. 수집할 수 있도록 먼저 키보드를 한 번 여세요.</string>
     <string name="ckb_gestures_export_title">CKB 배열 내보내기</string>
     <string name="ckb_gestures_export_written">%s에 기록함</string>
-    <string name="ckb_gestures_reserved_note">위로 스와이프(손가락 아래의 추천 항목 확정)는 예약되어 있습니다</string>
+    <string name="ckb_gestures_reserved_note">위로 스와이프 또는 플릭은 키보드 위에 표시되는 추천 항목을 확정하는 데 예약되어 있습니다</string>
     <string name="ckb_gestures_screen_title">정전식 제스처</string>
     <string name="settings_gesture_accent_max_speed_summary">악센트 변경의 최대 속도 배율</string>
     <string name="settings_gesture_accent_max_speed_title">스크롤 악센트 변경 최대 속도 배율</string>
@@ -319,7 +319,7 @@
     <string name="settings_vkb_swipe_gestures_title">스와이프 제스처</string>
     <string name="settings_vkb_swipe_gestures_switch_summary">키보드에서 왼쪽, 오른쪽, 아래로 스와이프</string>
     <string name="vkb_gestures_configure_title">스와이프 제스처 구성</string>
-    <string name="vkb_gestures_reserved_note">위로 스와이프하면 키 위의 단어를 선택합니다</string>
+    <string name="vkb_gestures_reserved_note">위로 스와이프 또는 플릭은 키보드에 표시되는 추천 항목을 확정하는 데 예약되어 있습니다</string>
     <string name="settings_vkb_type_by_swiping_summary">키 위로 손가락을 밀어서 단어를 입력합니다</string>
     <string name="settings_vkb_type_by_swiping_title">밀어서 입력</string>
     <string name="vkb_control_key_summary">\?123을 길게 누르면 Ctrl 모드가 켜집니다</string>

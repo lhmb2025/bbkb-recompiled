@@ -105,7 +105,7 @@
     <string name="ckb_gestures_export_summary">Yakalanan tuş ızgarasını, cihaz yapılandırmasına yapıştırmak üzere &lt;ckb-key-grid&gt; parçası olarak uygulama dosyalarına yaz. Yakalama yapılabilmesi için önce klavyeyi bir kez açın.</string>
     <string name="ckb_gestures_export_title">CKB geometrisini dışa aktar</string>
     <string name="ckb_gestures_export_written">%s yazıldı</string>
-    <string name="ckb_gestures_reserved_note">Yukarı kaydırma (parmağınızın altındaki öneriyi onaylama) ayrılmıştır</string>
+    <string name="ckb_gestures_reserved_note">Yukarı kaydırma veya fiske, klavyenin üstünde gösterilen önerileri onaylamak için ayrılmıştır</string>
     <string name="ckb_gestures_screen_title">Kapasitif hareketler</string>
     <string name="settings_gesture_accent_max_speed_summary">Vurgu değişimleri için maksimum hız çarpanı</string>
     <string name="settings_gesture_accent_max_speed_title">Vurgu değişimi maksimum hız çarpanı</string>
@@ -319,7 +319,7 @@
     <string name="settings_vkb_swipe_gestures_title">Kaydırma hareketleri</string>
     <string name="settings_vkb_swipe_gestures_switch_summary">Klavyede sola, sağa ve aşağı kaydırma</string>
     <string name="vkb_gestures_configure_title">Kaydırma hareketlerini yapılandır</string>
-    <string name="vkb_gestures_reserved_note">Yukarı kaydırma tuşun üstündeki kelimeyi seçer</string>
+    <string name="vkb_gestures_reserved_note">Yukarı kaydırma veya fiske, klavyede gösterilen önerileri onaylamak için ayrılmıştır</string>
     <string name="settings_vkb_type_by_swiping_summary">Kelime yazmak için tuşların üzerinde kaydır</string>
     <string name="settings_vkb_type_by_swiping_title">Kaydırarak yazma</string>
     <string name="vkb_control_key_summary">Ctrl modunu etkinleştirmek için ?123 tuşunu basılı tutun</string>

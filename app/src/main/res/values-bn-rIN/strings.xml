@@ -105,7 +105,7 @@
     <string name="ckb_gestures_export_summary">ডিভাইস কনফিগে পেস্ট করার জন্য ধরা পড়া কী গ্রিডটি একটি &lt;ckb-key-grid&gt; স্নিপেট হিসেবে অ্যাপ ফাইলে লিখুন। ধরার সুযোগ দিতে আগে একবার কীবোর্ড খুলুন।</string>
     <string name="ckb_gestures_export_title">CKB জ্যামিতি এক্সপোর্ট করুন</string>
     <string name="ckb_gestures_export_written">%s লেখা হয়েছে</string>
-    <string name="ckb_gestures_reserved_note">উপরে সোয়াইপ (আঙুলের নিচের পরামর্শটি প্রয়োগ করা) সংরক্ষিত</string>
+    <string name="ckb_gestures_reserved_note">উপরে সোয়াইপ বা ফ্লিক করা কিবোর্ডের উপরে দেখানো পরামর্শ প্রয়োগের জন্য সংরক্ষিত</string>
     <string name="ckb_gestures_screen_title">ক্যাপাসিটিভ অঙ্গভঙ্গি</string>
     <string name="settings_gesture_accent_max_speed_summary">অ্যাকসেন্ট পরিবর্তনের সর্বোচ্চ গতি গুণক</string>
     <string name="settings_gesture_accent_max_speed_title">স্ক্রলে অ্যাকসেন্ট পরিবর্তনের সর্বোচ্চ গতি গুণক</string>
@@ -319,7 +319,7 @@
     <string name="settings_vkb_swipe_gestures_title">সোয়াইপ অঙ্গভঙ্গি</string>
     <string name="settings_vkb_swipe_gestures_switch_summary">কীবোর্ডে বাঁয়ে, ডানে ও নিচে সোয়াইপ</string>
     <string name="vkb_gestures_configure_title">সোয়াইপ অঙ্গভঙ্গি কনফিগার করুন</string>
-    <string name="vkb_gestures_reserved_note">উপরে সোয়াইপ করলে কী-এর উপরের শব্দটি বেছে নেওয়া হয়</string>
+    <string name="vkb_gestures_reserved_note">উপরে সোয়াইপ বা ফ্লিক করা কিবোর্ডে দেখানো পরামর্শ প্রয়োগের জন্য সংরক্ষিত</string>
     <string name="settings_vkb_type_by_swiping_summary">একটি শব্দ লিখতে কী-গুলোর ওপর দিয়ে আঙুল টানুন</string>
     <string name="settings_vkb_type_by_swiping_title">সোয়াইপ করে লিখুন</string>
     <string name="vkb_control_key_summary">Ctrl মোড চালু করতে ?123 চেপে ধরে রাখুন</string>

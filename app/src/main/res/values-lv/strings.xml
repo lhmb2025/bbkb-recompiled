@@ -105,7 +105,7 @@
     <string name="ckb_gestures_export_summary">Ierakstīt tverto taustiņu režģi kā &lt;ckb-key-grid&gt; fragmentu programmas failos, lai to ielīmētu ierīces konfigurācijā. Vispirms vienreiz atveriet tastatūru, lai tā varētu to tvert.</string>
     <string name="ckb_gestures_export_title">Eksportēt CKB ģeometriju</string>
     <string name="ckb_gestures_export_written">Ierakstīts: %s</string>
-    <string name="ckb_gestures_reserved_note">Vilkšana augšup (apstiprināt zem pirksta esošo ieteikumu) ir rezervēta</string>
+    <string name="ckb_gestures_reserved_note">Vilkšana vai pavilkšana augšup ir rezervēta virs tastatūras rādīto ieteikumu apstiprināšanai</string>
     <string name="ckb_gestures_screen_title">Kapacitatīvie žesti</string>
     <string name="settings_gesture_accent_max_speed_summary">Maksimālais diakritisko zīmju maiņas ātruma reizinātājs</string>
     <string name="settings_gesture_accent_max_speed_title">Diakritisko zīmju ritināšanas maks. ātruma reizinātājs</string>
@@ -319,7 +319,7 @@
     <string name="settings_vkb_swipe_gestures_title">Vilkšanas žesti</string>
     <string name="settings_vkb_swipe_gestures_switch_summary">Vilkšana pa kreisi, pa labi un lejup uz tastatūras</string>
     <string name="vkb_gestures_configure_title">Konfigurēt vilkšanas žestus</string>
-    <string name="vkb_gestures_reserved_note">Vilkšana augšup izvēlas vārdu virs taustiņa</string>
+    <string name="vkb_gestures_reserved_note">Vilkšana vai pavilkšana augšup ir rezervēta uz tastatūras rādīto ieteikumu apstiprināšanai</string>
     <string name="settings_vkb_type_by_swiping_summary">Velciet pa taustiņiem, lai uzrakstītu vārdu</string>
     <string name="settings_vkb_type_by_swiping_title">Rakstīšana velkot</string>
     <string name="vkb_control_key_summary">Turiet nospiestu ?123, lai ieslēgtu Ctrl režīmu</string>

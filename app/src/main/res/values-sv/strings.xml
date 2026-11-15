@@ -105,7 +105,7 @@
     <string name="ckb_gestures_export_summary">Skriv det registrerade tangentrutnätet som ett &lt;ckb-key-grid&gt;-utdrag till appens filer, så att det kan klistras in i enhetskonfigurationen. Öppna tangentbordet en gång först så att det hinner registreras.</string>
     <string name="ckb_gestures_export_title">Exportera CKB-geometri</string>
     <string name="ckb_gestures_export_written">Skrev %s</string>
-    <string name="ckb_gestures_reserved_note">Svep uppåt (bekräfta förslaget under fingret) är reserverat</string>
+    <string name="ckb_gestures_reserved_note">Att svepa eller flicka uppåt är reserverat för att bekräfta förslag som visas ovanför tangentbordet</string>
     <string name="ckb_gestures_screen_title">Kapacitiva gester</string>
     <string name="settings_gesture_accent_max_speed_summary">Högsta hastighetsmultiplikator för accentbyten</string>
     <string name="settings_gesture_accent_max_speed_title">Max hastighetsmultiplikator för accentbyte vid rullning</string>
@@ -319,7 +319,7 @@
     <string name="settings_vkb_swipe_gestures_title">Svepgester</string>
     <string name="settings_vkb_swipe_gestures_switch_summary">Svep åt vänster, åt höger och nedåt på tangentbordet</string>
     <string name="vkb_gestures_configure_title">Konfigurera svepgester</string>
-    <string name="vkb_gestures_reserved_note">Svep uppåt väljer ordet ovanför tangenten</string>
+    <string name="vkb_gestures_reserved_note">Att svepa eller flicka uppåt är reserverat för att bekräfta förslag som visas på tangentbordet</string>
     <string name="settings_vkb_type_by_swiping_summary">Dra över tangenterna för att skriva ett ord</string>
     <string name="settings_vkb_type_by_swiping_title">Dra för att skriva</string>
     <string name="vkb_control_key_summary">Håll ?123 nedtryckt för att aktivera Ctrl-läge</string>

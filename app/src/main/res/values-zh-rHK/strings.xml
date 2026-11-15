@@ -105,7 +105,7 @@
     <string name="ckb_gestures_export_summary">將擷取到的按鍵格線以 &lt;ckb-key-grid&gt; 片段寫入應用程式檔案，以便貼入裝置設定。請先開啟鍵盤一次，讓系統完成擷取。</string>
     <string name="ckb_gestures_export_title">匯出 CKB 幾何資料</string>
     <string name="ckb_gestures_export_written">已寫入 %s</string>
-    <string name="ckb_gestures_reserved_note">向上滑動 (確認手指下方的建議字詞) 為保留手勢</string>
+    <string name="ckb_gestures_reserved_note">向上滑動或輕彈保留用於確認顯示在鍵盤上方的建議字詞</string>
     <string name="ckb_gestures_screen_title">電容式手勢</string>
     <string name="settings_gesture_accent_max_speed_summary">變更重音符號的最大速度倍數</string>
     <string name="settings_gesture_accent_max_speed_title">捲動變更重音符號的最大速度倍數</string>
@@ -319,7 +319,7 @@
     <string name="settings_vkb_swipe_gestures_title">滑動手勢</string>
     <string name="settings_vkb_swipe_gestures_switch_summary">在鍵盤上向左、向右及向下滑動</string>
     <string name="vkb_gestures_configure_title">設定滑動手勢</string>
-    <string name="vkb_gestures_reserved_note">向上滑動可選取按鍵上方的字詞</string>
+    <string name="vkb_gestures_reserved_note">向上滑動或輕彈保留用於確認顯示在鍵盤上的建議字詞</string>
     <string name="settings_vkb_type_by_swiping_summary">在按鍵上滑過即可輸入字詞</string>
     <string name="settings_vkb_type_by_swiping_title">滑動輸入</string>
     <string name="vkb_control_key_summary">長按 ?123 以啟用 Ctrl 模式</string>

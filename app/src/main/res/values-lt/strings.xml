@@ -105,7 +105,7 @@
     <string name="ckb_gestures_export_summary">Įrašyti užfiksuotą klavišų tinklelį kaip &lt;ckb-key-grid&gt; fragmentą į programos failus, kad galėtumėte jį įklijuoti į įrenginio konfigūraciją. Pirmiausia kartą atidarykite klaviatūrą, kad ji galėtų užfiksuoti.</string>
     <string name="ckb_gestures_export_title">Eksportuoti CKB geometriją</string>
     <string name="ckb_gestures_export_written">Įrašyta: %s</string>
-    <string name="ckb_gestures_reserved_note">Perbraukimas aukštyn (patvirtinti po pirštu esantį pasiūlymą) yra rezervuotas</string>
+    <string name="ckb_gestures_reserved_note">Perbraukimas ar timptelėjimas aukštyn yra rezervuotas virš klaviatūros rodomiems pasiūlymams patvirtinti</string>
     <string name="ckb_gestures_screen_title">Talpiniai gestai</string>
     <string name="settings_gesture_accent_max_speed_summary">Didžiausias diakritinių ženklų keitimo greičio daugiklis</string>
     <string name="settings_gesture_accent_max_speed_title">Diakritinių ženklų slinkimo maks. greičio daugiklis</string>
@@ -319,7 +319,7 @@
     <string name="settings_vkb_swipe_gestures_title">Perbraukimo gestai</string>
     <string name="settings_vkb_swipe_gestures_switch_summary">Perbraukimai kairėn, dešinėn ir žemyn klaviatūroje</string>
     <string name="vkb_gestures_configure_title">Konfigūruoti perbraukimo gestus</string>
-    <string name="vkb_gestures_reserved_note">Perbraukus aukštyn pasirenkamas žodis virš klavišo</string>
+    <string name="vkb_gestures_reserved_note">Perbraukimas ar timptelėjimas aukštyn yra rezervuotas klaviatūroje rodomiems pasiūlymams patvirtinti</string>
     <string name="settings_vkb_type_by_swiping_summary">Braukite per klavišus, kad parašytumėte žodį</string>
     <string name="settings_vkb_type_by_swiping_title">Rašymas braukiant</string>
     <string name="vkb_control_key_summary">Palaikykite ?123, kad įjungtumėte Ctrl režimą</string>

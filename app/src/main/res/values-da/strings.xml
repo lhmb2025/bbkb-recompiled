@@ -105,7 +105,7 @@
     <string name="ckb_gestures_export_summary">Skriv det registrerede tastegitter som et &lt;ckb-key-grid&gt;-uddrag til appens filer, så det kan indsættes i enhedskonfigurationen. Åbn tastaturet én gang først, så det kan registreres.</string>
     <string name="ckb_gestures_export_title">Eksporter CKB-geometri</string>
     <string name="ckb_gestures_export_written">Skrev %s</string>
-    <string name="ckb_gestures_reserved_note">Stryg opad (bekræft forslaget under fingeren) er reserveret</string>
+    <string name="ckb_gestures_reserved_note">Stryg eller svirp opad er reserveret til at bekræfte forslag, der vises over tastaturet</string>
     <string name="ckb_gestures_screen_title">Kapacitive bevægelser</string>
     <string name="settings_gesture_accent_max_speed_summary">Maksimal hastighedsfaktor for accentskift</string>
     <string name="settings_gesture_accent_max_speed_title">Maks. hastighedsfaktor for accentskift ved rulning</string>
@@ -319,7 +319,7 @@
     <string name="settings_vkb_swipe_gestures_title">Strygebevægelser</string>
     <string name="settings_vkb_swipe_gestures_switch_summary">Strygninger til venstre, til højre og nedad på tastaturet</string>
     <string name="vkb_gestures_configure_title">Konfigurer strygebevægelser</string>
-    <string name="vkb_gestures_reserved_note">Stryg opad vælger ordet over tasten</string>
+    <string name="vkb_gestures_reserved_note">Stryg eller svirp opad er reserveret til at bekræfte forslag, der vises på tastaturet</string>
     <string name="settings_vkb_type_by_swiping_summary">Glid hen over tasterne for at skrive et ord</string>
     <string name="settings_vkb_type_by_swiping_title">Skriv med strygebevægelser</string>
     <string name="vkb_control_key_summary">Hold ?123 nede for at slå Ctrl-tilstand til</string>

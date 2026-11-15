@@ -105,7 +105,7 @@
     <string name="ckb_gestures_export_summary">Бүртгэсэн товчны торыг &lt;ckb-key-grid&gt; хэсэг болгон аппын файлд бичиж, төхөөрөмжийн тохиргоонд буулгана. Бүртгэж авах боломжтой болгохын тулд эхлээд гараа нэг нээнэ үү.</string>
     <string name="ckb_gestures_export_title">CKB геометрийг гаргах</string>
     <string name="ckb_gestures_export_written">%s бичлээ</string>
-    <string name="ckb_gestures_reserved_note">Дээш шудрах (хуруун доорх саналыг оруулах) үйлдэл нь нөөцлөгдсөн</string>
+    <string name="ckb_gestures_reserved_note">Дээш шудрах эсвэл шүүрдэх үйлдэл нь гарын дээд талд харагдах саналуудыг оруулахад нөөцлөгдсөн</string>
     <string name="ckb_gestures_screen_title">Мэдрэгчит зангаа</string>
     <string name="settings_gesture_accent_max_speed_summary">Аялгууны тэмдэг солиход хэрэглэх хурдны дээд үржүүлэгч</string>
     <string name="settings_gesture_accent_max_speed_title">Аялгууны тэмдэг гүйлгэх хурдны дээд үржүүлэгч</string>
@@ -319,7 +319,7 @@
     <string name="settings_vkb_swipe_gestures_title">Шудрах зангаа</string>
     <string name="settings_vkb_swipe_gestures_switch_summary">Гар дээр зүүн, баруун, доош шудрах</string>
     <string name="vkb_gestures_configure_title">Шудрах зангааг тохируулах</string>
-    <string name="vkb_gestures_reserved_note">Дээш шудрахад товчлуурын дээрх үгийг сонгоно</string>
+    <string name="vkb_gestures_reserved_note">Дээш шудрах эсвэл шүүрдэх үйлдэл нь гар дээр харагдах саналуудыг оруулахад нөөцлөгдсөн</string>
     <string name="settings_vkb_type_by_swiping_summary">Товчнууд дээгүүр шударч үг бичих</string>
     <string name="settings_vkb_type_by_swiping_title">Шударч бичих</string>
     <string name="vkb_control_key_summary">Ctrl горимыг идэвхжүүлэхийн тулд ?123-г удаан дарна</string>

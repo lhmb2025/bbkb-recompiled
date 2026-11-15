@@ -105,7 +105,7 @@
     <string name="ckb_gestures_export_summary">Ја запишува снимената мрежа од копчиња како фрагмент &lt;ckb-key-grid&gt; во датотеките на апликацијата, за да го вметнете во конфигурацијата на уредот. Прво отворете ја тастатурата еднаш за да може да ја сними.</string>
     <string name="ckb_gestures_export_title">Извезување на геометријата на CKB</string>
     <string name="ckb_gestures_export_written">Запишано е %s</string>
-    <string name="ckb_gestures_reserved_note">Повлекувањето нагоре (потврдување на предлогот под прстот) е резервирано</string>
+    <string name="ckb_gestures_reserved_note">Повлекувањето или брзото поместување нагоре е резервирано за потврдување на предлозите прикажани над тастатурата</string>
     <string name="ckb_gestures_screen_title">Капацитивни гестови</string>
     <string name="settings_gesture_accent_max_speed_summary">Максимален множител на брзината при менување акценти</string>
     <string name="settings_gesture_accent_max_speed_title">Макс. множител на брзината при лизгање за менување акценти</string>
@@ -319,7 +319,7 @@
     <string name="settings_vkb_swipe_gestures_title">Гестови со повлекување</string>
     <string name="settings_vkb_swipe_gestures_switch_summary">Повлекувања налево, надесно и надолу на тастатурата</string>
     <string name="vkb_gestures_configure_title">Конфигурирај гестови со повлекување</string>
-    <string name="vkb_gestures_reserved_note">Повлекувањето нагоре го избира зборот над копчето</string>
+    <string name="vkb_gestures_reserved_note">Повлекувањето или брзото поместување нагоре е резервирано за потврдување на предлозите прикажани на тастатурата</string>
     <string name="settings_vkb_type_by_swiping_summary">Лизнете преку копчињата за да напишете збор</string>
     <string name="settings_vkb_type_by_swiping_title">Пишување со повлекување</string>
     <string name="vkb_control_key_summary">Задржете ?123 за да вклучите режим Ctrl</string>

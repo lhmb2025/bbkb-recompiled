@@ -105,7 +105,7 @@
     <string name="ckb_gestures_export_summary">कैप्चर किए गए कुंजी ग्रिड को &lt;ckb-key-grid&gt; स्निपेट के रूप में ऐप फ़ाइलों में लिखें, ताकि उसे डिवाइस कॉन्फ़िगरेशन में पेस्ट किया जा सके. पहले कीबोर्ड एक बार खोलें ताकि वह कैप्चर कर सके.</string>
     <string name="ckb_gestures_export_title">CKB ज्यामिति निर्यात करें</string>
     <string name="ckb_gestures_export_written">%s लिखा गया</string>
-    <string name="ckb_gestures_reserved_note">ऊपर स्वाइप करना (अपनी उंगली के नीचे वाला सुझाव लागू करना) आरक्षित है</string>
+    <string name="ckb_gestures_reserved_note">ऊपर स्वाइप या फ्लिक करना कीबोर्ड के ऊपर दिखाए गए सुझाव लागू करने के लिए आरक्षित है</string>
     <string name="ckb_gestures_screen_title">कैपेसिटिव जेस्चर</string>
     <string name="settings_gesture_accent_max_speed_summary">उच्चारण चिह्न बदलने के लिए अधिकतम गति गुणक</string>
     <string name="settings_gesture_accent_max_speed_title">स्क्रॉल से उच्चारण बदलने का अधिकतम गति गुणक</string>
@@ -319,7 +319,7 @@
     <string name="settings_vkb_swipe_gestures_title">स्वाइप जेस्चर</string>
     <string name="settings_vkb_swipe_gestures_switch_summary">कीबोर्ड पर बाएं, दाएं और नीचे स्वाइप</string>
     <string name="vkb_gestures_configure_title">स्वाइप जेस्चर कॉन्फ़िगर करें</string>
-    <string name="vkb_gestures_reserved_note">ऊपर स्वाइप करने पर कुंजी के ऊपर वाला शब्द चुना जाता है</string>
+    <string name="vkb_gestures_reserved_note">ऊपर स्वाइप या फ्लिक करना कीबोर्ड पर दिखाए गए सुझाव लागू करने के लिए आरक्षित है</string>
     <string name="settings_vkb_type_by_swiping_summary">कोई शब्द टाइप करने के लिए कुंजियों पर उंगली सरकाएं</string>
     <string name="settings_vkb_type_by_swiping_title">स्वाइप करके टाइप करें</string>
     <string name="vkb_control_key_summary">Ctrl मोड चालू करने के लिए ?123 दबाकर रखें</string>

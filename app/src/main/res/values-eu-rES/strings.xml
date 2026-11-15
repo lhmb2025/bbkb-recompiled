@@ -105,7 +105,7 @@
     <string name="ckb_gestures_export_summary">Idatzi atzemandako tekla-sareta &lt;ckb-key-grid&gt; zati gisa aplikazioaren fitxategietan, gailuaren konfigurazioan itsasteko. Ireki teklatua behin lehenik, atzeman ahal izateko.</string>
     <string name="ckb_gestures_export_title">Esportatu CKB geometria</string>
     <string name="ckb_gestures_export_written">%s idatzi da</string>
-    <string name="ckb_gestures_reserved_note">Gorantz lerratzea (hatzaren azpiko iradokizuna berrestea) erreserbatuta dago</string>
+    <string name="ckb_gestures_reserved_note">Gorantz lerratzea edo kolpe azkarra egitea tekladuaren gainean erakusten diren iradokizunak berresteko erreserbatuta dago</string>
     <string name="ckb_gestures_screen_title">Keinu kapazitiboak</string>
     <string name="settings_gesture_accent_max_speed_summary">Azentuak aldatzeko gehieneko abiadura-biderkatzailea</string>
     <string name="settings_gesture_accent_max_speed_title">Azentuen korritze-abiaduraren gehieneko biderkatzailea</string>
@@ -319,7 +319,7 @@
     <string name="settings_vkb_swipe_gestures_title">Lerratze-keinuak</string>
     <string name="settings_vkb_swipe_gestures_switch_summary">Ezkerrera, eskuinera eta behera lerratzeak teklatuan</string>
     <string name="vkb_gestures_configure_title">Konfiguratu lerratze-keinuak</string>
-    <string name="vkb_gestures_reserved_note">Gorantz lerratzeak teklaren gaineko hitza aukeratzen du</string>
+    <string name="vkb_gestures_reserved_note">Gorantz lerratzea edo kolpe azkarra egitea tekladuan erakusten diren iradokizunak berresteko erreserbatuta dago</string>
     <string name="settings_vkb_type_by_swiping_summary">Lerratu hatza teklen gainean hitz bat idazteko</string>
     <string name="settings_vkb_type_by_swiping_title">Idatzi hatza lerratuz</string>
     <string name="vkb_control_key_summary">Eduki sakatuta ?123 Ctrl modua gaitzeko</string>

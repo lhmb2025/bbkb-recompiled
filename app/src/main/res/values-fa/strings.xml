@@ -105,7 +105,7 @@
     <string name="ckb_gestures_export_summary">نوشتن شبکه کلید ثبت‌شده به‌صورت قطعه &lt;ckb-key-grid&gt; در فایل‌های برنامه، برای چسباندن در پیکربندی دستگاه. ابتدا یک‌بار صفحه کلید را باز کنید تا ثبت انجام شود.</string>
     <string name="ckb_gestures_export_title">صدور هندسه CKB</string>
     <string name="ckb_gestures_export_written">%s نوشته شد</string>
-    <string name="ckb_gestures_reserved_note">کشیدن به بالا (تأیید پیشنهاد زیر انگشت شما) رزرو شده است</string>
+    <string name="ckb_gestures_reserved_note">کشیدن یا فلیک به بالا برای تأیید پیشنهادهای نمایش‌داده‌شده بالای صفحه‌کلید رزرو شده است</string>
     <string name="ckb_gestures_screen_title">اشاره‌های خازنی</string>
     <string name="settings_gesture_accent_max_speed_summary">بیشینه ضریب سرعت برای تغییر اعراب</string>
     <string name="settings_gesture_accent_max_speed_title">بیشینه ضریب سرعت تغییر اعراب با پیمایش</string>
@@ -319,7 +319,7 @@
     <string name="settings_vkb_swipe_gestures_title">اشاره‌های کشیدن</string>
     <string name="settings_vkb_swipe_gestures_switch_summary">کشیدن به چپ، راست و پایین روی صفحه کلید</string>
     <string name="vkb_gestures_configure_title">پیکربندی اشاره‌های کشیدن</string>
-    <string name="vkb_gestures_reserved_note">کشیدن به بالا کلمه بالای کلید را انتخاب می‌کند</string>
+    <string name="vkb_gestures_reserved_note">کشیدن یا فلیک به بالا برای تأیید پیشنهادهای نمایش‌داده‌شده روی صفحه‌کلید رزرو شده است</string>
     <string name="settings_vkb_type_by_swiping_summary">کشیدن انگشت روی کلیدها برای تایپ یک کلمه</string>
     <string name="settings_vkb_type_by_swiping_title">تایپ با کشیدن انگشت</string>
     <string name="vkb_control_key_summary">برای فعال‌کردن حالت Ctrl، ?123 را نگه دارید</string>

@@ -105,7 +105,7 @@
     <string name="ckb_gestures_export_summary">Skriv det registrerte tasterutenettet som en &lt;ckb-key-grid&gt;-kodebit til appfilene, klar til å limes inn i enhetskonfigurasjonen. Åpne tastaturet én gang først, slik at det kan registreres.</string>
     <string name="ckb_gestures_export_title">Eksporter CKB-geometri</string>
     <string name="ckb_gestures_export_written">Skrev %s</string>
-    <string name="ckb_gestures_reserved_note">Sveip opp (godta forslaget under fingeren) er reservert</string>
+    <string name="ckb_gestures_reserved_note">Sveip eller flikk opp er reservert for å godta forslag som vises over tastaturet</string>
     <string name="ckb_gestures_screen_title">Kapasitive bevegelser</string>
     <string name="settings_gesture_accent_max_speed_summary">Maksimal hastighetsfaktor for aksentendringer</string>
     <string name="settings_gesture_accent_max_speed_title">Maks. hastighetsfaktor for aksentbytte ved rulling</string>
@@ -319,7 +319,7 @@
     <string name="settings_vkb_swipe_gestures_title">Sveipebevegelser</string>
     <string name="settings_vkb_swipe_gestures_switch_summary">Sveip mot venstre, mot høyre og ned på tastaturet</string>
     <string name="vkb_gestures_configure_title">Konfigurer sveipebevegelser</string>
-    <string name="vkb_gestures_reserved_note">Sveip opp velger ordet over tasten</string>
+    <string name="vkb_gestures_reserved_note">Sveip eller flikk opp er reservert for å godta forslag som vises på tastaturet</string>
     <string name="settings_vkb_type_by_swiping_summary">Skli over tastene for å skrive et ord</string>
     <string name="settings_vkb_type_by_swiping_title">Skriv ved å sveipe</string>
     <string name="vkb_control_key_summary">Hold inne ?123 for å slå på Ctrl-modus</string>

@@ -105,7 +105,7 @@
     <string name="ckb_gestures_export_summary">Запісаць зафіксаваную сетку клавіш у файлы праграмы як фрагмент &lt;ckb-key-grid&gt;, каб уставіць яго ў канфігурацыю прылады. Спачатку адкрыйце клавіятуру, каб яна змагла зафіксаваць сетку.</string>
     <string name="ckb_gestures_export_title">Экспарт геаметрыі CKB</string>
     <string name="ckb_gestures_export_written">Запісана %s</string>
-    <string name="ckb_gestures_reserved_note">Правядзенне ўверх (пацвярджэнне прапановы пад пальцам) зарэзервавана</string>
+    <string name="ckb_gestures_reserved_note">Правядзенне або рэзкі рух уверх зарэзервавана для пацвярджэння прапаноў, якія паказваюцца над клавіятурай</string>
     <string name="ckb_gestures_screen_title">Ёмкасныя жэсты</string>
     <string name="settings_gesture_accent_max_speed_summary">Максімальны множнік хуткасці пры змене акцэнтаў</string>
     <string name="settings_gesture_accent_max_speed_title">Макс. множнік хуткасці змены акцэнтаў пры пракрутцы</string>
@@ -319,7 +319,7 @@
     <string name="settings_vkb_swipe_gestures_title">Жэсты правядзення</string>
     <string name="settings_vkb_swipe_gestures_switch_summary">Правядзенне ўлева, ўправа і ўніз на клавіятуры</string>
     <string name="vkb_gestures_configure_title">Наладзіць жэсты правядзення</string>
-    <string name="vkb_gestures_reserved_note">Правядзенне ўверх выбірае слова над клавішай</string>
+    <string name="vkb_gestures_reserved_note">Правядзенне або рэзкі рух уверх зарэзервавана для пацвярджэння прапаноў, якія паказваюцца на клавіятуры</string>
     <string name="settings_vkb_type_by_swiping_summary">Правядзіце па клавішах, каб набраць слова</string>
     <string name="settings_vkb_type_by_swiping_title">Набор тэксту жэстамі</string>
     <string name="vkb_control_key_summary">Націсніце і ўтрымлівайце ?123, каб уключыць рэжым Ctrl</string>

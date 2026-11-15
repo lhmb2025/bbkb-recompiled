@@ -105,7 +105,7 @@
     <string name="ckb_gestures_export_summary">Tulis kisi tombol yang terekam sebagai cuplikan &lt;ckb-key-grid&gt; ke file aplikasi, untuk ditempel ke konfigurasi perangkat. Buka keyboard sekali terlebih dahulu agar dapat merekam.</string>
     <string name="ckb_gestures_export_title">Ekspor geometri CKB</string>
     <string name="ckb_gestures_export_written">Menulis %s</string>
-    <string name="ckb_gestures_reserved_note">Gesek ke atas (menerapkan saran di bawah jari Anda) telah dicadangkan</string>
+    <string name="ckb_gestures_reserved_note">Gesek atau jentik ke atas dicadangkan untuk menerapkan saran yang ditampilkan di atas keyboard</string>
     <string name="ckb_gestures_screen_title">Gestur kapasitif</string>
     <string name="settings_gesture_accent_max_speed_summary">Pengali kecepatan maksimum untuk perubahan aksen</string>
     <string name="settings_gesture_accent_max_speed_title">Pengali kecepatan maksimum gulir ganti aksen</string>
@@ -319,7 +319,7 @@
     <string name="settings_vkb_swipe_gestures_title">Gestur gesek</string>
     <string name="settings_vkb_swipe_gestures_switch_summary">Gesek ke kiri, kanan, dan bawah pada keyboard</string>
     <string name="vkb_gestures_configure_title">Konfigurasikan gestur gesek</string>
-    <string name="vkb_gestures_reserved_note">Gesek ke atas memilih kata di atas tombol</string>
+    <string name="vkb_gestures_reserved_note">Gesek atau jentik ke atas dicadangkan untuk menerapkan saran yang ditampilkan di keyboard</string>
     <string name="settings_vkb_type_by_swiping_summary">Geser di atas tombol untuk mengetik kata</string>
     <string name="settings_vkb_type_by_swiping_title">Mengetik dengan menggesek</string>
     <string name="vkb_control_key_summary">Tekan lama ?123 untuk mengaktifkan mode Ctrl</string>

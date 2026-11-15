@@ -105,7 +105,7 @@
     <string name="ckb_gestures_export_summary">Skrifar vistaða lyklanetið sem &lt;ckb-key-grid&gt;-búta í skrár forritsins, til að líma inn í tækjastillinguna. Opnaðu lyklaborðið fyrst svo það geti vistað netið.</string>
     <string name="ckb_gestures_export_title">Flytja út CKB-rúmfræði</string>
     <string name="ckb_gestures_export_written">Skrifaði %s</string>
-    <string name="ckb_gestures_reserved_note">Að strjúka upp (staðfesta tillöguna undir fingrinum) er frátekið</string>
+    <string name="ckb_gestures_reserved_note">Að strjúka eða fletta upp er frátekið til að staðfesta tillögur sem birtast fyrir ofan lyklaborðið</string>
     <string name="ckb_gestures_screen_title">Rýmdarnæmar bendingar</string>
     <string name="settings_gesture_accent_max_speed_summary">Hámarkshraðamargfaldari fyrir breytingu á broddstöfum</string>
     <string name="settings_gesture_accent_max_speed_title">Hámarkshraðamargfaldari við flettingu broddstafa</string>
@@ -319,7 +319,7 @@
     <string name="settings_vkb_swipe_gestures_title">Strokbendingar</string>
     <string name="settings_vkb_swipe_gestures_switch_summary">Strokur til vinstri, hægri og niður á lyklaborðinu</string>
     <string name="vkb_gestures_configure_title">Stilla strokbendingar</string>
-    <string name="vkb_gestures_reserved_note">Að strjúka upp velur orðið fyrir ofan lykilinn</string>
+    <string name="vkb_gestures_reserved_note">Að strjúka eða fletta upp er frátekið til að staðfesta tillögur sem birtast á lyklaborðinu</string>
     <string name="settings_vkb_type_by_swiping_summary">Renndu yfir lyklana til að skrifa orð</string>
     <string name="settings_vkb_type_by_swiping_title">Skrifa með stroki</string>
     <string name="vkb_control_key_summary">Haltu ?123 inni til að kveikja á Ctrl-ham</string>

@@ -105,7 +105,7 @@
     <string name="ckb_gestures_export_summary">Schreibt das erfasste Tastenraster als &lt;ckb-key-grid&gt;-Snippet in die App-Dateien, zum Einfügen in die Gerätekonfiguration. Öffnen Sie zuerst einmal die Tastatur, damit sie erfasst werden kann.</string>
     <string name="ckb_gestures_export_title">CKB-Geometrie exportieren</string>
     <string name="ckb_gestures_export_written">%s geschrieben</string>
-    <string name="ckb_gestures_reserved_note">Nach oben streichen (den Vorschlag unter Ihrem Finger übernehmen) ist reserviert</string>
+    <string name="ckb_gestures_reserved_note">Nach oben streichen oder wischen ist für die Übernahme von Vorschlägen reserviert, die über der Tastatur angezeigt werden</string>
     <string name="ckb_gestures_screen_title">Kapazitive Gesten</string>
     <string name="settings_gesture_accent_max_speed_summary">Maximaler Geschwindigkeitsfaktor für Akzentwechsel</string>
     <string name="settings_gesture_accent_max_speed_title">Max. Geschwindigkeitsfaktor für Akzentwechsel beim Scrollen</string>
@@ -319,7 +319,7 @@
     <string name="settings_vkb_swipe_gestures_title">Streichgesten</string>
     <string name="settings_vkb_swipe_gestures_switch_summary">Streichen nach links, rechts und unten auf der Tastatur</string>
     <string name="vkb_gestures_configure_title">Streichgesten konfigurieren</string>
-    <string name="vkb_gestures_reserved_note">Nach oben streichen wählt das Wort über der Taste</string>
+    <string name="vkb_gestures_reserved_note">Nach oben streichen oder wischen ist für die Übernahme von Vorschlägen reserviert, die auf der Tastatur angezeigt werden</string>
     <string name="settings_vkb_type_by_swiping_summary">Über die Tasten gleiten, um ein Wort zu tippen</string>
     <string name="settings_vkb_type_by_swiping_title">Per Streichgeste tippen</string>
     <string name="vkb_control_key_summary">\?123 gedrückt halten, um den Strg-Modus zu aktivieren</string>

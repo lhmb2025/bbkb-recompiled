@@ -105,7 +105,7 @@
     <string name="ckb_gestures_export_summary">Գրանցված ստեղների ցանցը գրել հավելվածի ֆայլերում որպես &lt;ckb-key-grid&gt; հատված՝ սարքի կազմաձևում տեղադրելու համար։ Սկզբում մեկ անգամ բացեք ստեղնաշարը, որպեսզի այն կարողանա գրանցել։</string>
     <string name="ckb_gestures_export_title">Արտահանել CKB երկրաչափությունը</string>
     <string name="ckb_gestures_export_written">Գրվեց %s</string>
-    <string name="ckb_gestures_reserved_note">Վերև սահեցումը (մատի տակ եղած առաջարկը հաստատելը) վերապահված է</string>
+    <string name="ckb_gestures_reserved_note">Վերև սահեցումը կամ թեթև շարժումը վերապահված է ստեղնաշարի վերևում ցուցադրվող առաջարկները հաստատելու համար</string>
     <string name="ckb_gestures_screen_title">Հպազգայուն ժեստեր</string>
     <string name="settings_gesture_accent_max_speed_summary">Շեշտերի փոփոխման արագության առավելագույն գործակիցը</string>
     <string name="settings_gesture_accent_max_speed_title">Շեշտերի ոլորման արագության առավելագույն գործակից</string>
@@ -319,7 +319,7 @@
     <string name="settings_vkb_swipe_gestures_title">Սահեցման ժեստեր</string>
     <string name="settings_vkb_swipe_gestures_switch_summary">Սահեցումներ ձախ, աջ և ներքև ստեղնաշարի վրա</string>
     <string name="vkb_gestures_configure_title">Կարգավորել սահեցման ժեստերը</string>
-    <string name="vkb_gestures_reserved_note">Վերև սահեցումն ընտրում է ստեղնի վերևում գտնվող բառը</string>
+    <string name="vkb_gestures_reserved_note">Վերև սահեցումը կամ թեթև շարժումը վերապահված է ստեղնաշարի վրա ցուցադրվող առաջարկները հաստատելու համար</string>
     <string name="settings_vkb_type_by_swiping_summary">Սահեցնել մատը ստեղների վրայով՝ բառ մուտքագրելու համար</string>
     <string name="settings_vkb_type_by_swiping_title">Մուտքագրում սահեցումով</string>
     <string name="vkb_control_key_summary">Սեղմած պահեք ?123՝ Ctrl ռեժիմը միացնելու համար</string>

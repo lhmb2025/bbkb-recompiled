@@ -105,7 +105,7 @@
     <string name="ckb_gestures_export_summary">A rögzített billentyűrács kiírása &lt;ckb-key-grid&gt; kódrészletként az alkalmazás fájljaiba, hogy beilleszthesse a készülék konfigurációjába. Előbb nyissa meg egyszer a billentyűzetet, hogy rögzíthesse.</string>
     <string name="ckb_gestures_export_title">CKB-geometria exportálása</string>
     <string name="ckb_gestures_export_written">Kiírva: %s</string>
-    <string name="ckb_gestures_reserved_note">A felfelé csúsztatás (az ujj alatti javaslat elfogadása) foglalt</string>
+    <string name="ckb_gestures_reserved_note">A felfelé csúsztatás vagy pöccintés a billentyűzet felett megjelenő javaslatok elfogadására van fenntartva</string>
     <string name="ckb_gestures_screen_title">Kapacitív kézmozdulatok</string>
     <string name="settings_gesture_accent_max_speed_summary">Az ékezetváltás legnagyobb sebességszorzója</string>
     <string name="settings_gesture_accent_max_speed_title">Ékezetváltás max. sebességszorzója görgetésnél</string>
@@ -319,7 +319,7 @@
     <string name="settings_vkb_swipe_gestures_title">Csúsztatásos kézmozdulatok</string>
     <string name="settings_vkb_swipe_gestures_switch_summary">Csúsztatás balra, jobbra és lefelé a billentyűzeten</string>
     <string name="vkb_gestures_configure_title">Csúsztatásos kézmozdulatok beállítása</string>
-    <string name="vkb_gestures_reserved_note">A felfelé csúsztatás kiválasztja a billentyű feletti szót</string>
+    <string name="vkb_gestures_reserved_note">A felfelé csúsztatás vagy pöccintés a billentyűzeten megjelenő javaslatok elfogadására van fenntartva</string>
     <string name="settings_vkb_type_by_swiping_summary">Csúsztassa az ujját a billentyűkön egy szó beírásához</string>
     <string name="settings_vkb_type_by_swiping_title">Gépelés az ujj csúsztatásával</string>
     <string name="vkb_control_key_summary">Tartsa lenyomva a ?123 gombot a Ctrl mód bekapcsolásához</string>

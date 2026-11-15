@@ -105,7 +105,7 @@
     <string name="ckb_gestures_export_summary">כתוב את רשת המקשים שנלכדה כקטע &lt;ckb-key-grid&gt; לקבצי האפליקציה, להדבקה בתצורת המכשיר. פתח תחילה את המקלדת פעם אחת כדי לאפשר לכידה.</string>
     <string name="ckb_gestures_export_title">ייצא את גאומטריית ה-CKB</string>
     <string name="ckb_gestures_export_written">נכתב %s</string>
-    <string name="ckb_gestures_reserved_note">החלקה למעלה (אישור ההצעה שמתחת לאצבע) שמורה</string>
+    <string name="ckb_gestures_reserved_note">החלקה או הצלפה למעלה שמורה לאישור הצעות המוצגות מעל המקלדת</string>
     <string name="ckb_gestures_screen_title">מחוות קיבוליות</string>
     <string name="settings_gesture_accent_max_speed_summary">מכפיל המהירות המרבי לשינוי סימני טעמה</string>
     <string name="settings_gesture_accent_max_speed_title">מכפיל מהירות מרבי לשינוי סימני טעמה בגלילה</string>
@@ -319,7 +319,7 @@
     <string name="settings_vkb_swipe_gestures_title">מחוות החלקה</string>
     <string name="settings_vkb_swipe_gestures_switch_summary">החלקות שמאלה, ימינה ומטה על המקלדת</string>
     <string name="vkb_gestures_configure_title">הגדר מחוות החלקה</string>
-    <string name="vkb_gestures_reserved_note">החלקה למעלה בוחרת את המילה שמעל המקש</string>
+    <string name="vkb_gestures_reserved_note">החלקה או הצלפה למעלה שמורה לאישור הצעות המוצגות במקלדת</string>
     <string name="settings_vkb_type_by_swiping_summary">החלק על פני המקשים כדי להקליד מילה</string>
     <string name="settings_vkb_type_by_swiping_title">הקלד על-ידי החלקה</string>
     <string name="vkb_control_key_summary">לחיצה ארוכה על ?123 מפעילה מצב Ctrl</string>

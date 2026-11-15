@@ -105,7 +105,7 @@
     <string name="ckb_gestures_export_summary">Kirjoita tallennettu näppäinruudukko &lt;ckb-key-grid&gt;-katkelmana sovelluksen tiedostoihin, josta voit liittää sen laitemäärityksiin. Avaa näppäimistö ensin kerran, jotta ruudukko voidaan tallentaa.</string>
     <string name="ckb_gestures_export_title">Vie CKB-geometria</string>
     <string name="ckb_gestures_export_written">Kirjoitettiin %s</string>
-    <string name="ckb_gestures_reserved_note">Pyyhkäisy ylös (hyväksyy sormen alla olevan ehdotuksen) on varattu</string>
+    <string name="ckb_gestures_reserved_note">Pyyhkäisy tai sipaisu ylös on varattu näppäimistön yläpuolella näkyvien ehdotusten hyväksymiseen</string>
     <string name="ckb_gestures_screen_title">Kapasitiiviset eleet</string>
     <string name="settings_gesture_accent_max_speed_summary">Aksenttien vaihdon suurin nopeuskerroin</string>
     <string name="settings_gesture_accent_max_speed_title">Vierityksen aksenttivaihdon suurin nopeuskerroin</string>
@@ -319,7 +319,7 @@
     <string name="settings_vkb_swipe_gestures_title">Pyyhkäisyeleet</string>
     <string name="settings_vkb_swipe_gestures_switch_summary">Pyyhkäisyt vasemmalle, oikealle ja alas näppäimistöllä</string>
     <string name="vkb_gestures_configure_title">Määritä pyyhkäisyeleet</string>
-    <string name="vkb_gestures_reserved_note">Pyyhkäisy ylös valitsee näppäimen yläpuolella olevan sanan</string>
+    <string name="vkb_gestures_reserved_note">Pyyhkäisy tai sipaisu ylös on varattu näppäimistöllä näkyvien ehdotusten hyväksymiseen</string>
     <string name="settings_vkb_type_by_swiping_summary">Kirjoita sana liu\'uttamalla näppäinten yli</string>
     <string name="settings_vkb_type_by_swiping_title">Kirjoita pyyhkäisemällä</string>
     <string name="vkb_control_key_summary">Pidä ?123 painettuna ottaaksesi Ctrl-tilan käyttöön</string>

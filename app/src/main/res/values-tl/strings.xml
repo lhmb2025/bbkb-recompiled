@@ -105,7 +105,7 @@
     <string name="ckb_gestures_export_summary">Isulat ang na-capture na key grid bilang &lt;ckb-key-grid&gt; snippet sa mga file ng app, para i-paste sa config ng device. Buksan muna ang keyboard nang isang beses para makapag-capture ito.</string>
     <string name="ckb_gestures_export_title">I-export ang geometry ng CKB</string>
     <string name="ckb_gestures_export_written">Isinulat ang %s</string>
-    <string name="ckb_gestures_reserved_note">Nakalaan ang pag-swipe pataas (pag-commit ng suhestyon sa ilalim ng iyong daliri)</string>
+    <string name="ckb_gestures_reserved_note">Nakalaan ang pag-swipe o pag-flick pataas para sa pag-commit ng mga suhestyong ipinapakita sa itaas ng keyboard</string>
     <string name="ckb_gestures_screen_title">Mga capacitive na galaw</string>
     <string name="settings_gesture_accent_max_speed_summary">Maximum na speed multiplier para sa pagpapalit ng accent</string>
     <string name="settings_gesture_accent_max_speed_title">Max speed multiplier ng pag-scroll para sa pagpapalit ng accent</string>
@@ -319,7 +319,7 @@
     <string name="settings_vkb_swipe_gestures_title">Mga galaw na swipe</string>
     <string name="settings_vkb_swipe_gestures_switch_summary">Mga swipe pakaliwa, pakanan at pababa sa keyboard</string>
     <string name="vkb_gestures_configure_title">I-configure ang mga galaw na swipe</string>
-    <string name="vkb_gestures_reserved_note">Pinipili ng pag-swipe pataas ang salita sa itaas ng key</string>
+    <string name="vkb_gestures_reserved_note">Nakalaan ang pag-swipe o pag-flick pataas para sa pag-commit ng mga suhestyong ipinapakita sa keyboard</string>
     <string name="settings_vkb_type_by_swiping_summary">I-slide sa mga key para mag-type ng salita</string>
     <string name="settings_vkb_type_by_swiping_title">Mag-type sa pamamagitan ng swipe</string>
     <string name="vkb_control_key_summary">Pindutin nang matagal ang ?123 para i-enable ang Ctrl mode</string>

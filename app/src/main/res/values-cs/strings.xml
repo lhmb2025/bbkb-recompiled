@@ -105,7 +105,7 @@
     <string name="ckb_gestures_export_summary">Zapíše zachycenou mřížku kláves jako úryvek &lt;ckb-key-grid&gt; do souborů aplikace, k vložení do konfigurace zařízení. Nejprve jednou otevřete klávesnici, aby ji mohla zachytit.</string>
     <string name="ckb_gestures_export_title">Exportovat geometrii CKB</string>
     <string name="ckb_gestures_export_written">Zapsáno %s</string>
-    <string name="ckb_gestures_reserved_note">Přejetí nahoru (potvrzení návrhu pod prstem) je vyhrazeno</string>
+    <string name="ckb_gestures_reserved_note">Přejetí nebo švihnutí nahoru je vyhrazeno pro potvrzení návrhů zobrazených nad klávesnicí</string>
     <string name="ckb_gestures_screen_title">Kapacitní gesta</string>
     <string name="settings_gesture_accent_max_speed_summary">Maximální násobitel rychlosti změny diakritiky</string>
     <string name="settings_gesture_accent_max_speed_title">Max. násobitel rychlosti posouvání diakritiky</string>
@@ -319,7 +319,7 @@
     <string name="settings_vkb_swipe_gestures_title">Gesta přejetím</string>
     <string name="settings_vkb_swipe_gestures_switch_summary">Přejetí doleva, doprava a dolů na klávesnici</string>
     <string name="vkb_gestures_configure_title">Nastavit gesta přejetím</string>
-    <string name="vkb_gestures_reserved_note">Přejetí nahoru vybere slovo nad klávesou</string>
+    <string name="vkb_gestures_reserved_note">Přejetí nebo švihnutí nahoru je vyhrazeno pro potvrzení návrhů zobrazených na klávesnici</string>
     <string name="settings_vkb_type_by_swiping_summary">Přejeďte po klávesách a napište slovo</string>
     <string name="settings_vkb_type_by_swiping_title">Psaní pomocí přejetí prstem</string>
     <string name="vkb_control_key_summary">Podržením ?123 zapnete režim Ctrl</string>

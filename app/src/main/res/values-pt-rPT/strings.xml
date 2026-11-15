@@ -105,7 +105,7 @@
     <string name="ckb_gestures_export_summary">Escreve a grelha de teclas capturada como um excerto &lt;ckb-key-grid&gt; nos ficheiros da aplicação, para colar na configuração do dispositivo. Abra o teclado uma vez primeiro para que o possa capturar.</string>
     <string name="ckb_gestures_export_title">Exportar geometria do CKB</string>
     <string name="ckb_gestures_export_written">%s escrito</string>
-    <string name="ckb_gestures_reserved_note">Deslizar para cima (confirmar a sugestão sob o dedo) está reservado</string>
+    <string name="ckb_gestures_reserved_note">Deslizar ou fazer um toque rápido para cima está reservado para confirmar as sugestões apresentadas acima do teclado</string>
     <string name="ckb_gestures_screen_title">Gestos capacitivos</string>
     <string name="settings_gesture_accent_max_speed_summary">Multiplicador de velocidade máxima para alterações de acento</string>
     <string name="settings_gesture_accent_max_speed_title">Multiplicador de velocidade máx. do deslocamento de acentos</string>
@@ -319,7 +319,7 @@
     <string name="settings_vkb_swipe_gestures_title">Gestos de deslize</string>
     <string name="settings_vkb_swipe_gestures_switch_summary">Deslizes para a esquerda, para a direita e para baixo no teclado</string>
     <string name="vkb_gestures_configure_title">Configurar gestos de deslize</string>
-    <string name="vkb_gestures_reserved_note">Deslizar para cima escolhe a palavra acima da tecla</string>
+    <string name="vkb_gestures_reserved_note">Deslizar ou fazer um toque rápido para cima está reservado para confirmar as sugestões apresentadas no teclado</string>
     <string name="settings_vkb_type_by_swiping_summary">Deslize o dedo pelas teclas para escrever uma palavra</string>
     <string name="settings_vkb_type_by_swiping_title">Escrever ao deslizar</string>
     <string name="vkb_control_key_summary">Mantenha ?123 premido para ativar o modo Ctrl</string>

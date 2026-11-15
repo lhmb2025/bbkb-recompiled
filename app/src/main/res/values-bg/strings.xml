@@ -105,7 +105,7 @@
     <string name="ckb_gestures_export_summary">Записва заснетата мрежа от клавиши като фрагмент &lt;ckb-key-grid&gt; във файловете на приложението, за да го поставите в конфигурацията на устройството. Първо отворете клавиатурата веднъж, за да може да я заснеме.</string>
     <string name="ckb_gestures_export_title">Експортиране на геометрията на CKB</string>
     <string name="ckb_gestures_export_written">Записано е %s</string>
-    <string name="ckb_gestures_reserved_note">Плъзгането нагоре (потвърждаване на предложението под пръста ви) е запазено</string>
+    <string name="ckb_gestures_reserved_note">Плъзгането или рязкото движение нагоре е запазено за потвърждаване на предложенията, показани над клавиатурата</string>
     <string name="ckb_gestures_screen_title">Капацитивни жестове</string>
     <string name="settings_gesture_accent_max_speed_summary">Максимален множител на скоростта при смяна на акценти</string>
     <string name="settings_gesture_accent_max_speed_title">Макс. множител на скоростта при превъртане за смяна на акценти</string>
@@ -319,7 +319,7 @@
     <string name="settings_vkb_swipe_gestures_title">Жестове с плъзгане</string>
     <string name="settings_vkb_swipe_gestures_switch_summary">Плъзгане наляво, надясно и надолу по клавиатурата</string>
     <string name="vkb_gestures_configure_title">Конфигуриране на жестовете с плъзгане</string>
-    <string name="vkb_gestures_reserved_note">Плъзгането нагоре избира думата над клавиша</string>
+    <string name="vkb_gestures_reserved_note">Плъзгането или рязкото движение нагоре е запазено за потвърждаване на предложенията, показани на клавиатурата</string>
     <string name="settings_vkb_type_by_swiping_summary">Плъзнете по клавишите, за да въведете дума</string>
     <string name="settings_vkb_type_by_swiping_title">Писане с плъзгане</string>
     <string name="vkb_control_key_summary">Задръжте ?123, за да включите режим Ctrl</string>

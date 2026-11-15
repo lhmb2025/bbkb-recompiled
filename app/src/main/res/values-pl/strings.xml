@@ -105,7 +105,7 @@
     <string name="ckb_gestures_export_summary">Zapisz przechwyconą siatkę klawiszy jako fragment &lt;ckb-key-grid&gt; w plikach aplikacji, do wklejenia w konfiguracji urządzenia. Najpierw otwórz raz klawiaturę, aby mogła ją przechwycić.</string>
     <string name="ckb_gestures_export_title">Eksportuj geometrię CKB</string>
     <string name="ckb_gestures_export_written">Zapisano %s</string>
-    <string name="ckb_gestures_reserved_note">Przesunięcie w górę (zatwierdzenie sugestii pod palcem) jest zarezerwowane</string>
+    <string name="ckb_gestures_reserved_note">Przesunięcie lub machnięcie w górę jest zarezerwowane do zatwierdzania sugestii wyświetlanych nad klawiaturą</string>
     <string name="ckb_gestures_screen_title">Gesty pojemnościowe</string>
     <string name="settings_gesture_accent_max_speed_summary">Maksymalny mnożnik szybkości zmiany znaków akcentowanych</string>
     <string name="settings_gesture_accent_max_speed_title">Maks. mnożnik szybkości przewijania akcentów</string>
@@ -319,7 +319,7 @@
     <string name="settings_vkb_swipe_gestures_title">Gesty przesuwania</string>
     <string name="settings_vkb_swipe_gestures_switch_summary">Przesunięcia w lewo, w prawo i w dół na klawiaturze</string>
     <string name="vkb_gestures_configure_title">Skonfiguruj gesty przesuwania</string>
-    <string name="vkb_gestures_reserved_note">Przesunięcie w górę wybiera słowo nad klawiszem</string>
+    <string name="vkb_gestures_reserved_note">Przesunięcie lub machnięcie w górę jest zarezerwowane do zatwierdzania sugestii wyświetlanych na klawiaturze</string>
     <string name="settings_vkb_type_by_swiping_summary">Przesuń palcem po klawiszach, aby wpisać słowo</string>
     <string name="settings_vkb_type_by_swiping_title">Wpisuj, przesuwając palcem</string>
     <string name="vkb_control_key_summary">Przytrzymaj ?123, aby włączyć tryb Ctrl</string>

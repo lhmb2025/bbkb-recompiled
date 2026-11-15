@@ -105,7 +105,7 @@
     <string name="ckb_gestures_export_summary">ಸೆರೆಹಿಡಿದ ಕೀ ಗ್ರಿಡ್ ಅನ್ನು &lt;ckb-key-grid&gt; ಸ್ನಿಪ್ಪೆಟ್ ಆಗಿ ಅಪ್ಲಿಕೇಶನ್ ಫೈಲ್‌ಗಳಿಗೆ ಬರೆಯಿರಿ, ಸಾಧನ ಕಾನ್ಫಿಗ್‌ಗೆ ಅಂಟಿಸಲು. ಅದು ಸೆರೆಹಿಡಿಯುವಂತಾಗಲು ಮೊದಲು ಕೀಬೋರ್ಡ್ ಅನ್ನು ಒಮ್ಮೆ ತೆರೆಯಿರಿ.</string>
     <string name="ckb_gestures_export_title">CKB ಜ್ಯಾಮಿತಿಯನ್ನು ರಫ್ತು ಮಾಡಿ</string>
     <string name="ckb_gestures_export_written">%s ಬರೆಯಲಾಗಿದೆ</string>
-    <string name="ckb_gestures_reserved_note">ಮೇಲಕ್ಕೆ ಸ್ವೈಪ್ ಮಾಡುವುದನ್ನು (ನಿಮ್ಮ ಬೆರಳಿನ ಕೆಳಗಿನ ಸಲಹೆಯನ್ನು ಸ್ವೀಕರಿಸುವುದು) ಕಾಯ್ದಿರಿಸಲಾಗಿದೆ</string>
+    <string name="ckb_gestures_reserved_note">ಮೇಲಕ್ಕೆ ಸ್ವೈಪ್ ಅಥವಾ ಫ್ಲಿಕ್ ಮಾಡುವುದನ್ನು ಕೀಬೋರ್ಡ್ ಮೇಲೆ ತೋರಿಸಲಾದ ಸಲಹೆಗಳನ್ನು ಖಚಿತಪಡಿಸಲು ಕಾಯ್ದಿರಿಸಲಾಗಿದೆ</string>
     <string name="ckb_gestures_screen_title">ಕೆಪ್ಯಾಸಿಟಿವ್ ಗೆಸ್ಚರ್‌ಗಳು</string>
     <string name="settings_gesture_accent_max_speed_summary">ಉಚ್ಚಾರಣಾ ಚಿಹ್ನೆ ಬದಲಾವಣೆಗಳಿಗೆ ಗರಿಷ್ಠ ವೇಗ ಗುಣಕ</string>
     <string name="settings_gesture_accent_max_speed_title">ಸ್ಕ್ರಾಲ್ ಉಚ್ಚಾರಣಾ ಚಿಹ್ನೆ ಬದಲಾವಣೆಯ ಗರಿಷ್ಠ ವೇಗ ಗುಣಕ</string>
@@ -319,7 +319,7 @@
     <string name="settings_vkb_swipe_gestures_title">ಸ್ವೈಪ್ ಗೆಸ್ಚರ್‌ಗಳು</string>
     <string name="settings_vkb_swipe_gestures_switch_summary">ಕೀಬೋರ್ಡ್‌ನಲ್ಲಿ ಎಡಕ್ಕೆ, ಬಲಕ್ಕೆ ಮತ್ತು ಕೆಳಕ್ಕೆ ಸ್ವೈಪ್</string>
     <string name="vkb_gestures_configure_title">ಸ್ವೈಪ್ ಗೆಸ್ಚರ್‌ಗಳನ್ನು ಕಾನ್ಫಿಗರ್ ಮಾಡಿ</string>
-    <string name="vkb_gestures_reserved_note">ಮೇಲಕ್ಕೆ ಸ್ವೈಪ್ ಮಾಡಿದರೆ ಕೀಲಿಯ ಮೇಲಿನ ಪದ ಆಯ್ಕೆಯಾಗುತ್ತದೆ</string>
+    <string name="vkb_gestures_reserved_note">ಮೇಲಕ್ಕೆ ಸ್ವೈಪ್ ಅಥವಾ ಫ್ಲಿಕ್ ಮಾಡುವುದನ್ನು ಕೀಬೋರ್ಡ್‌ನಲ್ಲಿ ತೋರಿಸಲಾದ ಸಲಹೆಗಳನ್ನು ಖಚಿತಪಡಿಸಲು ಕಾಯ್ದಿರಿಸಲಾಗಿದೆ</string>
     <string name="settings_vkb_type_by_swiping_summary">ಪದವನ್ನು ಟೈಪ್ ಮಾಡಲು ಕೀಗಳ ಮೇಲೆ ಬೆರಳು ಜಾರಿಸಿ</string>
     <string name="settings_vkb_type_by_swiping_title">ಸ್ವೈಪ್ ಮಾಡಿ ಟೈಪ್ ಮಾಡಿ</string>
     <string name="vkb_control_key_summary">Ctrl ಮೋಡ್ ಸಕ್ರಿಯಗೊಳಿಸಲು ?123 ಒತ್ತಿ ಹಿಡಿಯಿರಿ</string>

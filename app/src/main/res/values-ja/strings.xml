@@ -105,7 +105,7 @@
     <string name="ckb_gestures_export_summary">取得したキー配置を&lt;ckb-key-grid&gt;スニペットとしてアプリのファイルに書き出し、端末の設定に貼り付けられるようにします。先にキーボードを一度開いて取得させてください。</string>
     <string name="ckb_gestures_export_title">CKBの配置をエクスポート</string>
     <string name="ckb_gestures_export_written">%s に書き込みました</string>
-    <string name="ckb_gestures_reserved_note">上へのスワイプ(指の下にある候補を確定)は予約されています</string>
+    <string name="ckb_gestures_reserved_note">上へのスワイプまたはフリックは、キーボードの上に表示される候補の確定用に予約されています</string>
     <string name="ckb_gestures_screen_title">静電容量式ジェスチャー</string>
     <string name="settings_gesture_accent_max_speed_summary">アクセント切り替えの最大速度倍率</string>
     <string name="settings_gesture_accent_max_speed_title">スクロールによるアクセント切り替えの最大速度倍率</string>
@@ -319,7 +319,7 @@
     <string name="settings_vkb_swipe_gestures_title">スワイプジェスチャー</string>
     <string name="settings_vkb_swipe_gestures_switch_summary">キーボード上で左、右、下にスワイプ</string>
     <string name="vkb_gestures_configure_title">スワイプジェスチャーを設定</string>
-    <string name="vkb_gestures_reserved_note">上にスワイプするとキーの上に表示された単語を選択します</string>
+    <string name="vkb_gestures_reserved_note">上へのスワイプまたはフリックは、キーボード上に表示される候補の確定用に予約されています</string>
     <string name="settings_vkb_type_by_swiping_summary">キーの上を指でなぞって単語を入力します</string>
     <string name="settings_vkb_type_by_swiping_title">スワイプして入力</string>
     <string name="vkb_control_key_summary">\?123 を長押しすると Ctrl モードになります</string>

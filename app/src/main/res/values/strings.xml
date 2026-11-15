@@ -115,7 +115,7 @@
     <string name="ckb_gestures_export_summary">Write the captured key grid as a &lt;ckb-key-grid&gt; snippet to app files, to paste into the device config. Open the keyboard once first so it can capture.</string>
     <string name="ckb_gestures_export_title">Export CKB geometry</string>
     <string name="ckb_gestures_export_written">Wrote %s</string>
-    <string name="ckb_gestures_reserved_note">Swiping up (commit the suggestion under your finger) is reserved</string>
+    <string name="ckb_gestures_reserved_note">Swiping or flicking up is reserved for committing suggestions displayed above the keyboard</string>
     <string name="ckb_gestures_screen_title">Capacitive gestures</string>
     <string name="settings_gesture_accent_max_speed_summary">Maximum speed multiplier for accent changes</string>
     <string name="settings_gesture_accent_max_speed_title">Scroll accents change max speed multiplier</string>
@@ -359,7 +359,7 @@
     <string name="settings_vkb_swipe_gestures_title">Swipe gestures</string>
     <string name="settings_vkb_swipe_gestures_switch_summary">Swipes left, right, and down on the keyboard</string>
     <string name="vkb_gestures_configure_title">Configure swipe gestures</string>
-    <string name="vkb_gestures_reserved_note">Swiping up picks the word above the key</string>
+    <string name="vkb_gestures_reserved_note">Swiping or flicking up is reserved for committing suggestions displayed on the keyboard</string>
     <string name="settings_vkb_type_by_swiping_summary">Slide across the keys to type a word</string>
     <string name="settings_vkb_type_by_swiping_title">Type by swiping</string>
     <string name="vkb_control_key_summary">Press and hold ?123 to enable Ctrl mode</string>

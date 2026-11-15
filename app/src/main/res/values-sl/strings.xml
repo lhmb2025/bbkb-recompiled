@@ -105,7 +105,7 @@
     <string name="ckb_gestures_export_summary">Zajeto mrežo tipk zapiše kot izsek &lt;ckb-key-grid&gt; med datoteke aplikacije, da ga prilepite v konfiguracijo naprave. Najprej enkrat odprite tipkovnico, da jo lahko zajame.</string>
     <string name="ckb_gestures_export_title">Izvozi geometrijo CKB</string>
     <string name="ckb_gestures_export_written">Zapisano v %s</string>
-    <string name="ckb_gestures_reserved_note">Podrsanje navzgor (potrditev predloga pod prstom) je rezervirano</string>
+    <string name="ckb_gestures_reserved_note">Podrsanje ali sunek navzgor je rezerviran za potrditev predlogov, prikazanih nad tipkovnico</string>
     <string name="ckb_gestures_screen_title">Kapacitivne poteze</string>
     <string name="settings_gesture_accent_max_speed_summary">Največji množitelj hitrosti pri spreminjanju naglasov</string>
     <string name="settings_gesture_accent_max_speed_title">Najv. množitelj hitrosti drsenja med naglasi</string>
@@ -319,7 +319,7 @@
     <string name="settings_vkb_swipe_gestures_title">Poteze s podrsanjem</string>
     <string name="settings_vkb_swipe_gestures_switch_summary">Podrsanje v levo, v desno in navzdol na tipkovnici</string>
     <string name="vkb_gestures_configure_title">Nastavitev potez s podrsanjem</string>
-    <string name="vkb_gestures_reserved_note">Podrsanje navzgor izbere besedo nad tipko</string>
+    <string name="vkb_gestures_reserved_note">Podrsanje ali sunek navzgor je rezerviran za potrditev predlogov, prikazanih na tipkovnici</string>
     <string name="settings_vkb_type_by_swiping_summary">Podrsajte po tipkah, da natipkate besedo</string>
     <string name="settings_vkb_type_by_swiping_title">Tipkanje s podrsanjem</string>
     <string name="vkb_control_key_summary">Pridržite ?123, da vklopite način Ctrl</string>

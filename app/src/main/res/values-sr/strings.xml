@@ -105,7 +105,7 @@
     <string name="ckb_gestures_export_summary">Уписује забележену мрежу тастера као исечак &lt;ckb-key-grid&gt; у датотеке апликације да бисте га налепили у конфигурацију уређаја. Прво једном отворите тастатуру да би могла да је забележи.</string>
     <string name="ckb_gestures_export_title">Извези CKB геометрију</string>
     <string name="ckb_gestures_export_written">Уписано: %s</string>
-    <string name="ckb_gestures_reserved_note">Превлачење нагоре (потврда предлога испод прста) је резервисано</string>
+    <string name="ckb_gestures_reserved_note">Превлачење или замах нагоре резервисано је за потврду предлога приказаних изнад тастатуре</string>
     <string name="ckb_gestures_screen_title">Капацитивни покрети</string>
     <string name="settings_gesture_accent_max_speed_summary">Максимални множилац брзине за промену акцената</string>
     <string name="settings_gesture_accent_max_speed_title">Макс. множилац брзине промене акцената скроловањем</string>
@@ -319,7 +319,7 @@
     <string name="settings_vkb_swipe_gestures_title">Покрети превлачења</string>
     <string name="settings_vkb_swipe_gestures_switch_summary">Превлачења улево, удесно и надоле на тастатури</string>
     <string name="vkb_gestures_configure_title">Конфигуриши покрете превлачења</string>
-    <string name="vkb_gestures_reserved_note">Превлачење нагоре бира реч изнад тастера</string>
+    <string name="vkb_gestures_reserved_note">Превлачење или замах нагоре резервисано је за потврду предлога приказаних на тастатури</string>
     <string name="settings_vkb_type_by_swiping_summary">Превуците преко тастера да бисте откуцали реч</string>
     <string name="settings_vkb_type_by_swiping_title">Куцање превлачењем</string>
     <string name="vkb_control_key_summary">Држите ?123 да укључите Ctrl режим</string>

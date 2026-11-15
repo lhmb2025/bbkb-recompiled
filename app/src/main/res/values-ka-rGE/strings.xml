@@ -105,7 +105,7 @@
     <string name="ckb_gestures_export_summary">ჩაწერს ჩაჭერილ კლავიშების ბადეს აპის ფაილებში, როგორც &lt;ckb-key-grid&gt; ფრაგმენტს, მოწყობილობის კონფიგურაციაში ჩასასმელად. ჯერ ერთხელ გახსენით კლავიატურა, რომ ბადის ჩაჭერა შეძლოს.</string>
     <string name="ckb_gestures_export_title">CKB გეომეტრიის ექსპორტი</string>
     <string name="ckb_gestures_export_written">ჩაიწერა %s</string>
-    <string name="ckb_gestures_reserved_note">ზემოთ გადასრიალება (თითის ქვეშ არსებული შემოთავაზების დადასტურება) დაცულია</string>
+    <string name="ckb_gestures_reserved_note">ზემოთ გადასრიალება ან გადაწკაპუნება დაცულია კლავიატურის ზემოთ ნაჩვენები შემოთავაზებების დასადასტურებლად</string>
     <string name="ckb_gestures_screen_title">ტევადობითი ჟესტები</string>
     <string name="settings_gesture_accent_max_speed_summary">მახვილების შეცვლის სიჩქარის მაქსიმალური მამრავლი</string>
     <string name="settings_gesture_accent_max_speed_title">გადაადგილებით მახვილების შეცვლის მაქს. მამრავლი</string>
@@ -319,7 +319,7 @@
     <string name="settings_vkb_swipe_gestures_title">გადასრიალების ჟესტები</string>
     <string name="settings_vkb_swipe_gestures_switch_summary">გადასრიალება მარცხნივ, მარჯვნივ და ქვემოთ კლავიატურაზე</string>
     <string name="vkb_gestures_configure_title">გადასრიალების ჟესტების კონფიგურაცია</string>
-    <string name="vkb_gestures_reserved_note">ზემოთ გადასრიალება ირჩევს კლავიშის ზემოთ არსებულ სიტყვას</string>
+    <string name="vkb_gestures_reserved_note">ზემოთ გადასრიალება ან გადაწკაპუნება დაცულია კლავიატურაზე ნაჩვენები შემოთავაზებების დასადასტურებლად</string>
     <string name="settings_vkb_type_by_swiping_summary">სიტყვის აკრეფა კლავიშებზე თითის გასრიალებით</string>
     <string name="settings_vkb_type_by_swiping_title">აკრეფა გადასრიალებით</string>
     <string name="vkb_control_key_summary">Ctrl რეჟიმის ჩასართავად ხანგრძლივად დააჭირეთ ?123-ს</string>

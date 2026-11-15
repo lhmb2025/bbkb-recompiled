@@ -105,7 +105,7 @@
     <string name="ckb_gestures_export_summary">ບັນທຶກຕາຕະລາງປຸ່ມທີ່ຈັບໄດ້ເປັນສ່ວນ &lt;ckb-key-grid&gt; ລົງໃນໄຟລ໌ແອັບ ເພື່ອວາງໃສ່ໃນການຕັ້ງຄ່າອຸປະກອນ. ໃຫ້ເປີດແປ້ນພິມເທື່ອໜຶ່ງກ່ອນ ເພື່ອໃຫ້ມັນຈັບໄດ້.</string>
     <string name="ckb_gestures_export_title">ສົ່ງອອກເລຂາຄະນິດ CKB</string>
     <string name="ckb_gestures_export_written">ບັນທຶກ %s ແລ້ວ</string>
-    <string name="ckb_gestures_reserved_note">ການປັດຂຶ້ນ (ຢືນຢັນຄຳແນະນຳທີ່ຢູ່ໃຕ້ນິ້ວຂອງທ່ານ) ຖືກສະຫງວນໄວ້</string>
+    <string name="ckb_gestures_reserved_note">ການປັດຂຶ້ນ ຫຼື ປັດໄວຂຶ້ນ ຖືກສະຫງວນໄວ້ສຳລັບການຢືນຢັນຄຳແນະນຳທີ່ສະແດງຢູ່ເທິງແປ້ນພິມ</string>
     <string name="ckb_gestures_screen_title">ທ່າທາງແບບສຳຜັດ</string>
     <string name="settings_gesture_accent_max_speed_summary">ຕົວຄູນຄວາມໄວສູງສຸດສຳລັບການປ່ຽນເຄື່ອງໝາຍກຳກັບສຽງ</string>
     <string name="settings_gesture_accent_max_speed_title">ຕົວຄູນຄວາມໄວສູງສຸດຂອງການເລື່ອນປ່ຽນເຄື່ອງໝາຍກຳກັບສຽງ</string>
@@ -319,7 +319,7 @@
     <string name="settings_vkb_swipe_gestures_title">ທ່າທາງການປັດ</string>
     <string name="settings_vkb_swipe_gestures_switch_summary">ປັດຊ້າຍ, ຂວາ ແລະ ລົງເທິງແປ້ນພິມ</string>
     <string name="vkb_gestures_configure_title">ຕັ້ງຄ່າທ່າທາງການປັດ</string>
-    <string name="vkb_gestures_reserved_note">ການປັດຂຶ້ນຈະເລືອກຄຳທີ່ຢູ່ເທິງປຸ່ມ</string>
+    <string name="vkb_gestures_reserved_note">ການປັດຂຶ້ນ ຫຼື ປັດໄວຂຶ້ນ ຖືກສະຫງວນໄວ້ສຳລັບການຢືນຢັນຄຳແນະນຳທີ່ສະແດງຢູ່ແປ້ນພິມ</string>
     <string name="settings_vkb_type_by_swiping_summary">ລາກນິ້ວຜ່ານປຸ່ມຕ່າງໆເພື່ອພິມຄຳ</string>
     <string name="settings_vkb_type_by_swiping_title">ພິມດ້ວຍການປັດ</string>
     <string name="vkb_control_key_summary">ກົດ ?123 ຄ້າງໄວ້ເພື່ອເປີດໂໝດ Ctrl</string>

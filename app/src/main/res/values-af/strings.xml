@@ -105,7 +105,7 @@
     <string name="ckb_gestures_export_summary">Skryf die vasgelegde toetsrooster as ’n &lt;ckb-key-grid&gt;-brokkie na die programlêers, om in die toestelkonfigurasie te plak. Maak eers die toetsbord een keer oop sodat dit vasgelê kan word.</string>
     <string name="ckb_gestures_export_title">Voer CKB-meetkunde uit</string>
     <string name="ckb_gestures_export_written">%s geskryf</string>
-    <string name="ckb_gestures_reserved_note">Opwaarts vee (aanvaar die voorstel onder jou vinger) is gereserveer</string>
+    <string name="ckb_gestures_reserved_note">Opwaarts vee of flik is gereserveer om voorstelle te aanvaar wat bo die sleutelbord vertoon word</string>
     <string name="ckb_gestures_screen_title">Kapasitiewe gebare</string>
     <string name="settings_gesture_accent_max_speed_summary">Maksimum spoedvermenigvuldiger vir aksentveranderinge</string>
     <string name="settings_gesture_accent_max_speed_title">Maks. spoedvermenigvuldiger vir aksentverandering met rol</string>
@@ -319,7 +319,7 @@
     <string name="settings_vkb_swipe_gestures_title">Veeggebare</string>
     <string name="settings_vkb_swipe_gestures_switch_summary">Vee links, regs en af op die toetsbord</string>
     <string name="vkb_gestures_configure_title">Stel veeggebare op</string>
-    <string name="vkb_gestures_reserved_note">Opwaarts vee kies die woord bo die sleutel</string>
+    <string name="vkb_gestures_reserved_note">Opwaarts vee of flik is gereserveer om voorstelle te aanvaar wat op die sleutelbord vertoon word</string>
     <string name="settings_vkb_type_by_swiping_summary">Gly oor die toetse om ’n woord te tik</string>
     <string name="settings_vkb_type_by_swiping_title">Tik deur te vee</string>
     <string name="vkb_control_key_summary">Druk en hou ?123 om Ctrl-modus te aktiveer</string>

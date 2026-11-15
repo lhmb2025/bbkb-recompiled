@@ -105,7 +105,7 @@
     <string name="ckb_gestures_export_summary">Зберегти записану сітку клавіш у файли програми як фрагмент &lt;ckb-key-grid&gt; для вставлення в конфігурацію пристрою. Спершу один раз відкрийте клавіатуру, щоб вона виконала запис.</string>
     <string name="ckb_gestures_export_title">Експорт геометрії CKB</string>
     <string name="ckb_gestures_export_written">Записано: %s</string>
-    <string name="ckb_gestures_reserved_note">Проведення вгору (підтвердження підказки під пальцем) зарезервовано</string>
+    <string name="ckb_gestures_reserved_note">Проведення або різкий рух вгору зарезервовано для підтвердження підказок, що відображаються над клавіатурою</string>
     <string name="ckb_gestures_screen_title">Ємнісні жести</string>
     <string name="settings_gesture_accent_max_speed_summary">Максимальний множник швидкості зміни діакритичних знаків</string>
     <string name="settings_gesture_accent_max_speed_title">Макс. множник швидкості зміни діакритики під час прокручування</string>
@@ -319,7 +319,7 @@
     <string name="settings_vkb_swipe_gestures_title">Жести проведення</string>
     <string name="settings_vkb_swipe_gestures_switch_summary">Проведення вліво, вправо та вниз на клавіатурі</string>
     <string name="vkb_gestures_configure_title">Налаштувати жести проведення</string>
-    <string name="vkb_gestures_reserved_note">Проведення вгору вибирає слово над клавішею</string>
+    <string name="vkb_gestures_reserved_note">Проведення або різкий рух вгору зарезервовано для підтвердження підказок, що відображаються на клавіатурі</string>
     <string name="settings_vkb_type_by_swiping_summary">Проводьте по клавішах, щоб ввести слово</string>
     <string name="settings_vkb_type_by_swiping_title">Введення тексту жестами</string>
     <string name="vkb_control_key_summary">Утримуйте ?123, щоб увімкнути режим Ctrl</string>

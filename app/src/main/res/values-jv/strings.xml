@@ -105,7 +105,7 @@
     <string name="ckb_gestures_export_summary">Nulis kisi tombol sing wis dijupuk minangka cuplikan &lt;ckb-key-grid&gt; menyang berkas aplikasi, kanggo ditempelake ing konfigurasi piranti. Bukak papan tombol sepisan dhisik supaya bisa njupuk.</string>
     <string name="ckb_gestures_export_title">Ekspor geometri CKB</string>
     <string name="ckb_gestures_export_written">Ditulis %s</string>
-    <string name="ckb_gestures_reserved_note">Geser munggah (nampa saran ing sangisore drijimu) wis dicadhangake</string>
+    <string name="ckb_gestures_reserved_note">Geser utawa jentik munggah wis dicadhangake kanggo nampa saran sing katon ing sadhuwure keyboard</string>
     <string name="ckb_gestures_screen_title">Gerakan kapasitif</string>
     <string name="settings_gesture_accent_max_speed_summary">Pangganda kacepetan paling dhuwur kanggo ngganti aksen</string>
     <string name="settings_gesture_accent_max_speed_title">Pangganda kacepetan paling dhuwur nalika nggulung aksen</string>
@@ -319,7 +319,7 @@
     <string name="settings_vkb_swipe_gestures_title">Gerakan geser</string>
     <string name="settings_vkb_swipe_gestures_switch_summary">Geser ngiwa, nengen lan mudhun ing papan tombol</string>
     <string name="vkb_gestures_configure_title">Atur gerakan geser</string>
-    <string name="vkb_gestures_reserved_note">Geser munggah milih tembung ing sadhuwure tombol</string>
+    <string name="vkb_gestures_reserved_note">Geser utawa jentik munggah wis dicadhangake kanggo nampa saran sing katon ing keyboard</string>
     <string name="settings_vkb_type_by_swiping_summary">Geser ing tombol-tombol kanggo ngetik tembung</string>
     <string name="settings_vkb_type_by_swiping_title">Ngetik kanthi geser</string>
     <string name="vkb_control_key_summary">Pencet suwe ?123 kanggo ngaktifake mode Ctrl</string>

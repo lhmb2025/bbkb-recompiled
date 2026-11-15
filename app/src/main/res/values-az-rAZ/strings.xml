@@ -105,7 +105,7 @@
     <string name="ckb_gestures_export_summary">Qeydə alınmış klaviş şəbəkəsini cihaz konfiqurasiyasına yapışdırmaq üçün tətbiq fayllarına &lt;ckb-key-grid&gt; fraqmenti kimi yazın. Əvvəlcə klaviaturanı bir dəfə açın ki, o, qeydə ala bilsin.</string>
     <string name="ckb_gestures_export_title">CKB həndəsəsini ixrac edin</string>
     <string name="ckb_gestures_export_written">%s yazıldı</string>
-    <string name="ckb_gestures_reserved_note">Yuxarı sürüşdürmə (barmağınızın altındakı təklifi təsdiqləmək) ehtiyatda saxlanılıb</string>
+    <string name="ckb_gestures_reserved_note">Yuxarı sürüşdürmə və ya cəld hərəkət klaviaturanın üstündə göstərilən təklifləri təsdiqləmək üçün ayrılıb</string>
     <string name="ckb_gestures_screen_title">Tutumlu jestlər</string>
     <string name="settings_gesture_accent_max_speed_summary">Vurğu dəyişikliyi üçün maksimum sürət əmsalı</string>
     <string name="settings_gesture_accent_max_speed_title">Vurğu diyirləməsinin maksimum sürət əmsalı</string>
@@ -319,7 +319,7 @@
     <string name="settings_vkb_swipe_gestures_title">Sürüşdürmə jestləri</string>
     <string name="settings_vkb_swipe_gestures_switch_summary">Klaviaturada sola, sağa və aşağı sürüşdürmə</string>
     <string name="vkb_gestures_configure_title">Sürüşdürmə jestlərini tənzimləyin</string>
-    <string name="vkb_gestures_reserved_note">Yuxarı sürüşdürmə düymənin üstündəki sözü seçir</string>
+    <string name="vkb_gestures_reserved_note">Yuxarı sürüşdürmə və ya cəld hərəkət klaviaturada göstərilən təklifləri təsdiqləmək üçün ayrılıb</string>
     <string name="settings_vkb_type_by_swiping_summary">Söz yazmaq üçün klavişlər üzərində sürüşdürün</string>
     <string name="settings_vkb_type_by_swiping_title">Sürüşdürərək yazma</string>
     <string name="vkb_control_key_summary">Ctrl rejimini aktiv etmək üçün ?123 düyməsini basıb saxlayın</string>

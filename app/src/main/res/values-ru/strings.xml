@@ -105,7 +105,7 @@
     <string name="ckb_gestures_export_summary">Сохранить записанную сетку клавиш в файлы приложения в виде фрагмента &lt;ckb-key-grid&gt; для вставки в конфигурацию устройства. Сначала откройте клавиатуру один раз, чтобы она выполнила запись.</string>
     <string name="ckb_gestures_export_title">Экспорт геометрии CKB</string>
     <string name="ckb_gestures_export_written">Записано: %s</string>
-    <string name="ckb_gestures_reserved_note">Смахивание вверх (подтверждение подсказки под пальцем) зарезервировано</string>
+    <string name="ckb_gestures_reserved_note">Смахивание или резкое движение вверх зарезервировано для подтверждения подсказок, отображаемых над клавиатурой</string>
     <string name="ckb_gestures_screen_title">Емкостные жесты</string>
     <string name="settings_gesture_accent_max_speed_summary">Максимальный множитель скорости смены диакритических символов</string>
     <string name="settings_gesture_accent_max_speed_title">Макс. множитель скорости смены диакритики при прокрутке</string>
@@ -319,7 +319,7 @@
     <string name="settings_vkb_swipe_gestures_title">Жесты смахивания</string>
     <string name="settings_vkb_swipe_gestures_switch_summary">Смахивания влево, вправо и вниз на клавиатуре</string>
     <string name="vkb_gestures_configure_title">Настроить жесты смахивания</string>
-    <string name="vkb_gestures_reserved_note">Смахивание вверх выбирает слово над клавишей</string>
+    <string name="vkb_gestures_reserved_note">Смахивание или резкое движение вверх зарезервировано для подтверждения подсказок, отображаемых на клавиатуре</string>
     <string name="settings_vkb_type_by_swiping_summary">Проведите по клавишам, чтобы ввести слово</string>
     <string name="settings_vkb_type_by_swiping_title">Ввод текста с помощью жестов</string>
     <string name="vkb_control_key_summary">Удерживайте ?123, чтобы включить режим Ctrl</string>

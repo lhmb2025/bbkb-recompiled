@@ -105,7 +105,7 @@
     <string name="ckb_gestures_export_summary">Guarda la cuadrícula de teclas capturada como un fragmento &lt;ckb-key-grid&gt; en los archivos de la aplicación para pegarlo en la configuración del dispositivo. Abre antes el teclado una vez para que pueda capturarla.</string>
     <string name="ckb_gestures_export_title">Exportar la geometría del CKB</string>
     <string name="ckb_gestures_export_written">Se ha escrito %s</string>
-    <string name="ckb_gestures_reserved_note">Deslizar hacia arriba (confirmar la sugerencia que hay bajo tu dedo) está reservado</string>
+    <string name="ckb_gestures_reserved_note">Deslizar o hacer un gesto rápido hacia arriba está reservado para confirmar las sugerencias que se muestran sobre el teclado</string>
     <string name="ckb_gestures_screen_title">Gestos capacitivos</string>
     <string name="settings_gesture_accent_max_speed_summary">Multiplicador de velocidad máximo para cambiar de acento</string>
     <string name="settings_gesture_accent_max_speed_title">Multiplicador de velocidad máximo al desplazar acentos</string>
@@ -319,7 +319,7 @@
     <string name="settings_vkb_swipe_gestures_title">Gestos de deslizamiento</string>
     <string name="settings_vkb_swipe_gestures_switch_summary">Deslizamientos a la izquierda, a la derecha y hacia abajo en el teclado</string>
     <string name="vkb_gestures_configure_title">Configurar gestos de deslizamiento</string>
-    <string name="vkb_gestures_reserved_note">Deslizar hacia arriba elige la palabra que hay sobre la tecla</string>
+    <string name="vkb_gestures_reserved_note">Deslizar o hacer un gesto rápido hacia arriba está reservado para confirmar las sugerencias que se muestran en el teclado</string>
     <string name="settings_vkb_type_by_swiping_summary">Desliza el dedo por las teclas para escribir una palabra</string>
     <string name="settings_vkb_type_by_swiping_title">Escribe deslizando el dedo</string>
     <string name="vkb_control_key_summary">Mantén pulsado ?123 para activar el modo Ctrl</string>

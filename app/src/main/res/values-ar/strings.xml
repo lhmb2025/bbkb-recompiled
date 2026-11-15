@@ -105,7 +105,7 @@
     <string name="ckb_gestures_export_summary">كتابة شبكة المفاتيح الملتقطة كمقطع &lt;ckb-key-grid&gt; في ملفات التطبيق، للصقه في تكوين الجهاز. افتح لوحة المفاتيح مرة واحدة أولاً ليتم الالتقاط.</string>
     <string name="ckb_gestures_export_title">تصدير هندسة CKB</string>
     <string name="ckb_gestures_export_written">تمت كتابة %s</string>
-    <string name="ckb_gestures_reserved_note">التمرير للأعلى (تأكيد الاقتراح الموجود تحت إصبعك) محجوز</string>
+    <string name="ckb_gestures_reserved_note">التمرير أو السحب السريع للأعلى مخصص لتأكيد الاقتراحات المعروضة فوق لوحة المفاتيح</string>
     <string name="ckb_gestures_screen_title">الإيماءات السعوية</string>
     <string name="settings_gesture_accent_max_speed_summary">أقصى مضاعف سرعة لتغيير التشكيل</string>
     <string name="settings_gesture_accent_max_speed_title">أقصى مضاعف سرعة لتغيير التشكيل بالسحب</string>
@@ -319,7 +319,7 @@
     <string name="settings_vkb_swipe_gestures_title">إيماءات التمرير</string>
     <string name="settings_vkb_swipe_gestures_switch_summary">التمرير لليسار ولليمين وللأسفل على لوحة المفاتيح</string>
     <string name="vkb_gestures_configure_title">تكوين إيماءات التمرير</string>
-    <string name="vkb_gestures_reserved_note">التمرير للأعلى يختار الكلمة الموجودة فوق المفتاح</string>
+    <string name="vkb_gestures_reserved_note">التمرير أو السحب السريع للأعلى مخصص لتأكيد الاقتراحات المعروضة على لوحة المفاتيح</string>
     <string name="settings_vkb_type_by_swiping_summary">تمرير الإصبع عبر المفاتيح لكتابة كلمة</string>
     <string name="settings_vkb_type_by_swiping_title">الكتابة بالتمرير</string>
     <string name="vkb_control_key_summary">اضغط مطولاً على ?123 لتفعيل وضع Ctrl</string>

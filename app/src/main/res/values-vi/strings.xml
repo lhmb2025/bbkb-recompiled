@@ -105,7 +105,7 @@
     <string name="ckb_gestures_export_summary">Ghi lưới phím đã ghi nhận dưới dạng đoạn &lt;ckb-key-grid&gt; vào tệp của ứng dụng, để dán vào cấu hình thiết bị. Hãy mở bàn phím một lần trước để ứng dụng ghi nhận được.</string>
     <string name="ckb_gestures_export_title">Xuất hình học CKB</string>
     <string name="ckb_gestures_export_written">Đã ghi %s</string>
-    <string name="ckb_gestures_reserved_note">Vuốt lên (chọn gợi ý ngay dưới ngón tay) là cử chỉ dành riêng</string>
+    <string name="ckb_gestures_reserved_note">Vuốt hoặc lướt nhanh lên là cử chỉ dành riêng để chọn các gợi ý hiển thị phía trên bàn phím</string>
     <string name="ckb_gestures_screen_title">Cử chỉ cảm ứng</string>
     <string name="settings_gesture_accent_max_speed_summary">Hệ số tốc độ tối đa khi đổi dấu</string>
     <string name="settings_gesture_accent_max_speed_title">Hệ số tốc độ tối đa khi cuộn đổi dấu</string>
@@ -319,7 +319,7 @@
     <string name="settings_vkb_swipe_gestures_title">Cử chỉ vuốt</string>
     <string name="settings_vkb_swipe_gestures_switch_summary">Vuốt sang trái, sang phải và xuống trên bàn phím</string>
     <string name="vkb_gestures_configure_title">Thiết lập cử chỉ vuốt</string>
-    <string name="vkb_gestures_reserved_note">Vuốt lên sẽ chọn từ phía trên phím</string>
+    <string name="vkb_gestures_reserved_note">Vuốt hoặc lướt nhanh lên là cử chỉ dành riêng để chọn các gợi ý hiển thị trên bàn phím</string>
     <string name="settings_vkb_type_by_swiping_summary">Trượt ngón tay qua các phím để nhập một từ</string>
     <string name="settings_vkb_type_by_swiping_title">Nhập bằng cách vuốt</string>
     <string name="vkb_control_key_summary">Nhấn giữ ?123 để bật chế độ Ctrl</string>

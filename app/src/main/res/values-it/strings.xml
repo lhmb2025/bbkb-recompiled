@@ -105,7 +105,7 @@
     <string name="ckb_gestures_export_summary">Salva la griglia dei tasti acquisita come snippet &lt;ckb-key-grid&gt; nei file dell\'app, da incollare nella configurazione del dispositivo. Apri prima la tastiera una volta per consentire l\'acquisizione.</string>
     <string name="ckb_gestures_export_title">Esporta la geometria CKB</string>
     <string name="ckb_gestures_export_written">%s salvato</string>
-    <string name="ckb_gestures_reserved_note">Lo scorrimento verso l\'alto (conferma il suggerimento sotto il dito) è riservato</string>
+    <string name="ckb_gestures_reserved_note">Lo scorrimento o lo swipe rapido verso l\'alto è riservato alla conferma dei suggerimenti mostrati sopra la tastiera</string>
     <string name="ckb_gestures_screen_title">Gesti capacitivi</string>
     <string name="settings_gesture_accent_max_speed_summary">Moltiplicatore di velocità massimo per il cambio di accento</string>
     <string name="settings_gesture_accent_max_speed_title">Moltiplicatore max velocità cambio accenti</string>
@@ -319,7 +319,7 @@
     <string name="settings_vkb_swipe_gestures_title">Gesti di scorrimento</string>
     <string name="settings_vkb_swipe_gestures_switch_summary">Scorrimenti verso sinistra, verso destra e verso il basso sulla tastiera</string>
     <string name="vkb_gestures_configure_title">Configura i gesti di scorrimento</string>
-    <string name="vkb_gestures_reserved_note">Lo scorrimento verso l\'alto sceglie la parola sopra il tasto</string>
+    <string name="vkb_gestures_reserved_note">Lo scorrimento o lo swipe rapido verso l\'alto è riservato alla conferma dei suggerimenti mostrati sulla tastiera</string>
     <string name="settings_vkb_type_by_swiping_summary">Scorri sui tasti per digitare una parola</string>
     <string name="settings_vkb_type_by_swiping_title">Digita scorrendo</string>
     <string name="vkb_control_key_summary">Tieni premuto ?123 per attivare la modalità Ctrl</string>

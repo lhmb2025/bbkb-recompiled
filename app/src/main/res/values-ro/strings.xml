@@ -105,7 +105,7 @@
     <string name="ckb_gestures_export_summary">Scrie grila de taste captată ca fragment &lt;ckb-key-grid&gt; în fișierele aplicației, pentru a fi lipit în configurația dispozitivului. Deschideți mai întâi tastatura o dată, pentru a permite captarea.</string>
     <string name="ckb_gestures_export_title">Exportați geometria CKB</string>
     <string name="ckb_gestures_export_written">S-a scris %s</string>
-    <string name="ckb_gestures_reserved_note">Glisarea în sus (confirmă sugestia de sub deget) este rezervată</string>
+    <string name="ckb_gestures_reserved_note">Glisarea sau fluturarea în sus este rezervată pentru confirmarea sugestiilor afișate deasupra tastaturii</string>
     <string name="ckb_gestures_screen_title">Gesturi capacitive</string>
     <string name="settings_gesture_accent_max_speed_summary">Multiplicatorul maxim de viteză pentru schimbarea accentelor</string>
     <string name="settings_gesture_accent_max_speed_title">Multiplicator max. viteză schimbare accente</string>
@@ -319,7 +319,7 @@
     <string name="settings_vkb_swipe_gestures_title">Gesturi de glisare</string>
     <string name="settings_vkb_swipe_gestures_switch_summary">Glisări spre stânga, spre dreapta și în jos pe tastatură</string>
     <string name="vkb_gestures_configure_title">Configurați gesturile de glisare</string>
-    <string name="vkb_gestures_reserved_note">Glisarea în sus alege cuvântul de deasupra tastei</string>
+    <string name="vkb_gestures_reserved_note">Glisarea sau fluturarea în sus este rezervată pentru confirmarea sugestiilor afișate pe tastatură</string>
     <string name="settings_vkb_type_by_swiping_summary">Glisați peste taste pentru a tasta un cuvânt</string>
     <string name="settings_vkb_type_by_swiping_title">Tastați trăgând cu degetul</string>
     <string name="vkb_control_key_summary">Ține apăsat ?123 pentru a activa modul Ctrl</string>

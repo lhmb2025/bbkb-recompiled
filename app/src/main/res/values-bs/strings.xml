@@ -105,7 +105,7 @@
     <string name="ckb_gestures_export_summary">Zapisuje zabilježenu mrežu tipki kao isječak &lt;ckb-key-grid&gt; u datoteke aplikacije, da ga zalijepite u konfiguraciju uređaja. Prvo jednom otvorite tastaturu da bi je mogla zabilježiti.</string>
     <string name="ckb_gestures_export_title">Izvezi geometriju CKB-a</string>
     <string name="ckb_gestures_export_written">Zapisano %s</string>
-    <string name="ckb_gestures_reserved_note">Prevlačenje prema gore (potvrda prijedloga ispod prsta) je rezervisano</string>
+    <string name="ckb_gestures_reserved_note">Prevlačenje ili zamah prema gore rezervisan je za potvrdu prijedloga prikazanih iznad tastature</string>
     <string name="ckb_gestures_screen_title">Kapacitivne geste</string>
     <string name="settings_gesture_accent_max_speed_summary">Najveći množilac brzine za promjenu akcenata</string>
     <string name="settings_gesture_accent_max_speed_title">Najveći množilac brzine pri listanju akcenata</string>
@@ -319,7 +319,7 @@
     <string name="settings_vkb_swipe_gestures_title">Geste prevlačenja</string>
     <string name="settings_vkb_swipe_gestures_switch_summary">Prevlačenja ulijevo, udesno i prema dolje na tastaturi</string>
     <string name="vkb_gestures_configure_title">Konfiguriraj geste prevlačenja</string>
-    <string name="vkb_gestures_reserved_note">Prevlačenje prema gore bira riječ iznad tipke</string>
+    <string name="vkb_gestures_reserved_note">Prevlačenje ili zamah prema gore rezervisan je za potvrdu prijedloga prikazanih na tastaturi</string>
     <string name="settings_vkb_type_by_swiping_summary">Prevucite preko tipki da upišete riječ</string>
     <string name="settings_vkb_type_by_swiping_title">Pisanje prevlačenjem</string>
     <string name="vkb_control_key_summary">Pritisnite i držite ?123 da uključite Ctrl način</string>

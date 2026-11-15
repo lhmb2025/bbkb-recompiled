@@ -105,7 +105,7 @@
     <string name="ckb_gestures_export_summary">Yn ysgrifennu\'r grid bysellau a gipiwyd fel pwt &lt;ckb-key-grid&gt; i ffeiliau\'r ap, i\'w gludo i ffurfweddiad y ddyfais. Agorwch y bysellfwrdd unwaith yn gyntaf er mwyn iddo allu cipio.</string>
     <string name="ckb_gestures_export_title">Allforio geometreg y CKB</string>
     <string name="ckb_gestures_export_written">Ysgrifennwyd %s</string>
-    <string name="ckb_gestures_reserved_note">Mae sweipio i fyny (derbyn yr awgrym o dan eich bys) wedi\'i gadw</string>
+    <string name="ckb_gestures_reserved_note">Mae sweipio neu fflicio i fyny wedi\'i gadw ar gyfer derbyn awgrymiadau a ddangosir uwchben y bysellfwrdd</string>
     <string name="ckb_gestures_screen_title">Ystumiau cynhwysaidd</string>
     <string name="settings_gesture_accent_max_speed_summary">Y lluosydd cyflymder mwyaf ar gyfer newid acenion</string>
     <string name="settings_gesture_accent_max_speed_title">Lluosydd cyflymder mwyaf wrth sgrolio drwy acenion</string>
@@ -319,7 +319,7 @@
     <string name="settings_vkb_swipe_gestures_title">Ystumiau sweipio</string>
     <string name="settings_vkb_swipe_gestures_switch_summary">Sweipio i\'r chwith, i\'r dde ac i lawr ar y bysellfwrdd</string>
     <string name="vkb_gestures_configure_title">Ffurfweddu ystumiau sweipio</string>
-    <string name="vkb_gestures_reserved_note">Mae sweipio i fyny yn dewis y gair uwchben yr allwedd</string>
+    <string name="vkb_gestures_reserved_note">Mae sweipio neu fflicio i fyny wedi\'i gadw ar gyfer derbyn awgrymiadau a ddangosir ar y bysellfwrdd</string>
     <string name="settings_vkb_type_by_swiping_summary">Llithro ar draws y bysellau i deipio gair</string>
     <string name="settings_vkb_type_by_swiping_title">Teipio drwy sweipio</string>
     <string name="vkb_control_key_summary">Pwyswch a daliwch ?123 i alluogi modd Ctrl</string>

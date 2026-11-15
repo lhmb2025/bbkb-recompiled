@@ -105,7 +105,7 @@
     <string name="ckb_gestures_export_summary">Shkruan rrjetën e regjistruar të tastave si një fragment &lt;ckb-key-grid&gt; te skedarët e aplikacionit, për ta ngjitur te konfigurimi i pajisjes. Hap një herë tastierën që ajo të mund ta regjistrojë.</string>
     <string name="ckb_gestures_export_title">Eksporto gjeometrinë e CKB-së</string>
     <string name="ckb_gestures_export_written">U shkrua %s</string>
-    <string name="ckb_gestures_reserved_note">Rrëshqitja lart (pranimi i sugjerimit nën gisht) është e rezervuar</string>
+    <string name="ckb_gestures_reserved_note">Rrëshqitja ose goditja lart është e rezervuar për pranimin e sugjerimeve që shfaqen mbi tastierë</string>
     <string name="ckb_gestures_screen_title">Gjestet kapacitive</string>
     <string name="settings_gesture_accent_max_speed_summary">Shumëzuesi maksimal i shpejtësisë për ndryshimin e theksave</string>
     <string name="settings_gesture_accent_max_speed_title">Shumëzuesi maksimal i shpejtësisë gjatë kalimit të theksave</string>
@@ -319,7 +319,7 @@
     <string name="settings_vkb_swipe_gestures_title">Gjestet e rrëshqitjes</string>
     <string name="settings_vkb_swipe_gestures_switch_summary">Rrëshqitje majtas, djathtas dhe poshtë në tastierë</string>
     <string name="vkb_gestures_configure_title">Konfiguro gjestet e rrëshqitjes</string>
-    <string name="vkb_gestures_reserved_note">Rrëshqitja lart zgjedh fjalën mbi tastin</string>
+    <string name="vkb_gestures_reserved_note">Rrëshqitja ose goditja lart është e rezervuar për pranimin e sugjerimeve që shfaqen në tastierë</string>
     <string name="settings_vkb_type_by_swiping_summary">Rrëshqit mbi tastet për të shkruar një fjalë</string>
     <string name="settings_vkb_type_by_swiping_title">Shkrim me rrëshqitje</string>
     <string name="vkb_control_key_summary">Mbaje shtypur ?123 për të aktivizuar modalitetin Ctrl</string>
