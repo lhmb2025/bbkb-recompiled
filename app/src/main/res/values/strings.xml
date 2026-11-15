@@ -704,6 +704,25 @@
     <string name="settings_customize_menu_title">Customize input menu</string>
     <string name="settings_qr_scanner_app_title">QR scanner app</string>
     <string name="qr_scanner_app_benos_camera">BenOS Camera</string>
+
+    <!-- First-run setup checklist -->
+    <string name="settings_setup_title">Set up your keyboard</string>
+    <string name="settings_setup_returning_header">Returning?</string>
+    <string name="settings_setup_restore_title">Restore from a backup</string>
+    <string name="settings_setup_restore_summary">Bring back settings from an earlier install</string>
+    <string name="settings_setup_steps_header">Get started</string>
+    <string name="settings_setup_enable_title">Enable the keyboard</string>
+    <string name="settings_setup_enable_summary">Turn it on in the system input-method settings</string>
+    <string name="settings_setup_set_default_title">Set as default</string>
+    <string name="settings_setup_set_default_summary">Choose this keyboard in the input-method picker</string>
+    <string name="settings_setup_device_title">Confirm your device</string>
+    <string name="settings_setup_device_summary">Check the detected device or pick another</string>
+    <string name="settings_setup_keylayout_title">Keyboard layout</string>
+    <string name="settings_setup_keylayout_summary">QWERTY, QWERTZ, AZERTY and custom layouts</string>
+    <string name="settings_setup_language_title">Language</string>
+    <string name="settings_setup_language_summary">Keyboard languages and switching</string>
+    <string name="settings_setup_skip_title">Skip for now</string>
+    <string name="settings_setup_skip_summary">You can change any of this later in settings</string>
     <string name="settings_default_currency_summary">Select the currency to display on the keyboard</string>
     <string name="settings_default_currency_title">Default currency</string>
     <string name="settings_lang_quick_switch_summary">Show a key that switches between your last two languages</string>
