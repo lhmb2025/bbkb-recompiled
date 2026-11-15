@@ -222,6 +222,8 @@
     <string name="settings_language_switching_title">Language switching</string>
     <string name="settings_languages_summary">Keyboard languages, language switching, and language packs</string>
     <string name="settings_languages_title">Language</string>
+    <string name="settings_switch_keyboard_summary">Open the system input-method picker to change the active keyboard</string>
+    <string name="settings_switch_keyboard_title">Switch keyboard</string>
 
     <string name="control_key_setting_left_shift">Left shift key</string>
     <string name="control_key_setting_off">None</string>
@@ -698,6 +700,8 @@
     <string name="settings_customize_menu_instructions">Touch and hold a shortcut, then drag to reorder. The first four appear on the keyboard\u2019s input menu.</string>
     <string name="settings_customize_menu_summary">Choose and reorder the input menu shortcuts</string>
     <string name="settings_customize_menu_title">Customize input menu</string>
+    <string name="settings_qr_scanner_app_title">QR scanner app</string>
+    <string name="qr_scanner_app_benos_camera">BenOS Camera</string>
     <string name="settings_default_currency_summary">Select the currency to display on the keyboard</string>
     <string name="settings_default_currency_title">Default currency</string>
     <string name="settings_lang_quick_switch_summary">Show a key that switches between your last two languages</string>
@@ -1129,4 +1133,6 @@
     <string name="settings_spellcheck_enable_title">Enable BBKB spell checker</string>
     <string name="settings_spellcheck_enable_summary">Detect typos and suggest corrections</string>
     <string name="settings_credits_version">Version %1$s (Build %2$s)</string>
+    <string name="settings_uim_toggle_qr_scan">QR scanner</string>
+    <string name="qr_scanner_unavailable">QR scanner unavailable: BenOS Camera was not found</string>
 </resources>

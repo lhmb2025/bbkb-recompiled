@@ -60,6 +60,9 @@
         <item name="iconNumberPadActiveKey">@drawable/ic_auxbar_numpad</item>
         <item name="iconNumberPadKey">@drawable/ic_auxbar_numpad</item>
         <item name="iconNumberPadKeyDisabled">@drawable/ic_auxbar_numpad_disabled</item>
+        <item name="iconQrScanActiveKey">@drawable/ic_auxbar_qr_scan</item>
+        <item name="iconQrScanKey">@drawable/ic_auxbar_qr_scan</item>
+        <item name="iconQrScanKeyDisabled">@drawable/ic_auxbar_qr_scan</item>
         <item name="iconPasteActiveKey">@drawable/ic_auxbar_clipboard_enabled</item>
         <item name="iconPasteKey">@drawable/ic_auxbar_clipboard_enabled</item>
         <item name="iconPasteKeyDisabled">@drawable/ic_auxbar_clipboard_disabled</item>
