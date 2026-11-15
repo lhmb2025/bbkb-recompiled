@@ -5,6 +5,9 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.foundation.selection.selectable
+import androidx.compose.foundation.selection.selectableGroup
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -300,35 +303,47 @@ fun ListPreference(
             onDismissRequest = { showDialog = false },
             title = { Text(title, style = MaterialTheme.typography.headlineSmall) },
             text = {
-                // Capped near half the screen and scrollable: the dialog's own bound alone let long
-                // lists clip their last rows into text-less bubbles on short screens.
-                val maxListHeight = (LocalConfiguration.current.screenHeightDp * 0.55f).dp
-                Column(modifier = Modifier.heightIn(max = maxListHeight).verticalScroll(rememberScrollState())) {
-                    entries.forEachIndexed { index, entry ->
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .clickable {
-                                    onValueChange(entryValues[index])
-                                    showDialog = false
-                                }
-                                .padding(vertical = spacing.dialogListItemVerticalPadding),
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            RadioButton(
-                                selected = value == entryValues[index],
-                                onClick = {
-                                    onValueChange(entryValues[index])
-                                    showDialog = false
-                                }
-                            )
-                            Spacer(modifier = Modifier.width(spacing.iconTextGap))
-                            Text(
-                                text = entry,
-                                style = MaterialTheme.typography.bodyLarge
-                            )
+                // Material 3 selection dialog: the list takes the room the dialog has and scrolls
+                // only past it; a divider marks each edge with more beyond it. The cap keeps the
+                // title and Cancel on screen however the dialog slot measures its content.
+                val scroll = rememberScrollState()
+                val maxListHeight = (LocalConfiguration.current.screenHeightDp - DIALOG_CHROME_HEIGHT_DP)
+                    .coerceAtLeast(MIN_DIALOG_LIST_HEIGHT_DP).dp
+                Column(modifier = Modifier.heightIn(max = maxListHeight)) {
+                    ScrollEdgeDivider(visible = scroll.canScrollBackward)
+                    Column(
+                        modifier = Modifier
+                            .weight(1f, fill = false)
+                            .verticalScroll(scroll)
+                            .selectableGroup()
+                    ) {
+                        entries.forEachIndexed { index, entry ->
+                            val selected = value == entryValues[index]
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .heightIn(min = DIALOG_LIST_ITEM_HEIGHT)
+                                    .selectable(
+                                        selected = selected,
+                                        role = Role.RadioButton,
+                                        onClick = {
+                                            onValueChange(entryValues[index])
+                                            showDialog = false
+                                        }
+                                    ),
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                // The row is the control; the button only shows the state.
+                                RadioButton(selected = selected, onClick = null)
+                                Spacer(modifier = Modifier.width(spacing.iconTextGap))
+                                Text(
+                                    text = entry,
+                                    style = MaterialTheme.typography.bodyLarge
+                                )
+                            }
                         }
                     }
+                    ScrollEdgeDivider(visible = scroll.canScrollForward)
                 }
             },
             confirmButton = {
@@ -339,6 +354,22 @@ fun ListPreference(
             shape = shapes.dialog
         )
     }
+}
+
+/** Material 3 one-line list item height, the whole row being the tap target. */
+private val DIALOG_LIST_ITEM_HEIGHT = 56.dp
+
+/** Status and navigation bars, dialog margins and padding, title and button row, in dp. */
+private const val DIALOG_CHROME_HEIGHT_DP = 240
+
+private const val MIN_DIALOG_LIST_HEIGHT_DP = 168
+
+/** A scrollable dialog list's edge: a divider while content continues past it, else the same space empty. */
+@Composable
+private fun ScrollEdgeDivider(visible: Boolean) {
+    androidx.compose.material3.HorizontalDivider(
+        color = if (visible) MaterialTheme.colorScheme.outlineVariant else androidx.compose.ui.graphics.Color.Transparent
+    )
 }
 
 /** The label above a [PreferenceGroup]; the string carries its own (sentence) case. */
