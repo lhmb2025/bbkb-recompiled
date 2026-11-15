@@ -3,13 +3,18 @@ package dev.bbkb.ime.keyboard
 import android.content.Context
 import android.content.SharedPreferences
 import android.graphics.Canvas
-import android.graphics.Paint
+import android.graphics.ColorFilter
+import android.graphics.PixelFormat
+import android.graphics.drawable.Drawable
+import androidx.compose.runtime.MutableState
 import dev.bbkb.ime.keyboard.internal.KeyboardId
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Assert.fail
 import org.junit.Test
+import org.junit.After
+import org.junit.Before
 import org.junit.runner.RunWith
 import org.mockito.Mockito
 import org.mockito.Mockito.mock
@@ -28,7 +33,8 @@ import java.util.Locale
  *
  * Element ids: 0 alphabet, 4 alphabetShiftLockShifted, 5..8 symbols0/1/2/Custom, 9 phone,
  * 104, 105..108 symbols0/1/2/CustomPkb, 109 phonePkb, 110 phoneSymbolsPkb. Per row: drawn or not,
- * dot count, and active dot (`hi`, -1 = none), read off a recording [Canvas].
+ * dot count, and active dot (`hi`, -1 = none), read off a recording dot drawable: each dot is the
+ * view's `pageIndicatorDot` tinted with the palette's accent (active) or text (other) color.
  *
  * Locale matters: Chinese has three base symbol pages (5,6,7), others two (5,6). The max page is a
  * dot count bumped by one for the custom page; the custom page is always id 8 / 108.
@@ -172,12 +178,39 @@ class SymbolPageIndicatorTest {
         "zh cust=1 first=1 el=110 => draw=0",
     )
 
-    /** Records the colour of every dot drawn, in draw order. */
-    private class RecordingCanvas : Canvas() {
+    /** Stands in for `pageIndicatorDot`: records the tint of every dot drawn, in draw order. */
+    private class RecordingDot : Drawable() {
         val dotColors = ArrayList<Int>()
-        override fun drawText(text: String, x: Float, y: Float, paint: Paint) {
-            dotColors.add(paint.color)
+        private var tint = 0
+        override fun setTint(tintColor: Int) {
+            tint = tintColor
         }
+        override fun draw(canvas: Canvas) {
+            dotColors.add(tint)
+        }
+        override fun setAlpha(alpha: Int) {}
+        override fun setColorFilter(colorFilter: ColorFilter?) {}
+        @Deprecated("Drawable API")
+        override fun getOpacity(): Int = PixelFormat.TRANSLUCENT
+    }
+
+    /** The palette the dots are tinted from; swapped for marker colors around each test. */
+    @Suppress("UNCHECKED_CAST")
+    private val paletteState: MutableState<KeyboardColorManager.Palette>
+        get() = KeyboardColorManager::class.java.getDeclaredField("palette\$delegate")
+            .apply { isAccessible = true }.get(KeyboardColorManager) as MutableState<KeyboardColorManager.Palette>
+
+    private var savedPalette: KeyboardColorManager.Palette? = null
+
+    @Before
+    fun markActiveAndInactiveColors() {
+        savedPalette = paletteState.value
+        paletteState.value = KeyboardColorManager.Palette.EMPTY.copy(text = INACTIVE_COLOR, accent = ACTIVE_COLOR)
+    }
+
+    @After
+    fun restorePalette() {
+        savedPalette?.let { paletteState.value = it }
     }
 
     /** A [KeyboardView] whose constructor never ran; every method runs its real body. */
@@ -235,8 +268,7 @@ class SymbolPageIndicatorTest {
                      pkbEnabled: Boolean, pkbFirst: Boolean): KeyboardView {
         val v = bareView()
         field("sharedPreferences").set(v, prefs(vkbEnabled, vkbFirst, pkbEnabled, pkbFirst))
-        field("pageIndicatorActiveColor").setInt(v, ACTIVE_COLOR)
-        field("pageIndicatorInactiveColor").setInt(v, INACTIVE_COLOR)
+        field("pageIndicatorDot").set(v, RecordingDot())
         try {
             v.setKeyboard(keyboard(elementId, chinese))
         } catch (expected: Throwable) {
@@ -270,13 +302,14 @@ class SymbolPageIndicatorTest {
         return m.invoke(v, k) as Boolean
     }
 
-    private fun draw(v: KeyboardView, k: Key): RecordingCanvas {
-        val canvas = RecordingCanvas()
+    private fun draw(v: KeyboardView, k: Key): RecordingDot {
+        val dot = field("pageIndicatorDot").get(v) as RecordingDot
+        dot.dotColors.clear()
         KeyboardView::class.java
             .getDeclaredMethod("drawPageIndicator", Canvas::class.java, Key::class.java)
             .apply { isAccessible = true }
-            .invoke(v, canvas, k)
-        return canvas
+            .invoke(v, Canvas(), k)
+        return dot
     }
 
     /**
