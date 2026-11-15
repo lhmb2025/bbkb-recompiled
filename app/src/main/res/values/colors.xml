@@ -9,8 +9,6 @@
     <color name="language_indicator_text_color">@color/m3_on_surface_variant_dark</color>
 
     <color name="multitap_highlight_color">#4c00b800</color>
-    <color name="page_switcher_active_color">#ff0092cc</color>
-    <color name="page_switcher_inactive_color">#ff474747</color>
     <color name="suggested_word_dark">#b3ffffff</color>
     <color name="text_decorator_add_to_dictionary_indicator_background_color">#4eb848</color>
     <color name="text_decorator_add_to_dictionary_indicator_foreground_color">#ffffff</color>

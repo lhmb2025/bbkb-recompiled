@@ -523,8 +523,6 @@
     <public type="color" name="multitap_highlight_color" id="0x7f060169" />
     <public type="color" name="notification_action_color_filter" id="0x7f06016b" />
     <public type="color" name="notification_icon_bg_color" id="0x7f06016c" />
-    <public type="color" name="page_switcher_active_color" id="0x7f060170" />
-    <public type="color" name="page_switcher_inactive_color" id="0x7f060171" />
     <public type="color" name="primary_dark_material_dark" id="0x7f060174" />
     <public type="color" name="primary_dark_material_light" id="0x7f060175" />
     <public type="color" name="primary_material_dark" id="0x7f060177" />

@@ -49,7 +49,9 @@ import dev.bbkb.ime.BuildConfig;
 
 public class KeyboardView extends View {
 
-    private static final Paint PAGE_INDICATOR_PAINT = new Paint();
+    private static final float PAGE_DOT_DIAMETER_DP = 6f;
+
+    private static final float PAGE_DOT_GAP_DP = 6f;
 
     private final HashSet<Key> invalidatedKeys;
 
@@ -124,9 +126,8 @@ public class KeyboardView extends View {
 
     private final float spacebarIconWidth;
 
-    private final int pageIndicatorActiveColor;
-
-    private final int pageIndicatorInactiveColor;
+    /** Symbol-page dot, mutated once and re-tinted per dot. */
+    private final Drawable pageIndicatorDot;
 
     private int maxVkbSymbolPage;
 
@@ -170,11 +171,6 @@ public class KeyboardView extends View {
         }
     };
 
-    static {
-        PAGE_INDICATOR_PAINT.setTextAlign(Paint.Align.CENTER);
-        PAGE_INDICATOR_PAINT.setAntiAlias(true);
-    }
-
     public KeyboardView(Context context, AttributeSet attributeSet) {
         this(context, attributeSet, R.attr.keyboardViewStyle);
     }
@@ -214,8 +210,7 @@ public class KeyboardView extends View {
         this.backgroundPaint.setStyle(Paint.Style.FILL);
         this.dividerPaint.setStyle(Paint.Style.FILL);
         this.capStrokePaint.setStyle(Paint.Style.STROKE);
-        this.pageIndicatorActiveColor = ContextCompat.getColor(context, R.color.page_switcher_active_color);
-        this.pageIndicatorInactiveColor = ContextCompat.getColor(context, R.color.page_switcher_inactive_color);
+        this.pageIndicatorDot = ContextCompat.getDrawable(context, R.drawable.ic_page_indicator_dot).mutate();
         this.context = context;
         this.sharedPreferences = PrefsManager.INSTANCE.getPrefs(this.context);
 
@@ -520,29 +515,40 @@ public class KeyboardView extends View {
                 || (getIsPkbCustomSymbolPageEnabled() && elementId == 108);
     }
 
+    /**
+     * Draws one dot per page in a centred column: the current page in the keyboard's accent color,
+     * the others in the key text color. Dots shrink to fit when the key is too short for the full
+     * size.
+     */
     private void drawPageIndicator(Canvas canvas, Key key) {
-        int basePageIndex;
-        int dotIndex = 0;
         boolean isPkb = this.keyboard.mId.mElementId >= 105;
-        if (!isPkb) {
-            basePageIndex = (this.maxVkbSymbolPage - 5) + 1;
-        } else {
-            basePageIndex = (this.maxPkbSymbolPage - 105) + 1;
+        int pageCount = isPkb
+                ? (this.maxPkbSymbolPage - 105) + 1
+                : (this.maxVkbSymbolPage - 5) + 1;
+        if (pageCount <= 0) {
+            return;
         }
         int activePageIndex = getActivePageIndex(isPkb);
-        float pageCount = basePageIndex;
-        float dotSize = key.getHeight() / pageCount;
-        if (basePageIndex > 2) {
-            dotSize = (float) (dotSize * ((basePageIndex / 10.0d) + 1.0d));
+        int activeColor = KeyboardColorManager.INSTANCE.getAccentColor();
+        int inactiveColor = KeyboardColorManager.INSTANCE.getTextColor();
+        float diameter = PAGE_DOT_DIAMETER_DP * this.density;
+        float gap = PAGE_DOT_GAP_DP * this.density;
+        float available = key.getHeight() * 0.8f;
+        float needed = (pageCount * diameter) + ((pageCount - 1) * gap);
+        if (needed > available) {
+            float scale = available / needed;
+            diameter *= scale;
+            gap *= scale;
+            needed = available;
         }
-        PAGE_INDICATOR_PAINT.setTextSize(dotSize);
-        float fMeasureText = PAGE_INDICATOR_PAINT.measureText("•");
-        float dotSpacing = (key.getHeight() - (pageCount * fMeasureText)) / (basePageIndex + 1);
-        while (dotIndex < basePageIndex) {
-            PAGE_INDICATOR_PAINT.setColor(activePageIndex == dotIndex ? this.pageIndicatorActiveColor : this.pageIndicatorInactiveColor);
-            int nextIndex = dotIndex + 1;
-            canvas.drawText("•", key.getWidth() / 2.0f, (this.keyboard.mVerticalGap / 2) + (nextIndex * dotSpacing) + (dotIndex * fMeasureText) + (dotSize / 2.0f), PAGE_INDICATOR_PAINT);
-            dotIndex = nextIndex;
+        int size = Math.max(1, Math.round(diameter));
+        int left = Math.round((key.getWidth() - size) / 2f);
+        float top = (key.getHeight() - needed) / 2f;
+        for (int i = 0; i < pageCount; i++) {
+            int y = Math.round(top + (i * (diameter + gap)));
+            this.pageIndicatorDot.setBounds(left, y, left + size, y + size);
+            this.pageIndicatorDot.setTint(i == activePageIndex ? activeColor : inactiveColor);
+            this.pageIndicatorDot.draw(canvas);
         }
     }
 
