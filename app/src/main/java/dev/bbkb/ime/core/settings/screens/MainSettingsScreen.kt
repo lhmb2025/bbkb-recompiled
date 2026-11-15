@@ -186,6 +186,20 @@ fun MainSettingsScreen(
 
                 Spacer(modifier = Modifier.height(spacing.small))
                 PreferenceGroup {
+                    // 0a. Enable keyboard: opens the system input-method settings so the IME can be
+                    // turned on. A device with no navigation bar cannot reach this without an app, and
+                    // the IME must be enabled before it can be chosen as the default below.
+                    PreferenceScreen(
+                        title = context.getString(R.string.settings_enable_keyboard_title),
+                        summary = context.getString(R.string.settings_enable_keyboard_summary),
+                        icon = ImageVector.vectorResource(R.drawable.ic_settings_m_keyboard),
+                        onClick = {
+                            context.startActivity(
+                                Intent(android.provider.Settings.ACTION_INPUT_METHOD_SETTINGS)
+                                    .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
+                        }
+                    )
+
                     // 0. Switch keyboard: shows the system input-method picker. On a device with no
                     // navigation bar (the Zinwa Q25 has no soft buttons or gesture pill) there is no
                     // system affordance to raise it, so a settings action is the only in-app route to

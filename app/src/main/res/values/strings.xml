@@ -224,6 +224,8 @@
     <string name="settings_languages_title">Language</string>
     <string name="settings_switch_keyboard_summary">Open the system input-method picker to change the active keyboard</string>
     <string name="settings_switch_keyboard_title">Switch keyboard</string>
+    <string name="settings_enable_keyboard_summary">Open system input-method settings to turn this keyboard on</string>
+    <string name="settings_enable_keyboard_title">Enable keyboard</string>
 
     <string name="control_key_setting_left_shift">Left shift key</string>
     <string name="control_key_setting_off">None</string>
