@@ -12,6 +12,7 @@ import androidx.annotation.Nullable;
 import androidx.annotation.VisibleForTesting;
 
 import dev.bbkb.ime.core.device.config.CustomDeviceConfigManager;
+import dev.bbkb.ime.core.device.config.PhysicalDisplay;
 import dev.bbkb.ime.core.device.config.model.AltMappingsTable;
 import dev.bbkb.ime.core.device.config.model.DeviceInputConfig;
 import dev.bbkb.ime.core.device.config.model.DeviceInputMapping;
@@ -198,6 +199,7 @@ public class DeviceInputResolver {
                 (InputManager) context.getApplicationContext().getSystemService(Context.INPUT_SERVICE);
         if (inputManager == null) return;
         sAppContext = context.getApplicationContext();
+        PhysicalDisplay.attach(sAppContext);
         // Frequent: Android reports the built-in keyboard as changed on every subtype switch. The
         // phone's profile is resolved again at once, each keyboard's on its next key.
         inputManager.registerInputDeviceListener(new InputManager.InputDeviceListener() {

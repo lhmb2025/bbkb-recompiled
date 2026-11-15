@@ -1507,7 +1507,15 @@ public final class KeyboardSwitcher implements SymbolPageProvider, KeyboardLayou
         if (c0965eM6834l == null) {
             return false;
         }
-        if (c0965eM6834l.getKeyByCode(-3) == null && (!c0965eM6834l.isTouchKeyboard() || c0965eM6834l.isNumberOrDatetimeVariation())) {
+        // The guard refuses the symbol-shift toggle when the mounted keyboard carries no on-screen
+        // symbol-switch key (code -3). On a physical-symbol-keyboard device the SYM key is a hardware
+        // key and the mounted alphabet keyboard is non-touch (mElementId < 100) with no -3 key, so the
+        // unqualified !isTouchKeyboard() term refused the overlay in every text field. The physical
+        // case is admitted via hasShiftedSymbolKeyboard(); number and datetime fields still refuse.
+        boolean physicalSymbolKeyboard = DeviceProfile.current().hasShiftedSymbolKeyboard();
+        if (c0965eM6834l.getKeyByCode(-3) == null
+                && ((!c0965eM6834l.isTouchKeyboard() && !physicalSymbolKeyboard)
+                        || c0965eM6834l.isNumberOrDatetimeVariation())) {
             return false;
         }
         this.keyboardState.onSymbolShiftToggle(autoCapsFlags, recapitalizeMode, fromSwipe, fromPhysicalKeyboard);

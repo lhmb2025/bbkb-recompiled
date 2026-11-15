@@ -79,9 +79,58 @@ public final class ResourceConfigManager {
         sCachedScreenWidthDp = -1;
     }
 
+    // Display window of near-square panels: a width of exactly 720 px and a height of 720 to 772 px,
+    // inclusive. The upper bound is the least narrow entry of a resolution switcher that keeps the
+    // width and adds height. The generic height rules below resolve to a keyboard that is
+    // unaffected by the keyboard height setting on such a panel (see getKeyboardHeight), so the
+    // height is taken as a share of the screen height instead.
+    private static final int NEAR_SQUARE_SCREEN_WIDTH_PX = 720;
+    private static final int NEAR_SQUARE_SCREEN_MIN_HEIGHT_PX = 720;
+    private static final int NEAR_SQUARE_SCREEN_MAX_HEIGHT_PX = 772;
+
+    public static boolean isNearSquareScreen(Resources resources) {
+        final DisplayMetrics metrics = resources.getDisplayMetrics();
+        return metrics.widthPixels == NEAR_SQUARE_SCREEN_WIDTH_PX
+                && metrics.heightPixels >= NEAR_SQUARE_SCREEN_MIN_HEIGHT_PX
+                && metrics.heightPixels <= NEAR_SQUARE_SCREEN_MAX_HEIGHT_PX;
+    }
+
+    /**
+     * Share of the screen height taken by the keyboard on a near-square panel, per keyboard height
+     * mode, or -1 for a mode that has no share and uses the generic height rules.
+     */
+    private static float getNearSquareScreenHeightFraction(String mode) {
+        if ("extra_compact".equals(mode)) {
+            return 0.40f;
+        }
+        return -1.0f;
+    }
+
+    /**
+     * Keyboard height in pixels on a near-square panel for the current keyboard height mode, or
+     * -1 when the display is outside that window or the mode has no share of the screen height.
+     */
+    private static int getNearSquareScreenKeyboardHeight(Resources resources) {
+        if (!isNearSquareScreen(resources)) {
+            return -1;
+        }
+        final float fraction = getNearSquareScreenHeightFraction(SettingsManager.getKeyboardHeightMode());
+        if (fraction <= 0.0f) {
+            return -1;
+        }
+        return Math.round(resources.getDisplayMetrics().heightPixels * fraction);
+    }
+
     public static int getKeyboardHeight(Resources resources) throws Resources.NotFoundException {
+        final int nearSquareHeight = getNearSquareScreenKeyboardHeight(resources);
+        if (nearSquareHeight > 0) {
+            return nearSquareHeight;
+        }
         float dimension;
         DisplayMetrics displayMetrics = resources.getDisplayMetrics();
+        // A physical-keyboard device in portrait whose screen is not taller than the mercury screen
+        // height gets a fixed dimension; the height scale of the keyboard height setting is not
+        // applied on this path.
         if (DeviceProfile.current().hasPhysicalKeyboard() && resources.getConfiguration().orientation == 1 && displayMetrics.heightPixels - ((int) resources.getDimension(R.dimen.config_mercury_max_screen_height)) <= 0) {
             return (int) resources.getDimension(R.dimen.config_default_mercury_keyboard_height);
         }

@@ -1719,7 +1719,30 @@ class BlackBerryIME : InputMethodService(),
         if (InputPathDebug.on()) Logger.info("CKB_SWIPE_TYPE_DEBUG", "BlackBerryIME.onKeyUp: keyCode=$keyCode deviceId=${keyEvent.deviceId} source=0x${Integer.toHexString(keyEvent.source)} scanCode=${keyEvent.scanCode} flags=0x${Integer.toHexString(keyEvent.flags)}")
         if (ckbGestures.handleFirmwareGestureKey(keyEvent)) return true
         ckbGestures.onHardwareKey(keyEvent.eventTime)
-        return keyEventProcessor.onKeyUpInternal(keyCode, keyEvent)
+        // The Q25 ROM attaches KEYCODE_ALT_RIGHT (58) to the SYM key, which is dispatched to the IME
+        // as an ordinary Alt modifier, so a chorded SYM+key keeps producing its alternate-layer glyph
+        // through the standard modifier path and must not be disturbed. A lone SYM tap is
+        // distinguished here: the Alt "consumed by a chord" state is sampled BEFORE onKeyUpInternal,
+        // because the internal key-up path resets it. An unchorded release toggles the symbol overlay
+        // through the same KeyboardSwitcher entry the accessibility path uses. Left Alt
+        // (KEYCODE_ALT_LEFT, 57) is not matched, so the first-layer-symbol modifier is unaffected.
+        val symTapToggle = keyCode == KeyEvent.KEYCODE_ALT_RIGHT && !physicalKeyboardStateTracker.isAltKeyConsumed()
+        val handled = keyEventProcessor.onKeyUpInternal(keyCode, keyEvent)
+        if (symTapToggle) {
+            // Name the SYM key to the tracker so isSymKeyHeld() ("hold SYM to keep the overlay open")
+            // checks the Alt-right slot rather than the default KEYCODE_SYM.
+            physicalKeyboardStateTracker.setSymKeyCode(KeyEvent.KEYCODE_ALT_RIGHT)
+            // updateSymbolShift is the canonical board-toggle entry the -22 functional-key path
+            // reaches; it summons the IME window when it is down and clears the CJK suggestion grid.
+            updateSymbolShift(false)
+            // The SYM key is a sticky Alt (KEYCODE_ALT_RIGHT); the down latched Alt and
+            // consumeModifiersAfterKey skips modifier keycodes, so without this the latch survives
+            // the tap and the next key is read through the KCM alt layer (its first-layer symbol, e.g.
+            // j -> ';'). Clearing the Alt state here keeps the SYM tap from arming the following key.
+            physicalKeyboardStateTracker.resetAltStateAndNotify()
+            return true
+        }
+        return handled
     }
 
     /** Modifier/symbol state updates only, for keys the accessibility service sees with no field. */
