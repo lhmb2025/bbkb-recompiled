@@ -533,6 +533,11 @@ public final class GestureEventProcessor extends AbstractDrawingHandler {
         return sGestureHandlingActive;
     }
 
+    /** A swipe-typing trace is under way on the keypad. */
+    public static boolean isBatchInputInProgress() {
+        return sInGesture;
+    }
+
     /** @param active whether gesture handling is active */
     public static void setGestureHandlingActive(boolean active) {
         sGestureHandlingActive = active;

@@ -26,7 +26,8 @@ import java.time.Duration
 /**
  * Pins that the keypad cursor drag queues steps and moves once per frame, flushing the queue first
  * on a new direction or axis, a key, finger lift or new contact, so the cursor lands where
- * step-by-step moves would have put it.
+ * step-by-step moves would have put it. Also pins the drag with a second finger resting on the
+ * keypad (holding Shift), and the Shift selection swipe outside cursor mode.
  */
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [34], manifest = Config.NONE)
@@ -146,6 +147,175 @@ class CkbCursorDragCoalescingTest {
         move(190f)
         bridge.onHardwareKey(t)
         verify(ime).moveLeft(1)
+    }
+
+    /** One sample of several fingers, each an (x, y) pair in pointer order; ids are 0, 1, ... */
+    private fun fingers(action: Int, vararg points: Pair<Float, Float>): MotionEvent {
+        t += 8
+        val props = Array(points.size) { i ->
+            MotionEvent.PointerProperties().apply { id = i; toolType = MotionEvent.TOOL_TYPE_FINGER }
+        }
+        val coords = Array(points.size) { i ->
+            MotionEvent.PointerCoords().apply { x = points[i].first; y = points[i].second; pressure = 1f; size = 1f }
+        }
+        return MotionEvent.obtain(1000L, t, action, points.size, props, coords, 0, 0, 1f, 1f, 0, 0, 0, 0)
+            .also { events += it }
+    }
+
+    private fun pointerAction(action: Int, index: Int) = action or (index shl MotionEvent.ACTION_POINTER_INDEX_SHIFT)
+
+    /** A finger resting on Shift at (900, 480), then a second finger landing at ([x], 100). */
+    private fun holdShiftThenTouch(x: Float) {
+        down(900f, 480f)
+        val second = fingers(pointerAction(MotionEvent.ACTION_POINTER_DOWN, 1), 900f to 480f, x to 100f)
+        bridge.onContactStart(second.eventTime)
+        bridge.handleCursorModeDrag(second)
+    }
+
+    private fun moveSecond(x: Float) =
+        bridge.handleCursorModeDrag(fingers(MotionEvent.ACTION_MOVE, 900f to 480f, x to 100f))
+
+    @Test
+    fun withAFingerHoldingShift_theOtherFingerMovesTheCursor() {
+        holdShiftThenTouch(200f)
+        moveSecond(190f)
+        moveSecond(180f)
+        moveSecond(170f)
+        nextFrame()
+        verify(ime, times(1)).moveLeft(3)
+        verify(ime, never()).moveRight(anyInt())
+    }
+
+    @Test
+    fun aFingerLandingOrLifting_doesNotMoveTheCursor() {
+        holdShiftThenTouch(200f)
+        moveSecond(190f)
+        // The swiping finger lifts and lands again far away: only its travel counts.
+        bridge.handleCursorModeDrag(fingers(pointerAction(MotionEvent.ACTION_POINTER_UP, 1), 900f to 480f, 190f to 100f))
+        move(900f, 480f)
+        holdShiftThenTouch(600f)
+        moveSecond(590f)
+        nextFrame()
+        verify(ime, times(2)).moveLeft(1)
+        verify(ime, never()).moveRight(anyInt())
+        verify(ime, never()).moveUp(anyInt())
+        verify(ime, never()).moveDown(anyInt())
+    }
+
+    @Test
+    fun theFirstFingerLifting_leavesTheOtherDragging() {
+        holdShiftThenTouch(200f)
+        moveSecond(190f)
+        // Shift's finger (pointer 0) lifts first; the swiping finger carries on alone.
+        bridge.handleCursorModeDrag(fingers(pointerAction(MotionEvent.ACTION_POINTER_UP, 0), 900f to 480f, 190f to 100f))
+        move(180f)
+        nextFrame()
+        verify(ime, times(1)).moveLeft(2)
+        verify(ime, never()).moveRight(anyInt())
+        verify(ime, never()).moveUp(anyInt())
+        verify(ime, never()).moveDown(anyInt())
+    }
+
+    @Test
+    fun aSwipeUnderAHeldFinger_doesNotLeaveCursorMode() {
+        holdShiftThenTouch(200f)
+        moveSecond(190f)
+        moveSecond(180f)
+        bridge.handleCursorModeDrag(fingers(pointerAction(MotionEvent.ACTION_POINTER_UP, 1), 900f to 480f, 180f to 100f))
+        bridge.handleCursorModeDrag(event(MotionEvent.ACTION_UP, 900f, 480f))
+        verify(ime).moveLeft(2)
+        verify(ime, never()).toggleCursorMode()
+    }
+
+    // Shift held outside cursor mode: the same drag, behind the tap slop (30 px of finger travel).
+
+    private fun shiftDown(x: Float, y: Float) {
+        val e = event(MotionEvent.ACTION_DOWN, x, y)
+        bridge.onContactStart(e.eventTime)
+        bridge.handleShiftSelectionDrag(e)
+    }
+
+    /** A finger on Shift at (900, 480), then a second finger landing at ([x], 100). */
+    private fun shiftHeldThenTouch(x: Float, alreadyDown: Boolean = false) {
+        if (!alreadyDown) shiftDown(900f, 480f)
+        val second = fingers(pointerAction(MotionEvent.ACTION_POINTER_DOWN, 1), 900f to 480f, x to 100f)
+        bridge.onContactStart(second.eventTime)
+        bridge.handleShiftSelectionDrag(second)
+    }
+
+    private fun shiftMoveSecond(x: Float): MotionEvent =
+        fingers(MotionEvent.ACTION_MOVE, 900f to 480f, x to 100f).also { bridge.handleShiftSelectionDrag(it) }
+
+    private fun shiftLiftSecond(x: Float) = bridge.handleShiftSelectionDrag(
+        fingers(pointerAction(MotionEvent.ACTION_POINTER_UP, 1), 900f to 480f, x to 100f))
+
+    @Test
+    fun aShiftSwipe_movesOncePastTheSlop_andCarriesTheTravelSoFar() {
+        shiftHeldThenTouch(200f)
+        val within = shiftMoveSecond(180f)
+        nextFrame()
+        verify(ime, never()).moveLeft(anyInt())
+        assertFalse(bridge.feed(within))
+        verify(ime, never()).onShiftSelectionSwipeStarted()
+        val beyond = shiftMoveSecond(160f)
+        // Shift starts selecting before the first step is sent.
+        verify(ime).onShiftSelectionSwipeStarted()
+        nextFrame()
+        verify(ime, times(1)).moveLeft(4)
+        // The contact is taken: no swipe typing, and the arbiter must not read it as a flick.
+        assertTrue(bridge.feed(beyond))
+    }
+
+    @Test
+    fun aSwipeTypingTraceUnderWayWhenShiftGoesDown_isLeftAlone() {
+        Mockito.`when`(ime.isKeypadSwipeTypingUnderWay()).thenReturn(true)
+        // Picked up mid-contact: the first sample the Shift swipe sees is a move.
+        bridge.handleShiftSelectionDrag(event(MotionEvent.ACTION_MOVE, 300f))
+        val later = event(MotionEvent.ACTION_MOVE, 200f)
+        bridge.handleShiftSelectionDrag(later)
+        nextFrame()
+        verify(ime, never()).onShiftSelectionSwipeStarted()
+        verify(ime, never()).moveLeft(anyInt())
+        assertFalse(bridge.feed(later))
+    }
+
+    @Test
+    fun aShiftTap_neitherMovesNorTogglesCursorMode() {
+        shiftDown(200f, 100f)
+        bridge.handleShiftSelectionDrag(event(MotionEvent.ACTION_MOVE, 205f))
+        bridge.handleShiftSelectionDrag(event(MotionEvent.ACTION_UP, 205f))
+        nextFrame()
+        verify(ime, never()).toggleCursorMode()
+        verify(ime, never()).moveLeft(anyInt())
+        verify(ime, never()).moveRight(anyInt())
+    }
+
+    @Test
+    fun underShift_eachLandingFingerMustPassTheSlopAgain() {
+        shiftHeldThenTouch(200f)
+        shiftMoveSecond(160f)
+        shiftLiftSecond(160f)
+        // A finger landing to press a key wobbles 20 px: the selection stays put.
+        shiftHeldThenTouch(500f, alreadyDown = true)
+        shiftMoveSecond(520f)
+        shiftLiftSecond(520f)
+        nextFrame()
+        verify(ime, times(1)).moveLeft(4)
+        verify(ime, never()).moveRight(anyInt())
+    }
+
+    @Test
+    fun aShiftSwipePickedUpAgain_startsAfresh() {
+        shiftHeldThenTouch(200f)
+        shiftMoveSecond(160f)
+        // Shift is let go mid-contact, then pressed again with the finger elsewhere.
+        bridge.endDrag()
+        verify(ime).moveLeft(4)
+        shiftMoveSecond(700f)
+        shiftMoveSecond(705f)
+        nextFrame()
+        verify(ime, times(1)).moveLeft(anyInt())
+        verify(ime, never()).moveRight(anyInt())
     }
 
     @Test

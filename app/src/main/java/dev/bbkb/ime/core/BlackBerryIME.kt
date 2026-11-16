@@ -1829,9 +1829,9 @@ class BlackBerryIME : InputMethodService(),
         keyboardSwitcher.isShiftKeyReleasing() && physicalKeyboardStateTracker.getModifierState().isShiftReleased()
 
     fun isMetaKeyActive(): Boolean {
-        // !isShiftReleased() && isShiftLockedForLayout() && !isAltUsedWithKey(), answered without
-        // building a snapshot: the capacitive keypad asks on every touch sample.
-        return physicalKeyboardStateTracker.isShiftHeldAndLockedForLayout()
+        // Shift held for selecting, answered without building a snapshot: the capacitive keypad
+        // asks on every touch sample.
+        return physicalKeyboardStateTracker.isShiftHeldForSelection()
     }
 
     fun getSymbolPageProvider(): SymbolPageProvider {
@@ -2197,6 +2197,11 @@ class BlackBerryIME : InputMethodService(),
                 ckbGestures.handleCursorModeDrag(motionEvent)
                 return true
             }
+            // Shift held: a swipe extends the selection, as in cursor mode. Until it passes the
+            // tap slop the contact is still a tap, a hold or a key press for everything below.
+            val shiftSwipe = if (isMetaKeyActive()) !isGestureHandlingActive()
+                else physicalKeyboardStateTracker.canHoldShiftForSelection()
+            if (shiftSwipe) ckbGestures.handleShiftSelectionDrag(motionEvent) else ckbGestures.endDrag()
             // The gesture arbiter drives all CKB gestures; a consumed contact cancels any flow,
             // anything else (Tap / FlowTrace / pre-UP) falls through to the key/flow path.
             if (ckbGestures.feed(motionEvent)) {
@@ -2399,9 +2404,20 @@ class BlackBerryIME : InputMethodService(),
         sendPrivateCommand("dev.bbkb.ime.MOVE_DOWN_CKB", null)
     }
 
+    /** A keypad swipe under a held Shift passed the tap slop: Shift selects until it is let go. */
+    fun onShiftSelectionSwipeStarted() {
+        physicalKeyboardStateTracker.holdShiftForSelection()
+    }
+
+    /** A swipe-typing trace is under way on the keypad. */
+    fun isKeypadSwipeTypingUnderWay(): Boolean = GestureEventProcessor.isBatchInputInProgress()
+
     private fun clearStuckMetaState() {
         if (!isMetaKeyActive()) {
-            if (isCursorModeEnabled) physicalKeyboardStateTracker.cancelModifierTimers()
+            if (isCursorModeEnabled) {
+                physicalKeyboardStateTracker.cancelModifierTimers()
+                physicalKeyboardStateTracker.holdShiftForSelection()
+            }
             physicalKeyboardStateTracker.consumeModifiersAfterKey(0, true)
         }
         if (isUnifiedInputBoardShowing()) return

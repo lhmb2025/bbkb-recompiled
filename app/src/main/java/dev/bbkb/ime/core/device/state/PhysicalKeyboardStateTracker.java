@@ -64,6 +64,13 @@ public final class PhysicalKeyboardStateTracker extends MetaKeyStateTracker impl
 
     private boolean mAltUsedWithKey = false;
 
+    /**
+     * Shift is held for selecting: keypad swipes extend the selection. Set by a keypad swipe or a
+     * cursor-mode move made under a held Shift; cleared when Shift is let go. Such a swipe used
+     * to lock Shift, and the locked state was what armed this.
+     */
+    private boolean mShiftHeldForSelection = false;
+
     public PhysicalKeyboardStateTracker(ModifierStatusBarUpdater statusBarUpdater) {
         this.mModifierStateListener = statusBarUpdater;
     }
@@ -99,17 +106,34 @@ public final class PhysicalKeyboardStateTracker extends MetaKeyStateTracker impl
     }
 
     /**
-     * {@code !isShiftReleased() && isShiftLockedForLayout() && !isAltUsedWithKey()} of
-     * {@link #getModifierState()} without building the snapshot; asked on every capacitive touch sample.
+     * Keypad swipes extend the selection: Shift is down and not spent on a key, and either armed
+     * by its hold or locked. Unarmed, this is {@code !isShiftReleased() && isShiftLockedForLayout()
+     * && !isAltUsedWithKey()} of {@link #getModifierState()} without building the snapshot; asked
+     * on every capacitive touch sample.
      */
-    public boolean isShiftHeldAndLockedForLayout() {
+    public boolean isShiftHeldForSelection() {
         if (!isShiftKeyDown() && !isShiftKeyConsumed()) {
             return false;
         }
         if (this.mAltUsedWithKey) {
             return false;
         }
-        return (computeInternalMetaState() & ModifierState.SPAN_SHIFT_LOCKED) != 0;
+        return this.mShiftHeldForSelection || (computeInternalMetaState() & ModifierState.SPAN_SHIFT_LOCKED) != 0;
+    }
+
+    /**
+     * Shift is the one key down and has not been spent on a typed key: a keypad swipe or a
+     * cursor-mode move made now may start selecting. Asked on every capacitive touch sample.
+     */
+    public boolean canHoldShiftForSelection() {
+        return getNumberOfKeysDown() == 1 && !isShiftReleased() && !this.mAltUsedWithKey;
+    }
+
+    /** A keypad swipe or a cursor-mode move under a held Shift: it selects from here until Shift is let go. */
+    public void holdShiftForSelection() {
+        if (getNumberOfKeysDown() == 1 && !isShiftReleased()) {
+            this.mShiftHeldForSelection = true;
+        }
     }
 
     private ModifierState buildModifierState(int eventMetaState) {
@@ -496,10 +520,12 @@ public final class PhysicalKeyboardStateTracker extends MetaKeyStateTracker impl
         }
         if (isShiftReleased()) {
             this.mAltUsedWithKey = false;
+            this.mShiftHeldForSelection = false;
         }
     }
 
     private void resetKeyState() {
+        this.mShiftHeldForSelection = false;
         this.mKeysHeld.clear();
         int[] iArr = this.mShiftState;
         iArr[0] = -2;

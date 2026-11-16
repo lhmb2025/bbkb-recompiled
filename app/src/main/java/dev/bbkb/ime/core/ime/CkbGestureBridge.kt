@@ -45,9 +45,10 @@ internal fun flickCommitIndex(normalizedX: Float, suggestionCount: Int): Int {
 
 /**
  * Capacitive-keypad gesture arbiter to IME: records and classifies each contact, resolves it via
- * [GesturePolicy] and executes the [GestureAction]. Also owns the cursor-mode drag.
- * [BlackBerryIME.onGenericMotionEvent] gates keypad events, calls [onContactStart] on every
- * (pointer) DOWN, then routes to [handleCursorModeDrag] or [feed].
+ * [GesturePolicy] and executes the [GestureAction]. Also owns the cursor-mode drag and the Shift
+ * selection swipe. [BlackBerryIME.onGenericMotionEvent] gates keypad events, calls [onContactStart]
+ * on every (pointer) DOWN, then routes to [handleCursorModeDrag], or to [feed] after
+ * [handleShiftSelectionDrag] or [endDrag].
  */
 class CkbGestureBridge(private val ime: BlackBerryIME) {
 
@@ -185,6 +186,9 @@ class CkbGestureBridge(private val ime: BlackBerryIME) {
     private var dragMoved = false
     private var dragInitialized = false
 
+    /** A Shift swipe may take this contact over: no swipe-typing trace was under way when it was picked up. */
+    private var shiftSwipeAllowed = false
+
     private var engineTrackingCancelled = false
 
     /**
@@ -213,28 +217,83 @@ class CkbGestureBridge(private val ime: BlackBerryIME) {
     }
 
     /**
-     * Drag-to-move-cursor in cursor (FCC) mode with velocity-scaled accumulation. A stationary tap
-     * exits cursor mode; entered mid-contact, it initialises on the first move so the cursor does not jump.
+     * Drag-to-move-cursor in cursor (FCC) mode with velocity-scaled accumulation; with Shift held
+     * the moves extend the selection. A stationary tap exits cursor mode; entered mid-contact, it
+     * initialises on the first move so the cursor does not jump.
      */
-    fun handleCursorModeDrag(event: MotionEvent) {
-        val idx = event.actionIndex
-        when (event.actionMasked) {
-            MotionEvent.ACTION_DOWN -> initDrag(event, idx)
-            MotionEvent.ACTION_MOVE -> {
-                if (!dragInitialized) {
-                    initDrag(event, idx)
+    fun handleCursorModeDrag(event: MotionEvent) = handleDrag(event, shiftSelection = false)
+
+    /**
+     * Shift held outside cursor mode: the swipe extends the selection. Until the fingers have
+     * travelled past the tap slop the contact is left to everyone else, so a finger pressing a key
+     * under a held Shift selects nothing; past it the contact is consumed and Shift selects until
+     * it is let go. A swipe-typing trace already under way when Shift went down is left alone.
+     */
+    fun handleShiftSelectionDrag(event: MotionEvent) = handleDrag(event, shiftSelection = true)
+
+    /** A keypad sample that was not a drag: a drag picked up later in the same contact starts afresh. */
+    fun endDrag() {
+        if (!dragInitialized) return
+        flushCursorSteps()
+        dragInitialized = false
+    }
+
+    private fun handleDrag(event: MotionEvent, shiftSelection: Boolean) {
+        val action = event.actionMasked
+        // The drag follows the centre of every finger still down: a finger holding Shift rests on
+        // the keypad too, and the other finger's travel must move the cursor all the same.
+        val lifting = if (action == MotionEvent.ACTION_POINTER_UP) event.actionIndex else -1
+        var sumX = 0f
+        var sumY = 0f
+        for (i in 0 until event.pointerCount) {
+            if (i != lifting) {
+                sumX += event.getX(i)
+                sumY += event.getY(i)
+            }
+        }
+        val fingers = if (lifting >= 0) event.pointerCount - 1 else event.pointerCount
+        val x = sumX / fingers
+        val y = sumY / fingers
+        when (action) {
+            MotionEvent.ACTION_DOWN -> initDrag(event, x, y, shiftSelection)
+            MotionEvent.ACTION_POINTER_DOWN, MotionEvent.ACTION_POINTER_UP -> {
+                // Under a held Shift every landing finger must pass the slop itself: it may be
+                // about to press a key.
+                if (!dragInitialized || (shiftSelection && action == MotionEvent.ACTION_POINTER_DOWN)) {
+                    initDrag(event, x, y, shiftSelection)
                 } else {
-                    val x = event.getX(idx)
-                    val y = event.getY(idx)
-                    moveCursorByScroll(event, dragLastX - x, dragLastY - y)
+                    // A finger landing or lifting shifts the centre without any travel.
+                    downX += x - dragLastX
+                    downY += y - dragLastY
                     dragLastX = x
                     dragLastY = y
-                    if (hypot((x - downX).toDouble(), (y - downY).toDouble()) > CURSOR_TAP_SLOP_PX) dragMoved = true
+                }
+            }
+            MotionEvent.ACTION_MOVE -> {
+                if (!dragInitialized) {
+                    initDrag(event, x, y, shiftSelection)
+                } else {
+                    // The centre moves by each finger's share, so the fingers' travel is that times their count.
+                    if (!dragMoved && fingers * hypot((x - downX).toDouble(), (y - downY).toDouble()) > CURSOR_TAP_SLOP_PX) {
+                        if (!shiftSelection) {
+                            dragMoved = true
+                        } else if (shiftSwipeAllowed) {
+                            dragMoved = true
+                            contactConsumed = true
+                            ime.onShiftSelectionSwipeStarted()
+                        }
+                    }
+                    // A Shift swipe waits for the slop; its first move then carries the travel so far.
+                    if (dragMoved || !shiftSelection) {
+                        moveCursorByScroll(event, dragLastX - x, dragLastY - y)
+                        dragLastX = x
+                        dragLastY = y
+                    }
                 }
             }
             MotionEvent.ACTION_UP -> {
                 flushCursorSteps()
-                if (dragInitialized && !dragMoved) ime.toggleCursorMode()
+                if (!shiftSelection && dragInitialized && !dragMoved) ime.toggleCursorMode()
                 dragInitialized = false
             }
             MotionEvent.ACTION_CANCEL -> {
@@ -244,9 +303,10 @@ class CkbGestureBridge(private val ime: BlackBerryIME) {
         }
     }
 
-    private fun initDrag(event: MotionEvent, idx: Int) {
-        dragLastX = event.getX(idx); downX = dragLastX
-        dragLastY = event.getY(idx); downY = dragLastY
+    private fun initDrag(event: MotionEvent, x: Float, y: Float, shiftSelection: Boolean) {
+        shiftSwipeAllowed = shiftSelection && !ime.isKeypadSwipeTypingUnderWay()
+        dragLastX = x; downX = x
+        dragLastY = y; downY = y
         accumX = 0f; accumY = 0f
         dragDownTime = event.eventTime; dragLastTime = event.eventTime
         dragMoved = false; dragInitialized = true

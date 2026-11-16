@@ -101,10 +101,11 @@ public class ModifierReadSiteEquivalenceTest {
                 tracker.isAltUsedWithKey(), modifiers.isAltUsedWithKey());
         // The same three terms together, as isMetaKeyActive() asks them on every touch sample:
         // the tracker's answer without a snapshot against the snapshot's.
-        assertEquals(state + ": isShiftHeldAndLockedForLayout",
+        // (No state here holds Shift long enough to arm the selection swipe, its other way in.)
+        assertEquals(state + ": isShiftHeldForSelection",
                 !modifiers.isShiftReleased() && modifiers.isShiftLockedForLayout()
                         && !modifiers.isAltUsedWithKey(),
-                tracker.isShiftHeldAndLockedForLayout());
+                tracker.isShiftHeldForSelection());
 
         // InputLogic: isManualShiftAndShiftPressing() -> isManualShiftPending()
         assertEquals(state + ": isManualShiftAndShiftPressing/isManualShiftPending",
