@@ -7,11 +7,29 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import dev.bbkb.ime.keyboard.inputboard.clipboard.ClipboardController;
+import dev.bbkb.ime.keyboard.inputboard.emoji.EmojiBoardController;
+import dev.bbkb.ime.keyboard.inputboard.fcc.FccController;
+import dev.bbkb.ime.keyboard.inputboard.numberpad.NumberPadController;
+import dev.bbkb.ime.keyboard.inputboard.voice.VoiceInputController;
+
 /**
  * Order of the user-orderable input menu toggles. The bar shows {@link #SHOWN_COUNT} around the
  * fixed centre key: (1)(2) [keyboard] (3)(4); the rest appear only in the customize screen.
  * Stored in {@link #PREF_KEY} as comma-separated ids; {@link #getOrder} drops unknown ids and
  * duplicates and appends missing ones, so a new toggle surfaces at the end.
+ *
+ * <p>The set of tools and their default order is the {@link #TOOLS} table. Each row binds a
+ * toggle's stored id (also carried by the menu_pool key and the customize screen) to the dispatch
+ * code owned by the tool's controller — the componentMap key for a panel tool, or
+ * {@link QrScanLauncher#KEY_CODE} for the QR action tool. The codes live in those controllers, not
+ * here, so this table references them rather than repeating the literals.
+ *
+ * <p>Adding a tool: append one row to {@link #TOOLS}, add its key to
+ * {@code res/xml/kbd_unified_input_menu_pool.xml}, and declare its icon (an {@code iconXxxKey}
+ * attr set in {@code attrs.xml} and {@code styles.xml}, mapped in {@code KeyboardIconSet}). A panel
+ * tool also registers its controller with {@code UnifiedInputBoardManager}; an action tool is
+ * dispatched directly (see {@code UnifiedInputBoardManager.dispatchBoardAction}).
  */
 public final class UimMenuOrder {
 
@@ -24,9 +42,37 @@ public final class UimMenuOrder {
     public static final String FCC = "fcc";
     public static final String CLIPBOARD = "clipboard";
     public static final String NUMBER_PAD = "numpad";
+    public static final String QR_SCAN = "qrscan";
 
-    private static final List<String> DEFAULT_ORDER = Collections.unmodifiableList(
-            Arrays.asList(VOICE, EMOJI, FCC, CLIPBOARD, NUMBER_PAD));
+    /** One toggle: its stored id and the dispatch code its controller declares. */
+    private static final class Tool {
+        final String id;
+        final int code;
+
+        Tool(String id, int code) {
+            this.id = id;
+            this.code = code;
+        }
+    }
+
+    /** The tools and their default bar order. Single source of truth for the set of toggles. */
+    private static final List<Tool> TOOLS = Collections.unmodifiableList(Arrays.asList(
+            new Tool(VOICE, VoiceInputController.KEY_CODE),
+            new Tool(EMOJI, EmojiBoardController.KEY_CODE),
+            new Tool(FCC, FccController.KEY_CODE),
+            new Tool(CLIPBOARD, ClipboardController.KEY_CODE),
+            new Tool(NUMBER_PAD, NumberPadController.KEY_CODE),
+            new Tool(QR_SCAN, QrScanLauncher.KEY_CODE)));
+
+    private static final List<String> DEFAULT_ORDER;
+
+    static {
+        List<String> ids = new ArrayList<>(TOOLS.size());
+        for (Tool tool : TOOLS) {
+            ids.add(tool.id);
+        }
+        DEFAULT_ORDER = Collections.unmodifiableList(ids);
+    }
 
     private UimMenuOrder() {
         // Static utility.
@@ -38,14 +84,12 @@ public final class UimMenuOrder {
 
     /** The UIM board keycode for a toggle id (the componentMap key), or 0 if unknown. */
     public static int keyCodeFor(String id) {
-        switch (id) {
-            case VOICE: return -27;
-            case EMOJI: return -11;
-            case FCC: return -42;
-            case CLIPBOARD: return -25;
-            case NUMBER_PAD: return -46;
-            default: return 0;
+        for (Tool tool : TOOLS) {
+            if (tool.id.equals(id)) {
+                return tool.code;
+            }
         }
+        return 0;
     }
 
     /** The full sanitized order (all toggles, shown ones first). */

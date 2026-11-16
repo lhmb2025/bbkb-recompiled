@@ -85,6 +85,9 @@ public class CustomDeviceConfigManager {
     private CustomDeviceConfigManager(Context context) {
         mContext = context.getApplicationContext();
         mPrefs = PrefsManager.defaultSharedPreferences(mContext);
+        // Supply the panel-resolution reader before findMatchingPreloadedConfig evaluates a <panel>
+        // criterion.
+        PhysicalDisplay.attach(mContext);
     }
 
     public static synchronized CustomDeviceConfigManager getInstance(Context context) {

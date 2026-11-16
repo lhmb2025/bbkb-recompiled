@@ -560,6 +560,9 @@ public class UnifiedInputBoardManager implements SimplifiedKeyboardView.onKeyEve
             this.imeService.openSlideboardSettings();
         } else if (keyCode == -45) {
             this.imeService.openSettings();
+        } else if (keyCode == QrScanLauncher.KEY_CODE) {
+            // An action, not a board: the scanner runs in BenOS Camera and no board opens here.
+            QrScanLauncher.launch(this.context);
         } else {
             if (keyCode == -27) {
                 UnifiedInputBoardComponent voiceComponent = panelComponent(keyCode);

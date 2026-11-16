@@ -25,5 +25,9 @@
             latin:keyIconActive="!icon/number_pad_active_key"
             latin:keyIconDisabled="!icon/number_pad_key_disabled"
             latin:keySpec="!icon/number_pad_key|!code/key_number_pad"/>
+        <Key
+            latin:keyIconActive="!icon/qr_scan_active_key"
+            latin:keyIconDisabled="!icon/qr_scan_key_disabled"
+            latin:keySpec="!icon/qr_scan_key|!code/key_qr_scan"/>
     </Row>
 </Keyboard>

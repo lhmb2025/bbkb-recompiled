@@ -1,6 +1,8 @@
 package dev.bbkb.ime.core.settings.screens
 
+import android.content.Context
 import android.content.Intent
+import android.view.inputmethod.InputMethodManager
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Row
@@ -184,8 +186,37 @@ fun MainSettingsScreen(
 
                 Spacer(modifier = Modifier.height(spacing.small))
                 PreferenceGroup {
-                    // Straight to the Language screen; the Languages menu route stays registered
-                    // for deep links and search results.
+                    // 0a. Enable keyboard: opens the system input-method settings so the IME can be
+                    // turned on. A device with no navigation bar cannot reach this without an app, and
+                    // the IME must be enabled before it can be chosen as the default below.
+                    PreferenceScreen(
+                        title = context.getString(R.string.settings_enable_keyboard_title),
+                        summary = context.getString(R.string.settings_enable_keyboard_summary),
+                        icon = ImageVector.vectorResource(R.drawable.ic_settings_m_keyboard),
+                        onClick = {
+                            context.startActivity(
+                                Intent(android.provider.Settings.ACTION_INPUT_METHOD_SETTINGS)
+                                    .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
+                        }
+                    )
+
+                    // 0. Switch keyboard: shows the system input-method picker. On a device with no
+                    // navigation bar (the Zinwa Q25 has no soft buttons or gesture pill) there is no
+                    // system affordance to raise it, so a settings action is the only in-app route to
+                    // change the active IME short of disabling this one. showInputMethodPicker is
+                    // called from the foreground settings activity, where it is permitted.
+                    PreferenceScreen(
+                        title = context.getString(R.string.settings_switch_keyboard_title),
+                        summary = context.getString(R.string.settings_switch_keyboard_summary),
+                        icon = ImageVector.vectorResource(R.drawable.ic_settings_m_keyboard),
+                        onClick = {
+                            (context.getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager)
+                                ?.showInputMethodPicker()
+                        }
+                    )
+
+                    // 1. Languages: straight to the consolidated screen. The old Languages
+                    // menu stays registered for deep links and search results that route to it.
                     PreferenceScreen(
                         title = context.getString(R.string.settings_languages_title),
                         summary = context.getString(R.string.settings_languages_summary),

@@ -9,6 +9,8 @@ package dev.bbkb.ime.core.settings
 sealed class SettingsRoute(val route: String, val title: String) {
     object Main : SettingsRoute("main", "Settings")
 
+    object Setup : SettingsRoute("setup", "Setup")
+
     object Preferences : SettingsRoute("preferences", "Preferences")
     object AppearanceLayout : SettingsRoute("appearance_layout", "Appearance and layout")
     object Advanced : SettingsRoute("advanced", "Advanced")
@@ -74,6 +76,7 @@ sealed class SettingsRoute(val route: String, val title: String) {
         fun fromRoute(route: String?): SettingsRoute? {
             return when (route) {
                 Main.route -> Main
+                Setup.route -> Setup
                 // The old Languages menu and multi-language keyboard pages.
                 "languages", "languages_input", "multi_language_keyboards",
                 "multi_language_wizard_add" -> LanguagesHub

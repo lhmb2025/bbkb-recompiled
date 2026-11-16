@@ -36,7 +36,9 @@ import dev.bbkb.ime.core.settings.screens.KeyPressFeedbackScreen
 import dev.bbkb.ime.core.settings.screens.LanguagePacksScreen
 import dev.bbkb.ime.core.settings.screens.LanguageSwitchingScreen
 import dev.bbkb.ime.core.settings.screens.LanguagesHubScreen
+import androidx.compose.ui.platform.LocalContext
 import dev.bbkb.ime.core.settings.screens.MainSettingsScreen
+import dev.bbkb.ime.core.settings.screens.SetupScreen
 import dev.bbkb.ime.core.settings.screens.KeyboardHelperScreen
 import dev.bbkb.ime.core.settings.screens.TouchSurfaceHelperScreen
 import dev.bbkb.ime.core.settings.screens.DeviceConfigurationScreen
@@ -84,6 +86,9 @@ class ComposeSettingsActivity : ComponentActivity() {
         }, "SettingsPrefsWarm").apply { isDaemon = true }.start()
         StartupTiming.end("settings.onCreate.prefsWarmSpawn", t)
 
+        // Read before anything may write a setting, while a brand-new store is still empty.
+        val setupNeeded = SetupState.shouldShowSetup(this)
+
         // Screens read DeviceProfile only after it loads; startInitialize moves the ~250 ms scan
         // and config parse onto a worker and every reader joins it.
         t = StartupTiming.begin()
@@ -94,8 +99,10 @@ class ComposeSettingsActivity : ComponentActivity() {
         enableEdgeToEdge()
 
         // Validated so an unknown "screen" extra cannot become an unregistered start destination.
+        // With no explicit screen, a brand-new settings database opens the first-run setup checklist.
+        // shouldShowSetup is read here, before any setting is written, while the store is still empty.
         val initialScreen = SettingsRoute.fromRoute(intent.getStringExtra("screen"))?.route
-            ?: SettingsRoute.Main.route
+            ?: if (setupNeeded) SettingsRoute.Setup.route else SettingsRoute.Main.route
 
         t = StartupTiming.begin()
         setContent {
@@ -146,6 +153,25 @@ fun SettingsNavHost(
                     navController.navigate(route)
                 },
                 onNavigateBack = onExit
+            )
+        }
+
+        composable(SettingsRoute.Setup.route) {
+            val context = LocalContext.current
+            // Both the back action and the final row mark setup done, then replace Setup with Main so
+            // a system back from Main exits rather than returning to the checklist.
+            val finishSetup: () -> Unit = {
+                SetupState.markCompleted(context)
+                navController.navigate(SettingsRoute.Main.route) {
+                    popUpTo(SettingsRoute.Setup.route) { inclusive = true }
+                }
+            }
+            SetupScreen(
+                onNavigateToDeviceConfig = go(SettingsRoute.DeviceConfiguration),
+                onNavigateToKeylayout = go(SettingsRoute.PhysicalLayouts),
+                onNavigateToLanguage = go(SettingsRoute.LanguagesHub),
+                onNavigateToBackupRestore = go(SettingsRoute.BackupRestore),
+                onDone = finishSetup,
             )
         }
 

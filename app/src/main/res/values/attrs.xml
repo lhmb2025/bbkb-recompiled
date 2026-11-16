@@ -244,6 +244,12 @@
     </attr>
     <attr name="iconNumberPadKeyDisabled" format="reference">
     </attr>
+    <attr name="iconQrScanActiveKey" format="reference">
+    </attr>
+    <attr name="iconQrScanKey" format="reference">
+    </attr>
+    <attr name="iconQrScanKeyDisabled" format="reference">
+    </attr>
     <attr name="iconHideKeyboardBigKey" format="reference">
     </attr>
     <attr name="iconSlideboardSettingsKey" format="reference">
@@ -779,6 +785,9 @@
         <attr name="iconNumberPadActiveKey" />
         <attr name="iconNumberPadKey" />
         <attr name="iconNumberPadKeyDisabled" />
+        <attr name="iconQrScanActiveKey" />
+        <attr name="iconQrScanKey" />
+        <attr name="iconQrScanKeyDisabled" />
         <attr name="iconPasteKey" />
         <attr name="iconPasteKeyDisabled" />
         <attr name="iconPkbEnterKey" />

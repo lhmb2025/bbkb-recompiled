@@ -47,6 +47,18 @@ fun AuxiliaryInputScreen(
             summary = R.string.settings_customize_menu_summary,
             onClick = { onNavigateToCustomizeMenu() },
         ),
+        // QR scanner receiver. Stub footprint: the only wired receiver today is BenOS Camera, which
+        // QrScanLauncher starts with an explicit SCAN_QR_TO_CLIPBOARD intent. The stored key
+        // pref_qr_scanner_app and this control are the footprint the reader picker populates; that work
+        // enumerates installed QR handlers into qrScannerAppOptions and has QrScanLauncher honour the
+        // selection. No search anchor yet: the index entry lands with the picker.
+        Choice(
+            store = stringPref("pref_qr_scanner_app", "benos_camera"),
+            title = R.string.settings_qr_scanner_app_title,
+            icon = drawableIcon(R.drawable.ic_auxbar_qr_scan),
+            options = ::qrScannerAppOptions,
+            fallbackIndex = 0,
+        ),
 
         Category(R.string.settings_uim_toggle_clipboard),
         // Off also deletes kept clips, pinned ones included.
@@ -109,6 +121,14 @@ private fun shakeActionOptions(context: Context): List<ChoiceOption> {
         ChoiceOption(value, labels.getOrElse(index) { value })
     }
 }
+
+/**
+ * QR scanner receivers. Stub: only BenOS Camera is wired, started by QrScanLauncher with an explicit
+ * SCAN_QR_TO_CLIPBOARD intent. The reader picker enumerates installed QR handlers into this list.
+ */
+private fun qrScannerAppOptions(context: Context): List<ChoiceOption> = listOf(
+    ChoiceOption("benos_camera", context.getString(R.string.qr_scanner_app_benos_camera)),
+)
 
 private fun retentionOptions(context: Context): List<ChoiceOption> = listOf(
     ChoiceOption(ClipboardPrefs.RETENTION_1H, context.getString(R.string.clipboard_retention_1h)),
