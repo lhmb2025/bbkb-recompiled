@@ -43,8 +43,8 @@ android {
         applicationId = "dev.bbkb.ime"
         minSdk = 26
         targetSdk = 36
-        versionCode = 1441
-        versionName = "5.0.0-beta.28"
+        versionCode = 1442
+        versionName = "5.0.0-beta.29"
 
         // arm64 only: the engine blob exists for no other ABI. Also filters AAR native libs.
         ndk {
