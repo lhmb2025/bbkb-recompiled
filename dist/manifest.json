@@ -1,15 +1,15 @@
 {
   "schema": 1,
-  "generated": "2026-11-07T02:30:45Z",
+  "generated": "2026-11-16T04:16:39Z",
   "app": {
     "release": {
-      "versionCode": 1441,
-      "versionName": "5.0.0-beta.28",
-      "url": "https://github.com/lhmb2025/bbkb-recompiled/releases/download/v5.0.0-beta.28/bbkb-5.0.0-beta.28-release.apk",
-      "sha256": "85b04c026258e544556bfa40e403f53f9961162c2c78a75f3af13e7a1edebe31",
-      "size": 70139169,
+      "versionCode": 1442,
+      "versionName": "5.0.0-beta.29",
+      "url": "https://github.com/lhmb2025/bbkb-recompiled/releases/download/v5.0.0-beta.29/bbkb-5.0.0-beta.29-release.apk",
+      "sha256": "899f48d0a866be0b17a0d74ad365b9dd909f35bbcd6f5878e05568795302d217",
+      "size": 70211148,
       "minSdk": 26,
-      "notes": "Emoji search and suggestions, rebuilt learned words with use counts and export and import, redesigned User dictionary and Text shortcuts screens, improved auxbar management, faster typing, many bug fixes, and support for Android 8.0."
+      "notes": "Assignable swipe gestures for on-screen keyboard; voice language downloads; UX improvements; miscellaneous bug fixes"
     }
   },
   "packs": {
